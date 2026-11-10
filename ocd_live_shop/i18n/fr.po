@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-10 15:46+0000\n"
-"PO-Revision-Date: 2026-11-10 15:46+0000\n"
+"POT-Creation-Date: 2026-11-10 19:55+0000\n"
+"PO-Revision-Date: 2026-11-10 19:55+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -47,9 +47,39 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%(amount)s · %(method)s"
+msgstr "%(amount)s · %(method)s"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%(count)s parcels · %(delivered)s delivered"
+msgstr "%(count)s colis · %(delivered)s livrés"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%(count)s parcels · %(state)s"
+msgstr "%(count)s colis · %(state)s"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "%(count)s · %(amount)s"
+msgstr "%(count)s · %(amount)s"
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_dashboard.py:0
 msgid "%(courier)s: %(amount)s of cash to hand over before %(hour)s"
 msgstr "%(courier)s : %(amount)s d'espèces à remettre avant %(hour)s"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "%(day)s · %(start)s – %(end)s, time of %(city)s"
+msgstr "%(day)s · %(start)s – %(end)s, heure de %(city)s"
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -77,6 +107,12 @@ msgstr "%(parcel)s · %(vendor)s : colis pas prêt, vendeur relancé"
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%(summary)s · %(problems)s problems"
+msgstr "%(summary)s · %(problems)s problèmes"
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "%(vendor)s has not prepared the parcel %(parcel)s yet: give it to an OCD courier?"
 msgstr "%(vendor)s n'a pas encore préparé le colis %(parcel)s : le passer à un livreur OCD ?"
@@ -88,10 +124,47 @@ msgid "%(vendors)s · %(amount)s to recover"
 msgstr "%(vendors)s · %(amount)s à récupérer"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.js:0
+msgid "%s goes to an OCD courier."
+msgstr "%s passe à un livreur OCD."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "%s in stock"
+msgstr "%s en stock"
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "%s is not a parcel of the shop."
 msgstr "%s n'est pas un colis du shop."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%s is not an OCD courier."
+msgstr "%s n'est pas un livreur OCD."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%s late"
+msgstr "%s en retard"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%s picks it up at the vendor"
+msgstr "%s passe chercher chez le vendeur"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%s problems"
+msgstr "%s problèmes"
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -112,10 +185,28 @@ msgid "%s vendors"
 msgstr "%s vendeurs"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%s · code checked"
+msgstr "%s · code vérifié"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%s · validated without the code"
+msgstr "%s · validé sans le code"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_res_partner__ocd_prep_hours
 #: model:ir.model.fields,help:ocd_live_shop.field_res_users__ocd_prep_hours
 msgid "0: the time of the settings."
 msgstr "0 : le délai des paramètres."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "1 problem"
+msgstr "1 problème"
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -213,11 +304,23 @@ msgid "Action Needed"
 msgstr "Action requise"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "Activities"
+msgstr "Activités"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_parcel_problem__reason__address
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_problem_reason__address
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery_app
 msgid "Address not found"
 msgstr "Adresse introuvable"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "After the live: link of the replay video"
+msgstr "Après le live : lien de la vidéo replay"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
@@ -229,6 +332,12 @@ msgstr "Alerte"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_escalation_hours
 msgid "Alert The Dispatch After The Reminder (Hours)"
 msgstr "Alerter le dispatch après la relance (heures)"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.js:0
+msgid "All · %s"
+msgstr "Tous · %s"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__amount_refunds
@@ -265,6 +374,12 @@ msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Available"
+msgstr "Disponible"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "Back to the vendor after"
 msgstr "Retour au vendeur après"
@@ -275,9 +390,27 @@ msgid "Balance"
 msgstr "Solde"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Banner on screen · direct contact"
+msgstr "Bandeau à l'écran · contact direct"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Banner on screen · sold by OCD"
+msgstr "Bandeau à l'écran · vendu par OCD"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "Before"
 msgstr "Avant"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Before %s"
+msgstr "Avant %s"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_payout_min_amount
@@ -290,6 +423,16 @@ msgstr "En dessous de ce montant, le reversement attend la période suivante."
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__move_ids
 msgid "Bills And Credit Notes"
 msgstr "Factures et avoirs"
+
+#. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,name:ocd_live_shop.refuse_reason_product_photo
+msgid "Blurry photo"
+msgstr "Photo floue"
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_booking__ocd_visit_count
+msgid "Boutique Visits"
+msgstr "Visites de la boutique"
 
 #. module: ocd_live_shop
 #: model:ocd.voice.prompt,name:ocd_live_shop.voice_prompt_boutique
@@ -362,6 +505,8 @@ msgid "Cash handed over"
 msgstr "Espèces remises"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
 #: model:ir.actions.act_window,name:ocd_live_shop.ocd_cash_remittance_action
 #: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_cash_menu
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_cash_remittance_view_list
@@ -374,15 +519,39 @@ msgid "Cash to hand over this evening:"
 msgstr "Espèces à remettre ce soir :"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Cash: %s to hand over"
+msgstr "Espèces : %s à remettre"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_parcel_code_view_form
 msgid "Check the code"
 msgstr "Vérifier le code"
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_review_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_review_date
+msgid "Checked At"
+msgstr "Vérifié le"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "Choose a courier…"
+msgstr "Choisir un livreur…"
 
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_payout.py:0
 msgid "Choose the journal of the payouts in the settings."
 msgstr "Choisis le journal des reversements dans les paramètres."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Choose the reason sent to the vendor."
+msgstr "Choisis le motif envoyé au vendeur."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -512,6 +681,18 @@ msgid "Courier Zones"
 msgstr "Zones du livreur"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.js:0
+msgid "Courier chosen for %s."
+msgstr "Livreur choisi pour %s."
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.js:0
+msgid "Courier of the parcel %s"
+msgstr "Livreur du colis %s"
+
+#. module: ocd_live_shop
 #: model:ir.actions.act_window,name:ocd_live_shop.res_partner_action_ocd_courier
 msgid "Couriers"
 msgstr "Livreurs"
@@ -615,6 +796,8 @@ msgid "Default rhythm for a new vendor. Can be changed on each vendor."
 msgstr "Rythme par défaut d'un nouveau vendeur. Modifiable sur la fiche de chaque vendeur."
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_stage__delivered
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery_app
 msgid "Delivered"
@@ -631,11 +814,25 @@ msgid "Delivered By"
 msgstr "Livré par"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Delivered by the vendor"
+msgstr "Livré par le vendeur"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "Delivered by the vendors"
 msgstr "Livrés par les vendeurs"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.js:0
+msgid "Delivered by the vendors · %s"
+msgstr "Livrés par les vendeurs · %s"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "Delivered today"
 msgstr "Livré aujourd'hui"
@@ -654,6 +851,7 @@ msgstr "Livré. Merci !"
 
 #. module: ocd_live_shop
 #: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_menu_deliveries
+#: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_parcels_menu
 msgid "Deliveries"
 msgstr "Livraisons"
 
@@ -725,6 +923,12 @@ msgid "Direct contact on WhatsApp"
 msgstr "Contact direct sur WhatsApp"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Direct contact: the customers write to %s."
+msgstr "Contact direct : les clients écrivent à %s."
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_product_product__ocd_sale_mode
 #: model:ir.model.fields,help:ocd_live_shop.field_product_template__ocd_sale_mode
 #: model:ir.model.fields,help:ocd_live_shop.field_res_partner__ocd_sale_mode
@@ -733,7 +937,10 @@ msgid "Direct contact: the customers write to the vendor on WhatsApp. Sold by OC
 msgstr "Contact direct : les clients écrivent au vendeur sur WhatsApp. Vendu par OCD : les clients paient OCD dans le shop et OCD reverse au vendeur."
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
 #: model:ir.actions.act_window,name:ocd_live_shop.stock_picking_action_ocd_dispatch
+#: model:ir.actions.client,name:ocd_live_shop.ocd_live_dispatch_action
 #: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_dispatch_menu
 msgid "Dispatch"
 msgstr "Dispatch"
@@ -748,7 +955,11 @@ msgstr "Dispatch alerté le"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_booking__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_dashboard__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_dispatch__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_planning__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_regie__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_verification__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__display_name
@@ -778,14 +989,31 @@ msgid "Districts where the vendor delivers. Elsewhere, an OCD courier delivers w
 msgstr "Quartiers où le vendeur livre. Ailleurs, un livreur OCD livre si le relais est activé."
 
 #. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,name:ocd_live_shop.refuse_reason_product_duplicate
+msgid "Duplicate"
+msgstr "Doublon"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_parcel_force_view_form
 msgid "E.g. the customer has no phone, the team called her"
 msgstr "Ex. : la cliente n'a pas de téléphone, l'équipe l'a appelée"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Each product put on screen is noted here with its minute."
+msgstr "Chaque produit mis à l'écran est noté ici avec sa minute."
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_partner__ocd_courier_kind__employee
 msgid "Employee of OCD"
 msgstr "Employé d'OCD"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "Ended"
+msgstr "Terminé"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_company__ocd_default_payout_frequency__daily
@@ -845,6 +1073,11 @@ msgid "For a new vendor sold by OCD. Can be changed on each vendor and for each 
 msgstr "Pour un nouveau vendeur vendu par OCD. Modifiable sur la fiche de chaque vendeur et pour chaque colis."
 
 #. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,name:ocd_live_shop.refuse_reason_product_forbidden
+msgid "Forbidden product"
+msgstr "Produit interdit"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_company__ocd_payout_weekday__4
 msgid "Friday"
 msgstr "Vendredi"
@@ -862,6 +1095,8 @@ msgid "Give the code only when you have the parcel in your hands."
 msgstr "Donne le code seulement quand tu as le colis en main."
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_kanban_ocd_dispatch
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_picking_form
 msgid "Give to an OCD courier"
@@ -877,6 +1112,12 @@ msgstr "Bonne livraison ! Le client a reçu le code."
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_goods_amount
 msgid "Goods"
 msgstr "Marchandises"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Grouped by step · %s"
+msgstr "Regroupé par étape · %s"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__amount_received
@@ -963,7 +1204,11 @@ msgstr "J'ai reçu les espèces"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_booking__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_dashboard__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_dispatch__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_planning__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_regie__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_verification__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__id
@@ -1049,6 +1294,7 @@ msgstr "Dernière mise à jour le"
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_dashboard.py:0
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_is_late
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "Late"
@@ -1081,9 +1327,21 @@ msgid "Left At"
 msgstr "Parti le"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Left at %s · code sent"
+msgstr "Parti à %s · code envoyé"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_partner_form
 msgid "Link of the delivery app"
 msgstr "Lien de l'appli de livraison"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "List"
+msgstr "Liste"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__booking_id
@@ -1102,6 +1360,28 @@ msgid "Live Moments"
 msgstr "Moments du live"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+#: model:ir.actions.client,name:ocd_live_shop.ocd_live_regie_action
+#: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_regie_menu
+msgid "Live control room"
+msgstr "Régie en direct"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "Live now"
+msgstr "En direct"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "Live now: %s"
+msgstr "Live en cours : %s"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_code_locked
 msgid "Locked"
 msgstr "Bloqué"
@@ -1110,6 +1390,12 @@ msgstr "Bloqué"
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "Locked after"
 msgstr "Bloqué après"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Locked after too many wrong codes: call the customer"
+msgstr "Bloqué après trop de codes faux : appeler le client"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
@@ -1143,6 +1429,11 @@ msgstr "Reversement minimum"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__offset_label
 msgid "Minute"
 msgstr "Minute"
+
+#. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,name:ocd_live_shop.refuse_reason_product_price
+msgid "Missing or wrong price"
+msgstr "Prix manquant ou faux"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__momo
@@ -1188,6 +1479,12 @@ msgid "Moments Of The Replay"
 msgstr "Moments du replay"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Moments saved for the replay"
+msgstr "Moments enregistrés pour le replay"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_company__ocd_payout_weekday__0
 msgid "Monday"
 msgstr "Lundi"
@@ -1227,6 +1524,66 @@ msgid "New"
 msgstr "Nouveau"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "New attempt"
+msgstr "Nouvelle tentative"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.js:0
+msgid "New attempt for %s."
+msgstr "Nouvelle tentative pour %s."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "New products"
+msgstr "Nouveaux produits"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "Next live"
+msgstr "Prochain live"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "No OCD courier yet."
+msgstr "Aucun livreur OCD pour l'instant."
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "No approved product for this vendor yet."
+msgstr "Aucun produit validé pour ce vendeur pour l'instant."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "No courier"
+msgstr "Aucun livreur"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "No courier: choose one"
+msgstr "Aucun livreur : choisis-en un"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "No live today. The control room opens the live of the moment by itself."
+msgstr "Aucun live aujourd'hui. La régie ouvre toute seule le live du moment."
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "No parcel"
+msgstr "Aucun colis"
+
+#. module: ocd_live_shop
 #: model_terms:ir.actions.act_window,help:ocd_live_shop.stock_picking_action_ocd_dispatch
 msgid "No parcel to deliver"
 msgstr "Aucun colis à livrer"
@@ -1240,6 +1597,24 @@ msgstr "Aucun colis à préparer ou à livrer."
 #: model_terms:ir.actions.act_window,help:ocd_live_shop.ocd_payout_action
 msgid "No payout to prepare"
 msgstr "Aucun reversement à préparer"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "No product waiting."
+msgstr "Aucun produit en attente."
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "No vendor delivers today."
+msgstr "Aucun vendeur ne livre aujourd'hui."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Not ready, vendor reminded at %s"
+msgstr "Pas prêt, vendeur relancé à %s"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__note
@@ -1283,6 +1658,12 @@ msgid "Number of visitors who wrote to the vendor on WhatsApp from the boutique.
 msgstr "Nombre de visiteurs qui ont écrit au vendeur sur WhatsApp depuis la boutique."
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "OCD"
+msgstr "OCD"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__ocd_is_courier
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_users__ocd_is_courier
 msgid "OCD Courier"
@@ -1295,9 +1676,29 @@ msgid "OCD Courier Outside The Zones"
 msgstr "Livreur OCD hors des zones"
 
 #. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_ocd_live_verification
+msgid "OCD Live Checks"
+msgstr "Vérifications OCD Live"
+
+#. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_ocd_live_regie
+msgid "OCD Live Control Room"
+msgstr "Régie OCD Live"
+
+#. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_ocd_live_dashboard
 msgid "OCD Live Dashboard"
 msgstr "Tableau de bord OCD Live"
+
+#. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_ocd_live_dispatch
+msgid "OCD Live Dispatch"
+msgstr "Dispatch OCD Live"
+
+#. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_ocd_live_planning
+msgid "OCD Live Planning"
+msgstr "Planning OCD Live"
 
 #. module: ocd_live_shop
 #: model:ir.module.module,shortdesc:base.module_ocd_live_shop
@@ -1332,9 +1733,33 @@ msgid "OCD Vendor"
 msgstr "Vendeur OCD"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "OCD courier"
+msgstr "Livreur OCD"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "OCD couriers"
 msgstr "Livreurs OCD"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "OCD couriers today"
+msgstr "Livreurs OCD aujourd'hui"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.js:0
+msgid "OCD couriers · %s"
+msgstr "Livreurs OCD · %s"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Off duty"
+msgstr "Pas en service"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__ocd_courier_available
@@ -1343,11 +1768,25 @@ msgid "On Duty"
 msgstr "En service"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "On a round"
+msgstr "En tournée"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "On screen now"
+msgstr "À l'écran maintenant"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.boutique
 msgid "On screen now:"
 msgstr "À l'écran maintenant :"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_stage__on_the_way
 msgid "On the way"
 msgstr "En route"
@@ -1365,10 +1804,22 @@ msgid "Only a manager can validate or pay a payout."
 msgstr "Seul un responsable peut valider ou payer un reversement."
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "Open the live"
+msgstr "Ouvrir le live"
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/product_template.py:0
 msgid "Open the live first."
 msgstr "Ouvre d'abord le live."
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "Open the live on %s"
+msgstr "Ouvrir le live sur %s"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_currency_id
@@ -1376,9 +1827,23 @@ msgid "Order Currency"
 msgstr "Devise de la commande"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "Order on OCD Live: %s"
+msgstr "Commande sur OCD Live : %s"
+
+#. module: ocd_live_shop
 #: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_orders_menu
 msgid "Orders"
 msgstr "Commandes"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Orders during the live"
+msgstr "Commandes pendant le live"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_parcel_problem__reason__other
@@ -1403,6 +1868,8 @@ msgid "Paid on the phone"
 msgstr "Payé sur le téléphone"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_cod_state__none
 msgid "Paid online"
 msgstr "Payé en ligne"
@@ -1579,7 +2046,14 @@ msgstr "Récupéré"
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Picked up at %s"
+msgstr "Récupéré à %s"
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_dashboard.py:0
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_problem_reason
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_stage__problem
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery_app
@@ -1612,6 +2086,24 @@ msgid "Product"
 msgstr "Produit"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Product put online"
+msgstr "Produit mis en ligne"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Product refused"
+msgstr "Produit refusé"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "Product refused: %s"
+msgstr "Produit refusé : %s"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_booking__vendor_product_ids
 msgid "Products Of The Vendor"
 msgstr "Produits du vendeur"
@@ -1625,9 +2117,22 @@ msgstr "Produits des vendeurs"
 
 #. module: ocd_live_shop
 #: model:ir.actions.act_window,name:ocd_live_shop.product_template_action_ocd_to_check
+#: model:ir.actions.client,name:ocd_live_shop.ocd_live_shop_verification_action
 #: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_to_check_menu
 msgid "Products to check"
 msgstr "Produits à vérifier"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Publish the replay in the boutique"
+msgstr "Publier le replay dans sa boutique"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Put online"
+msgstr "Mettre en ligne"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery_app
@@ -1635,6 +2140,8 @@ msgid "QR code of the payment"
 msgstr "QR code du paiement"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_stage__ready
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_kanban_ocd_dispatch
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_picking_form
@@ -1645,6 +2152,12 @@ msgstr "Prêt"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_ready_at
 msgid "Ready At"
 msgstr "Prêt le"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Ready since %s"
+msgstr "Prêt depuis %s"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__reason
@@ -1672,6 +2185,12 @@ msgstr "Référence du transfert Mobile Money fait depuis le compte d'OCD."
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery_app
 msgid "Reference of the payment"
 msgstr "Référence du paiement"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "Refresh"
+msgstr "Actualiser"
 
 #. module: ocd_live_shop
 #: model:mail.activity.type,summary:ocd_live_shop.mail_activity_type_refund
@@ -1709,6 +2228,18 @@ msgid "Replay"
 msgstr "Replay"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "Replay published in the boutique of the vendor."
+msgstr "Replay publié dans la boutique du vendeur."
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Replay published in the boutique, with"
+msgstr "Replay publié dans la boutique, avec"
+
+#. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_ocd_parcel_problem
 msgid "Report A Delivery Problem"
 msgstr "Signaler un problème de livraison"
@@ -1740,6 +2271,12 @@ msgstr "Erreur d'envoi SMS"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_sale_mode
 msgid "Sale Mode"
 msgstr "Mode de vente"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Sale mode to start"
+msgstr "Mode de vente au départ"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__amount_bills
@@ -1775,6 +2312,12 @@ msgstr "Seconde de la vidéo"
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.parcel_pay
 msgid "See if it is paid"
 msgstr "Voir si c'est payé"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "See it big"
+msgstr "Voir en grand"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_picking_form
@@ -1838,7 +2381,7 @@ msgstr "Commissions du shop"
 #. module: ocd_live_shop
 #: model:ir.module.module,summary:base.module_ocd_live_shop
 msgid "Shop of the vendors: sale mode and delivery chosen by the team for each vendor, one parcel per vendor, delivery code, dispatch, cash of the couriers, vendor payouts, product shown during the live"
-msgstr ""
+msgstr "Shop des vendeurs : mode de vente et livraison choisis par l'équipe pour chaque vendeur, un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements aux vendeurs, produit montré pendant le live"
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -1853,6 +2396,8 @@ msgid "Shop orders of today"
 msgstr "Commandes du shop d'aujourd'hui"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_live_booking_view_form
 msgid "Show on screen"
 msgstr "Mettre à l'écran"
@@ -1866,6 +2411,12 @@ msgstr "À l'écran maintenant"
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_partner__ocd_sale_mode__ocd
 msgid "Sold by OCD"
 msgstr "Vendu par OCD"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Sold by OCD · %s"
+msgstr "Vendu par OCD · %s"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__state
@@ -1987,10 +2538,26 @@ msgid "The payouts are prepared at the rhythm of each vendor, from the parcels c
 msgstr "Les reversements sont préparés au rythme de chaque vendeur, à partir des colis confirmés par le code du client."
 
 #. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_photo
+msgid "The photo of your product is blurry. Take a new photo in daylight and add the product again."
+msgstr "La photo de ton produit est floue. Prends une nouvelle photo à la lumière du jour et ajoute le produit à nouveau."
+
+#. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_price
+msgid "The price of your product is missing or wrong. Correct it and add the product again."
+msgstr "Le prix de ton produit manque ou est faux. Corrige-le et ajoute le produit à nouveau."
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/product_template.py:0
 msgid "The product %s must be approved before it is published."
 msgstr "Le produit %s doit être approuvé avant d'être publié."
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "The products"
+msgstr "Ses produits"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_product_product__ocd_review_state
@@ -2047,6 +2614,18 @@ msgstr "Il n'y a rien à encaisser pour le colis %s."
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "This live no longer exists."
+msgstr "Ce live n'existe plus."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "This live or this product no longer exists."
+msgstr "Ce live ou ce produit n'existe plus."
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/controllers/parcel_payment.py:0
 msgid "This parcel is already paid."
 msgstr "Ce colis est déjà payé."
@@ -2059,15 +2638,31 @@ msgstr "Ce colis est bloqué après trop de codes faux. Appelle l'équipe."
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "This parcel no longer exists."
+msgstr "Ce colis n'existe plus."
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "This payment method is not allowed for this parcel."
 msgstr "Ce moyen de paiement n'est pas autorisé pour ce colis."
+
+#. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_forbidden
+msgid "This product cannot be sold on OCD Live."
+msgstr "Ce produit ne peut pas être vendu sur OCD Live."
 
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_booking.py:0
 msgid "This product does not belong to the vendor of the live."
 msgstr "Ce produit n'appartient pas au vendeur du live."
+
+#. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_duplicate
+msgid "This product is already in your boutique."
+msgstr "Ce produit est déjà dans ta boutique."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -2092,6 +2687,12 @@ msgid "To Collect"
 msgstr "À encaisser"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "To call back"
+msgstr "À rappeler"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_payout__state__draft
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template__ocd_review_state__to_check
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_search
@@ -2102,6 +2703,12 @@ msgstr "À vérifier"
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_cod_state__to_collect
 msgid "To collect"
 msgstr "À encaisser"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "To collect %s"
+msgstr "À encaisser %s"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery_app
@@ -2132,14 +2739,28 @@ msgid "To pay out on %s"
 msgstr "À reverser %s"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_stage__to_prepare
 msgid "To prepare"
 msgstr "À préparer"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "To prepare before %s"
+msgstr "À préparer avant %s"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_search
 msgid "To recover"
 msgstr "À récupérer"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "Today"
+msgstr "Aujourd'hui"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_cash_remittance_view_form
@@ -2149,6 +2770,12 @@ msgstr "À récupérer"
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_list_ocd_dispatch
 msgid "Total"
 msgstr "Total"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Touch the one the vendor shows: the boutique shows it at once"
+msgstr "Touche celui que le vendeur montre : sa boutique l'affiche aussitôt"
 
 #. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_stock_picking
@@ -2249,6 +2876,29 @@ msgid "Vendor:"
 msgstr "Vendeur :"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "Vendors who deliver"
+msgstr "Vendeurs qui livrent"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "Views"
+msgstr "Vues"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "Visits of the boutique"
+msgstr "Visites de sa boutique"
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_live_booking__ocd_visit_count
+msgid "Visits of the boutique of the vendor during the live, one per browser."
+msgstr "Visites de la boutique du vendeur pendant le live, une par navigateur."
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.boutique
 msgid "Watch the last live again"
 msgstr "Revoir le dernier live"
@@ -2288,6 +2938,8 @@ msgid "Who Delivers By Default"
 msgstr "Qui livre par défaut"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_partner_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_picking_form
 msgid "Who delivers"
@@ -2350,6 +3002,24 @@ msgid "Your parcels"
 msgstr "Tes colis"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "at the studio"
+msgstr "au studio"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "before the start"
+msgstr "avant le début"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "delivered"
+msgstr "livré"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "failed attempts"
 msgstr "tentatives ratées"
@@ -2365,6 +3035,42 @@ msgid "hours after the reminder"
 msgstr "heures après la relance"
 
 #. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "https://"
+msgstr "https://"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "late"
+msgstr "en retard"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
+msgid "moments."
+msgstr "moments."
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "of live"
+msgstr "de live"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "on the way"
+msgstr "en route"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+msgid "parcels"
+msgstr "colis"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery_app
 msgid "picks it up."
 msgstr "passe le chercher."
@@ -2377,9 +3083,39 @@ msgstr "problème"
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "remote"
+msgstr "à distance"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "remote, %s"
+msgstr "à distance, %s"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/regie/regie.js:0
+msgid "since the start"
+msgstr "depuis le début"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_regie.py:0
+msgid "sold out"
+msgstr "épuisé"
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "to choose"
 msgstr "à choisir"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "to prepare or ready"
+msgstr "à préparer ou prêt"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
