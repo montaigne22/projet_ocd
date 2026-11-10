@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Demo records of OCD Live. They all belong to this module: uninstalling it removes them.
+     The lives, the directory links and the orders, which depend on the day, are created by
+     the hook of the installation. -->
+<odoo noupdate="1">
+
+    <!-- === Vendors === -->
+    <record id="vendor_awa" model="res.partner">
+        <field name="name">Awa Mensah</field>
+        <field name="is_company" eval="True"/>
+        <field name="ocd_is_vendor" eval="True"/>
+        <field name="ocd_vendor_state">approved</field>
+        <field name="ocd_category_id" ref="ocd_live.category_food"/>
+        <field name="ocd_business">Gâteaux et jus naturels</field>
+        <field name="phone">+228 90112201</field>
+        <field name="city">Lomé</field>
+        <field name="country_id" ref="base.tg"/>
+        <field name="ocd_whatsapp_optin" eval="True"/>
+        <field name="ocd_sale_mode">direct</field>
+    </record>
+    <record id="vendor_brenda" model="res.partner">
+        <field name="name">Brenda Wax</field>
+        <field name="is_company" eval="True"/>
+        <field name="ocd_is_vendor" eval="True"/>
+        <field name="ocd_vendor_state">approved</field>
+        <field name="ocd_category_id" ref="ocd_live.category_clothes"/>
+        <field name="ocd_business">Pagnes et robes en wax</field>
+        <field name="phone">+237 670112202</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_akwa"/>
+        <field name="delivery_landmark">En face de la pharmacie du Port</field>
+        <field name="ocd_whatsapp_optin" eval="True"/>
+        <field name="ocd_sale_mode">ocd</field>
+        <field name="ocd_delivery_mode">pickup</field>
+        <field name="ocd_commission_rate">15</field>
+    </record>
+    <record id="vendor_fatou" model="res.partner">
+        <field name="name">Fatou Karité</field>
+        <field name="is_company" eval="True"/>
+        <field name="ocd_is_vendor" eval="True"/>
+        <field name="ocd_vendor_state">approved</field>
+        <field name="ocd_category_id" ref="ocd_live.category_beauty"/>
+        <field name="ocd_business">Beurre de karité et savons</field>
+        <field name="phone">+237 690112203</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_makepe"/>
+        <field name="ocd_sale_mode">ocd</field>
+        <field name="ocd_delivery_mode">vendor</field>
+        <field name="ocd_zone_ids" eval="[Command.set([ref('delivery_cameroon.district_douala_akwa'), ref('delivery_cameroon.district_douala_makepe')])]"/>
+        <field name="ocd_zone_fallback" eval="True"/>
+        <field name="ocd_commission_rate">15</field>
+    </record>
+    <record id="vendor_papa" model="res.partner">
+        <field name="name">Papa Ndolé</field>
+        <field name="is_company" eval="True"/>
+        <field name="ocd_is_vendor" eval="True"/>
+        <field name="ocd_vendor_state">approved</field>
+        <field name="ocd_category_id" ref="ocd_live.category_food"/>
+        <field name="ocd_business">Ndolé et plats du pays</field>
+        <field name="phone">+237 670112204</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="ocd_sale_mode">direct</field>
+    </record>
+    <record id="vendor_junior" model="res.partner">
+        <field name="name">Junior Gadgets</field>
+        <field name="is_company" eval="True"/>
+        <field name="ocd_is_vendor" eval="True"/>
+        <field name="ocd_vendor_state">approved</field>
+        <field name="ocd_category_id" ref="ocd_live.category_phones"/>
+        <field name="ocd_business">Téléphones et accessoires</field>
+        <field name="phone">+225 0701122050</field>
+        <field name="city">Abidjan</field>
+        <field name="country_id" ref="base.ci"/>
+        <field name="ocd_sale_mode">direct</field>
+    </record>
+    <record id="vendor_aminata" model="res.partner">
+        <field name="name">Aminata Déco</field>
+        <field name="is_company" eval="True"/>
+        <field name="ocd_is_vendor" eval="True"/>
+        <field name="ocd_vendor_state">approved</field>
+        <field name="ocd_category_id" ref="ocd_live.category_home"/>
+        <field name="ocd_business">Décoration et vaisselle</field>
+        <field name="phone">+221 771122060</field>
+        <field name="city">Dakar</field>
+        <field name="country_id" ref="base.sn"/>
+        <field name="ocd_sale_mode">direct</field>
+    </record>
+    <record id="vendor_mireille" model="res.partner">
+        <field name="name">Mireille Couture</field>
+        <field name="is_company" eval="True"/>
+        <field name="ocd_is_vendor" eval="True"/>
+        <field name="ocd_vendor_state">approved</field>
+        <field name="ocd_category_id" ref="ocd_live.category_clothes"/>
+        <field name="ocd_business">Couture sur mesure</field>
+        <field name="phone">+229 0197112207</field>
+        <field name="city">Cotonou</field>
+        <field name="country_id" ref="base.bj"/>
+        <field name="ocd_sale_mode">direct</field>
+    </record>
+
+    <!-- === Customers and courier in Douala === -->
+    <record id="customer_estelle" model="res.partner">
+        <field name="name">Estelle Ngono</field>
+        <field name="phone">+237 670000101</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_akwa"/>
+        <field name="delivery_landmark">Derrière la boulangerie Saker</field>
+    </record>
+    <record id="customer_herve" model="res.partner">
+        <field name="name">Hervé Kuete</field>
+        <field name="phone">+237 694000102</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_bonaberi"/>
+        <field name="delivery_landmark">Après le pont, à gauche</field>
+    </record>
+    <record id="courier_ekwalla" model="res.partner">
+        <field name="name">Junior Ekwalla</field>
+        <field name="phone">+237 655000103</field>
+        <field name="ocd_is_courier" eval="True"/>
+        <field name="ocd_courier_kind">employee</field>
+        <field name="ocd_courier_zone_ids" eval="[Command.set([ref('delivery_cameroon.district_douala_akwa'), ref('delivery_cameroon.district_douala_makepe'), ref('delivery_cameroon.district_douala_bonaberi')])]"/>
+    </record>
+
+    <!-- === Hosts of the remote lives === -->
+    <record id="host_dzifa" model="hr.employee">
+        <field name="name">Dzifa Agbeko</field>
+        <field name="ocd_is_animatrice" eval="True"/>
+    </record>
+    <record id="host_kafui" model="hr.employee">
+        <field name="name">Kafui Amedome</field>
+        <field name="ocd_is_animatrice" eval="True"/>
+    </record>
+
+    <!-- === Price of the hours === -->
+    <record id="price_rule_saturday_evening" model="ocd.live.price.rule">
+        <field name="name">Samedi soir</field>
+        <field name="percent">25</field>
+        <field name="hour_from">17.5</field>
+        <field name="hour_to">22</field>
+        <field name="on_mon" eval="False"/>
+        <field name="on_tue" eval="False"/>
+        <field name="on_wed" eval="False"/>
+        <field name="on_thu" eval="False"/>
+        <field name="on_fri" eval="False"/>
+        <field name="on_sun" eval="False"/>
+    </record>
+    <record id="price_rule_monday_morning" model="ocd.live.price.rule">
+        <field name="name">Lundi matin</field>
+        <field name="percent">-15</field>
+        <field name="hour_from">8.5</field>
+        <field name="hour_to">12</field>
+        <field name="on_tue" eval="False"/>
+        <field name="on_wed" eval="False"/>
+        <field name="on_thu" eval="False"/>
+        <field name="on_fri" eval="False"/>
+        <field name="on_sat" eval="False"/>
+        <field name="on_sun" eval="False"/>
+    </record>
+
+    <!-- === Products of the vendors === -->
+    <record id="product_wax_dress" model="product.template">
+        <field name="name">Robe en wax</field>
+        <field name="type">consu</field>
+        <field name="list_price">12000</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_brenda"/>
+        <field name="is_published" eval="True"/>
+        <field name="description_sale">Robe longue en wax, coupe droite, tailles S à XL.</field>
+    </record>
+    <record id="product_wax_shirt" model="product.template">
+        <field name="name">Chemise wax homme</field>
+        <field name="type">consu</field>
+        <field name="list_price">10000</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_brenda"/>
+        <field name="is_published" eval="True"/>
+        <field name="description_sale">Chemise manches courtes en wax, coton.</field>
+    </record>
+    <record id="product_wax_pagne" model="product.template">
+        <field name="name">Pagne wax 6 yards</field>
+        <field name="type">consu</field>
+        <field name="list_price">15000</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_brenda"/>
+        <field name="is_published" eval="True"/>
+    </record>
+    <record id="product_shea_butter" model="product.template">
+        <field name="name">Beurre de karité 250 g</field>
+        <field name="type">consu</field>
+        <field name="list_price">2500</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_fatou"/>
+        <field name="is_published" eval="True"/>
+    </record>
+    <record id="product_black_soap" model="product.template">
+        <field name="name">Savon noir 200 g</field>
+        <field name="type">consu</field>
+        <field name="list_price">1500</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_fatou"/>
+        <field name="is_published" eval="True"/>
+    </record>
+    <record id="product_ndole" model="product.template">
+        <field name="name">Ndolé crevettes (plat)</field>
+        <field name="type">consu</field>
+        <field name="list_price">3000</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_papa"/>
+        <field name="is_published" eval="True"/>
+    </record>
+    <record id="product_chocolate_cake" model="product.template">
+        <field name="name">Gâteau au chocolat</field>
+        <field name="type">consu</field>
+        <field name="list_price">8000</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_awa"/>
+        <field name="is_published" eval="True"/>
+    </record>
+
+</odoo>
