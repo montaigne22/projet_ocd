@@ -78,6 +78,7 @@ OCD Live
             "ocd_live/static/src/backend/navbar.js",
             "ocd_live/static/src/backend/navbar.xml",
             "ocd_live/static/src/backend/theme.scss",
+            "ocd_live/static/src/backend/choice_cards/*",
         ],
         "web.assets_frontend": [
             "ocd_live/static/src/scss/ocd_app.scss",

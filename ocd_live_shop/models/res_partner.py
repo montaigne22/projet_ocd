@@ -61,6 +61,10 @@ class ResPartner(models.Model):
     ocd_late_count = fields.Integer(
         string="Late Parcels (30 Days)", compute="_compute_ocd_late_count"
     )
+    ocd_delivered_30 = fields.Integer(string="Parcels Delivered (30 Days)", compute="_compute_ocd_quality")
+    ocd_on_time_rate = fields.Char(string="On Time", compute="_compute_ocd_quality")
+    ocd_failed_30 = fields.Integer(string="Failed Deliveries (30 Days)", compute="_compute_ocd_quality")
+    ocd_product_count = fields.Integer(string="Products", compute="_compute_ocd_product_count")
 
     # === COURIER === #
 
@@ -98,6 +102,84 @@ class ResPartner(models.Model):
         }
         for partner in self:
             partner.ocd_late_count = counts.get(partner.id, 0)
+
+    def _compute_ocd_quality(self):
+        since = fields.Datetime.now() - timedelta(days=30)
+        Picking = self.env["stock.picking"]
+        for partner in self:
+            if not partner.ocd_is_vendor or not partner.id:
+                partner.ocd_delivered_30 = partner.ocd_failed_30 = 0
+                partner.ocd_on_time_rate = ""
+                continue
+            delivered = Picking.search([
+                ("ocd_vendor_id", "=", partner.id),
+                ("ocd_stage", "=", "delivered"),
+                ("ocd_delivered_at", ">=", since),
+            ])
+            partner.ocd_delivered_30 = len(delivered)
+            on_time = len(delivered.filtered(lambda parcel: not parcel.ocd_escalated_at))
+            partner.ocd_on_time_rate = f"{round(on_time / len(delivered) * 100)} %" if delivered else "—"
+            partner.ocd_failed_30 = Picking.search_count([
+                ("ocd_vendor_id", "=", partner.id),
+                ("ocd_failed_attempts", ">", 0),
+                ("create_date", ">=", since),
+            ])
+
+    def _compute_ocd_product_count(self):
+        counts = {
+            vendor.id: count
+            for vendor, count in self.env["product.template"]._read_group(
+                [("ocd_vendor_id", "in", self.ids)], ["ocd_vendor_id"], ["__count"]
+            )
+        }
+        for partner in self:
+            partner.ocd_product_count = counts.get(partner.id, 0)
+
+    @api.model
+    def ocd_choice_descriptions(self, field_name):
+        descriptions = super().ocd_choice_descriptions(field_name)
+        if field_name == "ocd_sale_mode":
+            descriptions.update({
+                "direct": self.env._(
+                    "The customer writes to the vendor. The vendor collects the money and delivers. "
+                    "OCD does not touch the money."
+                ),
+                "ocd": self.env._(
+                    "The customer pays on the website or at the door. OCD pays the vendor back, "
+                    "minus the commission."
+                ),
+            })
+        elif field_name == "ocd_delivery_mode":
+            descriptions.update({
+                "vendor": self.env._(
+                    "The vendor sees the parcels in the space, delivers, then types the code of the customer."
+                ),
+                "pickup": self.env._(
+                    "The vendor prepares. An OCD courier picks the parcel up, delivers and types the code."
+                ),
+                "stock": self.env._(
+                    "Consignment: the vendor leaves the products at OCD, which delivers from its stock."
+                ),
+            })
+        return descriptions
+
+    def action_ocd_view_products(self):
+        self.ensure_one()
+        action = self.env["ir.actions.act_window"]._for_xml_id("ocd_live_shop.product_template_action_ocd_vendor_products")
+        action["domain"] = [("ocd_vendor_id", "=", self.id)]
+        action["context"] = {"default_ocd_vendor_id": self.id}
+        return action
+
+    def action_ocd_open_boutique(self):
+        self.ensure_one()
+        return {"type": "ir.actions.act_url", "url": f"/ocd/boutique/{self.id}", "target": "new"}
+
+    def action_ocd_deliveries_to_ocd(self):
+        """Give the deliveries of a vendor often late to the OCD couriers."""
+        self.write({"ocd_delivery_mode": "pickup"})
+        for vendor in self:
+            vendor.message_post(body=self.env._("Who delivers: an OCD courier picks the parcels up, from now on."))
+        return True
 
     def _compute_ocd_cash_on_hand(self):
         totals = {

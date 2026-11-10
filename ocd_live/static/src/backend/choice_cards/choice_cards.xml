@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live.ChoiceCards">
+        <div role="radiogroup" class="o_ocd_choice_cards" t-att-aria-label="this.props.label">
+            <button t-foreach="this.items" t-as="item" t-key="item[0]" type="button" role="radio"
+                    t-att-aria-checked="item[0] === this.value ? 'true' : 'false'"
+                    t-att-disabled="this.props.readonly"
+                    t-att-class="{ 'o_ocd_choice_card': true, 'o_ocd_checked': item[0] === this.value }"
+                    t-on-click="() => this.choose(item)">
+                <span class="o_ocd_choice_dot" aria-hidden="true"><span/></span>
+                <span class="o_ocd_choice_text">
+                    <b t-out="item[1]"/>
+                    <span t-if="this.descriptions()[item[0]]" t-out="this.descriptions()[item[0]]"/>
+                </span>
+            </button>
+        </div>
+    </t>
+
+</templates>

@@ -262,3 +262,104 @@
     border-radius: 50%;
     background: $ocd-red-live;
 }
+
+// Record of a vendor, as in the validated design (BoVendeur)
+.o_ocd_vendor_form {
+    .o_ocd_vendor_title h1 {
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 24px;
+    }
+    .o_ocd_vendor_line {
+        font-size: 13.5px;
+        color: $ocd-bo-muted;
+    }
+    .o_ocd_vendor_section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 16px;
+    }
+    .o_ocd_vendor_caption {
+        font-size: 13px;
+        font-weight: 700;
+        color: $ocd-bo-text;
+    }
+    .o_ocd_vendor_box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 4px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: $ocd-bo-background;
+        font-size: 13.5px;
+    }
+    .o_ocd_vendor_check {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        .o_field_widget {
+            width: auto;
+        }
+        label {
+            font-weight: 400;
+        }
+    }
+    .o_ocd_vendor_inline {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        label {
+            font-weight: 600;
+        }
+        .o_ocd_small_input {
+            width: 64px;
+        }
+    }
+    .o_ocd_vendor_money {
+        margin-top: 4px;
+    }
+    .o_ocd_vendor_alert {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: $ocd-red-soft;
+        color: $ocd-red-dark;
+        font-size: 13.5px;
+        font-weight: 700;
+        .btn {
+            margin-left: auto;
+        }
+    }
+}
+.o_ocd_kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.o_ocd_kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 10px;
+    > span {
+        font-size: 12px;
+        font-weight: 600;
+        color: $ocd-bo-muted;
+    }
+    .o_field_widget, .o_field_widget span {
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 22px;
+        color: $ocd-ink;
+    }
+}

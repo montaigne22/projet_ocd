@@ -79,6 +79,99 @@
         </field>
     </record>
 
+    <!-- Record of a vendor, as in the validated design (BoVendeur) -->
+    <record id="res_partner_view_form_ocd_vendor" model="ir.ui.view">
+        <field name="name">res.partner.view.form.ocd.vendor</field>
+        <field name="model">res.partner</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Vendor" class="o_ocd_vendor_form">
+                <header>
+                    <button name="action_ocd_approve_vendor" type="object" string="Validate the vendor" class="btn-primary"
+                            invisible="ocd_vendor_state != 'to_check'"/>
+                    <button name="action_ocd_refuse_vendor" type="object" string="Refuse"
+                            invisible="ocd_vendor_state != 'to_check'"/>
+                    <button name="action_ocd_open_whatsapp" type="object" string="Write on WhatsApp" invisible="not phone"/>
+                    <field name="ocd_vendor_state" widget="statusbar" statusbar_visible="to_check,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_ocd_view_bookings" type="object" class="oe_stat_button" icon="videocam">
+                            <field name="ocd_booking_count" widget="statinfo" string="Lives"/>
+                        </button>
+                        <button name="action_ocd_view_credits" type="object" class="oe_stat_button" icon="confirmation_number">
+                            <field name="ocd_lives_remaining" widget="statinfo" string="To place"/>
+                        </button>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'avatar_128'}"/>
+                    <div class="oe_title o_ocd_vendor_title">
+                        <h1><field name="name" placeholder="Name of the vendor" required="1"/></h1>
+                        <div class="o_ocd_vendor_line">
+                            <field name="ocd_business" placeholder="What the vendor sells" class="o_ocd_inline"/>
+                        </div>
+                    </div>
+                    <field name="ocd_is_vendor" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <notebook>
+                        <page name="ocd_sale" string="Sale and delivery">
+                            <group name="ocd_vendor_main">
+                                <group>
+                                    <field name="ocd_category_id" options="{'no_create': True}"/>
+                                    <field name="country_id" options="{'no_create': True}"/>
+                                </group>
+                                <group>
+                                    <field name="city"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="ocd_quality" string="Quality">
+                            <div class="o_ocd_kpis" name="ocd_kpis">
+                                <div class="o_ocd_kpi">
+                                    <span>Lives booked</span>
+                                    <field name="ocd_booking_count"/>
+                                </div>
+                                <div class="o_ocd_kpi">
+                                    <span>Lives to place</span>
+                                    <field name="ocd_lives_remaining"/>
+                                </div>
+                            </div>
+                        </page>
+                        <page name="ocd_contact" string="Contact details">
+                            <group>
+                                <group>
+                                    <field name="phone" widget="phone" string="WhatsApp"/>
+                                    <field name="email" widget="email"/>
+                                    <field name="ocd_whatsapp_optin"/>
+                                </group>
+                                <group>
+                                    <field name="street" string="Address"/>
+                                    <field name="create_date" string="Vendor since" readonly="1"/>
+                                    <field name="ocd_vendor_checked_at" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="ocd_directory" string="Directory and space">
+                            <group>
+                                <group>
+                                    <field name="ocd_pass_active"/>
+                                    <field name="ocd_pass_end_date"/>
+                                </group>
+                                <group>
+                                    <button name="action_ocd_reset_space_link" type="object" string="New personal link"
+                                            class="btn-link ps-0" colspan="2"
+                                            confirm="The vendor will need the new link: the old one stops working."/>
+                                    <button name="action_ocd_create_password_access" type="object" string="Access with a password"
+                                            class="btn-link ps-0" colspan="2" groups="ocd_live.group_ocd_live_manager"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
     <record id="res_partner_action_ocd_vendor" model="ir.actions.act_window">
         <field name="name">Vendors</field>
         <field name="res_model">res.partner</field>
@@ -89,7 +182,7 @@
         <field name="view_ids" eval="[Command.clear(),
             Command.create({'view_mode': 'list', 'view_id': ref('res_partner_view_list_ocd_vendor')}),
             Command.create({'view_mode': 'kanban'}),
-            Command.create({'view_mode': 'form'})]"/>
+            Command.create({'view_mode': 'form', 'view_id': ref('res_partner_view_form_ocd_vendor')})]"/>
     </record>
 
 </odoo>

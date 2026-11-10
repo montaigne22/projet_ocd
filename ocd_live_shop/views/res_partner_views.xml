@@ -41,6 +41,101 @@
         </field>
     </record>
 
+    <!-- Record of a vendor: how the customers buy, who delivers, money and quality (BoVendeur) -->
+    <record id="res_partner_view_form_ocd_vendor" model="ir.ui.view">
+        <field name="name">res.partner.view.form.ocd.vendor.inherit.ocd.live.shop</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.res_partner_view_form_ocd_vendor"/>
+        <field name="arch" type="xml">
+            <button name="action_ocd_open_whatsapp" position="after">
+                <button name="action_ocd_open_boutique" type="object" string="See the boutique"
+                        invisible="ocd_vendor_state != 'approved'"/>
+            </button>
+            <div name="button_box" position="inside">
+                <button name="action_ocd_view_products" type="object" class="oe_stat_button" icon="storefront">
+                    <field name="ocd_product_count" widget="statinfo" string="Products"/>
+                </button>
+            </div>
+            <group name="ocd_vendor_main" position="after">
+                <div class="o_ocd_vendor_section">
+                    <span class="o_ocd_vendor_caption">How the customers buy</span>
+                    <field name="ocd_sale_mode" widget="ocd_choice_cards" nolabel="1"/>
+                </div>
+                <div class="o_ocd_vendor_section" invisible="ocd_sale_mode != 'ocd'">
+                    <span class="o_ocd_vendor_caption">Who delivers the orders</span>
+                    <field name="ocd_delivery_mode" widget="ocd_choice_cards" nolabel="1"/>
+                    <div class="o_ocd_vendor_box" invisible="ocd_delivery_mode != 'vendor'">
+                        <span class="o_ocd_vendor_caption">Districts the vendor delivers</span>
+                        <field name="ocd_zone_ids" widget="many2many_tags" options="{'no_create': True}" nolabel="1"/>
+                        <div class="o_ocd_vendor_check">
+                            <field name="ocd_zone_fallback" nolabel="1"/>
+                            <label for="ocd_zone_fallback" string="Outside these districts, an OCD courier picks the parcel up"/>
+                        </div>
+                        <div class="o_ocd_vendor_check">
+                            <field name="ocd_vendor_collects" nolabel="1"/>
+                            <label for="ocd_vendor_collects" string="The vendor collects the payments at the door (the commission due is withheld from the payout)"/>
+                        </div>
+                        <div class="o_ocd_vendor_inline">
+                            <label for="ocd_prep_hours" string="Time to prepare a parcel"/>
+                            <field name="ocd_prep_hours" nolabel="1" class="o_ocd_small_input"/>
+                            <span>hours, then reminder</span>
+                        </div>
+                    </div>
+                    <div class="o_ocd_vendor_box" invisible="ocd_delivery_mode != 'pickup'">
+                        <div class="o_ocd_vendor_inline">
+                            <label for="ocd_prep_hours" string="Time to prepare a parcel"/>
+                            <field name="ocd_prep_hours" nolabel="1" class="o_ocd_small_input"/>
+                            <span>hours, then reminder</span>
+                        </div>
+                    </div>
+                    <group class="o_ocd_vendor_money">
+                        <group>
+                            <field name="ocd_commission_rate" string="OCD commission (%)"/>
+                        </group>
+                        <group>
+                            <field name="ocd_payout_frequency" string="Payout"/>
+                        </group>
+                        <group>
+                            <field name="ocd_payout_momo" string="Number for the payouts"/>
+                        </group>
+                    </group>
+                </div>
+                <div class="o_ocd_vendor_box" invisible="ocd_sale_mode != 'direct'">
+                    The customers write to the vendor on WhatsApp from the boutique. OCD does not touch the money.
+                </div>
+            </group>
+            <div name="ocd_kpis" position="inside">
+                <div class="o_ocd_kpi">
+                    <span>Parcels delivered, 30 d</span>
+                    <field name="ocd_delivered_30"/>
+                </div>
+                <div class="o_ocd_kpi">
+                    <span>On time</span>
+                    <field name="ocd_on_time_rate"/>
+                </div>
+                <div class="o_ocd_kpi">
+                    <span>Failed deliveries</span>
+                    <field name="ocd_failed_30"/>
+                </div>
+                <div class="o_ocd_kpi">
+                    <span>Late preparations</span>
+                    <field name="ocd_late_count"/>
+                </div>
+            </div>
+            <div name="ocd_kpis" position="after">
+                <div class="o_ocd_vendor_box">
+                    Automatic rule: at the 3rd late preparation in 30 days, the team gets an activity to give the deliveries of the vendor to the OCD couriers.
+                </div>
+                <div class="o_ocd_vendor_alert" role="alert"
+                     invisible="ocd_late_count &lt; 3 or ocd_delivery_mode != 'vendor'">
+                    <span>3 late preparations or more in 30 days.</span>
+                    <button name="action_ocd_deliveries_to_ocd" type="object" string="Give the deliveries to the OCD couriers"
+                            class="btn btn-dark"/>
+                </div>
+            </div>
+        </field>
+    </record>
+
     <record id="res_partner_action_ocd_courier" model="ir.actions.act_window">
         <field name="name">Couriers</field>
         <field name="res_model">res.partner</field>

@@ -1,0 +1,71 @@
+// Choice shown as cards, as in the validated design (BoVendeur)
+.o_ocd_choice_cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+    width: 100%;
+}
+.o_ocd_choice_card {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 10px;
+    align-items: start;
+    padding: 12px;
+    border: 2px solid $ocd-bo-border;
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    text-align: left;
+    &.o_ocd_checked {
+        border-color: $ocd-orange;
+        background: #FFF6EE;
+    }
+    &:not(:disabled):not(.o_ocd_checked):hover {
+        border-color: $ocd-bo-input;
+    }
+    &:focus-visible {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 2px;
+    }
+    &:disabled {
+        opacity: 1;
+        cursor: default;
+    }
+}
+.o_ocd_choice_dot {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    display: grid;
+    place-items: center;
+    border: 2px solid $ocd-bo-input;
+    border-radius: 50%;
+    span {
+        display: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: $ocd-ink;
+    }
+    .o_ocd_checked & {
+        border-color: $ocd-ink;
+        span {
+            display: block;
+        }
+    }
+}
+.o_ocd_choice_text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    b {
+        font-size: 14px;
+        line-height: 1.25;
+    }
+    span {
+        font-size: 12.5px;
+        line-height: 1.35;
+        color: $ocd-bo-muted;
+    }
+}

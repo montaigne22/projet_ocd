@@ -154,6 +154,19 @@ class ResPartner(models.Model):
         action["context"] = {"default_partner_id": self.id}
         return action
 
+    @api.model
+    def ocd_choice_descriptions(self, field_name):
+        """Return what each choice of `field_name` means, for the choice cards of the forms."""
+        return {}
+
+    def action_ocd_open_whatsapp(self):
+        """Open a WhatsApp conversation with the contact."""
+        self.ensure_one()
+        digits = re.sub(r"\D", "", self.phone or "")
+        if not digits:
+            raise UserError(self.env._("Add the WhatsApp number of %s first.", self.name))
+        return {"type": "ir.actions.act_url", "url": f"https://wa.me/{digits}", "target": "new"}
+
     def action_ocd_approve_vendor(self):
         self.write({"ocd_vendor_state": "approved", "ocd_vendor_checked_at": fields.Datetime.now()})
         return True
