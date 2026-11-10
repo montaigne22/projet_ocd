@@ -93,6 +93,7 @@ SHOP_WHATSAPP = {
     "OCD Live: parcel not ready": "OCD Live : colis pas prêt",
     "OCD Live: parcel on the way": "OCD Live : colis en route",
     "OCD Live: parcel returned": "OCD Live : colis retourné",
+    "OCD Live: the vendor is live": "OCD Live : le vendeur est en live",
     "OCD Live: parcel to prepare": "OCD Live : colis à préparer",
     "Parcel to prepare and reminder to the vendor, parcel on the way with its code, failed attempt, delivered or returned parcel to the customer": "Colis à préparer et relance au vendeur, colis en route avec son code, tentative ratée, colis livré ou retourné, au client",
 }

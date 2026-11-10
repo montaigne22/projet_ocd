@@ -50,8 +50,9 @@ class TestOcdParcelMessages(OcdShopCommon):
 
     def test_message_when_the_vendor_goes_live(self):
         alert = self.env["ocd.boutique.alert"]._ocd_register(self.brenda, phone="+228 90112233")
+        later = self.company._ocd_local_today() + timedelta(days=30)
         booking = self.env["ocd.live.booking"].create({
-            "partner_id": self.brenda.id, "start_datetime": fields.Datetime.now() + timedelta(days=30), "mode": "remote",
+            "partner_id": self.brenda.id, "start_datetime": self.company._ocd_slot_starts(later)[0], "mode": "remote",
         })
         booking.state = "confirmed"
         now = fields.Datetime.now()

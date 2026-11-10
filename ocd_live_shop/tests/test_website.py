@@ -113,8 +113,9 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
         """A confirmed live of `vendor` running now, written directly (no slot of the studio
         is needed for the pages)."""
         now = fields.Datetime.now()
+        later = self.company._ocd_local_today() + timedelta(days=30)
         booking = self.env["ocd.live.booking"].create({
-            "partner_id": vendor.id, "start_datetime": now + timedelta(days=30), "mode": "remote",
+            "partner_id": vendor.id, "start_datetime": self.company._ocd_slot_starts(later)[0], "mode": "remote",
         })
         booking.write({"state": "confirmed", **values})
         self.env.cr.execute(
@@ -138,6 +139,7 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
         self.assertIn("Sold and delivered by OCD Live", response.text)
 
     def test_boutique_tells_the_next_live_and_registers_an_alert(self):
+        self.authenticate(None, None)
         response = self.url_open(f"/ocd/boutique/{self.awa.id}")
         self.assertIn("No live planned for now", response.text)
         self.assertIn("Direct contact with the vendor", response.text)
@@ -182,6 +184,13 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
 
     def test_replay_with_the_moments(self):
         booking = self._live_now(self.brenda, replay_url="https://www.youtube.com/watch?v=abc")
+        # The live is over: two days ago
+        self.env.cr.execute(
+            "UPDATE ocd_live_booking SET start_datetime = start_datetime - interval '2 days', "
+            "end_datetime = end_datetime - interval '2 days' WHERE id = %s",
+            [booking.id],
+        )
+        booking.invalidate_recordset(["start_datetime", "end_datetime"])
         self.env["ocd.live.moment"].create({
             "booking_id": booking.id, "product_tmpl_id": self.dress.product_tmpl_id.id, "offset_seconds": 125,
         })
