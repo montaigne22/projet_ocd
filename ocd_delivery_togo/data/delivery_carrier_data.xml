@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Delivery methods to price and publish in Website > Configuration > Delivery Methods. -->
+
+    <record id="product_delivery_lome" model="product.product">
+        <field name="name">Home delivery in Lome</field>
+        <field name="default_code">DELIVERY_TG_LOME</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">0.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="carrier_lome_home" model="delivery.carrier">
+        <field name="name">Home delivery in Lome</field>
+        <field name="sequence">15</field>
+        <field name="delivery_type">fixed</field>
+        <field name="fixed_price">0.0</field>
+        <field name="product_id" ref="product_delivery_lome"/>
+        <field name="country_ids" eval="[Command.set([ref('base.tg')])]"/>
+        <field name="city_ids" eval="[Command.set([ref('city_tg_lome')])]"/>
+        <field name="allow_cash_on_delivery" eval="True"/>
+        <field name="carrier_description">Delivered to your door within 24 to 48 hours.</field>
+        <field name="is_published" eval="False"/>
+    </record>
+
+    <record id="product_delivery_togo" model="product.product">
+        <field name="name">Shipping to other cities of Togo</field>
+        <field name="default_code">DELIVERY_TG_OTHER</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">0.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="carrier_togo_other_cities" model="delivery.carrier">
+        <field name="name">Shipping to other cities of Togo</field>
+        <field name="sequence">25</field>
+        <field name="delivery_type">fixed</field>
+        <field name="fixed_price">0.0</field>
+        <field name="product_id" ref="product_delivery_togo"/>
+        <field name="country_ids" eval="[Command.set([ref('base.tg')])]"/>
+        <field name="excluded_city_ids" eval="[Command.set([ref('city_tg_lome')])]"/>
+        <field name="carrier_description">Sent through a travel agency to your city, within 2 to 4 days.</field>
+        <field name="is_published" eval="False"/>
+    </record>
+
+</odoo>

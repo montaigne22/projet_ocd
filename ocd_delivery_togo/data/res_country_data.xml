@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The country record belongs to `base`: write the settings of Togo explicitly, so that
+         they are applied on install and on update. -->
+    <function model="res.country" name="write">
+        <value eval="[ref('base.tg')]"/>
+        <value eval="{
+            'enforce_cities': True,
+            'address_format': '%(street)s\n%(street2)s\n%(district_name)s\n%(delivery_landmark)s\n%(zip)s %(city)s\n%(state_name)s\n%(country_name)s',
+        }"/>
+    </function>
+
+</odoo>
