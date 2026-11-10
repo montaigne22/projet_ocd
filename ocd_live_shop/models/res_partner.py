@@ -148,3 +148,21 @@ class ResPartner(models.Model):
         """Personal link of the delivery app of the vendor or of the courier."""
         self.ensure_one()
         return f"{self.get_base_url()}/ocd/livrer/{self._ocd_get_space_token()}"
+
+    def _ocd_send_delivery_link(self, url):
+        """Send the link of the delivery app. Extended by ocd_live_shop_whatsapp."""
+        return False
+
+    def action_ocd_delivery_app_link(self):
+        """Give the vendor or the courier the link of the delivery app."""
+        self.ensure_one()
+        url = self._ocd_get_livrer_url()
+        if self._ocd_send_delivery_link(url):
+            message = self.env._("The link of the delivery app was sent on WhatsApp.")
+        else:
+            message = self.env._("Send this link of the delivery app: %s", url)
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {"message": message, "type": "success", "sticky": True},
+        }

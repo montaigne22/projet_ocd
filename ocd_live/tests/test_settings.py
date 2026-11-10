@@ -7,7 +7,6 @@ from odoo import fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
 
-from odoo.addons.ocd_live.models.res_partner import ResPartner
 
 from .common import OcdLiveCommon
 
@@ -60,7 +59,7 @@ class TestOcdLiveSettings(OcdLiveCommon):
 
     def test_login_with_a_whatsapp_code(self):
         sent = []
-        with patch.object(ResPartner, "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
+        with patch.object(type(self.env["res.partner"]), "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
             self.assertTrue(self.vendor._ocd_send_login_code())
             self.assertFalse(self.vendor._ocd_send_login_code(), "One code per minute")
         code = sent[0]
@@ -73,13 +72,13 @@ class TestOcdLiveSettings(OcdLiveCommon):
 
     def test_login_code_expires_and_attempts_are_limited(self):
         sent = []
-        with patch.object(ResPartner, "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
+        with patch.object(type(self.env["res.partner"]), "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
             self.vendor._ocd_send_login_code()
         code = sent[-1]
         with freeze_time(fields.Datetime.now() + timedelta(minutes=11)):
             self.assertFalse(self.vendor._ocd_check_login_code(code))
         with freeze_time(fields.Datetime.now() + timedelta(minutes=2)), \
-                patch.object(ResPartner, "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
+                patch.object(type(self.env["res.partner"]), "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
             self.vendor._ocd_send_login_code()
             code = sent[-1]
             wrong = "000000" if code != "000000" else "111111"

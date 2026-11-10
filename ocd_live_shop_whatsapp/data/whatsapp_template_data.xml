@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates to create at Meta (language French, category Utility) with the same names
+         and texts, then to synchronise from the WhatsApp account. -->
+    <data noupdate="1">
+
+        <record id="template_delivery_link" model="whatsapp.template">
+            <field name="name">OCD Live: link of the delivery app</field>
+            <field name="template_name">ocd_lien_livraison</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, voici votre lien pour préparer et livrer les colis OCD Live. Gardez-le pour vous.</field>
+            <field name="button_url_value">{{ 'ocd/livrer/' + object._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Junior'})]"/>
+        </record>
+
+        <record id="template_parcel_to_prepare" model="whatsapp.template">
+            <field name="name">OCD Live: parcel to prepare</field>
+            <field name="template_name">ocd_colis_a_preparer</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">ocd_vendor_id</field>
+            <field name="body">Bonjour {{1}}, nouveau colis à préparer pour {{2}} ({{3}}) : {{4}}. Touchez le bouton quand il est prêt.</field>
+            <field name="button_url_value">{{ 'ocd/livrer/' + object.ocd_vendor_id._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Fatou'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_district_id.name or object.partner_id.city or \'\' }}', 'sample_value': 'Akwa'}),
+                (0, 0, {'sequence': 4, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Beurre de karité'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_reminder" model="whatsapp.template">
+            <field name="name">OCD Live: parcel not ready</field>
+            <field name="template_name">ocd_colis_rappel</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">ocd_vendor_id</field>
+            <field name="body">Bonjour {{1}}, le colis de {{2}} n'est pas encore prêt. Le client attend : préparez-le et touchez le bouton.</field>
+            <field name="button_url_value">{{ 'ocd/livrer/' + object.ocd_vendor_id._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Patrick'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Didier'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_on_the_way" model="whatsapp.template">
+            <field name="name">OCD Live: parcel on the way</field>
+            <field name="template_name">ocd_colis_en_route</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre colis {{2}} est en route avec {{3}}. Donnez ce code au livreur seulement quand vous avez le colis en main : {{4}}</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Robe en wax'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_courier_id.name }}', 'sample_value': 'Junior'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.ocd_delivery_code }}', 'sample_value': '4729'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_failed" model="whatsapp.template">
+            <field name="name">OCD Live: delivery not possible</field>
+            <field name="template_name">ocd_colis_echec</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, {{2}} n'a pas pu vous livrer. Répondez à ce message pour choisir un autre moment. Votre code reste le même.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Arnaud'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.ocd_courier_id.name or \'Le livreur\' }}', 'sample_value': 'Raoul'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_delivered" model="whatsapp.template">
+            <field name="name">OCD Live: parcel delivered</field>
+            <field name="template_name">ocd_colis_livre</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre colis {{2}} est livré. Merci pour votre confiance !</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Robe en wax'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_returned" model="whatsapp.template">
+            <field name="name">OCD Live: parcel returned</field>
+            <field name="template_name">ocd_colis_retour</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre colis {{2}} n'a pas pu être livré et retourne chez le vendeur. L'équipe OCD Live vous contacte pour la suite.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Arnaud'}),
+                (0, 0, {'sequence': 2, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Coffret soins'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

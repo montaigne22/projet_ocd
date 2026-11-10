@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates to create at Meta (WhatsApp Manager > Message templates, language French)
+         with the same names and texts, then to synchronise from the WhatsApp account. The
+         login code is an Authentication template, the others are Utility templates.
+         Editable: texts, variables, buttons. -->
+    <data noupdate="1">
+
+        <record id="template_space_link" model="whatsapp.template">
+            <field name="name">OCD Live: personal link</field>
+            <field name="template_name">ocd_lien_espace</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, voici votre lien personnel OCD Live. Gardez-le pour vous : il ouvre votre espace (vos lives, vos paquets, votre pass).</field>
+            <field name="button_url_value">{{ 'ocd/espace/' + object._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon espace', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123'})]"/>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Awa'})]"/>
+        </record>
+
+        <record id="template_login_code" model="whatsapp.template">
+            <field name="name">OCD Live: login code</field>
+            <field name="template_name">ocd_code_connexion</field>
+            <field name="lang_code">fr</field>
+            <field name="category">authentication</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Votre code OCD Live est {{1}}. Il est valable 10 minutes. Ne le donnez à personne.</field>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ ctx.get(\'ocd_login_code\') }}', 'sample_value': '123456'})]"/>
+        </record>
+
+        <record id="template_access_link" model="whatsapp.template">
+            <field name="name">OCD Live: choose a password</field>
+            <field name="template_name">ocd_mot_de_passe</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, choisissez votre mot de passe OCD Live avec ce lien. Pour vous connecter, votre identifiant est votre numéro WhatsApp.</field>
+            <field name="button_url_value">{{ (ctx.get('ocd_access_url') or '').split('/', 3)[-1] }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Choisir mon mot de passe', 'url': '{base_url}/{{1}}', 'url_example': 'web/reset_password?token=abc'})]"/>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Awa'})]"/>
+        </record>
+
+        <record id="template_live_confirmed" model="whatsapp.template">
+            <field name="name">OCD Live: live confirmed</field>
+            <field name="template_name">ocd_live_confirme</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre live est confirmé : {{2}}, de {{3}} à {{4}}, {{5}}. Référence {{6}}. Vous recevrez un rappel la veille.</field>
+            <field name="button_url_value">{{ 'ocd/espace/' + object.partner_id._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon espace', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_local_labels()[0] }}', 'sample_value': 'mardi 1 décembre'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object._ocd_local_labels()[1] }}', 'sample_value': '14:30'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_local_labels()[2] }}', 'sample_value': '16:00'}),
+                (0, 0, {'sequence': 5, 'value': '{{ \'au studio de Lomé\' if object.mode == \'studio\' else \'à distance\' }}', 'sample_value': 'au studio de Lomé'}),
+                (0, 0, {'sequence': 6, 'value': '{{ object.name }}', 'sample_value': 'LIVE/2026/0042'}),
+            ]"/>
+        </record>
+
+        <record id="template_live_reminder" model="whatsapp.template">
+            <field name="name">OCD Live: reminder of the live</field>
+            <field name="template_name">ocd_rappel_live</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, rappel : votre live est {{2}} à {{3}}, {{4}}. Préparez vos produits. Au studio, venez 15 minutes avant.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_local_labels()[0] }}', 'sample_value': 'mercredi 2 décembre'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object._ocd_local_labels()[1] }}', 'sample_value': '08:30'}),
+                (0, 0, {'sequence': 4, 'value': '{{ \'au studio de Lomé\' if object.mode == \'studio\' else \'à distance\' }}', 'sample_value': 'au studio de Lomé'}),
+            ]"/>
+        </record>
+
+        <record id="template_pass_ending" model="whatsapp.template">
+            <field name="name">OCD Live: pass that ends</field>
+            <field name="template_name">ocd_pass_fin</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live.model_ocd_directory_pass"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre pass de l'annuaire OCD Live se termine le {{2}}. Renouvelez-le pour continuer à montrer vos lives.</field>
+            <field name="button_url_value">{{ 'ocd/espace/' + object.partner_id._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Renouveler', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ format_date(object.date_end) }}', 'sample_value': '31/12/2026'}),
+            ]"/>
+        </record>
+
+        <record id="template_link_online" model="whatsapp.template">
+            <field name="name">OCD Live: link online</field>
+            <field name="template_name">ocd_lien_en_ligne</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live.model_ocd_directory_listing"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre live est dans l'annuaire OCD Live jusqu'à {{2}}. Bon live !</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.company_id._ocd_to_local(object.window_end).strftime(\'%H:%M\') if object.window_end else \'\' }}', 'sample_value': '21:00'}),
+            ]"/>
+        </record>
+
+        <record id="template_link_refused" model="whatsapp.template">
+            <field name="name">OCD Live: link refused</field>
+            <field name="template_name">ocd_lien_refuse</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live.model_ocd_directory_listing"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre lien n'a pas été accepté dans l'annuaire : {{2}}</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.refuse_note or object.refuse_reason_id.message or object.refuse_reason_id.name }}', 'sample_value': 'Le live n a pas encore commencé.'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

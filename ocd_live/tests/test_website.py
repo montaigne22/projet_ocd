@@ -4,7 +4,6 @@ from unittest.mock import patch
 from odoo import fields
 from odoo.tests import HttpCase, tagged
 
-from odoo.addons.ocd_live.models.res_partner import ResPartner
 
 
 @tagged("post_install", "-at_install")
@@ -111,7 +110,7 @@ class TestOcdLiveWebsite(HttpCase):
         self.company.ocd_vendor_login = "whatsapp_code"
         self.authenticate(None, None)
         sent = []
-        with patch.object(ResPartner, "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
+        with patch.object(type(self.env["res.partner"]), "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
             response = self.url_open("/ocd/connexion", data={
                 "csrf_token": self.csrf_token(), "phone": "90 00 00 07",
             })
