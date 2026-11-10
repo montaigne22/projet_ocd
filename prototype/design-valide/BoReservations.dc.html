@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Réservations des lives</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="lives" sub="resa" title="Réservations" crumb="" facets="Cette semaine" views="calendar,list,kanban,pivot,graph,activity" view="calendar" pager="30 nov. – 6 déc. 2026" action="Nouvelle réservation" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 320px; gap: 16px; padding: 12px 22px 14px">
+    <div style="min-width: 0; display: flex; flex-direction: column; gap: 8px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 10px 12px">
+      <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 58px repeat(7, minmax(0, 1fr)); grid-template-rows: 30px repeat(9, minmax(0, 1fr)); gap: 3px">
+        <sc-for list="{{cells}}" as="c" hint-placeholder-count="80">
+          <sc-if value="{{c.isHead}}" hint-placeholder-val="{{false}}">
+            <span style="display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 12.5px; font-weight: 700; white-space: nowrap; color: {{c.fg}}">{{c.label}}</span>
+          </sc-if>
+          <sc-if value="{{c.isTime}}" hint-placeholder-val="{{false}}">
+            <span style="display: flex; align-items: flex-start; justify-content: flex-end; padding: 3px 6px 0 0; font-size: 12px; font-weight: 700; color: #5A6068; font-variant-numeric: tabular-nums">{{c.label}}</span>
+          </sc-if>
+          <sc-if value="{{c.isClosed}}" hint-placeholder-val="{{false}}">
+            <span style="border-radius: 6px; background: #F4F5F6; padding: 4px 6px; font-size: 11.5px; color: #5A6068; line-height: 1.25">{{c.label}}</span>
+          </sc-if>
+          <sc-if value="{{c.isSlot}}" hint-placeholder-val="{{true}}">
+            <button onClick="{{c.pick}}" aria-pressed="{{c.on}}" aria-label="{{c.aria}}" style="min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; overflow: hidden; border-radius: 6px; padding: 4px 6px; font-family: inherit; text-align: left; cursor: pointer; border: {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; box-shadow: {{c.ring}}">
+              <span style="max-width: 100%; font-size: 12px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{c.label}}</span>
+              <span style="max-width: 100%; font-size: 11px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9">{{c.sub}}</span>
+            </button>
+          </sc-if>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; font-weight: 600; color: #3F454C">
+        <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #FFE7D1; border: 1px solid #F0C9A4"></span>Au studio, payé</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #15130F"></span>À distance, payé</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #FFF0CC; border: 1px solid #E8CF8A"></span>À payer au studio</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; box-sizing: border-box; border-radius: 4px; border: 1px dashed #8A9097"></span>Gardé pendant un paiement</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; box-sizing: border-box; border-radius: 4px; border: 1px solid #E3E6E9"></span>Libre</span>
+      </div>
+    </div>
+
+    <aside style="min-width: 0; display: flex; flex-direction: column; gap: 10px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px; overflow-y: auto">
+      <span style="align-self: flex-start; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; background: {{pBg}}; color: {{pFg}}">{{pKind}}</span>
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 20px; line-height: 1.15">{{pTitle}}</h2>
+      <span style="font-size: 13px; color: #3F454C">{{pWhen}}</span>
+      <sc-for list="{{pRows}}" as="r" hint-placeholder-count="5">
+        <div style="display: grid; grid-template-columns: 96px 1fr; gap: 8px; padding: 5px 0; border-bottom: 1px solid #EEF0F2; font-size: 13px"><span style="color: #5A6068">{{r.label}}</span><span style="font-weight: 600">{{r.value}}</span></div>
+      </sc-for>
+      <sc-if value="{{pRemote}}" hint-placeholder-val="{{true}}">
+        <label for="r-anim" style="font-size: 12.5px; font-weight: 700; color: #3F454C">Animatrice</label>
+        <select id="r-anim" value="{{pAnim}}" onChange="{{setAnim}}" style="height: 34px; border: 1px solid {{animBd}}; border-radius: 7px; padding: 0 8px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 600">
+          <option value="">À affecter</option>
+          <option value="Animatrice 1 · Dzifa A.">Animatrice 1 · Dzifa A.</option>
+          <option value="Animatrice 2 · Abla N. (à l'essai)">Animatrice 2 · Abla N. (à l'essai)</option>
+        </select>
+      </sc-if>
+      <sc-if value="{{pIsLive}}" hint-placeholder-val="{{true}}">
+        <a href="Regie.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; border-radius: 8px; background: #15130F; color: #FFFFFF; font-size: 13.5px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 50%; background: #FF4D5A"></span>Ouvrir la régie : en direct</a>
+      </sc-if>
+      <sc-if value="{{pHeld}}" hint-placeholder-val="{{false}}">
+        <button onClick="{{release}}" style="min-height: 38px; border: 1px solid #AEB4BA; border-radius: 8px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer">Libérer maintenant</button>
+      </sc-if>
+      <sc-if value="{{pToPay}}" hint-placeholder-val="{{false}}">
+        <button onClick="{{markPaid}}" style="min-height: 38px; border: 0; border-radius: 8px; background: #0F7A43; color: #FFFFFF; font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer">Espèces reçues : marquer payé</button>
+      </sc-if>
+      <sc-if value="{{pFree}}" hint-placeholder-val="{{false}}">
+        <button onClick="{{offer}}" style="min-height: 38px; border: 0; border-radius: 8px; background: #F46A00; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer">{{offerLabel}}</button>
+      </sc-if>
+      <sc-if value="{{pBooked}}" hint-placeholder-val="{{true}}">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <span style="display: flex; align-items: center; justify-content: center; min-height: 36px; border: 1px solid #AEB4BA; border-radius: 8px; font-size: 13px; font-weight: 700">Déplacer</span>
+          <span style="display: flex; align-items: center; justify-content: center; min-height: 36px; border: 1px solid #AEB4BA; border-radius: 8px; font-size: 13px; font-weight: 700; color: #8E1220">Annuler et créditer</span>
+        </div>
+      </sc-if>
+      <span style="margin-top: auto; font-size: 12px; color: #5A6068; line-height: 1.4">Un seul live à la fois : le compte House of Challenge diffuse tous les lives réservés. Heures de Lomé.</span>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const sel = s.sel || "1-4";
+    const anim = s.anim || {};
+    const released = !!s.released;
+    const paidKeys = s.paid || {};
+    const offered = !!s.offered;
+    const times = ["08:30", "10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00", "20:30"];
+    const ends = ["10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00", "20:30", "22:00"];
+    const days = ["Lun. 30", "Mar. 1er", "Mer. 2", "Jeu. 3", "Ven. 4", "Sam. 5", "Dim. 6"];
+    const longDays = ["lun. 30 nov.", "mar. 1er déc.", "mer. 2 déc.", "jeu. 3 déc.", "ven. 4 déc.", "sam. 5 déc.", "dim. 6 déc."];
+    const S = (n, c, p, need) => ["S", n, c, p, need];
+    const R = (n, c, p) => ["R", n, c, p, "—"];
+    const D = [
+      null,
+      [S("Maman Awa Délices", "Togo", "Découverte", "Table"), S("Awa Mensah", "Togo", "Découverte", "Table"), "F", "F", R("Brenda Wax", "Cameroun", "Pack 4"), "F", ["H", "Paiement en cours", "Togo", "Découverte", "—"], S("Kossi Sneakers", "Togo", "Découverte", "Portant"), R("Aïssatou Beauté", "Sénégal", "Duo")],
+      [S("Rose Délices", "Togo", "Duo", "Table"), R("Nadège Perruques", "Cameroun", "Découverte"), ["P", "Yao Vaisselle", "Togo", "Découverte", "Étagère"], "F", R("Blaise Électro", "Cameroun", "Pack 4"), S("Afi Délices", "Togo", "Découverte", "Table"), "F", S("Koffi Mode", "Togo", "Annonce", "Portant"), "F"],
+      ["F", S("Edem Pagnes", "Togo", "Découverte", "Portant"), R("Carine Bijoux", "Cameroun", "Duo"), "F", "F", S("Mawuli Phones", "Togo", "Découverte", "Table"), R("Grâce Cosmétiques", "Cameroun", "Découverte"), S("Akossiwa Tresses", "Togo", "Mensuel", "Table"), "F"],
+      [S("Sena Jus Naturels", "Togo", "Découverte", "Table"), "F", R("Mireille Couture", "Cameroun", "Pack 4"), S("Kodjo Sneakers", "Togo", "Duo", "Portant"), "F", "F", R("Patrick Sneakers", "Cameroun", "Découverte"), S("Dzifa Beauté", "Togo", "Découverte", "Étagère"), R("Chantal Saveurs", "Cameroun", "Découverte")],
+      [S("Ama Wax", "Togo", "Mensuel", "Portant"), R("Solange Pagnes", "Cameroun", "Duo"), S("Kafui Cuisine", "Togo", "Découverte", "Table"), S("Délali Mode", "Togo", "Annonce", "Portant"), R("Hervé Grillades", "Cameroun", "Découverte"), S("Elinam Bijoux", "Togo", "Découverte", "Étagère"), R("Fatou Karité", "Cameroun", "Duo"), S("Komi Électro", "Togo", "Pack 4", "Table"), R("Franck Gadgets", "Cameroun", "Découverte")],
+      ["F", S("Abla Délices", "Togo", "Découverte", "Table"), "F", R("Christelle Tresses", "Cameroun", "Découverte"), S("Yawa Mode", "Togo", "Duo", "Portant"), "F", "F", S("Esinam Cosmétiques", "Togo", "Découverte", "Étagère"), "F"]
+    ];
+    const kindOf = (key, e) => {
+      if (e === "F") return "F";
+      if (e[0] === "H" && released) return "F";
+      if (e[0] === "P" && paidKeys[key]) return "S";
+      return e[0];
+    };
+    const credits = { "Pack 4": "Pack 4 · 2e live sur 4", "Duo": "Duo · 1er live sur 2", "Mensuel": "Mensuel · 3e live sur 8", "Annonce": "Annonce · vidéo publiée la veille", "Découverte": "Découverte · 1 live" };
+    const cells = [{ isHead: true, label: "", fg: "#5A6068" }].concat(days.map((d, i) => ({ isHead: true, label: i === 1 ? d + " · aujourd'hui" : d, fg: i === 1 ? "#B84F00" : "#3F454C" })));
+    times.forEach((t, r) => {
+      cells.push({ isTime: true, label: t });
+      days.forEach((d, i) => {
+        if (i === 0) {
+          cells.push({ isClosed: true, label: r === 0 ? "Ouverture des lives le 1er déc." : "" });
+          return;
+        }
+        const key = i + "-" + r;
+        const e = D[i][r];
+        const k = kindOf(key, e);
+        const on = sel === key;
+        const styles = {
+          S: ["1px solid #F0C9A4", "#FFE7D1", "#15130F"],
+          R: ["1px solid #15130F", "#15130F", "#FFFFFF"],
+          P: ["1px solid #E8CF8A", "#FFF0CC", "#6B4500"],
+          H: ["1px dashed #8A9097", "#FFFFFF", "#3F454C"],
+          F: ["1px solid #E3E6E9", "#FFFFFF", "#5A6068"]
+        };
+        const st = styles[k];
+        let label = "Libre";
+        let sub = "";
+        if (k !== "F") {
+          label = k === "H" ? "Gardé" : e[1];
+          sub = k === "S" ? "Studio · " + e[4].toLowerCase() : k === "R" ? "À distance · " + e[2] : k === "P" ? "À payer au studio" : "paiement en cours";
+        }
+        cells.push({
+          isSlot: true, on: on, label: label, sub: sub,
+          aria: longDays[i] + " " + t + " : " + label,
+          border: st[0], bg: st[1], fg: st[2],
+          ring: on ? "0 0 0 2px #F46A00" : "none",
+          pick: () => this.setState({ sel: key })
+        });
+      });
+    });
+    const parts = sel.split("-");
+    const di = parseInt(parts[0], 10);
+    const ri = parseInt(parts[1], 10);
+    const e = D[di][ri];
+    const k = kindOf(sel, e);
+    const kinds = {
+      S: ["Au studio de Lomé", "#FFE7D1", "#15130F"],
+      R: ["À distance", "#15130F", "#FFFFFF"],
+      P: ["Au studio · à payer", "#FFF0CC", "#6B4500"],
+      H: ["Gardé pendant un paiement", "#EEF0F2", "#3F454C"],
+      F: ["Libre", "#EEF0F2", "#3F454C"]
+    };
+    const when = longDays[di] + " · " + times[ri] + " – " + ends[ri] + " (heure de Lomé)";
+    let rows = [];
+    let title = "Libre";
+    if (k === "F") {
+      rows = [["Liste d'attente", di === 1 && ri === 2 ? "1 personne" : "Personne"], ["Prix", "Selon le paquet choisi"]];
+    } else if (k === "H") {
+      title = "Créneau gardé";
+      rows = [["Paiement", "En cours depuis 14:50"], ["Libéré à", "15:00 si non payé"], ["Pays", e[2]]];
+    } else {
+      title = e[1];
+      const remote = k === "R";
+      const pay = k === "P" ? "À payer au studio, en espèces" : remote ? (e[2] === "Cameroun" ? "Payé · MTN MoMo (Campay)" : "Payé · Wave, confirmé par l'équipe") : (paidKeys[sel] ? "Payé en espèces au studio" : "Payé · Flooz, confirmé par l'équipe");
+      rows = [
+        ["Vendeur", e[1] + " · " + e[2]],
+        ["Paquet", credits[e[3]]],
+        ["Paiement", pay],
+        [remote ? "Chez le vendeur" : "Au studio", remote ? (e[2] === "Cameroun" ? "1 h de plus qu'à Lomé" : "Même heure qu'à Lomé") : e[4]],
+        ["Rappels WhatsApp", di >= 1 ? "La veille à 18:00 et 1 h avant" : "—"]
+      ];
+    }
+    const defaultAnim = e && e !== "F" && e[0] === "R" && !(di === 5 && ri === 6) ? "Animatrice 1 · Dzifa A." : "";
+    const curAnim = anim[sel] === undefined ? defaultAnim : anim[sel];
+    return {
+      cells,
+      pKind: kinds[k][0], pBg: kinds[k][1], pFg: kinds[k][2],
+      pTitle: title,
+      pWhen: when,
+      pRows: rows.map((r) => ({ label: r[0], value: r[1] })),
+      pRemote: k === "R",
+      pAnim: curAnim,
+      animBd: k === "R" && !curAnim ? "#B01522" : "#AEB4BA",
+      setAnim: (ev) => { const next = Object.assign({}, anim); next[sel] = ev.target.value; this.setState({ anim: next }); },
+      pIsLive: sel === "1-4",
+      pHeld: k === "H",
+      pToPay: k === "P",
+      pFree: k === "F",
+      pBooked: k === "S" || k === "R" || k === "P",
+      offerLabel: offered ? "Proposé sur WhatsApp à la liste d'attente" : "Proposer ce créneau à la liste d'attente",
+      offer: () => this.setState({ offered: true }),
+      release: () => this.setState({ released: true }),
+      markPaid: () => { const next = Object.assign({}, paidKeys); next[sel] = true; this.setState({ paid: next }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

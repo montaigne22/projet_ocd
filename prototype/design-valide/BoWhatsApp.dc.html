@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>WhatsApp : conversations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="whatsapp" sub="conv" title="Conversations" crumb="" facets="" views="" view="" pager="Numéro OCD Live · connecté" action="" search="non" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; padding: 14px 22px; display: flex">
+    <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 290px minmax(0, 1fr) 290px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; overflow: hidden">
+
+      <div style="display: flex; flex-direction: column; min-height: 0; border-right: 1px solid #D3D7DB">
+        <div role="group" aria-label="Filtrer les conversations" style="display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid #EEF0F2">
+          <sc-for list="{{chips}}" as="f" hint-placeholder-count="2">
+            <button onClick="{{f.pick}}" aria-pressed="{{f.on}}" style="min-height: 30px; border-radius: 8px; padding: 0 10px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid {{f.bd}}; background: {{f.bg}}; color: {{f.fg}}">{{f.label}}</button>
+          </sc-for>
+        </div>
+        <div style="flex: 1; min-height: 0; overflow-y: auto">
+          <sc-for list="{{convs}}" as="v" hint-placeholder-count="7">
+            <button onClick="{{v.pick}}" aria-pressed="{{v.on}}" style="width: 100%; display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 9px; align-items: center; padding: 9px 12px; border: 0; border-bottom: 1px solid #EEF0F2; font-family: inherit; color: #15130F; text-align: left; cursor: pointer; background: {{v.bg}}; box-shadow: inset 3px 0 0 {{v.mark}}">
+              <span aria-hidden="true" style="width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 12.5px; font-weight: 800; background: {{v.avBg}}; color: {{v.avFg}}">{{v.ini}}</span>
+              <span style="display: flex; flex-direction: column; min-width: 0; line-height: 1.3">
+                <span style="display: flex; align-items: baseline; gap: 6px; min-width: 0">
+                  <span style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: {{v.weight}}">{{v.name}}</span>
+                  <span style="flex: none; font-size: 11.5px; color: #5A6068">{{v.role}}</span>
+                </span>
+                <span style="font-size: 12.5px; color: #3F454C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{v.preview}}</span>
+              </span>
+              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
+                <span style="font-size: 11.5px; color: #5A6068; font-variant-numeric: tabular-nums">{{v.time}}</span>
+                <sc-if value="{{v.unread}}" hint-placeholder-val="{{true}}">
+                  <span aria-label="En attente de réponse" style="width: 10px; height: 10px; border-radius: 50%; background: #0F7A43"></span>
+                </sc-if>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-top: 1px solid #D3D7DB; background: #FAFAFB">
+          <span style="font-size: 12px; font-weight: 700; color: #5A6068">Canaux de l'équipe · Discuss</span>
+          <span style="display: flex; justify-content: space-between; font-size: 13px"><span># lives</span><span style="color: #5A6068">Nouvelle réservation 14:38</span></span>
+          <span style="display: flex; justify-content: space-between; font-size: 13px"><span># livraisons</span><span style="color: #8E1220; font-weight: 700">Colis en retard</span></span>
+          <span style="display: flex; justify-content: space-between; font-size: 13px"><span># caisse</span><span style="color: #5A6068">11 500 F à remettre</span></span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; min-width: 0; min-height: 0">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid #EEF0F2">
+          <span style="display: flex; flex-direction: column; min-width: 0; line-height: 1.3">
+            <b style="font-size: 16px">{{c.name}}</b>
+            <span style="font-size: 12.5px; color: #5A6068; font-variant-numeric: tabular-nums">{{c.phone}} · {{c.role}}</span>
+          </span>
+          <span style="margin-left: auto; max-width: 300px; border-radius: 8px; padding: 4px 9px; font-size: 12px; font-weight: 700; line-height: 1.35; background: {{c.winBg}}; color: {{c.winFg}}">{{c.win}}</span>
+        </div>
+
+        <div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; background: #F7F5F2">
+          <sc-for list="{{c.msgs}}" as="m" hint-placeholder-count="3">
+            <div style="display: flex; justify-content: {{m.align}}">
+              <div style="max-width: 78%; display: flex; flex-direction: column; gap: 3px; border-radius: 10px; padding: 7px 10px; font-size: 13.5px; line-height: 1.4; background: {{m.bg}}; border: 1px solid {{m.bd}}">
+                <sc-if value="{{m.hasTag}}" hint-placeholder-val="{{false}}">
+                  <span style="font-size: 11.5px; font-weight: 700; color: {{m.tagFg}}">{{m.tag}}</span>
+                </sc-if>
+                <span>{{m.text}}</span>
+                <span style="align-self: flex-end; font-size: 11.5px; color: #5A6068; font-variant-numeric: tabular-nums">{{m.meta}}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{c.open}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 12px; border-top: 1px solid #D3D7DB">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
+              <span style="font-size: 12px; font-weight: 700; color: #5A6068">Réponses rapides</span>
+              <sc-for list="{{c.quick}}" as="q" hint-placeholder-count="3">
+                <button onClick="{{q.use}}" title="{{q.text}}" style="min-height: 28px; border: 1px solid #AEB4BA; border-radius: 14px; padding: 0 10px; background: #FFFFFF; color: #15130F; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; font-weight: 600; cursor: pointer">{{q.label}}</button>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <label for="wa-draft" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Message à {{c.name}}</label>
+              <input id="wa-draft" value="{{draft}}" onChange="{{setDraft}}" placeholder="Écrire un message…" autocomplete="off" style="flex: 1; min-width: 0; height: 40px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; font-family: inherit; font-size: 14px; color: #15130F; background: #FFFFFF">
+              <button onClick="{{note}}" style="min-height: 40px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; background: #FFF6D6; color: #15130F; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Note interne</button>
+              <button onClick="{{send}}" style="min-height: 40px; border: 0; border-radius: 8px; padding: 0 16px; background: #0F7A43; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer">Envoyer</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{c.closed}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 12px; border-top: 1px solid #D3D7DB">
+            <span style="font-size: 12.5px; font-weight: 700; color: #5A6068">Modèle approuvé par Meta · rappel_live</span>
+            <div style="border: 1px dashed #AEB4BA; border-radius: 8px; padding: 8px 10px; font-size: 13.5px; background: #FAFAFB">Rappel : ton live est demain, mercredi 2 déc. à 08:30, au studio OCD de Lomé. Viens 15 minutes avant avec tes produits.</div>
+            <sc-if value="{{canTemplate}}" hint-placeholder-val="{{true}}">
+              <button onClick="{{sendTemplate}}" style="align-self: flex-end; min-height: 40px; border: 0; border-radius: 8px; padding: 0 16px; background: #0F7A43; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer">Envoyer le modèle</button>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow-y: auto; padding: 14px 14px; border-left: 1px solid #D3D7DB">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; font-weight: 800; background: {{c.avBg}}; color: {{c.avFg}}">{{c.ini}}</span>
+          <span style="display: flex; flex-direction: column; line-height: 1.3"><b style="font-size: 15px">{{c.name}}</b><span style="font-size: 12.5px; color: #5A6068">{{c.place}}</span></span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px; border-radius: 8px; padding: 7px 9px; background: #DCF2E5; color: #0A5A31; font-size: 12.5px; line-height: 1.4">
+          <b>{{c.consent}}</b>
+          <span>S'il écrit STOP, plus aucun message automatique.</span>
+        </div>
+        <span style="font-size: 13px; font-weight: 700; color: #5A6068; border-top: 1px solid #E3E6E9; padding-top: 10px">{{c.infoTitle}}</span>
+        <sc-for list="{{c.rows}}" as="r" hint-placeholder-count="3">
+          <div style="display: grid; grid-template-columns: 74px 1fr; gap: 8px; font-size: 13px; line-height: 1.35">
+            <span style="color: #5A6068">{{r.k}}</span>
+            <span style="font-weight: 600">{{r.v}}</span>
+          </div>
+        </sc-for>
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px">
+          <sc-for list="{{c.links}}" as="l" hint-placeholder-count="2">
+            <a href="{{l.href}}" style="display: flex; align-items: center; justify-content: space-between; min-height: 36px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 10px; font-size: 13px; font-weight: 700">{{l.label}}<span aria-hidden="true">→</span></a>
+          </sc-for>
+        </div>
+        <span style="margin-top: auto; font-size: 12px; color: #5A6068; line-height: 1.4">Les codes de livraison sont masqués ici : seul le client les voit.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const sel = s.sel || "estelle";
+    const only = !!s.only;
+    const draft = s.draft || "";
+    const added = s.added || {};
+    const answered = s.answered || {};
+    const tpl = !!s.tpl;
+    const n = s.n || 0;
+    const I = (t, x) => ({ k: "in", t: t, x: x });
+    const O = (t, x) => ({ k: "out", t: t, x: x });
+    const A = (t, tag, x) => ({ k: "auto", t: t, tag: tag, x: x });
+    const N = (t, x) => ({ k: "note", t: t, x: x });
+    const defs = [
+      { id: "estelle", name: "Estelle Ngono", ini: "EN", role: "Cliente", phone: "+237 6 70 00 00 00", place: "Douala · Akwa", time: "14:46", unread: true, open: true, since: "1er déc.",
+        msgs: [A("12:31", "commande_confirmee", "Merci Estelle ! Commande S00042 reçue : 18 000 F payés. 2 colis : Robe en wax (Brenda Wax) et Beurre de karité × 2 (Fatou Karité)."), A("14:21", "livraison_en_route", "Votre Robe en wax est en route avec Junior, livreur OCD. Donnez-lui ce code à la remise : ••••"), I("14:46", "Bonjour, le livreur arrive à quelle heure ? Je dois sortir à 16 h.")],
+        quick: [["::livreur", "Junior arrive vers 15:00 et vous appelle 10 minutes avant. Votre 2e colis part avec Fatou à 15:30."], ["::code", "Gardez le code reçu sur WhatsApp. Donnez-le seulement quand vous avez le colis en main."], ["::absent", "Si vous n'êtes pas là, dites-nous quand repasser : on reprogramme sans frais."]],
+        infoTitle: "Commande S00042", rows: [["Total", "18 000 F · payé MoMo"], ["Colis 1", "En route · Junior"], ["Colis 2", "Prêt · Fatou part à 15:30"]],
+        links: [["Ouvrir la commande", "BoCommandes.dc.html"], ["Ouvrir le colis 1", "BoLivraison.dc.html"]] },
+      { id: "didier", name: "Didier Nkotto", ini: "DN", role: "Client", phone: "+237 6 55 00 00 45", place: "Douala · Bonabéri", time: "14:31", unread: true, open: true, since: "1er déc.",
+        msgs: [A("13:02", "commande_confirmee", "Merci Didier ! Commande S00045 reçue : 17 500 F à payer à la livraison. Votre colis : Baskets blanches (Patrick Sneakers)."), I("14:31", "Bonjour, mes baskets arrivent quand ? On m'avait dit cet après-midi."), N("14:33", "Patrick ne répond pas. S'il n'est pas parti à 15:00, on passe le colis à Raoul.")],
+        quick: [["::retard", "Pardon pour l'attente. On fait le point avec le vendeur et on vous écrit dans 15 minutes."], ["::livreur_ocd", "Votre colis part avec Raoul, livreur OCD, avant 17:00. Il vous appelle avant d'arriver."]],
+        infoTitle: "Commande S00045", rows: [["Total", "17 500 F · à la livraison"], ["Colis", "En retard · Patrick, prêt depuis 13:40"]],
+        links: [["Ouvrir la commande", "BoCommandes.dc.html"], ["Voir au dispatch", "BoDispatch.dc.html"]] },
+      { id: "arnaud", name: "Arnaud Tchoua", ini: "AT", role: "Client", phone: "+237 6 96 00 00 47", place: "Douala · Ndokoti", time: "14:12", unread: true, open: true, since: "1er déc.",
+        msgs: [A("13:55", "livraison_en_route", "Votre Coffret soins visage est en route avec Raoul, livreur OCD. Code à donner à la remise : ••••"), A("14:10", "livraison_echec", "Raoul n'a pas pu vous joindre. Répondez à ce message pour choisir un autre moment."), I("14:12", "Pardon, j'étais en réunion. Vous pouvez repasser après 17 h ?")],
+        quick: [["::17h", "C'est noté : Raoul repasse à 17:00. Gardez votre code, il reste le même."], ["::retard", "Pardon pour l'attente. On fait le point avec le livreur et on vous écrit dans 15 minutes."]],
+        infoTitle: "Commande S00047", rows: [["Total", "12 500 F · payé par carte"], ["Colis", "Problème · 1re tentative échouée"], ["Règle", "2e échec : retour et remboursement"]],
+        links: [["Ouvrir la commande", "BoCommandes.dc.html"], ["Voir au dispatch", "BoDispatch.dc.html"]] },
+      { id: "linda", name: "Linda Ekane", ini: "LE", role: "Cliente", phone: "+237 6 79 00 00 46", place: "Douala · Bonapriso", time: "13:58", unread: true, open: true, since: "1er déc.",
+        msgs: [A("13:20", "commande_confirmee", "Merci Linda ! Commande S00046 reçue : 19 000 F payés. Votre colis : Coffret bijoux (Carine Bijoux)."), I("13:58", "C'est pour un cadeau. Carine peut mettre un petit mot « Joyeux anniversaire Maman » ?"), A("14:35", "livraison_en_route", "Votre Coffret bijoux est en route avec Carine. Code à donner à la remise : ••••")],
+        quick: [["::cadeau", "C'est fait : Carine a glissé le mot « Joyeux anniversaire Maman » dans le coffret."]],
+        infoTitle: "Commande S00046", rows: [["Total", "19 000 F · payé MoMo"], ["Colis", "En route · Carine, partie à 14:35"]],
+        links: [["Ouvrir la commande", "BoCommandes.dc.html"]] },
+      { id: "patrick", name: "Patrick Sneakers", ini: "PS", role: "Vendeur", phone: "+237 6 90 00 00 52", place: "Douala · Bonabéri", time: "14:05", unread: false, open: true, since: "12 nov.",
+        msgs: [A("13:03", "colis_a_preparer", "Nouveau colis à préparer : OUT/0045, Baskets blanches, pour Didier à Bonabéri. À préparer avant 17:03."), I("13:40", "C'est prêt."), O("14:05", "Merci Patrick. Tu pars quand ? Le client attend.")],
+        quick: [["::bascule", "Si tu n'es pas parti à 15:00, Raoul passe chercher le colis chez toi."]],
+        infoTitle: "Vendeur · il livre lui-même", rows: [["Colis", "OUT/0045 · en retard"], ["Ce mois", "3 retards"], ["Règle", "3 retards : passage aux livreurs OCD"]],
+        links: [["Fiche vendeur", "BoVendeur.dc.html"], ["Voir au dispatch", "BoDispatch.dc.html"]] },
+      { id: "ruth", name: "Ruth Mbarga", ini: "RM", role: "Cliente", phone: "+237 6 99 00 00 44", place: "Douala · Makepe", time: "13:13", unread: false, open: true, since: "1er déc.",
+        msgs: [A("12:52", "commande_confirmee", "Merci Ruth ! Commande S00044 reçue : 9 500 F à payer à la livraison."), I("13:10", "Je peux payer par MoMo à la porte ?"), O("13:12", "Oui ! Le livreur vous envoie une demande MoMo sur votre téléphone. Vous validez avec votre code secret."), I("13:13", "D'accord, merci beaucoup.")],
+        quick: [["::livreur", "Junior passe chez vous vers 16:00 et vous appelle 10 minutes avant."]],
+        infoTitle: "Commande S00044", rows: [["Total", "9 500 F · à la livraison"], ["Colis", "Prêt · Junior passe à 15:30"]],
+        links: [["Ouvrir la commande", "BoCommandes.dc.html"]] },
+      { id: "rose", name: "Rose Délices", ini: "RD", role: "Vendeuse · Togo", phone: "+228 90 00 00 07", place: "Lomé · Bè", time: "sam.", unread: false, open: false, since: "26 nov.",
+        msgs: [O("sam. 10:12", "Bonjour Maman Rose, ton live est réservé mercredi 2 déc. à 08:30 au studio de Lomé."), I("sam. 10:20", "Merci, je viens avec ma table.")],
+        quick: [],
+        infoTitle: "Réservation", rows: [["Live", "Mer. 2 déc. · 08:30 – 10:00"], ["Lieu", "Studio OCD · Lomé"], ["Paquet", "Duo · 1er live sur 2"]],
+        links: [["Voir le calendrier", "BoReservations.dc.html"]] }
+    ];
+    const isUnread = (d) => d.unread && !answered[d.id];
+    const pending = defs.filter(isUnread).length;
+    const msgView = (m) => {
+      const out = m.k === "out" || m.k === "auto";
+      const note = m.k === "note";
+      return {
+        align: note ? "center" : out ? "flex-end" : "flex-start",
+        bg: note ? "#FFF6D6" : m.k === "auto" ? "#EEF0F2" : out ? "#DCF2E5" : "#FFFFFF",
+        bd: note ? "#E9D48A" : m.k === "in" ? "#D3D7DB" : "transparent",
+        hasTag: m.k === "auto" || note || m.k === "out",
+        tag: note ? "Note interne · invisible pour le contact" : m.k === "auto" ? "Message automatique · modèle " + m.tag : "Régie OCD",
+        tagFg: note ? "#6B4500" : m.k === "auto" ? "#3F454C" : "#0A5A31",
+        text: m.x,
+        meta: m.t + (m.k === "in" ? "" : note ? "" : " · lu")
+      };
+    };
+    const shownDefs = defs.filter((d) => !only || isUnread(d));
+    const convs = shownDefs.map((d) => {
+      const on = d.id === sel;
+      const extra = added[d.id] || [];
+      const last = extra.length ? extra[extra.length - 1] : d.msgs[d.msgs.length - 1];
+      const unread = isUnread(d);
+      return {
+        name: d.name, ini: d.ini, role: d.role,
+        preview: (last.k === "in" ? "" : last.k === "note" ? "Note : " : "Vous : ") + last.x,
+        time: extra.length ? last.t : d.time,
+        unread: unread,
+        weight: unread ? "800" : "600",
+        avBg: d.role.indexOf("Vend") === 0 ? "#FFE7D1" : "#15130F",
+        avFg: d.role.indexOf("Vend") === 0 ? "#15130F" : "#FFFFFF",
+        on: on, bg: on ? "#FFF6EC" : "#FFFFFF", mark: on ? "#F46A00" : "transparent",
+        pick: () => this.setState({ sel: d.id, draft: "" })
+      };
+    });
+    const d = defs.filter((x) => x.id === sel)[0] || defs[0];
+    const all = d.msgs.concat(added[d.id] || []);
+    const push = (msg, markAnswered) => {
+      const nextAdded = Object.assign({}, added);
+      nextAdded[d.id] = (added[d.id] || []).concat([msg]);
+      const nextAns = Object.assign({}, answered);
+      if (markAnswered) nextAns[d.id] = true;
+      this.setState({ added: nextAdded, answered: nextAns, draft: "", n: n + 1 });
+    };
+    const now = "14:" + String(Math.min(59, 52 + n));
+    const chips = [["all", "Toutes · " + defs.length], ["only", "En attente · " + pending]].map((c) => {
+      const on = (c[0] === "only") === only;
+      return { label: c[1], on: on, bd: on ? "#15130F" : "#AEB4BA", bg: on ? "#15130F" : "#FFFFFF", fg: on ? "#FFFFFF" : "#15130F", pick: () => this.setState({ only: c[0] === "only" }) };
+    });
+    return {
+      chips: chips,
+      convs: convs,
+      c: {
+        name: d.name, ini: d.ini, phone: d.phone, role: d.role, place: d.place,
+        avBg: d.role.indexOf("Vend") === 0 ? "#FFE7D1" : "#15130F",
+        avFg: d.role.indexOf("Vend") === 0 ? "#15130F" : "#FFFFFF",
+        win: d.open ? "Fenêtre de 24 h ouverte : réponse libre" : "Plus de 24 h sans message de Rose : seulement un modèle approuvé",
+        winBg: d.open ? "#DCF2E5" : "#FFF0CC",
+        winFg: d.open ? "#0A5A31" : "#6B4500",
+        msgs: all.map(msgView),
+        open: d.open,
+        closed: !d.open,
+        quick: d.quick.map((q) => ({ label: q[0], text: q[1], use: () => this.setState({ draft: q[1] }) })),
+        consent: "Accepte WhatsApp depuis le " + d.since,
+        infoTitle: d.infoTitle,
+        rows: d.rows.map((r) => ({ k: r[0], v: r[1] })),
+        links: d.links.map((l) => ({ label: l[0], href: l[1] }))
+      },
+      draft: draft,
+      setDraft: (e) => this.setState({ draft: e.target.value }),
+      send: () => { if (draft.trim()) push({ k: "out", t: now, x: draft.trim() }, true); },
+      note: () => { if (draft.trim()) push({ k: "note", t: now, x: draft.trim() }, false); },
+      canTemplate: !tpl,
+      sendTemplate: () => {
+        if (tpl) return;
+        const nextAdded = Object.assign({}, added);
+        nextAdded.rose = (added.rose || []).concat([{ k: "auto", t: now, tag: "rappel_live", x: "Rappel : ton live est demain, mercredi 2 déc. à 08:30, au studio OCD de Lomé. Viens 15 minutes avant avec tes produits." }]);
+        this.setState({ added: nextAdded, tpl: true, n: n + 1 });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

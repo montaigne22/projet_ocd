@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prototype OCD Live</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..800&display=swap">
+<style>
+/* Layout : deux écrans côte à côte. À gauche le téléphone de la vendeuse, à droite l'écran de l'équipe OCD.
+   Ce qui se fait à gauche arrive à droite. Sur petit écran, un interrupteur passe de l'un à l'autre. */
+:root{
+  --bg:#ECEEF0; --surface:#FFFFFF; --surface-2:#F4F5F6; --ink:#15130F; --mute:#5A6068; --line:#D3D7DB;
+  --orange:#F46A00; --orange-text:#AE4700; --orange-soft:#FFE7D1; --on-orange:#15130F;
+  --live:#D91A2A; --ok:#0F7A43; --ok-soft:#DCF2E5; --warn:#8A5800; --warn-soft:#FFF0CC; --bezel:#15130F;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1113; --surface:#191C1F; --surface-2:#21252A; --ink:#F1EEEA; --mute:#9BA2A9; --line:#31363B;
+    --orange:#FF7A14; --orange-text:#FF9A4D; --orange-soft:#3A2412; --on-orange:#15130F;
+    --live:#FF4D5A; --ok:#3CCB7F; --ok-soft:#12301F; --warn:#F2B84B; --warn-soft:#33270C; --bezel:#000000;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1113; --surface:#191C1F; --surface-2:#21252A; --ink:#F1EEEA; --mute:#9BA2A9; --line:#31363B;
+  --orange:#FF7A14; --orange-text:#FF9A4D; --orange-soft:#3A2412; --on-orange:#15130F;
+  --live:#FF4D5A; --ok:#3CCB7F; --ok-soft:#12301F; --warn:#F2B84B; --warn-soft:#33270C; --bezel:#000000;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--body)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0;text-align:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+svg{display:block}
+
+/* ---------- habillage de la page ---------- */
+.wrap{max-width:1160px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:12px}
+.id{display:flex;align-items:center;gap:12px;min-width:0;margin-right:auto}
+.id img{width:42px;height:42px;border-radius:50%;flex:none;border:1px solid var(--line);background:#fff}
+.id strong{display:block;font:800 19px/1.1 var(--display);letter-spacing:-.01em}
+.id span{display:block;font-size:13px;color:var(--mute)}
+.tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px;max-width:100%;overflow-x:auto}
+.tabs button{padding:9px 14px;border-radius:9px;font-weight:600;font-size:14.5px;color:var(--mute);white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--surface)}
+main{padding-block:28px 56px}
+.lede h1{font:800 clamp(28px,4.2vw,42px)/1.05 var(--display);letter-spacing:-.025em;margin:0 0 8px;text-wrap:balance}
+.lede p{margin:0;color:var(--mute);max-width:62ch}
+.switch{display:none;margin-top:18px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:14px;gap:4px}
+.switch button{flex:1;padding:11px 8px;border-radius:10px;font-weight:700;font-size:14.5px;text-align:center;color:var(--mute);position:relative}
+.switch button[aria-pressed="true"]{background:var(--orange);color:var(--on-orange)}
+.switch .bub{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:10px;background:var(--live);color:#fff;font-size:12px;line-height:20px}
+.stage{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:20px 32px;margin-top:22px;align-items:start}
+.col-h{font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.col-h i{width:8px;height:8px;border-radius:50%;background:var(--orange)}
+.under{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:18px;color:var(--mute);font-size:14px}
+.under p{margin:0;flex:1 1 320px;min-width:0}
+.ghost{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;font-weight:600;font-size:14px;color:var(--ink)}
+@media (max-width:979px){
+  .switch{display:flex}
+  .stage{grid-template-columns:minmax(0,1fr)}
+  .col-h{display:none}
+  .stage[data-view="phone"] .col-team,.stage[data-view="team"] .col-phone{display:none}
+}
+
+/* ---------- téléphone (identité de marque fixe : blanc, orange, noir) ---------- */
+.phone{
+  --p-bg:#FFFFFF; --p-ink:#15130F; --p-mute:#665F58; --p-line:#E7E2DC; --p-fill:#F5F2EE;
+  --p-orange:#F46A00; --p-orange-soft:#FFE7D1; --p-live:#D91A2A; --p-ok:#0F7A43; --p-ok-soft:#DCF2E5;
+  color-scheme:light;background:var(--p-bg);color:var(--p-ink);
+  width:100%;max-width:400px;margin-inline:auto;height:clamp(620px,calc(100vh - 150px),780px);
+  border:10px solid var(--bezel);border-radius:38px;overflow:hidden;position:relative;display:flex;flex-direction:column;
+  box-shadow:0 24px 50px -24px rgba(0,0,0,.45);
+}
+@media (max-width:520px){.phone{max-width:none;border-width:0;border-radius:22px;box-shadow:0 0 0 1px var(--line)}}
+.phone :focus-visible{outline-color:var(--p-ink)}
+.p-top{display:flex;align-items:center;gap:10px;padding:12px 14px 8px;flex:none;min-height:60px}
+.brand{display:flex;align-items:center;gap:8px;margin-right:auto;font:800 20px/1 var(--display);letter-spacing:-.01em}
+.brand img{width:34px;height:34px;border-radius:50%}
+.lv{display:inline-flex;align-items:center;gap:5px;font:700 11px/1 var(--body);letter-spacing:.1em;background:var(--p-ink);color:#fff;padding:5px 7px;border-radius:6px}
+.lv i,.dot{width:8px;height:8px;border-radius:50%;background:var(--p-live);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,26,42,.55)}80%,100%{box-shadow:0 0 0 7px rgba(217,26,42,0)}}
+.ib{width:44px;height:44px;border-radius:50%;background:var(--p-fill);display:grid;place-items:center;flex:none}
+.ib svg{width:22px;height:22px}
+.ib:disabled{opacity:.35;cursor:default}
+.ib.voice{background:var(--p-orange-soft)}
+.tt{font:800 18px/1 var(--display);margin-right:auto}
+.prog{flex:1;display:flex;gap:5px}
+.prog i{flex:1;height:6px;border-radius:3px;background:var(--p-line)}
+.prog i.on{background:var(--p-orange)}
+.p-scroll{flex:1;overflow-y:auto;padding:6px 16px 22px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin}
+.p-bottom{flex:none;border-top:1px solid var(--p-line);background:var(--p-bg)}
+.p-bottom:empty{display:none}
+.bar{padding:10px 14px 12px;display:flex;flex-direction:column;gap:8px}
+.h1{font:800 31px/1.04 var(--display);letter-spacing:-.025em;margin:4px 0 0;text-wrap:balance}
+.sub{margin:-8px 0 0;color:var(--p-mute);font-size:15px}
+.tag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:var(--p-fill);border-radius:8px;padding:5px 9px;font-size:13px;font-weight:600;margin-top:-6px}
+.pt{font-weight:700;font-size:15px;margin:4px 0 -6px}
+.pt small{font-weight:500;color:var(--p-mute)}
+
+/* pictos : i1 = forme principale, i2 = accent, i3 = découpe */
+.pic svg{width:100%;height:100%}
+.i1{fill:var(--i1,currentColor)}.i2{fill:var(--i2,var(--p-orange))}.i3{fill:var(--i3,var(--p-bg))}
+.s1{fill:none;stroke:var(--i1,currentColor);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.s2{fill:none;stroke:var(--i2,var(--p-orange));stroke-width:3.2;stroke-linecap:round}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+.choices{display:grid;gap:12px}
+.choice{display:grid;grid-template-columns:64px 1fr 44px;align-items:center;gap:14px;border-radius:24px;padding:20px 16px 20px 18px;min-height:124px}
+.choice .pic{width:64px;height:64px}
+.choice b{display:block;font:800 27px/1 var(--display);letter-spacing:-.02em}
+.choice small{display:block;font-size:15px;font-weight:600;margin-top:6px;opacity:.85}
+.choice .go{width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+.choice.studio{background:var(--p-orange);color:var(--p-ink);--i1:var(--p-ink);--i2:#fff;--i3:var(--p-orange)}
+.choice.studio .go{background:var(--p-ink);color:#fff}
+.choice.remote{background:var(--p-ink);color:#fff;--i1:#fff;--i2:var(--p-orange);--i3:var(--p-ink)}
+.choice.remote .go{background:var(--p-orange);color:var(--p-ink)}
+.choice:active{transform:scale(.985)}
+.onair{display:flex;align-items:center;gap:8px;font-size:15px;margin-top:6px}
+.onair .n{margin-left:auto;font:800 22px/1 var(--display);font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:-4px -16px 0;padding:2px 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;gap:7px;border:2px solid var(--p-line);border-radius:999px;padding:8px 12px;font-weight:600;font-size:14.5px;background:var(--p-bg)}
+.chip b{font-variant-numeric:tabular-nums}
+.chip.on{border-color:var(--p-ink);background:var(--p-ink);color:#fff}
+.chip .pic{width:20px;height:20px}
+.chip.on .pic{--i1:#fff}
+
+.flag{display:inline-block;width:1.5em;height:1em;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.14);flex:none;background-color:#bbb}
+.f-TG{background:linear-gradient(#D21034,#D21034) 0 0/38% 60% no-repeat,repeating-linear-gradient(180deg,#006A4E 0 20%,#FFCE00 20% 40%)}
+.f-BJ{background:linear-gradient(#008751,#008751) 0 0/40% 100% no-repeat,linear-gradient(180deg,#FCD116 50%,#E8112D 50%)}
+.f-CM{background:radial-gradient(circle closest-side at 50% 50%,#FCD116 0 30%,transparent 33%),linear-gradient(90deg,#007A5E 33.33%,#CE1126 33.33% 66.66%,#FCD116 66.66%)}
+.f-CI{background:linear-gradient(90deg,#F77F00 33.33%,#fff 33.33% 66.66%,#009E60 66.66%)}
+.f-SN{background:radial-gradient(circle closest-side at 50% 50%,#00853F 0 28%,transparent 31%),linear-gradient(90deg,#00853F 33.33%,#FDEF42 33.33% 66.66%,#E31B23 66.66%)}
+.f-BF{background:radial-gradient(circle closest-side at 50% 50%,#FCD116 0 30%,transparent 33%),linear-gradient(180deg,#EF2B2D 50%,#009E49 50%)}
+.f-ML{background:linear-gradient(90deg,#14B53A 33.33%,#FCD116 33.33% 66.66%,#CE1126 66.66%)}
+.f-GA{background:linear-gradient(180deg,#009E60 33.33%,#FCD116 33.33% 66.66%,#3A75C4 66.66%)}
+
+.nav{display:grid;grid-template-columns:repeat(4,1fr);padding:6px 6px 8px}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;font-size:12px;font-weight:600;color:var(--p-mute);border-radius:12px;position:relative}
+.nav button[aria-current="page"]{color:var(--p-ink)}
+.nav button[aria-current="page"] .ic{stroke:var(--p-orange);stroke-width:2.6}
+.nav .bdg{position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--p-live);color:#fff;font-size:11px;line-height:18px;text-align:center;padding:0 4px}
+
+.calh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.calh b{font:700 18px/1 var(--display);text-transform:capitalize}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal.wd{margin-bottom:-8px}
+.cal.wd span{text-align:center;font-size:12px;font-weight:700;color:var(--p-mute)}
+.cal button{aspect-ratio:1;border-radius:13px;background:var(--p-fill);font-weight:700;font-size:16px;text-align:center;font-variant-numeric:tabular-nums;position:relative}
+.cal button.few::after{content:"";position:absolute;left:50%;bottom:5px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--p-orange)}
+.cal button:disabled{background:none;color:#B5AFA8;text-decoration:line-through;cursor:default}
+.cal button.sel{background:var(--p-orange);color:var(--p-ink)}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--p-mute);flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{width:14px;height:14px;border-radius:5px;background:var(--p-fill);display:inline-block;position:relative}
+.lg.few::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--p-orange)}
+.lg.full{background:none;border:1.5px dashed #B5AFA8}
+
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slots button{border-radius:16px;background:var(--p-fill);padding:13px 4px 11px;text-align:center}
+.slots b{display:block;font:800 21px/1 var(--display);font-variant-numeric:tabular-nums}
+.slots small{display:block;font-size:12px;color:var(--p-mute);margin-top:5px;font-variant-numeric:tabular-nums}
+.slots button:disabled{background:none;box-shadow:inset 0 0 0 1.5px var(--p-line);cursor:default}
+.slots button:disabled b{color:#B5AFA8;text-decoration:line-through}
+.slots button.sel{background:var(--p-orange)}
+.slots button.sel small{color:var(--p-ink)}
+
+.packs{display:grid;gap:9px}
+.pack{display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center;border:2px solid var(--p-line);border-radius:18px;padding:11px 12px;width:100%}
+.pack .bd{width:54px;height:54px;border-radius:14px;background:var(--p-ink);color:#fff;display:grid;place-items:center;font:800 21px/1 var(--display);--i1:#fff}
+.pack .bd .pic{width:32px;height:32px}
+.pack b{display:block;font:800 18px/1.1 var(--display)}
+.pack small{display:block;font-size:13px;color:var(--p-mute);line-height:1.3;margin-top:3px}
+.pack .pr{text-align:right;font:800 17px/1.1 var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pack .sv{display:block;margin-top:5px;font:700 11.5px/1 var(--body);color:var(--p-ok);background:var(--p-ok-soft);padding:4px 6px;border-radius:6px;text-align:center}
+.pack:disabled{opacity:.5;cursor:default}
+.pack.sel{border-color:var(--p-orange);background:var(--p-orange-soft)}
+
+.field{display:grid;gap:6px}
+.field label,.lab{font-weight:700;font-size:14.5px}
+.inp{width:100%;height:52px;border:2px solid var(--p-line);border-radius:14px;padding:0 14px;font-size:17px;background:var(--p-bg);min-width:0}
+.inp:focus{outline:none;border-color:var(--p-orange)}
+.err .inp,.err.tiles button{border-color:var(--p-live)}
+.tel{display:flex;gap:8px}
+.tel .dial{flex:none;height:52px;border-radius:14px;background:var(--p-fill);display:flex;align-items:center;gap:7px;padding:0 12px;font-weight:700;font-variant-numeric:tabular-nums}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tiles button{border:2px solid var(--p-line);border-radius:16px;padding:10px 4px 9px;display:flex;flex-direction:column;align-items:center;gap:5px;font-weight:600;font-size:13.5px;text-align:center}
+.tiles .pic{width:38px;height:38px}
+.tiles button.on{border-color:var(--p-orange);background:var(--p-orange-soft)}
+.demo{align-self:flex-start;border:1.5px dashed var(--p-mute);border-radius:9px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--p-mute)}
+.third{background:var(--p-ink);color:#fff;border-radius:14px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
+.third .o{background:var(--p-orange);color:var(--p-ink);font:800 13px/1 var(--display);padding:9px 7px;border-radius:8px}
+.third b{display:block;font:700 15.5px/1.2 var(--display);overflow-wrap:anywhere}
+.third span{display:block;font-size:13px;opacity:.85;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.cta{width:100%;min-height:58px;border-radius:17px;background:var(--p-orange);color:var(--p-ink);font:800 18.5px/1.1 var(--display);display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 14px;text-align:center}
+.cta.dark{background:var(--p-ink);color:#fff}
+.cta.line{background:none;box-shadow:inset 0 0 0 2px var(--p-line);min-height:50px;font-size:16px}
+.cta:disabled{opacity:.45;cursor:default}
+.cta:active:not(:disabled){transform:scale(.985)}
+.recap{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13.5px;font-weight:600;color:var(--p-mute);padding:9px 14px 10px}
+.recap b{color:var(--p-ink)}
+
+.sum{background:var(--p-fill);border-radius:16px;padding:14px;display:grid;gap:4px}
+.sum b{font:800 19px/1.1 var(--display)}
+.sum span{font-size:14.5px;color:var(--p-mute);font-variant-numeric:tabular-nums}
+.total{display:flex;align-items:baseline;justify-content:space-between;border-top:2px dashed var(--p-line);padding-top:12px}
+.total b{font:800 30px/1 var(--display);font-variant-numeric:tabular-nums}
+.ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ops button{border:2px solid var(--p-line);border-radius:14px;padding:12px 10px;display:flex;align-items:center;gap:9px;font-weight:700;font-size:14.5px;line-height:1.15;min-height:54px}
+.ops i{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.ops button.on{border-color:var(--p-orange);background:var(--p-orange-soft)}
+.hint{font-size:13.5px;color:var(--p-mute);margin:-4px 0 0}
+
+.okhead{display:flex;align-items:center;gap:12px}
+.okhead .ck{width:46px;height:46px;border-radius:50%;background:var(--p-ok);color:#fff;display:grid;place-items:center;flex:none}
+.okhead .h1{margin:0}
+.ticket{border:2px solid var(--p-ink);border-radius:20px;position:relative}
+.ticket .tk-a{padding:15px 16px 14px;display:grid;gap:9px}
+.ticket .tk-b{padding:14px 16px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;border-top:2px dashed var(--p-ink);position:relative}
+.ticket .tk-b::before,.ticket .tk-b::after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--p-bg);border:2px solid var(--p-ink)}
+.ticket .tk-b::before{left:-12px;clip-path:inset(0 0 0 50%)}
+.ticket .tk-b::after{right:-12px;clip-path:inset(0 50% 0 0)}
+.kv{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:15.5px;font-weight:600}
+.kv .ic{width:20px;height:20px;margin-top:2px}
+.kv small{display:block;font-weight:500;color:var(--p-mute);font-size:13.5px}
+.kv .big{font:800 24px/1.05 var(--display);font-variant-numeric:tabular-nums}
+.qr{width:96px;height:96px;fill:var(--p-ink)}
+.tk-b b{display:block;font:800 15px/1.2 var(--display);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.tk-b small{display:block;font-size:13px;color:var(--p-mute);margin-top:4px}
+.note{background:var(--p-orange-soft);border-radius:14px;padding:12px 14px;font-size:14.5px;font-weight:600;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.note button{background:var(--p-ink);color:#fff;border-radius:10px;padding:9px 12px;font-weight:700;font-size:14px}
+
+.win{display:flex;align-items:center;gap:8px;background:var(--p-ok-soft);color:#0A5A31;border-radius:12px;padding:9px 12px;font-size:14px;font-weight:700}
+.win.off{background:var(--p-fill);color:var(--p-mute)}
+.win i{width:9px;height:9px;border-radius:50%;background:currentColor;flex:none}
+.lands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.land{border:2px solid var(--p-line);border-radius:18px;padding:13px 12px;display:grid;gap:8px}
+.land .flag{font-size:26px}
+.land b{font:800 28px/1 var(--display);font-variant-numeric:tabular-nums}
+.land b small{font:600 13px/1 var(--body);color:var(--p-mute);margin-left:4px}
+.land span{font-weight:700;font-size:15px}
+.who{display:grid;grid-template-columns:48px 1fr auto;gap:11px;align-items:center;padding:10px 0;border-bottom:1px solid var(--p-line)}
+.who:last-child{border-bottom:0}
+.av{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font:800 17px/1 var(--display);background:var(--p-fill);position:relative}
+.av::after{content:"";position:absolute;right:0;bottom:0;width:13px;height:13px;border-radius:50%;background:var(--p-live);border:2.5px solid var(--p-bg)}
+.who b{display:block;font-weight:700;font-size:15.5px;line-height:1.2}
+.who small{display:flex;align-items:center;gap:6px;color:var(--p-mute);font-size:13px;margin-top:3px}
+.who small .pic{width:16px;height:16px;--i1:var(--p-mute);--i2:var(--p-mute)}
+.who .me{color:var(--p-ok);font-weight:700}
+.watch{background:var(--p-ink);color:#fff;border-radius:999px;padding:9px 13px 9px 11px;display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px}
+.watch .ic{width:15px;height:15px;fill:currentColor;stroke:none}
+.empty{text-align:center;color:var(--p-mute);padding:22px 8px;font-size:15px}
+.price5{display:flex;align-items:baseline;gap:8px}
+.price5 b{font:800 44px/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.price5 span{font-weight:700;color:var(--p-mute)}
+.wins{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wins div{background:var(--p-fill);border-radius:14px;padding:12px;font:800 17px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.wins small{display:block;font:600 12.5px/1 var(--body);color:var(--p-mute);margin-bottom:6px}
+.lk{display:flex;gap:8px}
+.lk .inp{flex:1}
+.chk{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px;margin-top:-6px}
+.chk.ok{color:var(--p-ok)}.chk.ko{color:var(--p-live)}
+.chk .ic{width:16px;height:16px}
+.track{display:grid;gap:0}
+.track div{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:center;padding:9px 0;font-weight:700;font-size:16px;color:var(--p-mute)}
+.track i{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--p-line);display:grid;place-items:center}
+.track .done{color:var(--p-ink)}
+.track .done i{background:var(--p-ok);border-color:var(--p-ok);color:#fff}
+.track .cur{color:var(--p-ink)}
+.track .cur i{border-color:var(--p-orange);border-top-color:transparent;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.track .ic{width:16px;height:16px}
+
+.prods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.prod{border:2px solid var(--p-line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.prod .ph{aspect-ratio:4/3;display:grid;place-items:center;background:var(--p-fill)}
+.prod .ph .pic{width:54px;height:54px}
+.prod .pb{padding:10px 10px 10px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 6px;align-items:end;flex:1}
+.prod b{font-weight:700;font-size:14.5px;line-height:1.2;grid-column:1/-1}
+.prod small{font-size:12px;color:var(--p-mute);grid-column:1/-1;line-height:1.25}
+.prod .pp{font:800 16px/1 var(--display);font-variant-numeric:tabular-nums;align-self:center}
+.add{width:40px;height:40px;border-radius:50%;background:var(--p-orange);display:grid;place-items:center;position:relative}
+.add .q{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;border-radius:10px;background:var(--p-ink);color:#fff;font-size:11.5px;font-weight:700;line-height:19px;text-align:center}
+.cartbar{display:flex;align-items:center;gap:10px;padding:10px 14px 4px}
+.cartbar span{font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;margin-right:auto}
+.cartbar .cta{width:auto;min-height:48px;font-size:16px;padding-inline:18px}
+.rowc{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--p-fill);border-radius:16px;padding:13px 14px}
+.rowc b{display:block;font-weight:700;font-size:15.5px;font-variant-numeric:tabular-nums}
+.rowc small{display:block;color:var(--p-mute);font-size:13.5px;margin-top:2px}
+.rowc button{background:var(--p-ink);color:#fff;border-radius:10px;padding:9px 12px;font-weight:700;font-size:14px}
+.pill{display:inline-block;padding:4px 8px;border-radius:7px;font-size:12.5px;font-weight:700;background:var(--p-ok-soft);color:#0A5A31}
+
+.p-layer{position:absolute;inset:0;background:rgba(21,19,15,.6);display:flex;align-items:flex-end;z-index:5}
+.sheet{background:var(--p-bg);width:100%;border-radius:26px 26px 0 0;padding:24px 18px 20px;display:grid;gap:14px;animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:0}}
+.sheet h2{font:800 25px/1.08 var(--display);letter-spacing:-.02em;margin:0}
+.sheet p{margin:0;font-size:15.5px}
+.sheet .sim{font-size:12.5px;color:var(--p-mute);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.wait{display:flex;align-items:center;gap:12px;font-weight:700}
+.wait i{width:26px;height:26px;border-radius:50%;border:3.5px solid var(--p-orange);border-top-color:transparent;animation:spin 1s linear infinite;flex:none}
+.p-say{position:absolute;left:12px;right:12px;bottom:92px;background:var(--p-ink);color:#fff;border-radius:16px;padding:12px 14px;font-size:15px;font-weight:600;line-height:1.3;display:flex;gap:10px;align-items:center;z-index:6;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .2s,transform .2s}
+.p-say.show{opacity:1;transform:none}
+.p-say .ic{flex:none;stroke:var(--p-orange)}
+
+/* ---------- écran équipe (suit le thème de la page) ---------- */
+.team{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;height:clamp(620px,calc(100vh - 150px),780px)}
+.tm-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.tm-app{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:auto}
+.tm-app i{width:22px;height:22px;border-radius:6px;background:var(--orange);display:block}
+.tm-app span{color:var(--mute);font-weight:500}
+.tm-tag{font-size:12.5px;font-weight:600;color:var(--mute);border:1px solid var(--line);border-radius:7px;padding:3px 8px}
+.tm-tabs{display:flex;gap:2px;padding:0 10px;border-bottom:1px solid var(--line);overflow-x:auto;flex:none}
+.tm-tabs button{padding:12px 10px 10px;font-weight:600;font-size:14.5px;color:var(--mute);border-bottom:3px solid transparent;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.tm-tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--orange)}
+.tm-tabs .n{min-width:20px;padding:0 6px;border-radius:10px;background:var(--live);color:#fff;font-size:12px;line-height:20px;text-align:center}
+.tm-b{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin}
+.ev{display:grid;grid-template-columns:36px 1fr;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.ev.new{animation:flash 2.4s ease-out}
+@keyframes flash{0%,35%{background:var(--orange-soft);border-color:var(--orange)}}
+.ev .eb{width:36px;height:36px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;color:var(--orange-text)}
+.ev .eb .ic{width:19px;height:19px}
+.ev p{margin:0;font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.ev .mt{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:12.5px;color:var(--mute);align-items:center}
+.ev .mt span{border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-weight:600}
+.ev .mt time{margin-right:4px}
+.pl-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pl-h b{font:700 18px/1.2 var(--display);display:block}
+.pl-h b::first-letter{text-transform:uppercase}
+.pl-h div{display:flex;gap:6px}
+.sq{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;background:var(--surface)}
+.sq .ic{width:18px;height:18px}
+.pl{display:grid;grid-template-columns:54px 1fr;gap:10px;align-items:start}
+.pl time{font-weight:700;font-variant-numeric:tabular-nums;padding-top:11px;color:var(--mute);font-size:14.5px}
+.pl .fr{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;color:var(--mute);font-size:14px}
+.bk{border:1px solid var(--line);border-left:5px solid var(--orange);border-radius:10px;padding:10px 12px;display:grid;gap:7px;background:var(--surface)}
+.bk.rm{border-left-color:var(--ink)}
+.bk.mine{background:var(--orange-soft)}
+.bk b{font-weight:700;font-size:15.5px;overflow-wrap:anywhere}
+.bk .ch{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;font-weight:600;align-items:center}
+.bk .ch>span{background:var(--surface-2);border-radius:6px;padding:3px 7px;display:inline-flex;align-items:center;gap:5px}
+.bk select{height:34px;border-radius:8px;border:1px solid var(--line);background:var(--surface);padding:0 8px;font-size:14px;max-width:100%}
+.qc{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:9px;background:var(--surface)}
+.qc.mine{border-color:var(--orange);background:var(--orange-soft)}
+.qc b{font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.qc code{font:500 13px/1.3 ui-monospace,Menlo,Consolas,monospace;color:var(--mute);overflow-wrap:anywhere}
+.qc .ac{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:9px 13px;border-radius:9px;font-weight:700;font-size:14px;border:1px solid var(--line);background:var(--surface)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.btn.ko{color:var(--live)}
+.tgl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:14px;font-weight:600}
+.tgl button{margin-left:auto;border:1px dashed var(--mute);border-radius:8px;padding:6px 10px;font-weight:600;font-size:13px;color:var(--mute)}
+.kp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kp div{border:1px solid var(--line);border-radius:12px;padding:12px}
+.kp small{display:block;color:var(--mute);font-size:13px;font-weight:600}
+.kp b{font:800 26px/1.2 var(--display);font-variant-numeric:tabular-nums}
+.brs{display:grid;gap:8px}
+.br{display:grid;grid-template-columns:120px 1fr 28px;gap:10px;align-items:center;font-size:14px;font-weight:600}
+.br>span{display:flex;align-items:center;gap:7px;min-width:0}
+.br i{height:12px;border-radius:6px;background:var(--orange);display:block;min-width:4px}
+.br b{text-align:right;font-variant-numeric:tabular-nums}
+.tm-b h3{font:700 15px/1.2 var(--display);margin:6px 0 0}
+.tm-empty{color:var(--mute);font-size:14.5px;padding:8px 2px}
+
+/* ---------- onglets texte ---------- */
+.doc{display:grid;gap:34px}
+.doc>*{min-width:0}
+.doc h2{font:800 clamp(24px,3.2vw,32px)/1.08 var(--display);letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+.doc h3{font:700 19px/1.2 var(--display);margin:0 0 10px}
+.doc p{margin:0 0 10px;max-width:68ch}
+.doc .mut{color:var(--mute)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14.5px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td code,.doc li code,.doc p code{font:500 13px/1.3 ui-monospace,Menlo,Consolas,monospace;background:var(--surface-2);padding:1px 5px;border-radius:5px}
+.ty{display:inline-block;font-size:12px;font-weight:700;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.ty.s{background:var(--ok-soft);color:var(--ok)}.ty.c{background:var(--orange-soft);color:var(--orange-text)}.ty.e{background:var(--warn-soft);color:var(--warn)}.ty.x{background:var(--ink);color:var(--surface)}
+.seq{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;counter-reset:s}
+.seq li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:14.5px}
+.seq li::before{content:counter(s);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--surface);font:800 14px/1 var(--display);margin-bottom:9px}
+.seq b{display:block;font-size:15.5px;margin-bottom:3px}
+.rob{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 28px}
+.rob li{border-top:3px solid var(--ink);padding-top:10px;font-size:14.5px}
+.rob b{display:block;font:700 16.5px/1.25 var(--display);margin-bottom:4px}
+.lots{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.lot{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.lot small{font-weight:700;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-text)}
+.lot b{display:block;font:700 18px/1.2 var(--display);margin:4px 0 6px}
+.lot ul{margin:0;padding-left:18px;font-size:14.5px}
+.caveat{background:var(--warn-soft);border-radius:14px;padding:16px 18px}
+.caveat h3{color:var(--warn)}
+.caveat ul{margin:0;padding-left:18px;max-width:72ch}
+.caveat li{margin-bottom:6px}
+.qs{display:grid;gap:14px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0;min-width:0}
+.q legend{font:700 17px/1.25 var(--display);padding:0;float:left;width:100%;margin-bottom:4px}
+.q .why{clear:both;color:var(--mute);font-size:14px;margin:0 0 10px;max-width:70ch}
+.q label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:9px;font-size:15px;cursor:pointer}
+.q label:hover{background:var(--surface-2)}
+.q input[type=radio]{margin-top:4px;accent-color:var(--orange);flex:none;width:17px;height:17px}
+.q .rec{font-size:12px;font-weight:700;color:var(--ok);background:var(--ok-soft);padding:1px 6px;border-radius:5px;margin-left:6px;white-space:nowrap}
+.q textarea,.out{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:10px 12px;font-size:15px;min-height:74px;resize:vertical}
+.out{font:500 13.5px/1.45 ui-monospace,Menlo,Consolas,monospace;min-height:210px}
+.send{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.primary{background:var(--orange);color:var(--on-orange);font:800 16.5px/1 var(--display);padding:15px 20px;border-radius:13px}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--mute);font-size:13.5px;max-width:80ch}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <div class="id">
+      <img src="data:image/webp;base64,UklGRjIOAABXRUJQVlA4ICYOAACwQgCdASrAAMAAPmEskkakIqGhKBK7oIAMCU3cGAAIBjbU7J+R/8T922pf0b7p/lPv+xsPW73j/Rf2/2uf5z1CfcB7gf6Vf5b+odYv9r/7p7B/2A/bj3qf8p+s3us/w36q+4B/UP9j1i3oJftf6Y/7qfCP+3f7Ff/f5FP2F/+msP+Wv8p21/3T8nuiI9luYO8/91Py3r7/cO8vgBfj38k/yP5X8EGAL6v/8H1AZmWQBwN9AD8s/8j1D/97/UeeL6q/9P+W+A/+X/2T/n9gD0Ov1e//50DLt0ZtzR6+b6a/r70f8ZkLhNtfsSl9035ydaqryT3682nWQKekC+FFNCYmXoNqFkI92s0tdmzRJsxJpsS9NbVKWTUBe6AL7syJrqwudm9fNpDma0MLDnNMBBaFounqH3hTkoIjC/KUhbY1D6DAX5rENEXaCUG1j8opCUEe1LT/ce9VuFf/K8qxpukWSVVi7tx1ymasMD/s6tjhBh+k+J4M8cMKGwJ9VBFjvHMaoXNHtP7cuYOI0HOyO84wGfaOb/vODsfxg0iAOGh005fXOYCqTBJO1w+PV379aZp+rDQEPhcRQNT7QzFjwjVE2n5fVUsQ/paYfER53ylNcPgRJh4kP/8wRPgUiCrokms4Aa4yA+mRYWHKs/ChfAg9TbPzy3SoDSS8mOKWJxfcGru8hrUhvtDlBJSqTovc1cTR8vCp51c9/96LQAfMAAD+2R+wdWzDIfgWfRDaicOUo5J8SFVrroJyG0fAAK9OjPMLhksaJdl2I/BUIXlqJsMNFNsqb05zG7VSMaRLtsrNfJ3ZfUPxqIJSU/Rzle0ieSzMaUpWQf8IBuZ55n3vbHoZlijOQFmnKH4+hRysQiinLOcC5Dotwmv0oDxATtJA0yY96OrIMMJTzQomj6IMpk9lavcbUeO6nmgCkj8lQtIGzbPwi07sGPUgYmnOHAPGQH+sAbCfSQiVOEO6OQhw+BQgvnziNV0aPorHULCIlA9V+a+Ev+UzzwcSucb8TMtOV3R/Iq8ZR3QclVgzK5DPGEvBFJsTTxvAyfGp7CRa/EiyMbOj9Y1+Ka/Ug0UA+vzoZiiWaoXJI0og01lWtsdc5tV88lIqadb0uecydmA4jlqSHHU5zcsejTOn1vxrBxUd24eQx/audb/EfXP9MJ83FviOyThO2/M7a1s87+vCHqGlSLYUUiPNFY4AfLdx52uAIR98fBC3EqyDye1dSVvg9tseL2KvB4CoAPkECwq1FZRL6gRMxWTMVpuamh3Wv2+sqOj7anwz5b8p/Uizk1Lst3MlbGko8gMRcWk31r1dgaHY/gHTbl9aElJtatqH4WjAM1c86Q1pRiEYgzNp9l+ZeU8onNTJj/M0VaM/uI+A/4rKWfDQhDGh+R09uREOvyIH/xhAS5Pbr8Nlh+90kyN5ZUhYdzb0xB1rKWQqwAagBe3DHLiLG2nq5AY6gMZNEfcZ1BdnIEkWSysfJkFmLXEDxNZEg/4TcrFbamsOmQK+D38Z++Esy3Ss8piKHGA96NcPhAIw9WnXbEGs76xsXOXUyhRt5a6jewbPFJneYDwcDW7ShBK8c8i9Z5mHaf/Mp4712caVZXkSdMdiKHZAcaX5fNwxnZjgPYhXlBfzlhsDPySla6VG0J/obpqWMQrN5OLgmMiTL5CMYmyT0uEeLKeGQ4CmP+xkEZL3igFRVQbLYJiQ2lb5czkziPQJoyoiJs2EqYO19gSMPefzSO4omJU/ewkm5tGWnAYQ0WhqGkUsWn4mui/4BZSpECZlrZp8agRaXUtgNxGTjX6kNHA7QP/IVWKpcR2W6u1D+sN8CNRj7O575huCxL8lLWiIaileIQllM3VDYkwZRu2wYdjdguT2L/xipyQVoC7kSrcq4ZrJO7Mz1Nm41o5gSw2d5qPAPOHl94mUOtg4vWNDgd7Y7fc89ShbeBctRA6kK0QyNAqoxk8p4FWVxMsGCMCVVg9P3NNoHdxaXjKLeW8Do1eGj3r7N8E1IICR2GFb/+KPapiIV12hiqqBNrzsHxQ+QvaVnzZozV1zT3++cihyWaELaUb209yE1453drbw2FZ0fO0MFejUk+bpP4jFn5P1QfzK81Ba+hl/L9jz22korLWQxRjVdfp4eo8g9hOk/3X2t7O1n0y0if4Z2jdVLSPg1QT+MbeTa7pPryJMYfRt0hZjlQ23KaSHog69xwYKmnJfGQkykQwwNc4gsNsuqbaIGpZRTvwuHitZhn05Kub7q2t3tpJRmj++w/78l0BI46g9wzlSaD1TXXbro30SaJKfcymd/byTZSCltCnZv///ugWBcaFr8ZTA31JCjoQm4HHjC6qWoxM5/F6m+XSzQcJOWnHZ9pUxrCuSJqeSLJZLvA2tlhGiF5GCTzu71rO7cX/4B2K+VMaxSZlAUfPJd4SMj/AEQ96hLX2m9fTpZQre0PolccYppjKu/aa2KrVw/6iEN4q2QQGQqrCIAvbVTYoI1bpA6z+JtOmCM2gvMuKV+Y13wk96BYO1X68IzizjPnuqxL23lxgKe3a2pxv1aZnwhTLX3ejyD1IEy5uKwvYdSgiZ/T+SWb9D8BGzuUWmIV1POH9qsV/YEiFLOuomrexcny+m7YofPG6/i4oz9NxjGy6mR6o2ELlqCnKiDCnBZXa0/qBT3gIJL+25rGXJT8qUmBHlsqi0f4zltjyThqUESuDnisGAoExcjytaVvym/lBC/10WYCtGDuwbKbSRAZTkPl723un7TKG3gV6umFWNF7bnAVatqseyjhEbz+66SRCKAQCXUA9yQypLDIVo25V6zhA9oIo2V2vRH3l6OddTXmvbbEPpoufEFRgU1o6r2MNtnk/rFa57+JlZG8jNXXHMpFvEFhEwRg+1NnE8SbMkVBJ9VFEdSiDd1GtwKANsTeWrsUXe8yfvkPheAYHGRw754H1Cot/8t81Gv/iRTvGqMqSm3fdl6lhKyzFHRysdODKZH4k84GU3P3b8Vy4uq/q3l5Gg0L5MRuPTJ4fqtsQmyzkCGVGa7oRuUVPXksWr1jey/xvMa9Rsng8w9gUc8DSKK7sRociP7xJbAY2YdBGqsv+w9RcssUh6YNuNRJPVCM/LFyDKMATXGe+VsUqZSeXox40QKYmsikecrurImHaDlrJbE54JRst/OS+HTaUXggm++jyA13+KysVyjwImaQwWJ6uIx0x5sN4qPI0WnSfVdsyHOxP8aaTu5xc0PffIZORBqAX3QlwlJvxPqou7jySHqc4BOwH8I1dryDs6j1XVOPNvvfzLrzRNJNuFL4KpnStQ03v0hD9i8IbsfOfTzZxqJ56IZmD8/btwn1NlyHrz3CZdjBJ2IVzu/89Ak6HrGxo+mBSooVvLx8ub6KsYIG7Alfc8nHIUPu/29bxonfE0I8aJ/PQSNUEV9hafGRMBUlGWArW6pTG9SJ/+yAfhHH327IVnqet4hm8s+Ue3196rDskF/KpEyf+qa9gNCeV5TgJPpmXXcc906uAouUuCK9EFuiH6K8g5+vwDMgk+tugYRmWT5wQ81ABEFhAOBVv1eTIA/gE407Ei/BFxxKo2+2GU/6xSNkPoF9u60et8y1siKgAp4TBQr8aJM84eaEKhiQIWc/2wptYwvGAetmmwzDw5aX9Ec3zQfNnAFkXuBJg9IhpKCKQH+pYoOQ4Cjpt2Gho4hZo6Wc/ExRkYp8bpZu1w6hlLPf4bKXcjSDVOX4PcP15Jc6YyQJRBAl1gNcEG5lKKuJegDVAg6volfyOg9G/0lefQ0YyR2DwF0kmxS+0W4+pv9Q9KUD83poyWfMND8H1n6J7CSLlTquDgJRRYeW2DNqPnoXtEHG6UvkAlf8BemZLJoMKUMON6rNWQdtfpTnuY0pxFZjf5ct5vJpzuY9u47WzEtfdze4YBj3bSfY/i+DkqwYmZHAv7tsHpuWAiKIMHdsfuoVNI7ppXFxxEFiV7P179OHZpk9cW416iR/VvFhTWyxNmBkD9gRkb5ubjCO9S/lyf2ikZ/Cx8OQKqHLeHcMVd77f/wti65nXVK+H6fvGfzmdZ7YiHOLPXoKYJAytwB86JJkCvoN0ehaDo5zuMRNiqWJXgvl+dAV8/uzGvbzRjRkPc/s0mQ1T1IO+j1kMDCP1PLrGsbpv/5IJqNerbNd/+DREertX//LBfqcnHY6djV/s6yJkAajwmRTeosiUB4cX/KWpVKCKehKknSOHIkI41fY+wT7+NPbZYBRwj25aGApzWAAAAAAAAAUVPQrdecHcqWMEAhkb7ao0yWYV5CxTwhyLWMNUVeqISpXfuWB9MjMEynMeNjqh13tpBlpGlXg5ez8yOE9PqNgChNQCR23XLeovrrOzB8GP5k7DXvfp1z1h7hTOs7/JN76O/qT89j1bSFfNjM7iw1JNcCFuix1/XLe02uCujS7p6yJBJ3vwSOqx26M3giiMA6oishpffzeBzmLKMSaTL+qgnedSwoWa8KLy81FuUrKqumZh+nwgOHFUc3Jvdz34JljHbHxIoE5/tz8IIG/D1eAtiv6j/avo9xqm8jydbOeyaYqFRxW85baRuUh9Xh73AtWkp0aYU41nWrzWGK9iHOEmXzDaHG5MtsA7HaZWbkQIgtcyEeU+/RQSJjrZ03o1CduQ9aj4B8/92b/vIP2or40FkGiMULoarHa/mTJgS5r46fU7Y3JyaYsDsfbxOt6fUN/DXPQZTPiFqhl3cU32ymXbOvbKjz2yGToEweqq/PQ4QwPYvjhvRmdTNVPcPy8UBhFvyXVAdwcX8NEEV4GKGccKR0Wi7KCZrct2FSLyLWMy1ZT8WGRqD9x9LexojRbQDAgAA" alt="Logo OCD" width="42" height="42">
+      <div><strong>OCD Live</strong><span>Prototype pour le challenge · proposition non officielle</span></div>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" id="tab-demo" aria-controls="v-demo" aria-selected="true" data-a="page" data-p="demo">Démo cliquable</button>
+      <button role="tab" id="tab-archi" aria-controls="v-archi" aria-selected="false" data-a="page" data-p="archi">Architecture Odoo 20</button>
+      <button role="tab" id="tab-valid" aria-controls="v-valid" aria-selected="false" data-a="page" data-p="valid">À valider</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ======================= DÉMO ======================= -->
+  <section id="v-demo" role="tabpanel" aria-labelledby="tab-demo">
+    <div class="lede">
+      <h1>Deux écrans, un seul parcours.</h1>
+      <p>Le téléphone d'une vendeuse, et ce que l'équipe OCD voit dans Odoo. Ce que tu fais sur le téléphone arrive tout de suite chez l'équipe.</p>
+    </div>
+    <div class="switch" role="group" aria-label="Écran affiché">
+      <button data-a="view" data-v="phone" id="sw-phone" aria-pressed="true">Téléphone vendeur</button>
+      <button data-a="view" data-v="team" id="sw-team" aria-pressed="false">Équipe OCD <span class="bub" id="swBub" hidden>0</span></button>
+    </div>
+    <div class="stage" id="stage" data-view="phone">
+      <div class="col-phone">
+        <p class="col-h"><i></i>Téléphone du vendeur</p>
+        <div class="phone" id="phone">
+          <div class="p-top" id="pTop"></div>
+          <div class="p-scroll" id="pScroll"></div>
+          <div class="p-bottom" id="pBottom"></div>
+          <div class="p-layer" id="pLayer" hidden></div>
+          <div class="p-say" id="pSay" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="col-team">
+        <p class="col-h"><i></i>Écran de l'équipe OCD</p>
+        <div class="team" id="team"></div>
+      </div>
+    </div>
+    <div class="under">
+      <p><strong>À essayer :</strong> réserve un live, puis lis le fil de l'équipe. Envoie un lien dans « Lives », puis valide-le côté équipe. Les vendeurs, les compteurs, les opérateurs et les prix autres que 15 000 F et 5 000 F par mois sont des exemples ; aucun paiement n'est réel.</p>
+      <button class="ghost" data-a="reset">Recommencer la démo</button>
+    </div>
+  </section>
+
+  <!-- ======================= ARCHITECTURE ======================= -->
+  <section id="v-archi" role="tabpanel" aria-labelledby="tab-archi" class="doc" hidden>
+    <div>
+      <h2>Ce que le promoteur a demandé, et où le voir</h2>
+      <p class="mut">Relevé des deux vidéos. Chaque ligne se teste dans la démo.</p>
+      <div class="tw"><table>
+        <thead><tr><th>Dans les vidéos</th><th>Dans le prototype</th></tr></thead>
+        <tbody>
+          <tr><td>« Dès que tu cliques, tu vois les deux catégories », pas de site surchargé</td><td>Accueil : deux grands boutons, studio à Lomé ou à distance. Rien au-dessus.</td></tr>
+          <tr><td>Calendrier de décembre, puis les heures, lives d'une heure et demie</td><td>Jour, puis heure. Les créneaux pris sont barrés, les jours complets aussi.</td></tr>
+          <tr><td>Six paquets, dont un 4 heures moins cher, un gros paquet avec annonce, un mensuel</td><td>Écran Paquet. Le 4 heures se bloque tout seul s'il n'y a pas 4 heures libres à cette heure-là. Un paquet de plusieurs lives donne des crédits à placer plus tard.</td></tr>
+          <tr><td>« Le business que la personne fait », son numéro, son adresse : le marketing avant la vente</td><td>Écran « C'est qui ? ». Ces informations forment le bandeau affiché pendant le live, et la boutique du vendeur : ses produits, son quartier et un bouton WhatsApp (canvas, écrans 25 et 26).</td></tr>
+          <tr><td>Un mail ou une notification : « telle personne fait tel business, a réservé… et va venir, ou sera au Cameroun »</td><td>La même phrase, dans le canal Discuss « # lives », par email et sur le WhatsApp du responsable. Le back-office complet est sur le canvas : tableau de bord, calendrier, régie, WhatsApp, commandes, dispatch, reversements (écrans BO 1 à 15).</td></tr>
+          <tr><td>Une assistante à Lomé pour accompagner les lives à distance</td><td>Calendrier de la régie : une animatrice à affecter sur chaque live à distance, avec une alerte s'il en manque une. Recrutement par le site, suivi en kanban (canvas, BO 12).</td></tr>
+          <tr><td>Étagères et cintres au studio</td><td>Question « Au studio, il te faut » : étagère, portant ou table. La régie prépare avant l'arrivée.</td></tr>
+          <tr><td>Envoyer le lien de son live, validation par l'équipe, affichage par pays et par catégorie</td><td>Onglet Lives côté vendeur, file « À valider » côté équipe.</td></tr>
+          <tr><td>Deux créneaux par jour (8 h à 11 h, 18 h à 21 h), abonnement de 5 000 F par mois</td><td>Pass de 30 jours, créneaux affichés au public, interrupteur de démo côté équipe.</td></tr>
+          <tr><td>« Pourquoi ne pas ajouter un shop OCD ? »</td><td>Onglet Shop de cette démo, simplifié. Le parcours complet (fiche produit, panier, livraison par quartier, paiement, suivi, retour) est sur le canvas Design. Livraison : un colis par vendeur, livré par le vendeur ou par un livreur OCD selon sa fiche, avec un code à donner au livreur (canvas, écrans 30 et 31).</td></tr>
+          <tr><td>« Moins de texte, beaucoup d'actions. Pensez à nos mamans »</td><td>Pictos, gros boutons, une question par écran, et un haut-parleur qui lit chaque écran à voix haute.</td></tr>
+          <tr><td>« Si vous connaissez de bons agrégateurs »</td><td>Le paiement change selon le pays : Campay au Cameroun, un second connecteur à choisir pour le Togo. Voir l'onglet À valider.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div>
+      <h2>Les briques Odoo 20</h2>
+      <p class="mut">Le standard Odoo porte le site, la vente et les contacts. Tes modules <code>whatsapp_cloud</code>, <code>whatsapp_cloud_sale</code>, <code>payment_campay</code> et <code>delivery_cameroon</code> portent WhatsApp, le paiement et la livraison. Un module sur mesure, <code>ocd_live</code>, porte ce qui est propre à OCD. Chaque ligne a son écran sur le canvas Design.</p>
+      <div class="tw"><table>
+        <thead><tr><th>Besoin</th><th>Brique</th><th>Nature</th></tr></thead>
+        <tbody>
+          <tr><td>Site léger, deux choix à l'ouverture, pictos et voix</td><td>Website + thème <code>ocd_theme</code> : pages QWeb rendues côté serveur, bundle JavaScript réduit pour le parcours</td><td><span class="ty s">Standard</span> <span class="ty c">Thème</span></td></tr>
+          <tr><td>Créneaux, réservations, deux modes</td><td><code>ocd.live.booking</code> : vendeur, mode, début, fin, besoin au studio, animatrice, état</td><td><span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Six paquets et crédits de live</td><td>Produits (Ventes) avec nombre de lives et durée ; <code>ocd.live.credit</code> créé au paiement</td><td><span class="ty s">Standard</span> <span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Mobile money et carte</td><td><code>payment_campay</code>, déjà dans ton dépôt : MTN MoMo, Orange Money et carte, au Cameroun et en XAF. Confirmation sur le téléphone, webhook signé, relance des paiements en attente. Togo et autres pays : un second connecteur bâti sur le même modèle</td><td><span class="ty x">Existant</span> <span class="ty c">Connecteur à ajouter</span></td></tr>
+          <tr><td>Notification « telle personne, tel business, tel créneau »</td><td><code>whatsapp_cloud</code>, déjà dans ton dépôt : modèles soumis à Meta depuis Odoo, action « Envoyer un WhatsApp » dans les règles d'automatisation, conversations dans Discussion, consentement, STOP et START. Email et activité Odoo en plus</td><td><span class="ty x">Existant</span> <span class="ty s">Standard</span></td></tr>
+          <tr><td>Ticket, rappels et réponses de l'annuaire sur WhatsApp</td><td><code>ocd_live_whatsapp</code>, petit module pont sur le modèle de <code>whatsapp_cloud_sale</code> : modèles « live réservé », « rappel », « pass bientôt fini », « live validé », « live refusé », et leurs règles d'automatisation</td><td><span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Fiche vendeur : business, WhatsApp, ville, pays</td><td>Contacts (<code>res.partner</code> étendu). C'est la base de données des OCD</td><td><span class="ty s">Standard</span></td></tr>
+          <tr><td>Reçu</td><td>Facturation : reçu PDF, numérotation, F CFA Ouest (XOF) et Centre (XAF)</td><td><span class="ty s">Standard</span></td></tr>
+          <tr><td>Planning de la régie</td><td>Vues calendrier et kanban sur les réservations, filtre par jour et par mode</td><td><span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Annuaire des lives et validation</td><td><code>ocd.live.listing</code> (lien, pays, catégorie, état) ; <code>ocd.validation.window</code> (créneaux) ; kanban de modération ; tâche planifiée d'expiration</td><td><span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Abonnement 5 000 F par mois</td><td><code>ocd.pass</code> : pass prépayé de 30 jours, rappel avant la fin. Variante : app Abonnements</td><td><span class="ty c">Sur mesure</span> <span class="ty e">ou Enterprise</span></td></tr>
+          <tr><td>Shop OCD</td><td>eCommerce (<code>website_sale</code>) avec <code>whatsapp_cloud_sale</code> (commande confirmée, expédiée, note après livraison, « Commander sur WhatsApp ») et <code>delivery_cameroon</code> (ville, quartier, point de repère, livraison par zone). Suivi en quatre étapes et retour sous 30 jours repris de <code>website_tchokos</code></td><td><span class="ty x">Existant</span> <span class="ty s">Standard</span></td></tr>
+          <tr><td>Boutique de chaque vendeur et ses produits</td><td>Champ vendeur sur les produits (<code>product.template</code>), page publique par vendeur, formulaire « Mes produits » dans le portail, avec une règle d'accès : un vendeur ne voit et ne modifie que ses produits. Chaque nouveau produit passe par la file de vérification de l'équipe. Le bouton WhatsApp passe par une adresse d'Odoo qui compte le contact, puis ouvre WhatsApp chez le vendeur</td><td><span class="ty c">Sur mesure</span> <span class="ty s">Standard</span></td></tr>
+          <tr><td>Mode de vente choisi par l'équipe pour chaque vendeur</td><td>Sur la fiche du vendeur (<code>res.partner</code>) : « Contact direct » ou « Vendu par OCD », commission, récupération des produits, rythme de reversement. Le site affiche le bon bouton partout : boutique, fiche produit, replay, bandeau. En « Vendu par OCD », la commande passe par le panier, <code>payment_campay</code> et <code>delivery_cameroon</code> ; chaque ligne garde son vendeur, et une facture fournisseur est créée à la livraison pour suivre le reversement</td><td><span class="ty c">Sur mesure</span> <span class="ty x">Existant</span></td></tr>
+          <tr><td>Qui livre, pour chaque vendeur vendu par OCD</td><td>Sur la fiche du vendeur : il livre lui-même (avec ses zones, son temps de préparation, et s'il peut encaisser à la porte), un livreur OCD passe chercher chez lui, ou le colis part du stock OCD. Le dispatch peut changer pour un colis. Un client hors des zones du vendeur passe à un livreur OCD</td><td><span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Un colis par vendeur</td><td>Inventaire : chaque commande donne un transfert par vendeur. Vendeur qui livre : route Livraison directe (achat au vendeur, transfert du vendeur au client). Stock OCD : dépôt-vente, le vendeur reste propriétaire du stock jusqu'à la vente. Retours par le flux de retour standard</td><td><span class="ty s">Standard</span> <span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Preuve de remise</td><td>Code à 4 chiffres par colis, gardé chiffré, envoyé au client sur WhatsApp quand le colis part. Le colis ne passe à « livré » qu'avec ce code ; 3 essais faux le bloquent. Validation sans code réservée au responsable, avec photo et motif, gardée dans l'historique</td><td><span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Applis Livrer (vendeur) et Tournée (livreur OCD)</td><td>Pages du portail pensées pour le téléphone, ouvertes par un lien personnel sur WhatsApp. Le vendeur voit ses colis à préparer et à livrer ; le livreur voit sa tournée : ramassages, livraisons, encaissements. Règles d'accès : chacun ne voit que ses colis</td><td><span class="ty s">Standard</span> <span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Dispatch et relances</td><td>Kanban des colis par étape : à préparer, prêt, récupéré, en route, livré, problème. Automatisations : relance du vendeur après 4 h, alerte 2 h plus tard et bascule possible vers un livreur OCD. Activités et canal Discuss « # livraisons »</td><td><span class="ty s">Standard</span> <span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Paiement à la porte</td><td>Mobile Money : l'appli Tournée envoie la demande de paiement au téléphone du client par <code>payment_campay</code>. Espèces : journal « Caisse livreurs », remise chaque soir avant 20 h, écart signalé. Si le vendeur encaisse lui-même, la commission est retenue sur son reversement</td><td><span class="ty x">Existant</span> <span class="ty s">Standard</span></td></tr>
+          <tr><td>Reversements du lundi</td><td>Une facture fournisseur par colis confirmé par code : la part du vendeur, plus les frais de livraison s'il a livré. Le dimanche soir, une tâche prépare les reversements ; l'équipe les valide le lundi. Le versement se fait depuis le compte Campay, à la main : <code>payment_campay</code> encaisse, il ne reverse pas</td><td><span class="ty s">Standard</span> <span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Livreurs et motos</td><td>Employés pour les livreurs salariés, Contacts pour une société partenaire, Parc automobile pour les motos : papiers, assurance, entretien</td><td><span class="ty s">Standard</span></td></tr>
+          <tr><td>Back-office de l'équipe</td><td>Vues kanban, liste, calendrier, tableau croisé, graphique et activités ; tableau de bord ; conversations WhatsApp dans Odoo, avec réponses rapides et notes internes. Modules OCA déjà dans ton dépôt : <code>web_responsive</code> pour le téléphone, <code>web_quick_start_screen</code> pour un accueil à gros boutons</td><td><span class="ty s">Standard</span> <span class="ty x">OCA du dépôt</span></td></tr>
+          <tr><td>Automatisations</td><td>16 en tout : 9 règles que l'équipe modifie ou met en pause (Automatisations d'Odoo et action « Envoyer un WhatsApp »), 2 tâches à heure fixe, 5 écrites dans le code parce qu'elles touchent à l'argent ou à la preuve de livraison</td><td><span class="ty s">Standard</span> <span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Boutique reliée au live : produit à l'écran, replay par produit</td><td>Pendant un live réservé, la régie touche le produit montré : la boutique l'affiche, et le moment est noté (<code>ocd.live.moment</code> : live, produit, minute). Après le live, la régie colle le lien de la vidéo replay publiée sur TikTok ; la boutique l'affiche avec un accès direct à chaque produit. La vidéo reste chez TikTok : Odoo ne stocke que le lien. La page de la boutique vérifie le produit à l'écran toutes les 20 secondes, ce qui tient sur un réseau faible</td><td><span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Espace vendeur : mes lives, mes crédits, mon pass</td><td>Portail, ouvert par un lien personnel envoyé sur WhatsApp, sans mot de passe, comme les liens de commande de <code>whatsapp_cloud_sale</code></td><td><span class="ty s">Standard</span> <span class="ty c">Sur mesure</span></td></tr>
+          <tr><td>Recrutement de l'animatrice</td><td>Recrutement (<code>website_hr_recruitment</code>) : offre en ligne, candidature avec une vidéo d'une minute, par le site ou par WhatsApp ; kanban par étape ; réponse WhatsApp à chaque candidate</td><td><span class="ty s">Standard</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div>
+      <h2>Le chemin d'une réservation</h2>
+      <ol class="seq">
+        <li><b>Créneau bloqué</b>Dès le choix de l'heure, le créneau est tenu 10 minutes pour ce vendeur.</li>
+        <li><b>Paiement</b>Le vendeur confirme sur son téléphone, chez l'opérateur. Aucun code secret sur le site.</li>
+        <li><b>Confirmation serveur</b>L'agrégateur appelle Odoo (webhook signé). C'est ce message qui valide, pas le navigateur.</li>
+        <li><b>Réservation et crédits</b>La réservation passe à « confirmée ». Les lives restants du paquet deviennent des crédits.</li>
+        <li><b>Alerte régie</b>Email, notification et WhatsApp à l'équipe, avec le business et le créneau.</li>
+        <li><b>Ticket et rappels</b>Ticket sur WhatsApp, rappel la veille et une heure avant, à l'heure du pays du vendeur.</li>
+      </ol>
+    </div>
+
+    <div>
+      <h2>Le chemin d'une commande du shop</h2>
+      <ol class="seq">
+        <li><b>Commande</b>Payée par Campay, ou à payer à la livraison. Une commande peut mêler plusieurs vendeurs.</li>
+        <li><b>Un colis par vendeur</b>Chaque colis reçoit son livreur selon la fiche du vendeur : lui-même, un livreur OCD, ou le stock OCD.</li>
+        <li><b>Préparation</b>Le vendeur est prévenu sur WhatsApp et touche « C'est prêt ». Relance après 4 h, alerte au dispatch 2 h plus tard.</li>
+        <li><b>Départ</b>Le client reçoit sur WhatsApp le nom du livreur et un code à 4 chiffres.</li>
+        <li><b>Remise</b>Le client donne le code quand il a le colis en main. Paiement à la porte si besoin. Deux échecs : retour et remboursement.</li>
+        <li><b>Argent</b>La part du vendeur devient une facture fournisseur, reversée le lundi suivant.</li>
+      </ol>
+    </div>
+
+    <div>
+      <h2>Ce qui le rend solide</h2>
+      <ul class="rob">
+        <li><b>Jamais deux lives sur le même créneau</b>Contrainte d'exclusion PostgreSQL sur la plage horaire. Deux personnes qui cliquent en même temps : une seule passe. Les créneaux bloqués et non payés sont libérés par une tâche planifiée.</li>
+        <li><b>Un paiement compté une seule fois</b>Traitement idempotent sur la référence de transaction, vérification de la signature, relance automatique des paiements restés en attente.</li>
+        <li><b>Les bonnes heures dans chaque pays</b>Tout est stocké en UTC. Le ticket montre l'heure de Lomé et l'heure du vendeur.</li>
+        <li><b>Reprise au même endroit</b>Le brouillon de réservation est gardé côté serveur. Une coupure de réseau ou un rechargement ne fait pas recommencer.</li>
+        <li><b>Léger sur un petit forfait</b>Pages rendues côté serveur, images compressées, cache court sur l'annuaire, pas de vidéo ni d'animation lourde sur le parcours.</li>
+        <li><b>Un annuaire propre</b>Lien vérifié et dédoublonné, une seule fiche active par vendeur, retrait automatique à la fin du créneau, trace de qui a validé quoi.</li>
+        <li><b>Un abonnement adapté au mobile money</b>Le mobile money ne prélève pas tout seul. Le pass est prépayé pour 30 jours, avec un rappel WhatsApp et un lien de paiement trois jours avant la fin.</li>
+        <li><b>Des droits clairs</b>Groupes Régie, Dispatch, Modération et Admin. Un vendeur ne voit que ses réservations et ses colis, un livreur que sa tournée.</li>
+        <li><b>Pas de « livré » sans preuve</b>Le code du client, 3 essais, puis blocage. La validation sans code est réservée au responsable, avec photo, motif et trace.</li>
+        <li><b>Aucun colis oublié</b>Relance du vendeur, alerte au dispatch, bascule vers un livreur OCD. Un client hors des zones du vendeur passe directement à un livreur OCD.</li>
+        <li><b>L'argent suit le colis</b>Un vendeur n'est payé que pour les colis confirmés par code. Un retour après versement est déduit du suivant. Les espèces des livreurs sont comptées chaque soir.</li>
+        <li><b>Des tests automatiques</b>Chevauchement de créneaux, consommation des crédits, expiration du pass, parcours complet de réservation, codes de livraison, calcul des reversements.</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Quatre lots</h2>
+      <div class="lots">
+        <div class="lot"><small>Lot 1</small><b>Réserver de bout en bout</b><ul><li>Accueil, calendrier, paquets, fiche vendeur</li><li>Paiement, ticket, reçu</li><li>Alerte et planning de la régie</li></ul></div>
+        <div class="lot"><small>Lot 2</small><b>Annuaire des lives</b><ul><li>Pass 30 jours</li><li>Envoi du lien, file de validation, créneaux</li><li>Pages par pays et par catégorie</li></ul></div>
+        <div class="lot"><small>Lot 3</small><b>Shop et livraisons</b><ul><li>Shop OCD et boutiques des vendeurs</li><li>Colis par vendeur, applis Livrer et Tournée, dispatch</li><li>Caisse des livreurs, reversements</li></ul></div>
+        <div class="lot"><small>Lot 4</small><b>Voix et équipe</b><ul><li>Voix enregistrées, langues locales</li><li>Recrutement de l'animatrice</li><li>Tableau de bord</li></ul></div>
+      </div>
+    </div>
+
+    <div class="caveat">
+      <h3>Ce que je n'ai pas encore vérifié</h3>
+      <ul>
+        <li>Tes quatre modules sont en version 20.0, avec leurs tests. Je les ai lus, pas exécutés : il n'y a pas d'instance Odoo dans cette session.</li>
+        <li><code>payment_campay</code> n'encaisse que des numéros camerounais, en XAF. Le studio est à Lomé, en XOF : un vendeur du Togo ne peut pas payer avec Campay. Il faut un second connecteur pour le Togo, ou un paiement confirmé à la main par l'équipe en attendant.</li>
+        <li><code>delivery_cameroon</code> ne contient que les villes et quartiers du Cameroun. Livrer à Lomé demande les mêmes données pour le Togo.</li>
+        <li>D'après le README de <code>whatsapp_cloud</code>, Meta facture les modèles depuis le 1er octobre 2026 : chaque ticket et chaque rappel a un coût.</li>
+        <li><code>payment_campay</code> sait demander un paiement et vérifier son état. Je n'y ai trouvé ni versement ni remboursement. Les reversements du lundi et les remboursements se font donc depuis le compte Campay, à la main, tant qu'on n'a pas vérifié si Campay propose une API de versement.</li>
+        <li>Livraison directe, dépôt-vente, Parc automobile, Recrutement et Automatisations sont gratuits (Community) dans les versions précédentes d'Odoo. À reconfirmer sur la 20.0.</li>
+        <li>Les opérateurs proposés par pays dans la démo sont indicatifs.</li>
+        <li>Deux prix viennent des vidéos : 15 000 F pour 1 h 30, et 5 000 F par mois pour l'annuaire. Les cinq autres prix sont des exemples.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ======================= À VALIDER ======================= -->
+  <section id="v-valid" role="tabpanel" aria-labelledby="tab-valid" class="doc" hidden>
+    <div>
+      <h2>Quinze décisions avant d'écrire le module</h2>
+      <p class="mut">Ma recommandation est déjà cochée. Change ce qui ne te convient pas, puis copie le résumé et colle-le dans la conversation.</p>
+    </div>
+    <form class="qs" id="qs" onsubmit="return false">
+      <fieldset class="q"><legend>1. Édition d'Odoo</legend>
+        <p class="why">Tes modules WhatsApp et Campay tournent déjà sur Community, sans licence par utilisateur. Il reste à coder les réservations et le pass dans <code>ocd_live</code>. Enterprise n'apporterait que Rendez-vous et Abonnements.</p>
+        <label><input type="radio" name="q1" value="Community, module ocd_live autonome" checked><span>Community, avec un module <code>ocd_live</code> qui ne dépend pas d'Enterprise <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q1" value="Enterprise"><span>Enterprise</span></label>
+        <label><input type="radio" name="q1" value="Pas encore décidé"><span>Pas encore décidé</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>2. Ordre du parcours</legend>
+        <p class="why">Le promoteur décrit : type, jour, heure, puis paquet. L'autre ordre simplifie les paquets de plusieurs lives.</p>
+        <label><input type="radio" name="q2" value="Jour, heure, puis paquet (comme dans la vidéo)" checked><span>Jour, heure, puis paquet, comme dans la vidéo <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q2" value="Paquet, puis jour et heure"><span>Paquet d'abord, puis jour et heure</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>3. Un calendrier ou deux</legend>
+        <p class="why">Si tous les lives passent sur le compte House of Challenge, il ne peut y en avoir qu'un à la fois, studio ou distance.</p>
+        <label><input type="radio" name="q3" value="Un seul calendrier partagé" checked><span>Un seul calendrier : un live à la fois <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q3" value="Deux calendriers séparés"><span>Deux calendriers : un pour le studio, un pour la distance</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>4. Horaires du studio</legend>
+        <p class="why">La démo propose neuf créneaux d'une heure et demie, de 8 h 30 à 22 h, tous les jours.</p>
+        <label><input type="radio" name="q4" value="8h30 à 22h, tous les jours" checked><span>8 h 30 à 22 h, tous les jours</span></label>
+        <label><input type="radio" name="q4" value="Autres horaires (voir remarques)"><span>Autres horaires, que je précise plus bas</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>5. Paiement</legend>
+        <p class="why">Campay couvre le Cameroun, en XAF. Le studio est à Lomé, en XOF : il faut autre chose pour les vendeurs du Togo.</p>
+        <label><input type="radio" name="q5" value="Campay pour le Cameroun ; Togo confirmé à la main par l'équipe en attendant un second connecteur" checked><span>Campay pour le Cameroun dès le départ. Togo : paiement reçu et confirmé à la main par l'équipe, en attendant un second connecteur <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q5" value="Campay + second connecteur pour le Togo dès le premier envoi"><span>Campay et un second connecteur pour le Togo dès le premier envoi</span></label>
+        <label><input type="radio" name="q5" value="Tout simulé pour la démonstration"><span>Tout simulé pour la démonstration au promoteur</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>6. Connexion du vendeur</legend>
+        <p class="why">Beaucoup de vendeuses n'ont pas d'adresse email. Ton module WhatsApp envoie déjà des liens qui s'ouvrent sans connexion.</p>
+        <label><input type="radio" name="q6" value="Lien personnel envoyé sur WhatsApp, sans mot de passe" checked><span>Lien personnel envoyé sur WhatsApp, sans mot de passe <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q6" value="Numéro WhatsApp + code à taper"><span>Numéro WhatsApp et code à taper</span></label>
+        <label><input type="radio" name="q6" value="Email et mot de passe"><span>Email et mot de passe</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>7. Annuaire des lives</legend>
+        <p class="why">Créneaux à l'heure de Lomé, affichés à l'heure de chaque visiteur.</p>
+        <label><input type="radio" name="q7" value="Fiche retirée à la fin du créneau" checked><span>La fiche disparaît à la fin du créneau (11 h ou 21 h) <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q7" value="Fiche retirée quand le vendeur dit qu'il a fini"><span>La fiche reste jusqu'à ce que le vendeur touche « J'ai fini »</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>8. Shop OCD</legend>
+        <p class="why">Décidé : l'équipe choisit pour chaque vendeur, dans sa fiche du back-office. Pour un vendeur vendu par OCD, elle choisit aussi qui livre (question 13).</p>
+        <label><input type="radio" name="q8" value="Les deux : l'équipe choisit pour chaque vendeur (contact direct ou vendu par OCD)" checked><span>Les deux : l'équipe choisit pour chaque vendeur, contact direct sur WhatsApp ou vendu par OCD <span class="rec">décidé</span></span></label>
+        <label><input type="radio" name="q8" value="Shop hors du premier envoi"><span>Pas de shop dans le premier envoi</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>9. Voix</legend>
+        <p class="why">La démo utilise la voix du navigateur. Une voix enregistrée est plus chaleureuse et marche sur tous les téléphones.</p>
+        <label><input type="radio" name="q9" value="Voix enregistrées en français" checked><span>Voix enregistrées en français <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q9" value="Français + langues locales"><span>Français et langues locales (éwé, pidgin, wolof…)</span></label>
+        <label><input type="radio" name="q9" value="Pas de voix"><span>Pas de voix</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>10. Ce qu'on envoie au promoteur en premier</legend>
+        <p class="why">Sa deuxième vidéo demande explicitement l'annuaire des lives.</p>
+        <label><input type="radio" name="q10" value="Lots 1 et 2" checked><span>Lots 1 et 2 : réservation et annuaire <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q10" value="Lot 1 seul"><span>Lot 1 seul</span></label>
+        <label><input type="radio" name="q10" value="Lots 1, 2 et 3"><span>Lots 1, 2 et 3 : réservation, annuaire, shop et livraisons</span></label>
+        <label><input type="radio" name="q10" value="Les quatre lots"><span>Les quatre lots</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>11. Livraison du shop</legend>
+        <p class="why"><code>delivery_cameroon</code> existe déjà. Rien d'équivalent n'existe pour le Togo.</p>
+        <label><input type="radio" name="q11" value="Cameroun d'abord, avec delivery_cameroon" checked><span>Cameroun d'abord, avec <code>delivery_cameroon</code> <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q11" value="Togo d'abord : quartiers de Lomé à créer"><span>Togo d'abord : villes et quartiers de Lomé à créer</span></label>
+        <label><input type="radio" name="q11" value="Cameroun et Togo dès le départ"><span>Cameroun et Togo dès le départ</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>12. Livreurs OCD</legend>
+        <p class="why">Le canvas montre trois livreurs salariés à Douala et une société partenaire à Yaoundé.</p>
+        <label><input type="radio" name="q12" value="Les deux : salariés à Douala, société partenaire dans les autres villes" checked><span>Les deux : livreurs salariés à Douala, société partenaire dans les autres villes <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q12" value="Seulement des livreurs salariés OCD"><span>Seulement des livreurs salariés OCD</span></label>
+        <label><input type="radio" name="q12" value="Seulement des sociétés de livraison partenaires"><span>Seulement des sociétés de livraison partenaires</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>13. Qui livre, par défaut</legend>
+        <p class="why">Décidé : l'équipe choisit pour chaque vendeur vendu par OCD. Reste le choix proposé par défaut à un nouveau vendeur.</p>
+        <label><input type="radio" name="q13" value="Un livreur OCD passe chercher chez le vendeur" checked><span>Un livreur OCD passe chercher chez le vendeur <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q13" value="Le vendeur livre lui-même"><span>Le vendeur livre lui-même</span></label>
+        <label><input type="radio" name="q13" value="Depuis le stock OCD (dépôt-vente)"><span>Depuis le stock OCD, en dépôt-vente</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>14. Paiement à la livraison</legend>
+        <p class="why">Beaucoup de clients veulent payer en voyant le colis. Le code de livraison protège la remise.</p>
+        <label><input type="radio" name="q14" value="Accepté : Mobile Money à la porte ou espèces remises avant 20 h" checked><span>Accepté : Mobile Money à la porte, ou espèces remises à la caisse avant 20 h <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q14" value="Accepté, Mobile Money seulement"><span>Accepté, mais Mobile Money seulement</span></label>
+        <label><input type="radio" name="q14" value="Refusé : tout se paie en ligne"><span>Refusé : tout se paie en ligne</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>15. Reversements aux vendeurs</legend>
+        <p class="why">Versés depuis le compte Campay, à la main, tant qu'une API de versement n'est pas vérifiée.</p>
+        <label><input type="radio" name="q15" value="Chaque lundi, pour les colis confirmés par code" checked><span>Chaque lundi, pour les colis confirmés par code <span class="rec">recommandé</span></span></label>
+        <label><input type="radio" name="q15" value="Chaque jour"><span>Chaque jour</span></label>
+        <label><input type="radio" name="q15" value="Tous les 15 jours"><span>Tous les 15 jours</span></label>
+      </fieldset>
+      <fieldset class="q"><legend>Prix, horaires, remarques</legend>
+        <p class="why">Par exemple les prix des cinq paquets d'exemple, ou un écran à changer.</p>
+        <textarea id="q-notes" aria-label="Remarques"></textarea>
+      </fieldset>
+    </form>
+    <div class="send">
+      <button class="primary" data-a="copy">Copier mes réponses</button>
+      <span id="copyMsg" class="mut" role="status"></span>
+    </div>
+    <textarea class="out" id="out" readonly aria-label="Résumé à coller dans la conversation"></textarea>
+  </section>
+
+  <p class="foot">Proposition indépendante préparée pour répondre au challenge OCD Live, à partir de deux vidéos du promoteur. Ce n'est pas le site officiel. Rien n'est envoyé ni encaissé : toutes les données restent dans cette page.</p>
+</main>
+
+<script>
+'use strict';
+/* ================= données ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const F = n => n.toLocaleString('fr-FR').replace(/\s/g, ' ') + ' F';
+const LOGO = document.querySelector('.id img').src;
+
+const C = {
+  TG:{n:'Togo', au:'au Togo', dial:'+228', tz:0, ops:['mixx','flooz','card'], ex:'90 00 00 00', city:'Lomé'},
+  BJ:{n:'Bénin', au:'au Bénin', dial:'+229', tz:1, ops:['mtn','moov','celtiis','card'], ex:'01 90 00 00 00', city:'Cotonou'},
+  CM:{n:'Cameroun', au:'au Cameroun', dial:'+237', tz:1, ops:['om','mtn','card'], ex:'6 90 00 00 00', city:'Douala'},
+  CI:{n:"Côte d'Ivoire", au:"en Côte d'Ivoire", dial:'+225', tz:0, ops:['om','mtn','moov','wave','card'], ex:'07 00 00 00 00', city:'Abidjan'},
+  SN:{n:'Sénégal', au:'au Sénégal', dial:'+221', tz:0, ops:['om','wave','card'], ex:'77 000 00 00', city:'Dakar'},
+  BF:{n:'Burkina Faso', au:'au Burkina Faso', dial:'+226', tz:0, ops:['om','moov','card'], ex:'70 00 00 00', city:'Ouagadougou'},
+  ML:{n:'Mali', au:'au Mali', dial:'+223', tz:0, ops:['om','moov','card'], ex:'70 00 00 00', city:'Bamako'},
+  GA:{n:'Gabon', au:'au Gabon', dial:'+241', tz:1, ops:['airtel','moov','card'], ex:'074 00 00 00', city:'Libreville'},
+};
+const CC = Object.keys(C);
+const OPS = {
+  mixx:{n:'Mixx by Yas', c:'#0B3C8C'}, flooz:{n:'Flooz', c:'#0A63B0'}, om:{n:'Orange Money', c:'#FF7900'},
+  mtn:{n:'MTN MoMo', c:'#FFCB05'}, moov:{n:'Moov Money', c:'#0A63B0'}, wave:{n:'Wave', c:'#1DC8FF'},
+  celtiis:{n:'Celtiis Cash', c:'#E2231A'}, airtel:{n:'Airtel Money', c:'#E40000'}, card:{n:'Carte bancaire', c:'#555'},
+};
+const CATS = {food:'Nourriture', mode:'Habits', beauty:'Beauté', tech:'Téléphones', home:'Maison', other:'Autre'};
+const NEEDS = {shelf:'Étagère', rack:'Portant', table:'Table'};
+const SLOTS = ['08:30','10:00','11:30','13:00','14:30','16:00','17:30','19:00','20:30'];
+const PACKS = [
+  {id:'decouverte', n:'Découverte', bd:'×1', lives:1, span:1, price:15000, line:'1 live de 1 h 30'},
+  {id:'duo', n:'Duo', bd:'×2', lives:2, span:1, price:27000, line:'2 lives de 1 h 30', sv:'-10 %'},
+  {id:'long', n:'4 heures', bd:'4 h', lives:1, span:3, price:30000, line:'1 long live de 4 heures', sv:'-25 %'},
+  {id:'quatre', n:'Pack 4', bd:'×4', lives:4, span:1, price:50000, line:'4 lives de 1 h 30', sv:'-17 %'},
+  {id:'annonce', n:'Annonce', bd:'pic', lives:1, span:1, price:60000, line:'1 live + ta vidéo annoncée sur House of Challenge'},
+  {id:'mensuel', n:'Mensuel', bd:'×8', lives:8, span:1, price:100000, line:'8 lives dans le mois + annonce', sv:'-17 %'},
+];
+const P = id => PACKS.find(p => p.id === id);
+const PASS_PRICE = 5000;
+const WINDOWS = [['08:00','11:00'],['18:00','21:00']];
+const PRODUCTS = [
+  {id:'p1', n:'T-shirt OCD', price:6000, by:'OCD officiel', cat:'mode'},
+  {id:'p2', n:'Pagne wax 6 yards', price:12000, by:'Brenda Wax · Cameroun', cat:'mode'},
+  {id:'p3', n:'Beurre de karité 250 g', price:2500, by:'Aïcha Karité · Burkina Faso', cat:'beauty'},
+  {id:'p4', n:'Piment en poudre', price:1500, by:'Afi Délices · Togo', cat:'food'},
+  {id:'p5', n:'Écouteurs sans fil', price:8000, by:'Ibrahim Phones · Bénin', cat:'tech'},
+  {id:'p6', n:'Lot de 6 bols', price:4500, by:'Seydou Maison · Mali', cat:'home'},
+];
+const DJ = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+const DJL = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+const MO = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const MOL = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const MONTHS = [[2026,11],[2027,0]];
+const FN = ['Awa','Rose','Kossi','Fatou','Brenda','Ibrahim','Afi','Mireille','Yao','Aïcha','Blaise','Nadège','Koffi','Marie-Claire','Seydou','Carine','Estelle','Junior','Aminata','Serge','Chantal','Moussa','Grâce','Patrick','Akouvi','Djénéba','Christelle','Hervé','Mariam','Solange'];
+const TR = {food:['Délices','Cuisine','Saveurs','Grillades','Jus Naturels'], mode:['Mode','Couture','Wax','Sneakers','Pagnes','Bijoux'], beauty:['Beauté','Karité','Tresses','Perruques','Cosmétiques'], tech:['Phones','Électro','Gadgets'], home:['Déco','Maison','Vaisselle'], other:['Services','Boutique']};
+
+/* ================= outils ================= */
+const iso = (y,m,d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+const dt = s => { const [y,m,d] = s.split('-').map(Number); return new Date(Date.UTC(y, m-1, d)); };
+const dn = n => n === 1 ? '1er' : n;
+const dShort = s => { const d = dt(s); return `${DJ[d.getUTCDay()]} ${dn(d.getUTCDate())} ${MO[d.getUTCMonth()]}`; };
+const dLong = s => { const d = dt(s); return `${DJL[d.getUTCDay()]} ${dn(d.getUTCDate())} ${MOL[d.getUTCMonth()]}`; };
+const tAdd = (t, min) => { const [h,m] = t.split(':').map(Number); const x = h*60 + m + min; return `${String(Math.floor(x/60) % 24).padStart(2,'0')}:${String(x % 60).padStart(2,'0')}`; };
+const hours = (slot, span, tz = 0) => { const s = tAdd(SLOTS[slot], tz*60); return [s, tAdd(s, span === 3 ? 240 : 90)]; };
+function hash(s){ let h = 2166136261; for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function person(r, cc){
+  const x = r(), cat = x < .3 ? 'food' : x < .6 ? 'mode' : x < .8 ? 'beauty' : x < .9 ? 'tech' : x < .97 ? 'home' : 'other';
+  return {name: FN[Math.floor(r()*FN.length)] + ' ' + TR[cat][Math.floor(r()*TR[cat].length)], cat, cc: cc || CC[Math.floor(r()*CC.length)]};
+}
+const initials = n => n.split(/[\s-]+/).slice(0,2).map(w => w[0]).join('').toUpperCase();
+const flag = cc => `<span class="flag f-${cc}" aria-hidden="true"></span>`;
+
+/* ================= icônes ================= */
+const ic = d => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const I = {
+  left: ic('<path d="M19 12H5M12 19l-7-7 7-7"/>'), right: ic('<path d="M5 12h14M12 5l7 7-7 7"/>'),
+  prev: ic('<path d="M15 18l-6-6 6-6"/>'), next: ic('<path d="M9 18l6-6-6-6"/>'),
+  vol: ic('<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>'),
+  home: ic('<path d="M3 11l9-8 9 8v10h-7v-7h-4v7H3z"/>'),
+  live: ic('<circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>'),
+  bag: ic('<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/>'),
+  user: ic('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'),
+  check: ic('<path d="M20 6L9 17l-5-5"/>'), x: ic('<path d="M18 6L6 18M6 6l12 12"/>'), plus: ic('<path d="M12 5v14M5 12h14"/>'),
+  cal: ic('<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'),
+  clock: ic('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'),
+  pin: ic('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>'),
+  chat: ic('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>'),
+  play: ic('<path d="M6 3l14 9-14 9z"/>'),
+  bell: ic('<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>'),
+  link: ic('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'),
+  box: ic('<path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>'),
+  pack: ic('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'),
+};
+const PIC = {
+  studio:'<rect class="i1" x="7" y="12" width="24" height="17" rx="4"/><path class="i1" d="M31 18.500l9-5v14l-9-5z"/><circle class="i2" cx="14" cy="18.500" r="3"/><path class="s1" d="M19 29l-6 13M19 29l6 13M19 29v13"/>',
+  remote:'<rect class="i1" x="8" y="13" width="21" height="31" rx="5"/><rect class="i3" x="11.500" y="18" width="14" height="18" rx="1.500"/><circle class="i3" cx="18.500" cy="40" r="1.600"/><path class="s2" d="M31 10a6 6 0 0 1 6 6M31 3.500a12.500 12.500 0 0 1 12.500 12.500"/>',
+  food:'<path class="i1" d="M6 24h36a18 18 0 0 1-36 0z"/><rect class="i1" x="17" y="40" width="14" height="3.500" rx="1.750"/><path class="s2" d="M17 18c-2.500-3 2.500-5 0-8.500M24 18c-2.500-3 2.500-5 0-8.500M31 18c-2.500-3 2.500-5 0-8.500"/>',
+  mode:'<path class="i1" d="M17 7L6 13l4.500 8 4.500-2.500V41h18V18.500l4.500 2.500 4.500-8-11-6c-1.500 4-10.500 4-12 0z"/><rect class="i2" x="25.500" y="20" width="5" height="5" rx="1"/>',
+  beauty:'<rect class="i1" x="16" y="25" width="14" height="17" rx="2"/><rect class="i1" x="18" y="19.500" width="10" height="4" rx="1"/><path class="i2" d="M19 18v-8l8-4v12z"/><path class="i2" d="M38 8l1.300 3.200 3.200 1.300-3.200 1.300L38 17l-1.300-3.200-3.200-1.300 3.200-1.300z"/>',
+  tech:'<rect class="i1" x="13" y="5" width="22" height="38" rx="5"/><path class="i2" d="M26 12l-8 13h6l-2 11 8-13h-6z"/>',
+  home:'<path class="i1" d="M6 22L24 7l18 15v19H6z"/><rect class="i2" x="20" y="28" width="8" height="13" rx="1"/>',
+  other:'<rect class="i1" x="8" y="8" width="13" height="13" rx="3"/><rect class="i1" x="27" y="8" width="13" height="13" rx="3"/><rect class="i1" x="8" y="27" width="13" height="13" rx="3"/><circle class="i2" cx="33.500" cy="33.500" r="6.500"/>',
+  shelf:'<rect class="i2" x="13" y="9" width="7" height="6" rx="1"/><rect class="i2" x="24" y="20" width="10" height="7" rx="1"/><rect class="i2" x="14" y="33" width="6" height="6" rx="1"/><rect class="i2" x="23" y="34" width="7" height="5" rx="1"/><path class="s1" d="M9 6v36M39 6v36M9 16.500h30M9 28.500h30M9 40.500h30"/>',
+  rack:'<path class="i2" d="M16 13h7l2 17H14z"/><path class="i2" d="M27 13h6l1.500 12h-9z"/><path class="s1" d="M7 10h34M12 10v32M36 10v32M8 42h8M32 42h8"/>',
+  table:'<path class="i2" d="M15 12h18a9 9 0 0 1-18 0z"/><path class="s1" d="M6 23h36M11 23v19M37 23v19"/>',
+  mega:'<path class="i1" d="M6 19v10a2 2 0 0 0 2 2h5l19 9V8L13 17H8a2 2 0 0 0-2 2z"/><path class="s2" d="M38 18a8 8 0 0 1 0 12"/>',
+};
+const pic = k => `<span class="pic"><svg viewBox="0 0 48 48" aria-hidden="true">${PIC[k]}</svg></span>`;
+
+/* ================= état ================= */
+const blankB = mode => ({mode, date:null, slot:null, pack:null, name:'', biz:null, detail:'', cc: mode === 'studio' ? 'TG' : null, phone:'', city:'', need:null, op:null, credit:null});
+let S;
+function init(){
+  S = {
+    screen:'home', view:'phone', page:'demo', b:blankB(null), month:0, infoErr:false,
+    bookings:[], credits:[], lastId:null, me:null,
+    lives:[], dir:{cc:null, cat:null},
+    pass:false, my:{status:null, url:'', name:'', cc:null, cat:null}, goErr:false,
+    queue:[], cart:{}, orders:0, cash:0, windowOpen:true,
+    team:{tab:'feed', day:'2026-12-01'}, feed:[], unseen:0, flash:null, layer:null, n:1,
+  };
+  let id = 1;
+  for (const [y,m] of MONTHS){
+    const n = new Date(Date.UTC(y, m+1, 0)).getUTCDate();
+    for (let d = 1; d <= n; d++){
+      const date = iso(y,m,d), wd = dt(date).getUTCDay(), r = rng(hash(date));
+      let p = wd === 6 ? .7 : wd === 0 ? .5 : .28;
+      if (date === '2026-12-05' || date === '2026-12-12') p = 1;
+      if (date === '2026-12-01') continue;
+      SLOTS.forEach((_, i) => {
+        if (r() >= p) return;
+        const who = person(r), mode = r() < .55 ? 'studio' : 'remote';
+        S.bookings.push({id:'s'+(id++), date, slot:i, span:1, mode, name:who.name, biz:who.cat, detail:'', cc: mode === 'studio' ? 'TG' : who.cc, pack:'decouverte', need: mode === 'studio' ? ['shelf','rack','table'][Math.floor(r()*3)] : null, host:'', mine:false});
+      });
+    }
+  }
+  [[0,'Maman Awa Délices','food','TG','studio','table','riz sauce arachide'],[4,'Brenda Wax','mode','CM','remote',null,'pagnes'],[7,'Kossi Sneakers','mode','TG','studio','rack',''],[8,'Fatou Beauté','beauty','SN','remote',null,'']]
+    .forEach(([slot,name,biz,cc,mode,need,detail]) => S.bookings.push({id:'s'+(id++), date:'2026-12-01', slot, span:1, mode, name, biz, detail, cc, pack:'decouverte', need, host:'', mine:false}));
+  const counts = {CM:20, TG:9, BJ:7, CI:6, SN:5};
+  for (const cc in counts){
+    const r = rng(hash('dir' + cc)), seen = new Set();
+    while (seen.size < counts[cc]){ const w = person(r, cc); if (seen.has(w.name)) continue; seen.add(w.name); S.lives.push({id:'l'+(id++), name:w.name, cat:w.cat, cc, mins: 3 + Math.floor(r()*80), mine:false}); }
+  }
+  S.queue = [
+    {id:'q1', name:'Chantal Saveurs', cc:'CM', cat:'food', url:'https://www.tiktok.com/@exemple.chantal/live', mine:false},
+    {id:'q2', name:'Moussa Phones', cc:'CI', cat:'tech', url:'https://www.tiktok.com/@exemple.moussa/live', mine:false},
+  ];
+  const s1 = S.bookings.find(b => b.date === '2026-12-01' && b.slot === 4), s0 = S.bookings.find(b => b.date === '2026-12-01' && b.slot === 0);
+  S.feed = [
+    {id:'f2', kind:'book', html:bookSentence(s1), when:'il y a 12 min', ch:['Email','Notification','WhatsApp régie']},
+    {id:'f1', kind:'book', html:bookSentence(s0), when:'il y a 41 min', ch:['Email','Notification','WhatsApp régie']},
+  ];
+}
+function bookSentence(b){
+  const [a,z] = hours(b.slot, b.span);
+  return `<b>${esc(b.name)}</b> fait <b>${CATS[b.biz]}${b.detail ? ' (' + esc(b.detail) + ')' : ''}</b>. A réservé <b>${dLong(b.date)} de ${a} à ${z}</b>. ` +
+    (b.mode === 'studio' ? 'Vient au studio de Lomé' + (b.need ? ', prévoir : ' + NEEDS[b.need].toLowerCase() : '') + '.' : `Sera ${C[b.cc].au}, à distance.`);
+}
+const takenMap = () => { const t = new Set(); for (const b of S.bookings) for (let k = 0; k < b.span; k++) t.add(b.date + '|' + (b.slot + k)); return t; };
+const freeCount = (date, t) => SLOTS.filter((_, i) => !t.has(date + '|' + i)).length;
+const fits = (date, slot, span, t) => { for (let k = 0; k < span; k++) if (slot + k >= SLOTS.length || t.has(date + '|' + (slot + k))) return false; return true; };
+const narrow = () => window.matchMedia('(max-width: 979px)').matches;
+function teamEvent(kind, html, tab){
+  const id = 'f' + (100 + S.n++);
+  S.feed.unshift({id, kind, html, when:"à l'instant", ch: kind === 'book' ? ['Email','Notification','WhatsApp régie'] : ['Notification']});
+  S.flash = id; if (tab) S.team.tab = tab;
+  if (narrow() && S.view !== 'team') S.unseen++;
+}
+
+/* ================= voix ================= */
+const VOICE = {
+  home:"Choisis. Au studio à Lomé, ou chez toi, à distance.",
+  day:"Touche le jour que tu veux.",
+  time:"Touche l'heure. Un live dure une heure et demie.",
+  pack:"Choisis ton paquet.",
+  info:"Dis-nous ton nom, ce que tu vends, et ton numéro WhatsApp.",
+  pay:"Choisis comment payer, puis touche le bouton orange.",
+  ticket:"C'est réservé. Garde ton ticket.",
+  lives:"Choisis un pays pour voir les lives. Si tu es en live, touche le bouton orange.",
+  golive:"Colle le lien de ton live, choisis ton pays et ce que tu vends, puis envoie.",
+  shop:"Touche le plus pour mettre dans ton panier.",
+  me:"Ici, tu retrouves tes lives, tes crédits et ton abonnement.",
+};
+let sayT;
+function toast(text, speak){
+  const el = $('#pSay');
+  el.innerHTML = (speak ? I.vol : '') + '<span>' + esc(text) + '</span>';
+  el.classList.add('show'); clearTimeout(sayT); sayT = setTimeout(() => el.classList.remove('show'), 4200);
+  if (speak && 'speechSynthesis' in window){
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'fr-FR'; u.rate = .95; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+}
+
+/* ================= téléphone : écrans ================= */
+const voiceBtn = () => `<button class="ib voice" data-a="voice" aria-label="Écouter cet écran">${I.vol}</button>`;
+const FLOW = ['day','time','pack','info','pay'];
+function topBar(){
+  const sc = S.screen;
+  if (FLOW.includes(sc)){
+    const steps = S.b.credit != null ? ['day','time'] : FLOW, i = steps.indexOf(sc);
+    return `<button class="ib" data-a="back" aria-label="Retour">${I.left}</button><div class="prog" role="img" aria-label="Étape ${i+1} sur ${steps.length}">${steps.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('')}</div>${voiceBtn()}`;
+  }
+  if (sc === 'golive') return `<button class="ib" data-a="back" aria-label="Retour">${I.left}</button><div class="tt">Je suis en live</div>${voiceBtn()}`;
+  return `<div class="brand"><img src="${LOGO}" alt="" width="34" height="34"><span>OCD</span><span class="lv"><i></i>LIVE</span></div>${voiceBtn()}`;
+}
+const modeTag = () => S.b.credit != null
+  ? `<span class="tag">Live déjà payé · ${P(S.credits[S.b.credit].pack).n}</span>`
+  : `<span class="tag">${S.b.mode === 'studio' ? 'Au studio · Lomé' : 'Chez toi · à distance'}</span>`;
+const byCountry = () => { const m = {}; for (const l of S.lives) m[l.cc] = (m[l.cc] || 0) + 1; return Object.entries(m).sort((a,b) => b[1] - a[1]); };
+
+const SCREENS = {
+  home(){
+    return `<h1 class="h1">Vends en live devant toute l'Afrique.</h1>
+    <div class="choices">
+      <button class="choice studio" data-a="start" data-mode="studio">${pic('studio')}<span><b>Au studio</b><small>Lomé, Togo</small></span><span class="go">${I.right}</span></button>
+      <button class="choice remote" data-a="start" data-mode="remote">${pic('remote')}<span><b>Chez toi</b><small>À distance, partout</small></span><span class="go">${I.right}</span></button>
+    </div>
+    <div class="onair"><span class="dot"></span><b>En direct maintenant</b><span class="n">${S.lives.length}</span></div>
+    <div class="chips">${byCountry().map(([cc,n]) => `<button class="chip" data-a="dir" data-cc="${cc}">${flag(cc)}<span>${C[cc].n}</span><b>${n}</b></button>`).join('')}</div>`;
+  },
+  day(){
+    const [y,m] = MONTHS[S.month], n = new Date(Date.UTC(y, m+1, 0)).getUTCDate(), lead = (new Date(Date.UTC(y,m,1)).getUTCDay() + 6) % 7, t = takenMap();
+    const now = new Date(), today = iso(now.getFullYear(), now.getMonth(), now.getDate()), live = today <= '2027-01-31';
+    let cells = '<span></span>'.repeat(lead);
+    for (let d = 1; d <= n; d++){
+      const date = iso(y,m,d), f = freeCount(date, t), off = f === 0 || (live && date < today);
+      cells += `<button data-a="day" data-d="${date}" class="${S.b.date === date ? 'sel' : f <= 2 && !off ? 'few' : ''}" ${off ? 'disabled' : ''} aria-label="${dLong(date)}${off ? ', complet' : ''}">${d}</button>`;
+    }
+    return `<h1 class="h1">Quel jour ?</h1>${modeTag()}
+    <div class="calh"><button class="ib" data-a="month" data-d="-1" ${S.month === 0 ? 'disabled' : ''} aria-label="Mois précédent">${I.prev}</button><b>${MOL[m]} ${y}</b><button class="ib" data-a="month" data-d="1" ${S.month === MONTHS.length-1 ? 'disabled' : ''} aria-label="Mois suivant">${I.next}</button></div>
+    <div class="cal wd" aria-hidden="true">${['L','M','M','J','V','S','D'].map(x => `<span>${x}</span>`).join('')}</div>
+    <div class="cal">${cells}</div>
+    <div class="legend"><span><i class="lg"></i>Libre</span><span><i class="lg few"></i>Presque plein</span><span><i class="lg full"></i>Complet</span></div>`;
+  },
+  time(){
+    const t = takenMap();
+    return `<h1 class="h1">Quelle heure ?</h1><p class="sub">${dLong(S.b.date)} · heure de Lomé</p>
+    <div class="slots">${SLOTS.map((s, i) => { const off = t.has(S.b.date + '|' + i); return `<button data-a="slot" data-i="${i}" class="${S.b.slot === i ? 'sel' : ''}" ${off ? 'disabled' : ''} aria-label="${s}${off ? ', déjà pris' : ''}"><b>${s}</b><small>${off ? 'pris' : 'fin ' + tAdd(s, 90)}</small></button>`; }).join('')}</div>`;
+  },
+  pack(){
+    const t = takenMap(), [a] = hours(S.b.slot, 1);
+    return `<h1 class="h1">Quel paquet ?</h1><p class="sub">${dShort(S.b.date)} à ${a}</p>
+    <div class="packs">${PACKS.map(p => {
+      const ok = fits(S.b.date, S.b.slot, p.span, t);
+      return `<button class="pack ${S.b.pack === p.id ? 'sel' : ''}" data-a="pack" data-id="${p.id}" ${ok ? '' : 'disabled'}>
+        <span class="bd">${p.bd === 'pic' ? pic('mega') : p.bd}</span>
+        <span><b>${p.n}</b><small>${ok ? p.line : 'Pas 4 heures libres à ' + a}</small></span>
+        <span class="pr">${F(p.price)}${p.sv ? `<span class="sv">${p.sv}</span>` : ''}</span></button>`;
+    }).join('')}</div>`;
+  },
+  info(){
+    const b = S.b, e = S.infoErr, c = b.cc ? C[b.cc] : null;
+    const bad = {name: e && b.name.trim().length < 2, biz: e && !b.biz, cc: e && !b.cc, phone: e && b.phone.replace(/\D/g,'').length < 8};
+    return `<h1 class="h1">C'est qui ?</h1>
+    <button class="demo" data-a="fill">Démo : remplir un exemple</button>
+    <div class="field ${bad.name ? 'err' : ''}"><label for="f-name">Ton nom</label><input class="inp" id="f-name" data-f="name" value="${esc(b.name)}" autocomplete="off"></div>
+    <p class="lab" id="l-biz">Tu vends quoi ?</p>
+    <div class="tiles ${bad.biz ? 'err' : ''}" role="group" aria-labelledby="l-biz">${Object.keys(CATS).map(k => `<button data-a="biz" data-k="${k}" class="${b.biz === k ? 'on' : ''}" aria-pressed="${b.biz === k}">${pic(k)}${CATS[k]}</button>`).join('')}</div>
+    ${b.biz ? `<div class="field"><label for="f-detail">Précise, si tu veux</label><input class="inp" id="f-detail" data-f="detail" value="${esc(b.detail)}" placeholder="ex. attiéké poisson" autocomplete="off"></div>` : ''}
+    <p class="lab" id="l-cc">Ton pays</p>
+    <div class="chips ${bad.cc ? 'err' : ''}" role="group" aria-labelledby="l-cc">${CC.map(k => `<button class="chip ${b.cc === k ? 'on' : ''}" data-a="cc" data-cc="${k}" aria-pressed="${b.cc === k}" ${bad.cc ? 'style="border-color:var(--p-live)"' : ''}>${flag(k)}<span>${C[k].n}</span></button>`).join('')}</div>
+    <div class="field ${bad.phone ? 'err' : ''}"><label for="f-phone">Ton WhatsApp</label><div class="tel"><span class="dial">${c ? flag(b.cc) + c.dial : '+ …'}</span><input class="inp" id="f-phone" data-f="phone" type="tel" inputmode="tel" value="${esc(b.phone)}" placeholder="${c ? c.ex : ''}" autocomplete="off"></div></div>
+    <div class="field"><label for="f-city">Ta ville</label><input class="inp" id="f-city" data-f="city" value="${esc(b.city)}" autocomplete="off"></div>
+    ${b.mode === 'studio' ? `<p class="lab" id="l-need">Au studio, il te faut</p><div class="tiles" role="group" aria-labelledby="l-need">${Object.keys(NEEDS).map(k => `<button data-a="need" data-k="${k}" class="${b.need === k ? 'on' : ''}" aria-pressed="${b.need === k}">${pic(k)}${NEEDS[k]}</button>`).join('')}</div>` : ''}
+    <p class="lab">Ton bandeau pendant le live</p>
+    <div class="third" id="third">${third()}</div>`;
+  },
+  pay(){
+    const b = S.b, p = P(b.pack), c = C[b.cc], [a,z] = hours(b.slot, p.span);
+    return `<h1 class="h1">Payer</h1>
+    <div class="sum"><b>${p.n}</b><span>${dShort(b.date)} · ${a} à ${z} · ${b.mode === 'studio' ? 'studio de Lomé' : 'à distance'}</span><span>${p.line}</span></div>
+    <p class="lab">Avec quoi ? <span style="font-weight:500;color:var(--p-mute)">${flag(b.cc)} ${c.n}</span></p>
+    <div class="ops" role="group" aria-label="Moyen de paiement">${c.ops.map(k => `<button data-a="op" data-k="${k}" class="${b.op === k ? 'on' : ''}" aria-pressed="${b.op === k}"><i style="background:${OPS[k].c}"></i>${OPS[k].n}</button>`).join('')}</div>
+    <p class="hint">${b.op === 'card' ? "Tu passes sur la page sécurisée du partenaire de paiement." : `Demande envoyée au ${c.dial} ${esc(b.phone)}.`}</p>
+    <div class="total"><span class="lab">Total</span><b>${F(p.price)}</b></div>`;
+  },
+  ticket(){
+    const b = S.bookings.find(x => x.id === S.lastId), p = P(b.pack), [a,z] = hours(b.slot, b.span), c = C[b.cc];
+    const cr = S.credits.findIndex(x => x.left > 0);
+    const local = b.mode === 'remote' && c.tz ? `<small>Chez toi ${c.au} : ${hours(b.slot, b.span, c.tz).join(' à ')}</small>` : '';
+    return `<div class="okhead"><span class="ck">${I.check}</span><h1 class="h1">C'est réservé.</h1></div>
+    <div class="ticket">
+      <div class="tk-a">
+        <div class="kv">${I.cal}<span><span class="big">${dShort(b.date)}</span></span></div>
+        <div class="kv">${I.clock}<span><span class="big">${a} – ${z}</span><small>Heure de Lomé</small>${local}</span></div>
+        <div class="kv">${I.pin}<span>${b.mode === 'studio' ? 'Studio OCD, Lomé' : 'Chez toi, à distance'}<small>${b.mode === 'studio' ? "Adresse et plan envoyés sur WhatsApp" : "Ton assistante t'appelle 30 minutes avant"}</small></span></div>
+        <div class="kv">${I.pack}<span>${p.n}<small>${esc(b.name)} · ${CATS[b.biz]}</small></span></div>
+      </div>
+      <div class="tk-b">${qr(b.id + b.date)}<div><b>${ticketNo(b)}</b><small>${b.mode === 'studio' ? "Montre ce code à l'entrée du studio." : 'Ton numéro de réservation.'}</small></div></div>
+    </div>
+    ${cr >= 0 ? `<div class="note"><span>Il te reste ${S.credits[cr].left} live${S.credits[cr].left > 1 ? 's' : ''} à placer.</span><button data-a="credit" data-i="${cr}">Choisir la date</button></div>` : ''}`;
+  },
+  lives(){
+    const d = S.dir, win = `<div class="win ${S.windowOpen ? '' : 'off'}"><i></i>${S.windowOpen ? `Lives vérifiés en ce moment · jusqu'à ${WINDOWS[1][1]}` : `Fermé · prochains lives à ${WINDOWS[0][0]}`}</div>`;
+    if (!d.cc){
+      return `<h1 class="h1">Lives par pays</h1>${win}
+      <div class="lands">${byCountry().map(([cc,n]) => `<button class="land" data-a="dir" data-cc="${cc}">${flag(cc)}<b>${n}<small>live${n > 1 ? 's' : ''}</small></b><span>${C[cc].n}</span></button>`).join('')}</div>`;
+    }
+    const all = S.lives.filter(l => l.cc === d.cc), list = all.filter(l => !d.cat || l.cat === d.cat).sort((a,b) => (b.mine - a.mine) || (a.mins - b.mins));
+    const cats = Object.keys(CATS).filter(k => all.some(l => l.cat === k));
+    return `<h1 class="h1">${flag(d.cc)} ${C[d.cc].n}</h1>
+    <div class="chips"><button class="chip" data-a="dir" data-cc="">${I.prev}<span>Pays</span></button><button class="chip ${!d.cat ? 'on' : ''}" data-a="dcat" data-k="">Tout <b>${all.length}</b></button>${cats.map(k => `<button class="chip ${d.cat === k ? 'on' : ''}" data-a="dcat" data-k="${k}">${pic(k)}<span>${CATS[k]}</span></button>`).join('')}</div>
+    <div>${list.length ? list.map(l => `<div class="who"><span class="av" aria-hidden="true">${initials(l.name)}</span><span><b>${esc(l.name)}</b><small>${pic(l.cat)}${CATS[l.cat]} · ${l.mine ? '<span class="me">c\'est toi</span>' : 'depuis ' + l.mins + ' min'}</small></span><button class="watch" data-a="watch" data-n="${esc(l.name)}">${I.play}Voir</button></div>`).join('') : '<p class="empty">Aucun live dans cette catégorie.</p>'}</div>`;
+  },
+  golive(){
+    const m = S.my;
+    if (!S.pass){
+      return `<h1 class="h1">Montre ton live à ton pays.</h1>
+      <div class="price5"><b>${F(PASS_PRICE)}</b><span>par mois</span></div>
+      <p class="sub" style="margin:0">Environ 166 F par jour.</p>
+      <p class="lab">Deux créneaux chaque jour</p>
+      <div class="wins">${WINDOWS.map((w, i) => `<div><small>${i ? 'Soir' : 'Matin'}</small>${w[0]} – ${w[1]}</div>`).join('')}</div>
+      <p class="hint" style="margin:0">Tu lances ton live chez toi. Tu envoies le lien ici. L'équipe OCD vérifie, puis ton live s'affiche.</p>`;
+    }
+    if (m.status === 'pending' || m.status === 'live'){
+      const done = m.status === 'live';
+      return `<h1 class="h1">${done ? 'Tu es en ligne sur OCD Live.' : "L'équipe vérifie ton live."}</h1>
+      <div class="track"><div class="done"><i>${I.check}</i>Lien envoyé</div><div class="${done ? 'done' : 'cur'}"><i>${done ? I.check : ''}</i>Vérification par l'équipe</div><div class="${done ? 'done' : ''}"><i>${done ? I.check : ''}</i>Affiché : ${C[m.cc].n}, ${CATS[m.cat]}</div></div>
+      ${done ? '' : '<button class="demo" data-a="view" data-v="team">Démo : aller valider côté équipe</button>'}`;
+    }
+    const e = S.goErr, chk = linkCheck(m.url);
+    return `<h1 class="h1">${m.status === 'rejected' ? 'Refusé. Ton live ne tournait pas.' : 'Envoie le lien de ton live.'}</h1>
+    ${S.windowOpen ? '' : `<div class="win off"><i></i>Fermé. Prochain créneau à ${WINDOWS[0][0]}.</div>`}
+    <button class="demo" data-a="fillgo">Démo : remplir un exemple</button>
+    <div class="field ${e && !chk.ok ? 'err' : ''}"><label for="g-url">Le lien de ton live</label><input class="inp" id="g-url" data-g="url" value="${esc(m.url)}" placeholder="https://www.tiktok.com/@…/live" autocomplete="off" inputmode="url"></div>
+    <div id="chk">${chkHtml(chk)}</div>
+    <div class="field ${e && m.name.trim().length < 2 ? 'err' : ''}"><label for="g-name">Ton nom ou ta boutique</label><input class="inp" id="g-name" data-g="name" value="${esc(m.name)}" autocomplete="off"></div>
+    <p class="lab" id="l-gcc">Ton pays</p>
+    <div class="chips" role="group" aria-labelledby="l-gcc">${CC.map(k => `<button class="chip ${m.cc === k ? 'on' : ''}" data-a="gcc" data-cc="${k}" aria-pressed="${m.cc === k}" ${e && !m.cc ? 'style="border-color:var(--p-live)"' : ''}>${flag(k)}<span>${C[k].n}</span></button>`).join('')}</div>
+    <p class="lab" id="l-gcat">Tu vends quoi ?</p>
+    <div class="tiles ${e && !m.cat ? 'err' : ''}" role="group" aria-labelledby="l-gcat">${Object.keys(CATS).map(k => `<button data-a="gcat" data-k="${k}" class="${m.cat === k ? 'on' : ''}" aria-pressed="${m.cat === k}">${pic(k)}${CATS[k]}</button>`).join('')}</div>`;
+  },
+  shop(){
+    return `<h1 class="h1">Shop OCD</h1>
+    <div class="prods">${PRODUCTS.map(p => `<div class="prod"><div class="ph">${pic(p.cat)}</div><div class="pb"><b>${p.n}</b><small>${p.by}</small><span class="pp">${F(p.price)}</span><button class="add" data-a="add" data-id="${p.id}" aria-label="Ajouter ${p.n} au panier">${I.plus}${S.cart[p.id] ? `<span class="q">${S.cart[p.id]}</span>` : ''}</button></div></div>`).join('')}</div>`;
+  },
+  me(){
+    const mine = S.bookings.filter(b => b.mine).sort((a,b) => (a.date + a.slot).localeCompare(b.date + b.slot));
+    const cr = S.credits.map((c, i) => ({...c, i})).filter(c => c.left > 0);
+    if (!mine.length && !S.pass && !S.orders) return `<h1 class="h1">Mon espace</h1><p class="empty">Tes lives, tes crédits et ton abonnement arrivent ici après ta première réservation.</p><button class="cta" data-a="nav" data-s="home">Réserver un live</button>`;
+    return `<h1 class="h1">${S.me ? esc(S.me) : 'Mon espace'}</h1>
+    ${mine.length ? '<p class="lab">Mes lives</p>' + mine.map(b => { const [a,z] = hours(b.slot, b.span); return `<div class="rowc"><span><b>${dShort(b.date)} · ${a} – ${z}</b><small>${b.mode === 'studio' ? 'Studio de Lomé' : 'À distance'} · ${P(b.pack).n}</small></span><button data-a="showticket" data-id="${b.id}">Ticket</button></div>`; }).join('') : ''}
+    ${cr.map(c => `<div class="note"><span>${c.left} live${c.left > 1 ? 's' : ''} à placer · ${P(c.pack).n}</span><button data-a="credit" data-i="${c.i}">Choisir la date</button></div>`).join('')}
+    <p class="lab">Annuaire des lives</p>
+    <div class="rowc"><span><b>${S.pass ? 'Pass actif' : 'Pas de pass'}</b><small>${S.pass ? '30 jours · rappel WhatsApp 3 jours avant la fin' : F(PASS_PRICE) + ' par mois'}</small></span>${S.pass ? '<span class="pill">Actif</span>' : '<button data-a="nav" data-s="golive">Voir</button>'}</div>
+    ${S.orders ? `<p class="lab">Shop</p><div class="rowc"><span><b>${S.orders} commande${S.orders > 1 ? 's' : ''}</b><small>Suivi envoyé sur WhatsApp</small></span></div>` : ''}
+    <button class="cta line" data-a="wa">${I.chat}Parler à l'équipe sur WhatsApp</button>`;
+  },
+};
+function third(){
+  const b = S.b, c = b.cc ? C[b.cc] : null;
+  const l2 = [b.biz ? CATS[b.biz] : 'Ton business', b.city.trim() || (c ? c.n : '')].filter(Boolean).join(' · ');
+  return `<span class="o">OCD</span><span><b>${esc(b.name.trim() || 'Ton nom')}</b><span>${esc(l2)}</span><span>WhatsApp ${c ? c.dial : '+…'} ${esc(b.phone.trim() || '…')}</span></span>`;
+}
+const ticketNo = b => `OCD-${b.date.slice(5).replace('-','')}-${SLOTS[b.slot].replace(':','')}`;
+function qr(seed){
+  const r = rng(hash(seed)), n = 21; let d = '';
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++){
+    const zx = x < 8 ? x : x >= n-8 ? x - (n-7) : -9, zy = y < 8 ? y : y >= n-8 ? y - (n-7) : -9;
+    const inF = (x < 8 || x >= n-8) && (y < 8 || y >= n-8) && !(x >= n-8 && y >= n-8);
+    let on;
+    if (inF) on = zx >= 0 && zx <= 6 && zy >= 0 && zy <= 6 && (zx === 0 || zx === 6 || zy === 0 || zy === 6 || (zx >= 2 && zx <= 4 && zy >= 2 && zy <= 4));
+    else on = r() > .52;
+    if (on) d += `M${x} ${y}h1v1h-1z`;
+  }
+  return `<svg class="qr" viewBox="-1 -1 23 23" role="img" aria-label="Code d'entrée (exemple)"><path d="${d}"/></svg>`;
+}
+function linkCheck(u){
+  u = u.trim(); if (!u) return {ok:false, empty:true};
+  const m = /^(https?:\/\/)?([a-z0-9.-]+\.)?(tiktok\.com|facebook\.com|fb\.watch|instagram\.com|youtube\.com|youtu\.be)\/\S+/i.exec(u);
+  if (!m) return {ok:false};
+  const h = m[3].toLowerCase();
+  return {ok:true, platform: h.includes('tiktok') ? 'TikTok' : h.includes('fb') || h.includes('facebook') ? 'Facebook' : h.includes('insta') ? 'Instagram' : 'YouTube'};
+}
+const chkHtml = c => c.empty ? '' : c.ok ? `<p class="chk ok">${I.check}Lien ${c.platform} reconnu</p>` : `<p class="chk ko">${I.x}Ce n'est pas un lien de live. Copie-le depuis « Partager » dans TikTok.</p>`;
+
+function bottomBar(){
+  const sc = S.screen, b = S.b;
+  const nav = cur => `<div class="nav">${[['home','Accueil',I.home],['lives','Lives',I.live],['shop','Shop',I.bag],['me','Moi',I.user]].map(([s,l,i]) => `<button data-a="nav" data-s="${s}" ${cur === s ? 'aria-current="page"' : ''}>${i}${l}${s === 'me' && S.credits.some(c => c.left > 0) ? `<span class="bdg">${S.credits.reduce((a,c) => a + c.left, 0)}</span>` : ''}</button>`).join('')}</div>`;
+  if (sc === 'home' || sc === 'me') return nav(sc);
+  if (sc === 'lives') return `<div class="bar" style="padding-bottom:2px"><button class="cta" data-a="nav" data-s="golive"><span class="dot"></span>${S.my.status === 'live' ? 'Mon live est en ligne' : S.my.status === 'pending' ? 'Mon live est en vérification' : 'Je suis en live'}</button></div>` + nav('lives');
+  if (sc === 'shop'){
+    const n = Object.values(S.cart).reduce((a,x) => a + x, 0), tot = PRODUCTS.reduce((a,p) => a + (S.cart[p.id] || 0) * p.price, 0);
+    return (n ? `<div class="cartbar"><span>${n} article${n > 1 ? 's' : ''} · ${F(tot)}</span><button class="cta" data-a="order">Commander</button></div>` : '') + nav('shop');
+  }
+  if (sc === 'day' || sc === 'time' || sc === 'pack'){
+    const bits = [b.mode === 'studio' ? 'Studio' : 'À distance']; if (b.date) bits.push(dShort(b.date)); if (b.slot != null && sc !== 'time') bits.push(SLOTS[b.slot]);
+    return `<div class="recap">${bits.map(x => `<b>${x}</b>`).join('<span>·</span>')}</div>`;
+  }
+  if (sc === 'info') return `<div class="bar"><button class="cta" data-a="topay">Continuer${I.right}</button></div>`;
+  if (sc === 'pay') return `<div class="bar"><button class="cta" data-a="pay">Payer ${F(P(b.pack).price)}</button></div>`;
+  if (sc === 'ticket') return `<div class="bar"><button class="cta" data-a="wa">${I.chat}Recevoir sur WhatsApp</button><button class="cta line" data-a="nav" data-s="me">Voir mes lives</button></div>`;
+  if (sc === 'golive'){
+    if (!S.pass) return `<div class="bar"><button class="cta" data-a="pass">Prendre le pass · ${F(PASS_PRICE)}</button></div>`;
+    if (S.my.status === 'live') return `<div class="bar"><button class="cta dark" data-a="endlive">J'ai fini mon live</button></div>`;
+    if (S.my.status === 'pending') return '';
+    return `<div class="bar"><button class="cta" data-a="sendlive" ${S.windowOpen ? '' : 'disabled'}>Envoyer mon live</button></div>`;
+  }
+  return '';
+}
+function layer(){
+  const l = S.layer; if (!l) return '';
+  if (l.type === 'paying') return `<div class="sheet" role="dialog" aria-label="Paiement en cours"><span class="sim">Simulation · aucun paiement réel</span><h2>Regarde ton téléphone.</h2><p>Tape ton code secret sur ton téléphone, chez ton opérateur. Jamais sur ce site.</p><div class="wait"><i></i>${F(l.amount)} · en attente de ta confirmation</div></div>`;
+  if (l.type === 'place'){ const [a,z] = hours(S.b.slot, l.span); return `<div class="sheet" role="dialog" aria-label="Placer ce live"><h2>${dShort(S.b.date)}<br>${a} – ${z}</h2><p>Ce live est déjà payé dans ton paquet ${P(l.pack).n}.</p><button class="cta" data-a="place">Placer ce live ici</button><button class="cta line" data-a="closelayer">Changer d'heure</button></div>`; }
+  return '';
+}
+let lastScreen = null;
+function renderPhone(){
+  const sc = S.screen, box = $('#pScroll'), keep = sc === lastScreen ? box.scrollTop : 0;
+  $('#pTop').innerHTML = topBar();
+  box.innerHTML = SCREENS[sc]();
+  $('#pBottom').innerHTML = bottomBar();
+  $('#pLayer').innerHTML = layer(); $('#pLayer').hidden = !S.layer;
+  box.scrollTop = keep; lastScreen = sc;
+}
+
+/* ================= écran équipe ================= */
+const EVI = {book:I.cal, list:I.link, pass:I.user, order:I.box, valid:I.check};
+function renderTeam(){
+  const t = S.team, el = $('#team'), old = el.querySelector('.tm-b'), keepTab = el.dataset.tab === t.tab, keep = old && keepTab ? old.scrollTop : 0;
+  const tabs = [['feed','Fil'],['plan','Planning'],['queue','À valider'],['kpi','Chiffres']];
+  let body = '';
+  if (t.tab === 'feed'){
+    body = S.feed.map(f => `<div class="ev ${S.flash === f.id ? 'new' : ''}"><span class="eb">${EVI[f.kind]}</span><div><p>${f.html}</p><div class="mt"><time>${f.when}</time>${f.ch.map(c => `<span>${c}</span>`).join('')}</div></div></div>`).join('');
+  } else if (t.tab === 'plan'){
+    const day = S.bookings.filter(b => b.date === t.day), cont = new Set();
+    day.forEach(b => { for (let k = 1; k < b.span; k++) cont.add(b.slot + k); });
+    body = `<div class="pl-h"><b>${dLong(t.day)}</b><div><button class="sq" data-a="pday" data-d="-1" aria-label="Jour précédent" ${t.day <= '2026-12-01' ? 'disabled' : ''}>${I.prev}</button><button class="sq" data-a="pday" data-d="1" aria-label="Jour suivant" ${t.day >= '2027-01-31' ? 'disabled' : ''}>${I.next}</button></div></div>` +
+      SLOTS.map((s, i) => {
+        if (cont.has(i)) return '';
+        const b = day.find(x => x.slot === i);
+        if (!b) return `<div class="pl"><time>${s}</time><div class="fr">Libre</div></div>`;
+        const [, z] = hours(b.slot, b.span);
+        return `<div class="pl"><time>${s}</time><div class="bk ${b.mode === 'remote' ? 'rm' : ''} ${b.mine ? 'mine' : ''}"><b>${esc(b.name)}</b>
+          <div class="ch"><span>${CATS[b.biz]}${b.detail ? ' · ' + esc(b.detail) : ''}</span><span>${b.mode === 'studio' ? 'Studio' : flag(b.cc) + ' À distance · ' + C[b.cc].n}</span>${b.need ? `<span>${NEEDS[b.need]}</span>` : ''}<span>${P(b.pack).n} · fin ${z}</span></div>
+          ${b.mode === 'remote' ? `<select data-host="${b.id}" aria-label="Animatrice pour ${esc(b.name)}"><option value="">Animatrice : à affecter</option>${['Animatrice 1','Animatrice 2'].map(h => `<option ${b.host === h ? 'selected' : ''}>${h}</option>`).join('')}</select>` : ''}
+        </div></div>`;
+      }).join('');
+  } else if (t.tab === 'queue'){
+    body = `<div class="tgl"><span>${S.windowOpen ? 'Créneau ouvert · ' + WINDOWS[1].join(' – ') : 'Créneau fermé · prochain ' + WINDOWS[0].join(' – ')}</span><button data-a="window">Démo : ${S.windowOpen ? 'fermer' : 'ouvrir'}</button></div>` +
+      (S.queue.length ? S.queue.map(q => `<div class="qc ${q.mine ? 'mine' : ''}"><b>${flag(q.cc)} ${esc(q.name)} <span class="tm-tag">${CATS[q.cat]}</span></b><code>${esc(q.url)}</code><div class="ac"><button class="btn" data-a="openlive">Ouvrir le live</button><button class="btn ok" data-a="approve" data-id="${q.id}">Valider</button><button class="btn ko" data-a="reject" data-id="${q.id}">Refuser</button></div></div>`).join('') : '<p class="tm-empty">Aucun live en attente.</p>');
+  } else {
+    const dec = S.bookings.filter(b => b.date.startsWith('2026-12')), by = {};
+    dec.forEach(b => by[b.cc] = (by[b.cc] || 0) + 1);
+    const rows = Object.entries(by).sort((a,b) => b[1] - a[1]).slice(0, 6), max = rows.length ? rows[0][1] : 1;
+    body = `<div class="kp"><div><small>Lives réservés en décembre</small><b>${dec.length}</b></div><div><small>Encaissé pendant cette démo</small><b>${F(S.cash)}</b></div><div><small>Pass annuaire actifs</small><b>${132 + (S.pass ? 1 : 0)}</b></div><div><small>Lives affichés maintenant</small><b>${S.lives.length}</b></div></div>
+    <h3>Réservations de décembre par pays</h3><div class="brs">${rows.map(([cc,n]) => `<div class="br"><span>${flag(cc)}${C[cc].n}</span><i style="width:${Math.round(n / max * 100)}%"></i><b>${n}</b></div>`).join('')}</div>
+    <p class="tm-empty">Chiffres d'exemple, pour montrer la forme du tableau de bord.</p>`;
+  }
+  el.dataset.tab = t.tab;
+  el.innerHTML = `<div class="tm-h"><div class="tm-app"><i></i>OCD Live <span>/ Régie</span></div><span class="tm-tag">Back-office Odoo · aperçu</span></div>
+    <div class="tm-tabs" role="tablist">${tabs.map(([k,l]) => `<button role="tab" aria-selected="${t.tab === k}" data-a="ttab" data-k="${k}">${l}${k === 'queue' && S.queue.length ? `<span class="n">${S.queue.length}</span>` : ''}</button>`).join('')}</div>
+    <div class="tm-b">${body}</div>`;
+  el.querySelector('.tm-b').scrollTop = keep;
+  S.flash = null;
+}
+function renderChrome(){
+  $('#stage').dataset.view = S.view;
+  $('#sw-phone').setAttribute('aria-pressed', S.view === 'phone'); $('#sw-team').setAttribute('aria-pressed', S.view === 'team');
+  const bub = $('#swBub'); bub.hidden = !S.unseen; bub.textContent = S.unseen;
+  ['demo','archi','valid'].forEach(p => { $('#v-' + p).hidden = S.page !== p; $('#tab-' + p).setAttribute('aria-selected', S.page === p); });
+}
+function render(){ renderPhone(); renderTeam(); renderChrome(); }
+
+/* ================= actions ================= */
+function payThen(amount, then){
+  S.layer = {type:'paying', amount}; render();
+  setTimeout(() => { if (!S.layer || S.layer.type !== 'paying') return; S.layer = null; S.cash += amount; then(); render(); }, 2100);
+}
+function makeBooking(b, pack, span){
+  const bk = {id:'m' + (S.n++), date:b.date, slot:b.slot, span, mode:b.mode, name:b.name.trim(), biz:b.biz, detail:b.detail.trim(), cc:b.cc, phone:b.phone.trim(), city:b.city.trim(), pack, need:b.need, host:'', mine:true};
+  S.bookings.push(bk); S.lastId = bk.id; S.me = bk.name; S.team.day = bk.date;
+  teamEvent('book', bookSentence(bk), 'feed');
+  return bk;
+}
+const A = {
+  page: d => { S.page = d.p; },
+  view: d => { S.view = d.v; if (d.v === 'team') S.unseen = 0; },
+  reset: () => { init(); lastScreen = null; toast('Démo remise à zéro.'); },
+  voice: () => { toast(VOICE[S.screen], true); return false; },
+  nav: d => { S.screen = d.s; if (d.s === 'lives') S.dir = {cc:null, cat:null}; },
+  back: () => {
+    const sc = S.screen;
+    S.screen = sc === 'day' ? (S.b.credit != null ? 'me' : 'home') : sc === 'time' ? 'day' : sc === 'pack' ? 'time' : sc === 'info' ? 'pack' : sc === 'pay' ? 'info' : sc === 'golive' ? 'lives' : 'home';
+  },
+  start: d => { S.b = blankB(d.mode); S.month = 0; S.infoErr = false; S.screen = 'day'; },
+  month: d => { S.month = Math.max(0, Math.min(MONTHS.length - 1, S.month + Number(d.d))); },
+  day: d => { S.b.date = d.d; S.b.slot = null; S.b.pack = null; S.screen = 'time'; },
+  slot: d => {
+    S.b.slot = Number(d.i); S.b.pack = null;
+    if (S.b.credit != null){ const c = S.credits[S.b.credit]; S.layer = {type:'place', pack:c.pack, span:1}; } else S.screen = 'pack';
+  },
+  pack: d => { S.b.pack = d.id; S.screen = 'info'; },
+  biz: d => { S.b.biz = d.k; },
+  need: d => { S.b.need = S.b.need === d.k ? null : d.k; },
+  cc: d => { S.b.cc = d.cc; S.b.op = null; },
+  fill: () => {
+    const cc = S.b.mode === 'studio' ? 'TG' : 'CM';
+    Object.assign(S.b, {name:'Awa Mensah', biz:'food', detail:'attiéké poisson', cc, phone:C[cc].ex, city:C[cc].city, need: S.b.mode === 'studio' ? 'table' : null});
+    S.infoErr = false;
+  },
+  topay: () => {
+    const b = S.b, ok = b.name.trim().length >= 2 && b.biz && b.cc && b.phone.replace(/\D/g,'').length >= 8;
+    if (!ok){ S.infoErr = true; toast("Il manque quelque chose. Regarde les cases en rouge.", true); return; }
+    S.infoErr = false; b.op = b.op || C[b.cc].ops[0]; S.screen = 'pay';
+  },
+  op: d => { S.b.op = d.k; },
+  pay: () => {
+    const b = S.b, p = P(b.pack);
+    payThen(p.price, () => {
+      makeBooking(b, p.id, p.span);
+      if (p.lives > 1) S.credits.push({pack:p.id, left:p.lives - 1, tpl:{...b}});
+      S.screen = 'ticket';
+    });
+    return false;
+  },
+  credit: d => { const c = S.credits[Number(d.i)]; S.b = {...c.tpl, date:null, slot:null, credit:Number(d.i)}; S.month = 0; S.screen = 'day'; },
+  place: () => { const c = S.credits[S.b.credit]; S.layer = null; makeBooking(S.b, c.pack, 1); c.left--; S.screen = 'ticket'; },
+  closelayer: () => { S.layer = null; S.b.slot = null; },
+  showticket: d => { S.lastId = d.id; S.screen = 'ticket'; },
+  wa: () => { toast("Dans la vraie version, WhatsApp s'ouvre ici avec ton ticket."); return false; },
+  dir: d => { S.dir = {cc:d.cc || null, cat:null}; S.screen = 'lives'; },
+  dcat: d => { S.dir.cat = d.k || null; },
+  watch: d => { toast(`Dans la vraie version, le live de ${d.n} s'ouvre dans TikTok.`); return false; },
+  pass: () => { payThen(PASS_PRICE, () => { S.pass = true; teamEvent('pass', '<b>Nouveau pass annuaire</b> : 30 jours, ' + F(PASS_PRICE) + ' payés.', null); }); return false; },
+  gcc: d => { S.my.cc = d.cc; },
+  gcat: d => { S.my.cat = d.k; },
+  fillgo: () => { Object.assign(S.my, {url:'https://www.tiktok.com/@exemple.awa/live', name: S.me || 'Awa Mensah', cc: S.my.cc || 'TG', cat: S.my.cat || 'food'}); S.goErr = false; },
+  sendlive: () => {
+    const m = S.my, ok = linkCheck(m.url).ok && m.name.trim().length >= 2 && m.cc && m.cat;
+    if (!ok){ S.goErr = true; toast("Il manque quelque chose. Regarde les cases en rouge.", true); return; }
+    S.goErr = false; m.status = 'pending';
+    S.queue.unshift({id:'q' + (10 + S.n++), name:m.name.trim(), cc:m.cc, cat:m.cat, url:m.url.trim(), mine:true});
+    teamEvent('list', `<b>${esc(m.name.trim())}</b> (${C[m.cc].n}, ${CATS[m.cat]}) a envoyé un lien de live à vérifier.`, 'queue');
+  },
+  endlive: () => { S.lives = S.lives.filter(l => !l.mine); S.my.status = null; S.my.url = ''; toast('Ton live est retiré de la liste.'); },
+  add: d => { S.cart[d.id] = (S.cart[d.id] || 0) + 1; },
+  order: () => {
+    const n = Object.values(S.cart).reduce((a,x) => a + x, 0), tot = PRODUCTS.reduce((a,p) => a + (S.cart[p.id] || 0) * p.price, 0);
+    payThen(tot, () => { S.cart = {}; S.orders++; teamEvent('order', `<b>Nouvelle commande Shop</b> : ${n} article${n > 1 ? 's' : ''}, ${F(tot)} payés.`, null); toast('Commande reçue. Le suivi arrive sur WhatsApp.'); });
+    return false;
+  },
+  ttab: d => { S.team.tab = d.k; },
+  pday: d => { const x = dt(S.team.day); x.setUTCDate(x.getUTCDate() + Number(d.d)); S.team.day = iso(x.getUTCFullYear(), x.getUTCMonth(), x.getUTCDate()); },
+  window: () => { S.windowOpen = !S.windowOpen; },
+  openlive: () => { toast("Dans la vraie version, le lien s'ouvre pour vérifier que le vendeur est bien en train de vendre."); return false; },
+  approve: d => {
+    const q = S.queue.find(x => x.id === d.id); S.queue = S.queue.filter(x => x.id !== d.id);
+    S.lives.push({id:'l' + (500 + S.n++), name:q.name, cat:q.cat, cc:q.cc, mins:1, mine:q.mine});
+    if (q.mine){ S.my.status = 'live'; if (S.screen === 'lives' || S.screen === 'golive') S.dir = {cc:q.cc, cat:null}; }
+    S.feed.unshift({id:'f' + (100 + S.n++), kind:'valid', html:`Live de <b>${esc(q.name)}</b> validé. Affiché dans ${C[q.cc].n}, ${CATS[q.cat]}.`, when:"à l'instant", ch:['Modération']});
+  },
+  reject: d => { const q = S.queue.find(x => x.id === d.id); S.queue = S.queue.filter(x => x.id !== d.id); if (q.mine) S.my.status = 'rejected'; },
+  copy: () => { copyAnswers(); return false; },
+};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
+  const fn = A[el.dataset.a]; if (!fn) return;
+  if (fn(el.dataset) !== false) render();
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.f){ S.b[t.dataset.f] = t.value; const th = $('#third'); if (th) th.innerHTML = third(); const fl = t.closest('.field'); if (fl) fl.classList.remove('err'); }
+  else if (t.dataset.g){ S.my[t.dataset.g] = t.value; if (t.dataset.g === 'url') $('#chk').innerHTML = chkHtml(linkCheck(t.value)); const fl = t.closest('.field'); if (fl) fl.classList.remove('err'); }
+  else if (t.closest('#qs')) buildAnswers();
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.host){ const b = S.bookings.find(x => x.id === t.dataset.host); if (b) b.host = t.value; }
+  else if (t.closest('#qs')) buildAnswers();
+});
+
+/* ================= onglet À valider ================= */
+function buildAnswers(){
+  const lines = ['Validation du prototype OCD Live'];
+  document.querySelectorAll('#qs fieldset').forEach(fs => {
+    const lg = fs.querySelector('legend').textContent.trim(), r = fs.querySelector('input:checked');
+    if (r) lines.push(`${lg} : ${r.value}`);
+  });
+  const notes = $('#q-notes').value.trim();
+  lines.push('Remarques : ' + (notes || 'aucune'));
+  $('#out').value = lines.join('\n');
+  return $('#out').value;
+}
+function copyAnswers(){
+  const text = buildAnswers(), msg = $('#copyMsg'), out = $('#out');
+  const fallback = () => { out.focus(); out.select(); msg.textContent = 'Texte sélectionné ci-dessous : copie-le.'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => { msg.textContent = 'Copié. Colle-le dans la conversation.'; }, fallback);
+  else fallback();
+}
+
+init(); render(); buildAnswers();
+</script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Paramètres OCD Live</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="config" sub="params" title="Paramètres" crumb="" facets="" views="" view="" pager="" action="" search="non" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 14px; padding: 14px 22px">
+    <nav aria-label="Sections des paramètres" style="display: flex; flex-direction: column; gap: 4px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 10px">
+      <sc-for list="{{secs}}" as="x" hint-placeholder-count="5">
+        <button onClick="{{x.pick}}" aria-current="{{x.current}}" style="display: grid; grid-template-columns: 32px 1fr; gap: 10px; align-items: center; min-height: 48px; border: 0; border-radius: 8px; padding: 6px 8px; font-family: inherit; color: #15130F; text-align: left; cursor: pointer; background: {{x.bg}}">
+          <span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; font-size: 12px; font-weight: 800; background: {{x.icoBg}}; color: {{x.icoFg}}">{{x.ico}}</span>
+          <span style="display: flex; flex-direction: column; line-height: 1.25">
+            <span style="font-size: 14px; font-weight: {{x.weight}}">{{x.label}}</span>
+            <span style="font-size: 12px; color: #5A6068">{{x.count}}</span>
+          </span>
+        </button>
+      </sc-for>
+      <span style="margin-top: auto; padding: 8px; font-size: 12px; color: #5A6068; line-height: 1.4">Chaque réglage est lu par les automatisations : pas besoin de toucher au code pour changer un horaire ou un prix.</span>
+    </nav>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0">
+      <div role="status" style="display: flex; align-items: center; gap: 10px; min-height: 44px; box-sizing: border-box; border-radius: 10px; padding: 0 12px; background: {{barBg}}; border: 1px solid {{barBd}}">
+        <span style="font-size: 13.5px; font-weight: 700; color: {{barFg}}">{{barText}}</span>
+        <sc-if value="{{dirty}}" hint-placeholder-val="{{false}}">
+          <span style="margin-left: auto; display: flex; gap: 8px">
+            <button onClick="{{save}}" style="min-height: 32px; border: 0; border-radius: 8px; padding: 0 14px; background: #F46A00; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer">Enregistrer</button>
+            <button onClick="{{cancel}}" style="min-height: 32px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer">Annuler</button>
+          </span>
+        </sc-if>
+      </div>
+
+      <div style="flex: 1; min-height: 0; overflow-y: auto; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px">
+        <h1 style="margin: 0 0 12px; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 20px; line-height: 1.1">{{secTitle}}</h1>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+          <sc-for list="{{items}}" as="it" hint-placeholder-count="6">
+            <div style="grid-column: {{it.span}}; display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; align-items: start; border-radius: 10px; padding: 11px 13px; background: {{it.bg}}; border: 1px solid {{it.bd}}">
+              <span style="display: flex; padding-top: 2px">
+                <sc-if value="{{it.isCheck}}" hint-placeholder-val="{{true}}">
+                  <input type="checkbox" id="{{it.cid}}" checked="{{it.on}}" onChange="{{it.toggle}}" style="width: 18px; height: 18px; accent-color: #F46A00; margin: 0">
+                </sc-if>
+                <sc-if value="{{it.isWarn}}" hint-placeholder-val="{{false}}">
+                  <span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 50%; background: #B84F00; color: #FFFFFF; display: grid; place-items: center; font-size: 12px; font-weight: 800">!</span>
+                </sc-if>
+              </span>
+              <div style="display: flex; flex-direction: column; gap: 5px; min-width: 0">
+                <label for="{{it.cid}}" style="font-size: 14.5px; font-weight: 700; line-height: 1.3">{{it.title}}</label>
+                <span style="font-size: 13px; color: #3F454C; line-height: 1.4">{{it.desc}}</span>
+                <sc-if value="{{it.isField}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; align-items: center; gap: 8px">
+                    <input id="{{it.cid}}" value="{{it.value}}" onChange="{{it.set}}" autocomplete="off" style="width: {{it.w}}; height: 34px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 9px; font-family: inherit; font-size: 14px; font-weight: 600; color: #15130F; background: #FFFFFF; font-variant-numeric: tabular-nums">
+                    <span style="font-size: 13px; color: #3F454C">{{it.suffix}}</span>
+                  </span>
+                </sc-if>
+                <sc-if value="{{it.isSelect}}" hint-placeholder-val="{{false}}">
+                  <select id="{{it.cid}}" value="{{it.value}}" onChange="{{it.set}}" style="align-self: flex-start; height: 34px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 8px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 600">
+                    <sc-for list="{{it.options}}" as="o" hint-placeholder-count="3">
+                      <option value="{{o.v}}">{{o.v}}</option>
+                    </sc-for>
+                  </select>
+                </sc-if>
+                <sc-if value="{{it.isChips}}" hint-placeholder-val="{{false}}">
+                  <span style="display: flex; flex-wrap: wrap; gap: 6px">
+                    <sc-for list="{{it.chips}}" as="ch" hint-placeholder-count="5">
+                      <span style="border-radius: 6px; padding: 2px 9px; background: #F4F5F6; border: 1px solid #D3D7DB; font-size: 13px; font-weight: 600">{{ch.v}}</span>
+                    </sc-for>
+                  </span>
+                </sc-if>
+                <sc-if value="{{it.isTpl}}" hint-placeholder-val="{{false}}">
+                  <div style="display: flex; flex-direction: column; border: 1px solid #E3E6E9; border-radius: 8px; overflow: hidden">
+                    <sc-for list="{{it.rows}}" as="r" hint-placeholder-count="12">
+                      <div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 150px; gap: 10px; align-items: center; padding: 5px 10px; border-bottom: 1px solid #EEF0F2; font-size: 13px">
+                        <span style="font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px">{{r.name}}</span>
+                        <span style="color: #3F454C">{{r.use}}</span>
+                        <span style="justify-self: start; border-radius: 6px; padding: 1px 8px; font-size: 12px; font-weight: 700; background: {{r.bg}}; color: {{r.fg}}">{{r.st}}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{it.hasNote}}" hint-placeholder-val="{{false}}">
+                  <span style="font-size: 12.5px; font-weight: 700; color: {{it.noteFg}}">{{it.note}}</span>
+                </sc-if>
+                <sc-if value="{{it.hasLink}}" hint-placeholder-val="{{false}}">
+                  <a href="{{it.href}}" style="align-self: flex-start; font-size: 13px; font-weight: 700; text-decoration: underline">{{it.link}}</a>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const sec = s.sec || "lives";
+    const vals = s.vals || {};
+    const dirty = !!s.dirty;
+    const savedAt = s.savedAt || "";
+    const CK = (id, title, desc, on, extra) => Object.assign({ id: id, kind: "check", title: title, desc: desc, def: on }, extra || {});
+    const FD = (id, title, desc, value, suffix, w, extra) => Object.assign({ id: id, kind: "field", title: title, desc: desc, def: value, suffix: suffix, w: w }, extra || {});
+    const SL = (id, title, desc, value, options, extra) => Object.assign({ id: id, kind: "select", title: title, desc: desc, def: value, options: options }, extra || {});
+    const sections = [
+      { id: "lives", ico: "LV", label: "Lives et studio", title: "Lives et studio de Lomé", items: [
+        CK("resa", "Réservation en ligne ouverte", "Les vendeurs choisissent un jour, une heure et un paquet, puis paient seuls.", true),
+        FD("open", "Ouverture des réservations", "Avant cette date, le calendrier est visible mais fermé.", "1er déc. 2026", "", "140px"),
+        FD("price", "Prix d'un créneau", "Créneau de 1 h 30. Le prix des autres paquets se règle sur chaque paquet.", "15 000", "F", "110px"),
+        FD("hours", "Horaires du studio", "9 créneaux de 1 h 30 par jour, tous les jours.", "08:30 – 22:00", "", "140px"),
+        FD("hold", "Créneau gardé pendant le paiement", "Passé ce délai, il est libéré et proposé à la liste d'attente.", "30", "minutes", "70px"),
+        CK("anim", "Animatrice obligatoire pour les lives à distance", "Un live à distance sans animatrice crée une alerte la veille.", true),
+        CK("notify", "Prévenir l'équipe à chaque réservation", "Message dans le canal Discuss # lives et WhatsApp au responsable du jour.", true),
+        { id: "packs", kind: "chips", title: "Les 6 paquets", desc: "Découverte est à 15 000 F. Les 5 autres prix sont à fixer par OCD.", chips: ["Découverte", "Duo", "4 heures", "Pack 4", "Annonce", "Mensuel"], link: "Voir les paquets sur le site", href: "Paquet.dc.html" }
+      ] },
+      { id: "annuaire", ico: "AN", label: "Annuaire des lives", title: "Annuaire des lives", items: [
+        FD("win", "Fenêtres de vérification des liens", "Un lien envoyé hors fenêtre attend la suivante. Le vendeur est prévenu.", "08:00 – 11:00 et 18:00 – 21:00", "", "260px"),
+        FD("pass", "Prix du pass annuaire", "Donne le droit d'afficher ses lives dans l'annuaire.", "5 000", "F par mois", "110px"),
+        FD("remind", "Rappel avant la fin du pass", "WhatsApp avec un lien de paiement.", "3", "jours avant", "70px"),
+        CK("newvendor", "Vérifier les nouveaux vendeurs avant publication", "Leur boutique reste cachée tant que l'équipe n'a pas validé.", true),
+        { id: "lands", kind: "chips", title: "Pays ouverts", desc: "Un pays ajouté apparaît tout de suite dans l'annuaire.", chips: ["Cameroun", "Togo", "Bénin", "Côte d'Ivoire", "Sénégal"], span: "span 2" }
+      ] },
+      { id: "shop", ico: "SH", label: "Shop et livraisons", title: "Shop et livraisons", items: [
+        FD("com", "Commission OCD par défaut", "Modifiable sur la fiche de chaque vendeur.", "15", "%", "70px"),
+        SL("who", "Qui livre, par défaut", "Pour un nouveau vendeur vendu par OCD. Modifiable sur sa fiche.", "Un livreur OCD passe chercher", ["Le vendeur livre lui-même", "Un livreur OCD passe chercher", "Depuis le stock OCD"]),
+        FD("prep", "Temps pour préparer un colis", "Passé ce délai, le vendeur est relancé sur WhatsApp.", "4", "heures", "70px"),
+        FD("alert", "Alerte au dispatch", "Si le colis n'est toujours pas prêt après la relance. Bascule possible vers un livreur OCD.", "2", "heures après la relance", "70px"),
+        CK("code", "Code de livraison obligatoire", "Le colis passe à « livré » seulement avec le code du client. 3 essais faux : colis bloqué.", true, { warnOff: "Sans code, un colis peut être déclaré livré sans preuve : les reversements ne sont plus protégés." }),
+        FD("tries", "Tentatives avant retour au vendeur", "Après le dernier échec : retour au vendeur et avoir si le client a payé en ligne.", "2", "tentatives", "70px"),
+        FD("cash", "Remise des espèces par les livreurs", "Après l'heure, le responsable reçoit une alerte.", "20:00", "chaque soir", "80px"),
+        CK("fallback", "Livreur OCD si le client est hors des zones du vendeur", "Le vendeur est prévenu et le livreur passe chercher le colis.", true),
+        { id: "zones", kind: "info", title: "Zones et frais de livraison", desc: "Douala de 1 000 à 2 500 F selon le quartier, Yaoundé, Bafoussam. Point de repère obligatoire à l'adresse. Les tarifs se règlent par quartier.", span: "span 2" }
+      ] },
+      { id: "pay", ico: "PA", label: "Paiements et reversements", title: "Paiements et reversements", items: [
+        CK("momo", "MTN Mobile Money", "Par Campay. Le client valide sur son téléphone avec son code secret.", true),
+        CK("orange", "Orange Money", "Par Campay, même fonctionnement.", true),
+        CK("card", "Carte bancaire", "Par Campay, sur une page de paiement.", true),
+        CK("cod", "Payer à la livraison", "Mobile Money à la porte, ou espèces remises à la caisse le soir.", true),
+        SL("payday", "Jour de reversement aux vendeurs", "Les reversements sont préparés la veille au soir, l'équipe les valide.", "Lundi", ["Lundi", "Mercredi", "Vendredi"]),
+        CK("proof", "Reverser seulement les colis confirmés par code", "Un retour accepté après un versement est déduit du versement suivant.", true, { warnOff: "Sans cette règle, OCD peut reverser de l'argent pour un colis qui n'a jamais été remis." }),
+        FD("min", "Reversement minimum", "En dessous, le montant passe à la semaine suivante.", "1 000", "F", "90px"),
+        { id: "togo", kind: "warn", title: "Togo : Campay ne fonctionne qu'au Cameroun, en francs CFA d'Afrique centrale", desc: "Pour les vendeurs du Togo (francs CFA d'Afrique de l'Ouest), en attendant un moyen de paiement local : paiement en espèces au studio de Lomé, noté par l'équipe dans Odoo.", span: "span 2" }
+      ] },
+      { id: "wa", ico: "WA", label: "WhatsApp", title: "WhatsApp", items: [
+        { id: "num", kind: "info", title: "Numéro WhatsApp Business d'OCD Live", desc: "Connecté par l'API officielle de Meta. Les messages arrivent dans Odoo, menu WhatsApp.", note: "Connecté", noteFg: "#0A5A31" },
+        CK("night", "Pas de message automatique la nuit", "Entre 21:00 et 07:00, les messages attendent le matin. Sauf le code de livraison.", true),
+        CK("stop", "Respecter STOP et START", "Un contact qui écrit STOP ne reçoit plus de message automatique. START le réactive.", true),
+        CK("rating", "Demander une note après la livraison", "2 heures après la livraison, le client note de 1 à 5.", true),
+        { id: "tpl", kind: "tpl", title: "Modèles de messages approuvés par Meta", desc: "Hors de la fenêtre de 24 h après le dernier message du contact, seuls ces modèles peuvent partir. Ils sont envoyés à Meta depuis Odoo.", span: "span 2", rows: [
+          ["commande_confirmee", "Commande reçue, au client", "ok"], ["colis_a_preparer", "Nouveau colis ou rappel, au vendeur", "ok"], ["livraison_en_route", "Colis parti, avec le code, au client", "ok"], ["livraison_echec", "Client injoignable, au client", "ok"], ["livraison_effectuee", "Colis livré et demande de note, au client", "ok"], ["reservation_confirmee", "Réservation payée, au vendeur", "ok"], ["rappel_live", "Veille du live, au vendeur", "ok"], ["creneau_libre", "Créneau libéré, à la liste d'attente", "ok"], ["pass_expire", "Pass qui se termine, au vendeur", "ok"], ["lien_refuse", "Lien refusé avec le motif, au vendeur", "ok"], ["lien_recu", "Lien reçu, heure de vérification", "wait"], ["recrutement_reponse", "Réponse aux candidates", "wait"]
+        ] }
+      ] }
+    ];
+    const cur = sections.filter((x) => x.id === sec)[0] || sections[0];
+    const valOf = (it) => (vals[it.id] === undefined ? it.def : vals[it.id]);
+    const setVal = (id, v) => {
+      const next = Object.assign({}, vals);
+      next[id] = v;
+      this.setState({ vals: next, dirty: true });
+    };
+    const items = cur.items.map((it) => {
+      const v = valOf(it);
+      const isCheck = it.kind === "check";
+      const off = isCheck && !v;
+      const warnOn = off && !!it.warnOff;
+      const isWarn = it.kind === "warn";
+      return {
+        cid: "set-" + it.id,
+        title: it.title,
+        desc: it.desc,
+        span: it.span || "span 1",
+        bg: isWarn ? "#FFF6E5" : warnOn ? "#FFF5F5" : "#FFFFFF",
+        bd: isWarn ? "#F0C987" : warnOn ? "#E8A0A6" : "#E3E6E9",
+        isCheck: isCheck,
+        isWarn: isWarn,
+        on: !!v,
+        toggle: () => setVal(it.id, !v),
+        isField: it.kind === "field",
+        isSelect: it.kind === "select",
+        value: isCheck ? "" : v,
+        w: it.w || "120px",
+        suffix: it.suffix || "",
+        set: (e) => setVal(it.id, e.target.value),
+        options: (it.options || []).map((o) => ({ v: o })),
+        isChips: it.kind === "chips",
+        chips: (it.chips || []).map((c) => ({ v: c })),
+        isTpl: it.kind === "tpl",
+        rows: (it.rows || []).map((r) => ({ name: r[0], use: r[1], st: r[2] === "ok" ? "Approuvé" : "En attente de Meta", bg: r[2] === "ok" ? "#DCF2E5" : "#FFF0CC", fg: r[2] === "ok" ? "#0A5A31" : "#6B4500" })),
+        hasNote: warnOn || !!it.note,
+        note: warnOn ? it.warnOff : it.note || "",
+        noteFg: warnOn ? "#8E1220" : it.noteFg || "#3F454C",
+        hasLink: !!it.link,
+        link: it.link || "",
+        href: it.href || "BoParametres.dc.html"
+      };
+    });
+    const secs = sections.map((x) => {
+      const on = x.id === sec;
+      return {
+        label: x.label,
+        ico: x.ico,
+        count: x.items.length + " réglages",
+        current: on ? "page" : "false",
+        bg: on ? "#FFF0E3" : "transparent",
+        weight: on ? "800" : "600",
+        icoBg: on ? "#F46A00" : "#15130F",
+        icoFg: on ? "#15130F" : "#FFFFFF",
+        pick: () => this.setState({ sec: x.id })
+      };
+    });
+    let bar = ["Tous les réglages sont enregistrés.", "#FFFFFF", "#D3D7DB", "#3F454C"];
+    if (dirty) bar = ["Modifications non enregistrées", "#FFF0CC", "#F0C987", "#6B4500"];
+    else if (savedAt) bar = ["Enregistré à " + savedAt + ". Les automatisations utilisent déjà les nouvelles valeurs.", "#DCF2E5", "#A8D9BC", "#0A5A31"];
+    return {
+      secs: secs,
+      secTitle: cur.title,
+      items: items,
+      dirty: dirty,
+      barText: bar[0], barBg: bar[1], barBd: bar[2], barFg: bar[3],
+      save: () => this.setState({ dirty: false, savedAt: "14:52" }),
+      cancel: () => this.setState({ vals: {}, dirty: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

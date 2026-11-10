@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche produit</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="Shop.dc.html" aria-label="Retour au shop" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px">Shop OCD</span>
+    <a href="Panier.dc.html" style="margin-left: auto; display: flex; align-items: center; gap: 7px; min-height: 46px; border-radius: 999px; padding: 0 14px; background: #15130F; color: #FFFFFF; font-weight: 700; font-size: 14.5px"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><path d="M3 6h18M16 10a4 4 0 0 1-8 0"></path></svg>Panier · 3</a>
+  </div>
+
+  <div style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 12px; padding: 4px 18px 12px">
+    <div style="height: 150px; flex: none; border-radius: 20px; background: #F5F2EE; display: grid; place-items: center; font-size: 13.5px; font-weight: 600; color: #665F58">Photo du produit · {{colorLabel}}</div>
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 26px; line-height: 1.05; letter-spacing: -0.02em">Robe en wax</h1>
+        <span style="display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: #665F58"><span aria-hidden="true" style="width: 21px; height: 14px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,0.14); background: linear-gradient(90deg,#007A5E 33.33%,#CE1126 33.33% 66.66%,#FCD116 66.66%)"></span>Vue en live sur OCD</span>
+      </div>
+      <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 24px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap">12 000 F</span>
+    </div>
+
+    <a href="Vitrine.dc.html" style="display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; border: 2px solid #E7E2DC; border-radius: 16px; padding: 10px 12px">
+      <span aria-hidden="true" style="position: relative; width: 46px; height: 46px; border-radius: 50%; background: #FFE7D1; display: grid; place-items: center; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px">BW<span style="position: absolute; right: 0; bottom: 0; width: 12px; height: 12px; box-sizing: border-box; border-radius: 50%; background: #D91A2A; border: 2.5px solid #FFFFFF"></span></span>
+      <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0"><span style="font-weight: 700; font-size: 15.5px; line-height: 1.2">Vendu par Brenda Wax</span><span style="font-size: 13px; color: #665F58">Douala · 6 produits · en live maintenant</span></span>
+      <span style="font-size: 14px; font-weight: 700; text-decoration: underline; white-space: nowrap">Sa boutique</span>
+    </a>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span id="l-col" style="font-weight: 700; font-size: 14.5px">Couleur</span>
+      <div role="group" aria-labelledby="l-col" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{colors}}" as="c" hint-placeholder-count="2">
+          <button onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="display: flex; align-items: center; gap: 10px; min-height: 48px; box-sizing: border-box; border-radius: 14px; padding: 8px 12px; font-family: inherit; font-weight: 700; font-size: 15px; color: #15130F; cursor: pointer; border: 2px solid {{c.bd}}; background: {{c.bg}}"><span style="width: 24px; height: 24px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1px rgba(0,0,0,0.2); background: {{c.dot}}"></span>{{c.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span id="l-size" style="font-weight: 700; font-size: 14.5px">Taille</span>
+      <div role="group" aria-labelledby="l-size" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{sizes}}" as="z" hint-placeholder-count="4">
+          <sc-if value="{{z.ok}}" hint-placeholder-val="{{true}}">
+            <button onClick="{{z.pick}}" aria-pressed="{{z.on}}" style="min-height: 48px; box-sizing: border-box; border-radius: 14px; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17px; color: #15130F; cursor: pointer; border: 2px solid {{z.bd}}; background: {{z.bg}}">{{z.label}}</button>
+          </sc-if>
+          <sc-if value="{{z.gone}}" hint-placeholder-val="{{false}}">
+            <button disabled aria-label="{{z.aria}}" style="min-height: 48px; box-sizing: border-box; border-radius: 14px; border: 2px dashed #E7E2DC; background: #FFFFFF; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17px; color: #736D66; text-decoration: line-through">{{z.label}}</button>
+          </sc-if>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-weight: 700; font-size: 14.5px">Quantité</span>
+        <span style="font-size: 13.5px; font-weight: 700; color: {{stockColor}}">{{stockText}}</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px; background: #F5F2EE; border-radius: 14px; padding: 4px">
+        <button onClick="{{less}}" aria-label="Retirer un" style="width: 44px; height: 44px; border: 0; border-radius: 11px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 22px; font-weight: 700; cursor: pointer">−</button>
+        <span aria-live="polite" style="min-width: 36px; text-align: center; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px; font-variant-numeric: tabular-nums">{{qty}}</span>
+        <button onClick="{{more}}" aria-label="Ajouter un" style="width: 44px; height: 44px; border: 0; border-radius: 11px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 22px; font-weight: 700; cursor: pointer">+</button>
+      </div>
+    </div>
+
+    <sc-if value="{{isOcd}}" hint-placeholder-val="{{true}}">
+    <div style="display: flex; flex-direction: column; gap: 8px; background: #F5F2EE; border-radius: 16px; padding: 12px 14px; font-size: 14px; line-height: 1.35">
+      <span style="display: flex; gap: 10px; align-items: flex-start"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; flex: none; margin-top: 1px"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"></path><circle cx="5.500" cy="18.500" r="2.500"></circle><circle cx="18.500" cy="18.500" r="2.500"></circle></svg>Livré à Douala en 24 à 48 h. Autres villes : par agence de voyage.</span>
+      <span style="display: flex; gap: 10px; align-items: flex-start"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; flex: none; margin-top: 1px"><path d="M1 4v6h6"></path><path d="M3.510 15a9 9 0 1 0 2.130-9.360L1 10"></path></svg>Retour possible pendant 30 jours après la livraison.</span>
+    </div>
+    </sc-if>
+    <sc-if value="{{isDirect}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; gap: 10px; align-items: flex-start; background: #F5F2EE; border-radius: 16px; padding: 12px 14px; font-size: 14px; line-height: 1.35"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; flex: none; margin-top: 1px"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span>Paiement et livraison se voient directement avec Brenda. OCD Live n'encaisse pas pour ce produit.</span></div>
+    </sc-if>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #E7E2DC; padding: 10px 14px 14px">
+    <sc-if value="{{isOcd}}" hint-placeholder-val="{{true}}">
+    <a href="Panier.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 58px; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px">Ajouter au panier · {{total}}</a>
+    <button style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; border: 0; border-radius: 17px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16.5px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>Une question ? Écrire à OCD Live</button>
+    </sc-if>
+    <sc-if value="{{isDirect}}" hint-placeholder-val="{{false}}">
+      <button style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 21px; height: 21px"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>Écrire à Brenda sur WhatsApp</button>
+      <span style="font-size: 13px; color: #665F58; text-align: center">Le message contient la couleur, la taille et le lien du produit.</span>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"modeVente":{"editor":"enum","options":["Vendu par OCD","Contact direct"],"default":"Vendu par OCD"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const ocd = (this.props.modeVente ?? "Vendu par OCD") === "Vendu par OCD";
+    const color = s.color || "bleu";
+    const size = s.size || "M";
+    const stockBy = { S: 5, M: 3, L: 0, XL: 1 };
+    const stock = stockBy[size];
+    const qty = Math.min(s.qty || 1, stock);
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const colorDefs = [["bleu", "Bleu", "#1F4E8C"], ["rouge", "Rouge", "#B3261E"]];
+    const colors = colorDefs.map((c) => ({
+      label: c[1], dot: c[2], on: color === c[0],
+      bd: color === c[0] ? "#F46A00" : "#E7E2DC",
+      bg: color === c[0] ? "#FFE7D1" : "#FFFFFF",
+      pick: () => this.setState({ color: c[0] })
+    }));
+    const sizes = Object.keys(stockBy).map((k) => ({
+      label: k,
+      ok: stockBy[k] > 0,
+      gone: stockBy[k] === 0,
+      aria: "Taille " + k + ", épuisée",
+      on: size === k,
+      bd: size === k ? "#F46A00" : "#E7E2DC",
+      bg: size === k ? "#FFE7D1" : "#FFFFFF",
+      pick: () => this.setState({ size: k, qty: 1 })
+    }));
+    return {
+      colors, sizes, qty,
+      isOcd: ocd,
+      isDirect: !ocd,
+      colorLabel: color === "bleu" ? "Bleu" : "Rouge",
+      stockText: stock <= 3 ? "Plus que " + stock + " en taille " + size : "En stock",
+      stockColor: stock <= 3 ? "#A04A00" : "#0A5A31",
+      total: fr(12000 * qty),
+      less: () => this.setState({ qty: Math.max(1, qty - 1) }),
+      more: () => this.setState({ qty: Math.min(stock, qty + 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>

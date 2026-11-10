@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pass annuaire des lives</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+@keyframes ocd-spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="Lives.dc.html" aria-label="Retour" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px">Je suis en live</span>
+    <button onClick="{{say}}" aria-label="Écouter cet écran" style="margin-left: auto; width: 46px; height: 46px; border-radius: 50%; border: 0; padding: 0; background: #FFE7D1; color: #15130F; display: grid; place-items: center; cursor: pointer; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></button>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 10px 18px 0; min-height: 0">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 34px; line-height: 1.04; letter-spacing: -0.025em">Montre ton live à ton pays.</h1>
+
+    <div style="background: #15130F; color: #FFFFFF; border-radius: 22px; padding: 20px 18px; display: flex; flex-direction: column; gap: 6px">
+      <div style="display: flex; align-items: baseline; gap: 9px">
+        <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 50px; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: #FF8A2E">5 000 F</span>
+        <span style="font-weight: 700; font-size: 17px">pour 30 jours</span>
+      </div>
+      <span style="font-size: 15.5px">Environ 166 F par jour. Rien n'est prélevé tout seul.</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <div style="background: #F5F2EE; border-radius: 15px; padding: 13px 14px; display: flex; flex-direction: column; gap: 5px"><span style="font-size: 13px; font-weight: 600; color: #665F58">Matin</span><span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px; line-height: 1.1; font-variant-numeric: tabular-nums">08:00 – 11:00</span></div>
+      <div style="background: #F5F2EE; border-radius: 15px; padding: 13px 14px; display: flex; flex-direction: column; gap: 5px"><span style="font-size: 13px; font-weight: 600; color: #665F58">Soir</span><span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px; line-height: 1.1; font-variant-numeric: tabular-nums">18:00 – 21:00</span></div>
+    </div>
+
+    <sc-if value="{{isOffer}}" hint-placeholder-val="{{true}}">
+      <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+        <li style="display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: center">
+          <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFE7D1; display: grid; place-items: center"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#15130F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg></span>
+          <span style="font-weight: 700; font-size: 16.5px; line-height: 1.25">Lance ton live chez toi.</span>
+        </li>
+        <li style="display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: center">
+          <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFE7D1; display: grid; place-items: center"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#15130F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span>
+          <span style="font-weight: 700; font-size: 16.5px; line-height: 1.25">Envoie le lien ici.</span>
+        </li>
+        <li style="display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: center">
+          <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFE7D1; display: grid; place-items: center"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#15130F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M20 6L9 17l-5-5"></path></svg></span>
+          <span style="font-weight: 700; font-size: 16.5px; line-height: 1.25">L'équipe OCD vérifie, puis ton pays te voit.</span>
+        </li>
+      </ol>
+    </sc-if>
+
+    <sc-if value="{{isPay}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <label for="s-phone" style="font-weight: 700; font-size: 14.5px">Numéro Mobile Money</label>
+        <div style="display: flex; gap: 8px">
+          <span style="flex: none; height: 52px; border-radius: 14px; background: #F5F2EE; display: flex; align-items: center; padding: 0 12px; font-weight: 700; font-variant-numeric: tabular-nums">+228</span>
+          <input id="s-phone" type="tel" value="{{phone}}" onChange="{{setPhone}}" autocomplete="off" style="flex: 1; min-width: 0; height: 52px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 17px; color: #15130F; background: #FFFFFF; border: 2px solid {{bdPhone}}">
+        </div>
+        <sc-if value="{{errPhone}}" hint-placeholder-val="{{false}}">
+          <span role="alert" style="font-size: 13.5px; font-weight: 700; color: #B01522">Numéro à 8 chiffres.</span>
+        </sc-if>
+        <span style="font-size: 13.5px; color: #665F58">Tu confirmes le paiement sur ce téléphone.</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isWaiting}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="background: #FFE7D1; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <span style="width: 26px; height: 26px; box-sizing: border-box; border-radius: 50%; border: 3.5px solid #15130F; border-top-color: transparent; animation: ocd-spin 1s linear infinite; flex: none"></span>
+          <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 21px; line-height: 1.1">Confirme sur ton téléphone</span>
+        </div>
+        <span style="font-size: 14.5px; line-height: 1.4">Tape ton code secret sur ton téléphone, jamais ici. Cette page se met à jour toute seule.</span>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button onClick="{{accept}}" style="min-height: 44px; border: 1.5px dashed #665F58; border-radius: 10px; padding: 8px 12px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Démo : paiement accepté</button>
+        <button onClick="{{refuse}}" style="min-height: 44px; border: 1.5px dashed #665F58; border-radius: 10px; padding: 8px 12px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Démo : paiement refusé</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isFailed}}" hint-placeholder-val="{{false}}">
+      <div role="alert" style="border: 2px solid #B01522; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 21px; line-height: 1.1; color: #B01522">Le paiement n'est pas passé.</span>
+        <span style="font-size: 15px; line-height: 1.4">Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité.</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isActive}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="background: #DCF2E5; color: #0A5A31; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+        <span style="display: flex; align-items: center; gap: 10px; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 21px; line-height: 1.1"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M20 6L9 17l-5-5"></path></svg>Pass actif jusqu'au 31 décembre</span>
+        <span style="font-size: 15px; line-height: 1.4">On te prévient sur WhatsApp 3 jours avant la fin, avec un lien pour le reprendre.</span>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{cap}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 14px; right: 14px; bottom: 96px; background: #15130F; color: #FFFFFF; border-radius: 16px; padding: 12px 14px; font-size: 15px; font-weight: 600; line-height: 1.3; box-shadow: 0 0 0 2px #FFFFFF">Cinq mille francs pour trente jours. Tu envoies le lien de ton live, et ton pays te voit.</div>
+  </sc-if>
+
+  <div style="border-top: 1px solid #E7E2DC; padding: 10px 14px 14px">
+    <sc-if value="{{isOffer}}" hint-placeholder-val="{{true}}">
+      <button onClick="{{start}}" style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px; cursor: pointer">Prendre le pass · 5 000 F</button>
+    </sc-if>
+    <sc-if value="{{isPay}}" hint-placeholder-val="{{false}}">
+      <button onClick="{{pay}}" style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px; cursor: pointer">Payer 5 000 F</button>
+    </sc-if>
+    <sc-if value="{{isWaiting}}" hint-placeholder-val="{{false}}">
+      <button onClick="{{start}}" style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 54px; border: 0; border-radius: 17px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16.5px; cursor: pointer">Changer de numéro</button>
+    </sc-if>
+    <sc-if value="{{isFailed}}" hint-placeholder-val="{{false}}">
+      <button onClick="{{start}}" style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px; cursor: pointer">Réessayer</button>
+    </sc-if>
+    <sc-if value="{{isActive}}" hint-placeholder-val="{{false}}">
+      <a href="EnvoyerLien.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 58px; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px">Envoyer le lien de mon live<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const cap = !!s.cap;
+    const phase = s.phase || "offer";
+    const phone = s.phone === undefined ? "90 00 00 00" : s.phone;
+    const phoneOk = phone.replace(/\D/g, "").length === 8;
+    const err = !!s.err;
+    return {
+      cap, phone,
+      isOffer: phase === "offer",
+      isPay: phase === "pay",
+      isWaiting: phase === "waiting",
+      isFailed: phase === "failed",
+      isActive: phase === "active",
+      errPhone: err && !phoneOk,
+      bdPhone: err && !phoneOk ? "#B01522" : "#E7E2DC",
+      setPhone: (e) => this.setState({ phone: e.target.value }),
+      start: () => this.setState({ phase: "pay", err: false }),
+      pay: () => {
+        if (!phoneOk) { this.setState({ err: true }); return; }
+        this.setState({ phase: "waiting", err: false });
+      },
+      accept: () => this.setState({ phase: "active" }),
+      refuse: () => this.setState({ phase: "failed" }),
+      say: () => {
+        try {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance("Cinq mille francs pour trente jours. Tu envoies le lien de ton live, et ton pays te voit.");
+          u.lang = "fr-FR";
+          window.speechSynthesis.speak(u);
+        } catch (e) {}
+        this.setState({ cap: !cap });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

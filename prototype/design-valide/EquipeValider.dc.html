@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Équipe OCD, lives à valider</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1000px; height: 700px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.45; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 14px 28px; background: #15130F; color: #FFFFFF">
+    <img src="/_blob/273c64c79958def7341794eb4577315c" alt="Logo OCD" style="width: 34px; height: 34px; border-radius: 50%">
+    <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px">OCD Live</span>
+    <span style="font-size: 15px; color: #C9C3BC">Régie</span>
+    <span style="margin-left: auto; font-size: 13px; font-weight: 600; color: #C9C3BC; border: 1px solid #4A453F; border-radius: 7px; padding: 3px 9px">Back-office Odoo · aperçu</span>
+  </div>
+  <nav aria-label="Sections" style="display: flex; gap: 4px; padding: 0 22px; background: #FFFFFF; border-bottom: 1px solid #D3D7DB">
+    <a href="EquipeFil.dc.html" style="display: flex; align-items: center; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent">Fil</a>
+    <a href="EquipePlanning.dc.html" style="display: flex; align-items: center; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent">Planning</a>
+    <a href="EquipeValider.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 7px; min-height: 48px; padding: 0 12px; font-weight: 700; font-size: 15px; border-bottom: 3px solid #F46A00">Lives à valider<span style="min-width: 21px; box-sizing: border-box; padding: 0 6px; border-radius: 11px; background: #C4162A; color: #FFFFFF; font-size: 12.5px; font-weight: 700; line-height: 21px; text-align: center">{{left}}</span></a>
+    <a href="EquipeCommandes.dc.html" style="display: flex; align-items: center; gap: 7px; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent">Commandes shop<span style="min-width: 21px; box-sizing: border-box; padding: 0 6px; border-radius: 11px; background: #C4162A; color: #FFFFFF; font-size: 12.5px; font-weight: 700; line-height: 21px; text-align: center">2</span></a>
+    <a href="Regie.dc.html" style="display: flex; align-items: center; gap: 7px; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent"><span style="width: 8px; height: 8px; border-radius: 50%; background: #D91A2A"></span>Régie en direct</a>
+    <a href="EquipeVendeurs.dc.html" style="display: flex; align-items: center; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent">Vendeurs</a>
+  </nav>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px 28px">
+    <div style="display: flex; align-items: center; gap: 10px; background: #DCF2E5; color: #0A5A31; border-radius: 12px; padding: 11px 16px; font-size: 15px; font-weight: 700">
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #0A5A31"></span>
+      <span>Créneau du soir ouvert · 18:00 – 21:00, heure de Lomé</span>
+      <span style="margin-left: auto; font-weight: 600">{{doneLine}}</span>
+    </div>
+
+    <sc-for list="{{queue}}" as="q" hint-placeholder-count="3">
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 14px; padding: 16px 18px">
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+            <strong style="font-size: 17px">{{q.name}}</strong>
+            <span style="background: #F4F5F6; border-radius: 6px; padding: 2px 8px; font-size: 13px; font-weight: 600">{{q.where}}</span>
+            <span style="background: #F4F5F6; border-radius: 6px; padding: 2px 8px; font-size: 13px; font-weight: 600">{{q.cat}}</span>
+            <span style="font-size: 13.5px; color: #5A6068">{{q.when}}</span>
+          </div>
+          <span style="font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13.5px; color: #5A6068; overflow-wrap: anywhere">{{q.url}}</span>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <button style="min-height: 44px; border: 1px solid #AEB4BA; border-radius: 10px; padding: 0 14px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer">Ouvrir le live</button>
+          <button onClick="{{q.approve}}" style="min-height: 44px; border: 0; border-radius: 10px; padding: 0 16px; background: #0F7A43; color: #FFFFFF; font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer">Valider</button>
+          <button onClick="{{q.reject}}" style="min-height: 44px; border: 1px solid #AEB4BA; border-radius: 10px; padding: 0 14px; background: #FFFFFF; color: #B01522; font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer">Refuser</button>
+        </div>
+      </div>
+    </sc-for>
+
+    <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+      <div style="border: 1px dashed #AEB4BA; border-radius: 14px; padding: 26px; text-align: center; font-size: 15.5px; color: #5A6068">Aucun live en attente.</div>
+    </sc-if>
+
+    <sc-if value="{{productWaiting}}" hint-placeholder-val="{{true}}">
+      <div style="display: grid; grid-template-columns: 64px 1fr auto; gap: 16px; align-items: center; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 14px; padding: 12px 18px">
+        <span style="width: 64px; height: 64px; border-radius: 10px; background: #F4F5F6; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #5A6068">Photo</span>
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+            <span style="background: #FFE7D1; border-radius: 6px; padding: 2px 8px; font-size: 12.5px; font-weight: 700">Nouveau produit</span>
+            <strong style="font-size: 16.5px">Gâteau à l'ananas · 3 000 F</strong>
+          </div>
+          <span style="font-size: 14px; color: #5A6068">Awa Mensah · Togo · Nourriture · 5 en stock · à l'instant</span>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <button onClick="{{productOk}}" style="min-height: 44px; border: 0; border-radius: 10px; padding: 0 16px; background: #0F7A43; color: #FFFFFF; font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer">Mettre en ligne</button>
+          <button onClick="{{productKo}}" style="min-height: 44px; border: 1px solid #AEB4BA; border-radius: 10px; padding: 0 14px; background: #FFFFFF; color: #B01522; font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer">Refuser</button>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{productDone}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="border: 1px dashed #AEB4BA; border-radius: 14px; padding: 16px 18px; font-size: 15px; color: #15130F">{{productLine}}</div>
+    </sc-if>
+
+    <p style="margin: auto 0 0; font-size: 14px; color: #5A6068; line-height: 1.5">Valider affiche le vendeur dans son pays et sa catégorie jusqu'à la fin du créneau. Un produit mis en ligne apparaît dans la boutique du vendeur. Refuser prévient le vendeur sur WhatsApp, avec le motif.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1000,"height":700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const gone = s.gone || {};
+    const ok = s.ok || 0;
+    const all = [
+      { id: "a", name: "Awa Mensah", where: "Togo", cat: "Nourriture", when: "à l'instant", url: "https://www.tiktok.com/@exemple.awa/live" },
+      { id: "b", name: "Chantal Saveurs", where: "Cameroun", cat: "Nourriture", when: "il y a 4 min", url: "https://www.tiktok.com/@exemple.chantal/live" },
+      { id: "c", name: "Moussa Phones", where: "Côte d'Ivoire", cat: "Téléphones", when: "il y a 7 min", url: "https://www.tiktok.com/@exemple.moussa/live" }
+    ];
+    const close = (id, approved) => {
+      const next = Object.assign({}, gone);
+      next[id] = true;
+      this.setState({ gone: next, ok: ok + (approved ? 1 : 0) });
+    };
+    const queue = all.filter((q) => !gone[q.id]).map((q) => Object.assign({}, q, {
+      approve: () => close(q.id, true),
+      reject: () => close(q.id, false)
+    }));
+    const prod = s.prod || "wait";
+    return {
+      productWaiting: prod === "wait",
+      productDone: prod !== "wait",
+      productLine: prod === "ok"
+        ? "Gâteau à l'ananas est en ligne dans la boutique d'Awa Mensah."
+        : "Produit refusé. Awa reçoit le motif sur WhatsApp : photo floue, à reprendre.",
+      productOk: () => this.setState({ prod: "ok" }),
+      productKo: () => this.setState({ prod: "ko" }),
+      queue,
+      left: queue.length,
+      empty: queue.length === 0,
+      doneLine: ok + (ok > 1 ? " lives validés ce soir" : " live validé ce soir")
+    };
+  }
+}
+</script>
+</body>
+</html>

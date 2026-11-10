@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Reversements aux vendeurs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="vendeurs" sub="reversements" title="Reversements" crumb="" facets="Semaine du 30 nov.|Colis confirmés par code" views="list,pivot,graph" view="list" pager="1-9 / 9" action="" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 14px 22px">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 10px; padding: 8px 14px">
+        <span style="font-size: 12px; font-weight: 600; color: #5A6068">À verser lundi 7 déc.</span>
+        <b style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-size: 20px; font-variant-numeric: tabular-nums">{{toPay}}</b>
+      </div>
+      <div style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 10px; padding: 8px 14px">
+        <span style="font-size: 12px; font-weight: 600; color: #5A6068">À récupérer</span>
+        <b style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-size: 20px; font-variant-numeric: tabular-nums">1 200 F</b>
+      </div>
+      <div style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 10px; padding: 8px 14px">
+        <span style="font-size: 12px; font-weight: 600; color: #5A6068">Déjà versé cette semaine</span>
+        <b style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-size: 20px; font-variant-numeric: tabular-nums">{{paidTotal}}</b>
+      </div>
+      <span style="flex: 1; min-width: 260px; font-size: 13px; color: #3F454C; line-height: 1.45">Solde = ventes livrées − commission + frais de livraison du vendeur − argent qu'il a déjà encaissé. Seuls les colis confirmés par le code du client comptent.</span>
+      <button onClick="{{paySelected}}" style="min-height: 40px; border: 0; border-radius: 8px; padding: 0 16px; background: {{payBg}}; color: #15130F; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer">{{payLabel}}</button>
+    </div>
+
+    <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; overflow: hidden">
+      <div style="display: grid; grid-template-columns: 34px 1.5fr 1.6fr 1fr 1fr 1fr 1.1fr 1fr 1.5fr 1.5fr; gap: 8px; align-items: center; padding: 9px 14px; background: #F4F5F6; border-bottom: 1px solid #D3D7DB; font-size: 12.5px; font-weight: 700; color: #3F454C">
+        <span></span><span>Vendeur</span><span>Qui livre</span><span style="text-align: right">Ventes livrées</span><span style="text-align: right">Commission</span><span style="text-align: right">Frais livraison</span><span style="text-align: right">Déjà encaissé</span><span style="text-align: right">Solde</span><span>Mobile Money</span><span>État</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto">
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+          <div style="display: grid; grid-template-columns: 34px 1.5fr 1.6fr 1fr 1fr 1fr 1.1fr 1fr 1.5fr 1.5fr; gap: 8px; align-items: center; padding: 9px 14px; border-bottom: 1px solid #EEF0F2; font-size: 13.5px; font-variant-numeric: tabular-nums; background: {{r.rowBg}}">
+            <sc-if value="{{r.selectable}}" hint-placeholder-val="{{true}}">
+              <input type="checkbox" aria-label="{{r.aria}}" checked="{{r.selected}}" onChange="{{r.toggle}}" style="width: 17px; height: 17px; accent-color: #F46A00; margin: 0">
+            </sc-if>
+            <sc-if value="{{r.notSelectable}}" hint-placeholder-val="{{false}}">
+              <span></span>
+            </sc-if>
+            <a href="BoVendeur.dc.html" style="font-weight: 700; text-decoration: underline">{{r.name}}</a>
+            <span style="font-size: 13px; color: #3F454C">{{r.who}}</span>
+            <span style="text-align: right">{{r.sales}}</span>
+            <span style="text-align: right">{{r.com}}</span>
+            <span style="text-align: right">{{r.fees}}</span>
+            <span style="text-align: right">{{r.held}}</span>
+            <b style="text-align: right; color: {{r.balColor}}">{{r.bal}}</b>
+            <span style="font-size: 13px">{{r.momo}}</span>
+            <span style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
+              <span style="border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 700; white-space: nowrap; background: {{r.stBg}}; color: {{r.stFg}}">{{r.state}}</span>
+              <sc-if value="{{r.canClaim}}" hint-placeholder-val="{{false}}">
+                <button onClick="{{r.claim}}" style="min-height: 28px; border: 1px solid #AEB4BA; border-radius: 6px; padding: 0 8px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer">Demander sur WhatsApp</button>
+              </sc-if>
+            </span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: 34px 1.5fr 1.6fr 1fr 1fr 1fr 1.1fr 1fr 1.5fr 1.5fr; gap: 8px; align-items: center; padding: 10px 14px; border-top: 1px solid #D3D7DB; background: #F4F5F6; font-size: 13.5px; font-weight: 700; font-variant-numeric: tabular-nums">
+        <span></span><span>Total</span><span></span><span style="text-align: right">82 000 F</span><span style="text-align: right">−12 300 F</span><span style="text-align: right">+10 000 F</span><span style="text-align: right">−10 500 F</span><span style="text-align: right">69 200 F</span><span></span><span></span>
+      </div>
+    </div>
+    <span style="font-size: 12.5px; color: #3F454C; line-height: 1.45">Chaque ligne additionne les factures fournisseurs créées à la livraison des colis (Achats et Facturation). Un retour accepté après un versement est déduit du versement suivant. Les vendeurs en contact direct ne passent pas ici : OCD n'encaisse rien pour eux.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const fr = (n) => (n < 0 ? "−" : "") + String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const sign = (n, plus) => (n === 0 ? "0 F" : (plus ? "+" : "−") + String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F");
+    const defs = [
+      { id: "brenda", name: "Brenda Wax", who: "Livreur OCD qui passe chercher", sales: 22000, fees: 0, held: 0, momo: "MTN · 6 70 00 00 02", kind: "pay" },
+      { id: "mireille", name: "Mireille Couture", who: "Elle livre elle-même", sales: 25000, fees: 1500, held: 0, momo: "Orange · 6 90 00 00 11", kind: "pay" },
+      { id: "carine", name: "Carine Bijoux", who: "Elle livre elle-même", sales: 15000, fees: 1000, held: 0, momo: "MTN · 6 70 00 00 14", kind: "pay" },
+      { id: "fatou", name: "Fatou Karité", who: "Elle livre elle-même", sales: 7500, fees: 1500, held: 0, momo: "MTN · 6 70 00 00 21", kind: "pay" },
+      { id: "aminata", name: "Aminata Déco", who: "Elle livre elle-même", sales: 4500, fees: 3500, held: 0, momo: "Orange · 6 90 00 00 33", kind: "pay" },
+      { id: "blaise", name: "Blaise Électro", who: "Il livre et encaisse à la porte", sales: 8000, fees: 2500, held: 10500, momo: "MTN · 6 70 00 00 45", kind: "claim" },
+      { id: "patrick", name: "Patrick Sneakers", who: "Il livre lui-même", sales: 0, fees: 0, held: 0, momo: "Orange · 6 90 00 00 52", kind: "none" },
+      { id: "grace", name: "Grâce Cosmétiques", who: "Depuis le stock OCD", sales: 0, fees: 0, held: 0, momo: "MTN · 6 70 00 00 61", kind: "none" },
+      { id: "awa", name: "Awa Mensah", who: "Contact direct", sales: 0, fees: 0, held: 0, momo: "Flooz · 90 00 00 00", kind: "na" }
+    ];
+    const paid = s.paid || {};
+    const sel = s.sel || {};
+    const claimed = !!s.claimed;
+    const isSel = (d) => (sel[d.id] === undefined ? true : sel[d.id]);
+    let toPay = 0;
+    let selected = 0;
+    let paidTotal = 0;
+    const rows = defs.map((d) => {
+      const com = Math.round(d.sales * 0.15);
+      const bal = d.sales - com + d.fees - d.held;
+      const isPaid = !!paid[d.id];
+      if (d.kind === "pay" && !isPaid) toPay += bal;
+      if (d.kind === "pay" && !isPaid && isSel(d)) selected += bal;
+      if (isPaid) paidTotal += bal;
+      let st = ["À verser", "#FFF0CC", "#6B4500"];
+      if (isPaid) st = ["Versé · réf. CP-" + (2041 + defs.indexOf(d)), "#DCF2E5", "#0A5A31"];
+      else if (d.kind === "claim") st = [claimed ? "Lien de paiement envoyé" : "À récupérer", "#FCE4E4", "#8E1220"];
+      else if (d.kind === "none") st = ["Rien cette semaine", "#EEF0F2", "#3F454C"];
+      else if (d.kind === "na") st = ["Non concerné", "#EEF0F2", "#3F454C"];
+      const selectable = d.kind === "pay" && !isPaid;
+      return {
+        name: d.name,
+        who: d.who,
+        sales: d.kind === "na" ? "—" : fr(d.sales),
+        com: d.kind === "na" ? "—" : sign(com, false),
+        fees: d.kind === "na" ? "—" : sign(d.fees, true),
+        held: d.kind === "na" ? "—" : sign(d.held, false),
+        bal: d.kind === "na" ? "—" : fr(bal),
+        balColor: bal < 0 ? "#8E1220" : "#15130F",
+        momo: d.momo,
+        state: st[0],
+        stBg: st[1],
+        stFg: st[2],
+        selectable: selectable,
+        notSelectable: !selectable,
+        selected: isSel(d),
+        aria: "Sélectionner " + d.name,
+        rowBg: selectable && isSel(d) ? "#FFFBF3" : "#FFFFFF",
+        canClaim: d.kind === "claim" && !claimed,
+        claim: () => this.setState({ claimed: true }),
+        toggle: () => {
+          const next = Object.assign({}, sel);
+          next[d.id] = !isSel(d);
+          this.setState({ sel: next });
+        }
+      };
+    });
+    return {
+      rows,
+      toPay: fr(toPay),
+      paidTotal: fr(paidTotal),
+      payLabel: selected > 0 ? "Verser la sélection : " + fr(selected) : "Rien de sélectionné",
+      payBg: selected > 0 ? "#F46A00" : "#E3E6E9",
+      paySelected: () => {
+        if (selected <= 0) return;
+        const next = Object.assign({}, paid);
+        defs.forEach((d) => { if (d.kind === "pay" && !paid[d.id] && isSel(d)) next[d.id] = true; });
+        this.setState({ paid: next });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

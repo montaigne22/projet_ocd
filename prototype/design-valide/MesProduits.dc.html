@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mes produits</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="MonEspace.dc.html" aria-label="Retour à mon espace" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px">Mes produits</span>
+    <button onClick="{{say}}" aria-label="Écouter cet écran" style="margin-left: auto; width: 46px; height: 46px; border-radius: 50%; border: 0; padding: 0; background: #FFE7D1; color: #15130F; display: grid; place-items: center; cursor: pointer; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></button>
+  </div>
+
+  <div style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 12px; padding: 6px 18px 14px">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 30px; line-height: 1.05; letter-spacing: -0.025em">Ajoute un produit</h1>
+
+    <sc-if value="{{noPhoto}}" hint-placeholder-val="{{true}}">
+      <button onClick="{{takePhoto}}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; height: 118px; flex: none; box-sizing: border-box; border-radius: 18px; border: 2px dashed {{bdPhoto}}; background: #FFFFFF; color: #15130F; font-family: inherit; font-weight: 700; font-size: 16px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 34px; height: 34px"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>Prendre une photo</button>
+    </sc-if>
+    <sc-if value="{{hasPhoto}}" hint-placeholder-val="{{false}}">
+      <div style="display: grid; grid-template-columns: 118px 1fr; gap: 14px; align-items: center">
+        <span style="height: 118px; border-radius: 16px; background: #F5F2EE; display: grid; place-items: center; font-size: 12.5px; font-weight: 600; color: #665F58">Ta photo</span>
+        <span style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 700; color: #0A5A31"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="width: 17px; height: 17px"><path d="M20 6L9 17l-5-5"></path></svg>Photo ajoutée</span>
+          <button onClick="{{dropPhoto}}" style="min-height: 44px; border: 0; padding: 0; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 14.5px; font-weight: 700; text-decoration: underline; cursor: pointer">Changer la photo</button>
+        </span>
+      </div>
+    </sc-if>
+    <sc-if value="{{errPhoto}}" hint-placeholder-val="{{false}}">
+      <span role="alert" style="margin-top: -4px; font-size: 13.5px; font-weight: 700; color: #B01522">Ajoute une photo de ton produit.</span>
+    </sc-if>
+
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="mp-name" style="font-weight: 700; font-size: 14.5px">Nom du produit</label>
+      <input id="mp-name" value="{{name}}" onChange="{{setName}}" autocomplete="off" style="height: 50px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 17px; color: #15130F; background: #FFFFFF; width: 100%; border: 2px solid {{bdName}}">
+      <sc-if value="{{errName}}" hint-placeholder-val="{{false}}">
+        <span role="alert" style="font-size: 13.5px; font-weight: 700; color: #B01522">Écris le nom du produit.</span>
+      </sc-if>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: end">
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <label for="mp-price" style="font-weight: 700; font-size: 14.5px">Prix</label>
+        <div style="display: flex; align-items: center; height: 50px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; background: #FFFFFF; border: 2px solid {{bdPrice}}">
+          <input id="mp-price" inputmode="numeric" value="{{price}}" onChange="{{setPrice}}" autocomplete="off" style="flex: 1; min-width: 0; height: 44px; border: 0; padding: 0; font-family: inherit; font-size: 17px; color: #15130F; background: #FFFFFF; outline-offset: 4px">
+          <span style="font-weight: 700; font-size: 16px; color: #665F58">F</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <span id="mp-qty" style="font-weight: 700; font-size: 14.5px">Combien tu en as ?</span>
+        <div role="group" aria-labelledby="mp-qty" style="display: flex; align-items: center; gap: 3px; background: #F5F2EE; border-radius: 14px; padding: 3px">
+          <button onClick="{{less}}" aria-label="Un de moins" style="width: 44px; height: 44px; border: 0; border-radius: 11px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 21px; font-weight: 700; cursor: pointer">−</button>
+          <span aria-live="polite" style="min-width: 30px; text-align: center; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18px; font-variant-numeric: tabular-nums">{{qty}}</span>
+          <button onClick="{{more}}" aria-label="Un de plus" style="width: 44px; height: 44px; border: 0; border-radius: 11px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 21px; font-weight: 700; cursor: pointer">+</button>
+        </div>
+      </div>
+    </div>
+    <sc-if value="{{errPrice}}" hint-placeholder-val="{{false}}">
+      <span role="alert" style="margin-top: -4px; font-size: 13.5px; font-weight: 700; color: #B01522">Écris un prix en francs, par exemple 3000.</span>
+    </sc-if>
+
+    <sc-if value="{{sent}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="background: #DCF2E5; color: #0A5A31; border-radius: 14px; padding: 12px 14px; font-size: 14.5px; font-weight: 700; line-height: 1.35">Envoyé. L'équipe vérifie la photo, puis ton produit apparaît dans ta boutique.</div>
+    </sc-if>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-top: 1px solid #E7E2DC; padding-top: 14px; margin-top: 4px">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 21px; line-height: 1.1">Ma boutique</h2>
+      <span style="font-size: 14px; color: #665F58">{{countLine}}</span>
+    </div>
+    <div style="display: flex; flex-direction: column">
+      <sc-for list="{{rows}}" as="it" hint-placeholder-count="3">
+        <div style="display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #E7E2DC">
+          <span style="width: 52px; height: 52px; border-radius: 12px; background: #F5F2EE; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #665F58">Photo</span>
+          <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+            <span style="font-weight: 700; font-size: 15px; line-height: 1.2">{{it.name}}</span>
+            <span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13.5px"><span style="font-variant-numeric: tabular-nums">{{it.price}}</span><span style="border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 700; background: {{it.pillBg}}; color: {{it.pillFg}}">{{it.status}}</span></span>
+          </span>
+          <div style="display: flex; align-items: center; gap: 2px; background: #F5F2EE; border-radius: 12px; padding: 2px">
+            <button onClick="{{it.less}}" aria-label="{{it.ariaLess}}" style="width: 44px; height: 44px; border: 0; border-radius: 10px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 20px; font-weight: 700; cursor: pointer">−</button>
+            <span aria-live="polite" style="min-width: 26px; text-align: center; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums">{{it.qty}}</span>
+            <button onClick="{{it.more}}" aria-label="{{it.ariaMore}}" style="width: 44px; height: 44px; border: 0; border-radius: 10px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 20px; font-weight: 700; cursor: pointer">+</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <span style="font-size: 13.5px; color: #665F58; line-height: 1.35">À 0, le produit reste visible avec « Épuisé ». Remets une quantité quand tu en as.</span>
+
+    <button onClick="{{share}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; border: 0; border-radius: 15px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: inherit; font-weight: 700; font-size: 15.5px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v13"></path></svg>Partager ma boutique</button>
+    <sc-if value="{{shared}}" hint-placeholder-val="{{false}}">
+      <span role="status" style="font-size: 14px; font-weight: 700; color: #0A5A31">Lien copié. Colle-le dans ton statut WhatsApp.</span>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{cap}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 14px; right: 14px; bottom: 96px; background: #15130F; color: #FFFFFF; border-radius: 16px; padding: 12px 14px; font-size: 15px; font-weight: 600; line-height: 1.3; box-shadow: 0 0 0 2px #FFFFFF">Prends une photo, écris le nom et le prix, puis touche le bouton orange.</div>
+  </sc-if>
+
+  <div style="border-top: 1px solid #E7E2DC; padding: 10px 14px 14px">
+    <button onClick="{{submit}}" style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px; cursor: pointer">Envoyer pour vérification</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const cap = !!s.cap;
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const photo = !!s.photo;
+    const name = s.name === undefined ? "Gâteau à l'ananas" : s.name;
+    const price = s.price === undefined ? "3000" : s.price;
+    const qty = s.qty === undefined ? 5 : s.qty;
+    const err = !!s.err;
+    const items = s.items || [
+      { id: "a", name: "Attiéké poisson", price: 1500, qty: 20, check: false },
+      { id: "b", name: "Jus de bissap 1 L", price: 1000, qty: 0, check: false },
+      { id: "c", name: "Piment noir 200 g", price: 1500, qty: 8, check: false }
+    ];
+    const priceNum = parseInt(String(price).replace(/\D/g, ""), 10) || 0;
+    const nameOk = name.trim().length >= 2;
+    const priceOk = priceNum > 0;
+    const setQty = (id, n) => this.setState({
+      items: items.map((it) => (it.id === id ? Object.assign({}, it, { qty: n }) : it))
+    });
+    const rows = items.map((it) => {
+      const st = it.check ? "check" : it.qty === 0 ? "out" : "online";
+      return {
+        name: it.name,
+        price: fr(it.price),
+        qty: it.qty,
+        status: st === "check" ? "En vérification" : st === "out" ? "Épuisé" : "En ligne",
+        pillBg: st === "check" ? "#FFF0CC" : st === "out" ? "#15130F" : "#DCF2E5",
+        pillFg: st === "check" ? "#6B4500" : st === "out" ? "#FFFFFF" : "#0A5A31",
+        ariaLess: "Un de moins : " + it.name,
+        ariaMore: "Un de plus : " + it.name,
+        less: () => setQty(it.id, Math.max(0, it.qty - 1)),
+        more: () => setQty(it.id, it.qty + 1)
+      };
+    });
+    const online = items.filter((it) => !it.check && it.qty > 0).length;
+    return {
+      cap, name, price, qty, rows,
+      noPhoto: !photo,
+      hasPhoto: photo,
+      errPhoto: err && !photo,
+      errName: err && !nameOk,
+      errPrice: err && !priceOk,
+      bdPhoto: err && !photo ? "#B01522" : "#8A827A",
+      bdName: err && !nameOk ? "#B01522" : "#E7E2DC",
+      bdPrice: err && !priceOk ? "#B01522" : "#E7E2DC",
+      sent: !!s.sent,
+      shared: !!s.shared,
+      countLine: items.length + " produits · " + online + " en ligne",
+      takePhoto: () => this.setState({ photo: true, sent: false }),
+      dropPhoto: () => this.setState({ photo: false }),
+      setName: (e) => this.setState({ name: e.target.value, sent: false }),
+      setPrice: (e) => this.setState({ price: e.target.value, sent: false }),
+      less: () => this.setState({ qty: Math.max(1, qty - 1) }),
+      more: () => this.setState({ qty: qty + 1 }),
+      share: () => this.setState({ shared: true }),
+      submit: () => {
+        if (!(photo && nameOk && priceOk)) {
+          this.setState({ err: true, sent: false });
+          return;
+        }
+        const added = { id: "n" + items.length, name: name.trim(), price: priceNum, qty: qty, check: true };
+        this.setState({ items: [added].concat(items), photo: false, name: "", price: "", qty: 1, err: false, sent: true });
+      },
+      say: () => {
+        try {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance("Prends une photo, écris le nom et le prix, puis touche le bouton orange.");
+          u.lang = "fr-FR";
+          window.speechSynthesis.speak(u);
+        } catch (e) {}
+        this.setState({ cap: !cap });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

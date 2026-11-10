@@ -363,3 +363,50 @@
         color: $ocd-ink;
     }
 }
+
+// Settings of OCD Live, as in the validated design (BoParametres): one card per setting, on
+// the grey background, the titles of the sections in Bricolage.
+.app_settings_block[data-key="ocd_live"] {
+    background: $ocd-bo-background;
+    padding-bottom: 16px;
+    h2 {
+        margin: 0;
+        padding: 18px 16px 6px;
+        border: 0;
+        background: transparent;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 18px;
+        color: $ocd-ink;
+    }
+    .o_settings_container {
+        margin: 6px 16px 4px;
+        row-gap: 12px;
+        column-gap: 12px;
+        > .o_setting_box {
+            margin: 0;
+            padding: 14px;
+            background: #FFFFFF;
+            border: 1px solid $ocd-bo-line;
+            border-radius: 10px;
+            .o_setting_right_pane, .o_setting_left_pane {
+                border: 0;
+            }
+            .o_form_label {
+                font-size: 14.5px;
+                font-weight: 700;
+                color: $ocd-ink;
+            }
+            .text-muted {
+                font-size: 13px;
+                color: $ocd-bo-muted !important;
+            }
+        }
+    }
+}
+@include media-breakpoint-up(lg) {
+    .app_settings_block[data-key="ocd_live"] .o_settings_container > .o_setting_box.col-lg-6 {
+        flex: 0 0 calc(50% - 6px);
+        max-width: calc(50% - 6px);
+    }
+}

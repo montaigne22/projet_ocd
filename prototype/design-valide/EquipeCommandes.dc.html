@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Équipe OCD, commandes du shop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1000px; height: 700px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.45; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 14px 28px; background: #15130F; color: #FFFFFF">
+    <img src="/_blob/273c64c79958def7341794eb4577315c" alt="Logo OCD" style="width: 34px; height: 34px; border-radius: 50%">
+    <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px">OCD Live</span>
+    <span style="font-size: 15px; color: #C9C3BC">Régie</span>
+    <span style="margin-left: auto; font-size: 13px; font-weight: 600; color: #C9C3BC; border: 1px solid #4A453F; border-radius: 7px; padding: 3px 9px">Back-office Odoo · aperçu</span>
+  </div>
+  <nav aria-label="Sections" style="display: flex; gap: 4px; padding: 0 22px; background: #FFFFFF; border-bottom: 1px solid #D3D7DB">
+    <a href="EquipeFil.dc.html" style="display: flex; align-items: center; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent">Fil</a>
+    <a href="EquipePlanning.dc.html" style="display: flex; align-items: center; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent">Planning</a>
+    <a href="EquipeValider.dc.html" style="display: flex; align-items: center; gap: 7px; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent">Lives à valider<span style="min-width: 21px; box-sizing: border-box; padding: 0 6px; border-radius: 11px; background: #C4162A; color: #FFFFFF; font-size: 12.5px; font-weight: 700; line-height: 21px; text-align: center">3</span></a>
+    <a href="EquipeCommandes.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 7px; min-height: 48px; padding: 0 12px; font-weight: 700; font-size: 15px; border-bottom: 3px solid #F46A00">Commandes shop<span style="min-width: 21px; box-sizing: border-box; padding: 0 6px; border-radius: 11px; background: #C4162A; color: #FFFFFF; font-size: 12.5px; font-weight: 700; line-height: 21px; text-align: center">{{open}}</span></a>
+    <a href="Regie.dc.html" style="display: flex; align-items: center; gap: 7px; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent"><span style="width: 8px; height: 8px; border-radius: 50%; background: #D91A2A"></span>Régie en direct</a>
+    <a href="EquipeVendeurs.dc.html" style="display: flex; align-items: center; min-height: 48px; padding: 0 12px; font-weight: 600; font-size: 15px; color: #5A6068; border-bottom: 3px solid transparent">Vendeurs</a>
+  </nav>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px 28px">
+    <sc-for list="{{orders}}" as="o" hint-placeholder-count="3">
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 14px; padding: 16px 18px">
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+            <strong style="font-size: 17px; font-variant-numeric: tabular-nums">{{o.ref}}</strong>
+            <span style="font-size: 15.5px; font-weight: 600">{{o.client}}</span>
+            <span style="border-radius: 6px; padding: 2px 8px; font-size: 13px; font-weight: 700; background: {{o.payBg}}; color: {{o.payFg}}">{{o.pay}}</span>
+            <span style="border-radius: 6px; padding: 2px 8px; font-size: 13px; font-weight: 700; background: {{o.stBg}}; color: {{o.stFg}}">{{o.status}}</span>
+          </div>
+          <span style="font-size: 14.5px">{{o.items}}</span>
+          <span style="font-size: 14px; color: #5A6068">{{o.address}}</span>
+          <span style="font-size: 13.5px; color: #5A6068">WhatsApp envoyé au client : {{o.wa}}</span>
+          <span style="font-size: 13.5px; font-weight: 600">{{o.payout}}</span>
+        </div>
+        <sc-if value="{{o.hasNext}}" hint-placeholder-val="{{true}}">
+          <button onClick="{{o.advance}}" style="min-height: 44px; border: 0; border-radius: 10px; padding: 0 16px; background: #15130F; color: #FFFFFF; font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer; white-space: nowrap">{{o.next}}</button>
+        </sc-if>
+        <sc-if value="{{o.closed}}" hint-placeholder-val="{{false}}">
+          <span style="font-size: 14px; font-weight: 700; color: #0A5A31; white-space: nowrap">{{o.after}}</span>
+        </sc-if>
+      </div>
+    </sc-for>
+
+    <p style="margin: auto 0 0; font-size: 14px; color: #5A6068; line-height: 1.5">Chaque changement d'état part au client sur WhatsApp. Une commande payée par Mobile Money n'apparaît ici qu'une fois le paiement confirmé par le prestataire.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1000,"height":700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const at = Object.assign({ a: 0, b: 2, c: 3 }, s.at || {});
+    const labels = ["À préparer", "Prête", "En livraison", "Livrée"];
+    const nexts = ["Marquer prête", "Remettre au livreur", "Marquer livrée"];
+    const sent = ["commande confirmée", "commande confirmée", "commande en route", "commande livrée, note demandée dans 2 jours"];
+    const defs = [
+      { id: "a", payout: "À reverser après livraison : Brenda Wax 10 200 F, Fatou Karité 4 250 F", ref: "S00042", client: "Estelle Ngono", cod: false, total: "18 000 F", items: "Robe en wax · Bleu · M ; Beurre de karité 250 g × 2", address: "Akwa, Douala · en face de la pharmacie · +237 6 70 00 00 00", after: "" },
+      { id: "b", payout: "À reverser après livraison : Blaise Électro 6 800 F", ref: "S00041", client: "Serge Talla", cod: true, total: "10 500 F", items: "Écouteurs sans fil", address: "Bastos, Yaoundé · derrière le marché · +237 6 90 00 00 00", after: "" },
+      { id: "c", payout: "À reverser lundi : Aminata Déco 3 825 F", ref: "S00040", client: "Mariam Kouam", cod: false, total: "8 000 F", items: "Lot de 6 bols", address: "Bafoussam · retrait à l'agence de voyage · +237 6 70 00 00 01", after: "Note du client : 5 sur 5" }
+    ];
+    let open = 0;
+    const orders = defs.map((d) => {
+      const n = at[d.id];
+      if (n < 3) open += 1;
+      const paid = !d.cod || n === 3;
+      return {
+        ref: d.ref,
+        client: d.client,
+        items: d.items,
+        address: d.address,
+        payout: d.payout,
+        pay: (paid ? (d.cod ? "Payé à la livraison · " : "Mobile Money payé · ") : "À encaisser à la livraison · ") + d.total,
+        payBg: paid ? "#DCF2E5" : "#FFF0CC",
+        payFg: paid ? "#0A5A31" : "#6B4500",
+        status: labels[n],
+        stBg: n === 3 ? "#15130F" : "#F4F5F6",
+        stFg: n === 3 ? "#FFFFFF" : "#15130F",
+        wa: sent[n],
+        hasNext: n < 3,
+        closed: n === 3,
+        next: nexts[n] || "",
+        after: d.after || "Livrée",
+        advance: () => { const next = Object.assign({}, at); next[d.id] = n + 1; this.setState({ at: next }); }
+      };
+    });
+    return { orders, open };
+  }
+}
+</script>
+</body>
+</html>

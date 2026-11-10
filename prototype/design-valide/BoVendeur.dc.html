@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche vendeur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="vendeurs" sub="vendeurs" title="{{name}}" crumb="Vendeurs" facets="" views="" view="" pager="{{pager}}" action="" search="non" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 340px">
+    <div style="min-width: 0; overflow-y: auto; padding: 14px 20px">
+      <div style="background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; display: flex; flex-direction: column">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid #E3E6E9">
+          <a href="BoWhatsApp.dc.html" style="display: inline-flex; align-items: center; min-height: 34px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; font-size: 13px; font-weight: 700">Écrire sur WhatsApp</a>
+          <a href="Vitrine.dc.html" style="display: inline-flex; align-items: center; min-height: 34px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; font-size: 13px; font-weight: 700">Voir sa boutique</a>
+          <button onClick="{{toggleSuspend}}" style="min-height: 34px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; background: #FFFFFF; color: #8E1220; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{suspendLabel}}</button>
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 4px">
+            <sc-for list="{{steps}}" as="st" hint-placeholder-count="4">
+              <span style="border-radius: 7px; padding: 4px 9px; font-size: 12.5px; font-weight: 700; white-space: nowrap; background: {{st.bg}}; color: {{st.fg}}">{{st.label}}</span>
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; gap: 4px; margin-left: 10px">
+            <button onClick="{{prev}}" aria-label="Vendeur précédent" style="width: 32px; height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; background: #FFFFFF; color: #15130F; font-size: 16px; font-weight: 700; cursor: pointer">‹</button>
+            <button onClick="{{next}}" aria-label="Vendeur suivant" style="width: 32px; height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; background: #FFFFFF; color: #15130F; font-size: 16px; font-weight: 700; cursor: pointer">›</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid #E3E6E9">
+          <sc-for list="{{stats}}" as="b" hint-placeholder-count="5">
+            <a href="{{b.href}}" style="display: flex; flex-direction: column; min-width: 112px; border: 1px solid #D3D7DB; border-radius: 8px; padding: 5px 12px"><span style="font-size: 11.5px; color: #5A6068; font-weight: 600">{{b.label}}</span><b style="font-size: 13.5px; font-variant-numeric: tabular-nums">{{b.value}}</b></a>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding: 16px 22px 20px">
+          <div style="display: grid; grid-template-columns: 54px 1fr; gap: 14px; align-items: center">
+            <span aria-hidden="true" style="width: 54px; height: 54px; border-radius: 50%; background: #FFE7D1; display: grid; place-items: center; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px">{{ini}}</span>
+            <div style="display: flex; flex-direction: column; gap: 3px">
+              <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 24px; line-height: 1.1">{{name}}</h1>
+              <span style="font-size: 13.5px; color: #3F454C">{{place}} · {{biz}}</span>
+            </div>
+          </div>
+
+          <div role="tablist" aria-label="Sections de la fiche" style="display: flex; gap: 2px; border-bottom: 1px solid #D3D7DB">
+            <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+              <button role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="min-height: 38px; padding: 0 14px; border: 0; border-bottom: 3px solid {{t.line}}; background: transparent; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: {{t.weight}}; cursor: pointer">{{t.label}}</button>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{tabSale}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; flex-direction: column; gap: 6px">
+                <span id="g-sale" style="font-size: 13px; font-weight: 700; color: #3F454C">Comment ses clients achètent</span>
+                <div role="radiogroup" aria-labelledby="g-sale" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+                  <sc-for list="{{saleOpts}}" as="o" hint-placeholder-count="2">
+                    <button role="radio" aria-checked="{{o.on}}" onClick="{{o.pick}}" style="display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; box-sizing: border-box; border-radius: 10px; padding: 10px 12px; font-family: inherit; color: #15130F; text-align: left; cursor: pointer; border: 2px solid {{o.bd}}; background: {{o.bg}}">
+                      <span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; border: 2px solid #15130F; display: grid; place-items: center; margin-top: 1px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #15130F; display: {{o.dot}}"></span></span>
+                      <span style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 14px">{{o.title}}</b><span style="font-size: 12.5px; color: #3F454C; line-height: 1.4">{{o.text}}</span></span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <sc-if value="{{isOcd}}" hint-placeholder-val="{{true}}">
+                <div style="display: flex; flex-direction: column; gap: 6px">
+                  <span id="g-del" style="font-size: 13px; font-weight: 700; color: #3F454C">Qui livre ses commandes</span>
+                  <div role="radiogroup" aria-labelledby="g-del" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+                    <sc-for list="{{delOpts}}" as="o" hint-placeholder-count="3">
+                      <button role="radio" aria-checked="{{o.on}}" onClick="{{o.pick}}" style="display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; box-sizing: border-box; border-radius: 10px; padding: 10px 12px; font-family: inherit; color: #15130F; text-align: left; cursor: pointer; border: 2px solid {{o.bd}}; background: {{o.bg}}">
+                        <span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; border: 2px solid #15130F; display: grid; place-items: center; margin-top: 1px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #15130F; display: {{o.dot}}"></span></span>
+                        <span style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 14px">{{o.title}}</b><span style="font-size: 12.5px; color: #3F454C; line-height: 1.4">{{o.text}}</span></span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <sc-if value="{{isVendorDel}}" hint-placeholder-val="{{false}}">
+                  <div style="display: flex; flex-direction: column; gap: 10px; background: #F4F5F6; border-radius: 10px; padding: 12px 14px">
+                    <span style="font-size: 13px; font-weight: 700">Quartiers qu'il livre lui-même</span>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                      <sc-for list="{{zoneChips}}" as="z" hint-placeholder-count="6">
+                        <button onClick="{{z.toggle}}" aria-pressed="{{z.on}}" style="min-height: 30px; border-radius: 15px; padding: 0 11px; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; border: 1px solid {{z.bd}}; background: {{z.bg}}; color: {{z.fg}}">{{z.label}}</button>
+                      </sc-for>
+                    </div>
+                    <label style="display: flex; align-items: center; gap: 9px; font-size: 13.5px; cursor: pointer"><input type="checkbox" checked="{{fallback}}" onChange="{{toggleFallback}}" style="width: 17px; height: 17px; accent-color: #F46A00; margin: 0">Hors de ces quartiers, un livreur OCD passe chercher le colis</label>
+                    <label style="display: flex; align-items: center; gap: 9px; font-size: 13.5px; cursor: pointer"><input type="checkbox" checked="{{cashOn}}" onChange="{{toggleCash}}" style="width: 17px; height: 17px; accent-color: #F46A00; margin: 0">Il encaisse les paiements à la livraison (la commission due est déduite de son reversement)</label>
+                    <div style="display: flex; align-items: center; gap: 9px; font-size: 13.5px"><label for="v-prep">Temps pour préparer un colis</label><input id="v-prep" inputmode="numeric" value="{{prep}}" onChange="{{setPrep}}" style="width: 52px; height: 30px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 8px; font-family: inherit; font-size: 13.5px; font-weight: 700; background: #FFFFFF; color: #15130F"><span>heures, puis relance</span></div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{isPickup}}" hint-placeholder-val="{{true}}">
+                  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; background: #F4F5F6; border-radius: 10px; padding: 12px 14px; font-size: 13.5px">
+                    <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12.5px; font-weight: 700; color: #3F454C">Adresse de récupération</span><span>{{pickupPlace}}</span></span>
+                    <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12.5px; font-weight: 700; color: #3F454C">Heures de récupération</span><span>10:00 – 17:00, du lundi au samedi</span></span>
+                    <span style="display: flex; flex-direction: column; gap: 2px"><label for="v-prep2" style="font-size: 12.5px; font-weight: 700; color: #3F454C">Temps pour préparer (heures)</label><input id="v-prep2" inputmode="numeric" value="{{prep}}" onChange="{{setPrep}}" style="width: 60px; height: 30px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 8px; font-family: inherit; font-size: 13.5px; font-weight: 700; background: #FFFFFF; color: #15130F"></span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{isStock}}" hint-placeholder-val="{{false}}">
+                  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; background: #F4F5F6; border-radius: 10px; padding: 12px 14px; font-size: 13.5px">
+                    <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12.5px; font-weight: 700; color: #3F454C">Entrepôt</span><span>OCD Douala, en dépôt-vente</span></span>
+                    <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12.5px; font-weight: 700; color: #3F454C">Stock déposé</span><span>14 articles, à lui jusqu'à la vente</span></span>
+                    <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12.5px; font-weight: 700; color: #3F454C">Invendus</span><span>Rendus après 60 jours</span></span>
+                  </div>
+                </sc-if>
+
+                <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+                  <div style="display: flex; flex-direction: column; gap: 4px">
+                    <label for="v-com" style="font-size: 12.5px; font-weight: 700; color: #3F454C">Commission OCD (%)</label>
+                    <input id="v-com" inputmode="numeric" value="{{commission}}" onChange="{{setCommission}}" style="height: 34px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 10px; font-family: inherit; font-size: 14px; font-weight: 700; background: #FFFFFF; color: #15130F">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 4px">
+                    <label for="v-pay" style="font-size: 12.5px; font-weight: 700; color: #3F454C">Reversement</label>
+                    <select id="v-pay" style="height: 34px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 8px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 600"><option>Mobile Money, chaque lundi</option><option>Mobile Money, après chaque livraison</option></select>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 4px">
+                    <span style="font-size: 12.5px; font-weight: 700; color: #3F454C">Numéro pour les reversements</span>
+                    <span style="height: 34px; display: flex; align-items: center; font-size: 13.5px; font-variant-numeric: tabular-nums">{{momo}}</span>
+                  </div>
+                </div>
+                <sc-if value="{{togoWarn}}" hint-placeholder-val="{{false}}">
+                  <div role="alert" style="background: #FFF0CC; color: #6B4500; border-radius: 10px; padding: 10px 12px; font-size: 13.5px; font-weight: 600; line-height: 1.4">Paiement en ligne indisponible au Togo pour l'instant : Campay ne couvre que le Cameroun. Ses clients paieront à la livraison.</div>
+                </sc-if>
+              </sc-if>
+
+              <sc-if value="{{isDirect}}" hint-placeholder-val="{{false}}">
+                <div style="background: #F4F5F6; border-radius: 10px; padding: 12px 14px; font-size: 13.5px; line-height: 1.45">{{directLine}}</div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{tabQuality}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px">
+                <sc-for list="{{quality}}" as="q" hint-placeholder-count="5">
+                  <div style="display: flex; flex-direction: column; gap: 2px; border: 1px solid #D3D7DB; border-radius: 10px; padding: 10px 12px"><span style="font-size: 12px; font-weight: 600; color: #5A6068">{{q.label}}</span><b style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-size: 22px; font-variant-numeric: tabular-nums; color: {{q.color}}">{{q.value}}</b></div>
+                </sc-for>
+              </div>
+              <div style="background: #F4F5F6; border-radius: 10px; padding: 12px 14px; font-size: 13.5px; line-height: 1.45">Règle automatique : au 3e retard de préparation en 30 jours, l'équipe reçoit une activité pour passer ses livraisons aux livreurs OCD.</div>
+              <sc-if value="{{ruleHit}}" hint-placeholder-val="{{false}}">
+                <div role="alert" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: #FCE4E4; color: #8E1220; border-radius: 10px; padding: 12px 14px; font-size: 13.5px; font-weight: 600">
+                  <span style="flex: 1; min-width: 260px">Règle déclenchée aujourd'hui à 14:10 : 3 retards de préparation en 30 jours.</span>
+                  <button onClick="{{applyRule}}" style="min-height: 34px; border: 0; border-radius: 8px; padding: 0 12px; background: #15130F; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Passer ses livraisons aux livreurs OCD</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{tabContact}}" hint-placeholder-val="{{false}}">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px">
+              <sc-for list="{{contact}}" as="c" hint-placeholder-count="6">
+                <div style="display: grid; grid-template-columns: 170px 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">{{c.label}}</span><span style="font-size: 13.5px">{{c.value}}</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+
+    <aside style="min-width: 0; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF; border-left: 1px solid #D3D7DB">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #E3E6E9">
+        <span style="min-height: 30px; display: inline-flex; align-items: center; border-radius: 7px; padding: 0 10px; background: #15130F; color: #FFFFFF; font-size: 12.5px; font-weight: 700">Envoyer un message</span>
+        <span style="min-height: 30px; display: inline-flex; align-items: center; border-radius: 7px; padding: 0 10px; border: 1px solid #AEB4BA; font-size: 12.5px; font-weight: 700">Note</span>
+        <span style="min-height: 30px; display: inline-flex; align-items: center; border-radius: 7px; padding: 0 10px; border: 1px solid #AEB4BA; font-size: 12.5px; font-weight: 700">Activité</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 14px 16px">
+        <sc-for list="{{log}}" as="m" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: 30px 1fr; gap: 9px">
+            <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 10.5px; font-weight: 800; background: {{m.avBg}}; color: {{m.avFg}}">{{m.ini}}</span>
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+              <span style="font-size: 12.5px"><b>{{m.who}}</b><span style="color: #5A6068"> · {{m.time}}</span></span>
+              <span style="font-size: 13px; line-height: 1.4">{{m.text}}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const V = [
+      { id: "brenda", name: "Brenda Wax", ini: "BW", place: "Cameroun · Douala · Akwa", mark: "En face de la pharmacie du Port", biz: "Habits", country: "CM", city: "douala", sale: "ocd", del: "pickup", zones: [], cash: false, products: 6, lives: 4, orders: 18, due: "18 700 F", rating: "4,7 / 5", q: [21, "95 %", 1, 0], momo: "MTN · +237 6 70 00 00 02", since: "14 nov." },
+      { id: "fatou", name: "Fatou Karité", ini: "FK", place: "Cameroun · Douala · Bonamoussadi", mark: "Face au terrain de foot", biz: "Beauté", country: "CM", city: "douala", sale: "ocd", del: "vendor", zones: ["Bonamoussadi", "Akwa", "Makepe", "Kotto"], cash: true, products: 4, lives: 2, orders: 9, due: "7 875 F", rating: "4,8 / 5", q: [12, "92 %", 0, 1], momo: "MTN · +237 6 70 00 00 21", since: "15 nov." },
+      { id: "patrick", name: "Patrick Sneakers", ini: "PS", place: "Cameroun · Douala · Ndokoti", mark: "Derrière le marché", biz: "Chaussures", country: "CM", city: "douala", sale: "ocd", del: "vendor", zones: ["Ndokoti", "Bonabéri", "Deido"], cash: true, products: 9, lives: 3, orders: 11, due: "0 F", rating: "4,1 / 5", q: [10, "78 %", 2, 3], momo: "Orange · +237 6 90 00 00 52", since: "16 nov." },
+      { id: "grace", name: "Grâce Cosmétiques", ini: "GC", place: "Cameroun · Douala · Makepe", mark: "Près de la station-service", biz: "Beauté", country: "CM", city: "douala", sale: "ocd", del: "stock", zones: [], cash: false, products: 7, lives: 2, orders: 6, due: "0 F", rating: "4,4 / 5", q: [6, "100 %", 1, 0], momo: "MTN · +237 6 70 00 00 61", since: "16 nov." },
+      { id: "blaise", name: "Blaise Électro", ini: "BE", place: "Cameroun · Yaoundé · Essos", mark: "À côté du carrefour", biz: "Téléphones", country: "CM", city: "yaounde", sale: "ocd", del: "vendor", zones: ["Essos", "Bastos", "Mvan"], cash: true, products: 12, lives: 3, orders: 7, due: "−1 200 F", rating: "4,5 / 5", q: [7, "100 %", 0, 0], momo: "MTN · +237 6 70 00 00 45", since: "17 nov." },
+      { id: "carine", name: "Carine Bijoux", ini: "CB", place: "Cameroun · Douala · Bonapriso", mark: "Portail bleu après l'église", biz: "Bijoux", country: "CM", city: "douala", sale: "ocd", del: "vendor", zones: ["Bonapriso", "Bonanjo", "Akwa"], cash: false, products: 15, lives: 2, orders: 5, due: "13 750 F", rating: "4,9 / 5", q: [5, "100 %", 0, 0], momo: "MTN · +237 6 70 00 00 14", since: "18 nov." },
+      { id: "mireille", name: "Mireille Couture", ini: "MC", place: "Cameroun · Douala · Bali", mark: "Immeuble à côté de la boulangerie", biz: "Habits", country: "CM", city: "douala", sale: "ocd", del: "vendor", zones: ["Bali", "Kotto", "Deido", "Akwa"], cash: false, products: 8, lives: 3, orders: 4, due: "22 750 F", rating: "4,6 / 5", q: [4, "100 %", 0, 0], momo: "Orange · +237 6 90 00 00 11", since: "18 nov." },
+      { id: "aminata", name: "Aminata Déco", ini: "AD", place: "Cameroun · Bafoussam · Tamdja", mark: "Derrière le marché B", biz: "Maison", country: "CM", city: "bafoussam", sale: "ocd", del: "vendor", zones: ["Bafoussam"], cash: false, products: 5, lives: 1, orders: 2, due: "7 325 F", rating: "5 / 5", q: [2, "100 %", 0, 0], momo: "Orange · +237 6 90 00 00 33", since: "19 nov." },
+      { id: "awa", name: "Awa Mensah", ini: "AM", place: "Togo · Lomé · Bè", mark: "À côté de la pharmacie", biz: "Nourriture", country: "TG", city: "lome", sale: "direct", del: "vendor", zones: [], cash: false, products: 3, lives: 2, orders: 0, due: "—", rating: "—", q: [0, "—", 0, 0], momo: "Flooz · +228 90 00 00 00", since: "20 nov." }
+    ];
+    const cityZones = {
+      douala: ["Akwa", "Bonapriso", "Bonanjo", "Deido", "Bali", "Bonamoussadi", "Makepe", "Kotto", "Ndokoti", "Bonabéri", "Logpom"],
+      yaounde: ["Essos", "Bastos", "Mvan", "Biyem-Assi"],
+      bafoussam: ["Bafoussam"],
+      lome: ["Bè", "Tokoin", "Adidogomé"]
+    };
+    const i = s.i || 0;
+    const v = V[i];
+    const pick = (key) => (s[key] && s[key][v.id] !== undefined ? s[key][v.id] : undefined);
+    const setFor = (key, val, logText) => {
+      const next = Object.assign({}, s[key] || {});
+      next[v.id] = val;
+      const patch = {};
+      patch[key] = next;
+      if (logText) {
+        const ex = Object.assign({}, s.extra || {});
+        ex[v.id] = [logText].concat(ex[v.id] || []);
+        patch.extra = ex;
+      }
+      this.setState(patch);
+    };
+    const sale = pick("sale") || v.sale;
+    const del = pick("del") || v.del;
+    const zones = pick("zones") || v.zones;
+    const fallback = pick("fallback") === undefined ? true : pick("fallback");
+    const cashOn = pick("cash") === undefined ? v.cash : pick("cash");
+    const prep = pick("prep") === undefined ? "4" : pick("prep");
+    const commission = pick("com") === undefined ? "15" : pick("com");
+    const susp = !!pick("susp");
+    const tab = s.tab || "vente";
+    const delLabels = { vendor: "le vendeur livre lui-même", pickup: "un livreur OCD passe chercher", stock: "depuis le stock OCD" };
+    const saleOpts = [
+      ["direct", "Contact direct sur WhatsApp", "Le client écrit au vendeur. Le vendeur encaisse et livre. OCD ne touche pas à l'argent."],
+      ["ocd", "Vendu par OCD", "Le client paie sur le site ou à la livraison. OCD reverse au vendeur, moins la commission."]
+    ].map((o) => ({
+      title: o[1], text: o[2], on: sale === o[0], dot: sale === o[0] ? "block" : "none",
+      bd: sale === o[0] ? "#F46A00" : "#D3D7DB", bg: sale === o[0] ? "#FFF6EE" : "#FFFFFF",
+      pick: () => { if (sale !== o[0]) setFor("sale", o[0], "Mode de vente : " + (o[0] === "ocd" ? "vendu par OCD." : "contact direct.")); }
+    }));
+    const delOpts = [
+      ["vendor", "Le vendeur livre lui-même", "Il voit ses colis dans son espace, livre, puis saisit le code du client."],
+      ["pickup", "Un livreur OCD passe chercher", "Le vendeur prépare. Un livreur OCD récupère, livre et saisit le code."],
+      ["stock", "Depuis le stock OCD", "Dépôt-vente : le vendeur dépose ses produits chez OCD, qui livre depuis son stock."]
+    ].map((o) => ({
+      title: o[1], text: o[2], on: del === o[0], dot: del === o[0] ? "block" : "none",
+      bd: del === o[0] ? "#F46A00" : "#D3D7DB", bg: del === o[0] ? "#FFF6EE" : "#FFFFFF",
+      pick: () => { if (del !== o[0]) setFor("del", o[0], "Qui livre : " + delLabels[del] + " → " + delLabels[o[0]] + ". S'applique aux nouvelles commandes."); }
+    }));
+    const zoneChips = (cityZones[v.city] || []).map((z) => {
+      const on = zones.indexOf(z) >= 0;
+      return {
+        label: z, on: on,
+        bd: on ? "#15130F" : "#AEB4BA", bg: on ? "#15130F" : "#FFFFFF", fg: on ? "#FFFFFF" : "#15130F",
+        toggle: () => setFor("zones", on ? zones.filter((x) => x !== z) : zones.concat([z]))
+      };
+    });
+    const stepLabels = ["Nouveau", "Vérifié", "Actif", "Suspendu"];
+    const cur = susp ? 3 : v.orders === 0 && v.sale === "direct" ? 2 : 2;
+    const steps = stepLabels.map((l, k) => ({
+      label: l,
+      bg: k === cur ? (susp ? "#FCE4E4" : "#15130F") : k < cur ? "#DCF2E5" : "#F4F5F6",
+      fg: k === cur ? (susp ? "#8E1220" : "#FFFFFF") : k < cur ? "#0A5A31" : "#5A6068"
+    }));
+    const tabs = [["vente", "Vente et livraison"], ["qualite", "Qualité"], ["coord", "Coordonnées"]].map((t) => ({
+      label: t[1], on: tab === t[0], line: tab === t[0] ? "#F46A00" : "transparent", weight: tab === t[0] ? "800" : "600",
+      pick: () => this.setState({ tab: t[0] })
+    }));
+    const quality = [
+      ["Colis livrés, 30 j", String(v.q[0]), "#15130F"],
+      ["À l'heure", v.q[1], "#15130F"],
+      ["Échecs de livraison", String(v.q[2]), v.q[2] > 1 ? "#8E1220" : "#15130F"],
+      ["Retards de préparation", String(v.q[3]), v.q[3] >= 3 ? "#8E1220" : "#15130F"],
+      ["Note des clients", v.rating, "#15130F"]
+    ].map((q) => ({ label: q[0], value: q[1], color: q[2] }));
+    const contact = [
+      ["WhatsApp", v.momo.split("· ")[1]],
+      ["Mobile Money", v.momo],
+      ["Adresse", v.place],
+      ["Point de repère", v.mark],
+      ["Pièce d'identité", "Vérifiée le " + v.since],
+      ["Espace vendeur", "Ouvert par lien WhatsApp"],
+      ["Pass annuaire", "Actif jusqu'au 31 déc."],
+      ["Vendeur depuis le", v.since]
+    ].map((c) => ({ label: c[0], value: c[1] }));
+    const base = [
+      ["Régie OCD", "28 nov.", "Qui livre : " + delLabels[v.del] + ".", "team"],
+      ["Régie OCD", "28 nov.", "Mode de vente : " + (v.sale === "ocd" ? "vendu par OCD." : "contact direct."), "team"],
+      ["OdooBot", v.since, "Pass annuaire payé : 5 000 F pour 30 jours.", "bot"],
+      ["Régie OCD", v.since, "Vendeur vérifié : pièce d'identité et numéro WhatsApp.", "team"]
+    ];
+    if (v.id === "patrick") base.unshift(["OdooBot", "aujourd'hui, 14:10", "3e retard de préparation en 30 jours. Activité créée pour l'équipe : passer ses livraisons aux livreurs OCD.", "bot"]);
+    const extra = ((s.extra || {})[v.id] || []).map((t) => ["Régie OCD", "à l'instant", t, "team"]);
+    const kinds = { team: ["RG", "#F46A00", "#15130F"], bot: ["OD", "#EEF0F2", "#3F454C"] };
+    const log = extra.concat(base).map((m) => ({ who: m[0], time: m[1], text: m[2], ini: kinds[m[3]][0], avBg: kinds[m[3]][1], avFg: kinds[m[3]][2] }));
+    const ocd = sale === "ocd";
+    return {
+      name: v.name, ini: v.ini, place: v.place, biz: v.biz, momo: v.momo,
+      pager: (i + 1) + " / " + V.length,
+      steps, tabs, saleOpts, delOpts, zoneChips, quality, contact, log,
+      stats: [
+        ["Produits", String(v.products), "BoVerification.dc.html"],
+        ["Lives", String(v.lives), "BoReservations.dc.html"],
+        ["Commandes", String(v.orders), "BoCommandes.dc.html"],
+        ["À reverser", v.due, "BoReversements.dc.html"],
+        ["Note", v.rating, "BoVendeur.dc.html"]
+      ].map((b) => ({ label: b[0], value: b[1], href: b[2] })),
+      tabSale: tab === "vente",
+      tabQuality: tab === "qualite",
+      tabContact: tab === "coord",
+      isOcd: ocd,
+      isDirect: !ocd,
+      isVendorDel: ocd && del === "vendor",
+      isPickup: ocd && del === "pickup",
+      isStock: ocd && del === "stock",
+      fallback: fallback,
+      cashOn: cashOn,
+      prep: prep,
+      commission: commission,
+      pickupPlace: v.place.split(" · ").slice(1).join(", ") + " · " + v.mark.toLowerCase(),
+      togoWarn: ocd && v.country === "TG",
+      directLine: "Ses clients lui écrivent sur WhatsApp. OCD n'encaisse pas et ne livre pas pour lui. 14 personnes lui ont écrit ce mois-ci depuis OCD Live.",
+      ruleHit: v.id === "patrick" && del === "vendor",
+      suspendLabel: susp ? "Réactiver" : "Suspendre",
+      toggleSuspend: () => setFor("susp", !susp, susp ? "Vendeur réactivé." : "Vendeur suspendu : sa boutique et ses produits sont masqués."),
+      toggleFallback: () => setFor("fallback", !fallback),
+      toggleCash: () => setFor("cash", !cashOn),
+      setPrep: (e) => setFor("prep", String(e.target.value).replace(/\D/g, "").slice(0, 2)),
+      setCommission: (e) => setFor("com", String(e.target.value).replace(/\D/g, "").slice(0, 2)),
+      applyRule: () => setFor("del", "pickup", "Qui livre : le vendeur livre lui-même → un livreur OCD passe chercher (3 retards en 30 jours). Patrick prévenu sur WhatsApp."),
+      prev: () => this.setState({ i: (i + V.length - 1) % V.length }),
+      next: () => this.setState({ i: (i + 1) % V.length })
+    };
+  }
+}
+</script>
+</body>
+</html>

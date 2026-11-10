@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Ma tournée de livreur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+@keyframes ocd-spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 14px 16px; background: #15130F; color: #FFFFFF">
+    <img src="/_blob/273c64c79958def7341794eb4577315c" alt="Logo OCD" style="width: 34px; height: 34px; border-radius: 50%">
+    <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18px">Livreur OCD</span>
+    <button onClick="{{toggleOn}}" aria-pressed="{{on}}" style="margin-left: auto; display: flex; align-items: center; gap: 7px; min-height: 40px; border: 0; border-radius: 999px; padding: 0 13px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; background: {{onBg}}; color: {{onFg}}"><span style="width: 9px; height: 9px; border-radius: 50%; background: {{onDot}}"></span>{{onLabel}}</button>
+  </div>
+
+  <div style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 14px">
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 29px; line-height: 1.05; letter-spacing: -0.02em">Ma tournée</h1>
+      <span style="font-size: 14.5px; color: #665F58">Junior · mar. 1er déc. · Douala</span>
+    </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap">
+      <span style="background: #F5F2EE; border-radius: 10px; padding: 6px 11px; font-size: 14px; font-weight: 700">{{leftLabel}}</span>
+      <span style="border-radius: 10px; padding: 6px 11px; font-size: 14px; font-weight: 700; background: {{cashBg}}; color: {{cashFg}}">Espèces sur moi : {{cash}}</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: center; padding: 10px 12px; background: #F5F2EE; border-radius: 14px">
+      <span style="width: 30px; height: 30px; border-radius: 50%; background: #0F7A43; color: #FFFFFF; display: grid; place-items: center"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px"><path d="M20 6L9 17l-5-5"></path></svg></span>
+      <span style="font-size: 14px; line-height: 1.35"><b>Livré à Sandrine Fouda</b> · Bonamoussadi · 11:42 · code vérifié</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 9px; border: 2px solid {{aBd}}; border-radius: 18px; padding: 14px">
+      <div style="display: flex; align-items: center; gap: 8px"><span style="width: 26px; height: 26px; border-radius: 50%; background: {{aNumBg}}; color: {{aNumFg}}; display: grid; place-items: center; font-size: 13px; font-weight: 800">2</span><b style="font-size: 17px">Livrer à Estelle Ngono</b></div>
+      <span style="font-size: 14.5px; color: #665F58">Akwa · en face de la pharmacie</span>
+      <span style="font-size: 15px; font-weight: 600">Robe en wax · OUT/0042-A</span>
+      <span style="align-self: flex-start; background: #DCF2E5; color: #0A5A31; border-radius: 8px; padding: 3px 9px; font-size: 13.5px; font-weight: 700">Payé en ligne : rien à encaisser</span>
+      <sc-if value="{{aRoute}}" hint-placeholder-val="{{true}}">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <button style="min-height: 46px; border: 0; border-radius: 13px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">Appeler</button>
+          <button style="min-height: 46px; border: 0; border-radius: 13px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">WhatsApp</button>
+        </div>
+        <label for="t-a" style="font-weight: 700; font-size: 14.5px">Code donné par Estelle</label>
+        <div style="display: flex; gap: 8px">
+          <input id="t-a" inputmode="numeric" maxlength="4" value="{{aCode}}" onChange="{{aSet}}" autocomplete="off" style="flex: 1; min-width: 0; height: 52px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 24px; font-weight: 800; letter-spacing: 0.35em; color: #15130F; background: #FFFFFF; border: 2px solid {{aBdCode}}">
+          <button onClick="{{aCheck}}" style="min-height: 52px; border: 0; border-radius: 14px; padding: 0 16px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer">Valider</button>
+        </div>
+        <sc-if value="{{aHasErr}}" hint-placeholder-val="{{false}}">
+          <span role="alert" style="font-size: 14px; font-weight: 700; color: #B01522">{{aErr}}</span>
+        </sc-if>
+        <span style="font-size: 13px; color: #665F58">Démo : le code d'Estelle est 4729.</span>
+        <button onClick="{{aProblemGo}}" style="align-self: flex-start; min-height: 44px; border: 0; padding: 0; background: #FFFFFF; color: #B01522; font-family: inherit; font-size: 14.5px; font-weight: 700; text-decoration: underline; cursor: pointer">Cliente absente ou injoignable</button>
+      </sc-if>
+      <sc-if value="{{aDone}}" hint-placeholder-val="{{false}}">
+        <span role="status" style="background: #DCF2E5; color: #0A5A31; border-radius: 12px; padding: 10px 12px; font-size: 14.5px; font-weight: 700">Livré à 15:02. Code vérifié.</span>
+      </sc-if>
+      <sc-if value="{{aProblem}}" hint-placeholder-val="{{false}}">
+        <span role="status" style="background: #FFF0CC; color: #6B4500; border-radius: 12px; padding: 10px 12px; font-size: 14px; font-weight: 700; line-height: 1.35">Signalé. Garde le colis : le dispatch propose un nouveau créneau à Estelle et te le place dans la tournée.</span>
+      </sc-if>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 9px; border: 2px solid {{bBd}}; border-radius: 18px; padding: 14px">
+      <div style="display: flex; align-items: center; gap: 8px"><span style="width: 26px; height: 26px; border-radius: 50%; background: {{bNumBg}}; color: {{bNumFg}}; display: grid; place-items: center; font-size: 13px; font-weight: 800">3</span><b style="font-size: 17px">Récupérer chez Brenda Wax</b></div>
+      <span style="font-size: 14.5px; color: #665F58">Akwa · en face de la pharmacie du Port</span>
+      <span style="font-size: 15px; font-weight: 600">Jupe en wax · OUT/0044 · prête à 15:30</span>
+      <sc-if value="{{bTodo}}" hint-placeholder-val="{{true}}">
+        <button onClick="{{bGo}}" style="min-height: 52px; border: 0; border-radius: 15px; background: #15130F; color: #FFFFFF; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16.5px; cursor: pointer">J'ai récupéré le colis</button>
+        <span style="font-size: 13px; color: #665F58; line-height: 1.35">Brenda reçoit un WhatsApp : si ce n'est pas toi, elle le signale.</span>
+      </sc-if>
+      <sc-if value="{{bDone}}" hint-placeholder-val="{{false}}">
+        <span role="status" style="background: #DCF2E5; color: #0A5A31; border-radius: 12px; padding: 10px 12px; font-size: 14.5px; font-weight: 700">Récupéré à 15:32. Brenda est prévenue.</span>
+      </sc-if>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 9px; border: 2px solid {{cBd}}; border-radius: 18px; padding: 14px">
+      <div style="display: flex; align-items: center; gap: 8px"><span style="width: 26px; height: 26px; border-radius: 50%; background: {{cNumBg}}; color: {{cNumFg}}; display: grid; place-items: center; font-size: 13px; font-weight: 800">4</span><b style="font-size: 17px">Livrer à Ruth Mbarga</b></div>
+      <span style="font-size: 14.5px; color: #665F58">Makepe · derrière l'école publique</span>
+      <span style="font-size: 15px; font-weight: 600">Jupe en wax · OUT/0044</span>
+      <span style="align-self: flex-start; background: #FFF0CC; color: #6B4500; border-radius: 8px; padding: 3px 9px; font-size: 13.5px; font-weight: 700">À encaisser : 9 500 F</span>
+      <sc-if value="{{cLocked}}" hint-placeholder-val="{{true}}">
+        <span style="font-size: 14px; color: #665F58">D'abord récupérer le colis chez Brenda.</span>
+      </sc-if>
+      <sc-if value="{{cPay}}" hint-placeholder-val="{{false}}">
+        <span style="font-weight: 700; font-size: 14.5px">Comment Ruth paie ?</span>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <button onClick="{{payMomo}}" style="min-height: 52px; border: 0; border-radius: 13px; background: #F46A00; color: #15130F; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer">Mobile Money</button>
+          <button onClick="{{payCash}}" style="min-height: 52px; border: 0; border-radius: 13px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer">Espèces reçues</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{cWait}}" hint-placeholder-val="{{false}}">
+        <div role="status" style="display: flex; align-items: center; gap: 10px; background: #FFE7D1; border-radius: 12px; padding: 10px 12px">
+          <span style="width: 22px; height: 22px; flex: none; box-sizing: border-box; border-radius: 50%; border: 3px solid #15130F; border-top-color: transparent; animation: ocd-spin 1s linear infinite"></span>
+          <span style="font-size: 14px; font-weight: 600; line-height: 1.35">Demande envoyée au +237 6 70 00 00 05. Ruth confirme sur son téléphone.</span>
+        </div>
+        <button onClick="{{momoOk}}" style="align-self: flex-start; min-height: 44px; border: 1.5px dashed #665F58; border-radius: 10px; padding: 0 12px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Démo : Ruth a payé</button>
+      </sc-if>
+      <sc-if value="{{cCode}}" hint-placeholder-val="{{false}}">
+        <span style="align-self: flex-start; background: #DCF2E5; color: #0A5A31; border-radius: 8px; padding: 3px 9px; font-size: 13.5px; font-weight: 700">{{paidLine}}</span>
+        <label for="t-c" style="font-weight: 700; font-size: 14.5px">Code donné par Ruth</label>
+        <div style="display: flex; gap: 8px">
+          <input id="t-c" inputmode="numeric" maxlength="4" value="{{cCodeVal}}" onChange="{{cSet}}" autocomplete="off" style="flex: 1; min-width: 0; height: 52px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 24px; font-weight: 800; letter-spacing: 0.35em; color: #15130F; background: #FFFFFF; border: 2px solid {{cBdCode}}">
+          <button onClick="{{cCheck}}" style="min-height: 52px; border: 0; border-radius: 14px; padding: 0 16px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer">Valider</button>
+        </div>
+        <sc-if value="{{cHasErr}}" hint-placeholder-val="{{false}}">
+          <span role="alert" style="font-size: 14px; font-weight: 700; color: #B01522">{{cErr}}</span>
+        </sc-if>
+        <span style="font-size: 13px; color: #665F58">Démo : le code de Ruth est 3081.</span>
+      </sc-if>
+      <sc-if value="{{cDone}}" hint-placeholder-val="{{false}}">
+        <span role="status" style="background: #DCF2E5; color: #0A5A31; border-radius: 12px; padding: 10px 12px; font-size: 14.5px; font-weight: 700">Livré. Code vérifié. {{paidLine}}.</span>
+      </sc-if>
+    </div>
+
+    <div style="background: {{endBg}}; border-radius: 14px; padding: 12px 14px; font-size: 14.5px; font-weight: 700; line-height: 1.35; color: {{endFg}}">{{endLine}}</div>
+  </div>
+
+  <div style="border-top: 1px solid #E7E2DC; padding: 10px 14px 14px">
+    <button style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; border: 0; border-radius: 15px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16.5px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Appeler le dispatch</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const on = s.on === undefined ? true : s.on;
+    const a = s.a || "route";
+    const b = s.b || "todo";
+    const pay = s.pay || "none";
+    const c = s.c || "todo";
+    const aCode = s.aCode || "";
+    const cCode = s.cCode || "";
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const cash = pay === "cash" ? 9500 : 0;
+    const left = (a === "route" ? 1 : 0) + (b === "todo" ? 1 : 0) + (c === "todo" ? 1 : 0);
+    const active = a === "route" ? "a" : b === "todo" ? "b" : c === "todo" ? "c" : "";
+    const num = (k, done) => (done ? ["#0F7A43", "#FFFFFF"] : active === k ? ["#F46A00", "#15130F"] : ["#EEF0F2", "#15130F"]);
+    const aN = num("a", a === "done");
+    const bN = num("b", b === "done");
+    const cN = num("c", c === "done");
+    const cReady = b === "done";
+    return {
+      on: on,
+      onLabel: on ? "En service" : "Hors service",
+      onBg: on ? "#DCF2E5" : "#3A3631",
+      onFg: on ? "#0A5A31" : "#FFFFFF",
+      onDot: on ? "#0F7A43" : "#C9C3BC",
+      toggleOn: () => this.setState({ on: !on }),
+      leftLabel: left === 0 ? "Tournée terminée" : left + (left > 1 ? " arrêts restants" : " arrêt restant"),
+      cash: fr(cash),
+      cashBg: cash ? "#FFF0CC" : "#F5F2EE",
+      cashFg: cash ? "#6B4500" : "#15130F",
+      aBd: active === "a" ? "#F46A00" : "#E7E2DC",
+      aNumBg: aN[0], aNumFg: aN[1],
+      aRoute: a === "route",
+      aDone: a === "done",
+      aProblem: a === "problem",
+      aCode: aCode,
+      aBdCode: s.aErr ? "#B01522" : "#E7E2DC",
+      aHasErr: !!s.aErr,
+      aErr: s.aErr || "",
+      aSet: (e) => this.setState({ aCode: String(e.target.value).replace(/\D/g, "").slice(0, 4), aErr: "" }),
+      aCheck: () => {
+        if (aCode === "4729") this.setState({ a: "done", aErr: "" });
+        else this.setState({ aErr: "Ce n'est pas le bon code. Redemande-le à Estelle." });
+      },
+      aProblemGo: () => this.setState({ a: "problem" }),
+      bBd: active === "b" ? "#F46A00" : "#E7E2DC",
+      bNumBg: bN[0], bNumFg: bN[1],
+      bTodo: b === "todo",
+      bDone: b === "done",
+      bGo: () => this.setState({ b: "done" }),
+      cBd: active === "c" ? "#F46A00" : "#E7E2DC",
+      cNumBg: cN[0], cNumFg: cN[1],
+      cLocked: !cReady,
+      cPay: cReady && c === "todo" && pay === "none",
+      cWait: cReady && c === "todo" && pay === "wait",
+      cCode: cReady && c === "todo" && (pay === "momo" || pay === "cash"),
+      cDone: c === "done",
+      paidLine: pay === "cash" ? "9 500 F reçus en espèces" : "9 500 F payés par Mobile Money",
+      cCodeVal: cCode,
+      cBdCode: s.cErr ? "#B01522" : "#E7E2DC",
+      cHasErr: !!s.cErr,
+      cErr: s.cErr || "",
+      payMomo: () => this.setState({ pay: "wait" }),
+      momoOk: () => this.setState({ pay: "momo" }),
+      payCash: () => this.setState({ pay: "cash" }),
+      cSet: (e) => this.setState({ cCode: String(e.target.value).replace(/\D/g, "").slice(0, 4), cErr: "" }),
+      cCheck: () => {
+        if (cCode === "3081") this.setState({ c: "done", cErr: "" });
+        else this.setState({ cErr: "Ce n'est pas le bon code. Redemande-le à Ruth." });
+      },
+      endLine: cash ? "Ce soir, remets " + fr(cash) + " à la caisse OCD avant 20:00." : "Rien à remettre à la caisse ce soir.",
+      endBg: cash ? "#FFF0CC" : "#F5F2EE",
+      endFg: cash ? "#6B4500" : "#15130F"
+    };
+  }
+}
+</script>
+</body>
+</html>

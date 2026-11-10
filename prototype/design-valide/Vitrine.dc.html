@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Boutique d'un vendeur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="LivesPays.dc.html" aria-label="Retour" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px">Boutique</span>
+    <button onClick="{{share}}" style="margin-left: auto; display: flex; align-items: center; gap: 7px; min-height: 46px; border: 0; border-radius: 999px; padding: 0 15px; background: #F5F2EE; color: #15130F; font-family: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v13"></path></svg>Partager</button>
+  </div>
+
+  <div style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 14px; padding: 6px 18px 14px">
+    <div style="display: grid; grid-template-columns: 68px 1fr; gap: 14px; align-items: center">
+      <span aria-hidden="true" style="position: relative; width: 68px; height: 68px; border-radius: 50%; background: #FFE7D1; display: grid; place-items: center; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 23px">BW<span style="position: absolute; right: 1px; bottom: 1px; width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%; border: 3px solid #FFFFFF; background: {{dot}}"></span></span>
+      <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+        <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 30px; line-height: 1.05; letter-spacing: -0.02em">Brenda Wax</h1>
+        <span style="font-size: 14.5px; font-weight: 600">Habits · pagnes et robes en wax</span>
+        <span style="align-self: flex-start; margin-top: 3px; border-radius: 6px; padding: 2px 8px; font-size: 12.5px; font-weight: 700; background: {{modeBg}}; color: {{modeFg}}">{{modeLabel}}</span>
+      </div>
+    </div>
+    <span style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; line-height: 1.35"><span aria-hidden="true" style="width: 24px; height: 16px; flex: none; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,0.14); background: linear-gradient(90deg,#007A5E 33.33%,#CE1126 33.33% 66.66%,#FCD116 66.66%)"></span>Douala, Akwa · en face de la pharmacie du Port</span>
+
+    <sc-if value="{{live}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 12px; background: #15130F; color: #FFFFFF; border-radius: 18px; padding: 12px 12px 12px 16px">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #FF4D5A; flex: none"></span>
+          <span style="display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0"><span style="font-weight: 700; font-size: 15.5px">En live maintenant</span><span style="font-size: 13px; color: #D9D3CC">Depuis 18 min, sur TikTok</span></span>
+          <button style="display: flex; align-items: center; gap: 6px; min-height: 44px; border: 0; border-radius: 999px; padding: 0 16px 0 13px; background: #F46A00; color: #15130F; font-family: inherit; font-weight: 800; font-size: 14.5px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" style="width: 14px; height: 14px"><path d="M6 3l14 9-14 9z"></path></svg>Voir le live</button>
+        </div>
+        <a href="Produit.dc.html" style="display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; border: 2px solid #F46A00; background: #FFE7D1; border-radius: 16px; padding: 10px 12px">
+          <span style="width: 56px; height: 56px; border-radius: 12px; background: #FFFFFF; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #665F58">Photo</span>
+          <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase">À l'écran maintenant</span><span style="font-weight: 700; font-size: 15.5px; line-height: 1.2">Chemise wax homme</span><span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums">10 000 F</span></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px"><path d="M9 18l6-6-6-6"></path></svg>
+        </a>
+      </div>
+    </sc-if>
+    <sc-if value="{{notLive}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 10px; background: #F5F2EE; border-radius: 18px; padding: 14px 16px">
+        <span style="display: flex; flex-direction: column; gap: 1px"><span style="font-weight: 700; font-size: 15.5px">Prochain live : sam. 5 déc. à 18:00</span><span style="font-size: 13.5px; color: #665F58">Sur TikTok, pendant le créneau du soir</span></span>
+        <sc-if value="{{askNotify}}" hint-placeholder-val="{{true}}">
+          <button onClick="{{notify}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border: 0; border-radius: 14px; background: #15130F; color: #FFFFFF; font-family: inherit; font-weight: 700; font-size: 15px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"></path></svg>Me prévenir sur WhatsApp</button>
+        </sc-if>
+        <sc-if value="{{notified}}" hint-placeholder-val="{{false}}">
+          <span role="status" style="font-size: 14.5px; font-weight: 700; color: #0A5A31">C'est noté. On t'écrit quand Brenda passe en live.</span>
+        </sc-if>
+      </div>
+    </sc-if>
+    <sc-if value="{{notLive}}" hint-placeholder-val="{{false}}">
+      <a href="Replay.dc.html" style="display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: center; border: 2px solid #E7E2DC; border-radius: 16px; padding: 10px">
+        <span style="height: 76px; border-radius: 12px; background: #15130F; color: #FFFFFF; display: grid; place-items: center"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" style="width: 24px; height: 24px"><path d="M6 3l14 9-14 9z"></path></svg></span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 700; font-size: 15.5px; line-height: 1.2">Revoir son live du 1er déc.</span><span style="font-size: 13.5px; color: #665F58">1 h 28 · 5 produits montrés</span><span style="font-size: 14px; font-weight: 700; text-decoration: underline">Revoir</span></span>
+      </a>
+    </sc-if>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <button style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17.5px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 21px; height: 21px"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>{{waLabel}}</button>
+      <span style="font-size: 13px; color: #665F58; text-align: center">{{waNote}}</span>
+    </div>
+
+    <sc-if value="{{shared}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="background: #DCF2E5; color: #0A5A31; border-radius: 12px; padding: 11px 13px; font-size: 14.5px; font-weight: 700">Lien de la boutique copié. Colle-le dans un message.</div>
+    </sc-if>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 2px">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 21px; line-height: 1.1">Ses produits</h2>
+      <span style="font-size: 14px; color: #665F58">{{count}} produits</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <sc-for list="{{items}}" as="p" hint-placeholder-count="6">
+        <sc-if value="{{p.buyable}}" hint-placeholder-val="{{true}}">
+          <a href="Produit.dc.html" style="display: flex; flex-direction: column; border: 2px solid #E7E2DC; border-radius: 18px; overflow: hidden">
+            <span style="position: relative; height: 96px; background: #F5F2EE; display: grid; place-items: center; font-size: 12.5px; font-weight: 600; color: #665F58">Photo du produit<span style="position: absolute; left: 8px; top: 8px; background: #FFE7D1; color: #15130F; border-radius: 6px; padding: 2px 7px; font-size: 12px; font-weight: 700; display: {{p.lowShow}}">{{p.low}}</span></span>
+            <span style="display: flex; flex-direction: column; gap: 3px; padding: 10px 12px 12px">
+              <span style="font-weight: 700; font-size: 15px; line-height: 1.2">{{p.name}}</span>
+              <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; margin-top: 3px">{{p.price}}</span>
+            </span>
+          </a>
+        </sc-if>
+        <sc-if value="{{p.out}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; border: 2px dashed #E7E2DC; border-radius: 18px; overflow: hidden">
+            <span style="position: relative; height: 96px; display: grid; place-items: center; font-size: 12.5px; font-weight: 600; color: #665F58">Photo du produit<span style="position: absolute; left: 8px; top: 8px; background: #15130F; color: #FFFFFF; border-radius: 6px; padding: 2px 7px; font-size: 12px; font-weight: 700">Épuisé</span></span>
+            <span style="display: flex; flex-direction: column; gap: 3px; padding: 10px 12px 12px">
+              <span style="font-weight: 700; font-size: 15px; line-height: 1.2; color: #665F58">{{p.name}}</span>
+              <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; margin-top: 3px; color: #665F58">{{p.price}}</span>
+            </span>
+          </div>
+        </sc-if>
+      </sc-for>
+    </div>
+  </div>
+
+  <nav aria-label="Menu" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #E7E2DC; padding: 8px 8px 12px">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M3 11l9-8 9 8v10h-7v-7h-4v7H3z"></path></svg>Accueil</a>
+    <a href="Lives.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 700; color: #15130F"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F46A00" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Lives</a>
+    <a href="Shop.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><path d="M3 6h18M16 10a4 4 0 0 1-8 0"></path></svg>Shop</a>
+    <a href="MonEspace.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Moi</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"enLive":{"editor":"boolean","default":true},"modeVente":{"editor":"enum","options":["Vendu par OCD","Contact direct"],"default":"Vendu par OCD"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const live = this.props.enLive ?? true;
+    const ocd = (this.props.modeVente ?? "Vendu par OCD") === "Vendu par OCD";
+    const notified = !!s.notified;
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const products = [
+      ["Robe en wax", 12000, 3],
+      ["Pagne wax 6 yards", 9000, 8],
+      ["Chemise wax homme", 10000, 5],
+      ["Sac en pagne", 7000, 0],
+      ["Foulard wax", 3500, 12],
+      ["Jupe en wax", 8000, 2]
+    ];
+    const items = products.map((p) => ({
+      name: p[0],
+      price: fr(p[1]),
+      buyable: p[2] > 0,
+      out: p[2] === 0,
+      low: "Plus que " + p[2],
+      lowShow: p[2] > 0 && p[2] <= 3 ? "block" : "none"
+    }));
+    return {
+      items,
+      count: products.length,
+      modeLabel: ocd ? "Vendu et livré par OCD Live" : "Contact direct avec le vendeur",
+      modeBg: ocd ? "#DCF2E5" : "#F5F2EE",
+      modeFg: ocd ? "#0A5A31" : "#15130F",
+      waLabel: ocd ? "Une question ? Écrire à OCD Live" : "Écrire à Brenda sur WhatsApp",
+      waNote: ocd ? "Tu paies sur le site, OCD livre chez toi." : "Paiement et livraison se voient avec Brenda.",
+      live,
+      notLive: !live,
+      dot: live ? "#D91A2A" : "#C9C2BA",
+      notified,
+      askNotify: !notified,
+      shared: !!s.shared,
+      notify: () => this.setState({ notified: true }),
+      share: () => this.setState({ shared: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

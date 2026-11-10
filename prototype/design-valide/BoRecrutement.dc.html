@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Recrutement de l'animatrice</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="recrutement" sub="animatrice" title="Animatrice live · Lomé" crumb="Candidatures" facets="Offre : Animatrice live" views="kanban,list,calendar,pivot,graph,activity" view="kanban" pager="12 candidatures" action="Nouveau" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 12px 22px 14px">
+    <div style="display: flex; align-items: center; gap: 14px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 9px 14px">
+      <span style="display: flex; flex-direction: column; line-height: 1.3">
+        <b style="font-size: 14.5px">Offre en ligne sur le site depuis le 12 nov.</b>
+        <span style="font-size: 13px; color: #3F454C">Sans diplôme · habiter Lomé · une vidéo d'une minute, par le site ou par WhatsApp</span>
+      </span>
+      <span style="display: flex; gap: 8px; margin-left: auto">
+        <span style="border-radius: 8px; padding: 4px 10px; background: #F4F5F6; font-size: 13px; font-weight: 700">2 postes, matin et soir · pourvus : {{hired}}</span>
+        <span style="border-radius: 8px; padding: 4px 10px; background: #F4F5F6; font-size: 13px; font-weight: 700">Refusées : {{refusedCount}}</span>
+      </span>
+    </div>
+    <sc-if value="{{hasToast}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="border-radius: 8px; padding: 7px 12px; background: #DCF2E5; color: #0A5A31; font-size: 13.5px; font-weight: 700">{{toast}}</div>
+    </sc-if>
+
+    <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px">
+      <sc-for list="{{cols}}" as="col" hint-placeholder-count="5">
+        <div style="display: flex; flex-direction: column; gap: 8px; min-height: 0; background: #ECEEF0; border-radius: 12px; padding: 9px">
+          <div style="display: flex; flex-direction: column; padding: 0 3px">
+            <span style="display: flex; justify-content: space-between; align-items: baseline"><b style="font-size: 14px">{{col.label}}</b><span style="font-size: 13px; font-weight: 700; color: #3F454C">{{col.count}}</span></span>
+            <span style="font-size: 12px; color: #5A6068">{{col.hint}}</span>
+          </div>
+          <div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px">
+            <sc-for list="{{col.cards}}" as="k" hint-placeholder-count="3">
+              <div style="display: flex; flex-direction: column; gap: 5px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 10px; padding: 9px 10px">
+                <span style="display: flex; align-items: center; justify-content: space-between; gap: 6px">
+                  <b style="font-size: 14px">{{k.name}}</b>
+                  <span aria-label="{{k.starsLabel}}" style="font-size: 13px; letter-spacing: 1px; color: #B84F00">{{k.stars}}</span>
+                </span>
+                <span style="font-size: 12.5px; color: #3F454C">{{k.where}}</span>
+                <span style="display: flex; flex-wrap: wrap; gap: 4px">
+                  <sc-for list="{{k.tags}}" as="t" hint-placeholder-count="2">
+                    <span style="border-radius: 5px; padding: 0 6px; background: #F4F5F6; border: 1px solid #E3E6E9; font-size: 11.5px; font-weight: 600">{{t.label}}</span>
+                  </sc-for>
+                </span>
+                <span style="display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: {{k.actColor}}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width: 13px; height: 13px; flex: none"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0M12 7v5l3 2"></path></svg>{{k.act}}</span>
+                <sc-if value="{{k.canMove}}" hint-placeholder-val="{{true}}">
+                  <span style="display: flex; gap: 6px; margin-top: 2px">
+                    <button onClick="{{k.next}}" style="flex: 1; min-height: 30px; border: 0; border-radius: 7px; padding: 0 8px; background: #15130F; color: #FFFFFF; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer">{{k.nextLabel}}</button>
+                    <button onClick="{{k.refuse}}" style="min-height: 30px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 8px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer">Refuser</button>
+                  </span>
+                </sc-if>
+                <sc-if value="{{k.isHired}}" hint-placeholder-val="{{false}}">
+                  <a href="BoReservations.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 30px; border: 1px solid #AEB4BA; border-radius: 7px; font-size: 12.5px; font-weight: 700">Voir ses lives</a>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const moves = s.moves || {};
+    const refused = s.refused || {};
+    const toast = s.toast || "";
+    const stages = [
+      ["Nouvelles", "Regarder la vidéo"],
+      ["Appel", "10 minutes au téléphone"],
+      ["Essai devant la caméra", "15 minutes au studio de Lomé"],
+      ["Proposition", "Horaires et rémunération"],
+      ["Embauchée", "Fiche employée créée"]
+    ];
+    const C = (id, name, where, st, stars, tags, act, late) => ({ id: id, name: name, where: where, st: st, stars: stars, tags: tags, act: act, late: !!late });
+    const people = [
+      C("akossiwa", "Akossiwa A.", "Adidogomé · par le site", 0, 2, ["Vidéo reçue", "Parle éwé et mina"], "Vidéo à regarder aujourd'hui"),
+      C("mawuena", "Mawuena D.", "Bè · par WhatsApp", 0, 2, ["Vidéo reçue", "Vend au marché"], "Vidéo à regarder aujourd'hui"),
+      C("yawa", "Yawa T.", "Tokoin · par le site", 0, 1, ["Vidéo reçue"], "Vidéo à regarder demain"),
+      C("enyonam", "Enyonam K.", "Agoè · bouche à oreille", 0, 0, ["Sans vidéo"], "Relancée hier sur WhatsApp", true),
+      C("sena", "Sena M.", "Hédzranawoé · par le site", 0, 1, ["Vidéo reçue", "Disponible le soir"], "Vidéo à regarder demain"),
+      C("edem", "Edem K.", "Nyékonakpoè · par le site", 1, 2, ["Vidéo reçue", "Très souriante"], "Appel demain à 10:00"),
+      C("ablavi", "Ablavi B.", "Bè · par WhatsApp", 1, 2, ["Disponible le soir"], "Appel aujourd'hui à 16:00"),
+      C("mawusi", "Mawusi F.", "Kodjoviakopé · par le site", 1, 3, ["Très à l'aise", "Parle anglais"], "Appel fait : à passer à l'essai"),
+      C("akpene", "Akpene G.", "Tokoin · par le site", 2, 2, ["Essai prévu"], "Essai jeu. 3 déc. à 10:00 au studio"),
+      C("dede", "Dédé S.", "Bè · bouche à oreille", 2, 3, ["Essai fait", "Bonne énergie"], "Décision à prendre avant vendredi"),
+      C("amivi", "Amivi N.", "Adidogomé · par le site", 3, 3, ["Essai réussi"], "Réponse attendue vendredi"),
+      C("dzifa", "Dzifa A.", "Bè · par le site", 4, 3, ["Animatrice 1"], "Accompagne les lives à distance depuis le 1er déc.")
+    ];
+    const stageOf = (p) => Math.min(4, p.st + (moves[p.id] || 0));
+    const live = people.filter((p) => !refused[p.id]);
+    const nextLabels = ["Appeler", "Inviter à l'essai", "Faire la proposition", "Embaucher"];
+    const cols = stages.map((st, i) => {
+      const cards = live.filter((p) => stageOf(p) === i).map((p) => {
+        const moved = (moves[p.id] || 0) > 0;
+        const stage = stageOf(p);
+        const hired = stage === 4;
+        let act = p.act;
+        if (moved && stage === 1) act = "Appel à planifier";
+        if (moved && stage === 2) act = "Essai à planifier au studio";
+        if (moved && stage === 3) act = "Proposition à envoyer";
+        if (moved && hired) act = "Fiche employée créée : Animatrice 2";
+        return {
+          name: p.name,
+          where: p.where,
+          stars: "★★★".slice(0, p.stars) + "☆☆☆".slice(0, 3 - p.stars),
+          starsLabel: "Note : " + p.stars + " sur 3",
+          tags: (moved && hired ? ["Animatrice 2"] : p.tags).map((t) => ({ label: t })),
+          act: act,
+          actColor: p.late ? "#8E1220" : "#3F454C",
+          canMove: !hired,
+          isHired: hired,
+          nextLabel: hired ? "" : nextLabels[stage],
+          next: () => {
+            if (stageOf(p) >= 4) return;
+            const m = Object.assign({}, moves);
+            m[p.id] = (moves[p.id] || 0) + 1;
+            const goes = stageOf(p) + 1;
+            const msg = goes === 4 ? p.name + " est embauchée : sa fiche employée est créée et elle reçoit un message de bienvenue sur WhatsApp." : p.name + " passe à l'étape « " + stages[goes][0] + " ». Elle est prévenue sur WhatsApp.";
+            this.setState({ moves: m, toast: msg });
+          },
+          refuse: () => {
+            const r = Object.assign({}, refused);
+            r[p.id] = true;
+            this.setState({ refused: r, toast: "Réponse polie envoyée à " + p.name + " sur WhatsApp. Sa candidature reste gardée pour plus tard." });
+          }
+        };
+      });
+      return { label: st[0], hint: st[1], count: cards.length, cards: cards };
+    });
+    const refusedCount = 3 + Object.keys(refused).length;
+    return {
+      cols: cols,
+      hired: live.filter((p) => stageOf(p) === 4).length,
+      refusedCount: refusedCount,
+      hasToast: toast.length > 0,
+      toast: toast
+    };
+  }
+}
+</script>
+</body>
+</html>

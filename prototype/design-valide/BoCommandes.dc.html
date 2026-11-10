@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Commandes du shop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="shop" sub="cmd" title="Commandes" crumb="" facets="Depuis lun. 30 nov." views="list,kanban,pivot,graph,activity" view="list" pager="1-13 / 13" action="" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 14px; padding: 14px 22px">
+    <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0">
+      <div role="group" aria-label="Filtrer les commandes" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
+        <sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+          <button onClick="{{f.pick}}" aria-pressed="{{f.on}}" style="min-height: 32px; border-radius: 8px; padding: 0 12px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid {{f.bd}}; background: {{f.bg}}; color: {{f.fg}}">{{f.label}}</button>
+        </sc-for>
+        <span style="margin-left: auto; font-size: 12.5px; color: #5A6068">Une commande = un colis par vendeur</span>
+      </div>
+
+      <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: 70px 44px minmax(0, 1.5fr) minmax(0, 1.2fr) 76px minmax(0, 1.25fr) minmax(0, 1.3fr); gap: 8px; align-items: center; padding: 9px 12px; background: #F4F5F6; border-bottom: 1px solid #D3D7DB; font-size: 12.5px; font-weight: 700; color: #3F454C">
+          <span>Réf.</span><span>Heure</span><span>Client</span><span>Vendeur</span><span style="text-align: right">Total</span><span>Paiement</span><span>Livraison</span>
+        </div>
+        <div style="flex: 1; min-height: 0; overflow-y: auto">
+          <sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 7px 12px; background: #FAFAFB; border-bottom: 1px solid #EEF0F2; font-size: 13px">
+              <b>{{g.label}}</b>
+              <span style="color: #3F454C; font-variant-numeric: tabular-nums">{{g.sum}}</span>
+            </div>
+            <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="5">
+              <button onClick="{{r.pick}}" aria-pressed="{{r.on}}" style="width: 100%; display: grid; grid-template-columns: 70px 44px minmax(0, 1.5fr) minmax(0, 1.2fr) 76px minmax(0, 1.25fr) minmax(0, 1.3fr); gap: 8px; align-items: center; padding: 7px 12px; border: 0; border-bottom: 1px solid #EEF0F2; font-family: inherit; font-size: 13.5px; color: #15130F; text-align: left; cursor: pointer; font-variant-numeric: tabular-nums; background: {{r.bg}}; box-shadow: inset 3px 0 0 {{r.mark}}">
+                <b>{{r.ref}}</b>
+                <span style="color: #3F454C">{{r.time}}</span>
+                <span style="display: flex; flex-direction: column; min-width: 0; line-height: 1.25">
+                  <span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.client}}</span>
+                  <span style="font-size: 12.5px; color: #5A6068; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.place}}</span>
+                </span>
+                <span style="font-size: 13px; line-height: 1.25">{{r.vendor}}</span>
+                <b style="text-align: right">{{r.total}}</b>
+                <span style="justify-self: start; border-radius: 6px; padding: 2px 7px; font-size: 12px; font-weight: 700; line-height: 1.3; background: {{r.payBg}}; color: {{r.payFg}}">{{r.pay}}</span>
+                <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; line-height: 1.25">
+                  <span style="border-radius: 6px; padding: 2px 7px; font-size: 12px; font-weight: 700; white-space: nowrap; background: {{r.stBg}}; color: {{r.stFg}}">{{r.st}}</span>
+                  <span style="font-size: 12px; color: #5A6068; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%">{{r.stSub}}</span>
+                </span>
+              </button>
+            </sc-for>
+          </sc-for>
+        </div>
+        <div style="display: flex; justify-content: space-between; gap: 10px; padding: 9px 12px; border-top: 1px solid #D3D7DB; background: #F4F5F6; font-size: 13.5px; font-weight: 700; font-variant-numeric: tabular-nums">
+          <span>{{countLine}}</span>
+          <span>{{sumLine}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px; min-height: 0; overflow-y: auto">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+        <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 22px; line-height: 1">{{d.ref}}</span>
+        <span style="border-radius: 6px; padding: 3px 9px; font-size: 12.5px; font-weight: 700; background: {{d.stateBg}}; color: {{d.stateFg}}">{{d.state}}</span>
+      </div>
+      <span style="font-size: 13px; color: #5A6068; margin-top: -4px">{{d.when}}</span>
+
+      <div style="display: flex; flex-direction: column; gap: 1px; border: 1px solid #E3E6E9; border-radius: 10px; padding: 9px 11px">
+        <b style="font-size: 15px">{{d.client}}</b>
+        <span style="font-size: 13px; font-variant-numeric: tabular-nums">{{d.phone}}</span>
+        <span style="font-size: 13px; color: #3F454C">{{d.place}}</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column">
+        <sc-for list="{{d.lines}}" as="l" hint-placeholder-count="2">
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid #EEF0F2">
+            <span style="display: flex; flex-direction: column; min-width: 0; line-height: 1.3">
+              <span style="font-weight: 600">{{l.name}}</span>
+              <span style="font-size: 12.5px; color: #5A6068">{{l.vendor}}</span>
+            </span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums">{{l.price}}</span>
+          </div>
+        </sc-for>
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 6px 0; border-bottom: 1px solid #EEF0F2; font-size: 13.5px; color: #3F454C; font-variant-numeric: tabular-nums"><span>{{d.feeLabel}}</span><span>{{d.fee}}</span></div>
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 7px 0 0; font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums"><span>Total</span><span>{{d.total}}</span></div>
+      </div>
+
+      <div style="border-radius: 8px; padding: 8px 10px; font-size: 13px; font-weight: 600; line-height: 1.4; background: {{d.payBg}}; color: {{d.payFg}}">{{d.payText}}</div>
+
+      <span style="font-size: 13px; font-weight: 700; color: #5A6068; margin-top: 2px">{{d.parcelTitle}}</span>
+      <sc-for list="{{d.parcels}}" as="p" hint-placeholder-count="2">
+        <a href="BoLivraison.dc.html" style="display: flex; flex-direction: column; gap: 3px; border: 1px solid #D3D7DB; border-radius: 10px; padding: 8px 10px">
+          <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+            <b style="font-size: 13.5px; text-decoration: underline">{{p.ref}}</b>
+            <span style="border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 700; background: {{p.stBg}}; color: {{p.stFg}}">{{p.st}}</span>
+          </span>
+          <span style="font-size: 13px">{{p.route}}</span>
+          <span style="font-size: 12.5px; color: {{p.noteColor}}">{{p.note}}</span>
+        </a>
+      </sc-for>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <sc-if value="{{d.canMove}}" hint-placeholder-val="{{false}}">
+          <button onClick="{{move}}" style="min-height: 36px; border: 0; border-radius: 8px; padding: 0 12px; background: #F46A00; color: #15130F; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer">Passer à un livreur OCD</button>
+        </sc-if>
+        <sc-if value="{{d.canRetry}}" hint-placeholder-val="{{false}}">
+          <button onClick="{{retry}}" style="min-height: 36px; border: 0; border-radius: 8px; padding: 0 12px; background: #F46A00; color: #15130F; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer">Nouvelle tentative à 17:00</button>
+          <button onClick="{{refund}}" style="min-height: 36px; border: 1px solid #C4162A; border-radius: 8px; padding: 0 12px; background: #FFFFFF; color: #8E1220; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Annuler et rembourser</button>
+        </sc-if>
+        <a href="BoWhatsApp.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; font-size: 13px; font-weight: 700">{{d.waLabel}}</a>
+        <sc-if value="{{d.todo}}" hint-placeholder-val="{{true}}">
+          <a href="BoDispatch.dc.html" style="display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; font-size: 13px; font-weight: 700">Voir au dispatch</a>
+        </sc-if>
+      </div>
+
+      <span style="font-size: 13px; font-weight: 700; color: #5A6068; border-top: 1px solid #E3E6E9; padding-top: 10px">Historique</span>
+      <sc-for list="{{d.log}}" as="h" hint-placeholder-count="4">
+        <div style="display: grid; grid-template-columns: 42px 1fr; gap: 8px; font-size: 13px; line-height: 1.4">
+          <span style="color: #5A6068; font-variant-numeric: tabular-nums">{{h.t}}</span>
+          <span>{{h.x}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const sel = s.sel || "S00042";
+    const filter = s.filter || "all";
+    const moved = !!s.moved;
+    const retried = !!s.retried;
+    const refunded = !!s.refunded;
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const P = (ref, vendor, who, st, note) => ({ ref: ref, vendor: vendor, who: who, st: st, note: note });
+    const orders = [
+      { ref: "S00042", day: 1, time: "12:31", client: "Estelle Ngono", phone: "+237 6 70 00 00 00", place: "Akwa · en face de la pharmacie", lines: [["Robe en wax", "Brenda Wax", 1, 12000], ["Beurre de karité", "Fatou Karité", 2, 5000]], fee: 1000, pay: "momo",
+        parcels: [P("OUT/0042-A", "Brenda Wax", "Junior Ekwalla, livreur OCD", "route", "Récupéré chez Brenda à 14:20 · code envoyé à 14:21"), P("OUT/0042-B", "Fatou Karité", "Fatou Karité, elle livre", "ready", "Fatou part à 15:30")],
+        log: [["12:31", "Commande reçue sur le site."], ["12:31", "Paiement reçu par Campay : 18 000 F, MTN MoMo."], ["12:32", "2 colis créés. Brenda et Fatou prévenues sur WhatsApp."], ["14:21", "Colis 1 parti avec Junior : code envoyé à Estelle."], ["14:46", "Estelle demande l'heure d'arrivée sur WhatsApp."]] },
+      { ref: "S00043", day: 1, time: "12:38", client: "Cyrille Essomba", phone: "+237 6 77 00 00 43", place: "Kotto · immeuble à côté du lycée", lines: [["Robe de soirée", "Mireille Couture", 1, 25000]], fee: 1500, pay: "orange",
+        parcels: [P("OUT/0043", "Mireille Couture", "Mireille Couture, elle livre", "done", "Livré à 13:05 · code vérifié")],
+        log: [["12:38", "Commande reçue. Paiement Orange Money reçu : 26 500 F."], ["12:39", "Colis créé. Mireille prévenue sur WhatsApp."], ["12:50", "Mireille part livrer : code envoyé à Cyrille."], ["13:05", "Livré, code bon. Facture fournisseur de Mireille : 21 250 F + 1 500 F de livraison."]] },
+      { ref: "S00044", day: 1, time: "12:52", client: "Ruth Mbarga", phone: "+237 6 99 00 00 44", place: "Makepe · derrière l'école publique", lines: [["Jupe en wax", "Brenda Wax", 1, 8000]], fee: 1500, pay: "cod",
+        parcels: [P("OUT/0044", "Brenda Wax", "Junior Ekwalla, livreur OCD", "ready", "Junior passe chez Brenda à 15:30")],
+        log: [["12:52", "Commande reçue. Paiement à la livraison : 9 500 F."], ["12:53", "Colis créé. Brenda prévenue sur WhatsApp."], ["13:10", "Ruth demande si elle peut payer par MoMo à la porte : oui."], ["14:05", "Brenda : colis prêt. Junior assigné."]] },
+      { ref: "S00045", day: 1, time: "13:02", client: "Didier Nkotto", phone: "+237 6 55 00 00 45", place: "Bonabéri · à côté du carrefour", lines: [["Baskets blanches", "Patrick Sneakers", 1, 15000]], fee: 2500, pay: "cod",
+        parcels: [P("OUT/0045", "Patrick Sneakers", "Patrick Sneakers, il livre", "late", "Prêt depuis 13:40, pas encore parti")],
+        log: [["13:02", "Commande reçue. Paiement à la livraison : 17 500 F."], ["13:03", "Colis créé. Patrick prévenu sur WhatsApp."], ["13:40", "Patrick : colis prêt."], ["14:31", "Didier demande où en est sa commande."]] },
+      { ref: "S00046", day: 1, time: "13:20", client: "Linda Ekane", phone: "+237 6 79 00 00 46", place: "Bonapriso · portail bleu après l'église", lines: [["Coffret bijoux", "Carine Bijoux", 1, 18000]], fee: 1000, pay: "momo",
+        parcels: [P("OUT/0046", "Carine Bijoux", "Carine Bijoux, elle livre", "route", "Partie à 14:35 · code envoyé")],
+        log: [["13:20", "Commande reçue. Paiement MTN MoMo reçu : 19 000 F."], ["13:21", "Colis créé. Carine prévenue sur WhatsApp."], ["13:58", "Linda demande un mot pour un cadeau."], ["14:35", "Carine part livrer : code envoyé à Linda."]] },
+      { ref: "S00047", day: 1, time: "13:31", client: "Arnaud Tchoua", phone: "+237 6 96 00 00 47", place: "Ndokoti · immeuble jaune", lines: [["Coffret soins visage", "Grâce Cosmétiques", 1, 11000]], fee: 1500, pay: "card",
+        parcels: [P("OUT/0047", "Grâce Cosmétiques (stock OCD)", "Raoul Nyobe, livreur OCD", "problem", "Client injoignable après 2 appels · 1re tentative")],
+        log: [["13:31", "Commande reçue. Paiement par carte reçu : 12 500 F."], ["13:32", "Colis préparé au stock OCD. Raoul assigné."], ["13:55", "Raoul parti : code envoyé à Arnaud."], ["14:10", "Échec : client injoignable. Colis rapporté au stock."], ["14:12", "Arnaud répond sur WhatsApp : il peut recevoir après 17 h."]] },
+      { ref: "S00048", day: 1, time: "14:02", client: "Prisca Ngo Bayiha", phone: "+237 6 70 00 00 48", place: "Logpom · près de la boulangerie", lines: [["Foulard wax", "Brenda Wax", 2, 7000]], fee: 1500, pay: "momo",
+        parcels: [P("OUT/0048", "Brenda Wax", "Aucun livreur pour l'instant", "prep", "À assigner au dispatch")],
+        log: [["14:02", "Commande reçue. Paiement MTN MoMo reçu : 8 500 F."], ["14:03", "Colis créé. Brenda prévenue sur WhatsApp."]] },
+      { ref: "S00049", day: 1, time: "14:30", client: "Sandrine Fouda", phone: "+237 6 98 00 00 39", place: "Bonamoussadi · face au terrain de foot", lines: [["Beurre de karité", "Fatou Karité", 1, 2500]], fee: 1500, pay: "cod",
+        parcels: [P("OUT/0049", "Fatou Karité", "Fatou Karité, elle livre", "prep", "À préparer avant 18:30")],
+        log: [["14:30", "Commande reçue. Paiement à la livraison : 4 000 F."], ["14:31", "Colis créé. Fatou prévenue sur WhatsApp."]] },
+      { ref: "S00050", day: 1, time: "14:41", client: "Hervé Kuete", phone: "+237 6 94 00 00 50", place: "Bonabéri · après le pont, station de lavage", lines: [["Beurre de karité", "Fatou Karité", 2, 5000]], fee: 2500, pay: "orange",
+        parcels: [P("OUT/0050", "Fatou Karité", "Raoul Nyobe, livreur OCD", "prep", "Hors des zones de Fatou : Raoul passe chercher à 16:00")],
+        log: [["14:41", "Commande reçue. Paiement Orange Money reçu : 7 500 F."], ["14:42", "Bonabéri n'est pas dans les zones de Fatou : colis passé à un livreur OCD."], ["14:42", "Raoul assigné, Fatou prévenue."]] },
+      { ref: "S00038", day: 0, time: "08:50", client: "Yves Kamga", phone: "+237 6 75 00 00 38", place: "Deido · après la boulangerie", lines: [["Chemise wax homme", "Brenda Wax", 1, 10000]], fee: 1500, pay: "cashOcd",
+        parcels: [P("OUT/0038", "Brenda Wax", "Christian Mbida, livreur OCD", "done", "Livré mar. à 12:15 · code vérifié")],
+        log: [["lun.", "Commande reçue. Paiement à la livraison : 11 500 F."], ["mar.", "Christian récupère chez Brenda à 11:30."], ["12:15", "Livré, code bon. 11 500 F en espèces chez Christian."]] },
+      { ref: "S00039", day: 0, time: "09:20", client: "Sandrine Fouda", phone: "+237 6 98 00 00 39", place: "Bonamoussadi · face au terrain de foot", lines: [["Robe en wax", "Brenda Wax", 1, 12000]], fee: 1500, pay: "momo",
+        parcels: [P("OUT/0039", "Brenda Wax", "Junior Ekwalla, livreur OCD", "done", "Livré mar. à 11:42 · code vérifié")],
+        log: [["lun.", "Commande reçue. Paiement MTN MoMo reçu : 13 500 F."], ["11:42", "Livré, code bon. Facture fournisseur de Brenda : 10 200 F."]] },
+      { ref: "S00040", day: 0, time: "10:05", client: "Mariam Kouam", phone: "+237 6 90 00 00 40", place: "Bafoussam · Djeleng, près du marché", lines: [["Vase en terre cuite", "Aminata Déco", 1, 4500]], fee: 3500, pay: "orange",
+        parcels: [P("OUT/0040", "Aminata Déco", "Aminata Déco, elle livre", "done", "Livré lun. à 16:10 · code vérifié")],
+        log: [["10:05", "Commande reçue. Paiement Orange Money reçu : 8 000 F."], ["16:10", "Livré, code bon. Facture fournisseur d'Aminata : 3 825 F + 3 500 F."]] },
+      { ref: "S00041", day: 0, time: "11:30", client: "Serge Talla", phone: "+237 6 91 00 00 41", place: "Yaoundé · Bastos, face à l'ambassade", lines: [["Ventilateur de table", "Blaise Électro", 1, 8000]], fee: 2500, pay: "cashVendor",
+        parcels: [P("OUT/0041", "Blaise Électro", "Blaise Électro, il livre", "done", "Livré lun. à 17:20 · code vérifié")],
+        log: [["11:30", "Commande reçue. Paiement à la livraison : 10 500 F."], ["17:20", "Livré, code bon. Blaise a encaissé 10 500 F : commission retenue sur son reversement."]] }
+    ];
+    const ST = { prep: ["À préparer", "#EEF0F2", "#3F454C"], ready: ["Prêt", "#FFF0CC", "#6B4500"], route: ["En route", "#FFE7D1", "#7A3A00"], done: ["Livré", "#DCF2E5", "#0A5A31"], late: ["En retard", "#FCE4E4", "#8E1220"], problem: ["Problème", "#FCE4E4", "#8E1220"], retry: ["Nouvelle tentative", "#FFF0CC", "#6B4500"], cancel: ["Annulé", "#EEF0F2", "#3F454C"] };
+    const PAY = { momo: ["Payé · MTN MoMo", "#DCF2E5", "#0A5A31"], orange: ["Payé · Orange Money", "#DCF2E5", "#0A5A31"], card: ["Payé · carte", "#DCF2E5", "#0A5A31"], cod: ["À la livraison", "#FFF0CC", "#6B4500"], cashOcd: ["Espèces · livreur OCD", "#EEF0F2", "#3F454C"], cashVendor: ["Espèces · vendeur", "#EEF0F2", "#3F454C"], refund: ["À rembourser", "#FCE4E4", "#8E1220"] };
+    const list = orders.map((o) => {
+      const c = Object.assign({}, o, { parcels: o.parcels.map((p) => Object.assign({}, p)), log: o.log.slice() });
+      if (c.ref === "S00045" && moved) {
+        c.parcels[0].who = "Raoul Nyobe, livreur OCD";
+        c.parcels[0].st = "ready";
+        c.parcels[0].note = "Raoul passe chercher chez Patrick · Didier et Patrick prévenus";
+        c.log.push(["14:52", "Colis passé à Raoul, livreur OCD, par Régie OCD."]);
+      }
+      if (c.ref === "S00047" && refunded) {
+        c.parcels[0].st = "cancel";
+        c.parcels[0].note = "Colis remis au stock OCD";
+        c.pay = "refund";
+        c.log.push(["14:52", "Commande annulée. Avoir de 12 500 F créé, Arnaud prévenu sur WhatsApp."]);
+      } else if (c.ref === "S00047" && retried) {
+        c.parcels[0].st = "retry";
+        c.parcels[0].note = "2e tentative à 17:00 avec Raoul · Arnaud prévenu";
+        c.log.push(["14:52", "Nouvelle tentative à 17:00. Arnaud prévenu sur WhatsApp."]);
+      }
+      c.goods = c.lines.reduce((a, l) => a + l[3], 0);
+      c.total = c.goods + c.fee;
+      c.todo = c.parcels.some((p) => p.st !== "done" && p.st !== "cancel");
+      c.issue = c.parcels.some((p) => p.st === "late" || p.st === "problem");
+      c.cod = c.pay === "cod" || c.pay === "cashOcd" || c.pay === "cashVendor";
+      return c;
+    });
+    const keep = (o) => filter === "all" || (filter === "todo" && o.todo) || (filter === "issue" && o.issue) || (filter === "cod" && o.cod);
+    const shown = list.filter(keep);
+    const rowOf = (o) => {
+      const on = o.ref === sel;
+      let stLabel, stBg, stFg, stSub;
+      if (o.parcels.length === 1) {
+        const p = o.parcels[0];
+        stLabel = ST[p.st][0]; stBg = ST[p.st][1]; stFg = ST[p.st][2];
+        stSub = p.who.split(",")[0];
+      } else {
+        stLabel = o.parcels.length + " colis"; stBg = "#EEF0F2"; stFg = "#3F454C";
+        stSub = o.parcels.map((p) => ST[p.st][0].toLowerCase()).join(" · ");
+      }
+      const vendors = [];
+      o.lines.forEach((l) => { if (vendors.indexOf(l[1]) < 0) vendors.push(l[1]); });
+      return {
+        ref: o.ref, time: o.time, client: o.client, place: o.place.split(" · ")[0],
+        vendor: vendors.join(", "), total: fr(o.total),
+        pay: PAY[o.pay][0], payBg: PAY[o.pay][1], payFg: PAY[o.pay][2],
+        st: stLabel, stBg: stBg, stFg: stFg, stSub: stSub,
+        on: on, bg: on ? "#FFF6EC" : "#FFFFFF", mark: on ? "#F46A00" : "transparent",
+        pick: () => this.setState({ sel: o.ref })
+      };
+    };
+    const groups = [[1, "Mardi 1er déc. · aujourd'hui"], [0, "Lundi 30 nov."]].map((g) => {
+      const rows = shown.filter((o) => o.day === g[0]);
+      const sum = rows.reduce((a, o) => a + o.total, 0);
+      return { label: g[1], sum: rows.length + (rows.length > 1 ? " commandes · " : " commande · ") + fr(sum), rows: rows.map(rowOf), n: rows.length };
+    }).filter((g) => g.n > 0);
+    const count = (f) => list.filter((o) => f === "all" || (f === "todo" && o.todo) || (f === "issue" && o.issue) || (f === "cod" && o.cod)).length;
+    const filters = [["all", "Toutes"], ["todo", "À livrer"], ["issue", "Retard ou problème"], ["cod", "Payées à la livraison"]].map((f) => {
+      const on = filter === f[0];
+      return { label: f[1] + " · " + count(f[0]), on: on, bd: on ? "#15130F" : "#AEB4BA", bg: on ? "#15130F" : "#FFFFFF", fg: on ? "#FFFFFF" : "#15130F", pick: () => this.setState({ filter: f[0] }) };
+    });
+    const o = list.filter((x) => x.ref === sel)[0] || list[0];
+    const first = o.client.split(" ")[0];
+    let state = ["Livrée", "#DCF2E5", "#0A5A31"];
+    if (o.pay === "refund") state = ["Annulée · à rembourser", "#FCE4E4", "#8E1220"];
+    else if (o.issue) state = ["À surveiller", "#FCE4E4", "#8E1220"];
+    else if (o.todo) state = ["En cours de livraison", "#FFF0CC", "#6B4500"];
+    const payTexts = {
+      momo: "Payé en ligne par MTN MoMo (Campay) : " + fr(o.total) + ".",
+      orange: "Payé en ligne par Orange Money (Campay) : " + fr(o.total) + ".",
+      card: "Payé en ligne par carte (Campay) : " + fr(o.total) + ".",
+      cod: "À encaisser à la porte : " + fr(o.total) + ". Mobile Money ou espèces.",
+      cashOcd: "Payé en espèces au livreur : " + fr(o.total) + ". À remettre à la caisse avant 20:00.",
+      cashVendor: "Payé en espèces au vendeur : " + fr(o.total) + ". La commission OCD est retenue sur son reversement.",
+      refund: "Avoir de " + fr(o.total) + " créé. Remboursement à faire depuis Campay vers le moyen de paiement du client."
+    };
+    const d = {
+      ref: o.ref,
+      state: state[0], stateBg: state[1], stateFg: state[2],
+      when: (o.day === 1 ? "Mardi 1er déc. à " : "Lundi 30 nov. à ") + o.time + " · shop OCD · vendu par OCD",
+      client: o.client, phone: o.phone, place: o.place,
+      lines: o.lines.map((l) => ({ name: l[0] + (l[2] > 1 ? " × " + l[2] : ""), vendor: l[1] + " · sa part " + fr(Math.round(l[3] * 0.85)), price: fr(l[3]) })),
+      feeLabel: "Livraison · " + o.place.split(" · ")[0],
+      fee: fr(o.fee),
+      total: fr(o.total),
+      payText: payTexts[o.pay],
+      payBg: PAY[o.pay][1], payFg: PAY[o.pay][2],
+      parcelTitle: o.parcels.length > 1 ? o.parcels.length + " colis, un par vendeur" : "1 colis",
+      parcels: o.parcels.map((p) => ({ ref: p.ref, st: ST[p.st][0], stBg: ST[p.st][1], stFg: ST[p.st][2], route: p.vendor + " → " + p.who, note: p.note, noteColor: p.st === "late" || p.st === "problem" ? "#8E1220" : "#5A6068" })),
+      canMove: o.ref === "S00045" && !moved,
+      canRetry: o.ref === "S00047" && !retried && !refunded,
+      todo: o.todo,
+      waLabel: "Écrire à " + first + " sur WhatsApp",
+      log: o.log.map((h) => ({ t: h[0], x: h[1] }))
+    };
+    const total = shown.reduce((a, x) => a + x.total, 0);
+    return {
+      filters: filters,
+      groups: groups,
+      countLine: shown.length + (shown.length > 1 ? " commandes" : " commande"),
+      sumLine: "Total " + fr(total),
+      d: d,
+      move: () => this.setState({ moved: true }),
+      retry: () => this.setState({ retried: true }),
+      refund: () => this.setState({ refunded: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

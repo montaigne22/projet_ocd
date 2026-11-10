@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Automatisations OCD Live</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="config" sub="auto" title="Automatisations" crumb="" facets="" views="list,kanban" view="list" pager="1-18 / 18" action="Nouveau" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 14px; padding: 14px 22px">
+    <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0">
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{kinds}}" as="k" hint-placeholder-count="3">
+          <span style="display: inline-flex; align-items: center; gap: 7px; border-radius: 8px; padding: 5px 10px; background: #FFFFFF; border: 1px solid #D3D7DB; font-size: 13px"><span style="border-radius: 5px; padding: 0 6px; font-size: 12px; font-weight: 700; background: {{k.bg}}; color: {{k.fg}}">{{k.n}}</span>{{k.label}}</span>
+        </sc-for>
+      </div>
+      <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 132px 84px 92px; gap: 10px; align-items: center; padding: 9px 14px; background: #F4F5F6; border-bottom: 1px solid #D3D7DB; font-size: 12.5px; font-weight: 700; color: #3F454C">
+          <span>Quand… alors…</span><span>Fonctionne par</span><span style="text-align: right">7 derniers jours</span><span style="text-align: right">Active</span>
+        </div>
+        <div style="flex: 1; min-height: 0; overflow-y: auto">
+          <sc-for list="{{groups}}" as="g" hint-placeholder-count="6">
+            <div style="padding: 6px 14px; background: #FAFAFB; border-bottom: 1px solid #EEF0F2; font-size: 13px; font-weight: 800">{{g.label}}</div>
+            <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
+              <div style="display: grid; grid-template-columns: minmax(0, 1fr) 132px 84px 92px; gap: 10px; align-items: center; padding: 0 14px 0 0; border-bottom: 1px solid #EEF0F2; background: {{r.bg}}; box-shadow: inset 3px 0 0 {{r.mark}}">
+                <button onClick="{{r.pick}}" aria-pressed="{{r.on}}" style="display: flex; flex-direction: column; gap: 1px; min-width: 0; padding: 7px 0 7px 14px; border: 0; background: transparent; font-family: inherit; color: #15130F; text-align: left; cursor: pointer; line-height: 1.3">
+                  <span style="font-size: 14px; font-weight: 700; opacity: {{r.op}}">{{r.name}}</span>
+                  <span style="font-size: 12.5px; color: #5A6068">{{r.when}}</span>
+                </button>
+                <span style="justify-self: start; border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 700; white-space: nowrap; background: {{r.engBg}}; color: {{r.engFg}}">{{r.eng}}</span>
+                <span style="text-align: right; font-size: 13.5px; font-variant-numeric: tabular-nums">{{r.runs}}</span>
+                <span style="display: flex; justify-content: flex-end; align-items: center; gap: 6px">
+                  <sc-if value="{{r.locked}}" hint-placeholder-val="{{false}}">
+                    <span style="font-size: 12px; font-weight: 700; color: #5A6068">Toujours</span>
+                  </sc-if>
+                  <input type="checkbox" role="switch" aria-label="{{r.aria}}" checked="{{r.active}}" disabled="{{r.locked}}" onChange="{{r.toggle}}" style="width: 18px; height: 18px; accent-color: #0F7A43; margin: 0">
+                </span>
+              </div>
+            </sc-for>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px; min-height: 0; overflow-y: auto">
+      <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 19px; line-height: 1.2">{{d.name}}</span>
+      <span style="display: flex; flex-wrap: wrap; gap: 6px">
+        <span style="border-radius: 6px; padding: 1px 8px; font-size: 12px; font-weight: 700; background: {{d.engBg}}; color: {{d.engFg}}">{{d.eng}}</span>
+        <span style="border-radius: 6px; padding: 1px 8px; font-size: 12px; font-weight: 700; background: #F4F5F6; border: 1px solid #D3D7DB">Sur : {{d.model}}</span>
+        <span style="border-radius: 6px; padding: 1px 8px; font-size: 12px; font-weight: 700; background: {{d.stBg}}; color: {{d.stFg}}">{{d.st}}</span>
+      </span>
+      <div style="display: flex; flex-direction: column; gap: 2px; border-top: 1px solid #E3E6E9; padding-top: 10px">
+        <span style="font-size: 12.5px; font-weight: 700; color: #5A6068">Quand</span>
+        <span style="font-size: 14px">{{d.trigger}}</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 12.5px; font-weight: 700; color: #5A6068">Pour</span>
+        <span style="font-size: 14px">{{d.scope}}</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 12.5px; font-weight: 700; color: #5A6068">Alors, dans l'ordre</span>
+        <sc-for list="{{d.actions}}" as="a" hint-placeholder-count="3">
+          <div style="display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: start">
+            <span style="width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #15130F; color: #FFFFFF; font-size: 12px; font-weight: 800">{{a.n}}</span>
+            <span style="font-size: 13.5px; line-height: 1.4; padding-top: 2px">{{a.x}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{d.hasWarn}}" hint-placeholder-val="{{false}}">
+        <div style="border-radius: 8px; padding: 8px 10px; background: #FFF0CC; color: #6B4500; font-size: 13px; font-weight: 600; line-height: 1.4">{{d.warn}}</div>
+      </sc-if>
+      <div style="display: flex; flex-direction: column; gap: 2px; border-top: 1px solid #E3E6E9; padding-top: 10px">
+        <span style="font-size: 12.5px; font-weight: 700; color: #5A6068">Historique</span>
+        <span style="font-size: 13.5px">{{d.history}}</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 12.5px; font-weight: 700; color: #5A6068">Fait avec</span>
+        <span style="font-size: 13.5px">{{d.tools}}</span>
+      </div>
+      <span style="margin-top: auto; font-size: 12px; color: #5A6068; line-height: 1.4">{{d.foot}}</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const sel = s.sel || "s2";
+    const off = s.off || {};
+    const R = (id, g, eng, name, when, model, trigger, scope, actions, runs, last, tools, warn) => ({ id: id, g: g, eng: eng, name: name, when: when, model: model, trigger: trigger, scope: scope, actions: actions, runs: runs, last: last, tools: tools, warn: warn || "" });
+    const WA = "Automatisations d'Odoo et l'action « Envoyer un WhatsApp » du module whatsapp_cloud";
+    const rules = [
+      R("l1", "lives", "rule", "Réservation payée : prévenir tout le monde", "Le paiement d'une réservation arrive", "Réservation de live", "Quand « Payée » passe à oui.", "Toutes les réservations.", ["WhatsApp au vendeur, modèle reservation_confirmee.", "Message dans le canal Discuss # lives.", "Événement ajouté au calendrier du studio.", "Si le live est à distance : activité « Choisir l'animatrice » pour la régie."], 41, "14:38, Fatou Karité, sam. 5 déc.", WA + ", Discuss, Calendrier."),
+      R("l2", "lives", "rule", "Créneau gardé mais pas payé : le libérer", "30 minutes sans paiement", "Réservation de live", "30 minutes après « Gardé depuis ».", "Réservations encore « En attente de paiement ».", ["Libérer le créneau dans le calendrier.", "WhatsApp au premier de la liste d'attente, modèle creneau_libre."], 6, "13:42", WA + "."),
+      R("l3", "lives", "cron", "Veille du live : rappel au vendeur", "Chaque jour à 18:00, pour les lives du lendemain", "Réservation de live", "Chaque jour à 18:00.", "Lives du lendemain, au studio ou à distance.", ["WhatsApp au vendeur, modèle rappel_live : heure, adresse du studio ou lien du live."], 37, "lun. à 18:00", "Action planifiée d'Odoo et whatsapp_cloud."),
+      R("l4", "lives", "rule", "Live à distance sans animatrice", "Réservation payée sans animatrice, puis 24 h avant", "Réservation de live", "À la confirmation, puis 24 heures avant le début si personne n'est choisi.", "Lives à distance sans animatrice.", ["Activité urgente « Choisir l'animatrice » pour la régie.", "Message dans le canal Discuss # lives."], 3, "14:38, Fatou Karité, sam. 5 déc.", "Automatisations, Activités et Discuss d'Odoo."),
+      R("a1", "annuaire", "rule", "Lien reçu hors des heures de vérification", "Lien envoyé hors de 8–11 h et 18–21 h", "Lien de live", "À la création du lien.", "Liens reçus hors des fenêtres de vérification.", ["Mettre le lien en attente jusqu'à la prochaine fenêtre.", "Afficher l'heure de vérification au vendeur sur le site.", "WhatsApp au vendeur, modèle lien_recu."], 18, "14:05", WA + ".", "Le modèle lien_recu attend l'accord de Meta. En attendant, l'heure s'affiche seulement sur le site."),
+      R("a2", "annuaire", "rule", "Lien refusé : prévenir avec le motif", "L'équipe refuse un lien", "Lien de live", "Quand l'état passe à « Refusé ».", "Tous les liens refusés.", ["WhatsApp au vendeur, modèle lien_refuse, avec le motif choisi par l'équipe."], 4, "11:02", WA + "."),
+      R("a3", "annuaire", "rule", "Pass qui se termine bientôt", "3 jours avant la fin du pass", "Pass annuaire", "3 jours avant « Fin du pass ».", "Pass actifs.", ["WhatsApp au vendeur, modèle pass_expire, avec un lien de paiement Campay de 5 000 F."], 9, "08:00", WA + " et payment_campay."),
+      R("s1", "shop", "code", "Commande confirmée : un colis par vendeur", "Commande payée, ou confirmée pour paiement à la livraison", "Commande", "Quand la commande passe à « Confirmée ».", "Commandes du shop vendues par OCD.", ["Créer un colis par vendeur.", "Choisir qui livre selon la fiche du vendeur et ses zones : lui-même, un livreur OCD, ou le stock OCD.", "WhatsApp au client, modèle commande_confirmee.", "WhatsApp à chaque vendeur, modèle colis_a_preparer."], 13, "14:41, S00050", "Module ocd_live (code testé), Ventes, Inventaire et whatsapp_cloud_sale."),
+      R("s2", "shop", "rule", "Colis pas prêt après 4 h : relancer le vendeur", "4 heures après la création du colis", "Colis", "4 heures après « Créé le ».", "Colis encore « À préparer », livrés ou remis par un vendeur.", ["WhatsApp au vendeur : rappel du colis à préparer.", "Noter « Relancé » sur le colis."], 5, "12:15, OUT/0037", WA + "."),
+      R("s3", "shop", "rule", "Toujours pas prêt : alerter le dispatch", "2 heures après la relance", "Colis", "6 heures après « Créé le ».", "Colis relancés et toujours « À préparer ».", ["Activité urgente pour le dispatch.", "Message dans le canal Discuss # livraisons.", "Afficher le bouton « Passer à un livreur OCD » sur le colis."], 2, "lun. à 17:10", "Automatisations, Activités et Discuss d'Odoo."),
+      R("s4", "shop", "code", "Colis parti : envoyer le code au client", "Le colis passe à « En route »", "Colis", "Quand l'étape passe à « En route ».", "Tous les colis.", ["Créer un code à 4 chiffres, différent pour chaque colis.", "WhatsApp au client, modèle livraison_en_route, avec le code.", "Masquer le code pour l'équipe et le livreur."], 9, "14:35, OUT/0046", "Module ocd_live et whatsapp_cloud."),
+      R("s5", "shop", "code", "3 codes faux : bloquer le colis", "Au 3e code faux saisi", "Colis", "Au 3e essai faux.", "Tous les colis.", ["Bloquer le colis : plus possible de le passer à « Livré ».", "Activité urgente pour le responsable.", "Message dans le canal Discuss # livraisons."], 0, "jamais encore", "Module ocd_live."),
+      R("s6", "shop", "code", "2e échec de livraison : retour", "Deux tentatives ratées", "Colis", "Quand « Tentatives ratées » atteint 2.", "Tous les colis.", ["Créer le retour vers le vendeur ou vers le stock OCD.", "Si le client a payé en ligne : créer l'avoir à rembourser.", "WhatsApp au client et au vendeur."], 1, "lun. à 16:40", "Module ocd_live, Inventaire, Facturation et whatsapp_cloud."),
+      R("m1", "argent", "code", "Colis livré : la part du vendeur", "Le colis passe à « Livré » avec le bon code", "Colis", "Quand le colis passe à « Livré », code vérifié.", "Colis vendus par OCD.", ["Créer la facture fournisseur du vendeur : sa part, plus les frais de livraison s'il a livré.", "Si le vendeur a encaissé l'argent : noter la commission à retenir sur son reversement.", "2 heures après : WhatsApp au client, modèle livraison_effectuee, pour la note."], 12, "13:05, OUT/0043", "Module ocd_live, Achats, Facturation et whatsapp_cloud_sale."),
+      R("m2", "argent", "cron", "20:00 : espèces pas encore remises", "Chaque jour à 20:00", "Livreur", "Chaque jour à 20:00.", "Livreurs OCD avec des espèces sur eux.", ["Activité urgente pour le responsable, avec le montant.", "WhatsApp au livreur."], 1, "lun. à 20:00", "Action planifiée d'Odoo, Facturation (journal « Caisse livreurs ») et whatsapp_cloud."),
+      R("r1", "recrut", "rule", "Nouvelle candidature d'animatrice", "Une candidature arrive", "Candidature", "À la création.", "Candidatures de l'offre « Animatrice live ».", ["WhatsApp à la candidate, modèle recrutement_reponse : bien reçu.", "Activité « Regarder la vidéo » pour la régie."], 4, "10:20, Akossiwa A.", "Recrutement, Activités et whatsapp_cloud.", "Le modèle recrutement_reponse attend l'accord de Meta. En attendant, seule l'activité est créée."),
+      R("c1", "plan", "cron", "Paiements Campay en attente", "Toutes les 10 minutes", "Paiement", "Toutes les 10 minutes.", "Paiements Campay pas encore confirmés.", ["Demander à Campay l'état du paiement.", "Confirmer la commande ou la réservation si le paiement est passé."], 1008, "14:50", "Module payment_campay (tâche fournie par le module)."),
+      R("c2", "plan", "cron", "Préparer les reversements du lundi", "Chaque dimanche à 20:00", "Facture fournisseur", "Chaque dimanche à 20:00.", "Factures fournisseurs des colis confirmés par code.", ["Additionner les factures de la semaine par vendeur.", "Retirer les commissions dues et les retours.", "Préparer les reversements en brouillon pour l'équipe."], 1, "dim. à 20:00", "Module ocd_live, Achats et Facturation.")
+    ];
+    const ENG = { rule: ["Règle modifiable", "#E3EEF9", "#0B4A82"], cron: ["Heure fixe", "#EEF0F2", "#3F454C"], code: ["Code ocd_live", "#15130F", "#FFFFFF"] };
+    const groupsDef = [["lives", "Lives"], ["annuaire", "Annuaire"], ["shop", "Shop et livraisons"], ["argent", "Argent"], ["recrut", "Recrutement"], ["plan", "Tâches techniques"]];
+    const isLocked = (r) => r.eng === "code" || r.g === "plan";
+    const isActive = (r) => isLocked(r) || !off[r.id];
+    const groups = groupsDef.map((g) => ({
+      label: g[1],
+      rows: rules.filter((r) => r.g === g[0]).map((r) => {
+        const on = r.id === sel;
+        const active = isActive(r);
+        return {
+          name: r.name,
+          when: r.when,
+          eng: ENG[r.eng][0], engBg: ENG[r.eng][1], engFg: ENG[r.eng][2],
+          runs: r.runs === 0 ? "0" : String(r.runs).replace(/\B(?=(\d{3})+(?!\d))/g, " "),
+          locked: isLocked(r),
+          active: active,
+          op: active ? "1" : "0.55",
+          aria: (active ? "Mettre en pause : " : "Réactiver : ") + r.name,
+          on: on,
+          bg: on ? "#FFF6EC" : "#FFFFFF",
+          mark: on ? "#F46A00" : "transparent",
+          pick: () => this.setState({ sel: r.id }),
+          toggle: () => {
+            if (isLocked(r)) return;
+            const next = Object.assign({}, off);
+            next[r.id] = !off[r.id];
+            this.setState({ off: next, sel: r.id });
+          }
+        };
+      })
+    }));
+    const count = (e) => rules.filter((r) => r.eng === e && r.g !== "plan").length;
+    const kinds = [
+      { n: count("rule"), label: "règles que l'équipe peut modifier ou mettre en pause", bg: ENG.rule[1], fg: ENG.rule[2] },
+      { n: count("cron"), label: "à heure fixe", bg: ENG.cron[1], fg: ENG.cron[2] },
+      { n: count("code"), label: "dans le code, car elles touchent à l'argent ou aux preuves", bg: ENG.code[1], fg: ENG.code[2] }
+    ];
+    const r = rules.filter((x) => x.id === sel)[0] || rules[0];
+    const active = isActive(r);
+    const pausedWarn = isLocked(r) ? "" : !active ? "En pause : plus rien ne part pour cette règle. L'équipe doit faire ces actions à la main." : "";
+    const warn = pausedWarn || r.warn;
+    const d = {
+      name: r.name,
+      eng: ENG[r.eng][0], engBg: ENG[r.eng][1], engFg: ENG[r.eng][2],
+      model: r.model,
+      st: isLocked(r) ? "Toujours active" : active ? "Active" : "En pause",
+      stBg: active ? "#DCF2E5" : "#FCE4E4",
+      stFg: active ? "#0A5A31" : "#8E1220",
+      trigger: r.trigger,
+      scope: r.scope,
+      actions: r.actions.map((x, i) => ({ n: String(i + 1), x: x })),
+      hasWarn: warn.length > 0,
+      warn: warn,
+      history: (r.runs === 0 ? "Aucune exécution sur 7 jours." : String(r.runs).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " exécutions sur 7 jours. Dernière : " + r.last + "."),
+      tools: r.tools,
+      foot: r.g === "plan" ? "Tâche technique indispensable : toujours active." : r.eng === "code" ? "Cette règle protège l'argent ou la preuve de livraison : elle est écrite et testée dans le module ocd_live, l'équipe ne peut pas la couper." : r.eng === "cron" ? "Tâche planifiée : l'heure se change dans Paramètres, sans toucher au code." : "Règle créée dans Odoo, menu Automatisations. L'équipe peut changer le texte, le délai ou la mettre en pause."
+    };
+    return { kinds: kinds, groups: groups, d: d };
+  }
+}
+</script>
+</body>
+</html>

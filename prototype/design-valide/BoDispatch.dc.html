@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Dispatch des livraisons</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="livraisons" sub="dispatch" title="Dispatch" crumb="" facets="Aujourd'hui|Douala" views="kanban,list,calendar,pivot,graph,activity" view="kanban" pager="1-12 / 12" action="Nouvelle livraison" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 292px; gap: 16px; padding: 14px 22px">
+    <div style="min-width: 0; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <div role="group" aria-label="Qui livre" style="display: flex; border: 1px solid #AEB4BA; border-radius: 8px; overflow: hidden; background: #FFFFFF">
+          <sc-for list="{{filters}}" as="f" hint-placeholder-count="3">
+            <button onClick="{{f.pick}}" aria-pressed="{{f.on}}" style="min-height: 34px; padding: 0 12px; border: 0; border-left: 1px solid {{f.sep}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; background: {{f.bg}}; color: {{f.fg}}">{{f.label}}</button>
+          </sc-for>
+        </div>
+        <span style="font-size: 13px; color: #5A6068">Regroupé par état · mar. 1er déc., 14:50</span>
+        <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #8E1220"><span style="width: 8px; height: 8px; border-radius: 50%; background: #C4162A"></span>{{alertLine}}</span>
+      </div>
+
+      <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{cols}}" as="col" hint-placeholder-count="5">
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow-y: auto">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 2px 2px 0">
+              <span style="font-weight: 700; font-size: 14px">{{col.label}}</span>
+              <span style="min-width: 22px; box-sizing: border-box; padding: 0 7px; border-radius: 11px; background: #E3E6E9; font-size: 12px; font-weight: 700; line-height: 22px; text-align: center">{{col.count}}</span>
+            </div>
+            <sc-if value="{{col.empty}}" hint-placeholder-val="{{false}}">
+              <div style="border: 1px dashed #AEB4BA; border-radius: 10px; padding: 14px 10px; font-size: 12.5px; color: #5A6068; text-align: center">Aucun colis</div>
+            </sc-if>
+            <sc-for list="{{col.cards}}" as="c" hint-placeholder-count="2">
+              <div style="display: flex; flex-direction: column; gap: 5px; background: #FFFFFF; border: 1px solid {{c.bd}}; border-radius: 10px; padding: 10px 11px">
+                <div style="display: flex; align-items: center; gap: 6px">
+                  <a href="BoLivraison.dc.html" style="font-weight: 700; font-size: 13px; text-decoration: underline; white-space: nowrap">{{c.ref}}</a>
+                  <span style="margin-left: auto; border-radius: 6px; padding: 1px 6px; font-size: 11px; font-weight: 700; white-space: nowrap; background: {{c.tagBg}}; color: {{c.tagFg}}">{{c.tag}}</span>
+                </div>
+                <span style="font-weight: 700; font-size: 13.5px; line-height: 1.25">{{c.client}}</span>
+                <span style="font-size: 12.5px; color: #5A6068; line-height: 1.3">{{c.place}}</span>
+                <span style="font-size: 12.5px; line-height: 1.3">{{c.items}}<span style="color: #5A6068"> · {{c.vendor}}</span></span>
+                <span style="align-self: flex-start; border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 700; background: {{c.moneyBg}}; color: {{c.moneyFg}}">{{c.money}}</span>
+                <span style="font-size: 12px; line-height: 1.3; color: {{c.noteColor}}">{{c.note}}</span>
+                <div style="display: flex; align-items: center; gap: 7px; border-top: 1px solid #EEF0F2; padding-top: 7px">
+                  <span aria-hidden="true" style="width: 26px; height: 26px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 10.5px; font-weight: 800; background: {{c.avBg}}; color: {{c.avFg}}">{{c.ini}}</span>
+                  <span style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 12.5px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{c.whoLabel}}</span><span style="font-size: 11.5px; color: #5A6068">{{c.byLabel}}</span></span>
+                </div>
+                <sc-if value="{{c.canAssign}}" hint-placeholder-val="{{false}}">
+                  <select value="{{c.assignValue}}" onChange="{{c.assign}}" aria-label="{{c.assignAria}}" style="height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 6px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 12.5px; font-weight: 600">
+                    <option value="">Choisir un livreur…</option>
+                    <option value="Junior Ekwalla">Junior Ekwalla</option>
+                    <option value="Raoul Nyobe">Raoul Nyobe</option>
+                    <option value="Christian Mbida">Christian Mbida</option>
+                  </select>
+                </sc-if>
+                <sc-if value="{{c.canReassign}}" hint-placeholder-val="{{false}}">
+                  <button onClick="{{c.reassign}}" style="min-height: 32px; border: 0; border-radius: 7px; padding: 0 8px; background: #15130F; color: #FFFFFF; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer">Passer à un livreur OCD</button>
+                </sc-if>
+                <sc-if value="{{c.canRetry}}" hint-placeholder-val="{{false}}">
+                  <button onClick="{{c.retry}}" style="min-height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 8px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer">Nouvelle tentative à 17:00</button>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <aside style="min-width: 0; display: flex; flex-direction: column; gap: 10px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px; overflow-y: auto">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 15.5px">Livreurs OCD aujourd'hui</h2>
+      <sc-for list="{{couriers}}" as="k" hint-placeholder-count="3">
+        <div style="display: grid; grid-template-columns: 30px 1fr; gap: 9px; align-items: start; padding-bottom: 9px; border-bottom: 1px solid #EEF0F2">
+          <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 50%; background: #15130F; color: #FFFFFF; display: grid; place-items: center; font-size: 11px; font-weight: 800">{{k.ini}}</span>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+            <span style="display: flex; align-items: center; gap: 6px"><b style="font-size: 13.5px">{{k.name}}</b><span style="border-radius: 6px; padding: 0 6px; font-size: 11px; font-weight: 700; background: {{k.stBg}}; color: {{k.stFg}}">{{k.status}}</span></span>
+            <span style="font-size: 12.5px; color: #3F454C">{{k.summary}}</span>
+            <span style="font-size: 12.5px; font-weight: 700; color: {{k.cashColor}}">{{k.cash}}</span>
+          </span>
+        </div>
+      </sc-for>
+      <h2 style="margin: 4px 0 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 15.5px">Vendeurs qui livrent</h2>
+      <sc-for list="{{sellers}}" as="v" hint-placeholder-count="4">
+        <div style="display: grid; grid-template-columns: 30px 1fr; gap: 9px; align-items: center">
+          <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 50%; background: #FFE7D1; color: #15130F; display: grid; place-items: center; font-size: 11px; font-weight: 800">{{v.ini}}</span>
+          <span style="display: flex; flex-direction: column; min-width: 0"><b style="font-size: 13.5px">{{v.name}}</b><span style="font-size: 12.5px; color: {{v.color}}">{{v.summary}}</span></span>
+        </div>
+      </sc-for>
+      <a href="BoLivreurs.dc.html" style="margin-top: auto; display: flex; align-items: center; justify-content: center; min-height: 38px; border-radius: 8px; border: 1px solid #AEB4BA; font-size: 13px; font-weight: 700">Caisse des livreurs</a>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const filter = s.filter || "all";
+    const assign = s.assign || "";
+    const reassigned = !!s.reassigned;
+    const retried = !!s.retried;
+    const raw = [
+      { ref: "OUT/0048", client: "Prisca Ngo Bayiha", place: "Logpom · près de la boulangerie", items: "Foulard wax × 2", vendor: "Brenda Wax", by: "ocd", who: assign, money: "Payé en ligne", mk: "paid", col: "prep", note: assign ? "Récupération chez Brenda dès qu'elle a préparé" : "Aucun livreur : choisis-en un", canAssign: true },
+      { ref: "OUT/0049", client: "Sandrine Fouda", place: "Bonamoussadi · face au terrain de foot", items: "Beurre de karité", vendor: "Fatou Karité", by: "vendor", who: "Fatou Karité", money: "À encaisser 4 000 F", mk: "cod", col: "prep", note: "À préparer avant 18:30" },
+      { ref: "OUT/0050", client: "Hervé Kuete", place: "Bonabéri · après le pont, station de lavage", items: "Beurre de karité × 2", vendor: "Fatou Karité", by: "ocd", who: "Raoul Nyobe", money: "Payé en ligne", mk: "paid", col: "prep", note: "Hors des zones de Fatou : Raoul passe chercher à 16:00" },
+      { ref: "OUT/0042-B", client: "Estelle Ngono", place: "Akwa · en face de la pharmacie", items: "Beurre de karité × 2", vendor: "Fatou Karité", by: "vendor", who: "Fatou Karité", money: "Payé en ligne", mk: "paid", col: "ready", note: "Fatou part à 15:30" },
+      { ref: "OUT/0044", client: "Ruth Mbarga", place: "Makepe · derrière l'école publique", items: "Jupe en wax", vendor: "Brenda Wax", by: "ocd", who: "Junior Ekwalla", money: "À encaisser 9 500 F", mk: "cod", col: "ready", note: "Junior passe chez Brenda à 15:30" },
+      reassigned
+        ? { ref: "OUT/0045", client: "Didier Nkotto", place: "Bonabéri · à côté du carrefour", items: "Baskets blanches", vendor: "Patrick Sneakers", by: "ocd", who: "Raoul Nyobe", money: "À encaisser 17 500 F", mk: "cod", col: "ready", note: "Raoul passe chercher chez Patrick · client et Patrick prévenus", reass: true }
+        : { ref: "OUT/0045", client: "Didier Nkotto", place: "Bonabéri · à côté du carrefour", items: "Baskets blanches", vendor: "Patrick Sneakers", by: "vendor", who: "Patrick Sneakers", money: "À encaisser 17 500 F", mk: "cod", col: "ready", note: "Prêt depuis 13:40, pas encore parti · client relancé", late: true, canReassign: true },
+      { ref: "OUT/0042-A", client: "Estelle Ngono", place: "Akwa · en face de la pharmacie", items: "Robe en wax", vendor: "Brenda Wax", by: "ocd", who: "Junior Ekwalla", money: "Payé en ligne", mk: "paid", col: "route", note: "Récupéré à 14:20 · code envoyé à 14:21" },
+      { ref: "OUT/0046", client: "Linda Ekane", place: "Bonapriso · portail bleu après l'église", items: "Coffret bijoux", vendor: "Carine Bijoux", by: "vendor", who: "Carine Bijoux", money: "Payé en ligne", mk: "paid", col: "route", note: "Partie à 14:35" },
+      { ref: "OUT/0039", client: "Sandrine Fouda", place: "Bonamoussadi", items: "Robe en wax", vendor: "Brenda Wax", by: "ocd", who: "Junior Ekwalla", money: "Payé en ligne", mk: "paid", col: "done", note: "11:42 · code vérifié" },
+      { ref: "OUT/0038", client: "Yves Kamga", place: "Deido", items: "Chemise wax homme", vendor: "Brenda Wax", by: "ocd", who: "Christian Mbida", money: "11 500 F en espèces", mk: "cash", col: "done", note: "12:15 · code vérifié" },
+      { ref: "OUT/0043", client: "Cyrille Essomba", place: "Kotto", items: "Robe de soirée", vendor: "Mireille Couture", by: "vendor", who: "Mireille Couture", money: "Payé en ligne", mk: "paid", col: "done", note: "13:05 · code vérifié" },
+      { ref: "OUT/0047", client: "Arnaud Tchoua", place: "Ndokoti · immeuble jaune", items: "Coffret soins visage", vendor: "Grâce Cosmétiques", by: "ocd", who: "Raoul Nyobe", money: "Payé en ligne", mk: "paid", col: "problem", note: retried ? "Nouvelle tentative à 17:00 · client prévenu sur WhatsApp" : "Client injoignable après 2 appels · colis du stock OCD", canRetry: !retried }
+    ];
+    const initials = (n) => n.split(" ").slice(0, 2).map((w) => w.charAt(0)).join("").toUpperCase();
+    const money = { paid: ["#DCF2E5", "#0A5A31"], cod: ["#FFF0CC", "#6B4500"], cash: ["#EEF0F2", "#3F454C"] };
+    const cards = raw.map((c) => {
+      const isVendor = c.by === "vendor";
+      const done = c.col === "done";
+      const problem = c.col === "problem";
+      const late = !!c.late;
+      let tag = ["Avant 18:00", "#EEF0F2", "#3F454C"];
+      if (done) tag = ["Livré", "#DCF2E5", "#0A5A31"];
+      else if (problem) tag = ["À rappeler", "#FCE4E4", "#8E1220"];
+      else if (late) tag = ["En retard", "#FCE4E4", "#8E1220"];
+      else if (c.reass) tag = ["Réassigné", "#FFF0CC", "#6B4500"];
+      return {
+        ref: c.ref,
+        client: c.client,
+        place: c.place,
+        items: c.items,
+        vendor: c.vendor,
+        by: c.by,
+        col: c.col,
+        who: c.who,
+        whoLabel: c.who || "Aucun livreur",
+        ini: c.who ? initials(c.who) : "?",
+        byLabel: isVendor ? "Livré par le vendeur" : "Livreur OCD",
+        avBg: !c.who ? "#EEF0F2" : isVendor ? "#FFE7D1" : "#15130F",
+        avFg: !c.who ? "#5A6068" : isVendor ? "#15130F" : "#FFFFFF",
+        money: c.money,
+        moneyBg: money[c.mk][0],
+        moneyFg: money[c.mk][1],
+        note: c.note,
+        noteColor: late || problem ? "#8E1220" : "#5A6068",
+        tag: tag[0],
+        tagBg: tag[1],
+        tagFg: tag[2],
+        bd: late || problem ? "#E8A0A6" : "#D3D7DB",
+        canAssign: !!c.canAssign,
+        assignValue: assign,
+        assignAria: "Assigner un livreur au colis " + c.ref,
+        assign: (e) => this.setState({ assign: e.target.value }),
+        canReassign: !!c.canReassign,
+        reassign: () => this.setState({ reassigned: true }),
+        canRetry: !!c.canRetry,
+        retry: () => this.setState({ retried: true })
+      };
+    });
+    const shown = cards.filter((c) => filter === "all" || c.by === filter);
+    const defs = [["prep", "À préparer"], ["ready", "Prêt"], ["route", "En route"], ["done", "Livré aujourd'hui"], ["problem", "Problème"]];
+    const cols = defs.map((d) => {
+      const list = shown.filter((c) => c.col === d[0]);
+      return { label: d[1], count: list.length, cards: list, empty: list.length === 0 };
+    });
+    const nOcd = cards.filter((c) => c.by === "ocd").length;
+    const nVendor = cards.filter((c) => c.by === "vendor").length;
+    const filters = [["all", "Tous · " + cards.length], ["ocd", "Livreurs OCD · " + nOcd], ["vendor", "Livrés par les vendeurs · " + nVendor]].map((f, i) => ({
+      label: f[1],
+      on: filter === f[0],
+      bg: filter === f[0] ? "#15130F" : "#FFFFFF",
+      fg: filter === f[0] ? "#FFFFFF" : "#15130F",
+      sep: i === 0 ? "transparent" : "#AEB4BA",
+      pick: () => this.setState({ filter: f[0] })
+    }));
+    const lateCount = raw.filter((c) => c.late).length;
+    const problems = raw.filter((c) => c.col === "problem").length;
+    const courierDefs = [["Junior Ekwalla", "En tournée", 0], ["Raoul Nyobe", "En tournée", 0], ["Christian Mbida", "Disponible", 11500]];
+    const couriers = courierDefs.map((k) => {
+      const mine = cards.filter((c) => c.who === k[0]);
+      const done = mine.filter((c) => c.col === "done").length;
+      const pb = mine.filter((c) => c.col === "problem").length;
+      return {
+        name: k[0],
+        ini: initials(k[0]),
+        status: k[1],
+        stBg: k[1] === "En tournée" ? "#DCF2E5" : "#EEF0F2",
+        stFg: k[1] === "En tournée" ? "#0A5A31" : "#3F454C",
+        summary: mine.length + (mine.length > 1 ? " colis · " : " colis · ") + done + (done > 1 ? " livrés" : " livré") + (pb ? " · " + pb + " problème" : ""),
+        cash: k[2] ? "Espèces : 11 500 F à remettre" : "Espèces : 0 F",
+        cashColor: k[2] ? "#6B4500" : "#5A6068"
+      };
+    });
+    const sellerNames = ["Fatou Karité", "Patrick Sneakers", "Carine Bijoux", "Mireille Couture"];
+    const sellers = sellerNames.map((n) => {
+      const mine = cards.filter((c) => c.who === n);
+      const late = raw.some((c) => c.who === n && c.late);
+      const route = mine.filter((c) => c.col === "route").length;
+      const done = mine.filter((c) => c.col === "done").length;
+      let summary = mine.length + (mine.length > 1 ? " colis" : " colis");
+      if (mine.length === 0) summary = "Plus rien : colis passé à un livreur OCD";
+      else if (late) summary += " · en retard";
+      else if (route) summary += " · en route";
+      else if (done) summary += " · livré";
+      else summary += " · à préparer ou prêt";
+      return { name: n, ini: initials(n), summary: summary, color: late ? "#8E1220" : "#5A6068" };
+    });
+    return {
+      cols, filters, couriers, sellers,
+      alertLine: (lateCount ? lateCount + " en retard · " : "") + problems + " problème"
+    };
+  }
+}
+</script>
+</body>
+</html>

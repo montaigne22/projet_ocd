@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Livreurs et caisse</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="livraisons" sub="livreurs" title="Livreurs et caisse" crumb="" facets="Douala" views="kanban,list,activity" view="kanban" pager="1-4 / 4" action="Nouveau livreur" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 14px 22px; overflow-y: auto">
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{couriers}}" as="k" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 8px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 13px 14px">
+          <div style="display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center">
+            <span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800; background: {{k.avBg}}; color: {{k.avFg}}">{{k.ini}}</span>
+            <span style="display: flex; flex-direction: column; min-width: 0"><b style="font-size: 14.5px; line-height: 1.2">{{k.name}}</b><span style="font-size: 12.5px; color: #5A6068">{{k.type}}</span></span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <label for="{{k.selId}}" style="font-size: 12.5px; color: #5A6068">Statut</label>
+            <select id="{{k.selId}}" value="{{k.status}}" onChange="{{k.setStatus}}" style="flex: 1; min-width: 0; height: 30px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 6px; font-family: inherit; font-size: 12.5px; font-weight: 700; background: {{k.stBg}}; color: {{k.stFg}}">
+              <option value="En tournée">En tournée</option>
+              <option value="Disponible">Disponible</option>
+              <option value="Repos">Repos</option>
+            </select>
+          </div>
+          <span style="font-size: 12.5px; font-variant-numeric: tabular-nums">{{k.phone}}</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 5px">
+            <sc-for list="{{k.zones}}" as="z" hint-placeholder-count="3">
+              <span style="border-radius: 6px; padding: 1px 7px; background: #F4F5F6; border: 1px solid #E3E6E9; font-size: 12px; font-weight: 600">{{z.label}}</span>
+            </sc-for>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; border-top: 1px solid #EEF0F2; padding-top: 8px">
+            <span style="display: flex; flex-direction: column"><span style="font-size: 11.5px; color: #5A6068">Aujourd'hui</span><b style="font-size: 13.5px">{{k.today}}</b></span>
+            <span style="display: flex; flex-direction: column"><span style="font-size: 11.5px; color: #5A6068">À l'heure, 30 j</span><b style="font-size: 13.5px">{{k.ontime}}</b></span>
+            <span style="display: flex; flex-direction: column"><span style="font-size: 11.5px; color: #5A6068">Note clients</span><b style="font-size: 13.5px">{{k.rating}}</b></span>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; line-height: 1.35">
+            <span style="flex: none; border-radius: 5px; padding: 0 6px; background: #15130F; color: #FFFFFF; font-size: 11px; font-weight: 700">Flotte</span>
+            <span>{{k.vehicle}}</span>
+          </div>
+          <span style="align-self: flex-start; border-radius: 6px; padding: 2px 8px; font-size: 12.5px; font-weight: 700; background: {{k.cashBg}}; color: {{k.cashFg}}">{{k.cashLabel}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <section style="display: flex; flex-direction: column; gap: 10px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px">Caisse des livreurs · mar. 1er déc.</h2>
+        <span style="font-size: 12.5px; color: #5A6068">Espèces à remettre chaque soir avant 20:00 · journal « Caisse livreurs » de la Facturation</span>
+      </div>
+      <div style="border: 1px solid #E3E6E9; border-radius: 10px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1.1fr 1fr 1.4fr 1fr 1.3fr; gap: 10px; align-items: center; padding: 8px 14px; background: #F4F5F6; font-size: 12.5px; font-weight: 700; color: #3F454C">
+          <span>Livreur</span><span>Espèces reçues</span><span>Mobile Money à la porte</span><span>À remettre</span><span>Montant remis</span><span>Écart</span><span></span>
+        </div>
+        <sc-for list="{{cash}}" as="r" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: 1.5fr 1fr 1.1fr 1fr 1.4fr 1fr 1.3fr; gap: 10px; align-items: center; padding: 8px 14px; border-top: 1px solid #EEF0F2; font-size: 13.5px; font-variant-numeric: tabular-nums">
+            <span style="font-weight: 600">{{r.name}}</span>
+            <span>{{r.cash}}</span>
+            <span>{{r.momo}}</span>
+            <span style="font-weight: 700">{{r.due}}</span>
+            <sc-if value="{{r.editable}}" hint-placeholder-val="{{false}}">
+              <input aria-label="{{r.aria}}" inputmode="numeric" value="{{r.given}}" onChange="{{r.setGiven}}" style="width: 120px; height: 32px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 8px; font-family: inherit; font-size: 13.5px; font-weight: 700; color: #15130F; background: #FFFFFF">
+            </sc-if>
+            <sc-if value="{{r.readonly}}" hint-placeholder-val="{{true}}">
+              <span>{{r.givenLabel}}</span>
+            </sc-if>
+            <span style="font-weight: 700; color: {{r.gapColor}}">{{r.gap}}</span>
+            <sc-if value="{{r.canSave}}" hint-placeholder-val="{{false}}">
+              <button onClick="{{r.save}}" style="min-height: 32px; border: 0; border-radius: 7px; padding: 0 10px; background: #0F7A43; color: #FFFFFF; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer">Enregistrer la remise</button>
+            </sc-if>
+            <sc-if value="{{r.noSave}}" hint-placeholder-val="{{true}}">
+              <span style="font-size: 12.5px; font-weight: 700; color: {{r.stateColor}}">{{r.state}}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-size: 13px; color: #3F454C; line-height: 1.45">Le Mobile Money encaissé à la porte passe par Campay : il arrive directement sur le compte d'OCD, rien à remettre. Les vendeurs qui encaissent eux-mêmes ne passent pas par cette caisse : la commission due est déduite de leur reversement. <a href="BoReversements.dc.html" style="font-weight: 700; text-decoration: underline">Voir les reversements</a></span>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const status = s.status || {};
+    const given = s.given || {};
+    const saved = s.saved || {};
+    const fr = (n) => (n < 0 ? "−" : "") + String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const defs = [
+      { id: "je", name: "Junior Ekwalla", ini: "JE", type: "Livreur salarié OCD", phone: "+237 6 90 00 00 31", zones: ["Akwa", "Bonapriso", "Makepe", "Bonamoussadi"], vehicle: "Moto LT-204-AB · vidange dans 300 km", status: "En tournée", today: "3 colis", ontime: "96 %", rating: "4,8 / 5", cash: 0, momo: 0 },
+      { id: "rn", name: "Raoul Nyobe", ini: "RN", type: "Livreur salarié OCD", phone: "+237 6 90 00 00 32", zones: ["Bonabéri", "Ndokoti", "Logpom"], vehicle: "Moto LT-318-CD", status: "En tournée", today: "2 colis", ontime: "91 %", rating: "4,6 / 5", cash: 0, momo: 0 },
+      { id: "cm", name: "Christian Mbida", ini: "CM", type: "Livreur salarié OCD", phone: "+237 6 90 00 00 33", zones: ["Deido", "Kotto", "Bali"], vehicle: "Moto LT-127-EF · assurance à renouveler le 15 déc.", status: "Disponible", today: "1 colis", ontime: "98 %", rating: "4,9 / 5", cash: 11500, momo: 0 },
+      { id: "pl", name: "Partenaire Yaoundé", ini: "PY", type: "Société de livraison partenaire (exemple)", phone: "+237 6 90 00 00 40", zones: ["Yaoundé"], vehicle: "5 coursiers, payés à la course", status: "Disponible", today: "0 colis", ontime: "—", rating: "—", cash: 0, momo: 0 }
+    ];
+    const stColors = { "En tournée": ["#DCF2E5", "#0A5A31"], "Disponible": ["#EEF0F2", "#15130F"], "Repos": ["#FFF0CC", "#6B4500"] };
+    const couriers = defs.map((d) => {
+      const st = status[d.id] || d.status;
+      const held = saved[d.id] ? 0 : d.cash;
+      return {
+        name: d.name,
+        ini: d.ini,
+        type: d.type,
+        phone: d.phone,
+        zones: d.zones.map((z) => ({ label: z })),
+        vehicle: d.vehicle,
+        today: d.today,
+        ontime: d.ontime,
+        rating: d.rating,
+        status: st,
+        selId: "st-" + d.id,
+        stBg: stColors[st][0],
+        stFg: stColors[st][1],
+        avBg: d.id === "pl" ? "#EEF0F2" : "#15130F",
+        avFg: d.id === "pl" ? "#15130F" : "#FFFFFF",
+        cashLabel: held ? "Espèces sur lui : " + fr(held) : "Aucune espèce sur lui",
+        cashBg: held ? "#FFF0CC" : "#EEF0F2",
+        cashFg: held ? "#6B4500" : "#3F454C",
+        setStatus: (e) => {
+          const next = Object.assign({}, status);
+          next[d.id] = e.target.value;
+          this.setState({ status: next });
+        }
+      };
+    });
+    const cash = defs.map((d) => {
+      const due = d.cash;
+      const g = given[d.id] === undefined ? "11 500" : given[d.id];
+      const gNum = parseInt(String(g).replace(/\D/g, ""), 10) || 0;
+      const isSaved = !!saved[d.id];
+      const gap = gNum - due;
+      const editable = due > 0 && !isSaved;
+      return {
+        name: d.name,
+        cash: fr(d.cash),
+        momo: fr(d.momo),
+        due: fr(due),
+        given: g,
+        aria: "Montant remis par " + d.name,
+        editable: editable,
+        readonly: !editable,
+        givenLabel: due === 0 ? "—" : fr(gNum),
+        gap: due === 0 ? "—" : gap === 0 ? "0 F" : fr(gap),
+        gapColor: due > 0 && gap !== 0 ? "#8E1220" : "#0A5A31",
+        canSave: editable,
+        noSave: !editable,
+        state: due === 0 ? "Rien à remettre" : gap === 0 ? "Remis à la caisse" : "Écart signalé au responsable",
+        stateColor: due === 0 ? "#5A6068" : gap === 0 ? "#0A5A31" : "#8E1220",
+        setGiven: (e) => {
+          const next = Object.assign({}, given);
+          next[d.id] = e.target.value;
+          this.setState({ given: next });
+        },
+        save: () => {
+          const next = Object.assign({}, saved);
+          next[d.id] = true;
+          this.setState({ saved: next });
+        }
+      };
+    });
+    return { couriers, cash };
+  }
+}
+</script>
+</body>
+</html>

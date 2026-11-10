@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Shop OCD</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 16px 18px 6px">
+    <img src="/_blob/273c64c79958def7341794eb4577315c" alt="Logo OCD" style="width: 38px; height: 38px; border-radius: 50%">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Shop OCD</h1>
+    <a href="Panier.dc.html" style="margin-left: auto; display: flex; align-items: center; gap: 7px; min-height: 46px; border-radius: 999px; padding: 0 14px; background: #15130F; color: #FFFFFF; font-weight: 700; font-size: 14.5px"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><path d="M3 6h18M16 10a4 4 0 0 1-8 0"></path></svg>Panier · 3</a>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px; padding: 6px 18px 10px">
+    <div style="display: flex; gap: 8px">
+      <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Chercher un produit</label>
+      <input id="q" value="{{q}}" onChange="{{setQ}}" placeholder="Chercher un produit" autocomplete="off" style="flex: 1; min-width: 0; height: 50px; box-sizing: border-box; border: 2px solid #E7E2DC; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 16.5px; color: #15130F; background: #FFFFFF">
+      <button aria-label="Pays de livraison : Cameroun. Changer" style="flex: none; display: flex; align-items: center; gap: 7px; height: 50px; border: 2px solid #E7E2DC; border-radius: 14px; padding: 0 11px; background: #FFFFFF; color: #15130F; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer"><span aria-hidden="true" style="width: 24px; height: 16px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,0.14); background: linear-gradient(90deg,#007A5E 33.33%,#CE1126 33.33% 66.66%,#FCD116 66.66%)"></span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px"><path d="M6 9l6 6 6-6"></path></svg></button>
+    </div>
+    <div style="display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -18px; padding: 0 18px">
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+        <button onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="flex: none; min-height: 44px; box-sizing: border-box; border-radius: 999px; padding: 8px 15px; font-family: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer; border: 2px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.label}}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; padding: 2px 18px 12px">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <sc-for list="{{items}}" as="p" hint-placeholder-count="6">
+        <sc-if value="{{p.buyable}}" hint-placeholder-val="{{true}}">
+          <a href="Produit.dc.html" style="display: flex; flex-direction: column; border: 2px solid #E7E2DC; border-radius: 18px; overflow: hidden">
+            <span style="position: relative; height: 96px; background: #F5F2EE; display: grid; place-items: center; font-size: 12.5px; font-weight: 600; color: #665F58">Photo du produit<span style="position: absolute; left: 8px; top: 8px; background: #FFE7D1; color: #15130F; border-radius: 6px; padding: 2px 7px; font-size: 12px; font-weight: 700; display: {{p.lowShow}}">{{p.low}}</span></span>
+            <span style="display: flex; flex-direction: column; gap: 3px; padding: 10px 12px 12px">
+              <span style="font-weight: 700; font-size: 15px; line-height: 1.2">{{p.name}}</span>
+              <span style="font-size: 12.5px; color: #665F58; line-height: 1.25">{{p.by}}</span>
+              <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; margin-top: 3px">{{p.price}}</span>
+              <span style="font-size: 12px; font-weight: 700; color: {{p.modeFg}}">{{p.mode}}</span>
+            </span>
+          </a>
+        </sc-if>
+        <sc-if value="{{p.out}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; border: 2px dashed #E7E2DC; border-radius: 18px; overflow: hidden">
+            <span style="position: relative; height: 96px; display: grid; place-items: center; font-size: 12.5px; font-weight: 600; color: #665F58">Photo du produit<span style="position: absolute; left: 8px; top: 8px; background: #15130F; color: #FFFFFF; border-radius: 6px; padding: 2px 7px; font-size: 12px; font-weight: 700">Épuisé</span></span>
+            <span style="display: flex; flex-direction: column; gap: 3px; padding: 10px 12px 12px">
+              <span style="font-weight: 700; font-size: 15px; line-height: 1.2; color: #665F58">{{p.name}}</span>
+              <span style="font-size: 12.5px; color: #665F58; line-height: 1.25">{{p.by}}</span>
+              <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; margin-top: 3px; color: #665F58">{{p.price}}</span>
+            </span>
+          </div>
+        </sc-if>
+      </sc-for>
+    </div>
+    <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 40px 10px; text-align: center">
+        <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 22px; line-height: 1.15">Aucun produit trouvé.</span>
+        <span style="font-size: 15px; color: #665F58">Essaie un autre mot, ou regarde toutes les catégories.</span>
+        <button onClick="{{clear}}" style="min-height: 48px; border: 0; border-radius: 14px; padding: 0 18px; background: #15130F; color: #FFFFFF; font-family: inherit; font-weight: 700; font-size: 15px; cursor: pointer">Tout afficher</button>
+      </div>
+    </sc-if>
+  </div>
+
+  <nav aria-label="Menu" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #E7E2DC; padding: 8px 8px 12px">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M3 11l9-8 9 8v10h-7v-7h-4v7H3z"></path></svg>Accueil</a>
+    <a href="Lives.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Lives</a>
+    <a href="Shop.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 700; color: #15130F"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F46A00" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><path d="M3 6h18M16 10a4 4 0 0 1-8 0"></path></svg>Shop</a>
+    <a href="MonEspace.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Moi</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const cat = s.cat || "all";
+    const q = s.q || "";
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const plain = (t) => t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    const labels = { all: "Tout", mode: "Habits", beauty: "Beauté", food: "Nourriture", tech: "Téléphones", home: "Maison" };
+    const products = [
+      ["Robe en wax", "mode", "Brenda Wax · Douala", 12000, 3, true],
+      ["Pagne wax 6 yards", "mode", "Solange Pagnes · Douala", 9000, 2, false],
+      ["Beurre de karité 250 g", "beauty", "Fatou Karité · Douala", 2500, 40, true],
+      ["Perruque lisse 14 pouces", "beauty", "Nadège Perruques · Douala", 18000, 0, false],
+      ["Piment en poudre 200 g", "food", "Estelle Cuisine · Douala", 1500, 25, false],
+      ["Écouteurs sans fil", "tech", "Blaise Électro · Yaoundé", 8000, 12, true],
+      ["Lot de 6 bols", "home", "Aminata Déco · Bafoussam", 4500, 9, true],
+      ["T-shirt OCD", "mode", "OCD officiel", 6000, 60, true]
+    ];
+    const shown = products.filter((p) => (cat === "all" || p[1] === cat) && plain(p[0]).indexOf(plain(q.trim())) >= 0);
+    const items = shown.map((p) => ({
+      name: p[0],
+      by: p[2],
+      price: fr(p[3]),
+      buyable: p[4] > 0,
+      out: p[4] === 0,
+      low: "Plus que " + p[4],
+      lowShow: p[4] > 0 && p[4] <= 3 ? "block" : "none",
+      mode: p[5] ? "Livré par OCD" : "Contact direct avec le vendeur",
+      modeFg: p[5] ? "#0A5A31" : "#665F58"
+    }));
+    const cats = Object.keys(labels).map((k) => ({
+      label: labels[k],
+      on: cat === k,
+      bd: cat === k ? "#15130F" : "#E7E2DC",
+      bg: cat === k ? "#15130F" : "#FFFFFF",
+      fg: cat === k ? "#FFFFFF" : "#15130F",
+      pick: () => this.setState({ cat: k })
+    }));
+    return {
+      q, cats, items,
+      none: items.length === 0,
+      setQ: (e) => this.setState({ q: e.target.value }),
+      clear: () => this.setState({ q: "", cat: "all" })
+    };
+  }
+}
+</script>
+</body>
+</html>

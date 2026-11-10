@@ -19,6 +19,7 @@ from . import ocd_voice_recording
 from . import ocd_live_dashboard
 from . import ocd_live_planning
 from . import ocd_live_verification
+from . import ocd_live_tools
 from . import ocd_live_waitlist
 from . import payment_provider
 from . import ocd_directory_alert

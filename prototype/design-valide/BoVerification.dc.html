@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>À vérifier</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="lives" sub="verif" title="À vérifier" crumb="" facets="À traiter|Aujourd'hui" views="kanban,list,activity" view="kanban" pager="{{pager}}" action="" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 12px 22px 14px">
+    <div style="display: flex; align-items: center; gap: 10px; background: #DCF2E5; color: #0A5A31; border-radius: 10px; padding: 9px 14px; font-size: 13.5px; font-weight: 700">
+      <span style="width: 9px; height: 9px; border-radius: 50%; background: #0A5A31"></span>
+      <span>Créneau du soir de l'annuaire : 18:00 – 21:00, heure de Lomé. Les lives envoyés avant l'ouverture attendent ici.</span>
+      <span style="margin-left: auto; font-weight: 600">Temps moyen de vérification : 3 min</span>
+    </div>
+    <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{cols}}" as="col" hint-placeholder-count="4">
+        <div style="min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 8px; overflow-y: auto">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 0">
+            <span style="font-weight: 700; font-size: 14px">{{col.label}}</span>
+            <span style="min-width: 22px; box-sizing: border-box; padding: 0 7px; border-radius: 11px; background: {{col.countBg}}; color: {{col.countFg}}; font-size: 12px; font-weight: 700; line-height: 22px; text-align: center">{{col.count}}</span>
+          </div>
+          <sc-if value="{{col.empty}}" hint-placeholder-val="{{false}}">
+            <div style="border: 1px dashed #AEB4BA; border-radius: 10px; padding: 14px 10px; font-size: 13px; color: #5A6068; text-align: center">{{col.emptyText}}</div>
+          </sc-if>
+          <sc-for list="{{col.items}}" as="it" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 10px; padding: 11px 12px">
+              <sc-if value="{{it.hasPhoto}}" hint-placeholder-val="{{false}}">
+                <span style="height: 74px; border-radius: 8px; background: #F4F5F6; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #5A6068">{{it.photo}}</span>
+              </sc-if>
+              <b style="font-size: 14px; line-height: 1.25">{{it.title}}</b>
+              <span style="font-size: 12.5px; color: #5A6068; line-height: 1.35">{{it.sub}}</span>
+              <span style="font-size: 12.5px; line-height: 1.35; overflow-wrap: anywhere">{{it.detail}}</span>
+              <sc-if value="{{it.isPending}}" hint-placeholder-val="{{true}}">
+                <sc-if value="{{it.hasMode}}" hint-placeholder-val="{{false}}">
+                  <label for="{{it.modeId}}" style="font-size: 12px; font-weight: 700; color: #3F454C">Mode de vente au départ</label>
+                  <select id="{{it.modeId}}" value="{{it.mode}}" onChange="{{it.setMode}}" style="height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 6px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 12.5px; font-weight: 600">
+                    <option value="Contact direct">Contact direct</option>
+                    <option value="Vendu par OCD">Vendu par OCD</option>
+                  </select>
+                </sc-if>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap">
+                  <span style="display: inline-flex; align-items: center; min-height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 9px; font-size: 12.5px; font-weight: 700">{{it.openLabel}}</span>
+                  <button onClick="{{it.approve}}" style="min-height: 32px; border: 0; border-radius: 7px; padding: 0 10px; background: #0F7A43; color: #FFFFFF; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer">{{it.okLabel}}</button>
+                  <button onClick="{{it.startRefuse}}" style="min-height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 9px; background: #FFFFFF; color: #8E1220; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer">Refuser</button>
+                </div>
+                <sc-if value="{{it.refusing}}" hint-placeholder-val="{{false}}">
+                  <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #EEF0F2; padding-top: 8px">
+                    <label for="{{it.reasonId}}" style="font-size: 12px; font-weight: 700; color: #3F454C">Motif envoyé sur WhatsApp</label>
+                    <select id="{{it.reasonId}}" value="{{it.reason}}" onChange="{{it.setReason}}" style="height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 6px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 12.5px; font-weight: 600">
+                      <sc-for list="{{it.reasons}}" as="r" hint-placeholder-count="3">
+                        <option value="{{r.label}}">{{r.label}}</option>
+                      </sc-for>
+                    </select>
+                    <button onClick="{{it.refuse}}" style="min-height: 32px; border: 0; border-radius: 7px; padding: 0 10px; background: #B01522; color: #FFFFFF; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer">Confirmer le refus</button>
+                  </div>
+                </sc-if>
+              </sc-if>
+              <sc-if value="{{it.isDone}}" hint-placeholder-val="{{false}}">
+                <span style="align-self: flex-start; border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 700; background: {{it.resBg}}; color: {{it.resFg}}">{{it.result}}</span>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const done = s.done || {};
+    const refusing = s.refusing || "";
+    const reasonSel = s.reason || {};
+    const modeSel = s.mode || {};
+    const items = [
+      { id: "l1", col: "lives", title: "Awa Mensah", sub: "Togo · Nourriture · envoyé à l'instant", detail: "tiktok.com/@exemple.awa/live", open: "Ouvrir le live", ok: "Afficher", reasons: ["Pas de live en cours", "Ce n'est pas de la vente", "Lien d'un autre compte"] },
+      { id: "l2", col: "lives", title: "Chantal Saveurs", sub: "Cameroun · Nourriture · il y a 4 min", detail: "tiktok.com/@exemple.chantal/live", open: "Ouvrir le live", ok: "Afficher", reasons: ["Pas de live en cours", "Ce n'est pas de la vente", "Lien d'un autre compte"] },
+      { id: "l3", col: "lives", title: "Moussa Phones", sub: "Côte d'Ivoire · Téléphones · il y a 7 min", detail: "tiktok.com/@exemple.moussa/live", open: "Ouvrir le live", ok: "Afficher", reasons: ["Pas de live en cours", "Ce n'est pas de la vente", "Lien d'un autre compte"] },
+      { id: "p1", col: "products", title: "Gâteau à l'ananas · 3 000 F", sub: "Awa Mensah · Togo · 5 en stock", detail: "Contact direct : les clients écrivent à Awa.", photo: "Photo envoyée par Awa", open: "Voir en grand", ok: "Mettre en ligne", reasons: ["Photo floue", "Prix manquant ou faux", "Produit interdit", "Doublon"] },
+      { id: "p2", col: "products", title: "Robe de soirée · 25 000 F", sub: "Mireille Couture · Douala · 1 en stock", detail: "Vendu par OCD, Mireille livre elle-même.", photo: "Photo envoyée par Mireille", open: "Voir en grand", ok: "Mettre en ligne", reasons: ["Photo floue", "Prix manquant ou faux", "Produit interdit", "Doublon"] },
+      { id: "v1", col: "sellers", title: "Yao Vaisselle", sub: "Togo · Lomé · Maison · inscrit à 13:40", detail: "Pièce d'identité reçue. Numéro WhatsApp vérifié par code.", open: "Voir la pièce", ok: "Valider le vendeur", mode: true, reasons: ["Pièce illisible", "Numéro injoignable", "Activité interdite"] }
+    ];
+    const history = [
+      { title: "Kossi Sneakers", result: "Live affiché · 08:12", ok: true },
+      { title: "Photo de Brenda Wax", result: "Produit refusé · photo floue · 09:40", ok: false }
+    ];
+    const pending = items.filter((it) => !done[it.id]);
+    const card = (it) => {
+      const reason = reasonSel[it.id] || it.reasons[0];
+      return {
+        title: it.title,
+        sub: it.sub,
+        detail: it.detail,
+        hasPhoto: !!it.photo,
+        photo: it.photo || "",
+        isPending: true,
+        isDone: false,
+        openLabel: it.open,
+        okLabel: it.ok,
+        hasMode: !!it.mode,
+        modeId: "m-" + it.id,
+        mode: modeSel[it.id] || "Contact direct",
+        setMode: (e) => { const n = Object.assign({}, modeSel); n[it.id] = e.target.value; this.setState({ mode: n }); },
+        refusing: refusing === it.id,
+        reasonId: "r-" + it.id,
+        reason: reason,
+        reasons: it.reasons.map((r) => ({ label: r })),
+        setReason: (e) => { const n = Object.assign({}, reasonSel); n[it.id] = e.target.value; this.setState({ reason: n }); },
+        approve: () => { const n = Object.assign({}, done); n[it.id] = "ok"; this.setState({ done: n, refusing: "" }); },
+        startRefuse: () => this.setState({ refusing: refusing === it.id ? "" : it.id }),
+        refuse: () => { const n = Object.assign({}, done); n[it.id] = "ko:" + reason; this.setState({ done: n, refusing: "" }); }
+      };
+    };
+    const okText = { lives: "Live affiché", products: "Produit mis en ligne", sellers: "Vendeur validé" };
+    const processed = items.filter((it) => done[it.id]).map((it) => {
+      const ok = done[it.id] === "ok";
+      const extra = it.mode && ok ? " · " + (modeSel[it.id] || "Contact direct").toLowerCase() : "";
+      return { title: it.title, result: ok ? okText[it.col] + extra + " · à l'instant" : "Refusé · " + done[it.id].slice(3).toLowerCase() + " · à l'instant", ok: ok };
+    }).concat(history).map((h) => ({
+      title: h.title, sub: "", detail: "", hasPhoto: false, photo: "", isPending: false, isDone: true,
+      result: h.result, resBg: h.ok ? "#DCF2E5" : "#FCE4E4", resFg: h.ok ? "#0A5A31" : "#8E1220"
+    }));
+    const defs = [
+      ["lives", "Lives envoyés", "Aucun live en attente."],
+      ["products", "Nouveaux produits", "Aucun produit en attente."],
+      ["sellers", "Nouveaux vendeurs", "Aucun vendeur en attente."]
+    ];
+    const cols = defs.map((d) => {
+      const list = pending.filter((it) => it.col === d[0]).map(card);
+      return { label: d[1], count: list.length, countBg: list.length ? "#C4162A" : "#E3E6E9", countFg: list.length ? "#FFFFFF" : "#15130F", items: list, empty: list.length === 0, emptyText: d[2] };
+    }).concat([{ label: "Traités aujourd'hui", count: processed.length, countBg: "#E3E6E9", countFg: "#15130F", items: processed, empty: false, emptyText: "" }]);
+    return { cols, pager: pending.length + " à traiter" };
+  }
+}
+</script>
+</body>
+</html>

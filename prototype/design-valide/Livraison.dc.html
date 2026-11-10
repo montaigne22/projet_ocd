@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Adresse et livraison</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 6px">
+    <a href="Panier.dc.html" aria-label="Retour au panier" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <div role="img" aria-label="Étape 1 sur 3" style="flex: 1; display: flex; gap: 5px">
+      <span style="flex: 1; height: 6px; border-radius: 3px; background: #F46A00"></span>
+      <span style="flex: 1; height: 6px; border-radius: 3px; background: #E7E2DC"></span>
+      <span style="flex: 1; height: 6px; border-radius: 3px; background: #E7E2DC"></span>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 11px; padding: 6px 18px 12px">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 32px; line-height: 1.04; letter-spacing: -0.025em">On livre où ?</h1>
+
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="d-name" style="font-weight: 700; font-size: 14.5px">Ton nom</label>
+      <input id="d-name" value="{{name}}" onChange="{{setName}}" autocomplete="off" style="height: 48px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 17px; color: #15130F; background: #FFFFFF; width: 100%; border: 2px solid {{bdName}}">
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="d-phone" style="font-weight: 700; font-size: 14.5px">Ton WhatsApp</label>
+      <div style="display: flex; gap: 8px">
+        <span style="flex: none; height: 48px; border-radius: 14px; background: #F5F2EE; display: flex; align-items: center; gap: 7px; padding: 0 12px; font-weight: 700; font-variant-numeric: tabular-nums"><span aria-hidden="true" style="width: 24px; height: 16px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,0.14); background: linear-gradient(90deg,#007A5E 33.33%,#CE1126 33.33% 66.66%,#FCD116 66.66%)"></span>+237</span>
+        <input id="d-phone" type="tel" value="{{phone}}" onChange="{{setPhone}}" autocomplete="off" style="flex: 1; min-width: 0; height: 48px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 17px; color: #15130F; background: #FFFFFF; border: 2px solid {{bdPhone}}">
+      </div>
+      <sc-if value="{{errPhone}}" hint-placeholder-val="{{false}}">
+        <span role="alert" style="font-size: 13.5px; font-weight: 700; color: #B01522">Numéro à 9 chiffres qui commence par 6.</span>
+      </sc-if>
+      <label for="d-optin" style="display: flex; align-items: center; gap: 10px; min-height: 30px; font-size: 14px; font-weight: 600; cursor: pointer">
+        <input id="d-optin" type="checkbox" checked="{{optin}}" onChange="{{toggleOptin}}" style="width: 20px; height: 20px; accent-color: #F46A00; flex: none; margin: 0">
+        Recevoir le suivi de ma commande sur WhatsApp
+      </label>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <label for="d-city" style="font-weight: 700; font-size: 14.5px">Ville</label>
+        <select id="d-city" value="{{city}}" onChange="{{setCity}}" style="height: 48px; box-sizing: border-box; border: 2px solid #E7E2DC; border-radius: 14px; padding: 0 10px; font-family: inherit; font-size: 16.5px; color: #15130F; background: #FFFFFF; width: 100%">
+          <sc-for list="{{cities}}" as="c" hint-placeholder-count="4">
+            <option value="{{c.id}}">{{c.name}}</option>
+          </sc-for>
+        </select>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <label for="d-district" style="font-weight: 700; font-size: 14.5px">Quartier</label>
+        <sc-if value="{{hasDistricts}}" hint-placeholder-val="{{true}}">
+          <select id="d-district" value="{{district}}" onChange="{{setDistrict}}" style="height: 48px; box-sizing: border-box; border-radius: 14px; padding: 0 10px; font-family: inherit; font-size: 16.5px; color: #15130F; background: #FFFFFF; width: 100%; border: 2px solid {{bdDistrict}}">
+            <option value="">Choisir</option>
+            <sc-for list="{{districts}}" as="q" hint-placeholder-count="5">
+              <option value="{{q.id}}">{{q.name}}</option>
+            </sc-for>
+          </select>
+        </sc-if>
+        <sc-if value="{{noDistricts}}" hint-placeholder-val="{{false}}">
+          <span id="d-district" style="display: flex; align-items: center; height: 48px; box-sizing: border-box; border: 2px dashed #E7E2DC; border-radius: 14px; padding: 0 12px; font-size: 14px; color: #665F58">Pas nécessaire</span>
+        </sc-if>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="d-landmark" style="font-weight: 700; font-size: 14.5px">Point de repère</label>
+      <input id="d-landmark" value="{{landmark}}" onChange="{{setLandmark}}" placeholder="ex. en face de la pharmacie" autocomplete="off" style="height: 48px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 16.5px; color: #15130F; background: #FFFFFF; width: 100%; border: 2px solid {{bdLandmark}}">
+      <sc-if value="{{errLandmark}}" hint-placeholder-val="{{false}}">
+        <span role="alert" style="font-size: 13.5px; font-weight: 700; color: #B01522">Donne un repère connu près de chez toi : le livreur s'en sert.</span>
+      </sc-if>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; border: 2px solid #15130F; border-radius: 16px; padding: 12px 14px">
+      <span style="width: 40px; height: 40px; border-radius: 12px; background: #FFE7D1; display: grid; place-items: center"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#15130F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 21px; height: 21px"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"></path><circle cx="5.500" cy="18.500" r="2.500"></circle><circle cx="18.500" cy="18.500" r="2.500"></circle></svg></span>
+      <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 700; font-size: 15.5px; line-height: 1.2">{{methodName}}</span><span style="font-size: 13.5px; color: #665F58; line-height: 1.3">{{methodNote}}</span></span>
+      <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap">{{fee}}</span>
+    </div>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: auto; padding-top: 6px">
+      <span style="font-size: 14.5px; color: #665F58">3 articles 17 000 F + livraison</span>
+      <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums">{{total}}</span>
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid #E7E2DC; padding: 10px 14px 14px">
+    <sc-if value="{{valid}}" hint-placeholder-val="{{true}}">
+      <a href="PayerCommande.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 58px; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px">Continuer vers le paiement<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a>
+    </sc-if>
+    <sc-if value="{{invalid}}" hint-placeholder-val="{{false}}">
+      <button onClick="{{showErr}}" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px; cursor: pointer">Continuer vers le paiement<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></button>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const name = s.name === undefined ? "Estelle Ngono" : s.name;
+    const phone = s.phone === undefined ? "6 70 00 00 00" : s.phone;
+    const landmark = s.landmark === undefined ? "En face de la pharmacie" : s.landmark;
+    const city = s.city || "douala";
+    const district = s.district === undefined ? "akwa" : s.district;
+    const optin = s.optin === undefined ? true : s.optin;
+    const err = !!s.err;
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const cities = [
+      { id: "douala", name: "Douala" },
+      { id: "yaounde", name: "Yaoundé" },
+      { id: "bafoussam", name: "Bafoussam" },
+      { id: "autre", name: "Autre ville" }
+    ];
+    const byCity = {
+      douala: [["akwa", "Akwa", 1000], ["bonapriso", "Bonapriso", 1000], ["bonamoussadi", "Bonamoussadi", 1500], ["makepe", "Makepe", 1500], ["ndokoti", "Ndokoti", 1500], ["bonaberi", "Bonabéri", 2500]],
+      yaounde: [["bastos", "Bastos", 2500], ["essos", "Essos", 2500], ["biyemassi", "Biyem-Assi", 2500], ["mvan", "Mvan", 2500]]
+    };
+    const list = byCity[city] || [];
+    const chosen = list.filter((d) => d[0] === district)[0];
+    const hasDistricts = list.length > 0;
+    const nameOk = name.trim().length >= 2;
+    const phoneOk = /^6\d{8}$/.test(phone.replace(/\D/g, ""));
+    const landmarkOk = landmark.trim().length >= 3;
+    const districtOk = !hasDistricts || !!chosen;
+    const valid = nameOk && phoneOk && landmarkOk && districtOk;
+    const home = hasDistricts;
+    const feeValue = home ? (chosen ? chosen[2] : null) : 3500;
+    return {
+      name, phone, landmark, city, optin, cities,
+      district: chosen ? district : "",
+      districts: list.map((d) => ({ id: d[0], name: d[1] })),
+      hasDistricts,
+      noDistricts: !hasDistricts,
+      valid,
+      invalid: !valid,
+      errPhone: err && !phoneOk,
+      errLandmark: err && !landmarkOk,
+      bdName: err && !nameOk ? "#B01522" : "#E7E2DC",
+      bdPhone: err && !phoneOk ? "#B01522" : "#E7E2DC",
+      bdLandmark: err && !landmarkOk ? "#B01522" : "#E7E2DC",
+      bdDistrict: err && !districtOk ? "#B01522" : "#E7E2DC",
+      methodName: home ? "Livraison à domicile" : "Envoi par agence de voyage",
+      methodNote: home ? "24 à 48 h. Un colis par vendeur, chacun avec un code à donner au livreur." : "2 à 4 jours. Tu retires ton colis à l'agence.",
+      fee: feeValue === null ? "choisis ton quartier" : fr(feeValue),
+      total: fr(17000 + (feeValue || 0)),
+      showErr: () => this.setState({ err: true }),
+      setName: (e) => this.setState({ name: e.target.value }),
+      setPhone: (e) => this.setState({ phone: e.target.value }),
+      setLandmark: (e) => this.setState({ landmark: e.target.value }),
+      setCity: (e) => this.setState({ city: e.target.value, district: "" }),
+      setDistrict: (e) => this.setState({ district: e.target.value }),
+      toggleOptin: () => this.setState({ optin: !optin })
+    };
+  }
+}
+</script>
+</body>
+</html>

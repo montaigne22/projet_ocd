@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche d'une livraison</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="livraisons" sub="fiche" title="OUT/0042-A" crumb="Dispatch" facets="" views="" view="" pager="7 / 12" action="" search="non" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 380px">
+    <div style="min-width: 0; overflow-y: auto; padding: 14px 20px">
+      <div style="background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; display: flex; flex-direction: column">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid #E3E6E9">
+          <button onClick="{{resend}}" style="min-height: 34px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Renvoyer le code à la cliente</button>
+          <button onClick="{{toggleReassign}}" style="min-height: 34px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Réassigner</button>
+          <button onClick="{{toggleProblem}}" style="min-height: 34px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; background: #FFFFFF; color: #8E1220; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Signaler un problème</button>
+          <div aria-label="État de la livraison" style="margin-left: auto; display: flex; align-items: center; gap: 4px">
+            <sc-for list="{{steps}}" as="st" hint-placeholder-count="5">
+              <span aria-current="{{st.current}}" style="border-radius: 7px; padding: 4px 9px; font-size: 12.5px; font-weight: 700; white-space: nowrap; background: {{st.bg}}; color: {{st.fg}}">{{st.label}}</span>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid #E3E6E9">
+          <a href="BoCommandes.dc.html" style="display: flex; flex-direction: column; min-width: 120px; border: 1px solid #D3D7DB; border-radius: 8px; padding: 5px 12px"><span style="font-size: 11.5px; color: #5A6068; font-weight: 600">Commande</span><b style="font-size: 13.5px">S00042</b></a>
+          <a href="BoVendeur.dc.html" style="display: flex; flex-direction: column; min-width: 120px; border: 1px solid #D3D7DB; border-radius: 8px; padding: 5px 12px"><span style="font-size: 11.5px; color: #5A6068; font-weight: 600">Vendeur</span><b style="font-size: 13.5px">Brenda Wax</b></a>
+          <a href="BoWhatsApp.dc.html" style="display: flex; flex-direction: column; min-width: 120px; border: 1px solid #D3D7DB; border-radius: 8px; padding: 5px 12px"><span style="font-size: 11.5px; color: #5A6068; font-weight: 600">Cliente</span><b style="font-size: 13.5px">WhatsApp</b></a>
+          <span style="display: flex; flex-direction: column; min-width: 120px; border: 1px solid #D3D7DB; border-radius: 8px; padding: 5px 12px"><span style="font-size: 11.5px; color: #5A6068; font-weight: 600">Paiement</span><b style="font-size: 13.5px; color: #0A5A31">Payé · Mobile Money</b></span>
+          <a href="BoDispatch.dc.html" style="display: flex; flex-direction: column; min-width: 120px; border: 1px solid #D3D7DB; border-radius: 8px; padding: 5px 12px"><span style="font-size: 11.5px; color: #5A6068; font-weight: 600">Autre colis</span><b style="font-size: 13.5px">OUT/0042-B</b></a>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding: 16px 22px 20px">
+          <div style="display: flex; flex-direction: column; gap: 1px">
+            <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 24px; line-height: 1.1">OUT/0042-A</h1>
+            <span style="font-size: 13.5px; color: #5A6068">Colis 1 sur 2 de la commande S00042 · un colis par vendeur</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px">
+            <div style="display: flex; flex-direction: column">
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Cliente</span><span style="font-weight: 600">Estelle Ngono</span></div>
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Téléphone</span><span style="font-variant-numeric: tabular-nums">+237 6 70 00 00 00</span></div>
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Adresse</span><span>Akwa, Douala</span></div>
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Point de repère</span><span>En face de la pharmacie</span></div>
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Promis</span><span>Aujourd'hui avant 18:00</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Livré par</span>
+                <span style="display: flex; flex-direction: column; gap: 6px">
+                  <span style="font-weight: 600">{{who}}</span>
+                  <sc-if value="{{showReassign}}" hint-placeholder-val="{{false}}">
+                    <select value="{{who}}" onChange="{{pickWho}}" aria-label="Choisir qui livre ce colis" style="height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 6px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13px; font-weight: 600">
+                      <option value="Junior Ekwalla, livreur OCD">Junior Ekwalla, livreur OCD</option>
+                      <option value="Raoul Nyobe, livreur OCD">Raoul Nyobe, livreur OCD</option>
+                      <option value="Christian Mbida, livreur OCD">Christian Mbida, livreur OCD</option>
+                      <option value="Brenda Wax, la vendeuse">Brenda Wax, la vendeuse</option>
+                    </select>
+                  </sc-if>
+                </span>
+              </div>
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Récupération</span><span>Chez Brenda Wax, Akwa · récupéré à 14:20</span></div>
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">À encaisser</span><span>Rien, payé en ligne</span></div>
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Code de livraison</span><span>•••• · envoyé à la cliente à {{codeSent}}</span></div>
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid #EEF0F2"><span style="font-size: 13px; color: #5A6068">Tentatives</span><span>{{attempts}}</span></div>
+            </div>
+          </div>
+
+          <div style="border: 1px solid #E3E6E9; border-radius: 10px; overflow: hidden">
+            <div style="display: grid; grid-template-columns: 2fr 1.2fr 0.6fr 1fr 1.3fr; gap: 10px; padding: 8px 14px; background: #F4F5F6; font-size: 12.5px; font-weight: 700; color: #3F454C"><span>Produit</span><span>Variante</span><span>Qté</span><span>Prix client</span><span>Part de la vendeuse (85 %)</span></div>
+            <div style="display: grid; grid-template-columns: 2fr 1.2fr 0.6fr 1fr 1.3fr; gap: 10px; padding: 9px 14px; font-size: 13.5px; font-variant-numeric: tabular-nums"><span style="font-weight: 600">Robe en wax</span><span>Bleu · M</span><span>1</span><span>12 000 F</span><span>10 200 F</span></div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; background: #F4F5F6; border-radius: 10px; padding: 14px 16px">
+            <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 15.5px">Preuve de livraison</h2>
+            <sc-if value="{{isRoute}}" hint-placeholder-val="{{true}}">
+              <span style="font-size: 13.5px; line-height: 1.45">Le livreur saisit le code de la cliente dans son appli à la remise. Le dispatch peut aussi le saisir ici si le livreur appelle.</span>
+              <div style="display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap">
+                <div style="display: flex; flex-direction: column; gap: 4px">
+                  <label for="lv-code" style="font-size: 13px; font-weight: 700">Code donné par la cliente</label>
+                  <input id="lv-code" inputmode="numeric" maxlength="4" value="{{code}}" onChange="{{setCode}}" autocomplete="off" style="width: 130px; height: 38px; box-sizing: border-box; border: 1px solid {{codeBd}}; border-radius: 8px; padding: 0 12px; font-family: inherit; font-size: 18px; font-weight: 700; letter-spacing: 0.3em; color: #15130F; background: #FFFFFF">
+                </div>
+                <button onClick="{{check}}" style="min-height: 38px; border: 0; border-radius: 8px; padding: 0 14px; background: #F46A00; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer">Vérifier le code</button>
+                <span style="font-size: 12.5px; color: #5A6068">Démo : le code d'Estelle est 4729</span>
+              </div>
+              <sc-if value="{{hasErr}}" hint-placeholder-val="{{false}}">
+                <span role="alert" style="font-size: 13.5px; font-weight: 700; color: #8E1220">{{err}}</span>
+              </sc-if>
+              <sc-if value="{{showReasons}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid #D3D7DB; padding-top: 10px">
+                  <span style="width: 100%; font-size: 13px; font-weight: 700">Quel problème ?</span>
+                  <sc-for list="{{reasons}}" as="r" hint-placeholder-count="4">
+                    <button onClick="{{r.pick}}" style="min-height: 34px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 12px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{r.label}}</button>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </sc-if>
+            <sc-if value="{{isLocked}}" hint-placeholder-val="{{false}}">
+              <span role="alert" style="font-size: 13.5px; font-weight: 700; color: #8E1220; line-height: 1.45">Bloqué après 3 codes faux. Appelle la cliente. Un responsable peut valider sans code, avec une photo et un motif.</span>
+              <button onClick="{{forceDone}}" style="align-self: flex-start; min-height: 36px; border: 0; border-radius: 8px; padding: 0 14px; background: #15130F; color: #FFFFFF; font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer">Valider sans code (responsable)</button>
+            </sc-if>
+            <sc-if value="{{isProblem}}" hint-placeholder-val="{{false}}">
+              <span role="status" style="font-size: 13.5px; font-weight: 600; color: #6B4500; line-height: 1.45">{{problemLine}}</span>
+              <button onClick="{{resume}}" style="align-self: flex-start; min-height: 36px; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 14px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer">Reprendre la livraison</button>
+            </sc-if>
+            <sc-if value="{{isDone}}" hint-placeholder-val="{{false}}">
+              <span role="status" style="font-size: 14px; font-weight: 700; color: #0A5A31; line-height: 1.45">{{doneLine}}</span>
+              <span style="font-size: 13.5px; line-height: 1.45">Facture fournisseur de Brenda Wax créée : 10 200 F à reverser lundi.</span>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside style="min-width: 0; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF; border-left: 1px solid #D3D7DB">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #E3E6E9">
+        <span style="min-height: 30px; display: inline-flex; align-items: center; border-radius: 7px; padding: 0 10px; background: #15130F; color: #FFFFFF; font-size: 12.5px; font-weight: 700">Envoyer un message</span>
+        <span style="min-height: 30px; display: inline-flex; align-items: center; border-radius: 7px; padding: 0 10px; border: 1px solid #AEB4BA; font-size: 12.5px; font-weight: 700">Note</span>
+        <span style="min-height: 30px; display: inline-flex; align-items: center; border-radius: 7px; padding: 0 10px; border: 1px solid #AEB4BA; font-size: 12.5px; font-weight: 700">Activité</span>
+        <span style="margin-left: auto; font-size: 12.5px; color: #5A6068">3 abonnés</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-bottom: 1px solid #E3E6E9; background: #FFFBF3">
+        <span style="font-size: 12px; font-weight: 700; color: #6B4500">Activité prévue · aujourd'hui</span>
+        <span style="font-size: 13px">Rappeler la cliente si pas livré à 18:00 · Dispatch</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 14px 16px">
+        <sc-for list="{{log}}" as="m" hint-placeholder-count="5">
+          <div style="display: grid; grid-template-columns: 30px 1fr; gap: 9px">
+            <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 10.5px; font-weight: 800; background: {{m.avBg}}; color: {{m.avFg}}">{{m.ini}}</span>
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+              <span style="font-size: 12.5px"><b>{{m.who}}</b><span style="color: #5A6068"> · {{m.time}}</span></span>
+              <span style="font-size: 13px; line-height: 1.4; overflow-wrap: anywhere">{{m.text}}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const stage = s.stage || "route";
+    const tries = s.tries || 0;
+    const code = s.code === undefined ? "" : s.code;
+    const who = s.who || "Junior Ekwalla, livreur OCD";
+    const extra = s.extra || [];
+    const add = (entries, patch) => this.setState(Object.assign({ extra: entries.concat(extra) }, patch));
+    const labels = ["À préparer", "Prêt", "Récupéré", "En route", stage === "problem" ? "Problème" : "Livré"];
+    const cur = stage === "route" || stage === "locked" ? 3 : 4;
+    const steps = labels.map((l, i) => ({
+      label: l,
+      current: i === cur ? "step" : "false",
+      bg: i < cur ? "#DCF2E5" : i === cur ? (stage === "problem" ? "#FCE4E4" : "#15130F") : "#F4F5F6",
+      fg: i < cur ? "#0A5A31" : i === cur ? (stage === "problem" ? "#8E1220" : "#FFFFFF") : "#5A6068"
+    }));
+    const base = [
+      ["WhatsApp · modèle livraison_en_route", "14:21", "À Estelle : « Votre colis Robe en wax (S00042) est en route avec Junior, livreur OCD. Donnez-lui ce code à la remise : •••• »", "wa"],
+      ["Junior Ekwalla", "14:20", "Colis récupéré chez Brenda Wax. Brenda a reçu la confirmation sur WhatsApp.", "ocd"],
+      ["Brenda Wax", "13:05", "Colis prêt.", "vendor"],
+      ["OdooBot", "12:40", "Livreur assigné automatiquement : Junior Ekwalla (zone Akwa, 2 colis en cours).", "bot"],
+      ["Campay", "12:31", "Paiement Mobile Money reçu : 18 000 F pour S00042.", "bot"]
+    ];
+    const kinds = { wa: ["WA", "#DCF2E5", "#0A5A31"], ocd: ["JE", "#15130F", "#FFFFFF"], vendor: ["BW", "#FFE7D1", "#15130F"], bot: ["OD", "#EEF0F2", "#3F454C"], team: ["RG", "#F46A00", "#15130F"] };
+    const log = extra.concat(base).map((m) => ({ who: m[0], time: m[1], text: m[2], ini: kinds[m[3]][0], avBg: kinds[m[3]][1], avFg: kinds[m[3]][2] }));
+    const reasons = ["Cliente absente", "Injoignable", "Adresse introuvable", "Refuse le colis"].map((r) => ({
+      label: r,
+      pick: () => add([["Régie OCD", "14:58", "Problème signalé : " + r.toLowerCase() + ". WhatsApp envoyé à la cliente pour choisir un nouveau créneau.", "team"]], { stage: "problem", reason: r, showReasons: false })
+    }));
+    const deliveredBy = who.split(",")[0];
+    return {
+      steps, log, reasons, who, code,
+      codeSent: s.resent ? "14:55 (renvoyé)" : "14:21",
+      attempts: tries === 0 ? "1re tentative, aucun code faux" : tries + (tries > 1 ? " codes faux" : " code faux") + " sur 3 autorisés",
+      isRoute: stage === "route",
+      isLocked: stage === "locked",
+      isProblem: stage === "problem",
+      isDone: stage === "done",
+      showReassign: !!s.showReassign && stage !== "done",
+      showReasons: !!s.showReasons && stage === "route",
+      hasErr: !!s.err && stage === "route",
+      err: s.err || "",
+      codeBd: s.err ? "#B01522" : "#AEB4BA",
+      problemLine: "Problème : " + (s.reason || "").toLowerCase() + ". La cliente choisit un nouveau créneau sur WhatsApp. Après 2 échecs, retour chez la vendeuse et remboursement.",
+      doneLine: s.forced ? "Livré à 15:02, validé sans code par Régie OCD (photo jointe, motif : cliente sans téléphone)." : "Livré à 15:02. Code vérifié par " + deliveredBy + ".",
+      setCode: (e) => this.setState({ code: String(e.target.value).replace(/\D/g, "").slice(0, 4), err: "" }),
+      check: () => {
+        if (code === "4729") {
+          add([
+            ["Facturation", "15:02", "Facture fournisseur de Brenda Wax : 10 200 F à reverser lundi.", "bot"],
+            ["WhatsApp · modèle livraison_effectuee", "15:02", "À Estelle : « Colis livré. Merci pour votre commande ! »", "wa"],
+            [deliveredBy, "15:02", "Livré. Code vérifié.", "ocd"]
+          ], { stage: "done", err: "" });
+          return;
+        }
+        const n = tries + 1;
+        if (n >= 3) {
+          add([["OdooBot", "15:01", "3 codes faux : livraison bloquée, responsable prévenu.", "bot"]], { tries: n, stage: "locked", err: "" });
+          return;
+        }
+        this.setState({ tries: n, err: "Code incorrect. Encore " + (3 - n) + (3 - n > 1 ? " essais." : " essai.") });
+      },
+      forceDone: () => add([["Régie OCD", "15:02", "Validé sans code : cliente sans téléphone, photo du colis remis jointe.", "team"]], { stage: "done", forced: true }),
+      resend: () => add([["Régie OCD", "14:55", "Code renvoyé à Estelle sur WhatsApp.", "team"]], { resent: true }),
+      toggleReassign: () => this.setState({ showReassign: !s.showReassign }),
+      toggleProblem: () => this.setState({ showReasons: !s.showReasons }),
+      pickWho: (e) => add([["Régie OCD", "14:56", "Livreur changé : " + who.split(",")[0] + " → " + String(e.target.value).split(",")[0] + ". Nouveau code envoyé à la cliente.", "team"]], { who: e.target.value, showReassign: false }),
+      resume: () => add([["Régie OCD", "15:10", "Livraison reprise : nouveau créneau confirmé par la cliente, 17:00 – 18:00.", "team"]], { stage: "route" })
+    };
+  }
+}
+</script>
+</body>
+</html>

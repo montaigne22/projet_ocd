@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mes colis à livrer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 16px 18px 8px">
+    <img src="/_blob/273c64c79958def7341794eb4577315c" alt="Logo OCD" style="width: 38px; height: 38px; border-radius: 50%">
+    <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 21px">Mes colis</span>
+    <button onClick="{{say}}" aria-label="Écouter cet écran" style="margin-left: auto; width: 46px; height: 46px; border-radius: 50%; border: 0; padding: 0; background: #FFE7D1; color: #15130F; display: grid; place-items: center; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></button>
+  </div>
+
+  <div style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 12px; padding: 6px 18px 14px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 30px; line-height: 1.05; letter-spacing: -0.02em">Bonjour Fatou</h1>
+    </div>
+    <span style="align-self: flex-start; background: #DCF2E5; color: #0A5A31; border-radius: 10px; padding: 6px 11px; font-size: 14px; font-weight: 700">Lundi, tu reçois {{payout}} sur ton Mobile Money</span>
+
+    <div role="tablist" aria-label="Mes colis" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; background: #F5F2EE; border-radius: 14px; padding: 4px">
+      <button role="tab" aria-selected="{{todoOn}}" onClick="{{showTodo}}" style="min-height: 44px; border: 0; border-radius: 11px; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; background: {{todoBg}}; color: #15130F">À faire · {{todoCount}}</button>
+      <button role="tab" aria-selected="{{doneOn}}" onClick="{{showDone}}" style="min-height: 44px; border: 0; border-radius: 11px; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; background: {{doneBg}}; color: #15130F">Livrés · {{doneCount}}</button>
+    </div>
+
+    <sc-if value="{{todoOn}}" hint-placeholder-val="{{true}}">
+      <sc-if value="{{aVisible}}" hint-placeholder-val="{{true}}">
+        <div style="display: flex; flex-direction: column; gap: 9px; border: 2px solid {{aBd}}; border-radius: 18px; padding: 14px">
+          <div style="display: flex; align-items: center; gap: 8px"><b style="font-size: 17px">Pour Estelle Ngono</b><span style="margin-left: auto; border-radius: 8px; padding: 3px 9px; font-size: 12.5px; font-weight: 700; background: {{aPillBg}}; color: {{aPillFg}}">{{aPill}}</span></div>
+          <span style="font-size: 14.5px; color: #665F58">Akwa · en face de la pharmacie</span>
+          <span style="font-size: 15.5px; font-weight: 600">Beurre de karité 250 g × 2</span>
+          <span style="align-self: flex-start; background: #DCF2E5; color: #0A5A31; border-radius: 8px; padding: 3px 9px; font-size: 13.5px; font-weight: 700">Payé en ligne : tu n'encaisses rien</span>
+          <span style="font-size: 13.5px; color: #665F58">À livrer avant 18:00 · OUT/0042-B</span>
+          <sc-if value="{{aReady}}" hint-placeholder-val="{{true}}">
+            <button onClick="{{aGo}}" style="min-height: 54px; border: 0; border-radius: 15px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17.5px; cursor: pointer">Je pars livrer</button>
+            <span style="font-size: 13.5px; color: #665F58; line-height: 1.35">Estelle reçoit son code sur WhatsApp quand tu pars.</span>
+          </sc-if>
+          <sc-if value="{{aRoute}}" hint-placeholder-val="{{false}}">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+              <button style="min-height: 46px; border: 0; border-radius: 13px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">Appeler</button>
+              <button style="min-height: 46px; border: 0; border-radius: 13px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">WhatsApp</button>
+            </div>
+            <label for="a-code" style="font-weight: 700; font-size: 14.5px">Code donné par Estelle</label>
+            <div style="display: flex; gap: 8px">
+              <input id="a-code" inputmode="numeric" maxlength="4" value="{{aCode}}" onChange="{{aSetCode}}" autocomplete="off" style="flex: 1; min-width: 0; height: 52px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 24px; font-weight: 800; letter-spacing: 0.35em; color: #15130F; background: #FFFFFF; border: 2px solid {{aCodeBd}}">
+              <button onClick="{{aCheck}}" style="min-height: 52px; border: 0; border-radius: 14px; padding: 0 16px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer">Valider</button>
+            </div>
+            <sc-if value="{{aHasErr}}" hint-placeholder-val="{{false}}">
+              <span role="alert" style="font-size: 14px; font-weight: 700; color: #B01522">{{aErr}}</span>
+            </sc-if>
+            <span style="font-size: 13px; color: #665F58">Démo : le code d'Estelle est 1856.</span>
+            <button onClick="{{aToggleReasons}}" style="align-self: flex-start; min-height: 44px; border: 0; padding: 0; background: #FFFFFF; color: #B01522; font-family: inherit; font-size: 14.5px; font-weight: 700; text-decoration: underline; cursor: pointer">Un problème ?</button>
+            <sc-if value="{{aShowReasons}}" hint-placeholder-val="{{false}}">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+                <sc-for list="{{aReasons}}" as="r" hint-placeholder-count="4">
+                  <button onClick="{{r.pick}}" style="min-height: 46px; border: 0; border-radius: 12px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer">{{r.label}}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </sc-if>
+          <sc-if value="{{aLocked}}" hint-placeholder-val="{{false}}">
+            <span role="alert" style="background: #FCE4E4; color: #8E1220; border-radius: 12px; padding: 11px 13px; font-size: 14.5px; font-weight: 700; line-height: 1.35">3 codes faux. Ne laisse pas le colis : l'équipe OCD t'appelle tout de suite.</span>
+          </sc-if>
+          <sc-if value="{{aProblem}}" hint-placeholder-val="{{false}}">
+            <span role="status" style="background: #FFF0CC; color: #6B4500; border-radius: 12px; padding: 11px 13px; font-size: 14.5px; font-weight: 700; line-height: 1.35">{{aProblemLine}}</span>
+            <button onClick="{{aResume}}" style="min-height: 46px; border: 0; border-radius: 13px; box-shadow: inset 0 0 0 2px #E7E2DC; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">Reprendre la livraison</button>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <div style="display: flex; flex-direction: column; gap: 9px; border: 2px solid #E7E2DC; border-radius: 18px; padding: 14px">
+        <div style="display: flex; align-items: center; gap: 8px"><b style="font-size: 17px">Pour Sandrine Fouda</b><span style="margin-left: auto; border-radius: 8px; padding: 3px 9px; font-size: 12.5px; font-weight: 700; background: {{bPillBg}}; color: {{bPillFg}}">{{bPill}}</span></div>
+        <span style="font-size: 14.5px; color: #665F58">Bonamoussadi · face au terrain de foot</span>
+        <span style="font-size: 15.5px; font-weight: 600">Beurre de karité 250 g</span>
+        <span style="align-self: flex-start; background: #FFF0CC; color: #6B4500; border-radius: 8px; padding: 3px 9px; font-size: 13.5px; font-weight: 700">À encaisser : 4 000 F, livraison comprise</span>
+        <span style="font-size: 13.5px; color: #665F58">À préparer avant 18:30 · OUT/0049</span>
+        <sc-if value="{{bPrep}}" hint-placeholder-val="{{true}}">
+          <button onClick="{{bReadyGo}}" style="min-height: 54px; border: 0; border-radius: 15px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17.5px; cursor: pointer">C'est prêt</button>
+        </sc-if>
+        <sc-if value="{{bReady}}" hint-placeholder-val="{{false}}">
+          <span role="status" style="background: #F5F2EE; border-radius: 12px; padding: 11px 13px; font-size: 14px; line-height: 1.4">Prêt. Pars quand tu veux. À la porte, touche « Mobile Money » pour que Sandrine paie sur son téléphone, ou prends les espèces.</span>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px; border: 2px solid #E7E2DC; border-radius: 18px; padding: 14px">
+        <div style="display: flex; align-items: center; gap: 8px"><b style="font-size: 17px">Pour Hervé Kuete</b><span style="margin-left: auto; border-radius: 8px; padding: 3px 9px; font-size: 12.5px; font-weight: 700; background: {{cPillBg}}; color: {{cPillFg}}">{{cPill}}</span></div>
+        <span style="font-size: 14.5px; color: #665F58">Bonabéri · hors de tes quartiers</span>
+        <span style="font-size: 15.5px; font-weight: 600">Beurre de karité 250 g × 2</span>
+        <span style="align-self: flex-start; background: #DCF2E5; color: #0A5A31; border-radius: 8px; padding: 3px 9px; font-size: 13.5px; font-weight: 700">Payé en ligne</span>
+        <div style="display: flex; align-items: center; gap: 10px; background: #F5F2EE; border-radius: 12px; padding: 9px 11px">
+          <span aria-hidden="true" style="width: 34px; height: 34px; flex: none; border-radius: 50%; background: #15130F; color: #FFFFFF; display: grid; place-items: center; font-size: 12px; font-weight: 800">RN</span>
+          <span style="font-size: 14px; line-height: 1.35">Raoul, livreur OCD, passe le chercher à 16:00 · OUT/0050</span>
+        </div>
+        <sc-if value="{{cPrep}}" hint-placeholder-val="{{true}}">
+          <button onClick="{{cReadyGo}}" style="min-height: 54px; border: 0; border-radius: 15px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17.5px; cursor: pointer">C'est prêt</button>
+        </sc-if>
+        <sc-if value="{{cReady}}" hint-placeholder-val="{{false}}">
+          <span role="status" style="background: #F5F2EE; border-radius: 12px; padding: 11px 13px; font-size: 14px; line-height: 1.4">Prêt. Raoul est prévenu. Donne-lui le colis quand il arrive.</span>
+          <button onClick="{{cPickGo}}" style="align-self: flex-start; min-height: 44px; border: 1.5px dashed #665F58; border-radius: 10px; padding: 0 12px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Démo : Raoul récupère le colis</button>
+        </sc-if>
+        <sc-if value="{{cPicked}}" hint-placeholder-val="{{false}}">
+          <span role="status" style="background: #DCF2E5; color: #0A5A31; border-radius: 12px; padding: 11px 13px; font-size: 14px; font-weight: 700; line-height: 1.4">Récupéré par Raoul à 16:04. Ce n'est pas lui ? Préviens l'équipe OCD tout de suite.</span>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{doneOn}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column">
+        <sc-for list="{{doneList}}" as="d" hint-placeholder-count="3">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid #E7E2DC">
+            <span style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 15.5px">{{d.who}}</b><span style="font-size: 13.5px; color: #665F58">{{d.detail}}</span></span>
+            <span style="background: #DCF2E5; color: #0A5A31; border-radius: 8px; padding: 3px 9px; font-size: 12.5px; font-weight: 700; white-space: nowrap">Code vérifié</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{cap}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 14px; right: 14px; bottom: 92px; background: #15130F; color: #FFFFFF; border-radius: 16px; padding: 12px 14px; font-size: 15px; font-weight: 600; line-height: 1.3; box-shadow: 0 0 0 2px #FFFFFF">Tes colis à livrer. Touche le bouton orange quand c'est prêt, puis quand tu pars. À la remise, écris le code du client.</div>
+  </sc-if>
+
+  <nav aria-label="Menu" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #E7E2DC; padding: 8px 8px 12px">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M3 11l9-8 9 8v10h-7v-7h-4v7H3z"></path></svg>Accueil</a>
+    <a href="Lives.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Lives</a>
+    <a href="Shop.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><path d="M3 6h18M16 10a4 4 0 0 1-8 0"></path></svg>Shop</a>
+    <a href="MonEspace.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 700; color: #15130F"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F46A00" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Moi</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const cap = !!s.cap;
+    const tab = s.tab || "todo";
+    const a = s.a || "ready";
+    const b = s.b || "prep";
+    const c = s.c || "prep";
+    const tries = s.tries || 0;
+    const aCode = s.aCode === undefined ? "" : s.aCode;
+    const pills = {
+      prep: ["À préparer", "#FFF0CC", "#6B4500"],
+      ready: ["Prêt", "#EEF0F2", "#15130F"],
+      route: ["En route", "#15130F", "#FFFFFF"],
+      done: ["Livré", "#DCF2E5", "#0A5A31"],
+      problem: ["Problème", "#FCE4E4", "#8E1220"],
+      locked: ["Bloqué", "#FCE4E4", "#8E1220"],
+      picked: ["Récupéré", "#DCF2E5", "#0A5A31"]
+    };
+    const doneBase = [
+      { who: "Joëlle Ndzana", detail: "lun. 30 nov. · Makepe · Beurre de karité" },
+      { who: "Bertrand Atangana", detail: "lun. 30 nov. · Kotto · Beurre de karité" },
+      { who: "Murielle Ebongue", detail: "lun. 30 nov. · Akwa · Beurre de karité" }
+    ];
+    const doneList = (a === "done" ? [{ who: "Estelle Ngono", detail: "aujourd'hui, 15:40 · Akwa · Beurre de karité × 2" }] : []).concat(doneBase);
+    const todoCount = (a === "done" ? 0 : 1) + 1 + (c === "picked" ? 0 : 1);
+    return {
+      cap,
+      payout: a === "done" ? "12 125 F" : "7 875 F",
+      todoOn: tab === "todo",
+      doneOn: tab === "done",
+      todoBg: tab === "todo" ? "#FFFFFF" : "transparent",
+      doneBg: tab === "done" ? "#FFFFFF" : "transparent",
+      todoCount: todoCount,
+      doneCount: doneList.length,
+      doneList: doneList,
+      showTodo: () => this.setState({ tab: "todo" }),
+      showDone: () => this.setState({ tab: "done" }),
+      aVisible: a !== "done",
+      aBd: a === "route" ? "#F46A00" : "#E7E2DC",
+      aPill: pills[a][0], aPillBg: pills[a][1], aPillFg: pills[a][2],
+      aReady: a === "ready",
+      aRoute: a === "route",
+      aLocked: a === "locked",
+      aProblem: a === "problem",
+      aCode: aCode,
+      aCodeBd: s.aErr ? "#B01522" : "#E7E2DC",
+      aHasErr: !!s.aErr,
+      aErr: s.aErr || "",
+      aShowReasons: !!s.aReasons,
+      aProblemLine: "Signalé : " + (s.reason || "").toLowerCase() + ". L'équipe OCD te rappelle et propose un nouveau créneau à Estelle.",
+      aReasons: ["Cliente absente", "Injoignable", "Adresse introuvable", "Refuse le colis"].map((r) => ({ label: r, pick: () => this.setState({ a: "problem", reason: r, aReasons: false }) })),
+      aGo: () => this.setState({ a: "route" }),
+      aSetCode: (e) => this.setState({ aCode: String(e.target.value).replace(/\D/g, "").slice(0, 4), aErr: "" }),
+      aCheck: () => {
+        if (aCode === "1856") { this.setState({ a: "done", aErr: "", tab: "todo" }); return; }
+        const n = tries + 1;
+        if (n >= 3) { this.setState({ tries: n, a: "locked", aErr: "" }); return; }
+        this.setState({ tries: n, aErr: "Ce n'est pas le bon code. Encore " + (3 - n) + (3 - n > 1 ? " essais." : " essai.") });
+      },
+      aToggleReasons: () => this.setState({ aReasons: !s.aReasons }),
+      aResume: () => this.setState({ a: "route" }),
+      bPill: pills[b][0], bPillBg: pills[b][1], bPillFg: pills[b][2],
+      bPrep: b === "prep",
+      bReady: b === "ready",
+      bReadyGo: () => this.setState({ b: "ready" }),
+      cPill: pills[c][0], cPillBg: pills[c][1], cPillFg: pills[c][2],
+      cPrep: c === "prep",
+      cReady: c === "ready",
+      cPicked: c === "picked",
+      cReadyGo: () => this.setState({ c: "ready" }),
+      cPickGo: () => this.setState({ c: "picked" }),
+      say: () => {
+        try {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance("Tes colis à livrer. Touche le bouton orange quand c'est prêt, puis quand tu pars. À la remise, écris le code du client.");
+          u.lang = "fr-FR";
+          window.speechSynthesis.speak(u);
+        } catch (e) {}
+        this.setState({ cap: !cap });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

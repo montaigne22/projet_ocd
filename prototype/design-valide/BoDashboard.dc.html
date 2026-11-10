@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tableau de bord OCD Live</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="dashboard" sub="dash" title="Tableau de bord" crumb="" facets="Aujourd'hui · mar. 1er déc." views="" view="" pager="Mis à jour à 14:50" action="" search="oui" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 16px 22px">
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{tiles}}" as="t" hint-placeholder-count="6">
+        <a href="{{t.href}}" style="display: flex; flex-direction: column; gap: 2px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 12px 14px">
+          <span style="font-size: 12.5px; font-weight: 600; color: #5A6068">{{t.label}}</span>
+          <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 26px; line-height: 1.15; font-variant-numeric: tabular-nums; white-space: nowrap">{{t.value}}</span>
+          <span style="font-size: 12.5px; font-weight: 600; color: {{t.subColor}}">{{t.sub}}</span>
+        </a>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px">
+      <section style="grid-column: span 7; height: 280px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px">
+        <div style="display: flex; align-items: flex-start; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 1px; min-width: 0">
+            <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; line-height: 1.2">Réservations de lives reçues par jour</h2>
+            <span style="font-size: 12.5px; color: #5A6068">14 derniers jours · 136 réservations · ouverture des lives le 1er déc.</span>
+          </div>
+          <div style="margin-left: auto; display: flex; flex: none; border: 1px solid #AEB4BA; border-radius: 8px; overflow: hidden">
+            <button onClick="{{showChart}}" aria-pressed="{{isChart}}" style="min-height: 30px; padding: 0 10px; border: 0; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; background: {{chartBg}}; color: {{chartFg}}">Graphique</button>
+            <button onClick="{{showTable}}" aria-pressed="{{isTable}}" style="min-height: 30px; padding: 0 10px; border: 0; border-left: 1px solid #AEB4BA; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; background: {{tableBg}}; color: {{tableFg}}">Tableau</button>
+          </div>
+        </div>
+        <sc-if value="{{isChart}}" hint-placeholder-val="{{true}}">
+          <div style="display: grid; grid-template-columns: 30px 1fr; grid-template-rows: 170px 24px; row-gap: 6px; margin-top: 8px">
+            <div style="position: relative">
+              <sc-for list="{{ticks}}" as="y" hint-placeholder-count="5">
+                <span style="position: absolute; right: 6px; bottom: {{y.lb}}; font-size: 11.5px; color: #5A6068; font-variant-numeric: tabular-nums">{{y.t}}</span>
+              </sc-for>
+            </div>
+            <div style="position: relative; border-bottom: 1px solid #8A9097">
+              <sc-for list="{{ticks}}" as="y" hint-placeholder-count="5">
+                <span style="position: absolute; left: 0; right: 0; bottom: {{y.bottom}}; border-top: 1px solid #E8EAED"></span>
+              </sc-for>
+              <div style="position: absolute; inset: 0; display: flex; align-items: stretch">
+                <sc-for list="{{bars}}" as="b" hint-placeholder-count="14">
+                  <button onMouseEnter="{{b.enter}}" onMouseLeave="{{clear}}" onFocus="{{b.enter}}" onBlur="{{clear}}" aria-label="{{b.aria}}" style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; border: 0; padding: 0; background: transparent; font-family: inherit; color: #15130F; cursor: default">
+                    <span style="font-size: 11.5px; font-weight: 700; margin-bottom: 3px; font-variant-numeric: tabular-nums; display: {{b.labelShow}}">{{b.v}}</span>
+                    <span style="width: 26px; height: {{b.h}}; border-radius: 4px 4px 0 0; background: {{b.color}}"></span>
+                  </button>
+                </sc-for>
+              </div>
+              <sc-if value="{{hasTip}}" hint-placeholder-val="{{false}}">
+                <div role="status" style="position: absolute; top: -4px; left: {{tipLeft}}; width: 170px; box-sizing: border-box; background: #15130F; color: #FFFFFF; border-radius: 8px; padding: 6px 9px; font-size: 12.5px; font-weight: 600; pointer-events: none">{{tipText}}</div>
+              </sc-if>
+            </div>
+            <span></span>
+            <div style="display: flex">
+              <sc-for list="{{bars}}" as="b" hint-placeholder-count="14">
+                <span style="flex: 1; min-width: 0; text-align: center; font-size: 11.5px; color: #5A6068; font-variant-numeric: tabular-nums">{{b.x}}</span>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{isTable}}" hint-placeholder-val="{{false}}">
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; font-size: 13px; margin-top: 4px">
+            <sc-for list="{{tableRows}}" as="r" hint-placeholder-count="14">
+              <div style="display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px solid #EEF0F2"><span>{{r.day}}</span><span style="font-weight: 700; font-variant-numeric: tabular-nums">{{r.v}}</span></div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </section>
+
+      <section style="grid-column: span 5; height: 280px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px; overflow: hidden">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 2px">
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; line-height: 1.2">À traiter maintenant</h2>
+          <span style="font-size: 12.5px; color: #5A6068">6 activités</span>
+        </div>
+        <sc-for list="{{todos}}" as="d" hint-placeholder-count="6">
+          <a href="{{d.href}}" style="display: grid; grid-template-columns: 84px 1fr; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid #EEF0F2">
+            <span style="justify-self: start; border-radius: 6px; padding: 2px 7px; font-size: 11.5px; font-weight: 700; white-space: nowrap; background: {{d.bg}}; color: {{d.fg}}">{{d.tag}}</span>
+            <span style="font-size: 13px; line-height: 1.35">{{d.text}}</span>
+          </a>
+        </sc-for>
+      </section>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px">
+      <section style="grid-column: span 7; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px">
+        <div style="display: flex; flex-direction: column; gap: 1px; margin-bottom: 4px">
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; line-height: 1.2">Encaissé depuis l'ouverture des réservations</h2>
+          <span style="font-size: 12.5px; color: #5A6068">16 nov. – 1er déc. · en francs CFA</span>
+        </div>
+        <sc-for list="{{revenue}}" as="r" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: 210px 1fr 104px; gap: 12px; align-items: center; height: 26px">
+            <span style="font-size: 13px; font-weight: 600; white-space: nowrap">{{r.label}}</span>
+            <span style="position: relative; height: 14px"><span style="position: absolute; left: 0; top: 0; bottom: 0; min-width: 3px; border-radius: 0 4px 4px 0; background: #F46A00; width: {{r.w}}"></span></span>
+            <span style="text-align: right; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap">{{r.value}}</span>
+          </div>
+        </sc-for>
+      </section>
+
+      <section style="grid-column: span 5; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 12px; padding: 14px 16px">
+        <h2 style="margin: 0 0 2px; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 16px; line-height: 1.2">Aujourd'hui, à venir</h2>
+        <sc-for list="{{upcoming}}" as="u" hint-placeholder-count="5">
+          <a href="{{u.href}}" style="display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: baseline; padding: 4px 0; border-bottom: 1px solid #EEF0F2">
+            <span style="font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap">{{u.time}}</span>
+            <span style="font-size: 13px; line-height: 1.35"><b style="font-weight: 700">{{u.name}}</b> · {{u.detail}}</span>
+          </a>
+        </sc-for>
+        <span style="margin-top: auto; font-size: 12px; color: #5A6068">Chiffres d'exemple pour la démonstration.</span>
+      </section>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const isChart = (s.mode || "chart") === "chart";
+    const vals = [3, 5, 4, 8, 6, 9, 12, 7, 10, 14, 11, 16, 13, 18];
+    const days = ["18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "1er"];
+    const full = ["mer. 18 nov.", "jeu. 19 nov.", "ven. 20 nov.", "sam. 21 nov.", "dim. 22 nov.", "lun. 23 nov.", "mar. 24 nov.", "mer. 25 nov.", "jeu. 26 nov.", "ven. 27 nov.", "sam. 28 nov.", "dim. 29 nov.", "lun. 30 nov.", "mar. 1er déc."];
+    const hov = s.hov === undefined ? -1 : s.hov;
+    const plotW = 653;
+    const plotH = 170;
+    const max = 20;
+    const slot = plotW / vals.length;
+    const bars = vals.map((v, i) => ({
+      v: v,
+      x: days[i],
+      aria: full[i] + " : " + v + " réservations",
+      h: Math.round((v / max) * plotH) + "px",
+      color: i === hov ? "#B84F00" : "#F46A00",
+      labelShow: i === vals.length - 1 ? "block" : "none",
+      enter: () => this.setState({ hov: i })
+    }));
+    const ticks = [0, 5, 10, 15, 20].map((t) => ({
+      t: t,
+      bottom: Math.round((t / max) * plotH) + "px",
+      lb: Math.round((t / max) * plotH) - 7 + "px"
+    }));
+    const tipLeft = Math.max(0, Math.min(plotW - 170, slot * (hov + 0.5) - 85)) + "px";
+    const tiles = [
+      ["Lives aujourd'hui", "5", "3 au studio · 2 à distance", "#5A6068", "BoReservations.dc.html"],
+      ["Pass annuaire actifs", "132", "12 finissent dans 3 jours", "#5A6068", "BoVendeur.dc.html"],
+      ["Commandes du shop", "9", "123 000 F aujourd'hui", "#5A6068", "BoCommandes.dc.html"],
+      ["Colis à livrer aujourd'hui", "12", "3 livrés · 1 en retard · 1 problème", "#B01522", "BoDispatch.dc.html"],
+      ["À reverser lundi", "70 400 F", "5 vendeurs · 1 200 F à récupérer", "#5A6068", "BoReversements.dc.html"],
+      ["WhatsApp en attente", "4", "la plus ancienne : 19 min", "#6B4500", "BoWhatsApp.dc.html"]
+    ].map((t) => ({ label: t[0], value: t[1], sub: t[2], subColor: t[3], href: t[4] }));
+    const red = ["#FCE4E4", "#8E1220"];
+    const yellow = ["#FFF0CC", "#6B4500"];
+    const grey = ["#EEF0F2", "#3F454C"];
+    const todos = [
+      ["Retard", red, "OUT/0045 · Patrick Sneakers n'est pas parti livrer, client relancé", "BoDispatch.dc.html"],
+      ["Problème", red, "OUT/0047 · client injoignable, nouvelle tentative à 17:00", "BoDispatch.dc.html"],
+      ["WhatsApp", yellow, "Didier Nkotto attend une réponse depuis 19 min", "BoWhatsApp.dc.html"],
+      ["À vérifier", yellow, "3 lives, 2 produits et 1 nouveau vendeur", "BoVerification.dc.html"],
+      ["Caisse", grey, "Christian : 11 500 F d'espèces à remettre avant 20:00", "BoLivreurs.dc.html"],
+      ["Animatrice", grey, "Live de Fatou Karité, sam. 5 déc. : aucune animatrice", "BoReservations.dc.html"]
+    ].map((d) => ({ tag: d[0], bg: d[1][0], fg: d[1][1], text: d[2], href: d[3] }));
+    const rmax = 1300000;
+    const revenue = [
+      ["Packs de lives", 1230000],
+      ["Pass de l'annuaire", 660000],
+      ["Commissions du shop", 12300],
+      ["Frais de livraison (livreurs OCD)", 3000]
+    ].map((r) => ({ label: r[0], value: fr(r[1]), w: ((r[1] / rmax) * 100).toFixed(1) + "%" }));
+    const upcoming = [
+      ["16:00", "Libre", "1 personne en liste d'attente", "BoReservations.dc.html"],
+      ["17:30", "Gardé", "paiement en cours, libéré à 15:00 si non payé", "BoReservations.dc.html"],
+      ["18:00 – 21:00", "Annuaire", "créneau du soir, 132 pass actifs", "BoVerification.dc.html"],
+      ["19:00", "Kossi Sneakers", "studio, portant prêt", "BoReservations.dc.html"],
+      ["20:30", "Aïssatou Beauté", "à distance, Sénégal, Animatrice 1", "BoReservations.dc.html"]
+    ].map((u) => ({ time: u[0], name: u[1], detail: u[2], href: u[3] }));
+    return {
+      tiles, todos, revenue, upcoming, bars, ticks,
+      isChart: isChart,
+      isTable: !isChart,
+      chartBg: isChart ? "#15130F" : "#FFFFFF",
+      chartFg: isChart ? "#FFFFFF" : "#15130F",
+      tableBg: isChart ? "#FFFFFF" : "#15130F",
+      tableFg: isChart ? "#15130F" : "#FFFFFF",
+      tableRows: vals.map((v, i) => ({ day: full[i], v: v })),
+      hasTip: hov >= 0,
+      tipLeft: tipLeft,
+      tipText: hov >= 0 ? full[hov] + " : " + vals[hov] + " réservations" : "",
+      clear: () => this.setState({ hov: -1 }),
+      showChart: () => this.setState({ mode: "chart" }),
+      showTable: () => this.setState({ mode: "table", hov: -1 })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Automatic tasks of OCD Live, each one with its switch (BoAutomatisations) -->
+    <record id="ir_cron_view_list_ocd" model="ir.ui.view">
+        <field name="name">ir.cron.view.list.ocd</field>
+        <field name="model">ir.cron</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list string="Automations" create="false" delete="false" editable="bottom">
+                <field name="cron_name" string="When… then…" readonly="1"/>
+                <field name="interval_number" string="Every" readonly="1"/>
+                <field name="interval_type" string="Unit" readonly="1"/>
+                <field name="lastcall" string="Last run" readonly="1"/>
+                <field name="nextcall" string="Next run" readonly="1"/>
+                <field name="active" string="Active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_live_cron_action" model="ir.actions.act_window">
+        <field name="name">Automations</field>
+        <field name="res_model">ir.cron</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('cron_name', 'ilike', 'OCD Live')]</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('ir_cron_view_list_ocd')}),
+            Command.create({'view_mode': 'form'})]"/>
+    </record>
+
+    <menuitem id="ocd_live_automations_menu" name="Automations" parent="ocd_live_menu_config"
+              action="ocd_live_cron_action" sequence="15" groups="base.group_system"/>
+
+</odoo>

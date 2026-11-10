@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Lives au Cameroun</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="Lives.dc.html" aria-label="Retour aux pays" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span aria-hidden="true" style="width: 36px; height: 24px; border-radius: 3px; box-shadow: 0 0 0 1px rgba(0,0,0,0.14); background: linear-gradient(90deg,#007A5E 33.33%,#CE1126 33.33% 66.66%,#FCD116 66.66%)"></span>
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Cameroun</h1>
+    <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 15px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #D91A2A"></span>{{count}} lives</span>
+  </div>
+
+  <div style="display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 8px 18px 10px">
+    <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+      <button onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="flex: none; min-height: 44px; box-sizing: border-box; border-radius: 999px; padding: 8px 15px; font-family: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer; border: 2px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.label}}</button>
+    </sc-for>
+  </div>
+
+  <div style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; padding: 0 18px">
+    <sc-for list="{{list}}" as="p" hint-placeholder-count="7">
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid #E7E2DC">
+        <a href="Vitrine.dc.html" aria-label="{{p.shop}}" style="display: grid; grid-template-columns: 50px 1fr; gap: 12px; align-items: center; min-width: 0">
+        <span aria-hidden="true" style="position: relative; width: 50px; height: 50px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 17px">{{p.ini}}<span style="position: absolute; right: 0; bottom: 0; width: 13px; height: 13px; border-radius: 50%; background: #D91A2A; border: 2.5px solid #FFFFFF"></span></span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 700; font-size: 16px; line-height: 1.2">{{p.name}}</span><span style="font-size: 13.5px; color: #665F58">{{p.meta}}</span><span style="font-size: 13px; font-weight: 700; text-decoration: underline">Sa boutique</span></span>
+        </a>
+        <button aria-label="{{p.aria}}" style="display: flex; align-items: center; gap: 6px; min-height: 44px; border: 0; border-radius: 999px; padding: 0 15px 0 12px; background: #15130F; color: #FFFFFF; font-family: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" style="width: 14px; height: 14px"><path d="M6 3l14 9-14 9z"></path></svg>Voir</button>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="padding: 10px 14px 10px; border-top: 1px solid #E7E2DC">
+    <a href="Pass.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 58px; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px"><span style="width: 10px; height: 10px; border-radius: 50%; background: #15130F"></span>Je suis en live</a>
+  </div>
+  <nav aria-label="Menu" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0 8px 12px">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M3 11l9-8 9 8v10h-7v-7h-4v7H3z"></path></svg>Accueil</a>
+    <a href="Lives.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 700; color: #15130F"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F46A00" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Lives</a>
+    <a href="Shop.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><path d="M3 6h18M16 10a4 4 0 0 1-8 0"></path></svg>Shop</a>
+    <a href="MonEspace.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; font-size: 12px; font-weight: 600; color: #665F58"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 23px; height: 23px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Moi</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const cat = (this.state && this.state.cat) || "all";
+    const labels = { all: "Tout", food: "Nourriture", mode: "Habits", beauty: "Beauté", tech: "Téléphones", home: "Maison" };
+    const people = [
+      ["Papa Ndolé", "food", 6], ["Nadège Perruques", "beauty", 9], ["Blaise Électro", "tech", 11],
+      ["Mireille Couture", "mode", 14], ["Estelle Cuisine", "food", 17], ["Brenda Wax", "mode", 18],["Chantal Saveurs", "food", 21], ["Serge Phones", "tech", 23],
+      ["Grâce Cosmétiques", "beauty", 26], ["Patrick Sneakers", "mode", 30], ["Solange Pagnes", "mode", 33], ["Hervé Grillades", "food", 37],
+      ["Christelle Tresses", "beauty", 41], ["Junior Gadgets", "tech", 44], ["Carine Bijoux", "mode", 48], ["Mariam Jus Naturels", "food", 52],
+      ["Aminata Déco", "home", 55], ["Rose Délices", "food", 61], ["Yao Vaisselle", "home", 68], ["Fatou Karité", "beauty", 74]
+    ];
+    const shown = people.filter((p) => cat === "all" || p[1] === cat);
+    const list = shown.map((p) => ({
+      name: p[0],
+      ini: p[0].split(" ").slice(0, 2).map((w) => w.charAt(0)).join(""),
+      meta: labels[p[1]] + " · depuis " + p[2] + " min",
+      aria: "Voir le live de " + p[0],
+      shop: "Boutique de " + p[0]
+    }));
+    const cats = Object.keys(labels).map((k) => ({
+      label: labels[k],
+      on: cat === k,
+      bd: cat === k ? "#15130F" : "#E7E2DC",
+      bg: cat === k ? "#15130F" : "#FFFFFF",
+      fg: cat === k ? "#FFFFFF" : "#15130F",
+      pick: () => this.setState({ cat: k })
+    }));
+    return { cats, list, count: shown.length };
+  }
+}
+</script>
+</body>
+</html>

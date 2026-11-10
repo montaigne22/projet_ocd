@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Informations du vendeur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 6px">
+    <a href="Paquet.dc.html" aria-label="Retour" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <div role="img" aria-label="Étape 4 sur 5" style="flex: 1; display: flex; gap: 5px">
+      <span style="flex: 1; height: 6px; border-radius: 3px; background: #F46A00"></span>
+      <span style="flex: 1; height: 6px; border-radius: 3px; background: #F46A00"></span>
+      <span style="flex: 1; height: 6px; border-radius: 3px; background: #F46A00"></span>
+      <span style="flex: 1; height: 6px; border-radius: 3px; background: #F46A00"></span>
+      <span style="flex: 1; height: 6px; border-radius: 3px; background: #E7E2DC"></span>
+    </div>
+    <button onClick="{{say}}" aria-label="Écouter cet écran" style="width: 46px; height: 46px; border-radius: 50%; border: 0; padding: 0; background: #FFE7D1; color: #15130F; display: grid; place-items: center; cursor: pointer; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></button>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 11px; padding: 6px 18px 10px; min-height: 0; overflow-y: auto; scrollbar-width: none">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 32px; line-height: 1.04; letter-spacing: -0.025em">C'est qui ?</h1>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 8px">
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <label for="f-name" style="font-weight: 700; font-size: 14.5px">Ton nom</label>
+        <input id="f-name" value="{{name}}" onChange="{{setName}}" autocomplete="off" style="height: 48px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 17px; color: #15130F; background: #FFFFFF; width: 100%; border: 2px solid {{bdName}}">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 5px">
+        <label for="f-city" style="font-weight: 700; font-size: 14.5px">Ta ville</label>
+        <input id="f-city" value="{{city}}" onChange="{{setCity}}" autocomplete="off" style="height: 48px; box-sizing: border-box; border: 2px solid #E7E2DC; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 17px; color: #15130F; background: #FFFFFF; width: 100%">
+      </div>
+    </div>
+    <sc-if value="{{errName}}" hint-placeholder-val="{{false}}">
+      <span role="alert" style="margin-top: -6px; font-size: 13.5px; font-weight: 700; color: #B01522">Écris ton nom.</span>
+    </sc-if>
+
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <span id="l-biz" style="font-weight: 700; font-size: 14.5px">Tu vends quoi ?</span>
+      <div role="group" aria-labelledby="l-biz" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px">
+        <sc-for list="{{bizTiles}}" as="t" hint-placeholder-count="6">
+          <button onClick="{{t.pick}}" aria-pressed="{{t.on}}" style="display: flex; flex-direction: column; align-items: center; gap: 4px; height: 70px; box-sizing: border-box; border-radius: 15px; padding: 8px 4px 6px; font-family: inherit; font-weight: 600; font-size: 13.5px; color: #15130F; cursor: pointer; border: 2px solid {{t.bd}}; background: {{t.bg}}"><svg viewBox="0 0 48 48" aria-hidden="true" style="width: 34px; height: 34px"><path d="{{t.main}}" fill="#15130F"></path><path d="{{t.accent}}" fill="#F46A00"></path><path d="{{t.line}}" fill="none" stroke="{{t.lineColor}}" stroke-width="3.2" stroke-linecap="round"></path></svg>{{t.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <label for="f-phone" style="font-weight: 700; font-size: 14.5px">Ton WhatsApp</label>
+      <div style="display: flex; gap: 8px">
+        <span style="flex: none; height: 48px; border-radius: 14px; background: #F5F2EE; display: flex; align-items: center; gap: 7px; padding: 0 12px; font-weight: 700; font-variant-numeric: tabular-nums"><span aria-hidden="true" style="width: 24px; height: 16px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,0.14); background: linear-gradient(#D21034,#D21034) 0 0/38% 60% no-repeat, repeating-linear-gradient(180deg,#006A4E 0 20%,#FFCE00 20% 40%)"></span>+228</span>
+        <input id="f-phone" type="tel" value="{{phone}}" onChange="{{setPhone}}" autocomplete="off" style="flex: 1; min-width: 0; height: 48px; box-sizing: border-box; border-radius: 14px; padding: 0 14px; font-family: inherit; font-size: 17px; color: #15130F; background: #FFFFFF; border: 2px solid {{bdPhone}}">
+      </div>
+      <sc-if value="{{errPhone}}" hint-placeholder-val="{{false}}">
+        <span role="alert" style="font-size: 13.5px; font-weight: 700; color: #B01522">Ton numéro a 8 chiffres.</span>
+      </sc-if>
+      <label for="f-optin" style="display: flex; align-items: center; gap: 10px; min-height: 30px; font-size: 14px; font-weight: 600; cursor: pointer">
+        <input id="f-optin" type="checkbox" checked="{{optin}}" onChange="{{toggleOptin}}" style="width: 20px; height: 20px; accent-color: #F46A00; flex: none; margin: 0">
+        Recevoir mon ticket et mes rappels sur WhatsApp
+      </label>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <span id="l-need" style="font-weight: 700; font-size: 14.5px">Au studio, il te faut</span>
+      <div role="group" aria-labelledby="l-need" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px">
+        <sc-for list="{{needTiles}}" as="t" hint-placeholder-count="3">
+          <button onClick="{{t.pick}}" aria-pressed="{{t.on}}" style="display: flex; flex-direction: column; align-items: center; gap: 4px; height: 70px; box-sizing: border-box; border-radius: 15px; padding: 8px 4px 6px; font-family: inherit; font-weight: 600; font-size: 13.5px; color: #15130F; cursor: pointer; border: 2px solid {{t.bd}}; background: {{t.bg}}"><svg viewBox="0 0 48 48" aria-hidden="true" style="width: 34px; height: 34px"><path d="{{t.main}}" fill="#15130F"></path><path d="{{t.accent}}" fill="#F46A00"></path><path d="{{t.line}}" fill="none" stroke="{{t.lineColor}}" stroke-width="3.2" stroke-linecap="round"></path></svg>{{t.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <span style="font-weight: 700; font-size: 14.5px">Ton bandeau pendant le live</span>
+      <div style="background: #15130F; color: #FFFFFF; border-radius: 14px; padding: 9px 12px; display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center">
+        <span style="background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 13px; line-height: 1; padding: 9px 7px; border-radius: 8px">OCD</span>
+        <span style="display: flex; flex-direction: column; min-width: 0"><span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: 15.5px; line-height: 1.25; overflow-wrap: anywhere">{{name}}</span><span style="font-size: 13px; line-height: 1.3; font-variant-numeric: tabular-nums; overflow-wrap: anywhere">{{line2}}</span><span style="font-size: 13px; line-height: 1.3; color: #FF9A4D; overflow-wrap: anywhere">Ta boutique sur OCD Live : {{slug}}</span></span>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{cap}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 14px; right: 14px; bottom: 96px; background: #15130F; color: #FFFFFF; border-radius: 16px; padding: 12px 14px; font-size: 15px; font-weight: 600; line-height: 1.3; box-shadow: 0 0 0 2px #FFFFFF">Dis-nous ton nom, ce que tu vends, et ton numéro WhatsApp.</div>
+  </sc-if>
+
+  <div style="border-top: 1px solid #E7E2DC; padding: 10px 14px 14px">
+    <sc-if value="{{valid}}" hint-placeholder-val="{{true}}">
+      <a href="Payer.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 58px; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px">Continuer<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a>
+    </sc-if>
+    <sc-if value="{{invalid}}" hint-placeholder-val="{{false}}">
+      <button onClick="{{showErr}}" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 18.5px; cursor: pointer">Continuer<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></button>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const cap = !!s.cap;
+    const biz = s.biz || "food";
+    const need = s.need || "table";
+    const name = s.name === undefined ? "Awa Mensah" : s.name;
+    const phone = s.phone === undefined ? "90 00 00 00" : s.phone;
+    const city = s.city === undefined ? "Lomé" : s.city;
+    const optin = s.optin === undefined ? true : s.optin;
+    const nameOk = name.trim().length >= 2;
+    const phoneOk = phone.replace(/\D/g, "").length === 8;
+    const err = !!s.err;
+    const ink = "#15130F";
+    const orange = "#F46A00";
+    const bizDefs = [
+      ["food", "Nourriture", "M6 24h36a18 18 0 0 1-36 0zM18.75 40h10.5a1.75 1.75 0 0 1 0 3.5h-10.5a1.75 1.75 0 0 1 0-3.5z", "", "M17 18c-2.5-3 2.5-5 0-8.5M24 18c-2.5-3 2.5-5 0-8.5M31 18c-2.5-3 2.5-5 0-8.5", orange],
+      ["mode", "Habits", "M17 7L6 13l4.5 8 4.5-2.5V41h18V18.5l4.5 2.5 4.5-8-11-6c-1.5 4-10.5 4-12 0z", "M25.5 20h5v5h-5z", "", ink],
+      ["beauty", "Beauté", "M18 25h10a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2zM18 19.5h10v4h-10z", "M19 18v-8l8-4v12zM38 8l1.3 3.2 3.2 1.3-3.2 1.3L38 17l-1.3-3.2-3.2-1.3 3.2-1.3z", "", ink],
+      ["tech", "Téléphones", "M18 5h12a5 5 0 0 1 5 5v28a5 5 0 0 1-5 5h-12a5 5 0 0 1-5-5v-28a5 5 0 0 1 5-5z", "M26 12l-8 13h6l-2 11 8-13h-6z", "", ink],
+      ["home", "Maison", "M6 22L24 7l18 15v19H6z", "M20 28h8v13h-8z", "", ink],
+      ["other", "Autre", "M11 8h7a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3zM30 8h7a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3zM11 27h7a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3z", "M27 33.5a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0-13 0z", "", ink]
+    ];
+    const needDefs = [
+      ["shelf", "Étagère", "", "M13 9h7v6h-7zM24 20h10v7h-10zM14 33h6v6h-6zM23 34h7v5h-7z", "M9 6v36M39 6v36M9 16.5h30M9 28.5h30M9 40.5h30", ink],
+      ["rack", "Portant", "", "M16 13h7l2 17H14zM27 13h6l1.5 12h-9z", "M7 10h34M12 10v32M36 10v32M8 42h8M32 42h8", ink],
+      ["table", "Table", "", "M15 12h18a9 9 0 0 1-18 0z", "M6 23h36M11 23v19M37 23v19", ink]
+    ];
+    const tiles = (defs, current, key) => defs.map((d) => ({
+      label: d[1], main: d[2], accent: d[3], line: d[4], lineColor: d[5],
+      on: current === d[0],
+      bd: current === d[0] ? orange : "#E7E2DC",
+      bg: current === d[0] ? "#FFE7D1" : "#FFFFFF",
+      pick: () => { const next = {}; next[key] = d[0]; this.setState(next); }
+    }));
+    const labels = { food: "Nourriture", mode: "Habits", beauty: "Beauté", tech: "Téléphones", home: "Maison", other: "Autre" };
+    return {
+      cap, name, phone, city, optin,
+      bizTiles: tiles(bizDefs, biz, "biz"),
+      needTiles: tiles(needDefs, need, "need"),
+      line2: labels[biz] + " · " + city + " · WhatsApp +228 " + phone,
+      slug: name.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""),
+      valid: nameOk && phoneOk,
+      invalid: !(nameOk && phoneOk),
+      errName: err && !nameOk,
+      errPhone: err && !phoneOk,
+      bdName: err && !nameOk ? "#B01522" : "#E7E2DC",
+      bdPhone: err && !phoneOk ? "#B01522" : "#E7E2DC",
+      showErr: () => this.setState({ err: true }),
+      setName: (e) => this.setState({ name: e.target.value }),
+      setPhone: (e) => this.setState({ phone: e.target.value }),
+      setCity: (e) => this.setState({ city: e.target.value }),
+      toggleOptin: () => this.setState({ optin: !optin }),
+      say: () => {
+        try {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance("Dis-nous ton nom, ce que tu vends, et ton numéro WhatsApp.");
+          u.lang = "fr-FR";
+          window.speechSynthesis.speak(u);
+        } catch (e) {}
+        this.setState({ cap: !cap });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

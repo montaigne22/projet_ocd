@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Régie du live en cours</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <dc-import name="BoShell" menu="lives" sub="regie" title="Régie en direct" crumb="" facets="" views="" view="" pager="Live en cours : Brenda Wax" action="" search="non" hint-size="1280px,144px"></dc-import>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 400px 1fr; gap: 18px; padding: 16px 22px">
+    <div style="display: flex; flex-direction: column; gap: 12px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 14px; padding: 16px 18px; min-height: 0; overflow-y: auto">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span style="display: inline-flex; align-items: center; gap: 6px; background: #15130F; color: #FFFFFF; border-radius: 6px; padding: 3px 9px; font-size: 13px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 50%; background: #FF4D5A"></span>En direct</span>
+        <span style="font-size: 13.5px; color: #5A6068">14:30 – 16:00, heure de Lomé</span>
+      </div>
+      <span style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums">{{clock}}</span>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <strong style="font-size: 17px">Brenda Wax</strong>
+        <span style="font-size: 14px; color: #5A6068">Habits · à distance, Douala · Animatrice 1 · Dzifa A.</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <div style="display: flex; flex-direction: column; border: 1px solid #D3D7DB; border-radius: 10px; padding: 8px 10px"><span style="font-size: 12px; color: #5A6068; font-weight: 600">Visites de sa boutique</span><b style="font-size: 18px; font-variant-numeric: tabular-nums">37</b></div>
+        <a href="BoCommandes.dc.html" style="display: flex; flex-direction: column; border: 1px solid #D3D7DB; border-radius: 10px; padding: 8px 10px"><span style="font-size: 12px; color: #5A6068; font-weight: 600">Commandes pendant le live</span><b style="font-size: 18px; font-variant-numeric: tabular-nums">2 · 20 500 F</b></a>
+      </div>
+      <button style="min-height: 40px; border: 1px solid #AEB4BA; border-radius: 10px; padding: 0 14px; background: #FFFFFF; color: #15130F; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Ouvrir le live sur TikTok</button>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 13px; font-weight: 700; color: #5A6068">Bandeau à l'écran · vendu par OCD</span>
+        <div style="display: grid; grid-template-columns: auto 1fr; gap: 9px; align-items: center; background: #15130F; color: #FFFFFF; border-radius: 10px; padding: 8px 10px">
+          <span style="background: #F46A00; color: #15130F; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 12px; line-height: 1; padding: 7px 6px; border-radius: 7px">OCD</span>
+          <span style="display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 700; font-size: 13.5px; line-height: 1.25">Brenda Wax · Habits · Douala</span><span style="font-size: 12px; line-height: 1.3; color: #FF9A4D">Commande sur OCD Live : brenda-wax</span></span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #D3D7DB; padding-top: 12px; margin-top: auto">
+        <label for="rg-replay" style="font-size: 13px; font-weight: 700; color: #5A6068">Après le live : lien de la vidéo replay</label>
+        <input id="rg-replay" value="{{replay}}" onChange="{{setReplay}}" autocomplete="off" style="height: 38px; box-sizing: border-box; border: 1px solid #AEB4BA; border-radius: 8px; padding: 0 10px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; color: #15130F; background: #FFFFFF; width: 100%">
+        <sc-if value="{{notPublished}}" hint-placeholder-val="{{true}}">
+          <button onClick="{{publish}}" style="min-height: 42px; border: 0; border-radius: 10px; padding: 0 14px; background: #0F7A43; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Publier le replay dans sa boutique</button>
+        </sc-if>
+        <sc-if value="{{published}}" hint-placeholder-val="{{false}}">
+          <span role="status" style="font-size: 14px; font-weight: 700; color: #0A5A31">{{publishedLine}}</span>
+        </sc-if>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+        <h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 21px; line-height: 1.1">Ses produits</h1>
+        <span style="font-size: 14px; color: #5A6068">Touche celui que Brenda montre : sa boutique l'affiche aussitôt</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{tiles}}" as="t" hint-placeholder-count="6">
+          <button onClick="{{t.pick}}" aria-pressed="{{t.on}}" style="display: grid; grid-template-columns: 58px 1fr; gap: 12px; align-items: center; min-height: 90px; box-sizing: border-box; border-radius: 12px; padding: 12px; font-family: inherit; color: #15130F; text-align: left; cursor: pointer; border: 2px solid {{t.bd}}; background: {{t.bg}}">
+            <span style="width: 58px; height: 58px; border-radius: 10px; background: #F4F5F6; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #5A6068">Photo</span>
+            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+              <span style="font-weight: 700; font-size: 15px; line-height: 1.2">{{t.name}}</span>
+              <span style="font-size: 13px; font-variant-numeric: tabular-nums">{{t.price}} · {{t.stock}}</span>
+              <span style="font-size: 12.5px; font-weight: 700; color: {{t.labelColor}}">{{t.label}}</span>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; background: #FFFFFF; border: 1px solid #D3D7DB; border-radius: 14px; padding: 14px 16px; overflow-y: auto">
+        <span style="font-size: 13px; font-weight: 700; color: #5A6068">Moments enregistrés pour le replay</span>
+        <sc-for list="{{moments}}" as="m" hint-placeholder-count="3">
+          <div style="display: grid; grid-template-columns: 60px 1fr; gap: 10px; align-items: center; font-size: 14.5px">
+            <span style="display: grid; place-items: center; height: 28px; border-radius: 7px; background: #15130F; color: #FFFFFF; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums">{{m.time}}</span>
+            <span style="font-weight: 600">{{m.name}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const fr = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " F";
+    const products = [
+      ["Robe en wax", 12000, 3],
+      ["Pagne wax 6 yards", 9000, 8],
+      ["Chemise wax homme", 10000, 5],
+      ["Sac en pagne", 7000, 0],
+      ["Foulard wax", 3500, 12],
+      ["Jupe en wax", 8000, 2]
+    ];
+    const moments = s.moments || [["02:10", "Robe en wax"], ["09:35", "Pagne wax 6 yards"], ["18:40", "Chemise wax homme"]];
+    const current = s.current || "Chemise wax homme";
+    const pad = (n) => String(n).padStart(2, "0");
+    const toTime = (sec) => pad(Math.floor(sec / 60)) + ":" + pad(sec % 60);
+    const base = 18 * 60 + 40;
+    const added = moments.length - 3;
+    const replay = s.replay === undefined ? "https://www.tiktok.com/@exemple/video/123" : s.replay;
+    const tiles = products.map((p) => {
+      const on = current === p[0];
+      return {
+        name: p[0],
+        price: fr(p[1]),
+        stock: p[2] === 0 ? "épuisé" : p[2] + " en stock",
+        on: on,
+        bd: on ? "#F46A00" : "#D3D7DB",
+        bg: on ? "#FFE7D1" : "#FFFFFF",
+        label: on ? "À l'écran maintenant" : "Mettre à l'écran",
+        labelColor: on ? "#15130F" : "#5A6068",
+        pick: () => {
+          if (on) return;
+          const t = toTime(base + (added + 1) * 75);
+          this.setState({ current: p[0], moments: moments.concat([[t, p[0]]]) });
+        }
+      };
+    });
+    return {
+      tiles,
+      replay,
+      clock: "00:" + moments[moments.length - 1][0],
+      moments: moments.map((m) => ({ time: m[0], name: m[1] })),
+      published: !!s.published,
+      notPublished: !s.published,
+      publishedLine: "Replay publié dans la boutique de Brenda, avec " + moments.length + " moments.",
+      setReplay: (e) => this.setState({ replay: e.target.value }),
+      publish: () => this.setState({ published: true })
+    };
+  }
+}
+</script>
+</body>
+</html>
