@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import potlib  # noqa: E402
 
 ns = {}
-for name in ("fr_web.py", "fr_rest.py", "fr_shop.py", "fr_other.py", "fr_bo2.py", "fr_bo3.py"):
+for name in ("fr_web.py", "fr_rest.py", "fr_shop.py", "fr_other.py", "fr_bo2.py", "fr_bo3.py", "fr_site_shop.py"):
     exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), name), encoding="utf-8").read(), ns)
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
@@ -14,8 +14,8 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 SKIP = {"Create a Customer", "Next Activity Calendar Event", "Ratings"}
 SKIP_PREFIX = ("Envoie le montant par Mobile Money",)
 MODULES = {
-    "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"]],
-    "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"]],
+    "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"]],
+    "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"]],
     "ocd_live_whatsapp": [ns["WHATSAPP"]],
     "ocd_live_shop_whatsapp": [ns["SHOP_WHATSAPP"]],
     "ocd_live_recruitment": [ns["RECRUITMENT"], ns["RECRUITMENT3"]],

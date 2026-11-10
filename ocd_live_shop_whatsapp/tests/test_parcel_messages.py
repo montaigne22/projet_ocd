@@ -1,5 +1,7 @@
+from datetime import timedelta
 from unittest.mock import patch
 
+from odoo import fields
 from odoo.tests import tagged
 
 from odoo.addons.ocd_live_shop.tests.common import OcdShopCommon
@@ -45,3 +47,29 @@ class TestOcdParcelMessages(OcdShopCommon):
         code_variable = template.variable_ids.filtered(lambda v: v.sequence == 4)
         rendered = template._render(code_variable.value, parcel)
         self.assertEqual(rendered[parcel.id], parcel.sudo().ocd_delivery_code)
+
+    def test_message_when_the_vendor_goes_live(self):
+        alert = self.env["ocd.boutique.alert"]._ocd_register(self.brenda, phone="+228 90112233")
+        booking = self.env["ocd.live.booking"].create({
+            "partner_id": self.brenda.id, "start_datetime": fields.Datetime.now() + timedelta(days=30), "mode": "remote",
+        })
+        booking.state = "confirmed"
+        now = fields.Datetime.now()
+        self.env.cr.execute(
+            "UPDATE ocd_live_booking SET start_datetime = %s, end_datetime = %s WHERE id = %s",
+            [now - timedelta(minutes=5), now + timedelta(minutes=85), booking.id],
+        )
+        booking.invalidate_recordset(["start_datetime", "end_datetime"])
+        calls = []
+
+        def fake_send(template, records):
+            calls.append((template.template_name, records))
+            return template.env["whatsapp.message"]
+
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            self.env["ocd.boutique.alert"]._ocd_send_due()
+        self.assertEqual(calls, [("ocd_vendeur_en_live", alert)])
+        self.assertEqual(alert.state, "sent")
+        template = self.env.ref("ocd_live_shop_whatsapp.template_vendor_live")
+        rendered = template._render(template.variable_ids.value, alert)
+        self.assertEqual(rendered[alert.id], "Brenda Wax")

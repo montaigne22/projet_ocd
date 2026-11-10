@@ -20,5 +20,14 @@
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
     </record>
+    <record id="ir_cron_boutique_alerts" model="ir.cron">
+        <field name="name">OCD Live: tell the visitors that a vendor is live</field>
+        <field name="model_id" ref="model_ocd_boutique_alert"/>
+        <field name="state">code</field>
+        <field name="code">model._ocd_send_due()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+    </record>
 
 </odoo>

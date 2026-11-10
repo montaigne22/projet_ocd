@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -57,3 +59,13 @@ class OcdLiveBooking(models.Model):
             [self.id],
         )
         self.invalidate_recordset(["ocd_visit_count"])
+
+    def _ocd_replay_url_at(self, seconds):
+        """Return the link of the replay at the second `seconds`, when the platform allows it
+        (YouTube); the link of the replay otherwise."""
+        self.ensure_one()
+        url = self.replay_url or ""
+        host = (urlparse(url).hostname or "").lower()
+        if seconds and (host.endswith("youtube.com") or host == "youtu.be"):
+            return f"{url}{'&' if '?' in url else '?'}t={int(seconds)}s"
+        return url

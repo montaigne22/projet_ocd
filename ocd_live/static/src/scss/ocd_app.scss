@@ -1418,6 +1418,61 @@ body.o_ocd_body {
     }
 }
 
+.o_ocd_share {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 46px;
+    border: 0;
+    border-radius: 999px;
+    padding: 0 15px;
+    background: $ocd-sand;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14.5px;
+    cursor: pointer;
+    .o_ocd_icon {
+        width: 18px;
+        height: 18px;
+    }
+    + .o_ocd_voice {
+        margin-left: 8px;
+    }
+}
+// Phone: with the voice beside it, the button keeps only its icon (its name stays for the
+// screen readers)
+@media (max-width: 479.98px) {
+    .o_ocd_top:has(.o_ocd_voice) .o_ocd_share {
+        position: relative;
+        width: 46px;
+        padding: 0;
+        justify-content: center;
+        flex: none;
+        span {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+    }
+}
+.o_ocd_share_done {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    bottom: 92px;
+    z-index: 20;
+    max-width: 560px;
+    margin: 0 auto;
+    &[hidden] {
+        display: none;
+    }
+}
+
 // === BOTTOM OF THE PHONE === //
 .o_ocd_bottom {
     position: sticky;

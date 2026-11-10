@@ -1,50 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- === BOUTIQUE OF A VENDOR === -->
+    <!-- === MENU OF THE PAGES: the shop between the lives and the space === -->
+
+    <template id="nav_links" inherit_id="ocd_live.nav_links" name="OCD Live: shop in the menu">
+        <xpath expr="//a[@href='/ocd/espace/moi']" position="before">
+            <a href="/shop" t-att-class="'o_ocd_on' if nav == 'shop' else None" t-att-aria-current="'page' if nav == 'shop' else None">
+                <t t-call="ocd_live.icon" icon.f="bag"/><span>Shop</span>
+            </a>
+        </xpath>
+    </template>
+
+    <!-- === BOUTIQUE OF A VENDOR (design: Vitrine) === -->
+
+    <template id="product_photo" name="OCD Live: photo of a product">
+        <!-- Parameter: image, the url of the photo (or False) -->
+        <img t-if="image" t-att-src="image" alt="" loading="lazy" class="o_ocd_photo_img"/>
+        <span t-else="" class="o_ocd_photo_none">Photo</span>
+    </template>
 
     <template id="boutique" name="OCD Live: boutique of a vendor">
-        <t t-call="ocd_live.layout">
-            <h1 class="o_ocd_live_title" t-out="vendor.ocd_business or vendor.name"/>
-            <p class="o_ocd_live_summary">
-                <t t-out="vendor.name"/>
-                <t t-if="vendor.district_id"> · <t t-out="vendor.district_id.name"/></t>
-                <t t-if="vendor.city"> · <t t-out="vendor.city"/></t>
-            </p>
-            <div t-if="live" class="o_ocd_live_card o_ocd_live_shop_live" t-att-data-vendor-id="vendor.id">
-                <span class="o_ocd_live_badge o_ocd_live_badge_warning">Live now</span>
-                <a t-if="live.live_url" t-att-href="live.live_url" target="_blank" rel="noopener noreferrer"
-                   class="btn btn-primary btn-lg">Watch the live</a>
-                <p class="mb-0">On screen now: <b class="o_ocd_live_shop_on_screen" t-out="live.current_product_tmpl_id.name or '-'"/></p>
-            </div>
-            <div class="o_ocd_live_cards o_ocd_live_shop_products">
-                <t t-foreach="products" t-as="product">
-                    <div class="o_ocd_live_card">
-                        <img t-if="product.image_128" t-att-src="'/web/image/product.template/%s/image_512' % product.id"
-                             t-att-alt="product.name" class="o_ocd_live_shop_image" loading="lazy"/>
-                        <b t-out="product.name"/>
-                        <span class="o_ocd_live_price" t-field="product.list_price"
-                              t-options="{'widget': 'monetary', 'display_currency': product.currency_id}"/>
-                        <a t-if="product.ocd_sale_mode == 'ocd'" t-att-href="product.website_url" class="btn btn-primary btn-lg">Buy</a>
-                        <a t-else="" t-attf-href="/ocd/wa/#{product.id}" class="btn btn-success btn-lg" rel="nofollow">
-                            Write on WhatsApp
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_vitrine">
+                    <div class="o_ocd_vendor_head">
+                        <span class="o_ocd_avatar o_ocd_avatar_big" aria-hidden="true">
+                            <t t-out="initials"/>
+                            <i t-attf-class="o_ocd_avatar_live #{'' if live else 'o_ocd_avatar_off'}"/>
+                        </span>
+                        <div class="o_ocd_vendor_text">
+                            <h1 class="o_ocd_vendor_name" t-out="vendor.name"/>
+                            <span t-if="categories" class="o_ocd_vendor_what" t-out="categories"/>
+                            <span t-if="sold_by_ocd" class="o_ocd_mode o_ocd_mode_ocd">Sold and delivered by OCD Live</span>
+                            <span t-else="" class="o_ocd_mode">Direct contact with the vendor</span>
+                        </div>
+                    </div>
+                    <span t-if="location" class="o_ocd_vendor_place">
+                        <span t-if="flag" t-attf-class="o_ocd_flag o_ocd_flag_#{flag}"/>
+                        <span t-out="location"/>
+                    </span>
+
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+
+                    <div t-if="live" class="o_ocd_onair o_ocd_live_shop_live" t-att-data-vendor-id="vendor.id">
+                        <div class="o_ocd_onair_bar">
+                            <i class="o_ocd_onair_dot" aria-hidden="true"/>
+                            <span class="o_ocd_onair_text">
+                                <b>Live now</b>
+                                <small t-out="live['line']"/>
+                            </span>
+                            <a t-if="live['booking'].live_url" t-att-href="live['booking'].live_url" target="_blank"
+                               rel="noopener noreferrer" class="o_ocd_onair_watch">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="o_ocd_icon"><path d="M6 3l14 9-14 9z"/></svg>
+                                <span>Watch the live</span>
+                            </a>
+                        </div>
+                        <a t-att-href="on_screen['url'] if on_screen else '#'"
+                           t-attf-class="o_ocd_onscreen #{'' if on_screen else 'd-none'}">
+                            <span class="o_ocd_photo o_ocd_onscreen_photo">
+                                <t t-call="ocd_live_shop.product_photo">
+                                    <t t-set="image" t-value="on_screen and on_screen['image']"/>
+                                </t>
+                            </span>
+                            <span class="o_ocd_onscreen_text">
+                                <small>On screen now</small>
+                                <b class="o_ocd_onscreen_name" t-out="on_screen['product'].name if on_screen else ''"/>
+                                <span class="o_ocd_onscreen_price" t-out="on_screen['price'] if on_screen else ''"/>
+                            </span>
+                            <t t-call="ocd_live.icon" icon.f="next"/>
                         </a>
                     </div>
-                </t>
+                    <div t-else="" class="o_ocd_next">
+                        <span class="o_ocd_next_text">
+                            <b t-if="next_live" t-out="next_live['title']"/>
+                            <b t-else="">No live planned for now</b>
+                            <small t-if="next_live" t-out="next_live['where']"/>
+                        </span>
+                        <div t-if="noted" class="o_ocd_next_noted" role="status" t-out="noted_text"/>
+                        <form t-else="" t-attf-action="/ocd/boutique/#{vendor.id}/prevenir" method="post" class="o_ocd_wait_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                            <button t-if="visitor" type="submit" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">
+                                <t t-call="ocd_live.icon" icon.f="bell"/>
+                                <span>Tell me on WhatsApp</span>
+                            </button>
+                            <details t-else="" class="o_ocd_wait_details" t-att-open="'open' if error else None">
+                                <summary class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">
+                                    <t t-call="ocd_live.icon" icon.f="bell"/>
+                                    <span>Tell me on WhatsApp</span>
+                                </summary>
+                                <div class="o_ocd_form o_ocd_wait_box">
+                                    <label for="b-phone" class="o_ocd_label">Your WhatsApp</label>
+                                    <t t-call="ocd_live.phone_field" field_id.f="b-phone" phone_value="''"/>
+                                    <button type="submit" class="o_ocd_cta o_ocd_cta_small">Tell me</button>
+                                </div>
+                            </details>
+                        </form>
+                    </div>
+                    <a t-if="replay" t-attf-href="/ocd/boutique/#{vendor.id}/replay" class="o_ocd_replay_card">
+                        <span class="o_ocd_replay_thumb">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="o_ocd_icon"><path d="M6 3l14 9-14 9z"/></svg>
+                        </span>
+                        <span class="o_ocd_replay_text">
+                            <b t-out="replay['title']"/>
+                            <small t-out="replay['line']"/>
+                            <span class="o_ocd_link">Watch again</span>
+                        </span>
+                    </a>
+
+                    <div t-if="contact['url']" class="o_ocd_contact">
+                        <a t-att-href="contact['url']" class="o_ocd_cta o_ocd_cta_mid" target="_blank" rel="noopener nofollow">
+                            <t t-call="ocd_live.icon" icon.f="chat"/>
+                            <span t-out="contact['label']"/>
+                        </a>
+                        <small t-out="contact['note']"/>
+                    </div>
+
+                    <div class="o_ocd_section_head">
+                        <h2>Their products</h2>
+                        <span t-out="count_label"/>
+                    </div>
+                    <div t-if="cards" class="o_ocd_products">
+                        <t t-foreach="cards" t-as="card">
+                            <div t-if="card['out']" class="o_ocd_product o_ocd_product_out">
+                                <span class="o_ocd_photo o_ocd_product_photo">
+                                    <t t-call="ocd_live_shop.product_photo">
+                                        <t t-set="image" t-value="card['image']"/>
+                                    </t>
+                                    <span class="o_ocd_product_flag o_ocd_product_flag_out">Sold out</span>
+                                </span>
+                                <span class="o_ocd_product_text">
+                                    <b t-out="card['product'].name"/>
+                                    <span class="o_ocd_product_price" t-out="card['price']"/>
+                                </span>
+                            </div>
+                            <a t-else="" t-att-href="card['url']" class="o_ocd_product">
+                                <span class="o_ocd_photo o_ocd_product_photo">
+                                    <t t-call="ocd_live_shop.product_photo">
+                                        <t t-set="image" t-value="card['image']"/>
+                                    </t>
+                                    <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
+                                </span>
+                                <span class="o_ocd_product_text">
+                                    <b t-out="card['product'].name"/>
+                                    <span class="o_ocd_product_price" t-out="card['price']"/>
+                                </span>
+                            </a>
+                        </t>
+                    </div>
+                    <div t-else="" class="o_ocd_info">The products of this boutique are coming soon.</div>
+                </main>
             </div>
-            <p t-if="not products" class="o_ocd_live_summary">The products of this boutique are coming soon.</p>
-            <section t-if="replay" class="o_ocd_live_section">
-                <h2>Watch the last live again</h2>
-                <a t-att-href="replay.replay_url" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark btn-lg">Replay</a>
-                <div class="o_ocd_live_cards">
-                    <t t-foreach="replay.moment_ids" t-as="moment">
-                        <div class="o_ocd_live_card">
-                            <span class="o_ocd_live_badge" t-out="moment.offset_label"/>
-                            <b t-out="moment.product_tmpl_id.name"/>
+        </t>
+    </template>
+
+    <!-- === REPLAY OF THE LAST LIVE (design: Replay) === -->
+
+    <template id="replay" name="OCD Live: replay of a live">
+        <t t-set="first" t-value="rows[:1] and rows[0]"/>
+        <t t-set="bottom_cta" t-value="{'href': first['order_url'], 'label': first['order_label']} if first else None"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_replay">
+                    <div class="o_ocd_video">
+                        <span class="o_ocd_video_tag">Replay</span>
+                        <span class="o_ocd_video_where" t-out="published_on"/>
+                        <a t-att-href="replay.replay_url" target="_blank" rel="noopener noreferrer"
+                           class="o_ocd_video_play o_ocd_replay_open" aria-label="Play the replay">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="o_ocd_icon"><path d="M6 3l14 9-14 9z"/></svg>
+                        </a>
+                        <div class="o_ocd_video_bottom">
+                            <div class="o_ocd_video_banner">
+                                <span class="o_ocd_video_logo">OCD</span>
+                                <span class="o_ocd_video_banner_text">
+                                    <b t-out="banner"/>
+                                    <small t-out="shop_line"/>
+                                </span>
+                            </div>
+                            <div class="o_ocd_video_time">
+                                <span class="o_ocd_video_now" t-out="first['moment'].offset_label if first else '0:00'"/>
+                                <span class="o_ocd_video_track"><i/></span>
+                                <span t-out="duration"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o_ocd_replay_head">
+                        <h1 t-out="title"/>
+                        <span t-out="line"/>
+                    </div>
+                    <t t-if="rows">
+                        <div class="o_ocd_section_head">
+                            <h2>Products shown</h2>
+                            <span>Tap to go to the moment</span>
+                        </div>
+                        <div class="o_ocd_moments">
+                            <t t-foreach="rows" t-as="row">
+                                <div t-attf-class="o_ocd_moment #{'o_ocd_on' if row_first else ''}">
+                                    <a t-att-href="row['url']" target="_blank" rel="noopener noreferrer" class="o_ocd_moment_go"
+                                       t-att-data-order-url="row['order_url']" t-att-data-order-label="row['order_label']"
+                                       t-att-data-time="row['moment'].offset_label"
+                                       t-att-aria-label="row['aria']">
+                                        <span class="o_ocd_moment_time" t-out="row['moment'].offset_label"/>
+                                        <span class="o_ocd_photo o_ocd_moment_photo">
+                                            <t t-call="ocd_live_shop.product_photo">
+                                                <t t-set="image" t-value="row['image']"/>
+                                            </t>
+                                        </span>
+                                        <span class="o_ocd_moment_text">
+                                            <b t-out="row['product'].name"/>
+                                            <span t-out="row['price']"/>
+                                        </span>
+                                    </a>
+                                    <a t-att-href="row['see_url']" class="o_ocd_link o_ocd_moment_see"
+                                       t-att-aria-label="row['see_aria']">See</a>
+                                </div>
+                            </t>
                         </div>
                     </t>
-                </div>
-            </section>
+                </main>
+            </div>
         </t>
     </template>
 

@@ -1,17 +1,549 @@
-.o_ocd_live {
-    .o_ocd_live_shop_image {
+// Pages of the shop on the website, faithful to the validated design (Vitrine, Replay).
+// Colours and fonts ($ocd-*) come from ocd_live/static/src/scss/ocd_tokens.scss.
+
+.o_ocd_app {
+    // === PHOTO OF A PRODUCT === //
+    .o_ocd_photo {
+        position: relative;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: $ocd-sand;
+        color: $ocd-muted;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .o_ocd_photo_img {
         width: 100%;
-        max-height: 14rem;
+        height: 100%;
         object-fit: cover;
-        border-radius: 10px;
     }
-    .o_ocd_live_shop_products {
-        grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+
+    // === BOUTIQUE (Vitrine) === //
+    .o_ocd_vitrine {
+        gap: 14px;
     }
-    .o_ocd_live_shop_live {
-        border-color: #F46A00;
+    .o_ocd_vendor_head {
+        display: grid;
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
     }
-    .o_ocd_live_shop_parcel form {
+    .o_ocd_avatar.o_ocd_avatar_big {
+        width: 68px;
+        height: 68px;
+        background: $ocd-orange-soft;
+        font-size: 23px;
+        .o_ocd_avatar_live {
+            width: 16px;
+            height: 16px;
+            box-shadow: 0 0 0 3px #FFFFFF;
+        }
+    }
+    .o_ocd_vendor_text {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+    .o_ocd_vendor_name {
         margin: 0;
+        font-size: 30px;
+        line-height: 1.05;
     }
+    .o_ocd_vendor_what {
+        font-size: 14.5px;
+        font-weight: 600;
+    }
+    .o_ocd_mode {
+        align-self: flex-start;
+        margin-top: 3px;
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        background: $ocd-sand;
+        &.o_ocd_mode_ocd {
+            background: $ocd-green-soft;
+            color: $ocd-green-text;
+        }
+    }
+    .o_ocd_vendor_place {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14.5px;
+        line-height: 1.35;
+        .o_ocd_flag {
+            width: 24px;
+            height: 16px;
+            flex: none;
+        }
+    }
+
+    // Live now, and the product on screen
+    .o_ocd_onair {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .o_ocd_onair_bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        border-radius: 18px;
+        padding: 12px 12px 12px 16px;
+    }
+    .o_ocd_onair_dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: $ocd-red-live;
+        flex: none;
+    }
+    .o_ocd_onair_text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        flex: 1;
+        min-width: 0;
+        b {
+            font-size: 15.5px;
+        }
+        small {
+            font-size: 13px;
+            color: #D9D3CC;
+        }
+    }
+    .o_ocd_onair_watch {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 44px;
+        border-radius: 999px;
+        padding: 0 16px 0 13px;
+        background: $ocd-orange;
+        font-weight: 800;
+        font-size: 14.5px;
+        white-space: nowrap;
+        .o_ocd_icon {
+            width: 14px;
+            height: 14px;
+        }
+    }
+    .o_ocd_onscreen {
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        border: 2px solid $ocd-orange;
+        background: $ocd-orange-soft;
+        border-radius: 16px;
+        padding: 10px 12px;
+        .o_ocd_icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+    .o_ocd_onscreen_photo {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background: #FFFFFF;
+        font-size: 11px;
+    }
+    .o_ocd_onscreen_text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 0;
+        small {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        b {
+            font-size: 15.5px;
+            line-height: 1.2;
+        }
+    }
+    .o_ocd_onscreen_price, .o_ocd_product_price {
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+    .o_ocd_onscreen_price {
+        font-size: 16px;
+    }
+
+    // Next live
+    .o_ocd_next {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: $ocd-sand;
+        border-radius: 18px;
+        padding: 14px 16px;
+        .o_ocd_wait_form {
+            margin: 0;
+        }
+        .o_ocd_wait_box {
+            background: #FFFFFF;
+        }
+    }
+    .o_ocd_next_text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        b {
+            font-size: 15.5px;
+        }
+        small {
+            font-size: 13.5px;
+            color: $ocd-muted;
+        }
+    }
+    .o_ocd_next_noted {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: $ocd-green-text;
+    }
+
+    // Last replay
+    .o_ocd_replay_card {
+        display: grid;
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 10px;
+    }
+    .o_ocd_replay_thumb {
+        height: 76px;
+        border-radius: 12px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        display: grid;
+        place-items: center;
+        .o_ocd_icon {
+            width: 24px;
+            height: 24px;
+        }
+    }
+    .o_ocd_replay_text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        b {
+            font-size: 15.5px;
+            line-height: 1.2;
+        }
+        small {
+            font-size: 13.5px;
+            color: $ocd-muted;
+        }
+        .o_ocd_link {
+            font-size: 14px;
+        }
+    }
+
+    // WhatsApp
+    .o_ocd_contact {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        .o_ocd_cta {
+            min-height: 56px;
+            font-size: 17.5px;
+        }
+        small {
+            font-size: 13px;
+            color: $ocd-muted;
+            text-align: center;
+        }
+    }
+
+    // Products
+    .o_ocd_section_head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 2px;
+        h2 {
+            margin: 0;
+            font-size: 21px;
+            line-height: 1.1;
+        }
+        span {
+            font-size: 14px;
+            color: $ocd-muted;
+        }
+    }
+    .o_ocd_products {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .o_ocd_product {
+        display: flex;
+        flex-direction: column;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        overflow: hidden;
+        &.o_ocd_product_out {
+            border-style: dashed;
+            .o_ocd_product_photo {
+                background: #FFFFFF;
+                img {
+                    opacity: 0.45;
+                }
+            }
+            .o_ocd_product_text {
+                color: $ocd-muted;
+            }
+        }
+    }
+    .o_ocd_product_photo {
+        height: 96px;
+        font-size: 12.5px;
+    }
+    .o_ocd_product_flag {
+        position: absolute;
+        left: 8px;
+        top: 8px;
+        background: $ocd-orange-soft;
+        color: $ocd-ink;
+        border-radius: 6px;
+        padding: 2px 7px;
+        font-size: 12px;
+        font-weight: 700;
+        &.o_ocd_product_flag_out {
+            background: $ocd-ink;
+            color: #FFFFFF;
+        }
+    }
+    .o_ocd_product_text {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 10px 12px 12px;
+        b {
+            font-size: 15px;
+            line-height: 1.2;
+        }
+    }
+    .o_ocd_product_price {
+        font-size: 17px;
+        margin-top: 3px;
+    }
+
+    // === REPLAY === //
+    .o_ocd_replay {
+        gap: 12px;
+    }
+    .o_ocd_video {
+        position: relative;
+        height: 270px;
+        flex: none;
+        border-radius: 20px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        overflow: hidden;
+    }
+    .o_ocd_video_tag {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        background: #FFFFFF;
+        color: $ocd-ink;
+        border-radius: 6px;
+        padding: 3px 8px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .o_ocd_video_where {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #D9D3CC;
+    }
+    .o_ocd_video_play {
+        position: absolute;
+        left: 50%;
+        top: 42%;
+        width: 64px;
+        height: 64px;
+        margin: -32px 0 0 -32px;
+        border-radius: 50%;
+        background: $ocd-orange;
+        display: grid;
+        place-items: center;
+        .o_ocd_icon {
+            width: 26px;
+            height: 26px;
+        }
+    }
+    .o_ocd_video_bottom {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .o_ocd_video_banner {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 9px;
+        align-items: center;
+        background: rgba(21, 19, 15, 0.86);
+        border-radius: 12px;
+        padding: 7px 10px;
+    }
+    .o_ocd_video_logo {
+        background: $ocd-orange;
+        color: $ocd-ink;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 12px;
+        line-height: 1;
+        padding: 7px 6px;
+        border-radius: 7px;
+    }
+    .o_ocd_video_banner_text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        b {
+            font-size: 13.5px;
+            line-height: 1.25;
+        }
+        small {
+            font-size: 12px;
+            line-height: 1.3;
+            color: $ocd-orange-text;
+        }
+    }
+    .o_ocd_video_time {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+    .o_ocd_video_track {
+        flex: 1;
+        height: 4px;
+        border-radius: 2px;
+        background: #4A453F;
+    }
+    .o_ocd_replay_head {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        h1 {
+            margin: 0;
+            font-size: 25px;
+            line-height: 1.1;
+        }
+        span {
+            font-size: 14px;
+            color: $ocd-muted;
+        }
+    }
+    .o_ocd_replay .o_ocd_section_head h2 {
+        font-size: 19px;
+    }
+    .o_ocd_moments {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .o_ocd_moment {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: center;
+        border-radius: 15px;
+        padding: 6px 8px 6px 6px;
+        border: 2px solid $ocd-line;
+        &.o_ocd_on {
+            border-color: $ocd-orange;
+            background: $ocd-orange-soft;
+        }
+    }
+    .o_ocd_moment_go {
+        display: grid;
+        grid-template-columns: 58px 44px minmax(0, 1fr);
+        gap: 10px;
+        align-items: center;
+        min-height: 52px;
+    }
+    .o_ocd_moment_time {
+        display: grid;
+        place-items: center;
+        height: 32px;
+        border-radius: 8px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        font-size: 13px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+    .o_ocd_moment_photo {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        font-size: 10px;
+    }
+    .o_ocd_moment_text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 0;
+        b {
+            font-size: 14.5px;
+            line-height: 1.2;
+        }
+        span {
+            font-size: 13.5px;
+            font-variant-numeric: tabular-nums;
+        }
+    }
+    .o_ocd_moment_see {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 6px;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 768px) {
+    .o_ocd_app {
+        .o_ocd_products {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .o_ocd_product_photo {
+            height: 150px;
+        }
+        .o_ocd_video {
+            height: 360px;
+        }
+    }
+}
+
+// === DELIVERY APP (until it follows the design) === //
+.o_ocd_live_shop_parcel form {
+    margin: 0;
 }

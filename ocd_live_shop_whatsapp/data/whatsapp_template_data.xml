@@ -101,5 +101,17 @@
             ]"/>
         </record>
 
+        <record id="template_vendor_live" model="whatsapp.template">
+            <field name="name">OCD Live: the vendor is live</field>
+            <field name="template_name">ocd_vendeur_en_live</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_boutique_alert"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour, {{1}} est en live maintenant. Touchez le bouton pour voir le live et sa boutique sur OCD Live.</field>
+            <field name="button_url_value">{{ 'ocd/boutique/%s' % object.vendor_id.id }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir la boutique', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/boutique/12'})]"/>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.vendor_id.name }}', 'sample_value': 'Brenda Wax'})]"/>
+        </record>
+
     </data>
 </odoo>

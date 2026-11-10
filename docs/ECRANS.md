@@ -33,14 +33,14 @@ Le design validé est dans [`prototype/design-valide/`](../prototype/design-vali
 
 | Écran du design | Où | État |
 |---|---|---|
-| `Vitrine` Boutique d'un vendeur | `/ocd/boutique/<vendeur>` (produit montré pendant le live, replay) | 🟡 |
+| `Vitrine` Boutique d'un vendeur | `/ocd/boutique/<vendeur>`, modèle `ocd_live_shop.boutique` : en live (produit à l'écran mis à jour toutes les 20 s) ou prochain live avec « Me prévenir sur WhatsApp » (`ocd.boutique.alert`), dernier replay, bouton WhatsApp selon le mode de vente, produits avec stock | ✅ |
 | `Shop` Shop OCD | pages `/shop` de website_sale | 🟡 |
 | `Produit` Fiche produit | pages produit de website_sale | 🟡 |
 | `Panier` Panier | panier de website_sale | 🟡 |
 | `Livraison` Adresse et livraison | étape adresse de website_sale (+ point de repère de delivery_cameroon / ocd_delivery_togo) | 🟡 |
 | `PayerCommande` Payer la commande | paiement de website_sale ; à la porte : `/ocd/colis/<colis>/payer` | 🟡 |
 | `Suivi` Suivi de commande | page de la commande du portail, avec le code de livraison | 🟡 |
-| `Replay` Revoir un live | bloc replay de la boutique, avec les moments | 🟡 |
+| `Replay` Revoir un live | `/ocd/boutique/<vendeur>/replay`, modèle `ocd_live_shop.replay` : moments du live (lien à la seconde pour YouTube), bouton « Commander » ou « Écrire » du moment choisi | ✅ |
 | `MesProduits` Mes produits | espace vendeur (produits ajoutés vérifiés par l'équipe) | 🟡 |
 | `Livrer` Mes colis à livrer | `/ocd/livrer/<jeton>` (appli de livraison) | 🟡 |
 | `Tournee` Ma tournée de livreur | `/ocd/livrer/<jeton>` pour un livreur OCD | 🟡 |
