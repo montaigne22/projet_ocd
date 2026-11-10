@@ -16,7 +16,7 @@ class ResConfigSettings(models.TransientModel):
     )
     ocd_cash_deadline = fields.Float(related="company_id.ocd_cash_deadline", readonly=False)
     ocd_cod_cash = fields.Boolean(related="company_id.ocd_cod_cash", readonly=False)
-    ocd_cod_momo_campay = fields.Boolean(related="company_id.ocd_cod_momo_campay", readonly=False)
+    ocd_cod_online = fields.Boolean(related="company_id.ocd_cod_online", readonly=False)
     ocd_cod_momo_declared = fields.Boolean(
         related="company_id.ocd_cod_momo_declared", readonly=False
     )

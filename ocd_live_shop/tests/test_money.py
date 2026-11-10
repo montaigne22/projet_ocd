@@ -43,9 +43,9 @@ class TestOcdMoney(OcdShopCommon):
         parcel = order.picking_ids
         self.assertEqual(parcel._ocd_allowed_cod_methods(self.fatou), [], "Fatou may not collect")
         self.fatou.ocd_vendor_collects = True
-        self.assertEqual(parcel._ocd_allowed_cod_methods(self.fatou), ["cash", "momo_declared"])
+        self.assertEqual(parcel._ocd_allowed_cod_methods(self.fatou), ["cash", "online", "momo_declared"])
         self.company.ocd_cod_cash = False
-        self.assertEqual(parcel._ocd_allowed_cod_methods(self.courier), ["momo_campay", "momo_declared"])
+        self.assertEqual(parcel._ocd_allowed_cod_methods(self.courier), ["online", "momo_declared"])
         with self.assertRaises(UserError):
             parcel._ocd_collect("cash", self.courier)
 
@@ -117,3 +117,27 @@ class TestOcdMoney(OcdShopCommon):
         self._deliver(parcel)
         bill = parcel.ocd_vendor_bill_ids
         self.assertAlmostEqual(bill.amount_total, 5250, msg="4,250 F of sales + 1,000 F of delivery")
+
+    def test_paid_on_the_phone_of_the_customer(self):
+        """The customer pays on the phone with any provider of Odoo: once the provider confirms
+        the payment, the parcel is paid, whoever is at the door."""
+        order = self._order(self.estelle, [(self.dress, 1)])
+        parcel = order.picking_ids
+        url = parcel._ocd_payment_url()
+        self.assertIn(f"/ocd/colis/{parcel.id}/payer?access_token=", url)
+        provider = self.env["payment.provider"].create({"name": "Any provider", "code": "none"})
+        method = self.env["payment.method"].create({"name": "Any method", "code": "ocd_test", "provider_id": provider.id})
+        transaction = self.env["payment.transaction"].create({
+            "provider_id": provider.id,
+            "payment_method_id": method.id,
+            "reference": f"TEST-{parcel.id}",
+            "amount": parcel.ocd_cod_amount,
+            "currency_id": parcel.ocd_currency_id.id,
+            "partner_id": self.estelle.id,
+            "ocd_picking_id": parcel.id,
+        })
+        transaction = transaction.with_context(payment_safe_write=True)
+        transaction._set_done()
+        transaction._ocd_mark_parcels_paid()
+        self.assertEqual(parcel.ocd_cod_state, "collected")
+        self.assertEqual(parcel.ocd_cod_method, "online")

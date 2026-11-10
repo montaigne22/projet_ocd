@@ -19,7 +19,7 @@ class OcdShopCommon(TransactionCase):
             "ocd_code_max_attempts": 3,
             "ocd_max_failed_attempts": 2,
             "ocd_cod_cash": True,
-            "ocd_cod_momo_campay": True,
+            "ocd_cod_online": True,
             "ocd_cod_momo_declared": True,
             "ocd_default_payout_frequency": "weekly",
             "ocd_payout_weekday": "0",

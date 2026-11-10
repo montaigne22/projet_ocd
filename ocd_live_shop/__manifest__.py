@@ -19,8 +19,10 @@ OCD Live shop and deliveries
   give the parcel to an OCD courier. A customer outside the zones of the
   vendor gets an OCD courier.
 - After the failed attempts allowed, the parcel goes back to the vendor.
-- Payment at the door: the options (cash, Mobile Money request sent by
-  Campay, Mobile Money declared by the courier) are chosen by the team.
+- Payment at the door: the options are chosen by the team: cash, payment on
+  the phone of the customer (the courier shows a QR code; the customer pays
+  with the payment methods Odoo offers for the country, whatever the
+  provider), Mobile Money declared by the courier and checked by the team.
 - Cash of the couriers counted every evening.
 - A vendor bill for the share of the vendor is created when the code is
   checked; a credit note when the vendor collected the money. The payouts
@@ -38,7 +40,6 @@ OCD Live shop and deliveries
         "sale_stock",
         "delivery",
         "delivery_cameroon",
-        "payment_campay",
     ],
     "data": [
         "security/ocd_live_shop_security.xml",

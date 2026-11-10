@@ -13,14 +13,17 @@ class PaymentTransaction(models.Model):
     )
 
     def _post_process(self):
-        """Override of `payment` to mark the parcel as paid once the Mobile Money request sent
-        at the door is confirmed by the provider."""
+        """Override of `payment` to mark the parcel as paid once the payment made on the phone
+        of the customer at the door is confirmed by the provider."""
         super()._post_process()
+        self._ocd_mark_parcels_paid()
+
+    def _ocd_mark_parcels_paid(self):
         for transaction in self.filtered(lambda t: t.ocd_picking_id and t.state == "done"):
             picking = transaction.ocd_picking_id
             if picking.ocd_cod_state == "to_collect":
                 picking._ocd_collect(
-                    "momo_campay",
+                    "online",
                     picking.ocd_courier_id,
                     reference=transaction.provider_reference or transaction.reference,
                 )

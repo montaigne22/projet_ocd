@@ -6,6 +6,8 @@ from odoo import Command, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import consteq
 
+from odoo.addons.payment import utils as payment_utils
+
 from .res_company import DELIVERY_MODES
 
 _logger = logging.getLogger(__name__)
@@ -33,7 +35,7 @@ PROBLEM_REASONS = [
 FAILED_REASONS = {"unreachable", "absent", "refused", "address"}
 COD_METHODS = [
     ("cash", "Cash"),
-    ("momo_campay", "Mobile Money request"),
+    ("online", "Paid on the phone"),
     ("momo_declared", "Mobile Money declared"),
 ]
 ACTIVITY_PROBLEM = "ocd_live_shop.mail_activity_type_parcel_problem"
@@ -473,8 +475,8 @@ class StockPicking(models.Model):
             return methods
         if company.ocd_cod_cash:
             methods.append("cash")
-        if company.ocd_cod_momo_campay and collector.ocd_is_courier:
-            methods.append("momo_campay")
+        if company.ocd_cod_online:
+            methods.append("online")
         if company.ocd_cod_momo_declared:
             methods.append("momo_declared")
         return methods
@@ -484,7 +486,8 @@ class StockPicking(models.Model):
         self.ensure_one()
         if self.ocd_cod_state != "to_collect":
             raise UserError(self.env._("There is nothing to collect for the parcel %s.", self.name))
-        if method not in self._ocd_allowed_cod_methods(collector):
+        # A payment on the phone is confirmed by the provider, not by the one at the door
+        if method != "online" and method not in self._ocd_allowed_cod_methods(collector):
             raise UserError(self.env._("This payment method is not allowed for this parcel."))
         if method == "momo_declared" and not (reference or "").strip():
             raise UserError(self.env._("Type the reference of the Mobile Money payment."))
@@ -501,36 +504,17 @@ class StockPicking(models.Model):
             self._ocd_create_collection_refund()
         return True
 
-    def _ocd_request_momo(self, phone):
-        """Send a Mobile Money payment request to the phone of the customer (Campay)."""
+    def _ocd_payment_url(self):
+        """Return the page where the customer pays the parcel on the phone, with the payment
+        methods Odoo offers for the country of the customer. Opened from the QR code shown by
+        the courier."""
         self.ensure_one()
-        if not self.company_id.ocd_cod_momo_campay:
-            raise UserError(self.env._("Mobile Money requests at the door are not enabled."))
+        if not self.company_id.ocd_cod_online:
+            raise UserError(self.env._("The payment on the phone of the customer is not enabled."))
         if self.ocd_cod_state != "to_collect":
             raise UserError(self.env._("There is nothing to collect for the parcel %s.", self.name))
-        # sudo: the courier app cannot read the payment providers
-        provider = self.env["payment.provider"].sudo().search(
-            [("code", "=", "campay"), ("state", "in", ("enabled", "test")), ("company_id", "=", self.company_id.id)],
-            limit=1,
-        )
-        method = provider.payment_method_ids.filtered(lambda m: m.code == "mobile_money")[:1]
-        if not provider or not method:
-            raise UserError(self.env._("Campay Mobile Money is not enabled."))
-        Transaction = self.env["payment.transaction"].sudo()
-        transaction = Transaction.create({
-            "provider_id": provider.id,
-            "payment_method_id": method.id,
-            "reference": Transaction._compute_reference(provider.code, prefix=self.sale_id.name),
-            "amount": self.ocd_cod_amount,
-            "currency_id": self.ocd_currency_id.id,
-            "partner_id": self.partner_id.id,
-            "partner_phone": phone,
-            "operation": "online_direct",
-            "sale_order_ids": [Command.link(self.sale_id.id)],
-            "ocd_picking_id": self.id,
-        })
-        self.sudo().ocd_payment_transaction_id = transaction
-        return transaction._campay_request_collect(phone)
+        token = payment_utils.generate_access_token(self.id, self.ocd_cod_amount, env=self.env)
+        return f"{self.get_base_url()}/ocd/colis/{self.id}/payer?access_token={token}"
 
     # === MONEY OF THE VENDOR === #
 

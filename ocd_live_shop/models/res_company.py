@@ -48,11 +48,12 @@ class ResCompany(models.Model):
         help="Hour of the studio time zone before which the couriers hand over the cash.",
     )
     ocd_cod_cash = fields.Boolean(string="Cash At The Door", default=True)
-    ocd_cod_momo_campay = fields.Boolean(
-        string="Mobile Money Request At The Door",
+    ocd_cod_online = fields.Boolean(
+        string="Payment On The Phone Of The Customer",
         default=True,
-        help="The courier sends a Mobile Money payment request to the phone of the customer "
-        "(Campay, Cameroon only). The payment is confirmed by Campay.",
+        help="At the door, the courier shows a QR code: the customer pays on the phone with "
+        "the payment methods Odoo offers for the country of the customer (Mobile Money, card...). "
+        "The payment is confirmed by the provider.",
     )
     ocd_cod_momo_declared = fields.Boolean(
         string="Mobile Money Declared By The Courier",

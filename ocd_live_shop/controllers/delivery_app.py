@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from odoo import http
 from odoo.exceptions import UserError
 from odoo.http import request
@@ -43,6 +45,13 @@ class OcdDeliveryApp(http.Controller):
         )
         return mine, done
 
+    def _payment_qr(self, parcel):
+        """Return the QR code that opens the payment page of the parcel on the phone of the
+        customer, and the link itself."""
+        url = parcel._ocd_payment_url()
+        query = urlencode({"barcode_type": "QR", "value": url, "width": 280, "height": 280})
+        return {"url": url, "src": f"/report/barcode?{query}"}
+
     def _render(self, token, partner, message=None, error=None):
         mine, done = self._parcels(partner)
         return request.render("ocd_live_shop.delivery_app", common.page_values(
@@ -51,6 +60,7 @@ class OcdDeliveryApp(http.Controller):
             token=token,
             parcels=mine,
             done=done,
+            payment_qr=self._payment_qr,
             message=message,
             error=error,
         ))
@@ -92,9 +102,6 @@ class OcdDeliveryApp(http.Controller):
             elif action == "collect" and delivers:
                 parcel._ocd_collect(post.get("method"), partner, reference=post.get("reference"))
                 message = request.env._("Payment saved.")
-            elif action == "momo" and delivers:
-                parcel._ocd_request_momo(post.get("phone") or parcel.ocd_customer_phone)
-                message = request.env._("Payment request sent: the customer confirms on the phone.")
             elif action == "problem" and delivers:
                 reason = post.get("reason")
                 if reason not in dict(parcel._fields["ocd_problem_reason"].selection):

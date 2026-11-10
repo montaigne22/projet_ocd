@@ -103,10 +103,15 @@
                                     <input type="hidden" name="method" value="cash"/>
                                     <button class="btn btn-outline-dark btn-lg w-100">I received the cash</button>
                                 </form>
-                                <form t-if="'momo_campay' in methods" t-attf-action="#{base}/colis/#{parcel.id}/momo" method="post">
-                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                    <button class="btn btn-outline-dark btn-lg w-100">Send a Mobile Money request</button>
-                                </form>
+                                <details t-if="'online' in methods" class="o_ocd_pay_qr">
+                                    <summary class="btn btn-outline-dark btn-lg w-100">Payment on the phone of the customer</summary>
+                                    <t t-set="qr" t-value="payment_qr(parcel)"/>
+                                    <div class="text-center p-3">
+                                        <img t-att-src="qr['src']" alt="QR code of the payment" width="220" height="220"/>
+                                        <p class="mb-1">The customer scans this code and pays with the methods of the country. The parcel is marked paid by itself.</p>
+                                        <a t-att-href="qr['url']" class="small text-break" t-out="qr['url']"/>
+                                    </div>
+                                </details>
                                 <form t-if="'momo_declared' in methods" t-attf-action="#{base}/colis/#{parcel.id}/collect" method="post" class="d-flex gap-2">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                     <input type="hidden" name="method" value="momo_declared"/>
@@ -175,6 +180,57 @@
                 </p>
             </div>
         </xpath>
+    </template>
+
+    <template id="parcel_pay" name="OCD Live: pay a parcel at the door">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_pay" t-att-data-state="state">
+                    <h1 class="o_ocd_h1">Pay the parcel</h1>
+                    <div class="o_ocd_recap">
+                        <b t-out="parcel.ocd_vendor_id.name or parcel.company_id.name"/>
+                        <span>Parcel <t t-out="parcel.name"/></span>
+                    </div>
+                    <div t-if="state == 'failed'" class="o_ocd_failed" role="alert">
+                        <b>The payment did not go through.</b>
+                        <span>Refused or cancelled on the phone, or not enough money. Nothing was taken.</span>
+                    </div>
+                    <t t-if="state in ('form', 'failed')">
+                        <div class="o_ocd_with_what">
+                            <span>With what?</span>
+                            <t t-if="country">
+                                <span t-attf-class="o_ocd_flag o_ocd_flag_#{(country.code or '').lower()}"/>
+                                <span class="o_ocd_with_country" t-out="country.name"/>
+                            </t>
+                        </div>
+                        <div class="o_ocd_payment">
+                            <t t-call="payment.form"/>
+                        </div>
+                        <div class="o_ocd_total">
+                            <span>Total</span>
+                            <b t-out="total"/>
+                        </div>
+                    </t>
+                    <t t-elif="state == 'waiting'">
+                        <div class="o_ocd_wait" role="status">
+                            <div class="o_ocd_wait_head">
+                                <span class="o_ocd_spinner" aria-hidden="true"/>
+                                <b>Payment in progress</b>
+                            </div>
+                            <div class="o_ocd_wait_text">
+                                <t t-call="payment.state_header"/>
+                            </div>
+                            <small>Type your secret code on your phone only, never here.</small>
+                        </div>
+                        <a t-attf-href="/ocd/colis/#{parcel.id}/payer?access_token=#{access_token}" class="o_ocd_cta o_ocd_cta_line">See if it is paid</a>
+                    </t>
+                    <div t-else="" class="o_ocd_ok o_ocd_ok_big" role="status">
+                        <b>Paid. Thank you!</b>
+                        <span>Give the code you received to the courier to get your parcel.</span>
+                    </div>
+                </main>
+            </div>
+        </t>
     </template>
 
 </odoo>
