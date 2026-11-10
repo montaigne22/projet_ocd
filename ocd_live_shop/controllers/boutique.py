@@ -36,11 +36,18 @@ class OcdBoutique(http.Controller):
             ("partner_id", "=", vendor.id),
             ("replay_published", "=", True),
         ], order="start_datetime desc", limit=1)
+        live = self._current_live(vendor)
+        if live:
+            # One visit per browser and per live, shown in the control room
+            seen = request.session.get("ocd_live_visits", [])
+            if live.id not in seen:
+                live._ocd_count_visit()
+                request.session["ocd_live_visits"] = (seen + [live.id])[-20:]
         return request.render("ocd_live_shop.boutique", common.page_values(
             "boutique",
             vendor=vendor,
             products=products,
-            live=self._current_live(vendor),
+            live=live,
             replay=replay,
         ))
 

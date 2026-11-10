@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live_shop.Regie">
+        <div class="o_action o_ocd_bo o_ocd_regie">
+            <t t-set="data" t-value="this.data()"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">Live control room</h1>
+                <span t-if="data.booking_id" class="o_ocd_bo_pager o_ocd_bo_push" t-out="data.pager"/>
+            </div>
+            <div t-if="!data.booking_id" class="o_ocd_bo_body">
+                <p class="o_ocd_regie_empty">No live today. The control room opens the live of the moment by itself.</p>
+            </div>
+            <div t-else="" class="o_ocd_bo_body o_ocd_regie_body">
+                <div class="o_ocd_regie_live">
+                    <div class="o_ocd_regie_status">
+                        <span t-attf-class="o_ocd_regie_badge o_ocd_regie_badge_#{data.status}">
+                            <span t-if="data.status === 'live'" class="o_ocd_live_dot" aria-hidden="true"/>
+                            <t t-out="this.statusLabel"/>
+                        </span>
+                        <span t-out="data.when"/>
+                    </div>
+                    <div class="o_ocd_regie_clock">
+                        <span t-out="this.clock()"/>
+                        <small t-out="this.clockCaption"/>
+                    </div>
+                    <div class="o_ocd_regie_vendor">
+                        <strong t-out="data.vendor"/>
+                        <span t-out="data.line"/>
+                    </div>
+                    <div class="o_ocd_regie_figures">
+                        <div>
+                            <span>Visits of the boutique</span>
+                            <b t-out="data.visits"/>
+                        </div>
+                        <a href="#" t-on-click.prevent="() => this.openOrders()">
+                            <span>Orders during the live</span>
+                            <b t-out="data.orders"/>
+                        </a>
+                    </div>
+                    <button t-if="data.live_url" type="button" class="o_ocd_regie_button" t-on-click="() => this.openLive()"
+                            t-out="this.openLabel"/>
+                    <div class="o_ocd_regie_banner">
+                        <span class="o_ocd_regie_caption">
+                            <t t-if="data.sold_by_ocd">Banner on screen · sold by OCD</t>
+                            <t t-else="">Banner on screen · direct contact</t>
+                        </span>
+                        <div class="o_ocd_regie_banner_box">
+                            <span class="o_ocd_regie_banner_tag">OCD</span>
+                            <span>
+                                <b t-out="data.banner_title"/>
+                                <small t-out="data.banner_sub"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="o_ocd_regie_replay">
+                        <label for="o_ocd_regie_replay">After the live: link of the replay video</label>
+                        <input id="o_ocd_regie_replay" type="url" autocomplete="off" placeholder="https://"
+                               t-att-value="this.replay()" t-on-input="(ev) => this.replay.set(ev.target.value)"/>
+                        <button t-if="!data.replay_published or this.replay() !== data.replay_url" type="button"
+                                class="o_ocd_regie_button o_ocd_green" t-on-click="() => this.publish()">Publish the replay in the boutique</button>
+                        <span t-else="" role="status" class="o_ocd_regie_published">
+                            Replay published in the boutique, with <t t-out="data.moments.length"/> moments.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="o_ocd_regie_products">
+                    <div class="o_ocd_regie_products_head">
+                        <h2>The products</h2>
+                        <span>Touch the one the vendor shows: the boutique shows it at once</span>
+                    </div>
+                    <div class="o_ocd_regie_tiles">
+                        <button t-foreach="data.products" t-as="product" t-key="product.id" type="button"
+                                t-att-class="{ 'o_ocd_regie_tile': true, 'o_ocd_shown': product.shown }"
+                                t-att-aria-pressed="product.shown ? 'true' : 'false'"
+                                t-att-disabled="!data.can_show"
+                                t-on-click="() => this.show(product)">
+                            <img t-att-src="product.image" alt="" loading="lazy"/>
+                            <span>
+                                <b t-out="product.name"/>
+                                <span><t t-out="product.price"/><t t-if="product.stock"> · <t t-out="product.stock"/></t></span>
+                                <small t-if="product.shown">On screen now</small>
+                                <small t-else="">Show on screen</small>
+                            </span>
+                        </button>
+                        <p t-if="!data.products.length" class="o_ocd_regie_empty">No approved product for this vendor yet.</p>
+                    </div>
+                    <div class="o_ocd_regie_moments">
+                        <span class="o_ocd_regie_caption">Moments saved for the replay</span>
+                        <div t-foreach="data.moments" t-as="moment" t-key="moment.id" class="o_ocd_regie_moment">
+                            <span t-out="moment.time"/>
+                            <span t-out="moment.name"/>
+                        </div>
+                        <p t-if="!data.moments.length" class="o_ocd_regie_empty">Each product put on screen is noted here with its minute.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

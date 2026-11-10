@@ -1,0 +1,317 @@
+// Live control room, as in the validated design (Regie)
+.o_ocd_regie_body {
+    display: grid;
+    grid-template-columns: 400px minmax(0, 1fr);
+    gap: 18px;
+}
+.o_ocd_regie_live, .o_ocd_regie_moments {
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 14px;
+    min-height: 0;
+    overflow-y: auto;
+}
+.o_ocd_regie_live {
+    gap: 12px;
+    padding: 16px 18px;
+}
+.o_ocd_regie_status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13.5px;
+    color: $ocd-bo-muted;
+}
+.o_ocd_regie_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    background: $ocd-bo-grey;
+    color: $ocd-bo-text;
+    &.o_ocd_regie_badge_live {
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
+}
+.o_ocd_regie_clock {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    span {
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 40px;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+    }
+    small {
+        font-size: 13px;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_regie_vendor {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    strong {
+        font-size: 17px;
+    }
+    span {
+        font-size: 14px;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_regie_figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    > div, > a {
+        display: flex;
+        flex-direction: column;
+        padding: 8px 10px;
+        border: 1px solid $ocd-bo-border;
+        border-radius: 10px;
+        color: $ocd-ink !important;
+        text-decoration: none !important;
+    }
+    > a:hover {
+        border-color: $ocd-bo-input;
+    }
+    span {
+        font-size: 12px;
+        font-weight: 600;
+        color: $ocd-bo-muted;
+    }
+    b {
+        font-size: 18px;
+        font-variant-numeric: tabular-nums;
+    }
+}
+.o_ocd_regie_button {
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-size: 14px;
+    font-weight: 700;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+    &.o_ocd_green {
+        min-height: 42px;
+        border: 0;
+        background: $ocd-green;
+        color: #FFFFFF;
+    }
+}
+.o_ocd_regie_caption {
+    font-size: 13px;
+    font-weight: 700;
+    color: $ocd-bo-muted;
+}
+.o_ocd_regie_banner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.o_ocd_regie_banner_box {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 9px;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: $ocd-ink;
+    color: #FFFFFF;
+    > span:last-child {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+    b {
+        font-size: 13.5px;
+        line-height: 1.25;
+    }
+    small {
+        font-size: 12px;
+        line-height: 1.3;
+        color: $ocd-orange-text;
+        overflow-wrap: anywhere;
+    }
+}
+.o_ocd_regie_banner_tag {
+    padding: 7px 6px;
+    border-radius: 7px;
+    background: $ocd-orange;
+    color: $ocd-ink;
+    font-family: $ocd-display;
+    font-weight: 800;
+    font-size: 12px;
+    line-height: 1;
+}
+.o_ocd_regie_replay {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid $ocd-bo-border;
+    label {
+        font-size: 13px;
+        font-weight: 700;
+        color: $ocd-bo-muted;
+    }
+    input {
+        width: 100%;
+        height: 38px;
+        box-sizing: border-box;
+        padding: 0 10px;
+        border: 1px solid $ocd-bo-input;
+        border-radius: 8px;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 13px;
+        color: $ocd-ink;
+    }
+}
+.o_ocd_regie_published {
+    font-size: 14px;
+    font-weight: 700;
+    color: $ocd-green-text;
+}
+.o_ocd_regie_products {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    min-height: 0;
+}
+.o_ocd_regie_products_head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    h2 {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 21px;
+        line-height: 1.1;
+    }
+    span {
+        font-size: 14px;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_regie_tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+.o_ocd_regie_tile {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 12px;
+    align-items: center;
+    min-height: 90px;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 2px solid $ocd-bo-border;
+    border-radius: 12px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    text-align: left;
+    img {
+        width: 58px;
+        height: 58px;
+        border-radius: 10px;
+        background: $ocd-bo-background;
+        object-fit: cover;
+    }
+    > span {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    b {
+        font-size: 15px;
+        line-height: 1.2;
+    }
+    span span {
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
+    }
+    small {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: $ocd-bo-muted;
+    }
+    &.o_ocd_shown {
+        border-color: $ocd-orange;
+        background: $ocd-orange-soft;
+        small {
+            color: $ocd-ink;
+        }
+    }
+    &:not(.o_ocd_shown):hover {
+        border-color: $ocd-bo-input;
+    }
+    &:focus-visible {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 2px;
+    }
+}
+.o_ocd_regie_moments {
+    flex: 1;
+    gap: 8px;
+    padding: 14px 16px;
+}
+.o_ocd_regie_moment {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 10px;
+    align-items: center;
+    font-size: 14.5px;
+    > :first-child {
+        display: grid;
+        place-items: center;
+        height: 28px;
+        border-radius: 7px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        font-size: 13px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+    > :last-child {
+        font-weight: 600;
+    }
+}
+.o_ocd_regie_empty {
+    margin: 0;
+    font-size: 13.5px;
+    color: $ocd-bo-muted;
+}
+@include media-breakpoint-down(xl) {
+    .o_ocd_regie_body {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .o_ocd_regie_tiles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@include media-breakpoint-down(md) {
+    .o_ocd_regie_tiles {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

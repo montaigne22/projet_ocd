@@ -137,7 +137,10 @@ export class OcdLivePlanning extends Component {
     }
 
     openRegie() {
-        this.actionService.doAction(this.data().regie_action);
+        this.actionService.doAction({
+            ...this.data().regie_action,
+            params: { booking_id: this.detail.booking_id },
+        });
     }
 
     switchView(viewType) {

@@ -169,6 +169,34 @@ class TestOcdParcels(OcdShopCommon):
         with self.assertRaises(UserError):
             booking._ocd_show_product(self.butter.product_tmpl_id)
 
+    def test_control_room(self):
+        booking = self.env["ocd.live.booking"].create({
+            "partner_id": self.brenda.id,
+            "start_datetime": self.company._ocd_slot_starts(fields.Date.today() + timedelta(days=5))[1],
+            "mode": "remote",
+        })
+        booking._ocd_confirm()
+        Regie = self.env["ocd.live.regie"]
+        data = Regie.get_regie_data(booking.id)
+        self.assertEqual(data["status"], "coming")
+        self.assertEqual(data["vendor"], self.brenda.name)
+        tiles = {tile["id"]: tile for tile in data["products"]}
+        self.assertIn(self.dress.product_tmpl_id.id, tiles)
+        self.assertFalse(tiles[self.dress.product_tmpl_id.id]["shown"])
+        # The product touched is on screen and noted for the replay
+        Regie.ocd_show_product(booking.id, self.dress.product_tmpl_id.id)
+        data = Regie.get_regie_data(booking.id)
+        self.assertTrue({tile["id"]: tile for tile in data["products"]}[self.dress.product_tmpl_id.id]["shown"])
+        self.assertEqual([moment["name"] for moment in data["moments"]], [self.dress.product_tmpl_id.name])
+        # A visit of the boutique during the live is counted
+        booking._ocd_count_visit()
+        self.assertEqual(Regie.get_regie_data(booking.id)["visits"], 1)
+        # The replay is published with its link
+        with self.assertRaises(UserError):
+            Regie.ocd_publish_replay(booking.id, "tiktok.com/@brenda/video/1")
+        Regie.ocd_publish_replay(booking.id, "https://www.tiktok.com/@brenda/video/1")
+        self.assertTrue(booking.replay_published)
+
     def test_unapproved_product_cannot_be_published(self):
         template = self.dress.product_tmpl_id
         template.ocd_review_state = "to_check"

@@ -11,6 +11,12 @@ class OcdLiveBooking(models.Model):
     moment_ids = fields.One2many(
         comodel_name="ocd.live.moment", inverse_name="booking_id", string="Moments Of The Replay"
     )
+    ocd_visit_count = fields.Integer(
+        string="Boutique Visits",
+        copy=False,
+        readonly=True,
+        help="Visits of the boutique of the vendor during the live, one per browser.",
+    )
     vendor_product_ids = fields.Many2many(
         comodel_name="product.template",
         string="Products Of The Vendor",
@@ -42,3 +48,12 @@ class OcdLiveBooking(models.Model):
             "product_tmpl_id": product.id,
             "offset_seconds": offset,
         })
+
+    def _ocd_count_visit(self):
+        """Count a visit of the boutique during the live, in one query (many visitors at once)."""
+        self.ensure_one()
+        self.env.cr.execute(
+            "UPDATE ocd_live_booking SET ocd_visit_count = COALESCE(ocd_visit_count, 0) + 1 WHERE id = %s",
+            [self.id],
+        )
+        self.invalidate_recordset(["ocd_visit_count"])
