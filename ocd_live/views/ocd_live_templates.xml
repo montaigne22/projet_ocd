@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Frame of the pages: the voice of the page, then the content. -->
+    <template id="layout" name="OCD Live: page">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_ocd_live">
+                <div class="container o_ocd_live_page">
+                    <div t-if="voice_key" class="o_ocd_live_voice" t-att-data-voice-key="voice_key">
+                        <label class="visually-hidden" for="o_ocd_live_voice_lang">Language of the voice</label>
+                        <select id="o_ocd_live_voice_lang" class="form-select form-select-sm o_ocd_live_voice_lang">
+                            <t t-foreach="voice_languages" t-as="voice_language">
+                                <option t-att-value="voice_language.code" t-out="voice_language.name"/>
+                            </t>
+                        </select>
+                        <button type="button" class="btn btn-dark o_ocd_live_voice_play">Listen</button>
+                    </div>
+                    <t t-out="0"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="message_box" name="OCD Live: messages">
+        <div t-if="message" class="alert alert-success o_ocd_live_alert" role="status" t-out="message"/>
+        <div t-if="error" class="alert alert-danger o_ocd_live_alert" role="alert" t-out="error"/>
+    </template>
+
+    <!-- === BOOKING === -->
+
+    <template id="booking_mode" name="OCD Live: where">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Where will you do your live?</h1>
+            <div class="o_ocd_live_choices">
+                <a href="/reserver/studio" class="o_ocd_live_choice">
+                    <span class="o_ocd_live_choice_title">At the studio in Lome</span>
+                    <span class="o_ocd_live_choice_text">With the team, the light, the shelves and the racks</span>
+                </a>
+                <a href="/reserver/remote" class="o_ocd_live_choice">
+                    <span class="o_ocd_live_choice_title">From home</span>
+                    <span class="o_ocd_live_choice_text">In any country: a host of OCD accompanies your live</span>
+                </a>
+            </div>
+            <p class="o_ocd_live_links">
+                <a href="/lives">See the lives of the moment</a>
+                <a href="/ocd/connexion">My space</a>
+            </p>
+        </t>
+    </template>
+
+    <template id="booking_package" name="OCD Live: package first">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Which package?</h1>
+            <div class="o_ocd_live_choices">
+                <t t-foreach="packages" t-as="product">
+                    <a t-attf-href="/reserver/#{mode}/paquet/#{product.id}" class="o_ocd_live_choice o_ocd_live_package">
+                        <span class="o_ocd_live_badge" t-out="product.ocd_badge or ''"/>
+                        <span class="o_ocd_live_choice_title" t-out="product.name"/>
+                        <span class="o_ocd_live_choice_text" t-out="product.description_sale or ''"/>
+                        <span class="o_ocd_live_price" t-field="product.lst_price"
+                              t-options="{'widget': 'monetary', 'display_currency': product.currency_id}"/>
+                    </a>
+                </t>
+            </div>
+            <p class="o_ocd_live_links"><a href="/reserver">Back</a></p>
+        </t>
+    </template>
+
+    <template id="booking_day" name="OCD Live: day">
+        <t t-call="ocd_live.layout">
+            <t t-set="base" t-value="('/reserver/%s/paquet/%s' % (mode, product.id)) if product else ('/reserver/%s' % mode)"/>
+            <h1 class="o_ocd_live_title">Which day?</h1>
+            <p t-if="product" class="o_ocd_live_summary">Package: <b t-out="product.name"/></p>
+            <div class="o_ocd_live_calendar" role="grid">
+                <div class="o_ocd_live_week o_ocd_live_weekdays" role="row">
+                    <span role="columnheader">Mon</span><span role="columnheader">Tue</span><span role="columnheader">Wed</span>
+                    <span role="columnheader">Thu</span><span role="columnheader">Fri</span><span role="columnheader">Sat</span>
+                    <span role="columnheader">Sun</span>
+                </div>
+                <t t-foreach="weeks" t-as="week">
+                    <div class="o_ocd_live_week" role="row">
+                        <t t-foreach="week" t-as="cell">
+                            <a t-if="not cell['past'] and not cell['closed'] and cell['free']" role="gridcell"
+                               t-attf-href="#{base}/#{cell['iso']}" class="o_ocd_live_day">
+                                <b t-out="cell['number']"/><small t-out="cell['month']"/>
+                            </a>
+                            <span t-else="" role="gridcell" aria-disabled="true"
+                                  t-attf-class="o_ocd_live_day o_ocd_live_day_off #{'o_ocd_live_day_full' if not cell['past'] and not cell['closed'] else ''}">
+                                <b t-out="cell['number']"/><small t-out="cell['month']"/>
+                            </span>
+                        </t>
+                    </div>
+                </t>
+            </div>
+            <p class="o_ocd_live_links"><a href="/reserver">Back</a></p>
+        </t>
+    </template>
+
+    <template id="booking_hour" name="OCD Live: hour">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">At what time?</h1>
+            <p class="o_ocd_live_summary"><t t-out="day_label"/><t t-if="product"> · <b t-out="product.name"/></t></p>
+            <t t-call="ocd_live.message_box"/>
+            <div class="o_ocd_live_slots">
+                <t t-foreach="slots" t-as="slot">
+                    <t t-set="href" t-value="('/reserver/%s/%s/%s/%s' % (mode, day, slot['code'], product.id)) if product else ('/reserver/%s/%s/%s' % (mode, day, slot['code']))"/>
+                    <a t-if="slot['available']" t-att-href="href" class="o_ocd_live_slot">
+                        <b t-out="slot['label']"/><small t-out="slot['end_label']"/>
+                    </a>
+                    <span t-else="" class="o_ocd_live_slot o_ocd_live_slot_off" aria-disabled="true">
+                        <b t-out="slot['label']"/><small t-if="slot['taken']">Taken</small><small t-else="">Closed</small>
+                    </span>
+                </t>
+            </div>
+            <p class="o_ocd_live_links"><a t-attf-href="/reserver/#{mode}">Another day</a></p>
+        </t>
+    </template>
+
+    <template id="booking_package_at" name="OCD Live: package of the hour">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Which package?</h1>
+            <p class="o_ocd_live_summary"><t t-out="day_label"/> · <t t-out="hour_label"/></p>
+            <div class="o_ocd_live_choices">
+                <t t-foreach="choices" t-as="choice">
+                    <t t-set="product" t-value="choice['product']"/>
+                    <a t-if="choice['available']" t-attf-href="/reserver/#{mode}/#{day}/#{hour}/#{product.id}"
+                       class="o_ocd_live_choice o_ocd_live_package">
+                        <span class="o_ocd_live_badge" t-out="product.ocd_badge or ''"/>
+                        <span class="o_ocd_live_choice_title" t-out="product.name"/>
+                        <span class="o_ocd_live_choice_text" t-out="product.description_sale or ''"/>
+                        <span class="o_ocd_live_price" t-field="product.lst_price"
+                              t-options="{'widget': 'monetary', 'display_currency': product.currency_id}"/>
+                    </a>
+                    <span t-else="" class="o_ocd_live_choice o_ocd_live_package o_ocd_live_choice_off" aria-disabled="true">
+                        <span class="o_ocd_live_choice_title" t-out="product.name"/>
+                        <span class="o_ocd_live_choice_text">Not enough free time at this hour</span>
+                    </span>
+                </t>
+            </div>
+            <p class="o_ocd_live_links"><a t-attf-href="/reserver/#{mode}/#{day}">Another hour</a></p>
+        </t>
+    </template>
+
+    <template id="booking_infos" name="OCD Live: who are you">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Who are you?</h1>
+            <p class="o_ocd_live_summary">
+                <t t-out="day_label"/> · <t t-out="hour_label"/> · <b t-out="product.name"/> ·
+                <t t-if="mode == 'studio'">At the studio in Lome</t><t t-else="">From home</t>
+            </p>
+            <t t-call="ocd_live.message_box"/>
+            <form action="/reserver/confirmer" method="post" class="o_ocd_live_form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="mode" t-att-value="mode"/>
+                <input type="hidden" name="day" t-att-value="day"/>
+                <input type="hidden" name="hour" t-att-value="hour"/>
+                <input type="hidden" name="product_id" t-att-value="product.id"/>
+                <div class="d-none" aria-hidden="true">
+                    <label for="website_url">Leave empty</label>
+                    <input id="website_url" name="website_url" type="text" tabindex="-1" autocomplete="off"/>
+                </div>
+                <t t-if="vendor">
+                    <p class="o_ocd_live_summary">Booking for <b t-out="vendor.name"/></p>
+                </t>
+                <t t-else="">
+                    <label for="ocd_name">Your name</label>
+                    <input id="ocd_name" name="name" class="form-control form-control-lg" required="required" maxlength="80"
+                           t-att-value="values.get('name')" autocomplete="name"/>
+                    <label for="ocd_business">What do you sell?</label>
+                    <input id="ocd_business" name="business" class="form-control form-control-lg" required="required" maxlength="80"
+                           t-att-value="values.get('business')" placeholder="e.g. wax dresses, shea butter"/>
+                    <label for="ocd_phone">Your WhatsApp number</label>
+                    <input id="ocd_phone" name="phone" type="tel" class="form-control form-control-lg" required="required" maxlength="30"
+                           t-att-value="values.get('phone')" autocomplete="tel" placeholder="+228 90 00 00 00"/>
+                    <label for="ocd_country">Your country</label>
+                    <select id="ocd_country" name="country_id" class="form-select form-select-lg">
+                        <t t-foreach="countries" t-as="country">
+                            <option t-att-value="country.id" t-out="country.name"
+                                    t-att-selected="str(country.id) == values.get('country_id')"/>
+                        </t>
+                    </select>
+                    <label for="ocd_city">Your city</label>
+                    <input id="ocd_city" name="city" class="form-control form-control-lg" maxlength="80" t-att-value="values.get('city')"/>
+                    <label for="ocd_category">Your category</label>
+                    <select id="ocd_category" name="category_id" class="form-select form-select-lg">
+                        <t t-foreach="categories" t-as="category">
+                            <option t-att-value="category.id" t-out="category.name"/>
+                        </t>
+                    </select>
+                </t>
+                <fieldset t-if="mode == 'studio'" class="o_ocd_live_needs">
+                    <legend>At the studio, you need</legend>
+                    <label class="o_ocd_live_radio"><input type="radio" name="studio_need" value="none" checked="checked"/> Nothing</label>
+                    <label class="o_ocd_live_radio"><input type="radio" name="studio_need" value="shelf"/> A shelf</label>
+                    <label class="o_ocd_live_radio"><input type="radio" name="studio_need" value="rack"/> A clothes rack</label>
+                    <label class="o_ocd_live_radio"><input type="radio" name="studio_need" value="table"/> A table</label>
+                </fieldset>
+                <button type="submit" class="btn btn-primary btn-lg o_ocd_live_cta">
+                    Pay <span t-field="product.lst_price" t-options="{'widget': 'monetary', 'display_currency': product.currency_id}"/>
+                </button>
+                <p class="o_ocd_live_note">Your slot is held while you pay. You confirm the payment on your phone: never give your secret code.</p>
+            </form>
+        </t>
+    </template>
+
+    <!-- === DIRECTORY === -->
+
+    <template id="directory_countries" name="OCD Live: lives of the moment">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Lives of the moment</h1>
+            <p t-if="not total and next_window" class="o_ocd_live_summary">Next lives from <b t-out="next_window"/>.</p>
+            <div class="o_ocd_live_choices">
+                <t t-foreach="rows" t-as="row">
+                    <a t-attf-href="/lives/#{row['country'].code.lower()}" class="o_ocd_live_choice">
+                        <span class="o_ocd_live_choice_title" t-out="row['country'].name"/>
+                        <span class="o_ocd_live_choice_text"><t t-out="row['count']"/> lives now</span>
+                    </a>
+                </t>
+            </div>
+            <p class="o_ocd_live_links"><a href="/ocd/connexion">Show my live here</a><a href="/reserver">Book a live</a></p>
+        </t>
+    </template>
+
+    <template id="directory_country" name="OCD Live: lives of a country">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Lives in <t t-out="country.name"/></h1>
+            <div class="o_ocd_live_pills">
+                <a t-attf-href="/lives/#{country.code.lower()}" t-attf-class="o_ocd_live_pill #{'active' if not category else ''}">All</a>
+                <t t-foreach="categories" t-as="cat">
+                    <a t-attf-href="/lives/#{country.code.lower()}?category=#{cat.id}"
+                       t-attf-class="o_ocd_live_pill #{'active' if category and category.id == cat.id else ''}" t-out="cat.name"/>
+                </t>
+            </div>
+            <div t-if="listings" class="o_ocd_live_cards">
+                <t t-foreach="listings" t-as="listing">
+                    <div class="o_ocd_live_card">
+                        <b t-out="listing.partner_id.ocd_business or listing.partner_id.name"/>
+                        <span t-out="listing.partner_id.name"/>
+                        <span class="o_ocd_live_badge" t-out="listing.category_id.name or ''"/>
+                        <a t-att-href="listing.url" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+                            Watch the live
+                        </a>
+                    </div>
+                </t>
+            </div>
+            <p t-else="" class="o_ocd_live_summary">No live right now.<t t-if="next_window"> Come back at <b t-out="next_window"/>.</t></p>
+            <p class="o_ocd_live_links"><a href="/lives">Other countries</a></p>
+        </t>
+    </template>
+
+    <!-- === VENDOR SPACE === -->
+
+    <template id="space_login" name="OCD Live: log in">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">My space</h1>
+            <t t-if="sent">
+                <div class="alert alert-success o_ocd_live_alert" role="status">
+                    If this number is registered, you will receive a message on WhatsApp.
+                </div>
+            </t>
+            <p t-if="login == 'link'" class="o_ocd_live_summary">Open the personal link received on WhatsApp. Lost it? Type your number to receive it again.</p>
+            <p t-else="" class="o_ocd_live_summary">Type your WhatsApp number: you receive a code.</p>
+            <form action="/ocd/connexion" method="post" class="o_ocd_live_form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <label for="ocd_login_phone">Your WhatsApp number</label>
+                <input id="ocd_login_phone" name="phone" type="tel" class="form-control form-control-lg" required="required"
+                       maxlength="30" autocomplete="tel"/>
+                <button type="submit" class="btn btn-primary btn-lg o_ocd_live_cta">
+                    <t t-if="login == 'link'">Receive my link</t><t t-else="">Receive a code</t>
+                </button>
+            </form>
+        </t>
+    </template>
+
+    <template id="space_login_code" name="OCD Live: code">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Type the code</h1>
+            <p class="o_ocd_live_summary">If this number is registered, you received a code on WhatsApp. It is valid 10 minutes.</p>
+            <t t-call="ocd_live.message_box"/>
+            <form action="/ocd/connexion/code" method="post" class="o_ocd_live_form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <label for="ocd_login_code">Code</label>
+                <input id="ocd_login_code" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                       class="form-control form-control-lg o_ocd_live_code" required="required" autocomplete="one-time-code"/>
+                <button type="submit" class="btn btn-primary btn-lg o_ocd_live_cta">Open my space</button>
+            </form>
+            <p class="o_ocd_live_links"><a href="/ocd/connexion">Ask for a new code</a></p>
+        </t>
+    </template>
+
+    <template id="space" name="OCD Live: my space">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Hello <t t-out="vendor.name"/></h1>
+            <t t-call="ocd_live.message_box"/>
+            <section class="o_ocd_live_section">
+                <h2>My lives</h2>
+                <div t-if="bookings" class="o_ocd_live_cards">
+                    <t t-foreach="bookings" t-as="booking">
+                        <t t-set="labels" t-value="booking._ocd_local_labels()"/>
+                        <div class="o_ocd_live_card">
+                            <b><t t-out="labels[0]"/>, <t t-out="labels[1]"/> - <t t-out="labels[2]"/></b>
+                            <span t-if="booking.mode == 'studio'">At the studio in Lome</span><span t-else="">From home</span>
+                            <span t-if="booking.state == 'draft'" class="o_ocd_live_badge o_ocd_live_badge_warning">To pay</span>
+                            <span t-else="" class="o_ocd_live_badge o_ocd_live_badge_success">Confirmed</span>
+                            <a t-if="booking.state == 'draft' and booking.sale_order_id" t-att-href="booking.sale_order_id.get_portal_url()"
+                               class="btn btn-primary">Pay</a>
+                        </div>
+                    </t>
+                </div>
+                <p t-else="">No live coming.</p>
+                <a href="/reserver" class="btn btn-outline-dark btn-lg">Book a live</a>
+            </section>
+            <section t-if="credits" class="o_ocd_live_section">
+                <h2>Lives to place</h2>
+                <div class="o_ocd_live_cards">
+                    <t t-foreach="credits" t-as="credit">
+                        <div class="o_ocd_live_card">
+                            <b t-out="credit.product_id.name"/>
+                            <span><t t-out="credit.remaining"/> to place<t t-if="credit.date_expiry">, before <t t-out="credit.date_expiry"/></t></span>
+                            <a t-attf-href="#{prefix}/placer/#{credit.id}" class="btn btn-primary">Place a live</a>
+                        </div>
+                    </t>
+                </div>
+            </section>
+            <section class="o_ocd_live_section">
+                <h2>Directory of the lives</h2>
+                <t t-if="vendor.ocd_pass_active">
+                    <p>Pass valid until <b t-out="vendor.ocd_pass_end_date"/>.</p>
+                    <p t-if="listing and listing.state in ('queued', 'to_check')">Your link is waiting for the team.</p>
+                    <p t-if="listing and listing.state == 'published'">Your live is in the directory now.</p>
+                    <p t-if="listing and listing.state == 'refused'" class="text-danger">
+                        Your last link was refused: <t t-out="listing.refuse_note or listing.refuse_reason_id.message or listing.refuse_reason_id.name"/>
+                    </p>
+                    <form t-attf-action="#{prefix}/lien" method="post" class="o_ocd_live_form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <label for="ocd_live_url">Link of your live</label>
+                        <input id="ocd_live_url" name="url" type="url" class="form-control form-control-lg" required="required"
+                               placeholder="https://www.tiktok.com/@..." maxlength="500"/>
+                        <label for="ocd_live_category">Category</label>
+                        <select id="ocd_live_category" name="category_id" class="form-select form-select-lg">
+                            <t t-foreach="categories" t-as="category">
+                                <option t-att-value="category.id" t-out="category.name"
+                                        t-att-selected="category == vendor.ocd_category_id"/>
+                            </t>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-lg o_ocd_live_cta">Send my link</button>
+                    </form>
+                </t>
+                <form t-attf-action="#{prefix}/pass" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <button type="submit" class="btn btn-outline-dark btn-lg">
+                        <t t-if="vendor.ocd_pass_active">Renew my pass</t><t t-else="">Take the pass of the directory</t>
+                    </button>
+                </form>
+            </section>
+            <p t-if="login == 'whatsapp_code'" class="o_ocd_live_links"><a href="/ocd/deconnexion">Log out</a></p>
+        </t>
+    </template>
+
+    <template id="space_place" name="OCD Live: place a live">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title">Place a live</h1>
+            <p class="o_ocd_live_summary"><b t-out="credit.product_id.name"/>: <t t-out="credit.remaining"/> to place</p>
+            <div class="o_ocd_live_pills">
+                <a t-attf-href="#{prefix}/placer/#{credit.id}?mode=studio" t-attf-class="o_ocd_live_pill #{'active' if mode == 'studio' else ''}">At the studio</a>
+                <a t-attf-href="#{prefix}/placer/#{credit.id}?mode=remote" t-attf-class="o_ocd_live_pill #{'active' if mode == 'remote' else ''}">From home</a>
+            </div>
+            <t t-foreach="days" t-as="day_slots">
+                <h2 class="o_ocd_live_day_title" t-out="day_slots['label']"/>
+                <div class="o_ocd_live_slots">
+                    <t t-foreach="day_slots['slots']" t-as="slot">
+                        <form t-attf-action="#{prefix}/placer/#{credit.id}" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="mode" t-att-value="mode"/>
+                            <input type="hidden" name="start" t-att-value="slot['start']"/>
+                            <button type="submit" class="o_ocd_live_slot"><b t-out="slot['label']"/><small t-out="slot['end_label']"/></button>
+                        </form>
+                    </t>
+                </div>
+            </t>
+            <p t-if="not days" class="o_ocd_live_summary">No free slot in the next two weeks.</p>
+            <p class="o_ocd_live_links"><a t-att-href="prefix">Back to my space</a></p>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,222 @@
+// Pages of OCD Live: one question per page, big buttons, readable on a small phone.
+$o-ocd-live-orange: #F46A00;
+$o-ocd-live-ink: #15130F;
+$o-ocd-live-muted: #5A6068;
+$o-ocd-live-line: #D3D7DB;
+
+.o_ocd_live {
+    .o_ocd_live_page {
+        max-width: 720px;
+        padding-top: 1.25rem;
+        padding-bottom: 3rem;
+    }
+    .o_ocd_live_voice {
+        display: flex;
+        justify-content: flex-end;
+        gap: .5rem;
+        margin-bottom: .75rem;
+        .o_ocd_live_voice_lang {
+            width: auto;
+        }
+    }
+    .o_ocd_live_title {
+        font-weight: 800;
+        font-size: 1.9rem;
+        margin-bottom: .5rem;
+    }
+    .o_ocd_live_summary {
+        font-size: 1.1rem;
+        color: $o-ocd-live-ink;
+    }
+    .o_ocd_live_choices {
+        display: grid;
+        gap: .75rem;
+        margin: 1rem 0;
+    }
+    .o_ocd_live_choice {
+        display: grid;
+        gap: .15rem;
+        padding: 1.1rem 1.25rem;
+        border: 2px solid $o-ocd-live-line;
+        border-radius: 14px;
+        color: $o-ocd-live-ink;
+        text-decoration: none;
+        background: #FFFFFF;
+        &:hover, &:focus {
+            border-color: $o-ocd-live-orange;
+        }
+    }
+    .o_ocd_live_choice_off {
+        opacity: .5;
+    }
+    .o_ocd_live_choice_title {
+        font-weight: 800;
+        font-size: 1.3rem;
+    }
+    .o_ocd_live_choice_text {
+        color: $o-ocd-live-muted;
+    }
+    .o_ocd_live_price {
+        font-weight: 800;
+        font-size: 1.2rem;
+    }
+    .o_ocd_live_badge {
+        justify-self: start;
+        padding: .05rem .5rem;
+        border-radius: 6px;
+        background: #FFE7D1;
+        font-weight: 700;
+        font-size: .9rem;
+    }
+    .o_ocd_live_badge_warning {
+        background: #FFF0CC;
+    }
+    .o_ocd_live_badge_success {
+        background: #DCF2E5;
+    }
+    .o_ocd_live_calendar {
+        display: grid;
+        gap: .35rem;
+        margin: 1rem 0;
+    }
+    .o_ocd_live_week {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: .35rem;
+    }
+    .o_ocd_live_weekdays span {
+        text-align: center;
+        font-weight: 700;
+        color: $o-ocd-live-muted;
+    }
+    .o_ocd_live_day {
+        display: grid;
+        place-items: center;
+        min-height: 3.5rem;
+        border-radius: 10px;
+        border: 2px solid $o-ocd-live-line;
+        color: $o-ocd-live-ink;
+        text-decoration: none;
+        background: #FFFFFF;
+        b {
+            font-size: 1.2rem;
+        }
+        small {
+            font-size: .75rem;
+            color: $o-ocd-live-muted;
+        }
+        &:hover, &:focus {
+            border-color: $o-ocd-live-orange;
+        }
+    }
+    .o_ocd_live_day_off {
+        background: #F4F5F6;
+        color: #9AA0A6;
+    }
+    .o_ocd_live_day_full b {
+        text-decoration: line-through;
+    }
+    .o_ocd_live_slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+        gap: .5rem;
+        margin: 1rem 0;
+        form {
+            display: contents;
+        }
+    }
+    .o_ocd_live_slot {
+        display: grid;
+        place-items: center;
+        min-height: 4rem;
+        border: 2px solid $o-ocd-live-line;
+        border-radius: 12px;
+        color: $o-ocd-live-ink;
+        text-decoration: none;
+        background: #FFFFFF;
+        b {
+            font-size: 1.3rem;
+        }
+        &:hover, &:focus {
+            border-color: $o-ocd-live-orange;
+        }
+    }
+    .o_ocd_live_slot_off {
+        background: #F4F5F6;
+        color: #9AA0A6;
+    }
+    .o_ocd_live_form {
+        display: grid;
+        gap: .5rem;
+        margin: 1rem 0;
+        label, legend {
+            font-weight: 700;
+            margin-top: .5rem;
+        }
+    }
+    .o_ocd_live_radio {
+        display: flex;
+        gap: .5rem;
+        align-items: center;
+        font-weight: 400 !important;
+        font-size: 1.1rem;
+    }
+    .o_ocd_live_code {
+        font-size: 2rem;
+        letter-spacing: .5rem;
+        text-align: center;
+    }
+    .o_ocd_live_cta {
+        margin-top: 1rem;
+        min-height: 3.5rem;
+        font-weight: 800;
+    }
+    .o_ocd_live_note {
+        color: $o-ocd-live-muted;
+    }
+    .o_ocd_live_links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+    }
+    .o_ocd_live_pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+        margin: 1rem 0;
+    }
+    .o_ocd_live_pill {
+        padding: .4rem .9rem;
+        border: 1px solid $o-ocd-live-line;
+        border-radius: 999px;
+        color: $o-ocd-live-ink;
+        text-decoration: none;
+        &.active {
+            background: $o-ocd-live-ink;
+            color: #FFFFFF;
+        }
+    }
+    .o_ocd_live_cards {
+        display: grid;
+        gap: .75rem;
+        margin: 1rem 0;
+    }
+    .o_ocd_live_card {
+        display: grid;
+        gap: .35rem;
+        padding: 1rem;
+        border: 1px solid $o-ocd-live-line;
+        border-radius: 12px;
+        background: #FFFFFF;
+    }
+    .o_ocd_live_section {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid $o-ocd-live-line;
+    }
+    .o_ocd_live_day_title {
+        font-size: 1.15rem;
+        margin-top: 1rem;
+    }
+}

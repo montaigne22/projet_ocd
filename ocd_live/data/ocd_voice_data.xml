@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Languages of the voice and the sentence of each page. The team adds the recordings
+     (OCD Live > Configuration > Voices); without a recording, the voice of the phone reads
+     the sentence when the language has one. -->
+<odoo noupdate="1">
+
+    <record id="voice_language_fr" model="ocd.voice.language">
+        <field name="name">French</field>
+        <field name="code">fr</field>
+        <field name="speech_code">fr-FR</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="voice_language_en" model="ocd.voice.language">
+        <field name="name">English</field>
+        <field name="code">en</field>
+        <field name="speech_code">en-US</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="voice_language_ee" model="ocd.voice.language">
+        <field name="name">Ewe</field>
+        <field name="code">ee</field>
+        <field name="sequence">3</field>
+        <field name="active" eval="False"/>
+    </record>
+    <record id="voice_language_mina" model="ocd.voice.language">
+        <field name="name">Mina</field>
+        <field name="code">gej</field>
+        <field name="sequence">4</field>
+        <field name="active" eval="False"/>
+    </record>
+    <record id="voice_language_pcm" model="ocd.voice.language">
+        <field name="name">Pidgin</field>
+        <field name="code">pcm</field>
+        <field name="sequence">5</field>
+        <field name="active" eval="False"/>
+    </record>
+    <record id="voice_language_wo" model="ocd.voice.language">
+        <field name="name">Wolof</field>
+        <field name="code">wo</field>
+        <field name="sequence">6</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="voice_prompt_home" model="ocd.voice.prompt">
+        <field name="key">home</field>
+        <field name="name">Home</field>
+        <field name="text">Welcome to OCD Live. Book your live, or see the lives of the moment.</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="voice_prompt_mode" model="ocd.voice.prompt">
+        <field name="key">mode</field>
+        <field name="name">Where</field>
+        <field name="text">Where will you do your live? At the studio in Lome, or from home?</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="voice_prompt_day" model="ocd.voice.prompt">
+        <field name="key">day</field>
+        <field name="name">Day</field>
+        <field name="text">Choose the day of your live. The crossed days are full.</field>
+        <field name="sequence">3</field>
+    </record>
+    <record id="voice_prompt_hour" model="ocd.voice.prompt">
+        <field name="key">hour</field>
+        <field name="name">Hour</field>
+        <field name="text">Choose the hour of your live. The grey hours are taken.</field>
+        <field name="sequence">4</field>
+    </record>
+    <record id="voice_prompt_package" model="ocd.voice.prompt">
+        <field name="key">package</field>
+        <field name="name">Package</field>
+        <field name="text">Choose your package. The more lives, the cheaper each live.</field>
+        <field name="sequence">5</field>
+    </record>
+    <record id="voice_prompt_infos" model="ocd.voice.prompt">
+        <field name="key">infos</field>
+        <field name="name">Who are you</field>
+        <field name="text">Tell us who you are: your name, what you sell and your WhatsApp number.</field>
+        <field name="sequence">6</field>
+    </record>
+    <record id="voice_prompt_pay" model="ocd.voice.prompt">
+        <field name="key">pay</field>
+        <field name="name">Payment</field>
+        <field name="text">Pay with Mobile Money. You confirm on your phone. Never give your secret code to anyone.</field>
+        <field name="sequence">7</field>
+    </record>
+    <record id="voice_prompt_directory" model="ocd.voice.prompt">
+        <field name="key">directory</field>
+        <field name="name">Lives of the moment</field>
+        <field name="text">Choose a country to see the lives of the moment.</field>
+        <field name="sequence">8</field>
+    </record>
+    <record id="voice_prompt_space" model="ocd.voice.prompt">
+        <field name="key">space</field>
+        <field name="name">My space</field>
+        <field name="text">Here are your lives, the lives left to place and your directory pass.</field>
+        <field name="sequence">9</field>
+    </record>
+    <record id="voice_prompt_login" model="ocd.voice.prompt">
+        <field name="key">login</field>
+        <field name="name">Log in</field>
+        <field name="text">Type your WhatsApp number. You receive a code to type here.</field>
+        <field name="sequence">10</field>
+    </record>
+
+</odoo>

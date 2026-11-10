@@ -1,7 +1,14 @@
+import re
 import secrets
+from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
+from odoo.exceptions import AccessError, UserError
 from odoo.tools import consteq
+from odoo.tools.misc import hmac
+
+LOGIN_CODE_MINUTES = 10
+LOGIN_CODE_MAX_ATTEMPTS = 5
 
 
 class ResPartner(models.Model):
@@ -44,6 +51,9 @@ class ResPartner(models.Model):
     ocd_listing_ids = fields.One2many(
         comodel_name="ocd.directory.listing", inverse_name="partner_id", string="Directory Links"
     )
+    ocd_login_code_hash = fields.Char(copy=False, groups="base.group_system")
+    ocd_login_code_expiry = fields.Datetime(copy=False, groups="base.group_system")
+    ocd_login_code_attempts = fields.Integer(copy=False, groups="base.group_system")
 
     def _compute_ocd_booking_count(self):
         counts = {
@@ -145,3 +155,108 @@ class ResPartner(models.Model):
     def action_ocd_refuse_vendor(self):
         self.write({"ocd_vendor_state": "refused"})
         return True
+
+    # === LOGIN WITH A CODE OR A PASSWORD === #
+
+    @api.model
+    def _ocd_find_vendor_by_phone(self, phone):
+        """Return the vendor whose phone number ends like `phone` (8 digits at least)."""
+        typed = re.sub(r"\D", "", phone or "")
+        if len(typed) < 8:
+            return self.browse()
+        # sudo: login page, the number is only compared, nothing is shown
+        vendors = self.sudo().search([
+            ("ocd_is_vendor", "=", True),
+            ("phone", "!=", False),
+            ("ocd_vendor_state", "!=", "refused"),
+        ])
+        for vendor in vendors:
+            stored = re.sub(r"\D", "", vendor.phone)
+            size = min(len(stored), len(typed))
+            if size >= 8 and stored[-size:] == typed[-size:]:
+                return vendor
+        return self.browse()
+
+    def _ocd_hash_login_code(self, code):
+        self.ensure_one()
+        return hmac(self.env(su=True), "ocd_live-login-code", f"{self.id}:{code}")
+
+    def _ocd_send_login_code(self):
+        """Create a 6-digit login code and send it to the vendor. Return False when a code was
+        sent less than a minute ago or when it cannot be sent."""
+        self.ensure_one()
+        # sudo: the code fields are restricted to administrators
+        partner_sudo = self.sudo()
+        now = fields.Datetime.now()
+        last_expiry = partner_sudo.ocd_login_code_expiry
+        if last_expiry and last_expiry - timedelta(minutes=LOGIN_CODE_MINUTES) > now - timedelta(minutes=1):
+            return False
+        code = f"{secrets.randbelow(1000000):06d}"
+        partner_sudo.write({
+            "ocd_login_code_hash": self._ocd_hash_login_code(code),
+            "ocd_login_code_expiry": now + timedelta(minutes=LOGIN_CODE_MINUTES),
+            "ocd_login_code_attempts": 0,
+        })
+        return self._ocd_deliver_login_code(code)
+
+    def _ocd_check_login_code(self, code):
+        """Check a login code: valid 10 minutes, 5 attempts, used once."""
+        self.ensure_one()
+        partner_sudo = self.sudo()
+        if (
+            not partner_sudo.ocd_login_code_hash
+            or not partner_sudo.ocd_login_code_expiry
+            or partner_sudo.ocd_login_code_expiry < fields.Datetime.now()
+            or partner_sudo.ocd_login_code_attempts >= LOGIN_CODE_MAX_ATTEMPTS
+        ):
+            return False
+        if consteq(partner_sudo.ocd_login_code_hash, self._ocd_hash_login_code((code or "").strip())):
+            partner_sudo.write({"ocd_login_code_hash": False, "ocd_login_code_expiry": False, "ocd_login_code_attempts": 0})
+            return True
+        partner_sudo.ocd_login_code_attempts += 1
+        return False
+
+    def _ocd_deliver_login_code(self, code):
+        """Send the login code to the vendor. Return whether it was sent. Extended by
+        ocd_live_whatsapp: without it, the login with a code is not possible."""
+        return False
+
+    def _ocd_send_space_link(self):
+        """Send the personal link of the space to the vendor. Extended by ocd_live_whatsapp."""
+        return False
+
+    def _ocd_send_access_link(self, url):
+        """Send the link to choose a password. Extended by ocd_live_whatsapp."""
+        return False
+
+    def action_ocd_create_password_access(self):
+        """Give the vendor a login with the phone number and a password chosen by the vendor."""
+        self.ensure_one()
+        if not self.env.user.has_group("ocd_live.group_ocd_live_manager"):
+            raise AccessError(self.env._("Only a manager can create the access of a vendor."))
+        digits = re.sub(r"\D", "", self.phone or "")
+        login = f"+{digits}" if len(digits) >= 8 else self.email
+        if not login:
+            raise UserError(self.env._("Add the WhatsApp number of the vendor first."))
+        # sudo: a manager of OCD Live creates the portal access without being an administrator
+        user = self.sudo().with_context(active_test=False).user_ids[:1]
+        if not user:
+            user = self.env["res.users"].sudo().with_context(no_reset_password=True).create({
+                "name": self.name,
+                "login": login,
+                "partner_id": self.id,
+                "group_ids": [Command.set(self.env.ref("base.group_portal").ids)],
+            })
+        self.sudo().signup_prepare(signup_type="reset")
+        url = self.sudo()._get_signup_url()
+        sent = self._ocd_send_access_link(url)
+        message = (
+            self.env._("The link to choose a password was sent on WhatsApp. Login: %s", user.login)
+            if sent
+            else self.env._("Send this link to the vendor to choose a password (login: %(login)s): %(url)s", login=user.login, url=url)
+        )
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {"message": message, "type": "success", "sticky": True},
+        }

@@ -30,3 +30,13 @@ class ResConfigSettings(models.TransientModel):
     ocd_min_notice_hours = fields.Integer(
         related="company_id.ocd_min_notice_hours", readonly=False
     )
+    ocd_open_mon = fields.Boolean(related="company_id.ocd_open_mon", readonly=False)
+    ocd_open_tue = fields.Boolean(related="company_id.ocd_open_tue", readonly=False)
+    ocd_open_wed = fields.Boolean(related="company_id.ocd_open_wed", readonly=False)
+    ocd_open_thu = fields.Boolean(related="company_id.ocd_open_thu", readonly=False)
+    ocd_open_fri = fields.Boolean(related="company_id.ocd_open_fri", readonly=False)
+    ocd_open_sat = fields.Boolean(related="company_id.ocd_open_sat", readonly=False)
+    ocd_open_sun = fields.Boolean(related="company_id.ocd_open_sun", readonly=False)
+    ocd_calendar_mode = fields.Selection(related="company_id.ocd_calendar_mode", readonly=False)
+    ocd_booking_flow = fields.Selection(related="company_id.ocd_booking_flow", readonly=False)
+    ocd_vendor_login = fields.Selection(related="company_id.ocd_vendor_login", readonly=False)

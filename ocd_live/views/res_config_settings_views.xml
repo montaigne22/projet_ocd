@@ -33,6 +33,42 @@
                             </div>
                         </setting>
                     </block>
+                    <block title="Booking" name="ocd_live_booking_rules">
+                        <setting id="ocd_open_days_setting" string="Days of opening of the studio"
+                                 help="A closed day has no slot." company_dependent="1">
+                            <div class="d-flex flex-wrap gap-3">
+                                <span><field name="ocd_open_mon" class="oe_inline"/> Mon.</span>
+                                <span><field name="ocd_open_tue" class="oe_inline"/> Tue.</span>
+                                <span><field name="ocd_open_wed" class="oe_inline"/> Wed.</span>
+                                <span><field name="ocd_open_thu" class="oe_inline"/> Thu.</span>
+                                <span><field name="ocd_open_fri" class="oe_inline"/> Fri.</span>
+                                <span><field name="ocd_open_sat" class="oe_inline"/> Sat.</span>
+                                <span><field name="ocd_open_sun" class="oe_inline"/> Sun.</span>
+                            </div>
+                        </setting>
+                        <setting id="ocd_calendar_mode_setting" string="Calendars"
+                                 help="One calendar when all the lives are broadcast by the same account." company_dependent="1">
+                            <field name="ocd_calendar_mode" widget="radio"/>
+                        </setting>
+                        <setting id="ocd_booking_flow_setting" string="Order of the steps on the website" company_dependent="1">
+                            <field name="ocd_booking_flow" widget="radio"/>
+                        </setting>
+                    </block>
+                    <block title="Vendors" name="ocd_live_vendors">
+                        <setting id="ocd_vendor_login_setting" string="How the vendors log in"
+                                 help="The personal link and the code are sent on WhatsApp (module OCD Live WhatsApp)." company_dependent="1">
+                            <field name="ocd_vendor_login" widget="radio"/>
+                        </setting>
+                        <setting id="ocd_voices_setting" string="Voices of the pages"
+                                 help="Each page is read aloud, in the languages chosen by the visitor.">
+                            <div class="d-flex flex-column">
+                                <button name="%(ocd_live.ocd_voice_prompt_action)d" type="action" string="Recordings"
+                                        icon="oi-arrow-right" class="btn-link"/>
+                                <button name="%(ocd_live.ocd_voice_language_action)d" type="action" string="Languages"
+                                        icon="oi-arrow-right" class="btn-link"/>
+                            </div>
+                        </setting>
+                    </block>
                     <block title="Team" name="ocd_live_team">
                         <setting id="ocd_require_animatrice_setting" string="Host for every remote live"
                                  help="Remind the team when a remote live has no host." company_dependent="1">

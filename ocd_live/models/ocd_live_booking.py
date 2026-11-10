@@ -214,7 +214,7 @@ class OcdLiveBooking(models.Model):
         return bookings
 
     def write(self, vals):
-        moving = any(key in vals for key in ("start_datetime", "slot_count", "company_id"))
+        moving = any(key in vals for key in ("start_datetime", "slot_count", "company_id", "mode"))
         if moving and self.filtered(lambda b: b.state in ("done", "cancelled")):
             raise UserError(self.env._("A live that took place or was cancelled cannot be moved."))
         result = super().write(vals)
@@ -241,6 +241,8 @@ class OcdLiveBooking(models.Model):
         local_start = company._ocd_to_local(self.start_datetime)
         starts = company._ocd_slot_starts(local_start.date())
         start = self.start_datetime.replace(microsecond=0)
+        if not starts:
+            raise ValidationError(self.env._("The studio is closed on that day."))
         if start not in starts:
             raise ValidationError(
                 self.env._(
@@ -270,23 +272,27 @@ class OcdLiveBooking(models.Model):
         """Insert one row per taken slot; the unique index refuses a slot already taken."""
         vals_list = []
         for booking in self:
+            key = booking.company_id._ocd_calendar_key(booking.mode)
             vals_list.extend(
-                {"booking_id": booking.id, "company_id": booking.company_id.id, "start_datetime": start}
+                {
+                    "booking_id": booking.id,
+                    "company_id": booking.company_id.id,
+                    "calendar_key": key,
+                    "start_datetime": start,
+                }
                 for start in booking._ocd_slot_datetimes()
             )
         if not vals_list:
             return
         # sudo: slots are technical rows, the booking itself was checked by the access rules
         Slot = self.env["ocd.live.booking.slot"].sudo()
-        taken = Slot.search_count(
-            [
-                ("company_id", "in", self.company_id.ids),
-                ("start_datetime", "in", [vals["start_datetime"] for vals in vals_list]),
-                ("booking_id", "not in", self.ids),
-            ],
-            limit=1,
-        )
-        if taken:
+        existing = Slot.search([
+            ("company_id", "in", self.company_id.ids),
+            ("start_datetime", "in", [vals["start_datetime"] for vals in vals_list]),
+            ("booking_id", "not in", self.ids),
+        ])
+        taken_keys = {(s.company_id.id, s.calendar_key, s.start_datetime) for s in existing}
+        if any((v["company_id"], v["calendar_key"], v["start_datetime"]) in taken_keys for v in vals_list):
             raise ValidationError(self.env._("This time slot is already taken. Please choose another one."))
         try:
             with self.env.cr.savepoint():
@@ -421,20 +427,29 @@ class OcdLiveBooking(models.Model):
     # === WEBSITE HELPERS === #
 
     @api.model
-    def _ocd_get_day_slots(self, day, slot_count=1, company=None):
+    def _ocd_taken_starts(self, starts, mode, company):
+        """Return the starts among `starts` already taken in the calendar of `mode`."""
+        if not starts:
+            return set()
+        # sudo: public pages, only the starts of the taken slots are read
+        return set(
+            self.env["ocd.live.booking.slot"].sudo().search([
+                ("company_id", "=", company.id),
+                ("calendar_key", "=", company._ocd_calendar_key(mode)),
+                ("start_datetime", "in", starts),
+            ]).mapped("start_datetime")
+        )
+
+    @api.model
+    def _ocd_get_day_slots(self, day, slot_count=1, company=None, mode="studio"):
         """Return the slots of `day` for the website, each with its availability.
 
-        A start is available when the `slot_count` slots from it are free, inside the day,
-        not before the opening date and far enough in the future.
+        A start is available when the `slot_count` slots from it are free in the calendar of
+        `mode`, inside the day, not before the opening date and far enough in the future.
         """
         company = company or self.env.company
         starts = company._ocd_slot_starts(day)
-        # sudo: public page, only the starts of the taken slots are read
-        taken = set(
-            self.env["ocd.live.booking.slot"].sudo().search(
-                [("company_id", "=", company.id), ("start_datetime", "in", starts)]
-            ).mapped("start_datetime")
-        )
+        taken = self._ocd_taken_starts(starts, mode, company)
         limit = fields.Datetime.now() + timedelta(hours=company.ocd_min_notice_hours)
         open_date = company.ocd_booking_open_date
         slots = []
@@ -458,16 +473,12 @@ class OcdLiveBooking(models.Model):
         return slots
 
     @api.model
-    def _ocd_get_free_counts(self, days, slot_count=1, company=None):
+    def _ocd_get_free_counts(self, days, slot_count=1, company=None, mode="studio"):
         """Return {day: number of available starts} for the website calendar."""
         company = company or self.env.company
         all_starts = {day: company._ocd_slot_starts(day) for day in days}
         flat = [start for starts in all_starts.values() for start in starts]
-        taken = set(
-            self.env["ocd.live.booking.slot"].sudo().search(
-                [("company_id", "=", company.id), ("start_datetime", "in", flat)]
-            ).mapped("start_datetime")
-        )
+        taken = self._ocd_taken_starts(flat, mode, company)
         limit = fields.Datetime.now() + timedelta(hours=company.ocd_min_notice_hours)
         open_date = company.ocd_booking_open_date
         counts = {}

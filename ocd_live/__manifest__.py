@@ -38,6 +38,8 @@ OCD Live
         "data/product_data.xml",
         "data/discuss_channel_data.xml",
         "data/ir_cron_data.xml",
+        "data/ocd_voice_data.xml",
+        "data/website_menu_data.xml",
         "views/ocd_live_booking_views.xml",
         "views/ocd_live_credit_views.xml",
         "views/ocd_directory_listing_views.xml",
@@ -48,10 +50,18 @@ OCD Live
         "views/res_partner_views.xml",
         "views/hr_employee_views.xml",
         "views/product_template_views.xml",
+        "views/ocd_voice_views.xml",
         "views/res_config_settings_views.xml",
+        "views/ocd_live_templates.xml",
         "wizard/ocd_directory_listing_refuse_views.xml",
         "views/ocd_live_menus.xml",
     ],
+    "assets": {
+        "web.assets_frontend": [
+            "ocd_live/static/src/scss/ocd_live.scss",
+            "ocd_live/static/src/interactions/voice.js",
+        ],
+    },
     "installable": True,
     "application": True,
 }

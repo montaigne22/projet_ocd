@@ -20,8 +20,14 @@ class OcdLiveBookingSlot(models.Model):
         comodel_name="res.company", required=True, index=True, ondelete="cascade"
     )
     start_datetime = fields.Datetime(string="Start", required=True)
+    calendar_key = fields.Char(
+        string="Calendar",
+        required=True,
+        default="all",
+        help="all: one shared calendar. studio or remote: one calendar per mode.",
+    )
 
-    _unique_company_start = models.UniqueIndex(
-        "(company_id, start_datetime)",
+    _unique_calendar_start = models.UniqueIndex(
+        "(company_id, calendar_key, start_datetime)",
         "This time slot is already taken.",
     )

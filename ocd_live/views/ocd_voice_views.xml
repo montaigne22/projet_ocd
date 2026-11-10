@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_voice_language_view_list" model="ir.ui.view">
+        <field name="name">ocd.voice.language.view.list</field>
+        <field name="model">ocd.voice.language</field>
+        <field name="arch" type="xml">
+            <list string="Voice languages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="speech_code" placeholder="e.g. fr-FR"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_voice_language_action" model="ir.actions.act_window">
+        <field name="name">Voice languages</field>
+        <field name="res_model">ocd.voice.language</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <record id="ocd_voice_prompt_view_list" model="ir.ui.view">
+        <field name="name">ocd.voice.prompt.view.list</field>
+        <field name="model">ocd.voice.prompt</field>
+        <field name="arch" type="xml">
+            <list string="Voices of the pages">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="text"/>
+                <field name="recording_count" string="Recordings"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_voice_prompt_view_form" model="ir.ui.view">
+        <field name="name">ocd.voice.prompt.view.form</field>
+        <field name="model">ocd.voice.prompt</field>
+        <field name="arch" type="xml">
+            <form string="Voice of a page">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="key" groups="base.group_no_one"/>
+                        <field name="text"/>
+                    </group>
+                    <field name="recording_ids">
+                        <list editable="bottom">
+                            <field name="language_id" options="{'no_create': True}"/>
+                            <field name="audio" filename="audio_filename" widget="binary"/>
+                            <field name="audio_filename" column_invisible="True"/>
+                            <field name="mimetype" optional="hide"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_voice_prompt_action" model="ir.actions.act_window">
+        <field name="name">Voices of the pages</field>
+        <field name="res_model">ocd.voice.prompt</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>Each page of the website has a sentence read aloud. Add a recording per language: the team records the sentence with a phone.</p>
+        </field>
+    </record>
+
+</odoo>

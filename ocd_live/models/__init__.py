@@ -13,3 +13,6 @@ from . import ocd_directory_pass
 from . import ocd_directory_listing
 from . import sale_order
 from . import sale_order_line
+from . import ocd_voice_language
+from . import ocd_voice_prompt
+from . import ocd_voice_recording
