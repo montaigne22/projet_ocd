@@ -187,6 +187,124 @@
         </field>
     </record>
 
+    <!-- Record of a parcel, as in the validated design (BoLivraison) -->
+    <record id="stock_picking_view_form_ocd_parcel" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.ocd.parcel</field>
+        <field name="model">stock.picking</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Parcel" create="false" class="o_ocd_parcel_form">
+                <header>
+                    <field name="ocd_is_parcel" invisible="1"/>
+                    <field name="ocd_code_locked" invisible="1"/>
+                    <field name="ocd_is_late" invisible="1"/>
+                    <button name="action_ocd_ready" type="object" string="Ready" invisible="ocd_stage != 'to_prepare'"/>
+                    <button name="action_ocd_pick_up" type="object" string="Picked up"
+                            invisible="ocd_stage not in ('to_prepare', 'ready') or ocd_delivery_mode == 'vendor'"/>
+                    <button name="action_ocd_leave" type="object" string="Leaves (send the code)" class="btn-primary"
+                            invisible="ocd_stage not in ('ready', 'picked')"/>
+                    <button name="action_ocd_open_code_wizard" type="object" string="Type the code" class="btn-primary"
+                            invisible="ocd_stage != 'on_the_way' or ocd_code_locked"/>
+                    <button name="action_ocd_resend_code" type="object" string="Send the code again to the customer"
+                            invisible="ocd_stage != 'on_the_way'"/>
+                    <button name="action_ocd_open_problem_wizard" type="object" string="Report a problem"
+                            invisible="ocd_stage not in ('ready', 'picked', 'on_the_way')"/>
+                    <button name="action_ocd_retry" type="object" string="New attempt" class="btn-primary"
+                            invisible="ocd_stage != 'problem'"/>
+                    <button name="action_ocd_switch_to_ocd" type="object" string="Give to an OCD courier"
+                            invisible="ocd_stage not in ('to_prepare', 'ready', 'problem') or ocd_delivery_mode != 'vendor'"/>
+                    <button name="action_ocd_open_force_wizard" type="object" string="Validate without the code"
+                            invisible="ocd_stage not in ('ready', 'picked', 'on_the_way', 'problem')"
+                            groups="ocd_live.group_ocd_live_manager"/>
+                    <button name="action_ocd_return" type="object" string="Send back to the vendor"
+                            invisible="ocd_stage not in ('to_prepare', 'ready', 'picked', 'problem')"
+                            confirm="The parcel goes back. If the customer paid online, a refund is to do."/>
+                    <field name="ocd_stage" widget="statusbar" statusbar_visible="to_prepare,ready,picked,on_the_way,delivered"/>
+                </header>
+                <sheet>
+                    <div class="o_ocd_parcel_alert" role="alert" invisible="not ocd_is_late and not ocd_code_locked and ocd_stage != 'problem'">
+                        <span invisible="not ocd_is_late">Late: the vendor was reminded and the parcel is still not ready.</span>
+                        <span invisible="not ocd_code_locked">Locked after too many wrong codes: call the customer.</span>
+                        <span invisible="ocd_stage != 'problem'">Problem: <field name="ocd_problem_reason" readonly="1" class="o_ocd_inline"/></span>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <field name="ocd_parcel_label" class="o_ocd_parcel_sub"/>
+                    </div>
+                    <group>
+                        <group string="Customer">
+                            <field name="partner_id" string="Customer" readonly="1"/>
+                            <field name="ocd_customer_phone" widget="phone"/>
+                            <field name="ocd_district_id" string="Address"/>
+                            <field name="ocd_landmark"/>
+                            <field name="sale_id" string="Order" readonly="1"/>
+                        </group>
+                        <group string="Delivery">
+                            <field name="ocd_vendor_id" readonly="1"/>
+                            <field name="ocd_delivery_mode" readonly="ocd_stage in ('delivered', 'returned', 'cancelled')"/>
+                            <field name="ocd_courier_id" string="Delivered by"
+                                   readonly="ocd_stage in ('delivered', 'returned', 'cancelled')"
+                                   domain="['|', ('ocd_is_courier', '=', True), ('id', '=', ocd_vendor_id)]"/>
+                            <field name="ocd_picked_at" invisible="not ocd_picked_at"/>
+                            <field name="ocd_currency_id" invisible="1"/>
+                            <field name="ocd_cod_state" readonly="1"/>
+                            <field name="ocd_cod_amount" invisible="ocd_cod_state == 'none'"/>
+                            <field name="ocd_code_sent_at" string="Code sent at" invisible="not ocd_code_sent_at"/>
+                            <field name="ocd_failed_attempts" string="Failed attempts"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="ocd_products" string="Products">
+                            <field name="move_ids" readonly="1">
+                                <list create="false" delete="false">
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty" string="Quantity"/>
+                                    <field name="state" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="ocd_money" string="Money">
+                            <group>
+                                <group>
+                                    <field name="ocd_goods_amount"/>
+                                    <field name="ocd_fee_amount"/>
+                                    <field name="ocd_vendor_share"/>
+                                </group>
+                                <group>
+                                    <field name="ocd_cod_method" invisible="ocd_cod_state in ('none', 'to_collect')"/>
+                                    <field name="ocd_cod_reference" invisible="not ocd_cod_reference"/>
+                                    <field name="ocd_cod_collected_by_id" invisible="ocd_cod_state in ('none', 'to_collect')"/>
+                                    <field name="ocd_remittance_id" invisible="not ocd_remittance_id"/>
+                                    <field name="ocd_vendor_bill_ids" widget="many2many_tags" invisible="not ocd_vendor_bill_ids"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="ocd_steps" string="Steps">
+                            <group>
+                                <group>
+                                    <field name="ocd_ready_at"/>
+                                    <field name="ocd_picked_at"/>
+                                    <field name="ocd_left_at"/>
+                                    <field name="ocd_delivered_at"/>
+                                </group>
+                                <group>
+                                    <field name="ocd_reminded_at"/>
+                                    <field name="ocd_escalated_at"/>
+                                    <field name="ocd_code_attempts"/>
+                                    <field name="ocd_problem_note" invisible="not ocd_problem_note"/>
+                                    <field name="ocd_forced_by_id" invisible="not ocd_forced_by_id"/>
+                                    <field name="ocd_force_reason" invisible="not ocd_forced_by_id"/>
+                                    <field name="ocd_force_photo" widget="image" invisible="not ocd_forced_by_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
     <record id="stock_picking_action_ocd_dispatch" model="ir.actions.act_window">
         <field name="name">Dispatch</field>
         <field name="res_model">stock.picking</field>
@@ -197,7 +315,7 @@
         <field name="view_ids" eval="[Command.clear(),
             Command.create({'view_mode': 'kanban', 'view_id': ref('stock_picking_view_kanban_ocd_dispatch')}),
             Command.create({'view_mode': 'list', 'view_id': ref('stock_picking_view_list_ocd_dispatch')}),
-            Command.create({'view_mode': 'form'})]"/>
+            Command.create({'view_mode': 'form', 'view_id': ref('stock_picking_view_form_ocd_parcel')})]"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No parcel to deliver</p>
             <p>Every order of the shop gives one parcel per vendor.</p>

@@ -84,6 +84,7 @@ class StockPicking(models.Model):
     ocd_reminded_at = fields.Datetime(string="Vendor Reminded At", copy=False)
     ocd_escalated_at = fields.Datetime(string="Dispatch Alerted At", copy=False)
     ocd_is_late = fields.Boolean(string="Late", compute="_compute_ocd_is_late")
+    ocd_parcel_label = fields.Char(string="Parcel Of The Order", compute="_compute_ocd_parcel_label")
     ocd_currency_id = fields.Many2one(related="sale_id.currency_id", string="Order Currency")
     ocd_goods_amount = fields.Monetary(
         string="Goods", copy=False, currency_field="ocd_currency_id"
@@ -147,6 +148,20 @@ class StockPicking(models.Model):
             picking.ocd_is_late = bool(picking.ocd_escalated_at) and picking.ocd_stage in (
                 "to_prepare",
                 "ready",
+            )
+
+    @api.depends("sale_id.picking_ids")
+    def _compute_ocd_parcel_label(self):
+        for picking in self:
+            parcels = picking.sale_id.picking_ids.filtered("ocd_is_parcel").sorted("id")
+            if not picking.ocd_is_parcel or not picking.sale_id or picking.id not in parcels.ids:
+                picking.ocd_parcel_label = ""
+                continue
+            picking.ocd_parcel_label = self.env._(
+                "Parcel %(position)s of %(count)s of the order %(order)s · one parcel per vendor",
+                position=parcels.ids.index(picking.id) + 1,
+                count=len(parcels),
+                order=picking.sale_id.name,
             )
 
     @api.depends("sale_id.order_line.price_total", "sale_id.picking_ids.state")

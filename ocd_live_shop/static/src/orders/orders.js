@@ -89,12 +89,9 @@ export class OcdLiveOrders extends Component {
     }
 
     openParcel(parcel) {
-        this.actionService.doAction({
-            type: "ir.actions.act_window",
-            res_model: "stock.picking",
-            res_id: parcel.id,
-            views: [[false, "form"]],
-            target: "current",
+        this.actionService.doAction("ocd_live_shop.stock_picking_action_ocd_dispatch", {
+            viewType: "form",
+            props: { resId: parcel.id },
         });
     }
 
