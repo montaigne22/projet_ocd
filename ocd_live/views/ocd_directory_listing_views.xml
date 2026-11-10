@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_directory_listing_view_search" model="ir.ui.view">
+        <field name="name">ocd.directory.listing.view.search</field>
+        <field name="model">ocd.directory.listing</field>
+        <field name="arch" type="xml">
+            <search string="Directory links">
+                <field name="partner_id"/>
+                <field name="business"/>
+                <field name="url"/>
+                <field name="country_id"/>
+                <field name="category_id"/>
+                <filter string="To check" name="to_check" domain="[('state', '=', 'to_check')]"/>
+                <filter string="Online" name="published" domain="[('state', '=', 'published')]"/>
+                <filter string="Waiting for the window" name="queued" domain="[('state', '=', 'queued')]"/>
+                <filter string="Today" name="today"
+                        domain="[('window_start', '&gt;=', (context_today()).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <group>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Country" name="group_country" context="{'group_by': 'country_id'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Window" name="group_window" context="{'group_by': 'window_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_directory_listing_view_kanban" model="ir.ui.view">
+        <field name="name">ocd.directory.listing.view.kanban</field>
+        <field name="model">ocd.directory.listing</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_mobile" quick_create="false" create="false" sample="1">
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <field class="fw-bold fs-5" name="partner_id"/>
+                        <field class="text-muted" name="business"/>
+                        <div class="d-flex gap-2">
+                            <field name="platform" widget="badge"/>
+                            <field name="country_id"/>
+                            <field name="category_id"/>
+                        </div>
+                        <field name="url" widget="url" class="text-truncate"/>
+                        <div class="d-flex gap-2 mt-2" invisible="state != 'to_check'">
+                            <button name="action_publish" type="object" class="btn btn-sm btn-primary">Put online</button>
+                            <button name="action_open_refuse_wizard" type="object" class="btn btn-sm btn-secondary">Refuse</button>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="ocd_directory_listing_view_list" model="ir.ui.view">
+        <field name="name">ocd.directory.listing.view.list</field>
+        <field name="model">ocd.directory.listing</field>
+        <field name="arch" type="xml">
+            <list string="Directory links" create="false" decoration-muted="state in ('ended', 'refused')">
+                <field name="window_start"/>
+                <field name="partner_id"/>
+                <field name="business" optional="show"/>
+                <field name="platform"/>
+                <field name="url" widget="url" optional="show"/>
+                <field name="country_id"/>
+                <field name="category_id"/>
+                <field name="checked_by_id" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'published'"
+                       decoration-warning="state == 'to_check'" decoration-danger="state == 'refused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_directory_listing_view_form" model="ir.ui.view">
+        <field name="name">ocd.directory.listing.view.form</field>
+        <field name="model">ocd.directory.listing</field>
+        <field name="arch" type="xml">
+            <form string="Directory link" create="false">
+                <header>
+                    <button name="action_publish" type="object" string="Put online" class="btn-primary"
+                            invisible="state not in ('to_check', 'refused')"/>
+                    <button name="action_open_refuse_wizard" type="object" string="Refuse"
+                            invisible="state not in ('to_check', 'published')"/>
+                    <button name="action_end" type="object" string="End" invisible="state not in ('queued', 'to_check', 'published')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="queued,to_check,published,ended"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="business"/>
+                            <field name="url" widget="url"/>
+                            <field name="platform"/>
+                        </group>
+                        <group>
+                            <field name="country_id"/>
+                            <field name="category_id"/>
+                            <field name="window_id"/>
+                            <field name="window_start"/>
+                            <field name="window_end"/>
+                        </group>
+                        <group invisible="state != 'refused'">
+                            <field name="refuse_reason_id"/>
+                            <field name="refuse_note"/>
+                        </group>
+                        <group>
+                            <field name="checked_by_id"/>
+                            <field name="checked_at"/>
+                        </group>
+                    </group>
+                    <field name="company_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_directory_listing_action" model="ir.actions.act_window">
+        <field name="name">Links to check</field>
+        <field name="res_model">ocd.directory.listing</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No link to check</p>
+            <p>The vendors with a pass send the link of their live. It shows here during the checking windows.</p>
+        </field>
+    </record>
+
+</odoo>

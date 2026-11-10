@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.view.form.inherit.ocd.live</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <page name="general_information" position="after">
+                <page name="ocd_live" string="OCD Live" invisible="type != 'service'">
+                    <group>
+                        <group>
+                            <field name="ocd_product_kind"/>
+                            <field name="ocd_badge" invisible="not ocd_product_kind"/>
+                        </group>
+                        <group invisible="ocd_product_kind != 'live_package'">
+                            <field name="ocd_live_count"/>
+                            <field name="ocd_live_hours" widget="float_time"/>
+                            <field name="ocd_slot_count"/>
+                            <field name="ocd_with_announce"/>
+                            <field name="ocd_validity_days"/>
+                        </group>
+                        <group invisible="ocd_product_kind != 'directory_pass'">
+                            <field name="ocd_pass_days"/>
+                        </group>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <record id="product_template_action_ocd_package" model="ir.actions.act_window">
+        <field name="name">Packages and pass</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('ocd_product_kind', '!=', False)]</field>
+        <field name="context">{'default_type': 'service', 'default_ocd_product_kind': 'live_package', 'default_invoice_policy': 'order'}</field>
+    </record>
+
+</odoo>

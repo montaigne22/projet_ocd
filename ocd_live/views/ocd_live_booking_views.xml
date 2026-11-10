@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_live_booking_view_search" model="ir.ui.view">
+        <field name="name">ocd.live.booking.view.search</field>
+        <field name="model">ocd.live.booking</field>
+        <field name="arch" type="xml">
+            <search string="Lives">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="business"/>
+                <field name="animatrice_id"/>
+                <field name="vendor_country_id"/>
+                <filter string="Today" name="today"
+                        domain="[('start_datetime', '&gt;=', (context_today()).strftime('%Y-%m-%d 00:00:00')), ('start_datetime', '&lt;', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Coming" name="coming"
+                        domain="[('start_datetime', '&gt;=', (context_today()).strftime('%Y-%m-%d 00:00:00')), ('state', 'in', ('draft', 'confirmed'))]"/>
+                <separator/>
+                <filter string="At the studio" name="studio" domain="[('mode', '=', 'studio')]"/>
+                <filter string="Remote" name="remote" domain="[('mode', '=', 'remote')]"/>
+                <separator/>
+                <filter string="Held" name="held" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Host to choose" name="needs_host" domain="[('needs_host', '=', True)]"/>
+                <filter string="Replay to publish" name="replay_todo"
+                        domain="[('state', '=', 'done'), ('replay_published', '=', False)]"/>
+                <separator/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <group>
+                    <filter string="Day" name="group_day" context="{'group_by': 'start_datetime:day'}"/>
+                    <filter string="Mode" name="group_mode" context="{'group_by': 'mode'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Host" name="group_host" context="{'group_by': 'animatrice_id'}"/>
+                    <filter string="Vendor country" name="group_country" context="{'group_by': 'vendor_country_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_live_booking_view_calendar" model="ir.ui.view">
+        <field name="name">ocd.live.booking.view.calendar</field>
+        <field name="model">ocd.live.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Lives" date_start="start_datetime" date_stop="end_datetime" mode="week"
+                      color="color" event_limit="9" quick_create="0" event_open_popup="1">
+                <field name="partner_id"/>
+                <field name="business"/>
+                <field name="mode"/>
+                <field name="state"/>
+                <field name="animatrice_id"/>
+                <field name="studio_need"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="ocd_live_booking_view_list" model="ir.ui.view">
+        <field name="name">ocd.live.booking.view.list</field>
+        <field name="model">ocd.live.booking</field>
+        <field name="arch" type="xml">
+            <list string="Lives" decoration-muted="state == 'cancelled'" decoration-warning="state == 'draft'"
+                  decoration-danger="needs_host">
+                <field name="name"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime" optional="hide"/>
+                <field name="partner_id"/>
+                <field name="business" optional="show"/>
+                <field name="vendor_country_id" optional="show"/>
+                <field name="mode"/>
+                <field name="product_id" optional="show"/>
+                <field name="animatrice_id" optional="show"/>
+                <field name="studio_need" optional="hide"/>
+                <field name="needs_host" column_invisible="True"/>
+                <field name="state" widget="badge" decoration-success="state == 'confirmed'"
+                       decoration-warning="state == 'draft'" decoration-info="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_live_booking_view_kanban" model="ir.ui.view">
+        <field name="name">ocd.live.booking.view.kanban</field>
+        <field name="model">ocd.live.booking</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_mobile" quick_create="false" sample="1">
+                <field name="needs_host"/>
+                <templates>
+                    <t t-name="card">
+                        <field class="fw-bold fs-5" name="partner_id"/>
+                        <field class="text-muted" name="business"/>
+                        <field name="start_datetime"/>
+                        <div class="d-flex justify-content-between">
+                            <field name="mode" widget="badge"/>
+                            <field name="animatrice_id" widget="many2one_avatar_employee"/>
+                        </div>
+                        <span class="text-danger fw-bold" invisible="not needs_host">Host to choose</span>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="ocd_live_booking_view_form" model="ir.ui.view">
+        <field name="name">ocd.live.booking.view.form</field>
+        <field name="model">ocd.live.booking</field>
+        <field name="arch" type="xml">
+            <form string="Live">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm (paid by hand)"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="ocd_live.group_ocd_live_manager"/>
+                    <button name="action_mark_done" type="object" string="Live done" invisible="state != 'confirmed'"/>
+                    <button name="action_publish_replay" type="object" string="Publish the replay"
+                            class="btn-primary" invisible="state != 'done' or replay_published"/>
+                    <button name="action_cancel" type="object" string="Cancel the live"
+                            invisible="state not in ('draft', 'confirmed')"
+                            confirm="The slot is released. If the live was paid, it becomes a credit to place again."/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_order" type="object" class="oe_stat_button" icon="fa-dollar"
+                                invisible="not sale_order_id">
+                            <field name="sale_order_id" widget="statinfo" string="Order"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Held" bg_color="text-bg-warning" invisible="state != 'draft'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-danger" invisible="state != 'cancelled'"/>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Who">
+                            <field name="partner_id" readonly="state in ('done', 'cancelled')"/>
+                            <field name="business"/>
+                            <field name="vendor_country_id"/>
+                            <field name="vendor_phone" widget="phone"/>
+                        </group>
+                        <group string="When and where">
+                            <field name="mode" widget="radio" readonly="state in ('done', 'cancelled')"/>
+                            <field name="start_datetime" readonly="state in ('done', 'cancelled')"/>
+                            <field name="end_datetime"/>
+                            <field name="product_id" readonly="state != 'draft'"/>
+                            <field name="slot_count" readonly="state != 'draft' or product_id"/>
+                            <field name="hold_until" invisible="state != 'draft'"/>
+                            <field name="credit_id" invisible="not credit_id"/>
+                        </group>
+                        <group string="Team">
+                            <field name="animatrice_id" invisible="mode != 'remote'"/>
+                            <field name="studio_need" invisible="mode != 'studio'"/>
+                            <field name="user_id"/>
+                            <field name="needs_host" invisible="1"/>
+                        </group>
+                        <group string="Live and replay">
+                            <field name="live_url" widget="url"/>
+                            <field name="replay_url" widget="url"/>
+                            <field name="replay_published"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Notes for the team..."/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="sale_line_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_live_booking_action" model="ir.actions.act_window">
+        <field name="name">Lives</field>
+        <field name="res_model">ocd.live.booking</field>
+        <field name="view_mode">calendar,list,kanban,form,activity</field>
+        <field name="context">{'search_default_coming': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No live booked yet</p>
+            <p>The vendors book their lives on the website. The team can also book one here.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_live_credit_view_search" model="ir.ui.view">
+        <field name="name">ocd.live.credit.view.search</field>
+        <field name="model">ocd.live.credit</field>
+        <field name="arch" type="xml">
+            <search string="Live credits">
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <filter string="To place" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_live_credit_view_list" model="ir.ui.view">
+        <field name="name">ocd.live.credit.view.list</field>
+        <field name="model">ocd.live.credit</field>
+        <field name="arch" type="xml">
+            <list string="Live credits" decoration-muted="state != 'active'">
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="used"/>
+                <field name="remaining"/>
+                <field name="date_expiry"/>
+                <field name="sale_order_id" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_live_credit_view_form" model="ir.ui.view">
+        <field name="name">ocd.live.credit.view.form</field>
+        <field name="model">ocd.live.credit</field>
+        <field name="arch" type="xml">
+            <form string="Live credit">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="product_id"/>
+                            <field name="sale_order_id"/>
+                        </group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="used"/>
+                            <field name="remaining"/>
+                            <field name="date_expiry"/>
+                        </group>
+                    </group>
+                    <field name="booking_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="start_datetime"/>
+                            <field name="mode"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                    <field name="company_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_live_credit_action" model="ir.actions.act_window">
+        <field name="name">Live credits</field>
+        <field name="res_model">ocd.live.credit</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+
+</odoo>

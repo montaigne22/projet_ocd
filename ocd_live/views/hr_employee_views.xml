@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_employee_form" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.inherit.ocd.live</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <field name="job_title" position="after">
+                <field name="ocd_is_animatrice"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_employee_action_ocd_host" model="ir.actions.act_window">
+        <field name="name">Live hosts</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('ocd_is_animatrice', '=', True)]</field>
+        <field name="context">{'default_ocd_is_animatrice': True}</field>
+    </record>
+
+</odoo>

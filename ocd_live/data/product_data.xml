@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The six packages of the promoter and the directory pass. The 15,000 F of a live and
+     the 5,000 F of the monthly pass come from the videos of the promoter; the other prices
+     are proposals, to be confirmed by the team (Sales > Products). -->
+<odoo noupdate="1">
+
+    <record id="product_category_lives" model="product.category">
+        <field name="name">OCD Live</field>
+    </record>
+
+    <record id="product_package_discovery" model="product.template">
+        <field name="name">Discovery</field>
+        <field name="description_sale">1 live of 1 h 30</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="product_category_lives"/>
+        <field name="list_price">15000</field>
+        <field name="invoice_policy">order</field>
+        <field name="ocd_product_kind">live_package</field>
+        <field name="ocd_live_count">1</field>
+        <field name="ocd_live_hours">1.5</field>
+        <field name="ocd_badge">x1</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="product_package_duo" model="product.template">
+        <field name="name">Duo</field>
+        <field name="description_sale">2 lives of 1 h 30</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="product_category_lives"/>
+        <field name="list_price">27000</field>
+        <field name="invoice_policy">order</field>
+        <field name="ocd_product_kind">live_package</field>
+        <field name="ocd_live_count">2</field>
+        <field name="ocd_live_hours">1.5</field>
+        <field name="ocd_badge">x2</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="product_package_four_hours" model="product.template">
+        <field name="name">4 hours</field>
+        <field name="description_sale">1 long live of 4 hours</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="product_category_lives"/>
+        <field name="list_price">30000</field>
+        <field name="invoice_policy">order</field>
+        <field name="ocd_product_kind">live_package</field>
+        <field name="ocd_live_count">1</field>
+        <field name="ocd_live_hours">4</field>
+        <field name="ocd_badge">4 h</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="product_package_pack4" model="product.template">
+        <field name="name">Pack 4</field>
+        <field name="description_sale">4 lives of 1 h 30</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="product_category_lives"/>
+        <field name="list_price">50000</field>
+        <field name="invoice_policy">order</field>
+        <field name="ocd_product_kind">live_package</field>
+        <field name="ocd_live_count">4</field>
+        <field name="ocd_live_hours">1.5</field>
+        <field name="ocd_badge">x4</field>
+        <field name="sequence">4</field>
+    </record>
+
+    <record id="product_package_announce" model="product.template">
+        <field name="name">Announce</field>
+        <field name="description_sale">1 live and your video announced on House of Challenge</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="product_category_lives"/>
+        <field name="list_price">60000</field>
+        <field name="invoice_policy">order</field>
+        <field name="ocd_product_kind">live_package</field>
+        <field name="ocd_live_count">1</field>
+        <field name="ocd_live_hours">1.5</field>
+        <field name="ocd_with_announce" eval="True"/>
+        <field name="ocd_badge">+</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="product_package_monthly" model="product.template">
+        <field name="name">Monthly</field>
+        <field name="description_sale">8 lives within the month and the announce</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="product_category_lives"/>
+        <field name="list_price">100000</field>
+        <field name="invoice_policy">order</field>
+        <field name="ocd_product_kind">live_package</field>
+        <field name="ocd_live_count">8</field>
+        <field name="ocd_live_hours">1.5</field>
+        <field name="ocd_with_announce" eval="True"/>
+        <field name="ocd_validity_days">30</field>
+        <field name="ocd_badge">x8</field>
+        <field name="sequence">6</field>
+    </record>
+
+    <record id="product_directory_pass" model="product.template">
+        <field name="name">Directory pass (30 days)</field>
+        <field name="description_sale">Your live links in the directory of OCD Live for 30 days</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="product_category_lives"/>
+        <field name="list_price">5000</field>
+        <field name="invoice_policy">order</field>
+        <field name="ocd_product_kind">directory_pass</field>
+        <field name="ocd_pass_days">30</field>
+        <field name="sequence">10</field>
+    </record>
+
+</odoo>

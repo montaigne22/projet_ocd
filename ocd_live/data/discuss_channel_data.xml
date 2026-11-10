@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="channel_lives" model="discuss.channel">
+        <field name="name">lives</field>
+        <field name="description">Every confirmed booking of a live: who, which business, when and where.</field>
+        <field name="group_ids" eval="[Command.link(ref('ocd_live.group_ocd_live_user'))]"/>
+    </record>
+
+    <function model="res.company" name="write">
+        <value eval="[ref('base.main_company')]"/>
+        <value eval="{'ocd_lives_channel_id': ref('ocd_live.channel_lives')}"/>
+    </function>
+
+</odoo>

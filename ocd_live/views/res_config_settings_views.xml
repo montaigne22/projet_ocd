@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ocd.live</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="80"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="OCD Live" string="OCD Live" name="ocd_live" groups="ocd_live.group_ocd_live_manager">
+                    <block title="Studio calendar" name="ocd_live_calendar">
+                        <setting id="ocd_booking_open_date_setting" string="Opening of the bookings"
+                                 help="No live can be booked before this date." company_dependent="1">
+                            <field name="ocd_booking_open_date"/>
+                        </setting>
+                        <setting id="ocd_studio_hours_setting" string="Hours of the studio"
+                                 help="First live, duration of a live and number of lives per day, in the time zone of the studio."
+                                 company_dependent="1">
+                            <div class="d-flex flex-column gap-1">
+                                <span>First live at <field name="ocd_first_slot_hour" widget="float_time" class="oe_inline"/></span>
+                                <span>Each live lasts <field name="ocd_slot_hours" widget="float_time" class="oe_inline"/></span>
+                                <span><field name="ocd_slots_per_day" class="oe_inline"/> lives per day</span>
+                                <span>Time zone <field name="ocd_studio_tz" class="oe_inline"/></span>
+                            </div>
+                        </setting>
+                        <setting id="ocd_hold_setting" string="Slot held during the payment"
+                                 help="Without payment, the slot is released and offered again." company_dependent="1">
+                            <div class="d-flex flex-column gap-1">
+                                <span><field name="ocd_hold_minutes" class="oe_inline"/> minutes for an online payment</span>
+                                <span><field name="ocd_manual_hold_hours" class="oe_inline"/> hours for a payment checked by the team</span>
+                                <span>Bookable until <field name="ocd_min_notice_hours" class="oe_inline"/> hours before the live</span>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Team" name="ocd_live_team">
+                        <setting id="ocd_require_animatrice_setting" string="Host for every remote live"
+                                 help="Remind the team when a remote live has no host." company_dependent="1">
+                            <field name="ocd_require_animatrice"/>
+                        </setting>
+                        <setting id="ocd_live_responsible_setting" string="Lives manager"
+                                 help="Receives the activities of the lives." company_dependent="1">
+                            <field name="ocd_live_responsible_id"/>
+                        </setting>
+                        <setting id="ocd_lives_channel_setting" string="Team channel"
+                                 help="Every confirmed booking is announced in this channel." company_dependent="1">
+                            <field name="ocd_lives_channel_id"/>
+                        </setting>
+                    </block>
+                    <block title="Directory" name="ocd_live_directory">
+                        <setting id="ocd_pass_reminder_setting" string="Reminder of the pass"
+                                 help="The vendor is reminded before the end of the pass." company_dependent="1">
+                            <span><field name="ocd_pass_reminder_days" class="oe_inline"/> days before the end</span>
+                        </setting>
+                        <setting id="ocd_windows_setting" string="Checking windows"
+                                 help="The live links are checked and shown during these hours.">
+                            <button name="%(ocd_live.ocd_directory_window_action)d" type="action" string="Windows"
+                                    icon="oi-arrow-right" class="btn-link"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_config_settings_action_ocd_live" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'module': 'ocd_live'}</field>
+    </record>
+
+</odoo>

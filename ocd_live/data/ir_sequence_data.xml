@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="seq_ocd_live_booking" model="ir.sequence">
+        <field name="name">Live Booking</field>
+        <field name="code">ocd.live.booking</field>
+        <field name="prefix">LIVE/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_ocd_directory_pass" model="ir.sequence">
+        <field name="name">Directory Pass</field>
+        <field name="code">ocd.directory.pass</field>
+        <field name="prefix">PASS/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="mail_activity_type_choose_host" model="mail.activity.type">
+        <field name="name">Choose the host</field>
+        <field name="summary">Choose the host of this remote live</field>
+        <field name="icon">fa-user-plus</field>
+        <field name="res_model">ocd.live.booking</field>
+        <field name="delay_count">0</field>
+    </record>
+
+</odoo>

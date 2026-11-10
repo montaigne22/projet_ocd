@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_groups_privilege_ocd_live" model="res.groups.privilege">
+        <field name="name">OCD Live</field>
+        <field name="sequence">20</field>
+        <field name="category_id" ref="base.module_category_sales"/>
+    </record>
+
+    <record id="group_ocd_live_user" model="res.groups">
+        <field name="name">Team</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_ocd_live"/>
+        <field name="comment">Manages the bookings, chooses the hosts, checks the directory links and runs the live control room.</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_ocd_live_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_ocd_live"/>
+        <field name="comment">Also confirms payments received by hand, changes the settings and the packages.</field>
+        <field name="implied_ids" eval="[Command.link(ref('group_ocd_live_user')), Command.link(ref('sales_team.group_sale_salesman'))]"/>
+        <field name="user_ids" eval="[Command.link(ref('base.user_root')), Command.link(ref('base.user_admin'))]"/>
+    </record>
+
+</odoo>

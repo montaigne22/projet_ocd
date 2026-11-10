@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="refuse_reason_broken" model="ocd.listing.refuse.reason">
+        <field name="name">The link does not open</field>
+        <field name="message">The link does not open. Copy the link of your live again and send it.</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="refuse_reason_not_started" model="ocd.listing.refuse.reason">
+        <field name="name">The live has not started</field>
+        <field name="message">Your live has not started yet. Send the link again once you are live.</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="refuse_reason_not_live" model="ocd.listing.refuse.reason">
+        <field name="name">It is not a live</field>
+        <field name="message">This link is a video, not a live. Send the link of your live.</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="refuse_reason_category" model="ocd.listing.refuse.reason">
+        <field name="name">Wrong category</field>
+        <field name="message">Your live does not match the chosen category. Choose the right one and send the link again.</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="refuse_reason_forbidden" model="ocd.listing.refuse.reason">
+        <field name="name">Forbidden content</field>
+        <field name="message">This live cannot be shown in the directory of OCD Live.</field>
+        <field name="sequence">50</field>
+    </record>
+
+</odoo>

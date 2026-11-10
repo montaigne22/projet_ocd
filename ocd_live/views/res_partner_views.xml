@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit.ocd.live</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_ocd_view_bookings" type="object" class="oe_stat_button" icon="fa-video-camera"
+                        invisible="not ocd_is_vendor" groups="ocd_live.group_ocd_live_user">
+                    <field name="ocd_booking_count" widget="statinfo" string="Lives"/>
+                </button>
+                <button name="action_ocd_view_credits" type="object" class="oe_stat_button" icon="fa-ticket"
+                        invisible="not ocd_is_vendor" groups="ocd_live.group_ocd_live_user">
+                    <field name="ocd_lives_remaining" widget="statinfo" string="To place"/>
+                </button>
+            </div>
+            <notebook position="inside">
+                <page name="ocd_live" string="OCD Live" groups="ocd_live.group_ocd_live_user">
+                    <group>
+                        <group string="Vendor">
+                            <field name="ocd_is_vendor"/>
+                            <field name="ocd_business" invisible="not ocd_is_vendor"/>
+                            <field name="ocd_category_id" invisible="not ocd_is_vendor" options="{'no_create': True}"/>
+                            <field name="ocd_vendor_state" invisible="not ocd_is_vendor"/>
+                        </group>
+                        <group string="Directory" invisible="not ocd_is_vendor">
+                            <field name="ocd_pass_active"/>
+                            <field name="ocd_pass_end_date"/>
+                            <button name="action_ocd_reset_space_link" type="object" string="New personal link"
+                                    class="btn-link ps-0" colspan="2"
+                                    confirm="The vendor will need the new link: the old one stops working."/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2" invisible="not ocd_is_vendor or ocd_vendor_state != 'to_check'">
+                        <button name="action_ocd_approve_vendor" type="object" string="Approve the vendor" class="btn-primary"/>
+                        <button name="action_ocd_refuse_vendor" type="object" string="Refuse"/>
+                    </div>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="res_partner_view_search_ocd_vendor" model="ir.ui.view">
+        <field name="name">res.partner.view.search.ocd.vendor</field>
+        <field name="model">res.partner</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="ocd_business"/>
+                <field name="ocd_category_id"/>
+                <filter string="To check" name="ocd_to_check" domain="[('ocd_vendor_state', '=', 'to_check')]"/>
+                <filter string="Approved" name="ocd_approved" domain="[('ocd_vendor_state', '=', 'approved')]"/>
+                <separator/>
+            </field>
+        </field>
+    </record>
+
+    <record id="res_partner_view_list_ocd_vendor" model="ir.ui.view">
+        <field name="name">res.partner.view.list.ocd.vendor</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="Vendors">
+                <field name="name"/>
+                <field name="ocd_business"/>
+                <field name="ocd_category_id"/>
+                <field name="phone" optional="show"/>
+                <field name="city" optional="show"/>
+                <field name="country_id"/>
+                <field name="ocd_lives_remaining" optional="show"/>
+                <field name="ocd_pass_end_date" optional="show"/>
+                <field name="ocd_vendor_state" widget="badge" decoration-success="ocd_vendor_state == 'approved'"
+                       decoration-warning="ocd_vendor_state == 'to_check'" decoration-danger="ocd_vendor_state == 'refused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="res_partner_action_ocd_vendor" model="ir.actions.act_window">
+        <field name="name">Vendors</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('ocd_is_vendor', '=', True)]</field>
+        <field name="context">{'default_ocd_is_vendor': True, 'default_is_company': True}</field>
+        <field name="search_view_id" ref="res_partner_view_search_ocd_vendor"/>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('res_partner_view_list_ocd_vendor')}),
+            Command.create({'view_mode': 'kanban'}),
+            Command.create({'view_mode': 'form'})]"/>
+    </record>
+
+</odoo>

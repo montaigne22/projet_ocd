@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="ocd_live_menu_root" name="OCD Live" sequence="25"
+              web_icon="ocd_live,static/description/icon.png"
+              groups="ocd_live.group_ocd_live_user"/>
+
+    <menuitem id="ocd_live_menu_lives" name="Lives" parent="ocd_live_menu_root" sequence="10"/>
+    <menuitem id="ocd_live_booking_menu" name="Bookings" parent="ocd_live_menu_lives"
+              action="ocd_live_booking_action" sequence="10"/>
+    <menuitem id="ocd_live_credit_menu" name="Credits to place" parent="ocd_live_menu_lives"
+              action="ocd_live_credit_action" sequence="20"/>
+    <menuitem id="ocd_live_host_menu" name="Hosts" parent="ocd_live_menu_lives"
+              action="hr_employee_action_ocd_host" sequence="30"/>
+
+    <menuitem id="ocd_live_menu_directory" name="Directory" parent="ocd_live_menu_root" sequence="20"/>
+    <menuitem id="ocd_directory_listing_menu" name="Links to check" parent="ocd_live_menu_directory"
+              action="ocd_directory_listing_action" sequence="10"/>
+    <menuitem id="ocd_directory_pass_menu" name="Passes" parent="ocd_live_menu_directory"
+              action="ocd_directory_pass_action" sequence="20"/>
+
+    <menuitem id="ocd_live_menu_vendors" name="Vendors" parent="ocd_live_menu_root" sequence="30"
+              action="res_partner_action_ocd_vendor"/>
+
+    <menuitem id="ocd_live_menu_config" name="Configuration" parent="ocd_live_menu_root" sequence="90"
+              groups="ocd_live.group_ocd_live_manager"/>
+    <menuitem id="ocd_live_settings_menu" name="Settings" parent="ocd_live_menu_config"
+              action="res_config_settings_action_ocd_live" sequence="10"/>
+    <menuitem id="ocd_live_package_menu" name="Packages and pass" parent="ocd_live_menu_config"
+              action="product_template_action_ocd_package" sequence="20"/>
+    <menuitem id="ocd_live_category_menu" name="Categories" parent="ocd_live_menu_config"
+              action="ocd_live_category_action" sequence="30"/>
+    <menuitem id="ocd_directory_window_menu" name="Checking windows" parent="ocd_live_menu_config"
+              action="ocd_directory_window_action" sequence="40"/>
+    <menuitem id="ocd_listing_refuse_reason_menu" name="Refusal reasons" parent="ocd_live_menu_config"
+              action="ocd_listing_refuse_reason_action" sequence="50"/>
+
+</odoo>

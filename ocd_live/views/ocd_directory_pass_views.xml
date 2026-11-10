@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_directory_pass_view_search" model="ir.ui.view">
+        <field name="name">ocd.directory.pass.view.search</field>
+        <field name="model">ocd.directory.pass</field>
+        <field name="arch" type="xml">
+            <search string="Directory passes">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <filter string="Active" name="active_pass" domain="[('state', 'in', ('scheduled', 'active'))]"/>
+                <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_directory_pass_view_list" model="ir.ui.view">
+        <field name="name">ocd.directory.pass.view.list</field>
+        <field name="model">ocd.directory.pass</field>
+        <field name="arch" type="xml">
+            <list string="Directory passes" decoration-muted="state in ('expired', 'cancelled')">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="sale_order_id" optional="show"/>
+                <field name="reminder_sent" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'" decoration-info="state == 'scheduled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_directory_pass_view_form" model="ir.ui.view">
+        <field name="name">ocd.directory.pass.view.form</field>
+        <field name="model">ocd.directory.pass</field>
+        <field name="arch" type="xml">
+            <form string="Directory pass">
+                <header>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('expired', 'cancelled')"
+                            groups="ocd_live.group_ocd_live_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="scheduled,active,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="product_id"/>
+                            <field name="sale_order_id"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="reminder_sent"/>
+                        </group>
+                    </group>
+                    <field name="company_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_directory_pass_action" model="ir.actions.act_window">
+        <field name="name">Directory passes</field>
+        <field name="res_model">ocd.directory.pass</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active_pass': 1}</field>
+    </record>
+
+</odoo>
