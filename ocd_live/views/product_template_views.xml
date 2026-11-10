@@ -12,6 +12,7 @@
                         <group>
                             <field name="ocd_product_kind"/>
                             <field name="ocd_badge" invisible="not ocd_product_kind"/>
+                            <field name="ocd_save_tag" invisible="ocd_product_kind != 'live_package'"/>
                         </group>
                         <group invisible="ocd_product_kind != 'live_package'">
                             <field name="ocd_live_count"/>

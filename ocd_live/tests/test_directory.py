@@ -93,12 +93,22 @@ class TestOcdDirectory(OcdLiveCommon):
             self.assertEqual(outside.state, "ended")
 
     def test_one_open_link_per_vendor(self):
+        """One live shown at a time: a new link replaces the one waiting or online, and the
+        database refuses two open links of the same vendor."""
         self._give_pass()
         day = fields.Date.today() + timedelta(days=1)
+        Listing = self.env["ocd.directory.listing"]
         with freeze_time(datetime.combine(day, datetime.min.time()) + timedelta(hours=9)):
-            self.env["ocd.directory.listing"]._ocd_submit(self.vendor, TIKTOK)
+            first = Listing._ocd_submit(self.vendor, TIKTOK)
+            second = Listing._ocd_submit(self.vendor, TIKTOK)
+            self.assertEqual(first.state, "ended")
+            self.assertEqual(second.state, "to_check")
             with self.assertRaises(Exception), mute_logger("odoo.sql_db"), self.env.cr.savepoint():
-                self.env["ocd.directory.listing"]._ocd_submit(self.vendor, TIKTOK)
+                Listing.create({
+                    "partner_id": self.vendor.id, "url": TIKTOK, "state": "to_check",
+                    "window_start": second.window_start, "window_end": second.window_end,
+                })
+                Listing.flush_model()
 
     def test_refuse_with_a_reason(self):
         self._give_pass()

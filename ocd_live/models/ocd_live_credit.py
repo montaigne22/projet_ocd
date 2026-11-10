@@ -93,6 +93,30 @@ class OcdLiveCredit(models.Model):
         if self.remaining <= 0:
             raise UserError(self.env._("All the lives of this package are already placed."))
 
+    def _ocd_hour_price_order(self, start, mode, percent):
+        """Return the quotation of the difference to pay for a live of this package placed on
+        an hour that costs `percent` more, in the currency of the package."""
+        self.ensure_one()
+        product = self.product_id
+        line = self.sale_line_id
+        if line:
+            per_live = line.price_unit / max(product.ocd_live_count, 1)
+            pricelist = line.order_id.pricelist_id
+        else:
+            pricelist = self.partner_id.with_company(self.company_id).property_product_pricelist
+            price = pricelist._get_product_price(product, 1.0) if pricelist else product.list_price
+            per_live = price / max(product.ocd_live_count, 1)
+        # sudo: the vendor places the live from the space, identified by the personal link
+        order = self.env["sale.order"].sudo().create({
+            "partner_id": self.partner_id.id,
+            "company_id": self.company_id.id,
+            "pricelist_id": pricelist.id or False,
+            "require_signature": False,
+            "prepayment_percent": 1.0,
+        })
+        order._ocd_add_hour_price_line(start, mode, percent, per_live)
+        return order
+
     @api.model
     def _cron_expire(self):
         """Mark the credits whose date passed as expired."""

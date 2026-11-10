@@ -52,6 +52,7 @@ class OcdDirectoryListing(models.Model):
         comodel_name="res.company", required=True, index=True, default=lambda self: self.env.company
     )
     url = fields.Char(string="Live Link", required=True, tracking=True)
+    title = fields.Char(string="Shown Name", help="Name or shop shown in the directory.")
     platform = fields.Selection(
         selection=[
             ("tiktok", "TikTok"),
@@ -111,8 +112,9 @@ class OcdDirectoryListing(models.Model):
     # === SUBMISSION === #
 
     @api.model
-    def _ocd_submit(self, partner, url, category=None):
-        """Register the link sent by `partner` for the current or next checking window."""
+    def _ocd_submit(self, partner, url, category=None, country=None, title=None):
+        """Register the link sent by `partner` for the current or next checking window, shown
+        in `country` and `category` (those of the vendor by default) under `title`."""
         partner.ensure_one()
         if not partner.ocd_pass_active:
             raise UserError(self.env._("A directory pass is needed to send a live link."))
@@ -128,14 +130,19 @@ class OcdDirectoryListing(models.Model):
             raise UserError(self.env._("The directory is closed for now."))
         window, start, end = found
         now = fields.Datetime.now()
+        # One live shown at a time: the new link replaces the one waiting or online
+        self.sudo().search([
+            ("partner_id", "=", partner.id), ("state", "in", ("queued", "to_check", "published")),
+        ]).write({"state": "ended"})
         # Write the pending state changes (e.g. a refusal) before the unique index checks them
         self.flush_model(["state", "partner_id"])
         # sudo: called from the vendor space, the vendor was identified by the personal link
         return self.sudo().create({
             "partner_id": partner.id,
             "url": url,
-            "country_id": partner.country_id.id,
+            "country_id": (country or partner.country_id).id,
             "category_id": (category or partner.ocd_category_id).id,
+            "title": (title or "").strip()[:80] or False,
             "window_id": window.id,
             "window_start": start,
             "window_end": end,
@@ -206,3 +213,4 @@ class OcdDirectoryListing(models.Model):
         self.search([("state", "in", ("queued", "to_check", "published")), ("window_end", "<=", now)]).write(
             {"state": "ended"}
         )
+        self.env["ocd.directory.alert"].sudo()._ocd_send_due()

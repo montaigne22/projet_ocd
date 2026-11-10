@@ -8,7 +8,11 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     ocd_product_kind = fields.Selection(
-        selection=[("live_package", "Live package"), ("directory_pass", "Directory pass")],
+        selection=[
+            ("live_package", "Live package"),
+            ("directory_pass", "Directory pass"),
+            ("hour_price", "Price of the hour"),
+        ],
         string="OCD Live Product",
         help="Live package: its lives become credits of the vendor once paid. "
         "Directory pass: gives the right to send live links to the directory.",
@@ -31,7 +35,14 @@ class ProductTemplate(models.Model):
     ocd_pass_days = fields.Integer(string="Pass Duration (Days)", default=30)
     ocd_badge = fields.Char(
         string="Badge",
-        help="Short text shown on the package button of the website, e.g. x1, x2, 4 h.",
+        help="Short text shown on the package button of the website, e.g. x1, x2, 4 h. "
+        "Empty or +: the pictogram of the announce.",
+    )
+    ocd_save_tag = fields.Selection(
+        selection=[("per_live", "Cheaper per live"), ("per_hour", "Cheaper per hour")],
+        string="Saving Shown",
+        help="Shown on the website only when it is true with the prices of the visitor, "
+        "compared with the package of one live.",
     )
 
     @api.depends("ocd_live_hours", "company_id.ocd_slot_hours")

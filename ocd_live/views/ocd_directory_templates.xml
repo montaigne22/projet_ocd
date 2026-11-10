@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- Directory of the lives of the moment, then the pages of the    -->
+    <!-- vendor who is live: pass, link to send, answer of the team.    -->
+    <!-- ============================================================== -->
+
+    <template id="windows" name="OCD Live: checking windows">
+        <div class="o_ocd_windows">
+            <t t-foreach="windows['rows']" t-as="row">
+                <div class="o_ocd_window">
+                    <small t-out="row['name']"/>
+                    <b t-out="row['hours']"/>
+                </div>
+            </t>
+        </div>
+    </template>
+
+    <template id="lives" name="OCD Live: lives by country">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame">
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">Lives by country</h1>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <t t-if="windows['open']">
+                        <div class="o_ocd_state_line o_ocd_state_open">
+                            <i aria-hidden="true"/>
+                            <span>Lives checked now · until <t t-out="windows['end']"/></span>
+                        </div>
+                        <div class="o_ocd_countries">
+                            <t t-foreach="cards" t-as="card">
+                                <a t-attf-href="/lives/#{card['flag']}" class="o_ocd_country">
+                                    <span t-attf-class="o_ocd_flag o_ocd_flag_card o_ocd_flag_#{card['flag']}"/>
+                                    <span class="o_ocd_country_count">
+                                        <b t-out="card['count']"/>
+                                        <small>lives</small>
+                                    </span>
+                                    <span class="o_ocd_country_name" t-out="card['country'].name"/>
+                                </a>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="o_ocd_state_line o_ocd_state_closed">
+                            <i aria-hidden="true"/>
+                            <span>Closed for now</span>
+                        </div>
+                        <div class="o_ocd_closed">
+                            <b class="o_ocd_closed_title">The lives come back at <t t-out="windows['next']"/>.</b>
+                            <t t-call="ocd_live.windows"/>
+                            <div t-if="noted" class="o_ocd_ok o_ocd_info_icon" role="status">
+                                <t t-call="ocd_live.icon" icon.f="check"/>
+                                <span>Noted. We write to you on WhatsApp at <t t-out="windows['next']"/>.</span>
+                            </div>
+                            <form t-else="" action="/lives/prevenir" method="post" class="o_ocd_wait_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                                <button t-if="vendor" type="submit" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_mid">
+                                    Tell me at <t t-out="windows['next']"/>
+                                </button>
+                                <details t-else="" class="o_ocd_wait_details">
+                                    <summary class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_mid">
+                                        Tell me at <t t-out="windows['next']"/>
+                                    </summary>
+                                    <div class="o_ocd_form o_ocd_wait_box">
+                                        <label for="a-phone" class="o_ocd_label">Your WhatsApp</label>
+                                        <t t-call="ocd_live.phone_field" field_id.f="a-phone" phone_value="''"/>
+                                        <button type="submit" class="o_ocd_cta o_ocd_cta_small">Tell me</button>
+                                    </div>
+                                </details>
+                            </form>
+                        </div>
+                    </t>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="lives_country" name="OCD Live: lives of a country">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame">
+                <main class="o_ocd_main">
+                    <div class="o_ocd_chips">
+                        <t t-foreach="chips" t-as="chip">
+                            <a t-att-href="chip['href']" t-att-class="'o_ocd_chip o_ocd_on' if chip['on'] else 'o_ocd_chip'"
+                               t-att-aria-current="'true' if chip['on'] else None" t-out="chip['label']"/>
+                        </t>
+                    </div>
+                    <div class="o_ocd_people">
+                        <t t-foreach="rows" t-as="row">
+                            <div class="o_ocd_person">
+                                <t t-set="person_href" t-value="row['shop_url'] or row['listing'].url"/>
+                                <a t-att-href="person_href" class="o_ocd_person_main"
+                                   t-att-target="None if row['shop_url'] else '_blank'"
+                                   t-att-rel="None if row['shop_url'] else 'noopener'">
+                                    <span class="o_ocd_avatar">
+                                        <t t-out="row['initials']"/>
+                                        <i class="o_ocd_avatar_live" aria-hidden="true"/>
+                                    </span>
+                                    <span class="o_ocd_person_text">
+                                        <b t-out="row['name']"/>
+                                        <small t-out="row['meta']"/>
+                                        <span t-if="row['shop_url']" class="o_ocd_person_shop">Their shop</span>
+                                    </span>
+                                </a>
+                                <a t-att-href="row['listing'].url" target="_blank" rel="noopener" class="o_ocd_pill"
+                                   t-att-aria-label="row['aria']">See</a>
+                            </div>
+                        </t>
+                        <div t-if="not rows" class="o_ocd_info">
+                            <t t-if="windows['open']">No live checked here for now. Come back in a few minutes.</t>
+                            <t t-else="">The lives come back at <t t-out="windows['next']"/>.</t>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="pass_page" name="OCD Live: pass of the directory">
+        <t t-call="ocd_live.app">
+            <form action="/lives/pass" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">Show your live to your country.</h1>
+                    <div class="o_ocd_price_card">
+                        <div>
+                            <b t-out="price"/>
+                            <span>for <t t-out="days"/> days</span>
+                        </div>
+                        <small t-out="per_day"/>
+                    </div>
+                    <t t-call="ocd_live.windows"/>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <t t-if="pass_end">
+                        <div class="o_ocd_ok o_ocd_ok_big" role="status">
+                            <b>Pass active until <t t-out="pass_end"/></b>
+                            <span>We warn you on WhatsApp <t t-out="reminder_days"/> days before the end, with a link to take it again.</span>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <ol class="o_ocd_howto">
+                            <li><span class="o_ocd_howto_number">1</span><span>Start your live at home.</span></li>
+                            <li><span class="o_ocd_howto_number">2</span><span>Send the link here.</span></li>
+                            <li><span class="o_ocd_howto_number">3</span><span>The OCD team checks, then your country sees you.</span></li>
+                        </ol>
+                        <t t-if="not vendor">
+                            <div class="o_ocd_field">
+                                <label for="p-name" class="o_ocd_label">Your name</label>
+                                <input id="p-name" name="name" class="o_ocd_input" autocomplete="name" maxlength="80"
+                                       t-att-value="values.get('name')"
+                                       t-att-aria-invalid="'true' if errors.get('name') else None"/>
+                                <span t-if="errors.get('name')" class="o_ocd_error" role="alert" t-out="errors['name']"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="p-phone" class="o_ocd_label">Your WhatsApp</label>
+                                <t t-call="ocd_live.phone_field" field_id.f="p-phone" phone_value="values.get('phone')"/>
+                                <span t-if="errors.get('phone')" class="o_ocd_error" role="alert" t-out="errors['phone']"/>
+                            </div>
+                            <a href="/ocd/connexion" class="o_ocd_link">I already have my space</a>
+                        </t>
+                    </t>
+                </main>
+                <div class="o_ocd_actions">
+                    <a t-if="pass_end" href="/lives/envoyer" class="o_ocd_cta">Send the link of my live</a>
+                    <button t-else="" type="submit" class="o_ocd_cta" t-out="take_label"/>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="send_link" name="OCD Live: send the link of the live">
+        <t t-call="ocd_live.app">
+            <form action="/lives/envoyer" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_send_link" novalidate="novalidate">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Send the link of your live.</h1>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div class="o_ocd_field">
+                        <label for="g-url" class="o_ocd_label">The link of your live</label>
+                        <input id="g-url" name="url" type="url" inputmode="url" autocomplete="off" class="o_ocd_input o_ocd_input_link"
+                               placeholder="https://www.tiktok.com/@..." t-att-value="values.get('url')"/>
+                        <span class="o_ocd_link_ok" hidden="hidden">
+                            <t t-call="ocd_live.icon" icon.f="check"/>
+                            <span>Link recognized:</span>
+                            <b class="o_ocd_link_platform"/>
+                        </span>
+                        <span class="o_ocd_link_bad" hidden="hidden">It is not a live link. Copy it from "Share" in your app.</span>
+                    </div>
+                    <div class="o_ocd_field">
+                        <label for="g-name" class="o_ocd_label">Your name or your shop</label>
+                        <input id="g-name" name="title" class="o_ocd_input" maxlength="80" t-att-value="values.get('title')"/>
+                    </div>
+                    <fieldset class="o_ocd_fieldset">
+                        <legend class="o_ocd_label">Your country</legend>
+                        <div class="o_ocd_chips o_ocd_chips_wrap">
+                            <t t-foreach="countries" t-as="item">
+                                <label class="o_ocd_chip_choice">
+                                    <input type="radio" name="country_id" t-att-value="item['country'].id"
+                                           t-att-checked="str(item['country'].id) == values.get('country_id') or None"/>
+                                    <span class="o_ocd_chip">
+                                        <span t-attf-class="o_ocd_flag o_ocd_flag_#{item['flag']}"/>
+                                        <t t-out="item['country'].name"/>
+                                    </span>
+                                </label>
+                            </t>
+                        </div>
+                    </fieldset>
+                    <fieldset class="o_ocd_fieldset">
+                        <legend class="o_ocd_label">What do you sell?</legend>
+                        <div class="o_ocd_tiles">
+                            <t t-foreach="categories" t-as="category">
+                                <label class="o_ocd_tile">
+                                    <input type="radio" name="category_id" t-att-value="category.id"
+                                           t-att-checked="str(category.id) == values.get('category_id') or None"/>
+                                    <span>
+                                        <t t-call="ocd_live.tile_icon" tile="category.icon"/>
+                                        <t t-out="category.name"/>
+                                    </span>
+                                </label>
+                            </t>
+                        </div>
+                    </fieldset>
+                </main>
+                <div class="o_ocd_actions">
+                    <button type="submit" class="o_ocd_cta">Send my live</button>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="listing_status" name="OCD Live: answer of the team">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_poll" t-att-data-state="state"
+                      t-att-data-poll-url="poll_url if state == 'pending' else None">
+                    <h1 t-attf-class="o_ocd_h1 #{'o_ocd_h1_bad' if state == 'refused' else ''}">
+                        <t t-if="state == 'live'">You are online on OCD Live.</t>
+                        <t t-elif="state == 'refused'">Refused: your live was not running.</t>
+                        <t t-elif="state == 'ended'">Your live is over.</t>
+                        <t t-else="">The team checks your live.</t>
+                    </h1>
+                    <ol class="o_ocd_track">
+                        <li class="o_ocd_track_done">
+                            <span class="o_ocd_track_icon"><t t-call="ocd_live.icon" icon.f="check"/></span>
+                            <span>Link sent</span>
+                        </li>
+                        <li t-attf-class="#{'o_ocd_track_done' if state in ('live', 'ended') else ''} #{'o_ocd_track_bad' if state == 'refused' else ''}">
+                            <span t-if="state == 'pending'" class="o_ocd_spinner" aria-hidden="true"/>
+                            <span t-elif="state == 'refused'" class="o_ocd_track_icon">×</span>
+                            <span t-else="" class="o_ocd_track_icon"><t t-call="ocd_live.icon" icon.f="check"/></span>
+                            <span t-if="state == 'refused'">Link opened: no live running</span>
+                            <span t-else="">Checked by the team</span>
+                        </li>
+                        <li t-attf-class="#{'o_ocd_track_done' if state == 'live' else 'o_ocd_track_next'}">
+                            <span t-if="state == 'live'" class="o_ocd_track_icon"><t t-call="ocd_live.icon" icon.f="check"/></span>
+                            <span t-else="" class="o_ocd_track_icon o_ocd_track_empty"/>
+                            <span t-out="shown_in"/>
+                        </li>
+                    </ol>
+                    <div class="o_ocd_person o_ocd_person_card">
+                        <span class="o_ocd_person_main">
+                            <span class="o_ocd_avatar">
+                                <t t-out="initials"/>
+                                <i t-attf-class="o_ocd_avatar_live #{'' if state == 'live' else 'o_ocd_avatar_off'}" aria-hidden="true"/>
+                            </span>
+                            <span class="o_ocd_person_text">
+                                <b t-out="name"/>
+                                <small class="o_ocd_url" t-out="listing.url"/>
+                            </span>
+                        </span>
+                    </div>
+                    <div t-if="state == 'pending'" class="o_ocd_info">
+                        <t t-if="queued">The checking opens at <t t-out="window_start"/>. </t>
+                        Stay live. The team opens your link during the window, and you get the answer on WhatsApp.
+                    </div>
+                    <div t-if="state == 'live'" class="o_ocd_info o_ocd_info_icon">
+                        <t t-call="ocd_live.icon" icon.f="clock"/>
+                        <span>Your listing stays until <t t-out="window_end"/>. One live shown at a time.</span>
+                    </div>
+                    <div t-if="state == 'refused'" class="o_ocd_alert" role="alert">
+                        <t t-if="reason"><t t-out="reason"/> </t>
+                        The team opened your link: no live was running. Start your live again, then send the link again. Your pass stays valid.
+                    </div>
+                </main>
+                <div t-if="state == 'live'" class="o_ocd_actions">
+                    <a href="/lives" class="o_ocd_cta">See the lives</a>
+                    <form t-attf-action="/lives/statut/#{listing.id}/fin" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_mid">I finished my live</button>
+                    </form>
+                </div>
+                <div t-elif="state in ('refused', 'ended')" class="o_ocd_actions">
+                    <a href="/lives/envoyer" class="o_ocd_cta">Send a link again</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

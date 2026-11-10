@@ -136,6 +136,12 @@ class OcdLiveBooking(models.Model):
         search="_search_needs_host",
     )
     color = fields.Integer(compute="_compute_color")
+    ticket_code = fields.Char(string="Ticket", compute="_compute_ticket_code")
+    price_percent = fields.Float(
+        string="Price Of The Hour (%)",
+        readonly=True,
+        help="Price change of the hour of the live when it was booked (price of the hours).",
+    )
 
     _check_slot_count = models.Constraint(
         "CHECK (slot_count > 0)",
@@ -169,6 +175,16 @@ class OcdLiveBooking(models.Model):
             ("state", "in", ("draft", "confirmed")),
         ])
         return domain if (operator == "=") == value else ~domain
+
+    @api.depends("start_datetime", "mode", "company_id")
+    def _compute_ticket_code(self):
+        for booking in self:
+            if not booking.start_datetime:
+                booking.ticket_code = False
+                continue
+            local = booking.company_id._ocd_to_local(booking.start_datetime)
+            suffix = "-D" if booking.mode == "remote" else ""
+            booking.ticket_code = f"OCD-{local:%m%d}-{local:%H%M}{suffix}"
 
     @api.depends("mode", "state")
     def _compute_color(self):
@@ -326,6 +342,10 @@ class OcdLiveBooking(models.Model):
 
     def action_cancel(self):
         bookings = self.filtered(lambda b: b.state in ("draft", "confirmed"))
+        released = [
+            (booking.company_id, booking.company_id._ocd_to_local(booking.start_datetime).date(), booking.mode)
+            for booking in bookings
+        ]
         bookings.sudo().slot_ids.unlink()
         bookings.write({"state": "cancelled", "hold_until": False})
         bookings.activity_unlink([HOST_ACTIVITY])
@@ -335,7 +355,31 @@ class OcdLiveBooking(models.Model):
         )
         if orders:
             orders.sudo()._action_cancel()
+        Waitlist = self.env["ocd.live.waitlist"]
+        for company, day, mode in set(released):
+            Waitlist._ocd_notify_free(company, day, mode)
         return True
+
+    def _ocd_move(self, start):
+        """Move a confirmed live to `start`, until the limit of hours before the live."""
+        self.ensure_one()
+        if self.state != "confirmed":
+            raise UserError(self.env._("Only a confirmed live can be moved."))
+        limit = self.company_id.ocd_move_limit_hours
+        if self.start_datetime - fields.Datetime.now() < timedelta(hours=limit):
+            raise UserError(self.env._("A live can be moved until %s hours before it starts.", limit))
+        percent = self.env["ocd.live.price.rule"]._ocd_percent(self.company_id, start, self.mode, self.product_id)
+        if percent > (self.price_percent or 0.0):
+            raise UserError(self.env._("This hour costs more: choose another hour, or book it apart."))
+        old_day = self.company_id._ocd_to_local(self.start_datetime).date()
+        self.start_datetime = start
+        self.env["ocd.live.waitlist"]._ocd_notify_free(self.company_id, old_day, self.mode)
+        self.message_post(body=self.env._("The vendor moved the live."))
+        return True
+
+    def _ocd_send_ticket(self):
+        """Send the ticket of the live to the vendor. Extended by ocd_live_whatsapp."""
+        return False
 
     def action_mark_done(self):
         self.filtered(lambda b: b.state == "confirmed").write({"state": "done"})
@@ -494,7 +538,9 @@ class OcdLiveBooking(models.Model):
 
     @api.model
     def _ocd_book_from_website(self, partner, product, start, mode, studio_need="none"):
-        """Create the quotation of the package and hold the chosen slot until it is paid."""
+        """Create the quotation of the package and hold the chosen slot until it is paid. When
+        the hour of the live costs more or less (price of the hours), the change is a line of
+        the quotation."""
         company = self.env.company
         # sudo: called by the public booking pages once the inputs are validated
         order = self.env["sale.order"].sudo().create({
@@ -505,6 +551,11 @@ class OcdLiveBooking(models.Model):
             "prepayment_percent": 1.0,
             "order_line": [Command.create({"product_id": product.id, "product_uom_qty": 1})],
         })
+        package_line = order.order_line[:1]
+        percent = self.env["ocd.live.price.rule"]._ocd_percent(company, start, mode, product)
+        if percent:
+            per_live = package_line.price_unit / max(product.ocd_live_count, 1)
+            order._ocd_add_hour_price_line(start, mode, percent, per_live)
         return self.sudo().create({
             "partner_id": partner.id,
             "company_id": company.id,
@@ -512,29 +563,40 @@ class OcdLiveBooking(models.Model):
             "start_datetime": start,
             "slot_count": product.ocd_slot_count,
             "product_id": product.id,
-            "sale_line_id": order.order_line[:1].id,
+            "sale_line_id": package_line.id,
             "studio_need": studio_need or "none",
+            "price_percent": percent,
         })
 
     @api.model
     def _ocd_book_with_credit(self, credit, start, mode, studio_need="none"):
-        """Place a live paid with a package bought before: confirmed at once."""
+        """Place a live paid with a package bought before: confirmed at once. On an hour that
+        costs more (price of the hours), the live is held until the difference is paid; a
+        cheaper hour gives nothing back, the package being already paid."""
         credit.ensure_one()
         # Lock the credit row so that two simultaneous placements cannot both take its
         # last live.
         self.env.cr.execute(SQL("SELECT id FROM ocd_live_credit WHERE id = %s FOR UPDATE", credit.id))
         credit.invalidate_recordset(["used", "remaining", "state"])
         credit._ocd_check_usable()
-        booking = self.sudo().create({
+        product = credit.product_id
+        percent = self.env["ocd.live.price.rule"]._ocd_percent(credit.company_id, start, mode, product)
+        vals = {
             "partner_id": credit.partner_id.id,
             "company_id": credit.company_id.id,
             "mode": mode,
             "start_datetime": start,
-            "slot_count": credit.product_id.ocd_slot_count,
-            "product_id": credit.product_id.id,
+            "slot_count": product.ocd_slot_count,
+            "product_id": product.id,
             "credit_id": credit.id,
             "studio_need": studio_need or "none",
-        })
+            "price_percent": max(percent, 0.0),
+        }
+        if percent > 0:
+            order = credit._ocd_hour_price_order(start, mode, percent)
+            vals["sale_line_id"] = order.order_line[:1].id
+            return self.sudo().create(vals)
+        booking = self.sudo().create(vals)
         booking._ocd_confirm()
         return booking
 

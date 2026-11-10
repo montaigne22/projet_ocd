@@ -38,7 +38,7 @@ class ResCompany(models.Model):
     ocd_slots_per_day = fields.Integer(string="Lives Per Day", default=9)
     ocd_hold_minutes = fields.Integer(
         string="Slot Held During The Payment (Minutes)",
-        default=30,
+        default=10,
         help="A slot chosen on the website is held for this time. Without payment, it is "
         "released and offered again.",
     )
@@ -96,6 +96,15 @@ class ResCompany(models.Model):
         ],
         string="Order Of The Booking Steps",
         default="day_first",
+    )
+    ocd_move_limit_hours = fields.Integer(
+        string="A Live Can Be Moved Until (Hours Before)",
+        default=24,
+    )
+    ocd_studio_city = fields.Char(
+        string="City Of The Studio",
+        default="Lomé",
+        help="Shown to the vendors: the place of the studio and the time of the lives.",
     )
     ocd_vendor_login = fields.Selection(
         selection=[

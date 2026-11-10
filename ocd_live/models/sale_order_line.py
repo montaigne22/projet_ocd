@@ -34,6 +34,9 @@ class SaleOrderLine(models.Model):
                     )
             elif kind == "directory_pass" and not line.ocd_pass_ids:
                 self.env["ocd.directory.pass"].sudo()._ocd_create_from_line(line)
+            elif kind == "hour_price":
+                # A live of a package placed on an hour that costs more, held until paid
+                line.ocd_booking_ids.filtered(lambda b: b.state == "draft")._ocd_confirm()
 
     def _ocd_prepare_credit_vals(self):
         self.ensure_one()

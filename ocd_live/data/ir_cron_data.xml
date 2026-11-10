@@ -71,4 +71,14 @@
         <field name="interval_type">days</field>
     </record>
 
+    <record id="ir_cron_clean_waitlist" model="ir.cron">
+        <field name="name">OCD Live: forget the old waiting lists</field>
+        <field name="model_id" ref="model_ocd_live_waitlist"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_clean()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+
 </odoo>

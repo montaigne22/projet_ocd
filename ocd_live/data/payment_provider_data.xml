@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mobile Money sent to the numbers of OCD and checked by the team, until a connector takes
+     the Mobile Money of these countries (decision 5). It is a payment provider of Odoo like the
+     others: the team writes its numbers in the message, chooses the countries and unarchives it
+     (Website > Configuration > Payment Providers). Archived until then. The payment page of
+     OCD Live offers, for each vendor, the providers of Odoo that take the country and the
+     currency of the order: Campay in Cameroon today, any connector added later. -->
+<odoo noupdate="1">
+
+    <record id="payment_provider_momo_team" model="payment.provider">
+        <field name="name">Mobile Money checked by the team</field>
+        <field name="code">custom</field>
+        <field name="custom_mode">wire_transfer</field>
+        <field name="active" eval="False"/>
+        <field name="is_live" eval="True"/>
+        <field name="is_published" eval="True"/>
+        <field name="sequence">20</field>
+        <field name="partner_bank_id" eval="False"/>
+        <field name="redirect_form_view_id" ref="payment.generic_redirect_form"/>
+        <field name="available_country_ids" eval="[Command.set([ref('base.tg'), ref('base.bj'), ref('base.ci'), ref('base.sn')])]"/>
+        <field name="pending_msg" type="html">
+            <p>Send the amount by Mobile Money to the number of OCD: Mixx by Yas [number], Flooz [number]. Write the reference below in the message. The team confirms once the money is received.</p>
+        </field>
+    </record>
+
+    <record id="payment_method_momo_team" model="payment.method">
+        <field name="name">Mobile Money</field>
+        <field name="code">mobile_money</field>
+        <field name="sequence">1</field>
+        <field name="active" eval="True"/>
+        <field name="provider_id" ref="payment_provider_momo_team"/>
+        <field name="image" type="bytes" file="payment/static/img/momo.png"/>
+        <field name="support_tokenization" eval="False"/>
+        <field name="support_express_checkout" eval="False"/>
+        <field name="support_manual_capture">none</field>
+        <field name="support_refund">none</field>
+    </record>
+
+</odoo>

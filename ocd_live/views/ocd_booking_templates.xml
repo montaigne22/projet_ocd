@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- Frame of the pages, as in the validated design: phone first,   -->
+    <!-- then a top menu on tablets and a summary beside the page on    -->
+    <!-- computers.                                                     -->
+    <!-- ============================================================== -->
+
+    <template id="icon" name="OCD Live: icon">
+        <!-- Parameter: icon, the name of the pictogram -->
+        <svg t-if="icon == 'back'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <svg t-elif="icon == 'speaker'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <svg t-elif="icon == 'arrow'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <svg t-elif="icon == 'prev'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <svg t-elif="icon == 'next'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        <svg t-elif="icon == 'home'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10h-7v-7h-4v7H3z"/></svg>
+        <svg t-elif="icon == 'live'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+        <svg t-elif="icon == 'bag'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+        <svg t-elif="icon == 'user'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <svg t-elif="icon == 'clock'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <svg t-elif="icon == 'bell'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <svg t-elif="icon == 'check'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        <svg t-elif="icon == 'calendar'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <svg t-elif="icon == 'pin'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <svg t-elif="icon == 'chat'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <svg t-elif="icon == 'studio'" class="o_ocd_icon o_ocd_icon_big" viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="12" width="24" height="17" rx="4" fill="#15130F"/><path d="M31 18.5l9-5v14l-9-5z" fill="#15130F"/><circle cx="14" cy="18.5" r="3" fill="#FFFFFF"/><path d="M19 29l-6 13M19 29l6 13M19 29v13" fill="none" stroke="#15130F" stroke-width="3.2" stroke-linecap="round"/></svg>
+        <svg t-elif="icon == 'remote'" class="o_ocd_icon o_ocd_icon_big" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="13" width="21" height="31" rx="5" fill="#FFFFFF"/><rect x="11.5" y="18" width="14" height="18" rx="1.5" fill="#15130F"/><circle cx="18.5" cy="40" r="1.6" fill="#15130F"/><path d="M31 10a6 6 0 0 1 6 6M31 3.5a12.5 12.5 0 0 1 12.5 12.5" fill="none" stroke="#F46A00" stroke-width="3.2" stroke-linecap="round"/></svg>
+        <svg t-elif="icon == 'announce'" class="o_ocd_icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 19v10a2 2 0 0 0 2 2h5l19 9V8L13 17H8a2 2 0 0 0-2 2z" fill="#FFFFFF"/><path d="M38 18a8 8 0 0 1 0 12" fill="none" stroke="#F46A00" stroke-width="3.2" stroke-linecap="round"/></svg>
+    </template>
+
+    <template id="tile_icon" name="OCD Live: pictogram of a choice">
+        <!-- Parameter: tile, the pictogram of a category (food, clothes, beauty, phone, home,
+             other) or of a need at the studio (shelf, rack, table) -->
+        <svg class="o_ocd_tile_icon" viewBox="0 0 48 48" aria-hidden="true">
+            <t t-if="tile == 'food'">
+                <path d="M6 24h36a18 18 0 0 1-36 0zM18.75 40h10.5a1.75 1.75 0 0 1 0 3.5h-10.5a1.75 1.75 0 0 1 0-3.5z" fill="#15130F"/>
+                <path d="M17 18c-2.5-3 2.5-5 0-8.5M24 18c-2.5-3 2.5-5 0-8.5M31 18c-2.5-3 2.5-5 0-8.5" fill="none" stroke="#F46A00" stroke-width="3.2" stroke-linecap="round"/>
+            </t>
+            <t t-elif="tile == 'clothes'">
+                <path d="M17 7L6 13l4.5 8 4.5-2.5V41h18V18.5l4.5 2.5 4.5-8-11-6c-1.5 4-10.5 4-12 0z" fill="#15130F"/>
+                <path d="M25.5 20h5v5h-5z" fill="#F46A00"/>
+            </t>
+            <t t-elif="tile == 'beauty'">
+                <path d="M18 25h10a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2zM18 19.5h10v4h-10z" fill="#15130F"/>
+                <path d="M19 18v-8l8-4v12zM38 8l1.3 3.2 3.2 1.3-3.2 1.3L38 17l-1.3-3.2-3.2-1.3 3.2-1.3z" fill="#F46A00"/>
+            </t>
+            <t t-elif="tile == 'phone'">
+                <path d="M18 5h12a5 5 0 0 1 5 5v28a5 5 0 0 1-5 5h-12a5 5 0 0 1-5-5v-28a5 5 0 0 1 5-5z" fill="#15130F"/>
+                <path d="M26 12l-8 13h6l-2 11 8-13h-6z" fill="#F46A00"/>
+            </t>
+            <t t-elif="tile == 'home'">
+                <path d="M6 22L24 7l18 15v19H6z" fill="#15130F"/>
+                <path d="M20 28h8v13h-8z" fill="#F46A00"/>
+            </t>
+            <t t-elif="tile == 'shelf'">
+                <path d="M13 9h7v6h-7zM24 20h10v7h-10zM14 33h6v6h-6zM23 34h7v5h-7z" fill="#F46A00"/>
+                <path d="M9 6v36M39 6v36M9 16.5h30M9 28.5h30M9 40.5h30" fill="none" stroke="#15130F" stroke-width="3.2" stroke-linecap="round"/>
+            </t>
+            <t t-elif="tile == 'rack'">
+                <path d="M16 13h7l2 17H14zM27 13h6l1.5 12h-9z" fill="#F46A00"/>
+                <path d="M7 10h34M12 10v32M36 10v32M8 42h8M32 42h8" fill="none" stroke="#15130F" stroke-width="3.2" stroke-linecap="round"/>
+            </t>
+            <t t-elif="tile == 'table'">
+                <path d="M15 12h18a9 9 0 0 1-18 0z" fill="#F46A00"/>
+                <path d="M6 23h36M11 23v19M37 23v19" fill="none" stroke="#15130F" stroke-width="3.2" stroke-linecap="round"/>
+            </t>
+            <t t-else="">
+                <path d="M11 8h7a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3zM30 8h7a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3zM11 27h7a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3z" fill="#15130F"/>
+                <path d="M27 33.5a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0-13 0z" fill="#F46A00"/>
+            </t>
+        </svg>
+    </template>
+
+    <template id="nav_links" name="OCD Live: menu">
+        <a href="/ocd" t-att-class="'o_ocd_on' if nav == 'home' else None" t-att-aria-current="'page' if nav == 'home' else None">
+            <t t-call="ocd_live.icon" icon.f="home"/><span>Home</span>
+        </a>
+        <a href="/lives" t-att-class="'o_ocd_on' if nav == 'lives' else None" t-att-aria-current="'page' if nav == 'lives' else None">
+            <t t-call="ocd_live.icon" icon.f="live"/><span>Lives</span>
+        </a>
+        <a href="/ocd/espace/moi" t-att-class="'o_ocd_nav_me o_ocd_on' if nav == 'me' else 'o_ocd_nav_me'" t-att-aria-current="'page' if nav == 'me' else None">
+            <t t-call="ocd_live.icon" icon.f="user"/><span>Me</span>
+        </a>
+    </template>
+
+    <template id="app" name="OCD Live: frame of the pages">
+        <!-- Parameters: back (url of the back button), step and step_label (bar of the
+             booking steps), nav (item of the menu of the page), voice_key, voice_languages
+             and voice_caption (voice of the page), summary (line at the bottom) -->
+        <t t-set="head">
+            <link rel="preconnect" href="https://fonts.googleapis.com"/>
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700;800&amp;display=swap"/>
+        </t>
+        <t t-call="website.layout" no_header="True" no_footer="True" body_classname.f="o_ocd_body" head="head">
+            <div t-attf-class="o_ocd_app #{'o_ocd_has_nav' if nav else ''}">
+                <header class="o_ocd_header">
+                    <div t-attf-class="o_ocd_frame o_ocd_top #{'o_ocd_top_flow' if back else ''}">
+                        <a href="/ocd" class="o_ocd_brandbox" aria-label="OCD Live">
+                            <img src="/ocd_live/static/img/ocd_logo.webp" alt="Logo OCD" class="o_ocd_logo" width="38" height="38"/>
+                            <span class="o_ocd_brand">OCD</span>
+                            <span class="o_ocd_live_badge">LIVE</span>
+                        </a>
+                        <div t-if="back" class="o_ocd_flowbar">
+                            <a t-att-href="back" class="o_ocd_round" aria-label="Back">
+                                <t t-call="ocd_live.icon" icon.f="back"/>
+                            </a>
+                            <div t-if="step" class="o_ocd_steps" role="img" t-att-aria-label="step_label">
+                                <t t-foreach="range(1, 6)" t-as="index">
+                                    <span t-att-class="'o_ocd_done' if index &lt;= step else None"/>
+                                </t>
+                            </div>
+                            <a t-if="header_brand" href="/ocd" class="o_ocd_flow_brand">
+                                <img src="/ocd_live/static/img/ocd_logo.webp" alt="Logo OCD" class="o_ocd_logo" width="38" height="38"/>
+                                <span class="o_ocd_brand">OCD</span>
+                            </a>
+                            <span t-if="header_title" class="o_ocd_header_title" t-out="header_title"/>
+                            <t t-if="header_h1">
+                                <span t-if="header_flag" t-attf-class="o_ocd_flag o_ocd_flag_head o_ocd_flag_#{header_flag}"/>
+                                <h1 class="o_ocd_header_h1" t-out="header_h1"/>
+                                <span t-if="header_count" class="o_ocd_header_count" t-out="header_count"/>
+                            </t>
+                        </div>
+                        <nav class="o_ocd_topnav" aria-label="Menu">
+                            <t t-call="ocd_live.nav_links"/>
+                        </nav>
+                        <a t-if="header_link" t-att-href="header_link['href']" class="o_ocd_header_link" t-out="header_link['label']"/>
+                        <div t-if="voice_key" class="o_ocd_voice o_ocd_live_voice" t-att-data-voice-key="voice_key"
+                             t-att-data-lang="voice_languages[:1].code if voice_languages else None">
+                            <details t-if="voice_languages and len(voice_languages) &gt; 1" class="o_ocd_lang">
+                                <summary class="o_ocd_lang_code" aria-label="Language of the voice"
+                                         t-out="voice_languages[:1].code.upper()"/>
+                                <div class="o_ocd_lang_menu" role="menu">
+                                    <t t-foreach="voice_languages" t-as="voice_language">
+                                        <button type="button" role="menuitemradio" class="o_ocd_lang_item"
+                                                t-att-data-code="voice_language.code"
+                                                t-att-aria-checked="'true' if voice_language_first else 'false'"
+                                                t-out="voice_language.name"/>
+                                    </t>
+                                </div>
+                            </details>
+                            <button type="button" class="o_ocd_round o_ocd_live_voice_play" aria-label="Listen to this screen">
+                                <t t-call="ocd_live.icon" icon.f="speaker"/>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+                <t t-out="0"/>
+                <div t-if="voice_caption" class="o_ocd_caption" role="status" hidden="hidden" t-out="voice_caption"/>
+                <div t-if="summary or nav or bottom_cta" class="o_ocd_bottom">
+                    <div t-if="bottom_cta" class="o_ocd_frame o_ocd_bottom_cta">
+                        <a t-att-href="bottom_cta['href']" class="o_ocd_cta">
+                            <span t-if="bottom_cta.get('dot')" class="o_ocd_rec" aria-hidden="true"/>
+                            <span t-out="bottom_cta['label']"/>
+                        </a>
+                    </div>
+                    <div t-if="summary" class="o_ocd_summary" t-out="summary"/>
+                    <nav t-if="nav" class="o_ocd_nav" aria-label="Menu">
+                        <t t-call="ocd_live.nav_links"/>
+                    </nav>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Frame of the pages of the other OCD Live modules: the content in the column of the
+         page, with the messages above it. -->
+    <template id="layout" name="OCD Live: page">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main">
+                    <t t-out="0"/>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="message_box" name="OCD Live: messages">
+        <div t-if="message" class="o_ocd_ok" role="status" t-out="message"/>
+        <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+    </template>
+
+    <template id="aside" name="OCD Live: what is chosen, beside the page">
+        <aside t-if="aside" class="o_ocd_aside">
+            <h2 t-out="aside['title']"/>
+            <dl>
+                <t t-foreach="aside['rows']" t-as="row">
+                    <dt t-out="row[0]"/>
+                    <dd t-out="row[1]"/>
+                </t>
+            </dl>
+        </aside>
+    </template>
+
+    <template id="mode_links" name="OCD Live: at the studio or remote">
+        <div t-if="mode_links" class="o_ocd_chips o_ocd_chips_wrap" role="group">
+            <t t-foreach="mode_links" t-as="link">
+                <a t-att-href="link['href']" t-att-class="'o_ocd_chip o_ocd_on' if link['on'] else 'o_ocd_chip'"
+                   t-att-aria-current="'true' if link['on'] else None" t-out="link['label']"/>
+            </t>
+        </div>
+    </template>
+
+    <template id="phone_field" name="OCD Live: WhatsApp number">
+        <!-- Parameters: field_id, dial_rows (countries with their dialing code), phone_value -->
+        <t t-set="dial_selected" t-value="[row for row in dial_rows if row['selected']][:1]"/>
+        <div class="o_ocd_phone">
+            <span class="o_ocd_dial">
+                <span t-attf-class="o_ocd_flag o_ocd_flag_#{dial_selected[0]['flag'] if dial_selected else ''}"/>
+                <select t-attf-id="#{field_id}-country" name="country_id" class="o_ocd_dial_select" aria-label="Country of the number">
+                    <t t-foreach="dial_rows" t-as="row">
+                        <option t-att-value="row['country'].id" t-att-selected="row['selected'] or None"
+                                t-att-data-flag="row['flag']" t-att-data-size="row['size']"
+                                t-att-data-dial="row['dial']"
+                                t-out="row['dial']"/>
+                    </t>
+                </select>
+            </span>
+            <input t-att-id="field_id" type="tel" name="phone" inputmode="tel" autocomplete="tel-national"
+                   class="o_ocd_input" t-att-value="phone_value" placeholder="90 00 00 00" required="required"/>
+        </div>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- Home                                                           -->
+    <!-- ============================================================== -->
+
+    <template id="home" name="OCD Live: home">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame">
+                <main class="o_ocd_main o_ocd_home">
+                    <h1 class="o_ocd_h1">Sell live in front of all of Africa.</h1>
+                    <div class="o_ocd_choices">
+                        <a href="/reserver/studio" class="o_ocd_choice">
+                            <t t-call="ocd_live.icon" icon.f="studio"/>
+                            <span>
+                                <span class="o_ocd_choice_title">At the studio</span>
+                                <span class="o_ocd_choice_text" t-out="studio_place"/>
+                            </span>
+                            <span class="o_ocd_arrow"><t t-call="ocd_live.icon" icon.f="arrow"/></span>
+                        </a>
+                        <a href="/reserver/remote" class="o_ocd_choice o_ocd_choice_dark">
+                            <t t-call="ocd_live.icon" icon.f="remote"/>
+                            <span>
+                                <span class="o_ocd_choice_title">From home</span>
+                                <span class="o_ocd_choice_text">Remote, anywhere</span>
+                            </span>
+                            <span class="o_ocd_arrow"><t t-call="ocd_live.icon" icon.f="arrow"/></span>
+                        </a>
+                    </div>
+                    <a href="/lives" class="o_ocd_live_count">
+                        <span>Live now</span>
+                        <b t-out="live_total"/>
+                    </a>
+                    <div class="o_ocd_chips">
+                        <t t-foreach="chips" t-as="chip">
+                            <a t-attf-href="/lives/#{chip['flag']}" class="o_ocd_chip">
+                                <span t-attf-class="o_ocd_flag o_ocd_flag_#{chip['flag']}"/>
+                                <span t-out="chip['country'].name"/>
+                                <span class="o_ocd_chip_count" t-out="chip['count']"/>
+                            </a>
+                        </t>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- Booking: day, hour, package, who are you                       -->
+    <!-- ============================================================== -->
+
+    <template id="booking_day" name="OCD Live: day">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_with_aside">
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1" t-out="title"/>
+                    <span t-if="tag" class="o_ocd_tag" t-out="tag"/>
+                    <t t-call="ocd_live.mode_links"/>
+                    <div t-if="move_limit" class="o_ocd_info o_ocd_info_icon">
+                        <t t-call="ocd_live.icon" icon.f="clock"/>
+                        <span>Your live can be moved until <t t-out="move_limit"/> hours before it starts.</span>
+                    </div>
+                    <div class="o_ocd_month">
+                        <a t-if="month['prev']" t-att-href="month['prev']" class="o_ocd_round" aria-label="Previous month">
+                            <t t-call="ocd_live.icon" icon.f="prev"/>
+                        </a>
+                        <span t-else="" class="o_ocd_round o_ocd_round_off" aria-hidden="true">
+                            <t t-call="ocd_live.icon" icon.f="prev"/>
+                        </span>
+                        <span class="o_ocd_month_title" t-out="month['title']"/>
+                        <a t-if="month['next']" t-att-href="month['next']" class="o_ocd_round" aria-label="Next month">
+                            <t t-call="ocd_live.icon" icon.f="next"/>
+                        </a>
+                        <span t-else="" class="o_ocd_round o_ocd_round_off" aria-hidden="true">
+                            <t t-call="ocd_live.icon" icon.f="next"/>
+                        </span>
+                    </div>
+                    <div class="o_ocd_cal o_ocd_cal_head" aria-hidden="true">
+                        <t t-foreach="month['weekdays']" t-as="weekday">
+                            <span t-out="weekday"/>
+                        </t>
+                    </div>
+                    <div class="o_ocd_cal">
+                        <t t-foreach="month['offset']" t-as="blank"><span/></t>
+                        <t t-foreach="month['cells']" t-as="cell">
+                            <a t-if="cell['href']" t-att-href="cell['href']" class="o_ocd_day o_ocd_free" t-att-aria-label="cell['label']">
+                                <t t-out="cell['number']"/>
+                                <span t-if="cell['state'] == 'almost'" class="o_ocd_dot"/>
+                            </a>
+                            <span t-else="" t-attf-class="o_ocd_day o_ocd_#{cell['state']}" t-att-aria-label="cell['label']" t-out="cell['number']"/>
+                        </t>
+                    </div>
+                    <div class="o_ocd_legend">
+                        <span><i class="o_ocd_legend_free"/>Free</span>
+                        <span><i class="o_ocd_legend_almost"><b/></i>Almost full</span>
+                        <span><s>12</s>Full</span>
+                    </div>
+                </main>
+                <t t-call="ocd_live.aside"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="booking_hour" name="OCD Live: hour">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_with_aside">
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">
+                        <t t-if="title" t-out="title"/>
+                        <t t-else="">Which hour?</t>
+                    </h1>
+                    <p class="o_ocd_lead" t-out="lead"/>
+                    <t t-call="ocd_live.mode_links"/>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div class="o_ocd_slots">
+                        <t t-foreach="slots" t-as="slot">
+                            <form t-if="slot['available'] and move_action" t-att-action="move_action" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="hour" t-att-value="slot['code']"/>
+                                <t t-foreach="(post_values or {}).items()" t-as="item">
+                                    <input type="hidden" t-att-name="item[0]" t-att-value="item[1]"/>
+                                </t>
+                                <button type="submit" class="o_ocd_slot" t-att-aria-label="slot['aria']">
+                                    <b t-out="slot['label']"/>
+                                    <small>end <t t-out="slot['end_label']"/></small>
+                                    <span t-if="slot['percent_text']"
+                                          t-attf-class="o_ocd_slot_price #{'o_ocd_slot_price_down' if slot['percent'] &lt; 0 else ''}"
+                                          t-out="slot['percent_text']"/>
+                                </button>
+                            </form>
+                            <a t-elif="slot['href']" t-att-href="slot['href']" class="o_ocd_slot" t-att-aria-label="slot['aria']">
+                                <b t-out="slot['label']"/>
+                                <small>end <t t-out="slot['end_label']"/></small>
+                                <span t-if="slot['percent_text']"
+                                      t-attf-class="o_ocd_slot_price #{'o_ocd_slot_price_down' if slot['percent'] &lt; 0 else ''}"
+                                      t-out="slot['percent_text']"/>
+                            </a>
+                            <span t-else="" class="o_ocd_slot o_ocd_taken" t-att-aria-label="slot['aria']">
+                                <b t-out="slot['label']"/>
+                                <small>taken</small>
+                            </span>
+                        </t>
+                    </div>
+                    <div class="o_ocd_info o_ocd_info_icon">
+                        <t t-call="ocd_live.icon" icon.f="clock"/>
+                        <span t-out="hour_info"/>
+                    </div>
+                    <div t-if="waiting" class="o_ocd_ok o_ocd_info_icon" role="status">
+                        <t t-call="ocd_live.icon" icon.f="check"/>
+                        <span>Noted. We write to you on WhatsApp as soon as an hour is free that day.</span>
+                    </div>
+                    <form t-elif="ask_wait" action="/reserver/attente" method="post" class="o_ocd_wait_form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <t t-foreach="wait_values.items()" t-as="item">
+                            <input type="hidden" t-att-name="item[0]" t-att-value="item[1]"/>
+                        </t>
+                        <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                        <button t-if="vendor" type="submit" class="o_ocd_cta o_ocd_cta_line">
+                            <t t-call="ocd_live.icon" icon.f="bell"/>
+                            <span>Tell me if an hour becomes free</span>
+                        </button>
+                        <details t-else="" class="o_ocd_wait_details">
+                            <summary class="o_ocd_cta o_ocd_cta_line">
+                                <t t-call="ocd_live.icon" icon.f="bell"/>
+                                <span>Tell me if an hour becomes free</span>
+                            </summary>
+                            <div class="o_ocd_form o_ocd_wait_box">
+                                <label for="w-phone" class="o_ocd_label">Your WhatsApp</label>
+                                <t t-call="ocd_live.phone_field" field_id.f="w-phone" phone_value="''"/>
+                                <button type="submit" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">Tell me</button>
+                            </div>
+                        </details>
+                    </form>
+                </main>
+                <t t-call="ocd_live.aside"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="pack_body" name="OCD Live: a package">
+        <span class="o_ocd_badge">
+            <t t-if="card['badge']" t-out="card['badge']"/>
+            <t t-else="" t-call="ocd_live.icon" icon.f="announce"/>
+        </span>
+        <span>
+            <span class="o_ocd_pack_name" t-out="card['product'].name"/>
+            <span t-if="card['available']" class="o_ocd_pack_line" t-out="card['line']"/>
+            <span t-else="" class="o_ocd_pack_line">Not free at this hour</span>
+        </span>
+        <span class="o_ocd_price">
+            <span t-out="card['price']"/>
+            <span t-if="card.get('hour_tag') and card['available']"
+                  t-attf-class="o_ocd_save #{'o_ocd_save_up' if card.get('hour_up') else ''}" t-out="card['hour_tag']"/>
+            <span t-elif="card['save'] and card['available']" class="o_ocd_save" t-out="card['save']"/>
+        </span>
+    </template>
+
+    <template id="booking_package" name="OCD Live: package">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_with_aside">
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">Which package?</h1>
+                    <p class="o_ocd_lead" t-out="lead"/>
+                    <div class="o_ocd_packs">
+                        <t t-foreach="cards" t-as="card">
+                            <a t-if="card['href']" t-att-href="card['href']" class="o_ocd_pack">
+                                <t t-call="ocd_live.pack_body"/>
+                            </a>
+                            <div t-else="" class="o_ocd_pack o_ocd_disabled" aria-disabled="true">
+                                <t t-call="ocd_live.pack_body"/>
+                            </div>
+                        </t>
+                    </div>
+                </main>
+                <t t-call="ocd_live.aside"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="booking_infos" name="OCD Live: who are you">
+        <t t-call="ocd_live.app">
+            <form action="/reserver/confirmer" method="post" class="o_ocd_frame o_ocd_with_aside o_ocd_infos" novalidate="novalidate">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <t t-foreach="hidden.items()" t-as="item">
+                    <input type="hidden" t-att-name="item[0]" t-att-value="item[1]"/>
+                </t>
+                <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                <input type="hidden" name="optin_shown" value="1"/>
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Who are you?</h1>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div t-if="vendor" class="o_ocd_card o_ocd_me">
+                        <span class="o_ocd_muted">You book as</span>
+                        <b t-out="vendor.name"/>
+                        <span t-out="vendor.phone"/>
+                        <a href="/ocd/deconnexion" class="o_ocd_link">This is not me</a>
+                    </div>
+                    <t t-else="">
+                        <div class="o_ocd_name_city">
+                            <div>
+                                <label for="f-name" class="o_ocd_label">Your name</label>
+                                <input id="f-name" name="name" class="o_ocd_input" t-att-value="values.get('name')"
+                                       autocomplete="name" required="required" maxlength="80"
+                                       t-att-aria-invalid="'true' if errors.get('name') else None"/>
+                            </div>
+                            <div>
+                                <label for="f-city" class="o_ocd_label">Your city</label>
+                                <input id="f-city" name="city" class="o_ocd_input" t-att-value="values.get('city')"
+                                       autocomplete="address-level2" maxlength="80"/>
+                            </div>
+                        </div>
+                        <span t-if="errors.get('name')" class="o_ocd_error" role="alert" t-out="errors['name']"/>
+                        <fieldset class="o_ocd_fieldset">
+                            <legend class="o_ocd_label">What do you sell?</legend>
+                            <div class="o_ocd_tiles">
+                                <t t-foreach="categories" t-as="category">
+                                    <label class="o_ocd_tile">
+                                        <input type="radio" name="category_id" t-att-value="category.id"
+                                               t-att-checked="str(category.id) == values.get('category_id') or None"
+                                               t-att-data-label="category.name"/>
+                                        <span>
+                                            <t t-call="ocd_live.tile_icon" tile="category.icon"/>
+                                            <t t-out="category.name"/>
+                                        </span>
+                                    </label>
+                                </t>
+                            </div>
+                            <span t-if="errors.get('category')" class="o_ocd_error" role="alert" t-out="errors['category']"/>
+                        </fieldset>
+                        <div class="o_ocd_field">
+                            <label for="f-phone" class="o_ocd_label">Your WhatsApp</label>
+                            <t t-call="ocd_live.phone_field" field_id.f="f-phone" phone_value="values.get('phone')"/>
+                            <span t-if="errors.get('phone')" class="o_ocd_error" role="alert" t-out="errors['phone']"/>
+                        </div>
+                    </t>
+                    <label for="f-optin" class="o_ocd_check">
+                        <input id="f-optin" type="checkbox" name="optin" value="1" t-att-checked="values.get('optin') or None"/>
+                        Receive my ticket and my reminders on WhatsApp
+                    </label>
+                    <fieldset t-if="mode == 'studio'" class="o_ocd_fieldset">
+                        <legend class="o_ocd_label">At the studio, you need</legend>
+                        <div class="o_ocd_tiles">
+                            <t t-foreach="needs" t-as="need">
+                                <label class="o_ocd_tile">
+                                    <input type="radio" name="studio_need" t-att-value="need[0]"
+                                           t-att-checked="need[0] == values.get('studio_need') or None"/>
+                                    <span>
+                                        <t t-call="ocd_live.tile_icon" tile="need[0]"/>
+                                        <t t-out="need[1]"/>
+                                    </span>
+                                </label>
+                            </t>
+                        </div>
+                    </fieldset>
+                    <div t-if="not vendor" class="o_ocd_field">
+                        <span class="o_ocd_label">Your banner during the live</span>
+                        <div class="o_ocd_banner">
+                            <span class="o_ocd_banner_tag">OCD</span>
+                            <span>
+                                <b class="o_ocd_banner_name" t-out="values.get('name') or 'Awa Mensah'"/>
+                                <span class="o_ocd_banner_line">
+                                    <span class="o_ocd_banner_category"/>
+                                    <span class="o_ocd_banner_city" t-out="values.get('city') or ''"/>
+                                    <span class="o_ocd_banner_phone"/>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </main>
+                <t t-call="ocd_live.aside"/>
+                <div class="o_ocd_actions">
+                    <button type="submit" class="o_ocd_cta">Continue</button>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- Payment and ticket                                             -->
+    <!-- ============================================================== -->
+
+    <template id="pay" name="OCD Live: pay">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame">
+                <main class="o_ocd_main o_ocd_pay o_ocd_poll" t-att-data-state="state"
+                      t-att-data-poll-url="status_url if state == 'waiting' else None"
+                      t-att-data-access-token="access_token">
+                    <h1 class="o_ocd_h1">Pay</h1>
+                    <div class="o_ocd_recap">
+                        <b t-out="what"/>
+                        <span t-if="when" t-out="when"/>
+                        <small t-if="hold and state in ('form', 'failed', 'waiting')" t-out="hold"/>
+                    </div>
+                    <div t-if="state == 'failed'" class="o_ocd_failed" role="alert">
+                        <b>The payment did not go through.</b>
+                        <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.</span>
+                    </div>
+                    <t t-if="state in ('form', 'failed')">
+                        <div class="o_ocd_with_what">
+                            <span>With what?</span>
+                            <t t-if="country">
+                                <span t-attf-class="o_ocd_flag o_ocd_flag_#{(country.code or '').lower()}"/>
+                                <span class="o_ocd_with_country" t-out="country.name"/>
+                            </t>
+                        </div>
+                        <div class="o_ocd_payment">
+                            <t t-call="payment.form" sale_order_id="order.id"/>
+                        </div>
+                        <div class="o_ocd_total">
+                            <span>Total</span>
+                            <b t-out="total"/>
+                        </div>
+                    </t>
+                    <t t-elif="state == 'waiting'">
+                        <div class="o_ocd_wait" role="status">
+                            <div class="o_ocd_wait_head">
+                                <span class="o_ocd_spinner" aria-hidden="true"/>
+                                <b>Payment in progress</b>
+                            </div>
+                            <div class="o_ocd_wait_text">
+                                <t t-call="payment.state_header"/>
+                            </div>
+                            <small>Type your secret code on your phone only, never here. This page updates by itself.</small>
+                        </div>
+                        <a t-if="tx.state == 'pending'" t-att-href="change_url" class="o_ocd_cta o_ocd_cta_line">Change the number or the method</a>
+                        <div class="o_ocd_total">
+                            <span>Total</span>
+                            <b t-out="total"/>
+                        </div>
+                    </t>
+                    <t t-elif="state == 'done'">
+                        <div class="o_ocd_ok o_ocd_ok_big" role="status">
+                            <b>Payment received</b>
+                            <span t-if="ticket_url">Your live is booked. The ticket and the receipt arrive on WhatsApp.</span>
+                            <span t-else="">Thank you. The receipt arrives on WhatsApp.</span>
+                        </div>
+                        <div class="o_ocd_total">
+                            <span>Total</span>
+                            <b t-out="total"/>
+                        </div>
+                        <div class="o_ocd_actions">
+                            <a t-if="ticket_url" t-att-href="ticket_url" class="o_ocd_cta">See my ticket</a>
+                            <a t-else="" href="/ocd/espace/moi" class="o_ocd_cta">See my space</a>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="o_ocd_failed" role="status">
+                            <b>This booking is cancelled.</b>
+                            <span>The hour was not paid in time and was offered again.</span>
+                        </div>
+                        <div class="o_ocd_actions">
+                            <a href="/ocd" class="o_ocd_cta">Book a live</a>
+                        </div>
+                    </t>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="payment_status" name="OCD Live: payment in progress">
+        <!-- The waiting page of Odoo while the payment is processed, with the look of OCD Live.
+             The element named o_payment_status is used by Odoo to send the vendor back to the
+             payment page of OCD Live once the payment is processed. -->
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame">
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">Pay</h1>
+                    <div t-if="payment_not_found" class="o_ocd_info">
+                        Your payment is on its way. You receive the confirmation on WhatsApp within a few minutes.
+                    </div>
+                    <div t-else="" name="o_payment_status" class="o_ocd_wait" role="status"
+                         t-att-data-transaction-reference="tx.reference"
+                         t-att-data-landing-route="tx.landing_route"
+                         t-att-data-notification-channel="notification_channel">
+                        <div class="o_ocd_wait_head">
+                            <span class="o_ocd_spinner" aria-hidden="true"/>
+                            <b>One moment</b>
+                        </div>
+                        <span>Your payment is being processed.</span>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="ticket" name="OCD Live: ticket">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_ticket_page">
+                <main class="o_ocd_main">
+                    <div class="o_ocd_done_title">
+                        <span class="o_ocd_check_round"><t t-call="ocd_live.icon" icon.f="check"/></span>
+                        <h1 class="o_ocd_h1">It is booked.</h1>
+                    </div>
+                    <div t-if="moved" class="o_ocd_ok o_ocd_info_icon" role="status">
+                        <t t-call="ocd_live.icon" icon.f="check"/>
+                        <span>Your live is moved. The new ticket is below.</span>
+                    </div>
+                    <div t-if="sent == '1'" class="o_ocd_ok o_ocd_info_icon" role="status">
+                        <t t-call="ocd_live.icon" icon.f="check"/>
+                        <span>The ticket is sent on WhatsApp.</span>
+                    </div>
+                    <div t-if="sent == '0'" class="o_ocd_info" role="status">
+                        WhatsApp is not available now: keep this page.
+                    </div>
+                    <div class="o_ocd_ticket">
+                        <div class="o_ocd_ticket_rows">
+                            <div class="o_ocd_ticket_row">
+                                <t t-call="ocd_live.icon" icon.f="calendar"/>
+                                <span class="o_ocd_big" t-out="day"/>
+                            </div>
+                            <div class="o_ocd_ticket_row">
+                                <t t-call="ocd_live.icon" icon.f="clock"/>
+                                <span>
+                                    <span class="o_ocd_big" t-out="hours"/>
+                                    <small t-out="tz_line"/>
+                                </span>
+                            </div>
+                            <div class="o_ocd_ticket_row">
+                                <t t-call="ocd_live.icon" icon.f="pin"/>
+                                <span>
+                                    <b t-out="place"/>
+                                    <small t-out="place_line"/>
+                                </span>
+                            </div>
+                            <div class="o_ocd_ticket_row">
+                                <t t-call="ocd_live.icon" icon.f="user"/>
+                                <span>
+                                    <b t-out="who"/>
+                                    <small t-out="package_line"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="o_ocd_ticket_code">
+                            <img t-attf-src="/report/barcode/QR/#{booking.ticket_code}?width=192&amp;height=192"
+                                 alt="QR code of the ticket" width="96" height="96"/>
+                            <span>
+                                <b t-out="booking.ticket_code"/>
+                                <small t-out="code_line"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="o_ocd_info o_ocd_info_icon">
+                        <t t-call="ocd_live.icon" icon.f="bell"/>
+                        <span>Reminder on WhatsApp the day before and one hour before.</span>
+                    </div>
+                    <div class="o_ocd_grid2 o_ocd_ticket_links">
+                        <a t-if="movable" t-att-href="move_url" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">Move my live</a>
+                        <a t-if="receipt_url" t-att-href="receipt_url" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">My receipt</a>
+                    </div>
+                </main>
+                <div class="o_ocd_actions">
+                    <form t-att-action="send_url" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="o_ocd_cta">
+                            <t t-call="ocd_live.icon" icon.f="chat"/>
+                            <span>Receive on WhatsApp</span>
+                        </button>
+                    </form>
+                    <a href="/ocd/espace/moi" class="o_ocd_cta o_ocd_cta_ghost">See my lives</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

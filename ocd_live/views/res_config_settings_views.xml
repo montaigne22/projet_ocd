@@ -22,6 +22,7 @@
                                 <span>Each live lasts <field name="ocd_slot_hours" widget="float_time" class="oe_inline"/></span>
                                 <span><field name="ocd_slots_per_day" class="oe_inline"/> lives per day</span>
                                 <span>Time zone <field name="ocd_studio_tz" class="oe_inline"/></span>
+                                <span>City <field name="ocd_studio_city" class="oe_inline"/></span>
                             </div>
                         </setting>
                         <setting id="ocd_hold_setting" string="Slot held during the payment"
@@ -52,6 +53,22 @@
                         </setting>
                         <setting id="ocd_booking_flow_setting" string="Order of the steps on the website" company_dependent="1">
                             <field name="ocd_booking_flow" widget="radio"/>
+                        </setting>
+                        <setting id="ocd_price_rules_setting" string="Price of the hours"
+                                 help="Make some hours more or less expensive, e.g. Saturday evening +25 %. Without rule, the prices of the packages apply.">
+                            <button name="%(ocd_live.ocd_live_price_rule_action)d" type="action" string="Price of the hours"
+                                    icon="oi-arrow-right" class="btn-link"/>
+                        </setting>
+                    </block>
+                    <block title="Payments" name="ocd_live_payments">
+                        <setting id="ocd_payment_providers_setting" string="Payment providers"
+                                 help="The payment page offers the providers of Odoo that take the country and the currency of the vendor: Campay in Cameroon, Mobile Money checked by the team, and any provider added later.">
+                            <button name="%(payment.action_payment_provider)d" type="action" string="Payment providers"
+                                    icon="oi-arrow-right" class="btn-link"/>
+                        </setting>
+                        <setting id="ocd_move_limit_setting" string="Move a live" company_dependent="1"
+                                 help="The vendors can move their live from their space until this time before.">
+                            <span><field name="ocd_move_limit_hours" class="oe_inline"/> hours before</span>
                         </setting>
                     </block>
                     <block title="Vendors" name="ocd_live_vendors">

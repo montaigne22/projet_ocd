@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_live_price_rule_view_list" model="ir.ui.view">
+        <field name="name">ocd.live.price.rule.view.list</field>
+        <field name="model">ocd.live.price.rule</field>
+        <field name="arch" type="xml">
+            <list string="Price of the hours" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="percent"/>
+                <field name="mode"/>
+                <field name="hour_from" widget="float_time"/>
+                <field name="hour_to" widget="float_time"/>
+                <field name="on_mon" string="Mon." optional="show"/>
+                <field name="on_tue" string="Tue." optional="show"/>
+                <field name="on_wed" string="Wed." optional="show"/>
+                <field name="on_thu" string="Thu." optional="show"/>
+                <field name="on_fri" string="Fri." optional="show"/>
+                <field name="on_sat" string="Sat." optional="show"/>
+                <field name="on_sun" string="Sun." optional="show"/>
+                <field name="date_from" optional="show"/>
+                <field name="date_to" optional="show"/>
+                <field name="product_tmpl_ids" widget="many2many_tags" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_live_price_rule_action" model="ir.actions.act_window">
+        <field name="name">Price of the hours</field>
+        <field name="res_model">ocd.live.price.rule</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Make some hours more or less expensive</p>
+            <p>
+                For example, Saturday from 18:00 to 22:00: +25 %, or Monday morning: -15 %.
+                The change applies to the price of one live, in the currency of each vendor.
+                The first rule of the list that matches a live applies. Without rule, the
+                prices of the packages apply.
+            </p>
+        </field>
+    </record>
+
+</odoo>

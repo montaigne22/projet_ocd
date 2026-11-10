@@ -10,6 +10,18 @@ class OcdLiveCategory(models.Model):
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
     color = fields.Integer()
+    icon = fields.Selection(
+        selection=[
+            ("food", "Food"),
+            ("clothes", "Clothes"),
+            ("beauty", "Beauty"),
+            ("phone", "Phones"),
+            ("home", "Home"),
+            ("other", "Other"),
+        ],
+        default="other",
+        help="Pictogram shown on the website.",
+    )
     vendor_count = fields.Integer(compute="_compute_vendor_count")
 
     def _compute_vendor_count(self):

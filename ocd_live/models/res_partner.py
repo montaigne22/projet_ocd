@@ -51,6 +51,11 @@ class ResPartner(models.Model):
     ocd_listing_ids = fields.One2many(
         comodel_name="ocd.directory.listing", inverse_name="partner_id", string="Directory Links"
     )
+    ocd_whatsapp_optin = fields.Boolean(
+        string="Messages On WhatsApp",
+        default=True,
+        help="The vendor receives the ticket, the reminders and the news on WhatsApp.",
+    )
     ocd_login_code_hash = fields.Char(copy=False, groups="base.group_system")
     ocd_login_code_expiry = fields.Datetime(copy=False, groups="base.group_system")
     ocd_login_code_attempts = fields.Integer(copy=False, groups="base.group_system")

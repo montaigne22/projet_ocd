@@ -33,6 +33,7 @@
         <field name="ocd_live_count">2</field>
         <field name="ocd_live_hours">1.5</field>
         <field name="ocd_badge">x2</field>
+        <field name="ocd_save_tag">per_live</field>
         <field name="sequence">2</field>
     </record>
 
@@ -47,6 +48,7 @@
         <field name="ocd_live_count">1</field>
         <field name="ocd_live_hours">4</field>
         <field name="ocd_badge">4 h</field>
+        <field name="ocd_save_tag">per_hour</field>
         <field name="sequence">3</field>
     </record>
 
@@ -105,6 +107,18 @@
         <field name="ocd_product_kind">directory_pass</field>
         <field name="ocd_pass_days">30</field>
         <field name="sequence">10</field>
+    </record>
+
+    <!-- Line of the quotation for an hour that costs more or less (price of the hours) -->
+    <record id="product_hour_price" model="product.template">
+        <field name="name">Price of the hour</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="product_category_lives"/>
+        <field name="list_price">0</field>
+        <field name="invoice_policy">order</field>
+        <field name="sale_ok" eval="False"/>
+        <field name="ocd_product_kind">hour_price</field>
+        <field name="sequence">20</field>
     </record>
 
 </odoo>

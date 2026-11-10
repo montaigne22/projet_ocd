@@ -2,6 +2,7 @@ import re
 from datetime import date, timedelta
 
 from odoo import fields
+from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import format_date
 
@@ -34,7 +35,7 @@ def first_bookable_day():
 
 
 def day_label(day):
-    return format_date(request.env, day, date_format="EEEE d MMMM")
+    return day_text(day, capital=True)
 
 
 def calendar_weeks(slot_count, mode, weeks=6):
@@ -113,9 +114,258 @@ def voice_languages():
 
 
 def page_values(voice_key, **values):
-    """Values shared by all the pages: the key of the voice and the voice languages."""
-    return {"voice_key": voice_key, "voice_languages": voice_languages(), **values}
+    """Values shared by all the pages: the voice of the page (key, languages and the sentence
+    shown while it speaks) and the setting of the vendor login."""
+    prompt = request.env["ocd.voice.prompt"].sudo()
+    if voice_key:
+        prompt = prompt.search([("key", "=", voice_key)], limit=1)
+    return {
+        "voice_key": voice_key if prompt else False,
+        "voice_languages": voice_languages(),
+        "voice_caption": prompt.with_context(lang=request.env.lang).text if prompt else "",
+        "ocd_company": company(),
+        **values,
+    }
 
 
 def now():
     return fields.Datetime.now()
+
+# Countries of the directory: dialing code and number of digits of a mobile number
+COUNTRY_PHONES = {
+    "TG": ("+228", 8),
+    "CM": ("+237", 9),
+    "BJ": ("+229", 10),
+    "CI": ("+225", 10),
+    "SN": ("+221", 9),
+}
+
+
+def directory_countries():
+    countries = request.env["res.country"].sudo().search([("code", "in", list(COUNTRY_PHONES))])
+    order = list(COUNTRY_PHONES)
+    return countries.sorted(lambda c: order.index(c.code))
+
+
+def dial_rows(selected=None):
+    """Return the countries of the phone fields: flag, dialing code and size of the number."""
+    rows = []
+    for country in directory_countries():
+        dial, size = COUNTRY_PHONES[country.code]
+        rows.append({
+            "country": country,
+            "flag": country.code.lower(),
+            "dial": dial,
+            "size": size,
+            "selected": selected == country,
+        })
+    if rows and not any(row["selected"] for row in rows):
+        rows[0]["selected"] = True
+    return rows
+
+
+def default_country():
+    """Return the country to propose first: the one of the visitor, else the one of the studio."""
+    countries = directory_countries()
+    geoip_code = request.geoip.country_code
+    return (
+        countries.filtered(lambda c: c.code == geoip_code)
+        or (company().country_id & countries)
+        or countries.filtered(lambda c: c.code == "TG")
+    )[:1]
+
+
+def normalize_phone(country, phone):
+    """Return the number with its dialing code, or False when it has not the right length."""
+    digits = re.sub(r"\D", "", phone or "")
+    dial, size = COUNTRY_PHONES.get(country.code, ("", 8)) if country else ("", 8)
+    dial_digits = dial.lstrip("+")
+    if dial_digits and digits.startswith(dial_digits) and len(digits) == len(dial_digits) + size:
+        digits = digits[len(dial_digits):]
+    if len(digits) != size:
+        return False
+    return f"{dial} {digits}"
+
+
+def local_digits(country, phone):
+    """Return the number without its dialing code, as the vendor types it."""
+    digits = re.sub(r"\D", "", phone or "")
+    dial = COUNTRY_PHONES.get(country.code, ("", 8))[0].lstrip("+") if country else ""
+    if dial and digits.startswith(dial):
+        digits = digits[len(dial):]
+    return digits
+
+
+def steps(flow, page):
+    """Return the number of the step of `page` in the booking flow (5 steps)."""
+    order = ["day", "hour", "package", "infos", "pay"]
+    if flow == "package_first":
+        order = ["package", "day", "hour", "infos", "pay"]
+    return order.index(page) + 1
+
+
+def _first_of_month(text, day):
+    """French writes the first day of the month "1er"."""
+    if day.day == 1 and (request.env.lang or "").startswith("fr"):
+        return re.sub(r"(?<!\d)1(?!\d)", "1er", text, count=1)
+    return text
+
+
+def day_text(day, pattern="EEEE d MMMM", capital=False):
+    """Return `day` written for the vendor, e.g. "Mardi 1er décembre" or "mar. 1er déc."."""
+    text = _first_of_month(format_date(request.env, day, date_format=pattern), day)
+    return text[:1].upper() + text[1:] if capital else text
+
+
+def short_day(day, capital=False):
+    return day_text(day, "EEE d MMM", capital=capital)
+
+
+def money(amount, currency):
+    """Return the amount in `currency`, written by Odoo for the language of the visitor."""
+    from odoo.tools.misc import format_amount
+
+    return format_amount(request.env, amount, currency)
+
+
+def pricelist(vendor=None, country=None):
+    """Return the pricelist Odoo applies to the vendor, or to a contact of `country` (the one
+    of the visitor by default): its currency is the currency of the quotation. Empty when the
+    pricelists are not used: the prices are then the sales prices, in the company currency."""
+    Pricelist = request.env["product.pricelist"].sudo().with_company(company())
+    if vendor:
+        return vendor.sudo().with_company(company()).property_product_pricelist or Pricelist
+    if not request.env["res.groups"].sudo()._is_feature_enabled("product.group_product_pricelist"):
+        return Pricelist
+    country = country or default_country()
+    if not country:
+        return Pricelist
+    return Pricelist._get_country_pricelist_multi([country.id]).get(country.id) or Pricelist
+
+
+def package_price(product, prices):
+    """Return what is paid for one `product` with the pricelist `prices`, taxes included as on
+    the quotation, and the currency."""
+    if prices:
+        amount, currency = prices._get_product_price(product, 1.0), prices.currency_id
+    else:
+        amount, currency = product.list_price, product.currency_id
+    taxes = product.sudo().taxes_id._filter_taxes_by_company(company())
+    if taxes:
+        amount = taxes.compute_all(amount, currency, 1.0, product=product)["total_included"]
+    return amount, currency
+
+
+def studio_city():
+    return company().ocd_studio_city or ""
+
+
+def live_counts():
+    """Return the lives of the moment of the directory, and their number per country."""
+    listings = request.env["ocd.directory.listing"].sudo().search(
+        [("state", "=", "published"), ("window_end", ">", now())],
+        order="checked_at desc, id desc",
+    )
+    counts = {}
+    for listing in listings:
+        counts[listing.country_id] = counts.get(listing.country_id, 0) + 1
+    return listings, counts
+
+
+def country_chips(counts):
+    """Return the countries of the directory, the ones with the most lives first."""
+    rows = [
+        {"country": country, "flag": country.code.lower(), "count": counts.get(country, 0)}
+        for country in directory_countries()
+    ]
+    rows.sort(key=lambda row: -row["count"])
+    return rows
+
+
+class FormErrors(UserError):
+    """The errors of a form, each with the field it is about."""
+
+    def __init__(self, message, errors):
+        super().__init__(message)
+        self.errors = errors
+
+
+def phone_error(country):
+    size = COUNTRY_PHONES.get(country.code, ("", 8))[1] if country else 8
+    return request.env._("Your number has %s digits.", size)
+
+
+def find_or_create_vendor(post, need_category=True):
+    """Return the vendor of a public form (name, WhatsApp number and its country, category,
+    city, opt-in). A known number with the same name is the same vendor; otherwise a new
+    vendor is created, checked later by the team. Every error is raised at once, with the
+    field it is about."""
+    env = request.env
+    name = clean_text(post.get("name"))
+    country = env["res.country"].sudo().browse(int(post.get("country_id") or 0)).exists()
+    phone = normalize_phone(country, post.get("phone"))
+    category = env["ocd.live.category"].sudo().browse(int(post.get("category_id") or 0)).exists()
+    errors = {}
+    if len(name) < 2:
+        errors["name"] = env._("Write your name.")
+    if not phone:
+        errors["phone"] = phone_error(country)
+    if need_category and not category:
+        errors["category"] = env._("Choose what you sell.")
+    if errors:
+        raise FormErrors(env._("Check the form."), errors)
+    Partner = env["res.partner"].sudo()
+    optin = bool(post.get("optin"))
+    vendor = Partner._ocd_find_vendor_by_phone(phone)
+    if vendor and vendor.name.casefold() == name.casefold():
+        if optin and not vendor.ocd_whatsapp_optin:
+            vendor.ocd_whatsapp_optin = True
+        return vendor
+    vendor = Partner.create({
+        "name": name,
+        "ocd_business": category.name if category else False,
+        "phone": phone,
+        "city": clean_text(post.get("city")),
+        "country_id": country.id,
+        "ocd_category_id": category.id,
+        "ocd_is_vendor": True,
+        "ocd_whatsapp_optin": optin,
+        "is_company": True,
+    })
+    if company().ocd_vendor_login in ("link", "whatsapp_code"):
+        # A new vendor: this browser opens its space without asking for the code
+        request.session[SESSION_VENDOR] = vendor.id
+    return vendor
+
+
+def windows_info(moment=None):
+    """Return the checking windows of the directory: whether one is open now, its end, the
+    start of the next one, and all the windows of a day."""
+    current = company()
+    Window = request.env["ocd.directory.window"].sudo()
+    now_value = moment or now()
+    found = Window._ocd_find(moment=now_value, company=current)
+    is_open = bool(found and found[1] <= now_value)
+    windows = Window.search([("company_id", "in", (current.id, False))])
+    return {
+        "open": is_open,
+        "end": current._ocd_to_local(found[2]).strftime("%H:%M") if found else False,
+        "next": current._ocd_to_local(found[1]).strftime("%H:%M") if found else False,
+        "next_start": found[1] if found else False,
+        "rows": [
+            {
+                "name": window.name,
+                "hours": "%s – %s" % (_hour_text(window.start_hour), _hour_text(window.end_hour)),
+            }
+            for window in windows
+        ],
+    }
+
+
+def _hour_text(value):
+    minutes = round(value * 60)
+    return f"{minutes // 60:02d}:{minutes % 60:02d}"
+
+
+def initials(name):
+    return "".join(word[:1] for word in (name or "").split()[:2]).upper()

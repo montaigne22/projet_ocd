@@ -40,3 +40,5 @@ class ResConfigSettings(models.TransientModel):
     ocd_calendar_mode = fields.Selection(related="company_id.ocd_calendar_mode", readonly=False)
     ocd_booking_flow = fields.Selection(related="company_id.ocd_booking_flow", readonly=False)
     ocd_vendor_login = fields.Selection(related="company_id.ocd_vendor_login", readonly=False)
+    ocd_move_limit_hours = fields.Integer(related="company_id.ocd_move_limit_hours", readonly=False)
+    ocd_studio_city = fields.Char(related="company_id.ocd_studio_city", readonly=False)

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- Space of the vendor: log in, then the next lives, the lives    -->
+    <!-- to place, the directory pass and the WhatsApp messages.        -->
+    <!-- ============================================================== -->
+
+    <template id="space_login" name="OCD Live: find my space">
+        <t t-call="ocd_live.app">
+            <form action="/ocd/connexion" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">Find your space.</h1>
+                    <p class="o_ocd_intro">
+                        <t t-if="login == 'whatsapp_code'">No password. We send you a code on WhatsApp.</t>
+                        <t t-else="">No password. We send you a link on WhatsApp.</t>
+                    </p>
+                    <div class="o_ocd_field o_ocd_field_big">
+                        <label for="c-phone" class="o_ocd_label">Your WhatsApp number</label>
+                        <t t-call="ocd_live.phone_field" field_id.f="c-phone"/>
+                        <span t-if="error" class="o_ocd_error" role="alert" t-out="error"/>
+                    </div>
+                    <div t-if="sent" class="o_ocd_ok o_ocd_ok_big" role="status">
+                        <b>Look at your WhatsApp.</b>
+                        <span>Touch the link you received: your space opens by itself. This link works only for you.</span>
+                    </div>
+                    <div t-else="" class="o_ocd_info">
+                        Your ticket and your reminders already come with this link. Keep this message in WhatsApp to come back whenever you want.
+                    </div>
+                </main>
+                <div class="o_ocd_actions">
+                    <button t-if="sent" type="submit" class="o_ocd_cta o_ocd_cta_ghost">I received nothing: send again</button>
+                    <button t-else="" type="submit" class="o_ocd_cta">
+                        <t t-if="login == 'whatsapp_code'">Receive my code</t>
+                        <t t-else="">Receive my link</t>
+                    </button>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="space_login_code" name="OCD Live: code received on WhatsApp">
+        <t t-call="ocd_live.app">
+            <form action="/ocd/connexion/code" method="post" class="o_ocd_frame o_ocd_narrow">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">Type the code.</h1>
+                    <p class="o_ocd_intro">If your number is known, a code of 6 digits arrives on your WhatsApp.</p>
+                    <div class="o_ocd_field o_ocd_field_big">
+                        <label for="c-code" class="o_ocd_label">Code</label>
+                        <input id="c-code" name="code" class="o_ocd_input o_ocd_code" inputmode="numeric"
+                               autocomplete="one-time-code" maxlength="6" required="required"/>
+                        <span t-if="error" class="o_ocd_error" role="alert" t-out="error"/>
+                    </div>
+                </main>
+                <div class="o_ocd_actions">
+                    <button type="submit" class="o_ocd_cta">Open my space</button>
+                    <a href="/ocd/connexion" class="o_ocd_cta o_ocd_cta_ghost">Ask for a new code</a>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="space" name="OCD Live: my space">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_space">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="vendor.name"/>
+                    <span class="o_ocd_tag o_ocd_tag_flag">
+                        <span t-if="flag" t-attf-class="o_ocd_flag o_ocd_flag_#{flag}"/>
+                        <t t-out="vendor_line"/>
+                    </span>
+
+                    <t t-foreach="lives" t-as="live">
+                        <h2 t-if="live_first" class="o_ocd_section">My next live</h2>
+                        <h2 t-if="live_index == 1" class="o_ocd_section">Then</h2>
+                        <div class="o_ocd_live_card">
+                            <div class="o_ocd_live_card_head">
+                                <span>
+                                    <b t-out="live['when']"/>
+                                    <small t-out="live['line']"/>
+                                </span>
+                                <span t-if="live['paid']" class="o_ocd_badge_ok">Paid</span>
+                                <span t-else="" class="o_ocd_badge_wait">To pay</span>
+                            </div>
+                            <div class="o_ocd_live_card_buttons">
+                                <t t-if="live['paid']">
+                                    <a t-att-href="live['ticket_url']" class="o_ocd_button o_ocd_button_dark">Ticket</a>
+                                    <a t-if="live['move_url']" t-att-href="live['move_url']" class="o_ocd_button o_ocd_button_line">Move</a>
+                                    <a t-if="live['receipt_url']" t-att-href="live['receipt_url']" class="o_ocd_button">Receipt</a>
+                                </t>
+                                <a t-elif="live['pay_url']" t-att-href="live['pay_url']" class="o_ocd_button o_ocd_button_orange">Pay</a>
+                            </div>
+                            <small t-if="live_first and live['paid']" class="o_ocd_muted">You can move your live until <t t-out="move_limit"/> h before.</small>
+                        </div>
+                    </t>
+
+                    <t t-if="credits">
+                        <h2 class="o_ocd_section">Lives to place</h2>
+                        <t t-foreach="credits" t-as="card">
+                            <div class="o_ocd_live_card">
+                                <div class="o_ocd_live_card_head">
+                                    <span>
+                                        <b t-out="card['name']"/>
+                                        <small>
+                                            <t t-out="card['line']"/>
+                                            <t t-if="card['expiry']"> · <t t-out="card['expiry']"/></t>
+                                        </small>
+                                    </span>
+                                </div>
+                                <a t-att-href="card['place_url']" class="o_ocd_button o_ocd_button_orange">Place a live</a>
+                            </div>
+                        </t>
+                    </t>
+
+                    <h2 class="o_ocd_section">Directory of the lives</h2>
+                    <div class="o_ocd_sand_card">
+                        <t t-if="pass_end">
+                            <div class="o_ocd_live_card_head">
+                                <span>
+                                    <b>Pass until <t t-out="pass_end"/></b>
+                                    <small>Reminder on WhatsApp <t t-out="reminder_days"/> days before the end</small>
+                                </span>
+                                <span class="o_ocd_badge_ok">Active</span>
+                            </div>
+                            <a t-if="listing" t-attf-href="/lives/statut/#{listing.id}" class="o_ocd_button">
+                                <span class="o_ocd_live_dot" aria-hidden="true"/>
+                                See where my link is
+                            </a>
+                            <a t-else="" href="/lives/envoyer" class="o_ocd_button">
+                                <span class="o_ocd_live_dot" aria-hidden="true"/>
+                                Send the link of my live
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <div class="o_ocd_live_card_head">
+                                <span>
+                                    <b>No pass</b>
+                                    <small>Show your live to your country during 30 days.</small>
+                                </span>
+                            </div>
+                            <a href="/lives/pass" class="o_ocd_button">Take the pass</a>
+                        </t>
+                    </div>
+
+                    <div class="o_ocd_space_shop"/>
+
+                    <form action="/ocd/espace/moi/whatsapp" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="o_ocd_toggle" role="switch"
+                                t-att-aria-checked="'true' if vendor.ocd_whatsapp_optin else 'false'">
+                            <span class="o_ocd_toggle_box" aria-hidden="true">
+                                <t t-if="vendor.ocd_whatsapp_optin" t-call="ocd_live.icon" icon.f="check"/>
+                            </span>
+                            <span t-if="vendor.ocd_whatsapp_optin">Tickets and reminders on WhatsApp: on</span>
+                            <span t-else="">Tickets and reminders on WhatsApp: off</span>
+                        </button>
+                    </form>
+
+                    <a href="/ocd" class="o_ocd_cta">Book another live</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>
