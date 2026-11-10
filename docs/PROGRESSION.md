@@ -21,14 +21,14 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Données de démonstration désinstallables | ✅ fait, testé |
 | Traductions françaises de tous les modules | ✅ faites (à compléter à chaque nouvel écran) |
 
-Derniers tests lancés : 99 tests OCD sans échec (ocd_live, ocd_live_shop, ocd_live_whatsapp), puis
-les tests ajoutés écran par écran (planning, vérification, régie, dispatch, commandes, livreurs,
-recrutement) sans échec.
+Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf la démo) :
+**117 tests, aucun échec**.
 
 ## Reste à faire, par priorité
 
-1. **Envoyer le dépôt sur GitHub** : le dépôt privé `projet_ocd` doit être créé sur GitHub par le
-   propriétaire, avec l'application GitHub de Claude autorisée dessus ; tout est commité en local.
+1. **Envoyer le dépôt sur GitHub** : le propriétaire crée le dépôt privé vide `projet_ocd` sur GitHub
+   et y autorise l'application GitHub de Claude ; tout est commité en local et sera envoyé aussitôt,
+   puis à chaque évolution.
 2. **Pages du shop sur le site** fidèles au design (`Shop`, `Vitrine`, `Produit`, `Panier`,
    `Livraison`, `PayerCommande`, `Suivi`, `Replay`, `MesProduits`, `Livrer`, `Tournee`).
 3. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
