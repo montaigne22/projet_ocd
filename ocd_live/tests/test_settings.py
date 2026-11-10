@@ -109,3 +109,18 @@ class TestOcdLiveSettings(OcdLiveCommon):
             "audio_filename": "day-ee.mp3",
         })
         self.assertEqual(prompt._ocd_voice_data(ewe)["url"], f"/ocd/voix/audio/{recording.id}")
+
+    def test_dashboard_figures(self):
+        team = self.env["res.users"].create({
+            "name": "Team", "login": "ocd_dashboard_team",
+            "group_ids": [fields.Command.set(self.env.ref("ocd_live.group_ocd_live_user").ids)],
+        })
+        booking = self._book(self.starts[0], mode="remote")
+        booking._ocd_confirm()
+        data = self.env["ocd.live.dashboard"].with_user(team).get_dashboard_data()
+        sections = {section["key"]: section for section in data["sections"]}
+        self.assertIn("lives", sections)
+        tiles = {tile["key"]: tile for tile in sections["lives"]["tiles"]}
+        self.assertEqual(tiles["host"]["value"], 1)
+        self.assertTrue(tiles["host"]["alert"])
+        self.assertEqual(tiles["host"]["action"]["res_model"], "ocd.live.booking")

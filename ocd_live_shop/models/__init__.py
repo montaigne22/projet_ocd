@@ -12,3 +12,4 @@ from . import ocd_payout
 from . import ocd_cash_remittance
 from . import ocd_live_moment
 from . import ocd_live_booking
+from . import ocd_live_dashboard

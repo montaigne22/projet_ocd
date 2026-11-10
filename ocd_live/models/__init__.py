@@ -16,3 +16,4 @@ from . import sale_order_line
 from . import ocd_voice_language
 from . import ocd_voice_prompt
 from . import ocd_voice_recording
+from . import ocd_live_dashboard

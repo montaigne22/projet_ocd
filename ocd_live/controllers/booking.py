@@ -120,6 +120,12 @@ class OcdLiveBooking(http.Controller):
             raise request.not_found()
         vendor = common.current_vendor()
         countries = request.env["res.country"].sudo().search([("code", "in", [c.upper() for c in DIRECTORY_COUNTRIES])])
+        if not kwargs.get("country_id"):
+            geoip_code = request.geoip.country_code
+            default = countries.filtered(lambda c: c.code == geoip_code) or (
+                common.company().country_id & countries
+            ) or countries.filtered(lambda c: c.code == "TG")
+            kwargs["country_id"] = str(default[:1].id)
         return self._render(
             "ocd_live.booking_infos",
             "infos",

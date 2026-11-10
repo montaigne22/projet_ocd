@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ocd_live.Dashboard">
+        <div class="o_action o_ocd_live_dashboard">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="mb-0">OCD Live</h2>
+                <button type="button" class="btn btn-secondary" t-on-click="() => this.load()">Refresh</button>
+            </div>
+            <t t-foreach="this.data().sections" t-as="section" t-key="section.key">
+                <h4 class="o_ocd_live_dashboard_title" t-out="section.title"/>
+                <div class="o_ocd_live_dashboard_tiles">
+                    <t t-foreach="section.tiles" t-as="tile" t-key="tile.key">
+                        <button type="button" t-att-class="tile.alert ? 'o_ocd_live_dashboard_tile o_ocd_live_dashboard_alert' : 'o_ocd_live_dashboard_tile'"
+                                t-on-click="() => this.open(tile)">
+                            <span class="o_ocd_live_dashboard_value" t-out="tile.value"/>
+                            <span class="o_ocd_live_dashboard_label" t-out="tile.label"/>
+                        </button>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

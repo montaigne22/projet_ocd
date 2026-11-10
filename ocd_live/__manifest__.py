@@ -40,6 +40,7 @@ OCD Live
         "data/ir_cron_data.xml",
         "data/ocd_voice_data.xml",
         "data/website_menu_data.xml",
+        "data/ocd_live_dashboard_data.xml",
         "views/ocd_live_booking_views.xml",
         "views/ocd_live_credit_views.xml",
         "views/ocd_directory_listing_views.xml",
@@ -57,6 +58,9 @@ OCD Live
         "views/ocd_live_menus.xml",
     ],
     "assets": {
+        "web.assets_backend": [
+            "ocd_live/static/src/dashboard/*",
+        ],
         "web.assets_frontend": [
             "ocd_live/static/src/scss/ocd_live.scss",
             "ocd_live/static/src/interactions/voice.js",

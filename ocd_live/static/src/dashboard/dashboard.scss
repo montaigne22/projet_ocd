@@ -1,0 +1,40 @@
+.o_ocd_live_dashboard {
+    padding: 1rem 1.5rem;
+    overflow: auto;
+    .o_ocd_live_dashboard_title {
+        margin-top: 1.25rem;
+    }
+    .o_ocd_live_dashboard_tiles {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+        gap: .75rem;
+    }
+    .o_ocd_live_dashboard_tile {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .25rem;
+        padding: .9rem 1rem;
+        border: 1px solid $border-color;
+        border-radius: .75rem;
+        background: $white;
+        text-align: left;
+        &:hover {
+            border-color: $o-brand-primary;
+        }
+    }
+    .o_ocd_live_dashboard_alert {
+        border-color: $danger;
+        .o_ocd_live_dashboard_value {
+            color: $danger;
+        }
+    }
+    .o_ocd_live_dashboard_value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+    .o_ocd_live_dashboard_label {
+        color: $text-muted;
+    }
+}
