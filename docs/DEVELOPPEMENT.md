@@ -3,13 +3,13 @@
 ## Environnement
 
 - **Odoo 20 Community** (Python 3.13, PostgreSQL 16).
-- Chemin des modules (`addons_path`) : les modules d'Odoo, **ce dépôt**, et le dépôt `tchokos-projet`
-  (pour `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay`, `delivery_cameroon`).
+- Chemin des modules (`addons_path`) : les modules d'Odoo, **ce dépôt**, et le dossier des modules
+  complémentaires `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay`, `delivery_cameroon`.
 - Exemple de `odoo.conf` :
 
 ```ini
 [options]
-addons_path = /opt/odoo20/src/addons,/opt/odoo20/src/odoo/addons,/chemin/tchokos-projet,/chemin/projet_ocd
+addons_path = /opt/odoo20/src/addons,/opt/odoo20/src/odoo/addons,/chemin/modules-complementaires,/chemin/projet_ocd
 db_host = localhost
 db_port = 5432
 data_dir = /opt/odoo20/data
@@ -64,7 +64,7 @@ Ils se connectent avec admin/admin et prennent les écrans en français.
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).
 - Écrans sur mesure du back-office : un modèle abstrait Python qui prépare les données
   (`ocd.live.dashboard`, `ocd.live.planning`, `ocd.live.verification`, `ocd.live.regie`,
-  `ocd.live.dispatch`, `ocd.live.orders`, `ocd.live.couriers`, `ocd.live.tools`) et un composant OWL
+  `ocd.live.dispatch`, `ocd.live.orders`, `ocd.live.couriers`) et un composant OWL
   dans `static/src/<écran>/`. Les modules ajoutent leurs chiffres en héritant des méthodes `_ocd_*`.
 - Icônes : Odoo 20 n'a plus Font Awesome ; utiliser `<i class="oi" data-icon="nom"/>` ou `icon="nom"`
   sur les boutons (noms Material, ex. `refresh`, `payments`, `videocam`).

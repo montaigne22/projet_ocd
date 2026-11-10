@@ -6,7 +6,7 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 
 | Module | Rôle |
 |---|---|
-| `ocd_live` | Réservations (créneaux, paquets, crédits, prix selon l'heure), annuaire des lives et pass, espace vendeur, voix des pages, tableau de bord et écrans de l'équipe (planning, à vérifier, outils), thème du site et du back-office |
+| `ocd_live` | Réservations (créneaux, paquets, crédits, prix selon l'heure), annuaire des lives et pass, espace vendeur, voix des pages, tableau de bord et écrans de l'équipe (planning, à vérifier), thème du site et du back-office |
 | `ocd_live_shop` | Shop des vendeurs : mode de vente et « qui livre » par vendeur, un colis par vendeur, code de livraison, dispatch, livreurs et caisse, paiement à la porte, reversements, régie en direct, commandes de la semaine |
 | `ocd_live_whatsapp` | Messages WhatsApp d'OCD Live (lien personnel, code, live confirmé, rappels, pass, annuaire) avec `whatsapp_cloud` |
 | `ocd_live_shop_whatsapp` | Messages WhatsApp des colis (à préparer, en route avec le code, échec, livré, retourné) |
@@ -14,8 +14,8 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `ocd_delivery_togo` | Régions, villes et quartiers du Togo, point de repère, modes de livraison pour Lomé et le reste du Togo |
 | `ocd_live_demo` | Données de démonstration, retirées entièrement en désinstallant le module |
 
-Les modules `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et `delivery_cameroon`
-viennent du dépôt `tchokos-projet` : ils doivent être dans le chemin des modules (`addons_path`).
+Modules complémentaires requis : `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et
+`delivery_cameroon`. Ce que fait chaque outil pour OCD Live : [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md).
 
 ## Pour reprendre le projet
 
@@ -23,6 +23,7 @@ viennent du dépôt `tchokos-projet` : ils doivent être dans le chemin des modu
 - [`docs/DECISIONS.md`](docs/DECISIONS.md) : les choix validés avec l'équipe OCD.
 - [`docs/ECRANS.md`](docs/ECRANS.md) : chaque écran du design validé et où il est fait dans le code.
 - [`docs/DEVELOPPEMENT.md`](docs/DEVELOPPEMENT.md) : installer, lancer, tester, traduire, faire des captures.
+- [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md) : les outils d'Odoo et ce qu'ils font pour OCD Live.
 - [`prototype/`](prototype/) : le design validé (tous les écrans) et le prototype interactif.
 - [`docs/captures/`](docs/captures/) : captures des écrans tels qu'ils sont aujourd'hui.
 

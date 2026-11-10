@@ -63,7 +63,7 @@ Le design validé est dans [`prototype/design-valide/`](../prototype/design-vali
 | `BoRecrutement` Recrutement | kanban `hr_applicant_view_kanban_ocd_host` avec `js_class="ocd_host_kanban"` | ✅ |
 | `BoParametres` Paramètres | réglages d'Odoo (application OCD Live), présentés en cartes | 🟡 |
 | `BoAutomatisations` Automatisations | liste des tâches automatiques OCD Live, avec interrupteur (administrateurs) | 🟡 |
-| `BoOutils` Outils Odoo utilisés | action `ocd_live.tools` (lit les modules installés) | ✅ |
+| `BoOutils` Outils Odoo utilisés | dans la documentation, pas dans le système : [`docs/OUTILS_ODOO.md`](OUTILS_ODOO.md) | ✅ |
 | `BoWhatsApp` Conversations | écran de `whatsapp_cloud` | 🟡 |
 
 ## Écrans d'équipe sur téléphone

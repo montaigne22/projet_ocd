@@ -13,7 +13,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Site fidèle au design : réservation, annuaire, espace (téléphone, tablette, ordinateur) | ✅ fait |
 | Site : pages du shop (shop, produit, panier, livraison, paiement, suivi, replay, livrer, tournée) | 🟡 fonctionnent, à rapprocher du design |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
-| Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement, outils | ✅ fait |
+| Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
+| Outils Odoo utilisés : dans la documentation ([`OUTILS_ODOO.md`](OUTILS_ODOO.md)), pas dans le système | ✅ fait |
 | Back-office : paramètres, automatisations, conversations WhatsApp | 🟡 écrans d'Odoo présentés au mieux |
 | WhatsApp (messages des lives et des colis) | ✅ fait ; quelques nouveaux messages à brancher (voir plus bas) |
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
@@ -26,18 +27,15 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
 
 ## Reste à faire, par priorité
 
-1. **Envoyer le dépôt sur GitHub** : le propriétaire crée le dépôt privé vide `projet_ocd` sur GitHub
-   et y autorise l'application GitHub de Claude ; tout est commité en local et sera envoyé aussitôt,
-   puis à chaque évolution.
-2. **Pages du shop sur le site** fidèles au design (`Shop`, `Vitrine`, `Produit`, `Panier`,
+1. **Pages du shop sur le site** (en cours) fidèles au design (`Shop`, `Vitrine`, `Produit`, `Panier`,
    `Livraison`, `PayerCommande`, `Suivi`, `Replay`, `MesProduits`, `Livrer`, `Tournee`).
-3. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
+2. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
    (`_ocd_send_ticket`), créneau libéré pour la liste d'attente (`_ocd_send_free_slot`), ouverture du
    créneau de l'annuaire, filtrage par accord WhatsApp du vendeur.
-4. **Paramètres** : page à sections comme le design (`BoParametres`), au lieu des réglages d'Odoo en cartes.
-5. **Automatisations** : catalogue complet « Quand… alors… » avec détail (`BoAutomatisations`).
-6. **Conversations WhatsApp** dans le style du design (`BoWhatsApp`) : écran de `whatsapp_cloud`.
-7. Démo : ajouter des colis livrés et des reversements, et deux autres livreurs, pour remplir tous les écrans.
+3. **Paramètres** : page à sections comme le design (`BoParametres`), au lieu des réglages d'Odoo en cartes.
+4. **Automatisations** : catalogue complet « Quand… alors… » avec détail (`BoAutomatisations`).
+5. **Conversations WhatsApp** dans le style du design (`BoWhatsApp`) : écran de `whatsapp_cloud`.
+6. Démo : ajouter des colis livrés et des reversements, et deux autres livreurs, pour remplir tous les écrans.
 
 ## Points d'attention
 
@@ -47,6 +45,11 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
 - La page « Automatisations » lit les tâches automatiques d'Odoo : elle est réservée aux administrateurs.
 
 ## Journal
+
+### 10 novembre 2026 — outils Odoo dans la documentation, shop du site commencé
+- La page « Outils Odoo utilisés » quitte le back-office : elle devient `docs/OUTILS_ODOO.md`, avec ce
+  que chaque outil fait concrètement pour OCD Live.
+- Dépôt GitHub `projet_ocd` en place : tout y est envoyé à chaque évolution.
 
 ### 10 novembre 2026 — back-office fidèle au design
 - Couleurs et polices dans un seul fichier, partagé par les deux thèmes (site et back-office).

@@ -64,7 +64,7 @@ OCD Live
         "views/ocd_space_templates.xml",
         "wizard/ocd_directory_listing_refuse_views.xml",
         "views/ocd_live_menus.xml",
-        "views/ocd_live_tools_views.xml",
+        "views/ir_cron_views.xml",
     ],
     "assets": {
         # The colours of OCD Live, read by the website and by the back office
@@ -76,7 +76,6 @@ OCD Live
             "ocd_live/static/src/dashboard/*",
             "ocd_live/static/src/planning/*",
             "ocd_live/static/src/verification/*",
-            "ocd_live/static/src/tools/*",
             "ocd_live/static/src/backend/navbar.js",
             "ocd_live/static/src/backend/navbar.xml",
             "ocd_live/static/src/backend/theme.scss",
