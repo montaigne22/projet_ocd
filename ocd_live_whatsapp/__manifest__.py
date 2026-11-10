@@ -25,6 +25,7 @@ The texts are editable in WhatsApp > Templates.
     "data": [
         "data/whatsapp_template_data.xml",
         "data/ir_cron_data.xml",
+        "views/ocd_live_whatsapp_menus.xml",
     ],
     "installable": True,
 }

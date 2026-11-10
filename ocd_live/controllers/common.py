@@ -6,6 +6,8 @@ from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import format_date
 
+from .. import tools
+
 MODES = ("studio", "remote")
 NAME_MAX = 80
 SESSION_VENDOR = "ocd_vendor_id"
@@ -204,17 +206,9 @@ def steps(flow, page):
     return order.index(page) + 1
 
 
-def _first_of_month(text, day):
-    """French writes the first day of the month "1er"."""
-    if day.day == 1 and (request.env.lang or "").startswith("fr"):
-        return re.sub(r"(?<!\d)1(?!\d)", "1er", text, count=1)
-    return text
-
-
 def day_text(day, pattern="EEEE d MMMM", capital=False):
     """Return `day` written for the vendor, e.g. "Mardi 1er décembre" or "mar. 1er déc."."""
-    text = _first_of_month(format_date(request.env, day, date_format=pattern), day)
-    return text[:1].upper() + text[1:] if capital else text
+    return tools.day_text(request.env, day, pattern, capital)
 
 
 def short_day(day, capital=False):
@@ -363,8 +357,7 @@ def windows_info(moment=None):
 
 
 def _hour_text(value):
-    minutes = round(value * 60)
-    return f"{minutes // 60:02d}:{minutes % 60:02d}"
+    return tools.hour_text(value)
 
 
 def initials(name):

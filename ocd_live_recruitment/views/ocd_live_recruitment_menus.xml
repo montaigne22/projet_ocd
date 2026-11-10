@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_applicant_action_ocd_host" model="ir.actions.act_window">
+        <field name="name">Live host · Lomé</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="domain" eval="[('job_id', '=', ref('job_live_host'))]"/>
+        <field name="context" eval="{'default_job_id': ref('job_live_host')}"/>
+    </record>
+
+    <menuitem id="ocd_live_recruitment_menu" name="Recruitment" parent="ocd_live.ocd_live_menu_root" sequence="60"/>
+    <menuitem id="ocd_live_recruitment_host_menu" name="Live host · Lomé" parent="ocd_live_recruitment_menu"
+              action="hr_applicant_action_ocd_host" sequence="10"/>
+
+</odoo>

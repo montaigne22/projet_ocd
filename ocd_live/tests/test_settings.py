@@ -118,9 +118,19 @@ class TestOcdLiveSettings(OcdLiveCommon):
         booking = self._book(self.starts[0], mode="remote")
         booking._ocd_confirm()
         data = self.env["ocd.live.dashboard"].with_user(team).get_dashboard_data()
-        sections = {section["key"]: section for section in data["sections"]}
-        self.assertIn("lives", sections)
-        tiles = {tile["key"]: tile for tile in sections["lives"]["tiles"]}
-        self.assertEqual(tiles["host"]["value"], 1)
-        self.assertTrue(tiles["host"]["alert"])
-        self.assertEqual(tiles["host"]["action"]["res_model"], "ocd.live.booking")
+        tiles = {tile["key"]: tile for tile in data["tiles"]}
+        self.assertEqual(tiles["lives"]["action"]["res_model"], "ocd.live.booking")
+        self.assertIn("passes", tiles)
+        # The remote live without host is to do, and opens the booking
+        todos = {todo["key"]: todo for todo in data["todos"]}
+        todo = todos[f"host_{booking.id}"]
+        self.assertEqual(todo["tone"], "grey")
+        self.assertEqual(todo["action"]["res_id"], booking.id)
+        # The paid booking is in the bar of today, the last of the 14 days
+        self.assertEqual(len(data["chart"]["bars"]), 14)
+        self.assertGreaterEqual(data["chart"]["bars"][-1]["value"], 1)
+        ticks = data["chart"]["ticks"]
+        self.assertEqual(len(ticks), 5)
+        self.assertEqual(ticks[0], 0)
+        self.assertGreaterEqual(ticks[-1], data["chart"]["bars"][-1]["value"])
+        self.assertEqual([row["key"] for row in data["revenue"]["rows"]][:2], ["packages", "passes"])

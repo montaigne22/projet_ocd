@@ -1,0 +1,221 @@
+// Back office of OCD Live, as in the validated design (BoShell): dark bar with the logo and
+// the menus of the app, white bar with the menus of the section, orange buttons, light grey
+// background, Figtree for the text and Bricolage Grotesque for the titles.
+// The colours ($ocd-*) are in ../scss/ocd_tokens.scss, shared with the website.
+
+.o_main_navbar {
+    .o_ocd_navbar_logo {
+        flex: none;
+        align-self: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        margin: 0 0 0 6px;
+    }
+    .o_menu_brand {
+        font-family: "Bricolage Grotesque", "Figtree", sans-serif;
+        font-weight: 800;
+        font-size: 16.5px;
+    }
+    .o_menu_systray .badge {
+        border-radius: 9px;
+        font-weight: 700;
+    }
+}
+.o_ocd_navbar_sections {
+    display: flex;
+    align-self: stretch;
+    margin-left: 6px;
+    min-width: 0;
+    overflow: hidden;
+}
+.o_ocd_navbar_section {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    color: $ocd-bo-faded !important;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none !important;
+    &:hover {
+        color: #FFFFFF !important;
+    }
+    &.o_ocd_current {
+        color: #FFFFFF !important;
+        border-bottom-color: $ocd-orange;
+    }
+}
+.o_ocd_subnav {
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    height: 40px;
+    padding: 0 22px;
+    background: #FFFFFF;
+    border-bottom: 1px solid $ocd-bo-line;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.o_ocd_subnav_item {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    color: $ocd-bo-muted !important;
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none !important;
+    &:hover {
+        color: $ocd-ink !important;
+    }
+    &.o_ocd_current {
+        color: $ocd-ink !important;
+        font-weight: 700;
+        border-bottom-color: $ocd-orange;
+    }
+}
+
+.o_web_client {
+    // Buttons of the design: orange with dark text, slightly rounded
+    .btn-primary {
+        --btn-color: #{$ocd-ink};
+        --btn-hover-color: #{$ocd-ink};
+        --btn-active-color: #{$ocd-ink};
+        --btn-disabled-color: #{$ocd-ink};
+        font-weight: 700;
+    }
+    .btn {
+        border-radius: 8px;
+    }
+    // Control panel: title, search with its facets, pager and views
+    .o_control_panel {
+        background: #FFFFFF;
+        border-bottom: 1px solid $ocd-bo-line;
+        .o_breadcrumb .active, .o_breadcrumb .o_last_breadcrumb_item {
+            font-size: 19px;
+            font-weight: 700;
+            color: $ocd-ink;
+        }
+        .o_breadcrumb .breadcrumb-item:not(.active) {
+            font-size: 15px;
+        }
+    }
+    .o_searchview {
+        border-radius: 8px;
+        min-height: 36px;
+    }
+    .o_searchview_facet {
+        border-radius: 6px;
+        background: $ocd-bo-background;
+        .o_searchview_facet_label {
+            background: transparent;
+        }
+    }
+    .o_cp_switch_buttons .btn.active {
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
+    // Light grey background behind the cards and the lists, as in the design
+    .o_action_manager > .o_action:not(.o_form_view_container) .o_content {
+        background: $ocd-bo-background;
+    }
+    .o_kanban_renderer .o_kanban_record {
+        border-radius: 12px;
+    }
+    .o_list_renderer {
+        background: #FFFFFF;
+    }
+    .badge.text-bg-success, .o_status_green {
+        background-color: #DCF2E5 !important;
+        color: #0A5A31 !important;
+    }
+    h1, h2, h3, .o_form_view .oe_title h1 {
+        font-family: "Bricolage Grotesque", "Figtree", sans-serif;
+    }
+}
+
+// Screens of OCD Live made for the design (dashboard, planning, control room…): a white bar
+// with the title, as the bar of the lists, then the content on the grey background.
+.o_ocd_bo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: $ocd-bo-background;
+    color: $ocd-ink;
+    font-family: $ocd-text;
+    font-size: 14px;
+    line-height: 1.4;
+}
+.o_ocd_bo_header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: none;
+    min-height: 56px;
+    box-sizing: border-box;
+    padding: 8px 22px;
+    background: #FFFFFF;
+    border-bottom: 1px solid $ocd-bo-border;
+    flex-wrap: wrap;
+}
+.o_ocd_bo_title {
+    margin: 0;
+    font-family: $ocd-display;
+    font-weight: 800;
+    font-size: 19px;
+    line-height: 1.2;
+    color: $ocd-ink;
+    white-space: nowrap;
+}
+.o_ocd_bo_facet {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 6px;
+    background: $ocd-bo-background;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.o_ocd_bo_pager {
+    font-size: 13px;
+    color: $ocd-bo-text;
+    white-space: nowrap;
+}
+.o_ocd_bo_push {
+    margin-left: auto;
+}
+.o_ocd_bo_icon_button {
+    width: 34px;
+    height: 34px;
+    display: inline-grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-bo-text;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+}
+.o_ocd_bo_body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 16px 22px;
+}
+@include media-breakpoint-down(md) {
+    .o_ocd_bo_header, .o_ocd_bo_body {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}

@@ -1,40 +1,374 @@
-.o_ocd_live_dashboard {
-    padding: 1rem 1.5rem;
-    overflow: auto;
-    .o_ocd_live_dashboard_title {
-        margin-top: 1.25rem;
+// Dashboard of the team, as in the validated design (BoDashboard)
+.o_ocd_dash {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    h2 {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 16px;
+        line-height: 1.2;
+        color: $ocd-ink;
     }
-    .o_ocd_live_dashboard_tiles {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-        gap: .75rem;
+}
+.o_ocd_dash_tiles {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+}
+.o_ocd_dash_tile {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding: 12px 14px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+    color: $ocd-ink !important;
+    text-decoration: none !important;
+    &:hover {
+        border-color: $ocd-bo-input;
     }
-    .o_ocd_live_dashboard_tile {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: .25rem;
-        padding: .9rem 1rem;
-        border: 1px solid $border-color;
-        border-radius: .75rem;
-        background: $white;
-        text-align: left;
-        &:hover {
-            border-color: $o-brand-primary;
-        }
+    &:focus-visible {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 2px;
     }
-    .o_ocd_live_dashboard_alert {
-        border-color: $danger;
-        .o_ocd_live_dashboard_value {
-            color: $danger;
-        }
+}
+.o_ocd_dash_tile_label, .o_ocd_dash_tile_sub {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: $ocd-bo-muted;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.o_ocd_dash_tile_value {
+    font-family: $ocd-display;
+    font-weight: 800;
+    font-size: 26px;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.o_ocd_dash_tile_sub.o_ocd_tone_red {
+    color: $ocd-red-text;
+}
+.o_ocd_dash_tile_sub.o_ocd_tone_yellow {
+    color: $ocd-yellow-text;
+}
+.o_ocd_dash_row {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 14px;
+    > :first-child {
+        grid-column: span 7;
     }
-    .o_ocd_live_dashboard_value {
-        font-size: 1.8rem;
+    > :last-child {
+        grid-column: span 5;
+    }
+}
+.o_ocd_dash_card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+}
+.o_ocd_dash_chart_card, .o_ocd_dash_todo_card {
+    min-height: 280px;
+}
+.o_ocd_dash_chart_card {
+    gap: 8px;
+}
+.o_ocd_dash_todo_card {
+    overflow: hidden;
+}
+.o_ocd_dash_card_head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.o_ocd_dash_card_head_line {
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2px;
+    > span {
+        font-size: 12.5px;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_dash_card_titles {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+    margin-bottom: 4px;
+    > span {
+        font-size: 12.5px;
+        color: $ocd-bo-muted;
+    }
+}
+// Chart or table, as two buttons joined
+.o_ocd_switch {
+    display: flex;
+    flex: none;
+    margin-left: auto;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    overflow: hidden;
+    button {
+        min-height: 30px;
+        padding: 0 10px;
+        border: 0;
+        background: #FFFFFF;
+        color: $ocd-ink;
+        font-size: 12.5px;
         font-weight: 700;
-        line-height: 1;
+        & + button {
+            border-left: 1px solid $ocd-bo-input;
+        }
+        &[aria-pressed="true"] {
+            background: $ocd-ink;
+            color: #FFFFFF;
+        }
     }
-    .o_ocd_live_dashboard_label {
-        color: $text-muted;
+}
+// Bars of the bookings received per day
+.o_ocd_chart {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    grid-template-rows: 170px 24px;
+    row-gap: 6px;
+    margin-top: 8px;
+}
+.o_ocd_chart_axis {
+    position: relative;
+    span {
+        position: absolute;
+        right: 6px;
+        font-size: 11.5px;
+        color: $ocd-bo-muted;
+        font-variant-numeric: tabular-nums;
+    }
+}
+.o_ocd_chart_plot {
+    position: relative;
+    border-bottom: 1px solid $ocd-bo-hint;
+}
+.o_ocd_chart_grid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #E8EAED;
+}
+.o_ocd_chart_bars {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: stretch;
+}
+.o_ocd_chart_bar {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: $ocd-ink;
+    &:focus-visible {
+        outline: 2px solid $ocd-orange;
+        outline-offset: -2px;
+    }
+}
+.o_ocd_chart_value {
+    margin-bottom: 3px;
+    font-size: 11.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+.o_ocd_chart_fill {
+    width: 26px;
+    max-width: 70%;
+    min-height: 0;
+    border-radius: 4px 4px 0 0;
+    background: $ocd-orange;
+    .o_ocd_hovered & {
+        background: $ocd-orange-dark;
+    }
+}
+.o_ocd_chart_tip {
+    position: absolute;
+    top: -4px;
+    width: 170px;
+    box-sizing: border-box;
+    padding: 6px 9px;
+    background: $ocd-ink;
+    color: #FFFFFF;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    pointer-events: none;
+}
+.o_ocd_chart_labels {
+    display: flex;
+    span {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+        font-size: 11.5px;
+        color: $ocd-bo-muted;
+        font-variant-numeric: tabular-nums;
+    }
+}
+.o_ocd_chart_table {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 28px;
+    margin-top: 4px;
+    font-size: 13px;
+}
+.o_ocd_chart_table_row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 4px 0;
+    border-bottom: 1px solid $ocd-bo-grey;
+    b {
+        font-variant-numeric: tabular-nums;
+    }
+}
+// To do now
+.o_ocd_dash_todo {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid $ocd-bo-grey;
+    color: $ocd-ink !important;
+    font-size: 13px;
+    line-height: 1.35;
+    text-decoration: none !important;
+    &:hover > span:last-child {
+        text-decoration: underline;
+    }
+}
+.o_ocd_dash_tag {
+    justify-self: start;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.o_ocd_tag_red {
+    background: $ocd-red-soft;
+    color: $ocd-red-dark;
+}
+.o_ocd_tag_yellow {
+    background: $ocd-yellow-soft;
+    color: $ocd-yellow-text;
+}
+.o_ocd_tag_grey {
+    background: $ocd-bo-grey;
+    color: $ocd-bo-text;
+}
+.o_ocd_dash_empty {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: $ocd-bo-muted;
+}
+// Money received
+.o_ocd_dash_revenue_card {
+    gap: 6px;
+}
+.o_ocd_dash_revenue {
+    display: grid;
+    grid-template-columns: 210px 1fr 104px;
+    gap: 12px;
+    align-items: center;
+    min-height: 26px;
+}
+.o_ocd_dash_revenue_label {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.o_ocd_dash_revenue_track {
+    position: relative;
+    height: 14px;
+    span {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        min-width: 3px;
+        border-radius: 0 4px 4px 0;
+        background: $ocd-orange;
+    }
+}
+.o_ocd_dash_revenue_value {
+    text-align: right;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+// Today, next
+.o_ocd_dash_upcoming_card h2 {
+    margin-bottom: 2px;
+}
+.o_ocd_dash_upcoming {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 10px;
+    align-items: baseline;
+    padding: 4px 0;
+    border-bottom: 1px solid $ocd-bo-grey;
+    color: $ocd-ink !important;
+    font-size: 13px;
+    line-height: 1.35;
+    text-decoration: none !important;
+    &:hover > span:last-child {
+        text-decoration: underline;
+    }
+}
+.o_ocd_dash_upcoming_time {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+// Tablets: three figures per row, the cards one below the other
+@include media-breakpoint-down(xl) {
+    .o_ocd_dash_tiles {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .o_ocd_dash_row > :first-child, .o_ocd_dash_row > :last-child {
+        grid-column: span 12;
+    }
+}
+// Phones: two figures per row
+@include media-breakpoint-down(md) {
+    .o_ocd_dash_tiles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .o_ocd_dash_revenue {
+        grid-template-columns: minmax(0, 1fr) 96px;
+        .o_ocd_dash_revenue_track {
+            grid-column: 1 / -1;
+            grid-row: 2;
+        }
     }
 }

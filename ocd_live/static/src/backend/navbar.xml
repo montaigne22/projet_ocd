@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live.NavBar" t-inherit="web.NavBar" t-inherit-mode="extension">
+        <!-- The logo of OCD before the name of the app -->
+        <xpath expr="//DropdownItem[contains(@class, 'o_menu_brand')]" position="before">
+            <img t-if="this.isOcdApp and !this.ui.isSmall" src="/ocd_live/static/img/ocd_logo.webp" alt="" class="o_ocd_navbar_logo"/>
+        </xpath>
+        <!-- The sections of OCD Live are links, as in the design -->
+        <xpath expr="//t[@t-call='web.NavBar.SectionsMenu']" position="attributes">
+            <attribute name="t-if">this.currentAppSections.length and !this.isOcdApp</attribute>
+        </xpath>
+        <xpath expr="//t[@t-call='web.NavBar.SectionsMenu']" position="after">
+            <nav t-if="this.isOcdApp and !this.ui.isSmall" class="o_ocd_navbar_sections" aria-label="Menus of OCD Live">
+                <t t-foreach="this.currentAppSections" t-as="section" t-key="section.id">
+                    <a t-att-href="this.getMenuItemHref(this.ocdFirstLeaf(section))"
+                       t-att-data-menu-xmlid="section.xmlid"
+                       t-att-class="{ 'o_ocd_navbar_section': true, 'o_ocd_current': this.ocdCurrentSection and this.ocdCurrentSection.id === section.id }"
+                       t-att-aria-current="this.ocdCurrentSection and this.ocdCurrentSection.id === section.id ? 'page' : undefined"
+                       t-on-click.prevent="() => this.onNavBarDropdownItemSelection(this.ocdFirstLeaf(section))"
+                       t-out="section.name"/>
+                </t>
+            </nav>
+        </xpath>
+        <!-- The menus of the current section, as tabs below the bar -->
+        <xpath expr="//nav[hasclass('o_main_navbar')]" position="after">
+            <nav t-if="this.isOcdApp and !this.ui.isSmall and this.ocdSubMenus.length" class="o_ocd_subnav" aria-label="Menus of the section">
+                <t t-foreach="this.ocdSubMenus" t-as="menu" t-key="menu.id">
+                    <a t-att-href="this.getMenuItemHref(menu)"
+                       t-att-data-menu-xmlid="menu.xmlid"
+                       t-att-class="{ 'o_ocd_subnav_item': true, 'o_ocd_current': this.ocdCurrentMenu and this.ocdCurrentMenu.id === menu.id }"
+                       t-att-aria-current="this.ocdCurrentMenu and this.ocdCurrentMenu.id === menu.id ? 'page' : undefined"
+                       t-on-click.prevent="() => this.onNavBarDropdownItemSelection(menu)"
+                       t-out="menu.name"/>
+                </t>
+            </nav>
+        </xpath>
+    </t>
+
+</templates>

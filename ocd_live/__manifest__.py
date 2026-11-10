@@ -58,6 +58,7 @@ OCD Live
         "views/ocd_voice_views.xml",
         "views/ocd_live_price_rule_views.xml",
         "views/res_config_settings_views.xml",
+        "views/webclient_templates.xml",
         "views/ocd_booking_templates.xml",
         "views/ocd_directory_templates.xml",
         "views/ocd_space_templates.xml",
@@ -65,8 +66,16 @@ OCD Live
         "views/ocd_live_menus.xml",
     ],
     "assets": {
+        # The colours of OCD Live, read by the website and by the back office
+        "web._assets_primary_variables": [
+            ("prepend", "ocd_live/static/src/scss/ocd_tokens.scss"),
+            ("after", "ocd_live/static/src/scss/ocd_tokens.scss", "ocd_live/static/src/backend/primary_variables.scss"),
+        ],
         "web.assets_backend": [
             "ocd_live/static/src/dashboard/*",
+            "ocd_live/static/src/backend/navbar.js",
+            "ocd_live/static/src/backend/navbar.xml",
+            "ocd_live/static/src/backend/theme.scss",
         ],
         "web.assets_frontend": [
             "ocd_live/static/src/scss/ocd_app.scss",

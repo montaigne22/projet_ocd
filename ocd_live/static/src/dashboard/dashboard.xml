@@ -1,23 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
+
     <t t-name="ocd_live.Dashboard">
-        <div class="o_action o_ocd_live_dashboard">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h2 class="mb-0">OCD Live</h2>
-                <button type="button" class="btn btn-secondary" t-on-click="() => this.load()">Refresh</button>
+        <div class="o_action o_ocd_bo o_ocd_dashboard">
+            <t t-set="data" t-value="this.data()"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">Dashboard</h1>
+                <span class="o_ocd_bo_facet">Today · <t t-out="data.today"/></span>
+                <span class="o_ocd_bo_pager">Updated at <t t-out="data.updated_at"/></span>
+                <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.load()"
+                        title="Refresh" aria-label="Refresh">
+                    <i class="oi" data-icon="refresh" aria-hidden="true"/>
+                </button>
             </div>
-            <t t-foreach="this.data().sections" t-as="section" t-key="section.key">
-                <h4 class="o_ocd_live_dashboard_title" t-out="section.title"/>
-                <div class="o_ocd_live_dashboard_tiles">
-                    <t t-foreach="section.tiles" t-as="tile" t-key="tile.key">
-                        <button type="button" t-att-class="tile.alert ? 'o_ocd_live_dashboard_tile o_ocd_live_dashboard_alert' : 'o_ocd_live_dashboard_tile'"
-                                t-on-click="() => this.open(tile)">
-                            <span class="o_ocd_live_dashboard_value" t-out="tile.value"/>
-                            <span class="o_ocd_live_dashboard_label" t-out="tile.label"/>
-                        </button>
-                    </t>
+            <div class="o_ocd_bo_body o_ocd_dash">
+                <div class="o_ocd_dash_tiles">
+                    <a t-foreach="data.tiles" t-as="tile" t-key="tile.key" href="#" class="o_ocd_dash_tile"
+                       t-on-click.prevent="() => this.open(tile.action)">
+                        <span class="o_ocd_dash_tile_label" t-out="tile.label"/>
+                        <span class="o_ocd_dash_tile_value" t-out="tile.value"/>
+                        <span t-attf-class="o_ocd_dash_tile_sub o_ocd_tone_#{tile.tone or 'none'}" t-out="tile.sub"/>
+                    </a>
                 </div>
-            </t>
+
+                <div class="o_ocd_dash_row">
+                    <section class="o_ocd_dash_card o_ocd_dash_chart_card" aria-labelledby="o_ocd_dash_chart_title">
+                        <div class="o_ocd_dash_card_head">
+                            <div class="o_ocd_dash_card_titles">
+                                <h2 id="o_ocd_dash_chart_title">Live bookings received per day</h2>
+                                <span t-out="data.chart.subtitle"/>
+                            </div>
+                            <div class="o_ocd_switch" role="group" aria-label="Show as">
+                                <button type="button" t-att-aria-pressed="this.mode() === 'chart' ? 'true' : 'false'"
+                                        t-on-click="() => this.mode.set('chart')">Chart</button>
+                                <button type="button" t-att-aria-pressed="this.mode() === 'table' ? 'true' : 'false'"
+                                        t-on-click="() => this.showTable()">Table view</button>
+                            </div>
+                        </div>
+                        <div t-if="this.mode() === 'chart'" class="o_ocd_chart">
+                            <div class="o_ocd_chart_axis" aria-hidden="true">
+                                <span t-foreach="data.chart.ticks" t-as="tick" t-key="tick_index"
+                                      t-att-style="'bottom: calc(' + (tick_index * 25) + '% - 7px)'" t-out="tick"/>
+                            </div>
+                            <div class="o_ocd_chart_plot">
+                                <span t-foreach="data.chart.ticks" t-as="tick" t-key="tick_index" class="o_ocd_chart_grid"
+                                      t-att-style="'bottom: ' + (tick_index * 25) + '%'"/>
+                                <div class="o_ocd_chart_bars">
+                                    <button t-foreach="data.chart.bars" t-as="bar" t-key="bar.key" type="button"
+                                            t-att-class="{ 'o_ocd_chart_bar': true, 'o_ocd_hovered': this.hovered() === bar_index }"
+                                            t-att-aria-label="this.barLabel(bar)"
+                                            t-on-mouseenter="() => this.hovered.set(bar_index)"
+                                            t-on-mouseleave="() => this.hovered.set(-1)"
+                                            t-on-focus="() => this.hovered.set(bar_index)"
+                                            t-on-blur="() => this.hovered.set(-1)"
+                                            t-on-click="() => this.open(data.chart.action)">
+                                        <span t-if="bar.last" class="o_ocd_chart_value" t-out="bar.value"/>
+                                        <span class="o_ocd_chart_fill" t-att-style="'height: ' + bar.height + '%'"/>
+                                    </button>
+                                </div>
+                                <div t-if="this.tip" role="status" class="o_ocd_chart_tip" t-att-style="this.tip.style" t-out="this.tip.text"/>
+                            </div>
+                            <span/>
+                            <div class="o_ocd_chart_labels" aria-hidden="true">
+                                <span t-foreach="data.chart.bars" t-as="bar" t-key="bar.key" t-out="bar.label"/>
+                            </div>
+                        </div>
+                        <div t-else="" class="o_ocd_chart_table">
+                            <div t-foreach="data.chart.bars" t-as="bar" t-key="bar.key" class="o_ocd_chart_table_row">
+                                <span t-out="bar.full"/>
+                                <b t-out="bar.value"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="o_ocd_dash_card o_ocd_dash_todo_card" aria-labelledby="o_ocd_dash_todo_title">
+                        <div class="o_ocd_dash_card_head o_ocd_dash_card_head_line">
+                            <h2 id="o_ocd_dash_todo_title">To do now</h2>
+                            <span t-out="this.todoCount(data.todos.length)"/>
+                        </div>
+                        <a t-foreach="data.todos" t-as="todo" t-key="todo.key" href="#" class="o_ocd_dash_todo"
+                           t-on-click.prevent="() => this.open(todo.action)">
+                            <span t-attf-class="o_ocd_dash_tag o_ocd_tag_#{todo.tone}" t-out="todo.tag"/>
+                            <span t-out="todo.text"/>
+                        </a>
+                        <p t-if="!data.todos.length" class="o_ocd_dash_empty">Nothing waits: well done.</p>
+                    </section>
+                </div>
+
+                <div class="o_ocd_dash_row">
+                    <section class="o_ocd_dash_card o_ocd_dash_revenue_card" aria-labelledby="o_ocd_dash_revenue_title">
+                        <div class="o_ocd_dash_card_titles">
+                            <h2 id="o_ocd_dash_revenue_title">Received since the opening of the bookings</h2>
+                            <span t-out="data.revenue.subtitle"/>
+                        </div>
+                        <div t-foreach="data.revenue.rows" t-as="row" t-key="row.key" class="o_ocd_dash_revenue">
+                            <span class="o_ocd_dash_revenue_label" t-out="row.label"/>
+                            <span class="o_ocd_dash_revenue_track" aria-hidden="true">
+                                <span t-att-style="'width: ' + row.width + '%'"/>
+                            </span>
+                            <span class="o_ocd_dash_revenue_value" t-out="row.value"/>
+                        </div>
+                    </section>
+
+                    <section class="o_ocd_dash_card o_ocd_dash_upcoming_card" aria-labelledby="o_ocd_dash_upcoming_title">
+                        <h2 id="o_ocd_dash_upcoming_title">Today, next</h2>
+                        <a t-foreach="data.upcoming" t-as="row" t-key="row_index" href="#" class="o_ocd_dash_upcoming"
+                           t-on-click.prevent="() => this.open(row.action)">
+                            <span class="o_ocd_dash_upcoming_time" t-out="row.time"/>
+                            <span><b t-out="row.name"/> · <t t-out="row.detail"/></span>
+                        </a>
+                        <p t-if="!data.upcoming.length" class="o_ocd_dash_empty">Nothing else today.</p>
+                    </section>
+                </div>
+            </div>
         </div>
     </t>
+
 </templates>

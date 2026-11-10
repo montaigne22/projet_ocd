@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Menus of OCD Live, as in the validated design (BoShell): the sections are the links of the
+     dark bar (Dashboard, Lives, Shop, Deliveries, Vendors, WhatsApp, Recruitment,
+     Configuration), their menus are the tabs below it. The other modules add their sections. -->
 <odoo>
 
     <menuitem id="ocd_live_menu_root" name="OCD Live" sequence="25"
               web_icon="ocd_live,static/description/icon.png"
               action="ocd_live_dashboard_action"
               groups="ocd_live.group_ocd_live_user"/>
-    <menuitem id="ocd_live_dashboard_menu" name="Dashboard" parent="ocd_live_menu_root"
-              action="ocd_live_dashboard_action" sequence="1"/>
+    <menuitem id="ocd_live_menu_dashboard" name="Dashboard" parent="ocd_live_menu_root" sequence="1"/>
+    <menuitem id="ocd_live_dashboard_menu" name="Overview" parent="ocd_live_menu_dashboard"
+              action="ocd_live_dashboard_action" sequence="10"/>
 
     <menuitem id="ocd_live_menu_lives" name="Lives" parent="ocd_live_menu_root" sequence="10"/>
     <menuitem id="ocd_live_booking_menu" name="Bookings" parent="ocd_live_menu_lives"
               action="ocd_live_booking_action" sequence="10"/>
-    <menuitem id="ocd_live_credit_menu" name="Credits to place" parent="ocd_live_menu_lives"
-              action="ocd_live_credit_action" sequence="20"/>
+    <menuitem id="ocd_directory_listing_menu" name="To check" parent="ocd_live_menu_lives"
+              action="ocd_directory_listing_action" sequence="30"/>
+    <menuitem id="ocd_live_credit_menu" name="Lives to place" parent="ocd_live_menu_lives"
+              action="ocd_live_credit_action" sequence="40"/>
     <menuitem id="ocd_live_host_menu" name="Hosts" parent="ocd_live_menu_lives"
-              action="hr_employee_action_ocd_host" sequence="30"/>
+              action="hr_employee_action_ocd_host" sequence="50"/>
 
-    <menuitem id="ocd_live_menu_directory" name="Directory" parent="ocd_live_menu_root" sequence="20"/>
-    <menuitem id="ocd_directory_listing_menu" name="Links to check" parent="ocd_live_menu_directory"
-              action="ocd_directory_listing_action" sequence="10"/>
-    <menuitem id="ocd_directory_pass_menu" name="Passes" parent="ocd_live_menu_directory"
-              action="ocd_directory_pass_action" sequence="20"/>
-
-    <menuitem id="ocd_live_menu_vendors" name="Vendors" parent="ocd_live_menu_root" sequence="30"
-              action="res_partner_action_ocd_vendor"/>
+    <menuitem id="ocd_live_menu_vendors" name="Vendors" parent="ocd_live_menu_root" sequence="40"/>
+    <menuitem id="ocd_live_vendor_menu" name="Vendors" parent="ocd_live_menu_vendors"
+              action="res_partner_action_ocd_vendor" sequence="10"/>
+    <menuitem id="ocd_directory_pass_menu" name="Directory passes" parent="ocd_live_menu_vendors"
+              action="ocd_directory_pass_action" sequence="30"/>
 
     <menuitem id="ocd_live_menu_config" name="Configuration" parent="ocd_live_menu_root" sequence="90"
               groups="ocd_live.group_ocd_live_manager"/>

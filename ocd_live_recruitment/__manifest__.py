@@ -7,6 +7,6 @@
     "author": "RollBackk",
     "license": "LGPL-3",
     "depends": ["ocd_live", "website_hr_recruitment"],
-    "data": ["data/hr_job_data.xml"],
+    "data": ["data/hr_job_data.xml", "views/ocd_live_recruitment_menus.xml"],
     "installable": True,
 }

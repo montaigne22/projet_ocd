@@ -7,11 +7,11 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
-                <button name="action_ocd_view_bookings" type="object" class="oe_stat_button" icon="fa-video-camera"
+                <button name="action_ocd_view_bookings" type="object" class="oe_stat_button" icon="videocam"
                         invisible="not ocd_is_vendor" groups="ocd_live.group_ocd_live_user">
                     <field name="ocd_booking_count" widget="statinfo" string="Lives"/>
                 </button>
-                <button name="action_ocd_view_credits" type="object" class="oe_stat_button" icon="fa-ticket"
+                <button name="action_ocd_view_credits" type="object" class="oe_stat_button" icon="confirmation_number"
                         invisible="not ocd_is_vendor" groups="ocd_live.group_ocd_live_user">
                     <field name="ocd_lives_remaining" widget="statinfo" string="To place"/>
                 </button>
