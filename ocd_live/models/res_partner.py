@@ -19,6 +19,7 @@ class ResPartner(models.Model):
     ocd_category_id = fields.Many2one(
         comodel_name="ocd.live.category", string="Live Category", index="btree_not_null"
     )
+    ocd_vendor_checked_at = fields.Datetime(string="Vendor Checked At", copy=False, readonly=True)
     ocd_vendor_state = fields.Selection(
         selection=[("to_check", "To check"), ("approved", "Approved"), ("refused", "Refused")],
         string="Vendor Status",
@@ -154,11 +155,14 @@ class ResPartner(models.Model):
         return action
 
     def action_ocd_approve_vendor(self):
-        self.write({"ocd_vendor_state": "approved"})
+        self.write({"ocd_vendor_state": "approved", "ocd_vendor_checked_at": fields.Datetime.now()})
         return True
 
-    def action_ocd_refuse_vendor(self):
-        self.write({"ocd_vendor_state": "refused"})
+    def action_ocd_refuse_vendor(self, reason=None):
+        self.write({"ocd_vendor_state": "refused", "ocd_vendor_checked_at": fields.Datetime.now()})
+        if reason:
+            for vendor in self:
+                vendor.message_post(body=self.env._("Vendor refused: %s", reason.name))
         return True
 
     # === LOGIN WITH A CODE OR A PASSWORD === #

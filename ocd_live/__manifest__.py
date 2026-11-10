@@ -74,6 +74,7 @@ OCD Live
         "web.assets_backend": [
             "ocd_live/static/src/dashboard/*",
             "ocd_live/static/src/planning/*",
+            "ocd_live/static/src/verification/*",
             "ocd_live/static/src/backend/navbar.js",
             "ocd_live/static/src/backend/navbar.xml",
             "ocd_live/static/src/backend/theme.scss",

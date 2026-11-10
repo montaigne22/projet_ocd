@@ -5,3 +5,4 @@ from . import test_security
 from . import test_settings
 from . import test_website
 from . import test_planning
+from . import test_verification

@@ -6,7 +6,12 @@ class OcdDirectoryListingRefuse(models.TransientModel):
     _description = "Refuse Directory Links"
 
     listing_ids = fields.Many2many(comodel_name="ocd.directory.listing", string="Links", required=True)
-    reason_id = fields.Many2one(comodel_name="ocd.listing.refuse.reason", string="Reason", required=True)
+    reason_id = fields.Many2one(
+        comodel_name="ocd.listing.refuse.reason",
+        string="Reason",
+        required=True,
+        domain=[("applies_to", "=", "link")],
+    )
     note = fields.Text(string="Note To The Vendor")
 
     def action_refuse(self):

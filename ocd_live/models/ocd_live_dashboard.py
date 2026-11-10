@@ -236,12 +236,12 @@ class OcdLiveDashboard(models.AbstractModel):
             (
                 links,
                 self.env._("%s lives", links) if links > 1 else self.env._("1 live"),
-                self._ocd_action("ocd_live.ocd_directory_listing_action", listing_domain, self.env._("Lives to check")),
+                self._ocd_action("ocd_live.ocd_live_verification_action"),
             ),
             (
                 vendors,
                 self.env._("%s new vendors", vendors) if vendors > 1 else self.env._("1 new vendor"),
-                self._ocd_action("ocd_live.res_partner_action_ocd_vendor", vendor_domain, self.env._("New vendors")),
+                self._ocd_action("ocd_live.ocd_live_verification_action"),
             ),
         ]
 

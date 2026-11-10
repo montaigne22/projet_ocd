@@ -11,5 +11,12 @@ class OcdListingRefuseReason(models.Model):
         translate=True,
         help="Sentence sent to the vendor, to explain what to do.",
     )
+    applies_to = fields.Selection(
+        selection=[("link", "Live links"), ("vendor", "New vendors"), ("product", "Products")],
+        string="For",
+        required=True,
+        default="link",
+        index=True,
+    )
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)

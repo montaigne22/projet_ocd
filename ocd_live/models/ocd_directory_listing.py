@@ -81,7 +81,11 @@ class OcdDirectoryListing(models.Model):
         tracking=True,
         index=True,
     )
-    refuse_reason_id = fields.Many2one(comodel_name="ocd.listing.refuse.reason", string="Refusal Reason")
+    refuse_reason_id = fields.Many2one(
+        comodel_name="ocd.listing.refuse.reason",
+        string="Refusal Reason",
+        domain=[("applies_to", "=", "link")],
+    )
     refuse_note = fields.Text(string="Note To The Vendor")
     checked_by_id = fields.Many2one(comodel_name="res.users", string="Checked By", readonly=True)
     checked_at = fields.Datetime(string="Checked At", readonly=True)

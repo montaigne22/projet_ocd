@@ -168,7 +168,7 @@ class OcdLiveDashboard(models.AbstractModel):
         parts.insert(1, (
             products,
             self.env._("%s products", products) if products > 1 else self.env._("1 product"),
-            self._ocd_action("ocd_live_shop.product_template_action_ocd_to_check"),
+            self._ocd_action("ocd_live_shop.ocd_live_shop_verification_action"),
         ))
         return parts
 

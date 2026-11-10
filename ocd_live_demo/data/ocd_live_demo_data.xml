@@ -18,6 +18,18 @@
         <field name="ocd_whatsapp_optin" eval="True"/>
         <field name="ocd_sale_mode">direct</field>
     </record>
+    <!-- A vendor who just registered: to check by the team -->
+    <record id="vendor_yao" model="res.partner">
+        <field name="name">Yao Vaisselle</field>
+        <field name="is_company" eval="True"/>
+        <field name="ocd_is_vendor" eval="True"/>
+        <field name="ocd_vendor_state">to_check</field>
+        <field name="ocd_category_id" ref="ocd_live.category_home"/>
+        <field name="ocd_business">Vaisselle et ustensiles de cuisine</field>
+        <field name="phone">+228 90112299</field>
+        <field name="city">Lomé</field>
+        <field name="country_id" ref="base.tg"/>
+    </record>
     <record id="vendor_brenda" model="res.partner">
         <field name="name">Brenda Wax</field>
         <field name="is_company" eval="True"/>
@@ -220,6 +232,15 @@
         <field name="taxes_id" eval="[Command.clear()]"/>
         <field name="ocd_vendor_id" ref="vendor_awa"/>
         <field name="is_published" eval="True"/>
+    </record>
+    <!-- A product added by a vendor from the space: to check by the team -->
+    <record id="product_pineapple_cake" model="product.template">
+        <field name="name">Gâteau à l'ananas</field>
+        <field name="type">consu</field>
+        <field name="list_price">3000</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_awa"/>
+        <field name="ocd_review_state">to_check</field>
     </record>
 
 </odoo>

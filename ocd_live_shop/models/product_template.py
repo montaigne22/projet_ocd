@@ -24,6 +24,7 @@ class ProductTemplate(models.Model):
         help="The products added by the vendors from their space are checked by the team "
         "before they appear on the website.",
     )
+    ocd_review_date = fields.Datetime(string="Checked At", copy=False, readonly=True)
     ocd_moment_ids = fields.One2many(
         comodel_name="ocd.live.moment", inverse_name="product_tmpl_id", string="Live Moments"
     )
@@ -43,11 +44,14 @@ class ProductTemplate(models.Model):
                 )
 
     def action_ocd_approve(self):
-        self.write({"ocd_review_state": "approved"})
+        self.write({"ocd_review_state": "approved", "ocd_review_date": fields.Datetime.now()})
         return True
 
-    def action_ocd_refuse(self):
-        self.write({"ocd_review_state": "refused", "is_published": False})
+    def action_ocd_refuse(self, reason=None):
+        self.write({"ocd_review_state": "refused", "is_published": False, "ocd_review_date": fields.Datetime.now()})
+        if reason:
+            for product in self:
+                product.message_post(body=self.env._("Product refused: %s", reason.name))
         return True
 
     def action_ocd_show_on_live(self):

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Reasons sent to the vendor when a new product is refused -->
+    <record id="refuse_reason_product_photo" model="ocd.listing.refuse.reason">
+        <field name="name">Blurry photo</field>
+        <field name="message">The photo of your product is blurry. Take a new photo in daylight and add the product again.</field>
+        <field name="applies_to">product</field>
+        <field name="sequence">210</field>
+    </record>
+    <record id="refuse_reason_product_price" model="ocd.listing.refuse.reason">
+        <field name="name">Missing or wrong price</field>
+        <field name="message">The price of your product is missing or wrong. Correct it and add the product again.</field>
+        <field name="applies_to">product</field>
+        <field name="sequence">220</field>
+    </record>
+    <record id="refuse_reason_product_forbidden" model="ocd.listing.refuse.reason">
+        <field name="name">Forbidden product</field>
+        <field name="message">This product cannot be sold on OCD Live.</field>
+        <field name="applies_to">product</field>
+        <field name="sequence">230</field>
+    </record>
+    <record id="refuse_reason_product_duplicate" model="ocd.listing.refuse.reason">
+        <field name="name">Duplicate</field>
+        <field name="message">This product is already in your boutique.</field>
+        <field name="applies_to">product</field>
+        <field name="sequence">240</field>
+    </record>
+
+</odoo>

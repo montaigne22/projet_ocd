@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live.Verification">
+        <div class="o_action o_ocd_bo o_ocd_verification">
+            <t t-set="data" t-value="this.data()"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">To check</h1>
+                <span class="o_ocd_bo_pager o_ocd_bo_push" t-out="data.pager"/>
+                <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.load()" title="Refresh" aria-label="Refresh">
+                    <i class="oi" data-icon="refresh" aria-hidden="true"/>
+                </button>
+            </div>
+            <div class="o_ocd_bo_body o_ocd_verification_body">
+                <div t-attf-class="o_ocd_verification_banner #{data.banner.open ? 'o_ocd_open' : ''}" role="status">
+                    <span class="o_ocd_verification_dot" aria-hidden="true"/>
+                    <span t-out="data.banner.text"/>
+                    <span t-if="data.average" class="o_ocd_verification_average" t-out="data.average"/>
+                </div>
+                <div class="o_ocd_verification_columns" t-att-style="'grid-template-columns: repeat(' + data.columns.length + ', minmax(0, 1fr))'">
+                    <div t-foreach="data.columns" t-as="column" t-key="column.key" class="o_ocd_verification_column">
+                        <div class="o_ocd_verification_column_head">
+                            <span t-out="column.label"/>
+                            <span t-att-class="{ 'o_ocd_verification_count': true, 'o_ocd_waiting': !column.done and column.items.length }"
+                                  t-out="column.items.length"/>
+                        </div>
+                        <div t-if="!column.items.length" class="o_ocd_verification_empty" t-out="column.empty"/>
+                        <div t-foreach="column.items" t-as="item" t-key="item.key" class="o_ocd_verification_card">
+                            <img t-if="item.photo" t-att-src="item.photo" alt="" loading="lazy" class="o_ocd_verification_photo"/>
+                            <b t-out="item.title"/>
+                            <span t-if="item.sub" class="o_ocd_verification_sub" t-out="item.sub"/>
+                            <span t-if="item.detail" class="o_ocd_verification_detail" t-out="item.detail"/>
+                            <t t-if="column.done">
+                                <span t-attf-class="o_ocd_verification_result #{item.ok ? 'o_ocd_ok' : 'o_ocd_ko'}" t-out="item.result"/>
+                            </t>
+                            <span t-elif="item.waiting" class="o_ocd_verification_waiting" t-out="item.waiting"/>
+                            <t t-else="">
+                                <t t-foreach="item.choices or []" t-as="choice" t-key="choice.name">
+                                    <label t-att-for="item.key + '_' + choice.name" t-out="choice.label"/>
+                                    <select t-att-id="item.key + '_' + choice.name" class="o_ocd_verification_select"
+                                            t-on-change="(ev) => this.setChoice(item, choice, ev.target.value)">
+                                        <option t-foreach="choice.options" t-as="option" t-key="option.value" t-att-value="option.value"
+                                                t-att-selected="option.value === this.choiceValue(item, choice)" t-out="option.label"/>
+                                    </select>
+                                </t>
+                                <div class="o_ocd_verification_buttons">
+                                    <button type="button" class="o_ocd_verification_button" t-on-click="() => this.open(item)" t-out="item.open_label"/>
+                                    <button type="button" class="o_ocd_verification_button o_ocd_green" t-on-click="() => this.approve(item)" t-out="item.ok_label"/>
+                                    <button type="button" class="o_ocd_verification_button o_ocd_refuse"
+                                            t-att-aria-expanded="this.refusing() === item.key ? 'true' : 'false'"
+                                            t-on-click="() => this.toggleRefuse(item)">Refuse</button>
+                                </div>
+                                <div t-if="this.refusing() === item.key" class="o_ocd_verification_refuse">
+                                    <label t-att-for="item.key + '_reason'">Reason sent on WhatsApp</label>
+                                    <select t-att-id="item.key + '_reason'" class="o_ocd_verification_select"
+                                            t-on-change="(ev) => this.setReason(item, ev.target.value)">
+                                        <option t-foreach="item.reasons" t-as="reason" t-key="reason.id" t-att-value="reason.id"
+                                                t-att-selected="reason.id === this.reasonOf(item)" t-out="reason.name"/>
+                                    </select>
+                                    <button type="button" class="o_ocd_verification_button o_ocd_red" t-on-click="() => this.refuse(item)">Confirm the refusal</button>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

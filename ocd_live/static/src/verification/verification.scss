@@ -1,0 +1,196 @@
+// What the team checks, as in the validated design (BoVerification)
+.o_ocd_verification_body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 12px;
+    padding-bottom: 14px;
+}
+.o_ocd_verification_banner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 9px 14px;
+    border-radius: 10px;
+    background: $ocd-bo-grey;
+    color: $ocd-bo-text;
+    font-size: 13.5px;
+    font-weight: 700;
+    &.o_ocd_open {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+}
+.o_ocd_verification_dot {
+    width: 9px;
+    height: 9px;
+    flex: none;
+    border-radius: 50%;
+    background: currentColor;
+}
+.o_ocd_verification_average {
+    margin-left: auto;
+    font-weight: 600;
+}
+.o_ocd_verification_columns {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    gap: 12px;
+}
+.o_ocd_verification_column {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+}
+.o_ocd_verification_column_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 2px 2px 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+.o_ocd_verification_count {
+    min-width: 22px;
+    box-sizing: border-box;
+    padding: 0 7px;
+    border-radius: 11px;
+    background: $ocd-bo-line;
+    color: $ocd-ink;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 22px;
+    text-align: center;
+    &.o_ocd_waiting {
+        background: $ocd-red-badge;
+        color: #FFFFFF;
+    }
+}
+.o_ocd_verification_empty {
+    padding: 14px 10px;
+    border: 1px dashed $ocd-bo-input;
+    border-radius: 10px;
+    font-size: 13px;
+    color: $ocd-bo-muted;
+    text-align: center;
+}
+.o_ocd_verification_card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 11px 12px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 10px;
+    > b {
+        font-size: 14px;
+        line-height: 1.25;
+    }
+    label {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 700;
+        color: $ocd-bo-text;
+    }
+}
+.o_ocd_verification_photo {
+    width: 100%;
+    height: 74px;
+    border-radius: 8px;
+    background: $ocd-bo-background;
+    object-fit: cover;
+}
+.o_ocd_verification_sub {
+    font-size: 12.5px;
+    line-height: 1.35;
+    color: $ocd-bo-muted;
+}
+.o_ocd_verification_detail {
+    font-size: 12.5px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+.o_ocd_verification_waiting {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: $ocd-yellow-text;
+}
+.o_ocd_verification_select {
+    height: 32px;
+    padding: 0 6px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 7px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+.o_ocd_verification_buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.o_ocd_verification_button {
+    min-height: 32px;
+    padding: 0 9px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 7px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-size: 12.5px;
+    font-weight: 700;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+    &.o_ocd_green {
+        border: 0;
+        background: $ocd-green;
+        color: #FFFFFF;
+    }
+    &.o_ocd_refuse {
+        color: $ocd-red-dark;
+    }
+    &.o_ocd_red {
+        border: 0;
+        background: $ocd-red-text;
+        color: #FFFFFF;
+    }
+}
+.o_ocd_verification_refuse {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 8px;
+    border-top: 1px solid $ocd-bo-grey;
+}
+.o_ocd_verification_result {
+    align-self: flex-start;
+    padding: 1px 7px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    &.o_ocd_ok {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+    &.o_ocd_ko {
+        background: $ocd-red-soft;
+        color: $ocd-red-dark;
+    }
+}
+@include media-breakpoint-down(xl) {
+    .o_ocd_verification_columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+@include media-breakpoint-down(md) {
+    .o_ocd_verification_columns {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+}

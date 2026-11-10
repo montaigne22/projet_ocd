@@ -11,8 +11,13 @@
     <menuitem id="ocd_live_shop_menu_shop" name="Shop" parent="ocd_live.ocd_live_menu_root" sequence="20"/>
     <menuitem id="ocd_live_shop_orders_menu" name="Orders" parent="ocd_live_shop_menu_shop"
               action="sale.action_orders" sequence="10"/>
+    <!-- The board of the checks, with the new products, as in the design -->
+    <record id="ocd_live_shop_verification_action" model="ir.actions.client">
+        <field name="name">Products to check</field>
+        <field name="tag">ocd_live.verification</field>
+    </record>
     <menuitem id="ocd_live_shop_to_check_menu" name="Products to check" parent="ocd_live_shop_menu_shop"
-              action="product_template_action_ocd_to_check" sequence="20"/>
+              action="ocd_live_shop_verification_action" sequence="20"/>
     <menuitem id="ocd_live_shop_products_menu" name="Products of the vendors" parent="ocd_live_shop_menu_shop"
               action="product_template_action_ocd_vendor_products" sequence="30"/>
 

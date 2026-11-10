@@ -27,4 +27,24 @@
         <field name="sequence">50</field>
     </record>
 
+    <!-- Reasons for a new vendor -->
+    <record id="refuse_reason_vendor_unreachable" model="ocd.listing.refuse.reason">
+        <field name="name">Number unreachable</field>
+        <field name="message">We could not reach you on this number. Write to us on WhatsApp to finish your registration.</field>
+        <field name="applies_to">vendor</field>
+        <field name="sequence">110</field>
+    </record>
+    <record id="refuse_reason_vendor_activity" model="ocd.listing.refuse.reason">
+        <field name="name">Forbidden activity</field>
+        <field name="message">This activity cannot be sold on OCD Live.</field>
+        <field name="applies_to">vendor</field>
+        <field name="sequence">120</field>
+    </record>
+    <record id="refuse_reason_vendor_duplicate" model="ocd.listing.refuse.reason">
+        <field name="name">Already registered</field>
+        <field name="message">You already have a space on OCD Live: use the link you received on WhatsApp.</field>
+        <field name="applies_to">vendor</field>
+        <field name="sequence">130</field>
+    </record>
+
 </odoo>

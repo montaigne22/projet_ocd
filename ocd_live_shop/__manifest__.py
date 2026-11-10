@@ -50,6 +50,7 @@ OCD Live shop and deliveries
         "data/mail_activity_type_data.xml",
         "data/ir_cron_data.xml",
         "data/ocd_voice_data.xml",
+        "data/ocd_refuse_reason_data.xml",
         "views/stock_picking_views.xml",
         "views/res_partner_views.xml",
         "views/product_template_views.xml",
