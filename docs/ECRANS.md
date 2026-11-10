@@ -42,8 +42,8 @@ Le design validé est dans [`prototype/design-valide/`](../prototype/design-vali
 | `Suivi` Suivi de commande | page de la commande du portail, avec le code de livraison | 🟡 |
 | `Replay` Revoir un live | `/ocd/boutique/<vendeur>/replay`, modèle `ocd_live_shop.replay` : moments du live (lien à la seconde pour YouTube), bouton « Commander » ou « Écrire » du moment choisi | ✅ |
 | `MesProduits` Mes produits | espace vendeur (produits ajoutés vérifiés par l'équipe) | 🟡 |
-| `Livrer` Mes colis à livrer | `/ocd/livrer/<jeton>` (appli de livraison) | 🟡 |
-| `Tournee` Ma tournée de livreur | `/ocd/livrer/<jeton>` pour un livreur OCD | 🟡 |
+| `Livrer` Mes colis à livrer | `/ocd/livrer/<jeton>`, modèle `ocd_live_shop.delivery_app` : reversement à venir, onglets « À faire » et « Livrés », une carte par colis (étape, paiement, livreur qui passe, prêt, départ, paiement à la porte, code, problème, reprise) | ✅ |
+| `Tournee` Ma tournée de livreur | `/ocd/livrer/<jeton>` pour un livreur OCD, modèle `ocd_live_shop.delivery_tour` : en service ou non, espèces sur soi, étapes numérotées (récupérer puis livrer), appeler le dispatch | ✅ |
 
 ## Back-office (équipe OCD)
 

@@ -87,7 +87,7 @@
 
     <template id="app" name="OCD Live: frame of the pages">
         <!-- Parameters: back (url of the back button) and back_label, header_share (url shared
-             by the Share button), step and step_label (bar of the
+             by the Share button), header_name (name of the page beside the logo), step and step_label (bar of the
              booking steps), nav (item of the menu of the page), voice_key, voice_languages
              and voice_caption (voice of the page), summary (line at the bottom) -->
         <t t-set="head">
@@ -99,7 +99,11 @@
             <div t-attf-class="o_ocd_app #{'o_ocd_has_nav' if nav else ''}">
                 <header class="o_ocd_header">
                     <div t-attf-class="o_ocd_frame o_ocd_top #{'o_ocd_top_flow' if back else ''}">
-                        <a href="/ocd" class="o_ocd_brandbox" aria-label="OCD Live">
+                        <a t-if="header_name" href="/ocd" class="o_ocd_brandbox o_ocd_brandbox_named">
+                            <img src="/ocd_live/static/img/ocd_logo.webp" alt="Logo OCD" class="o_ocd_logo" width="38" height="38"/>
+                            <span class="o_ocd_header_name" t-out="header_name"/>
+                        </a>
+                        <a t-else="" href="/ocd" class="o_ocd_brandbox" aria-label="OCD Live">
                             <img src="/ocd_live/static/img/ocd_logo.webp" alt="Logo OCD" class="o_ocd_logo" width="38" height="38"/>
                             <span class="o_ocd_brand">OCD</span>
                             <span class="o_ocd_live_badge">LIVE</span>

@@ -115,7 +115,7 @@ class OcdBoutique(http.Controller):
         return {
             "booking": live,
             "line": request.env._("For %(since)s, on %(platform)s", since=since, platform=name)
-            if name else request.env._("For %s", since),
+            if name else request.env._("Live for %s", since),
         }
 
     def _next_info(self, booking):

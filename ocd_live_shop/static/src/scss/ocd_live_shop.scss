@@ -543,7 +543,400 @@
     }
 }
 
-// === DELIVERY APP (until it follows the design) === //
-.o_ocd_live_shop_parcel form {
-    margin: 0;
+// === DELIVERY APP (Livrer, Tournee) === //
+.o_ocd_app {
+    .o_ocd_parcels {
+        gap: 12px;
+        form {
+            margin: 0;
+        }
+    }
+    .o_ocd_parcels_hello {
+        margin: 0;
+        font-size: 30px;
+        line-height: 1.05;
+    }
+    .o_ocd_parcels_payout {
+        align-self: flex-start;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        border-radius: 10px;
+        padding: 6px 11px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+    .o_ocd_tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        background: $ocd-sand;
+        border-radius: 14px;
+        padding: 4px;
+        a {
+            display: grid;
+            place-items: center;
+            min-height: 44px;
+            border-radius: 11px;
+            font-size: 15px;
+            font-weight: 800;
+            &.o_ocd_on {
+                background: #FFFFFF;
+            }
+        }
+    }
+    .o_ocd_parcel {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 14px;
+        &.o_ocd_parcel_on {
+            border-color: $ocd-orange;
+        }
+    }
+    .o_ocd_parcel_head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        b {
+            font-size: 17px;
+            line-height: 1.2;
+        }
+        .o_ocd_step_pill {
+            margin-left: auto;
+        }
+    }
+    .o_ocd_step_pill {
+        flex: none;
+        border-radius: 8px;
+        padding: 3px 9px;
+        font-size: 12.5px;
+        font-weight: 700;
+        white-space: nowrap;
+        background: $ocd-bo-grey;
+    }
+    .o_ocd_step_pill_prep {
+        background: $ocd-yellow-soft;
+        color: $ocd-yellow-text;
+    }
+    .o_ocd_step_pill_route {
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
+    .o_ocd_step_pill_done, .o_ocd_step_pill_picked {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+    .o_ocd_step_pill_problem, .o_ocd_step_pill_locked {
+        background: $ocd-red-soft;
+        color: $ocd-red-dark;
+    }
+    .o_ocd_parcel_place, .o_ocd_parcel_when {
+        font-size: 14.5px;
+        color: $ocd-muted;
+    }
+    .o_ocd_parcel_when {
+        font-size: 13.5px;
+    }
+    .o_ocd_parcel_items {
+        font-size: 15.5px;
+        font-weight: 600;
+    }
+    .o_ocd_parcel_pay {
+        align-self: flex-start;
+        border-radius: 8px;
+        padding: 3px 9px;
+        font-size: 13.5px;
+        font-weight: 700;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        &.o_ocd_parcel_pay_collect {
+            background: $ocd-yellow-soft;
+            color: $ocd-yellow-text;
+        }
+    }
+    .o_ocd_parcel_courier {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: $ocd-sand;
+        border-radius: 12px;
+        padding: 9px 11px;
+        font-size: 14px;
+        line-height: 1.35;
+    }
+    .o_ocd_parcel_initials, .o_ocd_step_number {
+        width: 34px;
+        height: 34px;
+        flex: none;
+        border-radius: 50%;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 800;
+    }
+    .o_ocd_step_number {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    .o_ocd_parcel_go {
+        min-height: 52px;
+        border: 0;
+        border-radius: 14px;
+        padding: 0 16px;
+        background: $ocd-orange;
+        color: $ocd-ink;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 16px;
+        cursor: pointer;
+        &.o_ocd_parcel_wide {
+            width: 100%;
+            min-height: 54px;
+            border-radius: 15px;
+            font-size: 17.5px;
+        }
+    }
+    .o_ocd_parcel_button {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        min-height: 46px;
+        border: 0;
+        border-radius: 13px;
+        box-shadow: inset 0 0 0 2px $ocd-line;
+        background: #FFFFFF;
+        color: $ocd-ink;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+        list-style: none;
+        &::-webkit-details-marker {
+            display: none;
+        }
+    }
+    .o_ocd_parcel_contact, .o_ocd_parcel_pair, .o_ocd_parcel_reasons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        align-items: start;
+    }
+    .o_ocd_parcel_momo[open] {
+        grid-column: 1 / -1;
+        order: 2;
+    }
+    .o_ocd_parcel_momo_box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 0 4px;
+        font-size: 14px;
+        text-align: center;
+        .o_ocd_code_row {
+            width: 100%;
+        }
+    }
+    .o_ocd_parcel_label {
+        font-weight: 700;
+        font-size: 14.5px;
+    }
+    .o_ocd_parcel_code {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+    .o_ocd_code_row {
+        display: flex;
+        gap: 8px;
+        .o_ocd_input {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+    .o_ocd_code_input {
+        flex: 1;
+        min-width: 0;
+        height: 52px;
+        box-sizing: border-box;
+        border-radius: 14px;
+        padding: 0 14px;
+        font-family: inherit;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.35em;
+        color: $ocd-ink;
+        background: #FFFFFF;
+        border: 2px solid $ocd-line;
+        &.o_ocd_code_wrong {
+            border-color: $ocd-red-text;
+        }
+    }
+    .o_ocd_parcel_error {
+        font-size: 14px;
+        font-weight: 700;
+        color: $ocd-red-text;
+    }
+    .o_ocd_parcel_hint {
+        font-size: 13.5px;
+        color: $ocd-muted;
+        line-height: 1.35;
+    }
+    .o_ocd_parcel_problem {
+        summary {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            color: $ocd-red-text;
+            font-size: 14.5px;
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
+            list-style: none;
+            &::-webkit-details-marker {
+                display: none;
+            }
+        }
+        .o_ocd_parcel_button {
+            font-size: 14px;
+            border-radius: 12px;
+        }
+    }
+    .o_ocd_parcel_note {
+        background: $ocd-sand;
+        border-radius: 12px;
+        padding: 11px 13px;
+        font-size: 14px;
+        line-height: 1.4;
+        &.o_ocd_parcel_note_ok {
+            background: $ocd-green-soft;
+            color: $ocd-green-text;
+            font-weight: 700;
+        }
+        &.o_ocd_parcel_note_warn {
+            background: $ocd-yellow-soft;
+            color: $ocd-yellow-text;
+            font-size: 14.5px;
+            font-weight: 700;
+        }
+    }
+    .o_ocd_parcel_alert {
+        background: $ocd-red-soft;
+        color: $ocd-red-dark;
+        border-radius: 12px;
+        padding: 11px 13px;
+        font-size: 14.5px;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+    .o_ocd_done_list {
+        display: flex;
+        flex-direction: column;
+    }
+    .o_ocd_done_row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid $ocd-line;
+    }
+    .o_ocd_done_text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        b {
+            font-size: 15.5px;
+        }
+        span {
+            font-size: 13.5px;
+            color: $ocd-muted;
+        }
+    }
+
+    // Tour of the courier
+    .o_ocd_tour_head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        > div {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 30px;
+            line-height: 1.05;
+        }
+        span {
+            font-size: 14px;
+            color: $ocd-muted;
+        }
+    }
+    .o_ocd_duty {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 44px;
+        border: 0;
+        border-radius: 999px;
+        padding: 0 14px;
+        background: $ocd-sand;
+        color: $ocd-ink;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        i {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: $ocd-bo-faded;
+        }
+        &.o_ocd_on {
+            background: $ocd-green-soft;
+            color: $ocd-green-text;
+            i {
+                background: $ocd-green;
+            }
+        }
+    }
+    .o_ocd_tour_sum {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        border-radius: 14px;
+        padding: 11px 14px;
+        font-size: 14.5px;
+        font-weight: 700;
+    }
+    .o_ocd_tour_done {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 14px;
+        padding: 10px 12px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        font-size: 14px;
+        .o_ocd_icon {
+            width: 18px;
+            height: 18px;
+        }
+    }
+    .o_ocd_tour_end {
+        font-size: 13.5px;
+        color: $ocd-muted;
+        text-align: center;
+    }
 }

@@ -215,3 +215,58 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
         response = self.url_open(f"/ocd/boutique/{self.brenda.id}")
         self.assertIn("Only 2 left", response.text)
         self.assertNotIn("Sold out", response.text)
+
+    def test_tour_of_the_courier(self):
+        order = self._order(self.estelle, [(self.dress, 1)])
+        parcel = order.picking_ids
+        token = self.courier._ocd_get_space_token()
+        self.authenticate(None, None)
+        response = self.url_open(f"/ocd/livrer/{token}")
+        self.assertIn("My tour", response.text)
+        self.assertIn("Pick up at Brenda Wax", response.text)
+        self.assertIn("Deliver to Estelle Ngono", response.text)
+        self.assertIn("First pick the parcel up at Brenda Wax.", response.text)
+        self.url_open(f"/ocd/livrer/{token}/colis/{parcel.id}/pickup", data={"csrf_token": self.csrf_token()})
+        response = self.url_open(f"/ocd/livrer/{token}")
+        self.assertNotIn("Pick up at Brenda Wax", response.text)
+        self.assertIn("I leave to deliver", response.text)
+        # The courier ends the service: no new parcel for them
+        self.assertTrue(self.courier.ocd_courier_available)
+        self.url_open(f"/ocd/livrer/{token}/service", data={"csrf_token": self.csrf_token()})
+        self.assertFalse(self.courier.ocd_courier_available)
+        # A vendor has no service to end
+        brenda_token = self.brenda._ocd_get_space_token()
+        response = self.url_open(f"/ocd/livrer/{brenda_token}/service", data={"csrf_token": self.csrf_token()})
+        self.assertEqual(response.status_code, 404)
+
+    def test_vendor_sees_the_courier_and_the_delivered_parcels(self):
+        order = self._order(self.estelle, [(self.dress, 1)])
+        parcel = order.picking_ids
+        token = self.brenda._ocd_get_space_token()
+        self.authenticate(None, None)
+        response = self.url_open(f"/ocd/livrer/{token}")
+        self.assertIn("Hello Brenda", response.text)
+        self.assertIn("For Estelle Ngono", response.text)
+        self.assertIn("Junior, OCD courier, picks it up", response.text)
+        parcel.action_ocd_pick_up()
+        parcel.action_ocd_leave()
+        parcel._ocd_check_code(parcel.sudo().ocd_delivery_code)
+        response = self.url_open(f"/ocd/livrer/{token}?vue=livres")
+        self.assertIn("Estelle Ngono", response.text)
+        self.assertIn("Code checked", response.text)
+        self.assertIn("Delivered · 1", response.text)
+
+    def test_courier_resumes_after_a_problem(self):
+        order = self._order(self.estelle, [(self.dress, 1)])
+        parcel = order.picking_ids
+        parcel.action_ocd_pick_up()
+        parcel.action_ocd_leave()
+        token = self.courier._ocd_get_space_token()
+        self.authenticate(None, None)
+        response = self.url_open(f"/ocd/livrer/{token}/colis/{parcel.id}/problem", data={
+            "csrf_token": self.csrf_token(), "reason": "absent",
+        })
+        self.assertEqual(parcel.ocd_stage, "problem")
+        self.assertIn("Reported: customer absent.", response.text)
+        self.url_open(f"/ocd/livrer/{token}/colis/{parcel.id}/retry", data={"csrf_token": self.csrf_token()})
+        self.assertEqual(parcel.ocd_stage, "picked")

@@ -11,8 +11,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
 | Site fidèle au design : réservation, annuaire, espace (téléphone, tablette, ordinateur) | ✅ fait |
-| Site : boutique d'un vendeur (`Vitrine`) et replay (`Replay`) | ✅ fait, testé |
-| Site : autres pages du shop (shop, produit, panier, livraison, paiement, suivi, mes produits, livrer, tournée) | 🟡 fonctionnent, à rapprocher du design |
+| Site : boutique d'un vendeur (`Vitrine`), replay (`Replay`), appli des colis (`Livrer`), tournée du livreur (`Tournee`) | ✅ fait, testé |
+| Site : autres pages du shop (shop, produit, panier, livraison, paiement, suivi, mes produits) | 🟡 fonctionnent, à rapprocher du design |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
 | Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
 | Outils Odoo utilisés : dans la documentation ([`OUTILS_ODOO.md`](OUTILS_ODOO.md)), pas dans le système | ✅ fait |
@@ -24,13 +24,13 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf la démo) :
-**117 tests, aucun échec**.
+**127 tests, aucun échec**.
 
 ## Reste à faire, par priorité
 
-1. **Pages du shop sur le site** (en cours) fidèles au design. Faites : `Vitrine`, `Replay`. Restent :
-   `Produit` (avec le bouton WhatsApp du contact direct : la boutique ouvre WhatsApp en attendant),
-   `Shop`, `Panier`, `Livraison`, `PayerCommande`, `Suivi`, `MesProduits`, `Livrer`, `Tournee`.
+1. **Pages du shop sur le site** (en cours) fidèles au design. Faites : `Vitrine`, `Replay`, `Livrer`,
+   `Tournee`. Restent : `Produit` (avec le bouton WhatsApp du contact direct : la boutique ouvre
+   WhatsApp en attendant), `Shop`, `Panier`, `Livraison`, `PayerCommande`, `Suivi`, `MesProduits`.
 2. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
    (`_ocd_send_ticket`), créneau libéré pour la liste d'attente (`_ocd_send_free_slot`), ouverture du
    créneau de l'annuaire, filtrage par accord WhatsApp du vendeur.
@@ -47,6 +47,15 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
 - La page « Automatisations » lit les tâches automatiques d'Odoo : elle est réservée aux administrateurs.
 
 ## Journal
+
+### 10 novembre 2026 — appli des colis et tournée du livreur fidèles au design
+- Vendeur (`Livrer`) : « Bonjour Fatou », reversement à venir, onglets « À faire » et « Livrés », une
+  carte par colis : étape, adresse, produits, paiement (payé en ligne ou à encaisser), livreur OCD qui
+  passe, et le bouton du moment (c'est prêt, je pars livrer, paiement à la porte, code, problème).
+- Livreur OCD (`Tournee`) : en service ou non, espèces sur soi, étapes numérotées (récupérer chez le
+  vendeur, puis livrer), dernières livraisons du jour, « Appeler le dispatch ».
+- Le message ou l'erreur d'une action s'affiche dans la carte du colis ; « Reprendre la livraison »
+  après un problème ; un vendeur qui n'encaisse pas peut montrer le paiement sur le téléphone du client.
 
 ### 10 novembre 2026 — boutique d'un vendeur et replay fidèles au design
 - Boutique (`/ocd/boutique/<vendeur>`) : vendeur, mode de vente, adresse ; en live (depuis combien de

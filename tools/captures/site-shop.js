@@ -1,11 +1,13 @@
 // Pages of the shop on the website (boutique of a vendor, replay), in French, on phone,
 // tablet and computer.
-// Usage: OCD_URL=http://127.0.0.1:8069 OUT=docs/captures/ node tools/captures/site-shop.js <vendor sold by OCD> <vendor in direct contact>
-// With the demo data: Brenda Wax (sold by OCD, with a replay) and Awa Mensah (direct contact).
+// Usage: OCD_URL=http://127.0.0.1:8069 OUT=docs/captures/ node tools/captures/site-shop.js \
+//          <vendor sold by OCD> <vendor in direct contact> [token of a vendor] [token of a courier]
+// With the demo data: Brenda Wax (sold by OCD, with a replay) and Awa Mensah (direct contact);
+// the tokens open the delivery app (Livrer) and the tour of the courier (Tournee).
 const { chromium } = require('playwright');
 const BASE = process.env.OCD_URL || 'http://127.0.0.1:8069';
 const OUT = process.env.OUT || './';
-const [OCD_VENDOR, DIRECT_VENDOR] = process.argv.slice(2);
+const [OCD_VENDOR, DIRECT_VENDOR, VENDOR_TOKEN, COURIER_TOKEN] = process.argv.slice(2);
 const sizes = {
   phone: { width: 390, height: 844 },
   tablet: { width: 820, height: 1180 },
@@ -28,6 +30,13 @@ const sizes = {
     await go(`/ocd/boutique/${OCD_VENDOR}`, '1-vitrine');
     await go(`/ocd/boutique/${DIRECT_VENDOR}`, '1b-vitrine-direct');
     await go(`/ocd/boutique/${OCD_VENDOR}/replay`, '2-replay');
+    if (VENDOR_TOKEN) {
+      await go(`/ocd/livrer/${VENDOR_TOKEN}`, '3-livrer');
+      await go(`/ocd/livrer/${VENDOR_TOKEN}?vue=livres`, '3b-livrer-livres');
+    }
+    if (COURIER_TOKEN) {
+      await go(`/ocd/livrer/${COURIER_TOKEN}`, '4-tournee');
+    }
     await context.close();
   }
   console.log(errors.length ? errors.join('\n') : 'no JS errors');

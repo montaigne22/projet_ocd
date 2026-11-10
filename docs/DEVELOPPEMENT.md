@@ -56,8 +56,9 @@ view » pour le bouton « Tableau », « Table » restant le meuble du studio).
 `tools/captures/` contient des scripts Playwright (`npm i playwright` puis
 `OCD_URL=http://127.0.0.1:8069 OUT=docs/captures/ node tools/captures/backoffice.js dashboard,planning`).
 Ils se connectent avec admin/admin et prennent les écrans en français.
-Pages du shop : `node tools/captures/site-shop.js <vendeur vendu par OCD> <vendeur en contact direct>`
-(ids des contacts, ex. Brenda Wax et Awa Mensah de la démo).
+Pages du shop : `node tools/captures/site-shop.js <vendeur vendu par OCD> <vendeur en contact direct>
+[jeton d'un vendeur] [jeton d'un livreur]` (ids des contacts, ex. Brenda Wax et Awa Mensah de la démo ;
+le jeton est celui de `_ocd_get_space_token()`, pour l'appli des colis et la tournée).
 
 ## Repères dans le code
 
