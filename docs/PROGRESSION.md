@@ -11,8 +11,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
 | Site fidèle au design : réservation, annuaire, espace (téléphone, tablette, ordinateur) | ✅ fait |
-| Site : boutique d'un vendeur (`Vitrine`), replay (`Replay`), appli des colis (`Livrer`), tournée du livreur (`Tournee`) | ✅ fait, testé |
-| Site : autres pages du shop (shop, produit, panier, livraison, paiement, suivi, mes produits) | 🟡 fonctionnent, à rapprocher du design |
+| Site : toutes les pages du shop fidèles au design (shop, produit, panier, livraison, paiement, suivi, boutique, replay, mes produits, mes colis, tournée) | ✅ fait, testé |
+| Frais de livraison selon le vendeur (sa ville, ses zones, ses prix) | ⬜ à faire : voir « Reste à faire » n° 1 |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
 | Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
 | Outils Odoo utilisés : dans la documentation ([`OUTILS_ODOO.md`](OUTILS_ODOO.md)), pas dans le système | ✅ fait |
@@ -24,20 +24,32 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf la démo) :
-**127 tests, aucun échec**.
+**138 tests, aucun échec**.
 
 ## Reste à faire, par priorité
 
-1. **Pages du shop sur le site** (en cours) fidèles au design. Faites : `Vitrine`, `Replay`, `Livrer`,
-   `Tournee`. Restent : `Produit` (avec le bouton WhatsApp du contact direct : la boutique ouvre
-   WhatsApp en attendant), `Shop`, `Panier`, `Livraison`, `PayerCommande`, `Suivi`, `MesProduits`.
-2. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
+1. **Frais de livraison selon le vendeur** (risque sur l'argent, analysé le 10 novembre 2026).
+   Aujourd'hui, une seule méthode de livraison par commande, choisie et chiffrée d'après l'adresse du
+   client seulement, pour tous les vendeurs ; le prix est partagé à parts égales entre les colis ; la
+   ville et le pays du vendeur ne comptent pas, et ses zones décident seulement qui livre. Conséquences :
+   prix faux pour un vendeur d'une autre ville ou d'un autre pays, un seul prix pour plusieurs colis,
+   commandes payées que personne ne peut livrer. Recommandé :
+   - des **tarifs par vendeur** (zone : quartiers, ville ou pays ; prix ; délai ; qui livre), dans des
+     bornes fixées par l'équipe, et des **tarifs OCD par ville** (livreur OCD, agence vers les autres
+     villes) quand le vendeur ne livre pas ;
+   - un **prix par colis** (somme des colis), détaillé sur les pages Livraison et Payer ;
+   - une seule méthode d'Odoo « Livraison OCD Live » d'un nouveau type qui calcule cette somme et
+     **refuse l'adresse** qu'un colis ne peut pas atteindre (avant le paiement, jamais après) ;
+   - le même tarif décide **qui livre** à la création des colis, et le prix exact de chaque colis va à
+     celui qui livre (fin du partage égal) ;
+   - envoi vers un autre pays seulement avec un tarif « agence » explicite, sans paiement à la porte.
+2. Démo : produits avec photos, variantes et stock, colis livrés, reversements, deux autres livreurs.
+3. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
    (`_ocd_send_ticket`), créneau libéré pour la liste d'attente (`_ocd_send_free_slot`), ouverture du
    créneau de l'annuaire, filtrage par accord WhatsApp du vendeur.
-3. **Paramètres** : page à sections comme le design (`BoParametres`), au lieu des réglages d'Odoo en cartes.
-4. **Automatisations** : catalogue complet « Quand… alors… » avec détail (`BoAutomatisations`).
-5. **Conversations WhatsApp** dans le style du design (`BoWhatsApp`) : écran de `whatsapp_cloud`.
-6. Démo : ajouter des colis livrés et des reversements, et deux autres livreurs, pour remplir tous les écrans.
+4. **Paramètres** : page à sections comme le design (`BoParametres`), au lieu des réglages d'Odoo en cartes.
+5. **Automatisations** : catalogue complet « Quand… alors… » avec détail (`BoAutomatisations`).
+6. **Conversations WhatsApp** dans le style du design (`BoWhatsApp`) : écran de `whatsapp_cloud`.
 
 ## Points d'attention
 
@@ -45,8 +57,25 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
 - Les écrans sur mesure du back-office gardent un bouton vers la liste standard d'Odoo (tri, export).
 - Odoo 20 n'a plus Font Awesome : les icônes sont celles d'Odoo (`data-icon`).
 - La page « Automatisations » lit les tâches automatiques d'Odoo : elle est réservée aux administrateurs.
+- La confirmation d'une commande envoie un PDF : le serveur a besoin du moteur PDF d'Odoo
+  (`wkhtmltopdf`), sinon la commande reste « en attente du paiement ».
+- Odoo publie au départ sa « Livraison standard » (gratuite, partout) : l'équipe ne publie que les
+  méthodes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 10 novembre 2026 — toutes les pages du shop fidèles au design
+- Shop, fiche produit, panier, livraison, paiement : les pages d'Odoo gardent leur logique (prix des
+  listes de prix, panier, méthodes de livraison, formulaire de paiement, confirmation) ; seul l'affichage
+  suit le design, et les formulaires appellent les mêmes méthodes d'Odoo.
+- Fiche produit : variantes avec leur prix et leur stock (valeurs épuisées barrées), quantité ; contact
+  direct : pas de panier (bloqué aussi côté serveur), WhatsApp avec le choix et le lien du produit.
+- Livraison sans e-mail : nom, WhatsApp, ville, quartier, point de repère ; prix de la livraison en direct.
+- Suivi de la commande (`/ocd/suivi/…`) : un bloc par colis avec ses étapes, le livreur, le code ; note de
+  1 à 5 et demande de retour (30 jours, réglable) une fois livré.
+- Mes produits : le vendeur ajoute un produit avec une photo (vérifié par l'équipe) et règle son stock.
+- Choix robustes : pas de remise sans paiement encaissé, reprise de livraison tracée, catégorie du
+  vendeur enregistrée sur le produit (filtre du shop sans lire les contacts).
 
 ### 10 novembre 2026 — appli des colis et tournée du livreur fidèles au design
 - Vendeur (`Livrer`) : « Bonjour Fatou », reversement à venir, onglets « À faire » et « Livrés », une

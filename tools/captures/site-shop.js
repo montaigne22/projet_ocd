@@ -37,6 +37,22 @@ const sizes = {
     if (COURIER_TOKEN) {
       await go(`/ocd/livrer/${COURIER_TOKEN}`, '4-tournee');
     }
+    // Shop of Odoo with the look of the design: shop, product, cart, delivery, payment
+    await go('/shop', '5-shop');
+    const product = await page.$('.o_ocd_products a.o_ocd_product');
+    const productUrl = product ? await product.getAttribute('href') : false;
+    if (productUrl) {
+      await go(productUrl, '6-produit');
+      const add = await page.$('.o_ocd_variant_add:not([disabled])');
+      if (add) {
+        await Promise.all([page.waitForNavigation(), add.click()]);
+        await go('/shop/cart', '7-panier');
+        await go('/shop/checkout', '8-livraison');
+      }
+    }
+    if (VENDOR_TOKEN) {
+      await go('/ocd/espace/moi/produits', '9-mes-produits');
+    }
     await context.close();
   }
   console.log(errors.length ? errors.join('\n') : 'no JS errors');

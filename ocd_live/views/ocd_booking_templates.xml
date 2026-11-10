@@ -23,6 +23,7 @@
         <svg t-elif="icon == 'check'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
         <svg t-elif="icon == 'calendar'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
         <svg t-elif="icon == 'pin'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <svg t-elif="icon == 'camera'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         <svg t-elif="icon == 'share'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
         <svg t-elif="icon == 'chat'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
         <svg t-elif="icon == 'studio'" class="o_ocd_icon o_ocd_icon_big" viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="12" width="24" height="17" rx="4" fill="#15130F"/><path d="M31 18.5l9-5v14l-9-5z" fill="#15130F"/><circle cx="14" cy="18.5" r="3" fill="#FFFFFF"/><path d="M19 29l-6 13M19 29l6 13M19 29v13" fill="none" stroke="#15130F" stroke-width="3.2" stroke-linecap="round"/></svg>
@@ -87,7 +88,8 @@
 
     <template id="app" name="OCD Live: frame of the pages">
         <!-- Parameters: back (url of the back button) and back_label, header_share (url shared
-             by the Share button), header_name (name of the page beside the logo), step and step_label (bar of the
+             by the Share button), header_name (name of the page beside the logo), header_pill (button of
+             the header, e.g. the cart: href, label), step and step_total and step_label (bar of the
              booking steps), nav (item of the menu of the page), voice_key, voice_languages
              and voice_caption (voice of the page), summary (line at the bottom) -->
         <t t-set="head">
@@ -116,7 +118,7 @@
                                 <t t-call="ocd_live.icon" icon.f="back"/>
                             </a>
                             <div t-if="step" class="o_ocd_steps" role="img" t-att-aria-label="step_label">
-                                <t t-foreach="range(1, 6)" t-as="index">
+                                <t t-foreach="range(1, (step_total or 5) + 1)" t-as="index">
                                     <span t-att-class="'o_ocd_done' if index &lt;= step else None"/>
                                 </t>
                             </div>
@@ -135,6 +137,10 @@
                             <t t-call="ocd_live.nav_links"/>
                         </nav>
                         <a t-if="header_link" t-att-href="header_link['href']" class="o_ocd_header_link" t-out="header_link['label']"/>
+                        <a t-if="header_pill" t-att-href="header_pill['href']" class="o_ocd_header_pill">
+                            <t t-call="ocd_live.icon" icon.f="bag"/>
+                            <span t-out="header_pill['label']"/>
+                        </a>
                         <button t-if="header_share" type="button" class="o_ocd_share" t-att-data-url="header_share">
                             <t t-call="ocd_live.icon" icon.f="share"/>
                             <span>Share</span>

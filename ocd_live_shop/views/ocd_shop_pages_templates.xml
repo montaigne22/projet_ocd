@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- Pages of the shop of Odoo with the look of the validated       -->
+    <!-- design: Shop, Produit, Panier, Livraison, PayerCommande, Suivi. -->
+    <!-- Odoo keeps the logic (prices, cart, delivery, payment): these   -->
+    <!-- templates are rendered with the values of its pages.            -->
+    <!-- ============================================================== -->
+
+    <template id="product_card" name="OCD Live: product in a grid">
+        <!-- Parameter: card (see controllers/shop_common.py), show_by -->
+        <div t-if="card['out']" class="o_ocd_product o_ocd_product_out">
+            <span class="o_ocd_photo o_ocd_product_photo">
+                <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
+                <span class="o_ocd_product_flag o_ocd_product_flag_out">Sold out</span>
+            </span>
+            <span class="o_ocd_product_text">
+                <b t-out="card['product'].name"/>
+                <small t-if="show_by" class="o_ocd_product_by" t-out="card['by']"/>
+                <span class="o_ocd_product_price" t-out="card['price']"/>
+            </span>
+        </div>
+        <a t-else="" t-att-href="card['url']" class="o_ocd_product">
+            <span class="o_ocd_photo o_ocd_product_photo">
+                <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
+                <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
+            </span>
+            <span class="o_ocd_product_text">
+                <b t-out="card['product'].name"/>
+                <small t-if="show_by" class="o_ocd_product_by" t-out="card['by']"/>
+                <span class="o_ocd_product_price" t-out="card['price']"/>
+                <small t-if="show_by" t-attf-class="o_ocd_product_mode #{'o_ocd_product_mode_ocd' if card['ocd'] else ''}" t-out="card['mode']"/>
+            </span>
+        </a>
+    </template>
+
+    <!-- === SHOP === -->
+
+    <template id="shop" name="OCD Live: shop">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame">
+                <main class="o_ocd_main o_ocd_shop">
+                    <form action="/shop" method="get" class="o_ocd_shop_search" role="search">
+                        <input t-if="categorie" type="hidden" name="categorie" t-att-value="categorie"/>
+                        <label for="q" class="visually-hidden">Search a product</label>
+                        <input id="q" type="search" name="search" t-att-value="search" class="o_ocd_input"
+                               placeholder="Search a product" autocomplete="off" enterkeyhint="search"/>
+                        <details t-if="len(countries) &gt; 1" class="o_ocd_shop_country">
+                            <summary t-att-aria-label="country_aria">
+                                <t t-foreach="countries" t-as="row">
+                                    <span t-if="row['on'] and row['flag']" t-attf-class="o_ocd_flag o_ocd_flag_#{row['flag']}"/>
+                                </t>
+                                <t t-call="ocd_live.icon" icon.f="next"/>
+                            </summary>
+                            <div class="o_ocd_shop_country_menu">
+                                <t t-foreach="countries" t-as="row">
+                                    <a t-if="row['pricelist']" t-attf-href="/shop/change_pricelist/#{row['pricelist'].id}"
+                                       t-att-aria-current="'true' if row['on'] else None">
+                                        <span t-if="row['flag']" t-attf-class="o_ocd_flag o_ocd_flag_#{row['flag']}"/>
+                                        <span t-out="row['label']"/>
+                                    </a>
+                                </t>
+                            </div>
+                        </details>
+                        <span t-elif="countries and countries[0]['flag']" class="o_ocd_shop_country o_ocd_shop_country_one"
+                              t-att-aria-label="countries[0]['label']">
+                            <span t-attf-class="o_ocd_flag o_ocd_flag_#{countries[0]['flag']}"/>
+                        </span>
+                    </form>
+                    <div class="o_ocd_chips">
+                        <t t-foreach="chips" t-as="chip">
+                            <a t-att-href="chip['href']" t-att-class="'o_ocd_chip o_ocd_on' if chip['on'] else 'o_ocd_chip'"
+                               t-att-aria-current="'true' if chip['on'] else None" t-out="chip['label']"/>
+                        </t>
+                    </div>
+                    <div t-if="cards" class="o_ocd_products">
+                        <t t-foreach="cards" t-as="card">
+                            <t t-call="ocd_live_shop.product_card" show_by="True"/>
+                        </t>
+                    </div>
+                    <div t-else="" class="o_ocd_shop_none">
+                        <b>No product found.</b>
+                        <span>Try another word, or look at all the categories.</span>
+                        <a href="/shop" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">Show everything</a>
+                    </div>
+                    <a t-if="more_url" t-att-href="more_url" class="o_ocd_cta o_ocd_cta_line">See more products</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === PRODUCT === -->
+
+    <template id="product" name="OCD Live: product">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <form t-att-action="'/ocd/panier/ajouter' if ocd else '/ocd/wa/%s' % template.id"
+                      t-att-method="'post' if ocd else 'get'" class="o_ocd_main o_ocd_product_page"
+                      t-att-data-variants="variants_json">
+                    <input t-if="ocd" type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="product_template_id" t-att-value="template.id"/>
+                    <div t-if="request.params.get('erreur')" class="o_ocd_alert" role="alert" t-out="request.params.get('erreur')"/>
+                    <div class="o_ocd_photo o_ocd_product_hero">
+                        <t t-call="ocd_live_shop.product_photo" image="images[0] if images else False"/>
+                    </div>
+                    <div class="o_ocd_product_head">
+                        <div>
+                            <h1 t-out="template.name"/>
+                            <span t-if="seen_live" class="o_ocd_product_seen">
+                                <i class="o_ocd_onair_dot" aria-hidden="true"/>Seen in a live on OCD
+                            </span>
+                        </div>
+                        <span class="o_ocd_product_price_big o_ocd_variant_price" t-out="first.get('price_text') or ''"/>
+                    </div>
+                    <a t-if="vendor" t-attf-href="/ocd/boutique/#{vendor.id}" class="o_ocd_product_vendor">
+                        <span class="o_ocd_avatar o_ocd_avatar_mid" aria-hidden="true">
+                            <t t-out="vendor_initials"/>
+                            <i t-if="live_now" class="o_ocd_avatar_live"/>
+                        </span>
+                        <span class="o_ocd_product_vendor_text">
+                            <b t-out="vendor_title"/>
+                            <small t-out="vendor_line"/>
+                        </span>
+                        <span class="o_ocd_link">Their boutique</span>
+                    </a>
+                    <t t-foreach="lines" t-as="row">
+                        <fieldset class="o_ocd_product_choice">
+                            <legend t-out="row['line'].attribute_id.name"/>
+                            <div t-attf-class="o_ocd_product_values #{'o_ocd_product_values_color' if row['color'] else ''}">
+                                <t t-foreach="row['values']" t-as="value">
+                                    <label class="o_ocd_product_value">
+                                        <input type="radio" t-attf-name="attribute_#{row['line'].id}" t-att-value="value.id"
+                                               t-att-checked="'checked' if value.id in first['values'] or (not first['values'] and value_first) else None"
+                                               class="o_ocd_variant_input"/>
+                                        <span>
+                                            <i t-if="row['color']" t-attf-style="background: #{value.html_color or '#FFFFFF'}" aria-hidden="true"/>
+                                            <t t-out="value.name"/>
+                                        </span>
+                                    </label>
+                                </t>
+                            </div>
+                        </fieldset>
+                    </t>
+                    <div t-if="ocd" class="o_ocd_product_qty">
+                        <div>
+                            <span id="qty-label" class="o_ocd_label">Quantity</span>
+                            <span class="o_ocd_variant_stock" role="status"/>
+                        </div>
+                        <div class="o_ocd_stepper o_ocd_stepper_js" role="group" aria-labelledby="qty-label">
+                            <button type="button" class="o_ocd_stepper_less" aria-label="One less">−</button>
+                            <input type="number" name="quantity" value="1" min="1" inputmode="numeric" class="o_ocd_stepper_value"
+                                   aria-labelledby="qty-label"/>
+                            <button type="button" class="o_ocd_stepper_more" aria-label="One more">+</button>
+                        </div>
+                    </div>
+                    <div t-if="ocd" class="o_ocd_product_info">
+                        <t t-foreach="delivery_lines" t-as="line">
+                            <span><t t-call="ocd_live.icon" icon.f="pin"/><span t-out="line"/></span>
+                        </t>
+                        <span t-if="return_line"><t t-call="ocd_live.icon" icon.f="check"/><span t-out="return_line"/></span>
+                    </div>
+                    <div t-else="" class="o_ocd_product_info">
+                        <span><t t-call="ocd_live.icon" icon.f="chat"/><span t-out="direct_line"/></span>
+                    </div>
+                    <div class="o_ocd_actions o_ocd_product_actions">
+                        <t t-if="ocd">
+                            <button type="submit" class="o_ocd_cta o_ocd_variant_add" t-out="add_label"/>
+                            <a t-if="question_url" t-att-href="question_url" target="_blank" rel="noopener" class="o_ocd_cta o_ocd_cta_line">
+                                <t t-call="ocd_live.icon" icon.f="chat"/>
+                                <span>A question? Write to OCD Live</span>
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <button type="submit" class="o_ocd_cta">
+                                <t t-call="ocd_live.icon" icon.f="chat"/>
+                                <span t-out="whatsapp_label"/>
+                            </button>
+                            <small class="o_ocd_product_note">The message gives your choice and the link of the product.</small>
+                        </t>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- === CART === -->
+
+    <template id="cart" name="OCD Live: cart">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_cart">
+                    <div t-if="cart_error" class="o_ocd_alert" role="alert" t-out="cart_error"/>
+                    <t t-foreach="rows" t-as="row">
+                        <div class="o_ocd_cart_line">
+                            <span class="o_ocd_photo o_ocd_cart_photo">
+                                <t t-call="ocd_live_shop.product_photo" image="row['image']"/>
+                            </span>
+                            <div class="o_ocd_cart_text">
+                                <b t-out="row['name']"/>
+                                <small t-if="row['variant']" t-out="row['variant']"/>
+                                <span class="o_ocd_product_price" t-out="row['price']"/>
+                                <div class="o_ocd_cart_actions">
+                                    <form action="/ocd/panier/ligne" method="post" class="o_ocd_stepper">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="line_id" t-att-value="row['line'].id"/>
+                                        <button name="quantity" t-att-value="row['qty'] - 1" t-att-aria-label="row['less_aria']">−</button>
+                                        <span class="o_ocd_stepper_value" aria-live="polite" t-out="row['qty']"/>
+                                        <button name="quantity" t-att-value="row['qty'] + 1" t-att-aria-label="row['more_aria']">+</button>
+                                    </form>
+                                    <form action="/ocd/panier/ligne" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="line_id" t-att-value="row['line'].id"/>
+                                        <button name="quantity" value="0" class="o_ocd_cart_remove">Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                    <div t-if="not rows" class="o_ocd_shop_none">
+                        <b>Your cart is empty.</b>
+                        <a href="/shop" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">See the shop</a>
+                    </div>
+                    <div t-else="" class="o_ocd_cart_sum">
+                        <div><span t-out="count_line"/><b t-out="subtotal"/></div>
+                        <div><span>Delivery</span><span>depends on your district</span></div>
+                        <div class="o_ocd_cart_pay"><t t-call="ocd_live.icon" icon.f="check"/><span>Mobile Money, card, or payment at the delivery.</span></div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === DELIVERY ADDRESS === -->
+
+    <template id="delivery" name="OCD Live: where do we deliver">
+        <t t-call="ocd_live.app">
+            <form action="/ocd/livraison" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_delivery_form" novalidate="novalidate">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="delivery_country_id" t-att-value="country.id"/>
+                <main class="o_ocd_main o_ocd_form">
+                    <h1 class="o_ocd_h1">Where do we deliver?</h1>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div class="o_ocd_field">
+                        <label for="d-name" class="o_ocd_label">Your name</label>
+                        <input id="d-name" name="name" class="o_ocd_input" t-att-value="name" autocomplete="name" required="required"
+                               t-att-aria-invalid="'true' if errors.get('name') else None"/>
+                        <span t-if="errors.get('name')" class="o_ocd_error" role="alert" t-out="errors['name']"/>
+                    </div>
+                    <div class="o_ocd_field">
+                        <label for="d-phone" class="o_ocd_label">Your WhatsApp</label>
+                        <t t-call="ocd_live.phone_field" field_id.f="d-phone"/>
+                        <span t-if="errors.get('phone')" class="o_ocd_error" role="alert" t-out="errors['phone']"/>
+                        <label for="d-optin" class="o_ocd_check">
+                            <input id="d-optin" type="checkbox" name="optin" value="1" t-att-checked="'checked' if optin else None"/>
+                            <span>Receive the tracking of my order on WhatsApp</span>
+                        </label>
+                    </div>
+                    <div class="o_ocd_name_city">
+                        <div class="o_ocd_field">
+                            <label for="d-city" class="o_ocd_label">City</label>
+                            <select id="d-city" name="city_id" class="o_ocd_input o_ocd_delivery_city">
+                                <t t-foreach="cities" t-as="row">
+                                    <option t-att-value="row.id" t-att-selected="'selected' if row == city else None" t-out="row.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="d-district" class="o_ocd_label">District</label>
+                            <select id="d-district" name="district_id" t-attf-class="o_ocd_input o_ocd_delivery_district #{'d-none' if not districts else ''}"
+                                    t-att-aria-invalid="'true' if errors.get('district_id') else None">
+                                <option value="">Choose</option>
+                                <t t-foreach="districts" t-as="row">
+                                    <option t-att-value="row.id" t-att-selected="'selected' if row.id == district_id else None" t-out="row.name"/>
+                                </t>
+                            </select>
+                            <span t-attf-class="o_ocd_delivery_no_district #{'' if not districts else 'd-none'}">Not needed</span>
+                            <span t-if="errors.get('district_id')" class="o_ocd_error" role="alert" t-out="errors['district_id']"/>
+                        </div>
+                    </div>
+                    <div class="o_ocd_field">
+                        <label for="d-landmark" class="o_ocd_label">Landmark</label>
+                        <input id="d-landmark" name="delivery_landmark" class="o_ocd_input" t-att-value="landmark" autocomplete="off"
+                               placeholder="e.g. opposite the pharmacy" required="required"
+                               t-att-aria-invalid="'true' if errors.get('delivery_landmark') else None"/>
+                        <span t-if="errors.get('delivery_landmark')" class="o_ocd_error" role="alert" t-out="errors['delivery_landmark']"/>
+                    </div>
+                    <div class="o_ocd_delivery_method" role="status">
+                        <span class="o_ocd_delivery_icon"><t t-call="ocd_live.icon" icon.f="pin"/></span>
+                        <span class="o_ocd_delivery_text">
+                            <b class="o_ocd_delivery_name" t-out="method['name'] if method else ''"/>
+                            <small class="o_ocd_delivery_note" t-out="method['note'] if method else none_line"/>
+                        </span>
+                        <b class="o_ocd_delivery_fee" t-out="method['fee'] if method else ''"/>
+                    </div>
+                    <div class="o_ocd_total">
+                        <span t-out="items_line"/>
+                        <b class="o_ocd_delivery_total" t-out="total"/>
+                    </div>
+                </main>
+                <div class="o_ocd_actions">
+                    <button type="submit" class="o_ocd_cta">
+                        <span>Continue to the payment</span>
+                        <t t-call="ocd_live.icon" icon.f="arrow"/>
+                    </button>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <!-- === PAYMENT === -->
+
+    <template id="payment" name="OCD Live: pay the order">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_pay">
+                    <h1 class="o_ocd_h1">Pay</h1>
+                    <div class="o_ocd_pay_lines">
+                        <div><span t-out="items_label"/><b t-out="items_amount"/></div>
+                        <div><span t-out="delivery_label"/><b t-out="delivery_amount"/></div>
+                    </div>
+                    <div t-if="payment_error" class="o_ocd_failed" role="alert">
+                        <b>The payment did not go through.</b>
+                        <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your cart is kept.</span>
+                    </div>
+                    <div t-if="cart_has_blocking_alerts" class="o_ocd_alert" role="alert">
+                        Your cart changed: go back to the cart to check it.
+                    </div>
+                    <t t-else="">
+                        <div class="o_ocd_with_what">
+                            <span>With what?</span>
+                            <t t-if="country">
+                                <span t-attf-class="o_ocd_flag o_ocd_flag_#{(country.code or '').lower()}"/>
+                                <span class="o_ocd_with_country" t-out="country.name"/>
+                            </t>
+                        </div>
+                        <div class="o_ocd_payment">
+                            <t t-call="payment.form"/>
+                        </div>
+                    </t>
+                    <div class="o_ocd_total">
+                        <span>Total</span>
+                        <b t-out="total"/>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === TRACKING OF THE ORDER === -->
+
+    <template id="tracking" name="OCD Live: my order">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_tracking">
+                    <div class="o_ocd_tracking_head">
+                        <h1 t-out="title"/>
+                        <span t-out="summary_line"/>
+                    </div>
+                    <t t-foreach="parcels" t-as="row">
+                        <div t-attf-class="o_ocd_parcel #{'o_ocd_parcel_on' if row['parcel'].ocd_stage == 'on_the_way' else ''}">
+                            <div class="o_ocd_parcel_head">
+                                <b t-out="row['title']"/>
+                                <span t-attf-class="o_ocd_step_pill o_ocd_step_pill_#{row['pill']}" t-out="row['pill_label']"/>
+                            </div>
+                            <span class="o_ocd_parcel_when" t-out="row['sub']"/>
+                            <ol class="o_ocd_tracking_steps">
+                                <t t-foreach="row['steps']" t-as="step">
+                                    <li t-att-class="'o_ocd_on' if step['on'] else None"><i aria-hidden="true"/><span t-out="step['label']"/></li>
+                                </t>
+                            </ol>
+                            <div class="o_ocd_parcel_courier">
+                                <span class="o_ocd_parcel_initials" aria-hidden="true" t-out="row['initials']"/>
+                                <span t-out="row['who']"/>
+                                <a t-if="row['phone']" t-attf-href="tel:+#{row['phone']}" class="o_ocd_link o_ocd_tracking_call"
+                                   t-att-aria-label="row['call_aria']">Call</a>
+                            </div>
+                            <div t-if="row['code']" class="o_ocd_tracking_code">
+                                <span>Your code for this parcel</span>
+                                <b t-out="row['code']"/>
+                                <small>Give it only when you have the parcel in your hands.</small>
+                            </div>
+                            <span t-if="row['done_line']" t-attf-class="o_ocd_parcel_note #{'o_ocd_parcel_note_ok' if row['parcel'].ocd_stage == 'delivered' else 'o_ocd_parcel_note_warn'}"
+                                  role="status" t-out="row['done_line']"/>
+                        </div>
+                    </t>
+                    <div t-if="not parcels and order.state in ('draft', 'sent')" class="o_ocd_info">
+                        <a t-att-href="'/shop/payment'" class="o_ocd_link">Pay the order</a>
+                    </div>
+                    <div t-if="delivered_all" class="o_ocd_tracking_rate">
+                        <span id="l-rate" class="o_ocd_label">Did you like your order?</span>
+                        <form t-attf-action="#{base}/note?#{token_query}" method="post" class="o_ocd_stars" role="group" aria-labelledby="l-rate">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <t t-foreach="range(1, 6)" t-as="star">
+                                <button name="stars" t-att-value="star" t-att-aria-pressed="'true' if rating and star &lt;= rating else 'false'"
+                                        t-att-class="'o_ocd_on' if rating and star &lt;= rating else None" t-out="star"/>
+                            </t>
+                        </form>
+                        <span t-if="rated" class="o_ocd_parcel_hint" role="status">Thank you, the vendors see your rating.</span>
+                        <form t-if="can_return" t-attf-action="#{base}/retour?#{token_query}" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <button class="o_ocd_cta o_ocd_cta_line" t-out="return_label"/>
+                        </form>
+                        <div t-if="return_requested" class="o_ocd_ok" role="status">
+                            Return asked. A courier comes to pick the parcel up; you receive a code to give them.
+                        </div>
+                    </div>
+                    <div class="o_ocd_tracking_address">
+                        <b t-out="address_name"/>
+                        <span t-out="address_line"/>
+                        <small>An order can come in several parcels: one per vendor, each with its code.</small>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === MY PRODUCTS (vendor space) === -->
+
+    <template id="vendor_products" name="OCD Live: my products">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_my_products">
+                    <form action="/ocd/espace/moi/produits" method="post" enctype="multipart/form-data"
+                          class="o_ocd_form o_ocd_my_products_form" novalidate="novalidate">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">Add a product</h1>
+                        <label class="o_ocd_photo_pick" for="mp-photo">
+                            <input id="mp-photo" type="file" name="photo" accept="image/*" capture="environment"
+                                   class="o_ocd_photo_input"/>
+                            <span class="o_ocd_photo_pick_empty">
+                                <t t-call="ocd_live.icon" icon.f="camera"/>
+                                <span>Take a photo</span>
+                            </span>
+                            <span class="o_ocd_photo_pick_done">
+                                <img alt="" class="o_ocd_photo_preview"/>
+                                <span><t t-call="ocd_live.icon" icon.f="check"/>Photo added · change it</span>
+                            </span>
+                        </label>
+                        <span t-if="errors.get('photo')" class="o_ocd_error" role="alert" t-out="errors['photo']"/>
+                        <div class="o_ocd_field">
+                            <label for="mp-name" class="o_ocd_label">Name of the product</label>
+                            <input id="mp-name" name="name" class="o_ocd_input" t-att-value="values.get('name')" autocomplete="off"/>
+                            <span t-if="errors.get('name')" class="o_ocd_error" role="alert" t-out="errors['name']"/>
+                        </div>
+                        <div class="o_ocd_name_city">
+                            <div class="o_ocd_field">
+                                <label for="mp-price" class="o_ocd_label">Price</label>
+                                <div class="o_ocd_price_input">
+                                    <input id="mp-price" name="price" inputmode="numeric" class="o_ocd_input" t-att-value="values.get('price')" autocomplete="off"/>
+                                    <span t-out="currency_symbol"/>
+                                </div>
+                            </div>
+                            <div class="o_ocd_field">
+                                <span id="mp-qty" class="o_ocd_label">How many do you have?</span>
+                                <div class="o_ocd_stepper o_ocd_stepper_js" role="group" aria-labelledby="mp-qty">
+                                    <button type="button" class="o_ocd_stepper_less" aria-label="One less">−</button>
+                                    <input type="number" name="quantity" min="0" inputmode="numeric" class="o_ocd_stepper_value"
+                                           t-att-value="values.get('quantity', 1)" aria-labelledby="mp-qty"/>
+                                    <button type="button" class="o_ocd_stepper_more" aria-label="One more">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <span t-if="errors.get('price')" class="o_ocd_error" role="alert" t-out="errors['price']"/>
+                        <div t-if="sent" class="o_ocd_ok" role="status">Sent. The team checks the photo, then your product shows in your boutique.</div>
+                        <button type="submit" class="o_ocd_cta">Send for checking</button>
+                    </form>
+
+                    <div class="o_ocd_section_head">
+                        <h2>My boutique</h2>
+                        <span t-out="count_line"/>
+                    </div>
+                    <div class="o_ocd_my_products_list">
+                        <t t-foreach="rows" t-as="row">
+                            <div class="o_ocd_my_product" t-attf-id="produit-#{row['product'].id}">
+                                <span class="o_ocd_photo o_ocd_cart_photo">
+                                    <t t-call="ocd_live_shop.product_photo" image="row['image']"/>
+                                </span>
+                                <span class="o_ocd_my_product_text">
+                                    <b t-out="row['product'].name"/>
+                                    <span>
+                                        <span t-out="row['price']"/>
+                                        <span t-attf-class="o_ocd_step_pill o_ocd_my_status_#{row['status']}" t-out="row['status_label']"/>
+                                    </span>
+                                </span>
+                                <form t-if="row['single']" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/stock"
+                                      method="post" class="o_ocd_stepper">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button name="quantity" t-att-value="max((row['qty'] or 0) - 1, 0)" t-att-aria-label="row['less_aria']"
+                                            t-att-disabled="'disabled' if not row['qty'] else None">−</button>
+                                    <span class="o_ocd_stepper_value" aria-live="polite" t-out="row['qty'] if row['qty'] is not None else '–'"/>
+                                    <button name="quantity" t-att-value="(row['qty'] or 0) + 1" t-att-aria-label="row['more_aria']">+</button>
+                                </form>
+                            </div>
+                        </t>
+                        <div t-if="not rows" class="o_ocd_info">No product yet: add your first one above.</div>
+                    </div>
+                    <small class="o_ocd_parcel_hint">At 0, the product stays visible with “Sold out”. Put a quantity back when you have some.</small>
+                    <t t-if="boutique_url">
+                        <button type="button" class="o_ocd_share o_ocd_share_wide" t-att-data-url="boutique_url">
+                            <t t-call="ocd_live.icon" icon.f="share"/>
+                            <span>Share my boutique</span>
+                        </button>
+                        <div class="o_ocd_share_done o_ocd_ok" role="status" hidden="hidden">Link copied. Paste it in your WhatsApp status.</div>
+                    </t>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="space" inherit_id="ocd_live.space" name="OCD Live: products and parcels in the space">
+        <xpath expr="//div[hasclass('o_ocd_space_shop')]" position="inside">
+            <h2 class="o_ocd_section">My shop</h2>
+            <div class="o_ocd_space_links">
+                <a href="/ocd/espace/moi/produits" class="o_ocd_button o_ocd_button_dark">My products</a>
+                <a t-if="vendor.ocd_sale_mode == 'ocd'" href="/ocd/livrer/moi" class="o_ocd_button o_ocd_button_line">My parcels</a>
+                <a t-if="vendor.ocd_vendor_state == 'approved'" t-attf-href="/ocd/boutique/#{vendor.id}" class="o_ocd_button">My boutique</a>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

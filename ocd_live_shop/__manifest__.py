@@ -62,6 +62,7 @@ OCD Live shop and deliveries
         "wizard/ocd_parcel_force_views.xml",
         "wizard/ocd_parcel_code_views.xml",
         "views/ocd_live_shop_templates.xml",
+        "views/ocd_shop_pages_templates.xml",
         "views/ocd_live_shop_menus.xml",
     ],
     "assets": {
@@ -74,7 +75,7 @@ OCD Live shop and deliveries
         ],
         "web.assets_frontend": [
             "ocd_live_shop/static/src/scss/ocd_live_shop.scss",
-            "ocd_live_shop/static/src/interactions/boutique_live.js",
+            "ocd_live_shop/static/src/interactions/*.js",
         ],
     },
     "installable": True,

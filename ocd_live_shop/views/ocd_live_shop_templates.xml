@@ -58,9 +58,7 @@
                         <a t-att-href="on_screen['url'] if on_screen else '#'"
                            t-attf-class="o_ocd_onscreen #{'' if on_screen else 'd-none'}">
                             <span class="o_ocd_photo o_ocd_onscreen_photo">
-                                <t t-call="ocd_live_shop.product_photo">
-                                    <t t-set="image" t-value="on_screen and on_screen['image']"/>
-                                </t>
+                                <t t-call="ocd_live_shop.product_photo" image="on_screen and on_screen['image']"/>
                             </span>
                             <span class="o_ocd_onscreen_text">
                                 <small>On screen now</small>
@@ -124,9 +122,7 @@
                         <t t-foreach="cards" t-as="card">
                             <div t-if="card['out']" class="o_ocd_product o_ocd_product_out">
                                 <span class="o_ocd_photo o_ocd_product_photo">
-                                    <t t-call="ocd_live_shop.product_photo">
-                                        <t t-set="image" t-value="card['image']"/>
-                                    </t>
+                                    <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
                                     <span class="o_ocd_product_flag o_ocd_product_flag_out">Sold out</span>
                                 </span>
                                 <span class="o_ocd_product_text">
@@ -136,9 +132,7 @@
                             </div>
                             <a t-else="" t-att-href="card['url']" class="o_ocd_product">
                                 <span class="o_ocd_photo o_ocd_product_photo">
-                                    <t t-call="ocd_live_shop.product_photo">
-                                        <t t-set="image" t-value="card['image']"/>
-                                    </t>
+                                    <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
                                     <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
                                 </span>
                                 <span class="o_ocd_product_text">
@@ -202,9 +196,7 @@
                                        t-att-aria-label="row['aria']">
                                         <span class="o_ocd_moment_time" t-out="row['moment'].offset_label"/>
                                         <span class="o_ocd_photo o_ocd_moment_photo">
-                                            <t t-call="ocd_live_shop.product_photo">
-                                                <t t-set="image" t-value="row['image']"/>
-                                            </t>
+                                            <t t-call="ocd_live_shop.product_photo" image="row['image']"/>
                                         </span>
                                         <span class="o_ocd_moment_text">
                                             <b t-out="row['product'].name"/>
@@ -266,8 +258,8 @@
                 </form>
             </div>
         </t>
-        <span t-elif="parcel.ocd_cod_state == 'to_collect'" class="o_ocd_parcel_hint">The payment at the door is settled with the OCD team.</span>
-        <form t-if="parcel.ocd_cod_state != 'to_collect' or not card['methods']" t-attf-action="#{base}/colis/#{parcel.id}/code" method="post" class="o_ocd_parcel_code">
+        <span t-elif="parcel.ocd_cod_state == 'to_collect'" class="o_ocd_parcel_alert" role="alert">This parcel is paid before the handover: call the OCD team before you give it.</span>
+        <form t-if="parcel.ocd_cod_state != 'to_collect'" t-attf-action="#{base}/colis/#{parcel.id}/code" method="post" class="o_ocd_parcel_code">
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
             <label t-attf-for="code_#{parcel.id}" class="o_ocd_parcel_label" t-out="card['code_label']"/>
             <div class="o_ocd_code_row">

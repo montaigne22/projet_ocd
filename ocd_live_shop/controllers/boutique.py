@@ -9,6 +9,8 @@ from odoo.http import request
 from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
+from . import shop_common
+
 # Platforms of the lives, recognised from the link of the live
 PLATFORMS = {
     "tiktok.com": "TikTok",
@@ -18,7 +20,6 @@ PLATFORMS = {
     "youtube.com": "YouTube",
     "youtu.be": "YouTube",
 }
-LOW_STOCK = 3
 
 
 def platform(url):
@@ -93,20 +94,11 @@ class OcdBoutique(http.Controller):
         ], order="website_sequence, id")
 
     def _price(self, product):
-        return common.money(product.list_price, product.currency_id)
+        return shop_common.prices(product).get(product.id) or common.money(product.list_price, product.currency_id)
 
     def _product_card(self, product):
-        """What the boutique shows of a product: price, photo and stock."""
-        stock = int(product.qty_available) if product.is_storable else None
-        return {
-            "product": product,
-            # Until the product page follows the design, direct contact opens WhatsApp
-            "url": product.website_url if product.ocd_sale_mode == "ocd" else f"/ocd/wa/{product.id}",
-            "price": self._price(product),
-            "image": f"/web/image/product.template/{product.id}/image_512" if product.image_128 else False,
-            "out": stock is not None and stock <= 0,
-            "low": request.env._("Only %s left", stock) if stock is not None and 0 < stock <= LOW_STOCK else False,
-        }
+        """What the boutique shows of a product: price, photo and stock, as in the shop."""
+        return shop_common.card(product, shop_common.prices(product))
 
     def _live_info(self, live):
         name = platform(live.live_url)
@@ -187,6 +179,7 @@ class OcdBoutique(http.Controller):
         on_screen = live.current_product_tmpl_id if live else False
         visitor = common.current_vendor()
         products = self._products(vendor)
+        price_by_id = shop_common.prices(products)
         country = vendor.country_id
         categories = " · ".join(part for part in (vendor.ocd_category_id.name, vendor.ocd_business) if part)
         return request.render("ocd_live_shop.boutique", common.page_values(
@@ -206,7 +199,7 @@ class OcdBoutique(http.Controller):
             next_live=self._next_info(next_live) if next_live else False,
             replay=self._replay_info(replay) if replay else False,
             contact=self._contact(vendor),
-            cards=[self._product_card(product) for product in products],
+            cards=[shop_common.card(product, price_by_id) for product in products],
             visitor=visitor,
             noted=bool(noted),
             noted_text=request.env._("Noted. We write to you when %s goes live.", (vendor.name or "").split()[0]),
@@ -286,7 +279,7 @@ class OcdBoutique(http.Controller):
             rows.append({
                 "moment": moment,
                 "product": product,
-                "see_url": product.website_url if vendor.ocd_sale_mode == "ocd" else f"/ocd/wa/{product.id}",
+                "see_url": product.website_url,
                 "price": self._price(product),
                 "url": replay._ocd_replay_url_at(moment.offset_seconds),
                 "image": f"/web/image/product.template/{product.id}/image_128" if product.image_128 else False,
@@ -324,7 +317,15 @@ class OcdBoutique(http.Controller):
         product = request.env["product.template"].sudo().browse(product_id).exists()
         if not product or not product.ocd_vendor_id or product.ocd_review_state != "approved":
             raise request.not_found()
-        url = product._ocd_whatsapp_url()
+        chosen = []
+        for line in product.valid_product_template_attribute_line_ids:
+            value = kwargs.get(f"attribute_{line.id}")
+            if value and str(value).isdigit():
+                ptav = line.product_template_value_ids.filtered(lambda v: v.id == int(value))
+                if ptav:
+                    chosen.append(f"{line.attribute_id.name} {ptav.name}")
+        link = request.httprequest.url_root.rstrip("/") + product.website_url if chosen else None
+        url = product._ocd_whatsapp_url(chosen, link)
         if not url:
             raise request.not_found()
         product.ocd_wa_clicks += 1

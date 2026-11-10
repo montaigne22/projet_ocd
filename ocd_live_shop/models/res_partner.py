@@ -222,6 +222,27 @@ class ResPartner(models.Model):
         }
         return couriers.sorted(lambda c: (loads.get(c.id, 0), c.id))[:1]
 
+    def _ocd_checkout_without_email(self, **kwargs):
+        """Whether the address of a website order is complete without an e-mail: the customers
+        of OCD Live give their WhatsApp number and follow their order on WhatsApp."""
+        if self.env.context.get("ocd_whatsapp_checkout"):
+            return True
+        return bool(kwargs.get("order_sudo")) and len(self) == 1 and bool(self.phone)
+
+    def _get_mandatory_billing_address_fields(self, country_sudo, **kwargs):
+        """Override of `portal`: no e-mail needed for the WhatsApp checkout of OCD Live."""
+        field_names = super()._get_mandatory_billing_address_fields(country_sudo, **kwargs)
+        if self._ocd_checkout_without_email(**kwargs):
+            field_names.discard("email")
+        return field_names
+
+    def _get_mandatory_delivery_address_fields(self, country_sudo, **kwargs):
+        """Override of `portal`: no e-mail needed for the WhatsApp checkout of OCD Live."""
+        field_names = super()._get_mandatory_delivery_address_fields(country_sudo, **kwargs)
+        if self._ocd_checkout_without_email(**kwargs):
+            field_names.discard("email")
+        return field_names
+
     def _ocd_prep_hours(self):
         self.ensure_one()
         return self.ocd_prep_hours or (self.company_id or self.env.company).ocd_prep_hours

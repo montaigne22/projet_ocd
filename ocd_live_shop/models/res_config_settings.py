@@ -14,6 +14,7 @@ class ResConfigSettings(models.TransientModel):
     ocd_max_failed_attempts = fields.Integer(
         related="company_id.ocd_max_failed_attempts", readonly=False
     )
+    ocd_return_days = fields.Integer(related="company_id.ocd_return_days", readonly=False)
     ocd_cash_deadline = fields.Float(related="company_id.ocd_cash_deadline", readonly=False)
     ocd_cod_cash = fields.Boolean(related="company_id.ocd_cod_cash", readonly=False)
     ocd_cod_online = fields.Boolean(related="company_id.ocd_cod_online", readonly=False)

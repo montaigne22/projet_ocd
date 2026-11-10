@@ -34,14 +34,14 @@ Le design validé est dans [`prototype/design-valide/`](../prototype/design-vali
 | Écran du design | Où | État |
 |---|---|---|
 | `Vitrine` Boutique d'un vendeur | `/ocd/boutique/<vendeur>`, modèle `ocd_live_shop.boutique` : en live (produit à l'écran mis à jour toutes les 20 s) ou prochain live avec « Me prévenir sur WhatsApp » (`ocd.boutique.alert`), dernier replay, bouton WhatsApp selon le mode de vente, produits avec stock | ✅ |
-| `Shop` Shop OCD | pages `/shop` de website_sale | 🟡 |
-| `Produit` Fiche produit | pages produit de website_sale | 🟡 |
-| `Panier` Panier | panier de website_sale | 🟡 |
-| `Livraison` Adresse et livraison | étape adresse de website_sale (+ point de repère de delivery_cameroon / ocd_delivery_togo) | 🟡 |
-| `PayerCommande` Payer la commande | paiement de website_sale ; à la porte : `/ocd/colis/<colis>/payer` | 🟡 |
-| `Suivi` Suivi de commande | page de la commande du portail, avec le code de livraison | 🟡 |
+| `Shop` Shop OCD | `/shop` d'Odoo, gabarit `ocd_live_shop.shop` : recherche, pays de livraison, catégories des vendeurs, produits avec vendeur, mode de vente et stock | ✅ |
+| `Produit` Fiche produit | `/shop/<produit>` d'Odoo, gabarit `ocd_live_shop.product` : variantes (couleur, taille) avec stock et prix, quantité, vendeur ; contact direct : WhatsApp avec le choix | ✅ |
+| `Panier` Panier | `/shop/cart` d'Odoo, gabarit `ocd_live_shop.cart` : quantités (`/ocd/panier/ligne`), total | ✅ |
+| `Livraison` Adresse et livraison | `/shop/checkout` d'Odoo, gabarit `ocd_live_shop.delivery`, envoi `/ocd/livraison` (formulaires d'adresse d'Odoo, sans e-mail) : ville, quartier, repère, mode de livraison et prix en direct | ✅ |
+| `PayerCommande` Payer la commande | `/shop/payment` d'Odoo, gabarit `ocd_live_shop.payment` : formulaire de paiement d'Odoo (Mobile Money, paiement à la livraison…) ; à la porte : `/ocd/colis/<colis>/payer` | ✅ |
+| `Suivi` Suivi de commande | `/ocd/suivi/<commande>?access_token=` (après la confirmation d'Odoo) : un bloc par colis, étapes, livreur, code, note, demande de retour | ✅ |
 | `Replay` Revoir un live | `/ocd/boutique/<vendeur>/replay`, modèle `ocd_live_shop.replay` : moments du live (lien à la seconde pour YouTube), bouton « Commander » ou « Écrire » du moment choisi | ✅ |
-| `MesProduits` Mes produits | espace vendeur (produits ajoutés vérifiés par l'équipe) | 🟡 |
+| `MesProduits` Mes produits | `/ocd/espace/moi/produits` : ajout avec photo (vérifié par l'équipe), stock de chaque produit, partager sa boutique | ✅ |
 | `Livrer` Mes colis à livrer | `/ocd/livrer/<jeton>`, modèle `ocd_live_shop.delivery_app` : reversement à venir, onglets « À faire » et « Livrés », une carte par colis (étape, paiement, livreur qui passe, prêt, départ, paiement à la porte, code, problème, reprise) | ✅ |
 | `Tournee` Ma tournée de livreur | `/ocd/livrer/<jeton>` pour un livreur OCD, modèle `ocd_live_shop.delivery_tour` : en service ou non, espèces sur soi, étapes numérotées (récupérer puis livrer), appeler le dispatch | ✅ |
 

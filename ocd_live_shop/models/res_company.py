@@ -42,6 +42,12 @@ class ResCompany(models.Model):
     )
     ocd_code_max_attempts = fields.Integer(string="Wrong Codes Before Locking", default=3)
     ocd_max_failed_attempts = fields.Integer(string="Failed Attempts Before Return", default=2)
+    ocd_return_days = fields.Integer(
+        string="Days To Ask For A Return",
+        default=30,
+        help="After the delivery, the customer can ask for a return from the tracking page during "
+        "these days. 0: no return from the website.",
+    )
     ocd_cash_deadline = fields.Float(
         string="Cash Handed Over Before",
         default=20.0,

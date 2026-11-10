@@ -16,6 +16,13 @@ class ProductTemplate(models.Model):
         tracking=True,
     )
     ocd_sale_mode = fields.Selection(related="ocd_vendor_id.ocd_sale_mode", string="Sale Mode")
+    ocd_category_id = fields.Many2one(
+        related="ocd_vendor_id.ocd_category_id",
+        store=True,
+        index="btree_not_null",
+        string="Category Of The Vendor",
+        help="Used by the shop to filter the products by category of the vendors.",
+    )
     ocd_review_state = fields.Selection(
         selection=[("to_check", "To check"), ("approved", "Approved"), ("refused", "Refused")],
         string="Review",
@@ -63,11 +70,36 @@ class ProductTemplate(models.Model):
         booking._ocd_show_product(self)
         return True
 
-    def _ocd_whatsapp_url(self):
-        """Return the WhatsApp link to the vendor, with a message about the product."""
+    def _ocd_whatsapp_url(self, values=None, link=None):
+        """Return the WhatsApp link to the vendor, with a message about the product: the
+        values chosen (colour, size...) and the link of the product, when given."""
         self.ensure_one()
         digits = re.sub(r"\D", "", self.ocd_vendor_id.phone or "")
         if len(digits) < 8:
             return False
         text = self.env._("Hello, I saw %(product)s on OCD Live.", product=self.name)
+        if values:
+            text = f"{text} {self.env._('My choice: %s.', ', '.join(values))}"
+        if link:
+            text = f"{text} {link}"
         return f"https://wa.me/{digits}?text={url_quote(text)}"
+
+    def _ocd_set_stock(self, quantity):
+        """Set the quantity in stock of a product without variants, as an inventory adjustment
+        of the main warehouse (traced in the stock moves). Used by the vendors from their
+        space."""
+        self.ensure_one()
+        variant = self.product_variant_ids[:1]
+        if not variant or len(self.product_variant_ids) != 1:
+            raise UserError(self.env._("Change the stock of the product %s from the back office.", self.name))
+        company = self.company_id or self.env.company
+        warehouse = self.env["stock.warehouse"].sudo().search([("company_id", "=", company.id)], limit=1)
+        if not warehouse:
+            return False
+        Quant = self.env["stock.quant"].sudo().with_context(inventory_mode=True)
+        quant = Quant.search([("product_id", "=", variant.id), ("location_id", "=", warehouse.lot_stock_id.id)], limit=1)
+        if not quant:
+            quant = Quant.create({"product_id": variant.id, "location_id": warehouse.lot_stock_id.id})
+        quant.inventory_quantity = quantity
+        quant.action_apply_inventory()
+        return True

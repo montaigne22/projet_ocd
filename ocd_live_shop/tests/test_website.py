@@ -35,7 +35,8 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
 
     def test_boutique_in_direct_contact(self):
         response = self.url_open(f"/ocd/boutique/{self.awa.id}")
-        self.assertIn(f"/ocd/wa/{self.cake.id}", response.text)
+        # The product page offers WhatsApp (the product is not sold on the website)
+        self.assertIn(self.cake.website_url, response.text)
         response = self.url_open(f"/ocd/wa/{self.cake.id}", allow_redirects=False)
         self.assertEqual(response.status_code, 303)
         self.assertTrue(response.headers["Location"].startswith("https://wa.me/22890000007?text="))
@@ -204,7 +205,8 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
         self.assertIn("Video published on YouTube", response.text)
 
     def test_stock_of_the_products(self):
-        self.dress.product_tmpl_id.is_storable = True
+        # Sold only while in stock, as the shop of Odoo does
+        self.dress.product_tmpl_id.write({"is_storable": True, "allow_out_of_stock_order": False})
         robe = self.dress.product_tmpl_id
         self.assertTrue(robe.is_published)
         response = self.url_open(f"/ocd/boutique/{self.brenda.id}")

@@ -346,6 +346,9 @@ class OcdDeliveryApp(http.Controller):
                 parcel.action_ocd_leave()
                 message = request.env._("Good delivery! The customer received the code.")
             elif action == "code" and delivers:
+                if parcel.ocd_cod_state == "to_collect":
+                    # The money is never left behind: paid first, then the code
+                    raise UserError(request.env._("Collect the payment first, then type the code of the customer."))
                 delivered, left = parcel._ocd_check_code(post.get("code"))
                 if delivered:
                     message = request.env._("Delivered. Thank you!")
@@ -363,7 +366,14 @@ class OcdDeliveryApp(http.Controller):
                 parcel._ocd_report_problem(reason, common.clean_text(post.get("note"), 300))
                 message = request.env._("Problem saved: the team is alerted.")
             elif action == "retry" and delivers:
+                reasons = dict(parcel._fields["ocd_problem_reason"]._description_selection(request.env))
+                reason = reasons.get(parcel.ocd_problem_reason) or ""
                 parcel.action_ocd_retry()
+                # Traced on the parcel: who resumed, after which problem
+                parcel.message_post(body=request.env._(
+                    "Delivery resumed by %(who)s from the delivery app, after: %(reason)s",
+                    who=partner.name, reason=reason,
+                ))
                 message = request.env._("Delivery resumed.")
             else:
                 raise request.not_found()

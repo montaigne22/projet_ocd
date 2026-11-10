@@ -15,6 +15,9 @@ db_port = 5432
 data_dir = /opt/odoo20/data
 ```
 
+- Moteur PDF d'Odoo (`wkhtmltopdf`, ex. `apt-get install -y wkhtmltopdf`) : la confirmation d'une
+  commande du shop envoie un PDF.
+
 ## Lancer une base de démonstration
 
 ```bash

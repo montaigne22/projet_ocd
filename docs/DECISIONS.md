@@ -51,3 +51,16 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   3 codes faux bloquent le colis.
 - Paiement à la porte : espèces, paiement sur le téléphone du client, ou Mobile Money déclaré (réglable).
 - **Reversements** au rythme de chaque vendeur, seulement pour les colis confirmés par le code.
+- **Pas de remise sans paiement** : dans l'appli des colis, le code du client n'est accepté qu'une fois
+  l'argent à la porte encaissé ; un vendeur qui n'encaisse pas montre le paiement sur le téléphone du
+  client, sinon il appelle l'équipe (qui peut valider sans code, avec un motif).
+- **Reprise de livraison par le livreur** après un problème, tracée dans l'historique du colis (qui, après
+  quel problème). Le nombre d'échecs compte toujours : au-delà du réglage, le colis retourne au vendeur.
+- **Contact direct** : le produit a sa fiche sur le site, sans panier (bloqué aussi côté serveur) ; le
+  bouton WhatsApp envoie au vendeur le choix (couleur, taille…) et le lien du produit.
+- **Voix des pages** gardée partout, même là où le design n'a pas de bouton ; sur téléphone, « Partager »
+  ne garde alors que son icône.
+- **Commande sans e-mail** : le client donne son nom, son WhatsApp, sa ville, son quartier et un point de
+  repère ; il suit sa commande sur WhatsApp et sur la page de suivi.
+- **Retour** demandé par le client depuis la page de suivi pendant **30 jours** après la livraison
+  (réglable, 0 = pas de retour) ; l'équipe reçoit une activité pour l'organiser.
