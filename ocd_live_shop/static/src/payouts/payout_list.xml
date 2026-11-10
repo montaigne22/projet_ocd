@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live_shop.PayoutListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary">
+        <xpath expr="//table" position="before">
+            <div t-if="this.summary()" class="o_ocd_payout_summary">
+                <div class="o_ocd_payout_figure">
+                    <span t-out="this.summary().to_pay_label"/>
+                    <b t-out="this.summary().to_pay"/>
+                </div>
+                <div class="o_ocd_payout_figure">
+                    <span>To recover</span>
+                    <b t-out="this.summary().to_recover"/>
+                </div>
+                <div class="o_ocd_payout_figure">
+                    <span>Already paid this week</span>
+                    <b t-out="this.summary().paid"/>
+                </div>
+                <span class="o_ocd_payout_rule" t-out="this.summary().rule"/>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

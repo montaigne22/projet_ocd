@@ -23,17 +23,27 @@
         <field name="name">ocd.payout.view.list</field>
         <field name="model">ocd.payout</field>
         <field name="arch" type="xml">
-            <list string="Payouts" decoration-danger="amount &lt; 0" decoration-muted="state in ('paid', 'cancelled')">
-                <field name="name"/>
-                <field name="date"/>
+            <list string="Payouts" js_class="ocd_payout_list" decoration-muted="state in ('paid', 'cancelled')">
+                <header>
+                    <button name="action_validate" type="object" string="Validate the selection" groups="ocd_live.group_ocd_live_manager"/>
+                    <button name="action_register_payment" type="object" string="Pay the selection" class="btn-primary"
+                            groups="ocd_live.group_ocd_live_manager"/>
+                </header>
+                <field name="name" optional="hide"/>
+                <field name="date" optional="hide"/>
                 <field name="vendor_id"/>
-                <field name="amount_bills" sum="Total"/>
+                <field name="delivery_mode" optional="show"/>
+                <field name="amount_sales" sum="Total"/>
+                <field name="amount_commission" sum="Total"/>
+                <field name="amount_fees" sum="Total"/>
                 <field name="amount_refunds" sum="Total"/>
-                <field name="amount" sum="Total"/>
+                <field name="amount" sum="Total" decoration-bf="1" decoration-danger="amount &lt; 0"/>
                 <field name="momo" optional="show"/>
                 <field name="currency_id" column_invisible="True"/>
                 <field name="state" widget="badge" decoration-warning="state == 'draft'" decoration-info="state == 'validated'"
                        decoration-success="state == 'paid'"/>
+                <button name="action_ocd_ask_whatsapp" type="object" string="Ask on WhatsApp" icon="oi_whatsapp"
+                        invisible="amount &gt;= 0 or state not in ('draft', 'validated')"/>
             </list>
         </field>
     </record>

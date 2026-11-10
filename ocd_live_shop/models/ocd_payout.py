@@ -1,5 +1,9 @@
+from datetime import timedelta
+
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError
+
+from odoo.addons.ocd_live.tools import day_text
 
 
 class OcdPayout(models.Model):
@@ -30,6 +34,10 @@ class OcdPayout(models.Model):
     amount_refunds = fields.Monetary(string="Already Collected", compute="_compute_amounts", store=True)
     amount = fields.Monetary(string="Balance", compute="_compute_amounts", store=True, tracking=True)
     momo = fields.Char(related="vendor_id.ocd_payout_momo", string="Mobile Money")
+    delivery_mode = fields.Selection(related="vendor_id.ocd_delivery_mode", string="Who Delivers")
+    amount_sales = fields.Monetary(string="Sales Delivered", compute="_compute_breakdown")
+    amount_commission = fields.Monetary(string="Commission", compute="_compute_breakdown")
+    amount_fees = fields.Monetary(string="Delivery Fees", compute="_compute_breakdown")
     state = fields.Selection(
         selection=[
             ("draft", "To check"),
@@ -57,6 +65,54 @@ class OcdPayout(models.Model):
             payout.amount_bills = bills
             payout.amount_refunds = refunds
             payout.amount = bills - refunds
+
+    @api.depends("move_ids.ocd_picking_id")
+    def _compute_breakdown(self):
+        """Balance = sales delivered − commission + delivery fees of the vendor − money the
+        vendor already collected, from the parcels of the bills."""
+        for payout in self:
+            sales = commission = fees = 0.0
+            company = payout.company_id
+            bills = payout.move_ids.filtered(lambda move: move.move_type == "in_invoice")
+            for parcel in bills.ocd_picking_id:
+                currency = parcel.ocd_currency_id or company.currency_id
+                date = parcel.ocd_delivered_at or fields.Datetime.now()
+                fee = parcel.ocd_fee_amount if parcel._ocd_vendor_delivers() else 0.0
+                goods_share = parcel.ocd_vendor_share - fee
+                sales += currency._convert(parcel.ocd_goods_amount, company.currency_id, company, date)
+                commission += currency._convert(parcel.ocd_goods_amount - goods_share, company.currency_id, company, date)
+                fees += currency._convert(fee, company.currency_id, company, date)
+            payout.amount_sales = sales
+            payout.amount_commission = -commission
+            payout.amount_fees = fees
+
+    @api.model
+    def ocd_summary(self):
+        """Figures of the top of the payouts: to pay on the next payout day, to recover from the
+        vendors, already paid this week."""
+        company = self.env.company
+        currency = company.currency_id
+        today = company._ocd_local_today()
+        open_payouts = self.search([("company_id", "=", company.id), ("state", "in", ("draft", "validated"))])
+        monday = today - timedelta(days=today.weekday())
+        paid = self.search([("company_id", "=", company.id), ("state", "=", "paid"), ("date", ">=", monday)])
+        Dashboard = self.env["ocd.live.dashboard"]
+        next_day = Dashboard._ocd_next_payout_day()
+        return {
+            "to_pay_label": self.env._("To pay on %s", day_text(self.env, next_day, "EEEE d MMM")),
+            "to_pay": Dashboard._ocd_money(sum(p.amount for p in open_payouts if p.amount > 0), currency),
+            "to_recover": Dashboard._ocd_money(-sum(p.amount for p in open_payouts if p.amount < 0), currency),
+            "paid": Dashboard._ocd_money(sum(paid.mapped("amount")), currency),
+            "rule": self.env._(
+                "Balance = sales delivered − commission + delivery fees of the vendor − money the vendor "
+                "already collected. Only the parcels confirmed by the code of the customer count."
+            ),
+        }
+
+    def action_ocd_ask_whatsapp(self):
+        """Ask on WhatsApp the money a vendor owes to OCD."""
+        self.ensure_one()
+        return self.vendor_id.action_ocd_open_whatsapp()
 
     @api.model_create_multi
     def create(self, vals_list):
