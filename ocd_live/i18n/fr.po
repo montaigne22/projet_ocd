@@ -1,0 +1,4431 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-10 15:06+0000\n"
+"PO-Revision-Date: 2026-11-10 15:06+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: ocd_live
+#: model:ir.module.module,description:base.module_ocd_live
+msgid ""
+"\n"
+"OCD Live\n"
+"========\n"
+"\n"
+"- Live bookings at the studio in Lome or remotely: 1 h 30 slots on one shared\n"
+"  calendar, no double booking (unique index on every reserved slot), slot held\n"
+"  during the payment and released when the payment does not come.\n"
+"- Six packages sold as products: the lives of a package become credits that\n"
+"  the vendor places later. The 4-hour live takes consecutive slots.\n"
+"- Payment page with the payment form of Odoo: it offers the providers that\n"
+"  take the country, the currency and the amount of the order, as configured by\n"
+"  the team (Campay in Cameroon today, Mobile Money checked by the team\n"
+"  elsewhere, any connector added later). The prices come from the pricelist\n"
+"  Odoo gives to the country of the vendor. The booking is confirmed when the\n"
+"  payment confirms the order, never by the browser.\n"
+"- A host (employee) for each remote live, with a reminder when none is chosen.\n"
+"- The team is notified in the \"Lives\" channel for every confirmed booking.\n"
+"- Live directory: the vendor sends the link of the live, the team checks it\n"
+"  during the checking windows (8:00 to 11:00 and 18:00 to 21:00 by default),\n"
+"  links are published by country and category and removed at the end of the\n"
+"  window. A prepaid pass of 30 days (5,000 F) is required to send links.\n"
+"- Personal link without password for each vendor (sent on WhatsApp by\n"
+"  ocd_live_whatsapp) to reach their space.\n"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "%(body)s To prepare: %(need)s."
+msgstr "%(body)s À préparer : %(need)s."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "%(category)s · for %(minutes)s min"
+msgstr "%(category)s · depuis %(minutes)s min"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "%(day)s at %(hour)s"
+msgstr "%(day)s à %(hour)s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "%(day)s · %(start)s to %(end)s · %(where)s"
+msgstr "%(day)s · %(start)s à %(end)s · %(where)s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "%(day)s · time of %(city)s"
+msgstr "%(day)s · heure de %(city)s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_credit.py:0
+msgid "%(package)s: %(count)s to place"
+msgstr "%(package)s : %(count)s à placer"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "%(vendor)s (%(business)s, %(country)s) booked a live: %(mode)s, %(day)s, %(start)s - %(end)s. Ref. %(ref)s"
+msgstr "%(vendor)s (%(business)s, %(country)s) a réservé un live : %(mode)s, %(day)s, %(start)s - %(end)s. Réf. %(ref)s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "%s lives"
+msgstr "%s lives"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "%s lives to place"
+msgstr "%s lives à placer"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "%s this hour"
+msgstr "%s à cette heure"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_price_rule__percent
+msgid "+25: the live costs 25 % more. -15: the live costs 15 % less."
+msgstr "+25 : le live coûte 25 % de plus. -15 : le live coûte 15 % de moins."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid ". One live shown at a time."
+msgstr ". Un seul live affiché à la fois."
+
+#. module: ocd_live
+#: model:product.template,description_sale:ocd_live.product_package_announce
+msgid "1 live and your video announced on House of Challenge"
+msgstr "1 live et ta vidéo annoncée sur House of Challenge"
+
+#. module: ocd_live
+#: model:product.template,description_sale:ocd_live.product_package_discovery
+msgid "1 live of 1 h 30"
+msgstr "1 live de 1 h 30"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "1 live to place"
+msgstr "1 live à placer"
+
+#. module: ocd_live
+#: model:product.template,description_sale:ocd_live.product_package_four_hours
+msgid "1 long live of 4 hours"
+msgstr "1 long live de 4 heures"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "1 long live, from %(start)s to %(end)s"
+msgstr "1 long live, de %(start)s à %(end)s"
+
+#. module: ocd_live
+#: model:product.template,description_sale:ocd_live.product_package_duo
+msgid "2 lives of 1 h 30"
+msgstr "2 lives de 1 h 30"
+
+#. module: ocd_live
+#: model:product.template,name:ocd_live.product_package_four_hours
+msgid "4 hours"
+msgstr "4 heures"
+
+#. module: ocd_live
+#: model:product.template,description_sale:ocd_live.product_package_pack4
+msgid "4 lives of 1 h 30"
+msgstr "4 lives de 1 h 30"
+
+#. module: ocd_live
+#: model:product.template,description_sale:ocd_live.product_package_monthly
+msgid "8 lives within the month and the announce"
+msgstr "8 lives dans le mois + annonce"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid ""
+"<b>Look at your WhatsApp.</b>\n"
+"                        <span>Touch the link you received: your space opens by itself. This link works only for you.</span>"
+msgstr ""
+"<b>Regarde ton WhatsApp.</b>\n"
+"                        <span>Touche le lien reçu : ton espace s'ouvre tout seul. Ce lien ne marche que pour toi.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "<b>Payment received</b>"
+msgstr "<b>Paiement reçu</b>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid ""
+"<b>The payment did not go through.</b>\n"
+"                        <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.</span>"
+msgstr ""
+"<b>Le paiement n'est pas passé.</b>\n"
+"                        <span>Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité. Ton heure est encore gardée.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid ""
+"<b>This booking is cancelled.</b>\n"
+"                            <span>The hour was not paid in time and was offered again.</span>"
+msgstr ""
+"<b>Cette réservation est annulée.</b>\n"
+"                            <span>L'heure n'a pas été payée à temps : elle a été proposée à nouveau.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid ""
+"<i aria-hidden=\"true\"/>\n"
+"                            <span>Closed for now</span>"
+msgstr ""
+"<i aria-hidden=\"true\"/>\n"
+"                            <span>Fermé pour l'instant</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "<small>Type your secret code on your phone only, never here. This page updates by itself.</small>"
+msgstr "<small>Tape ton code secret sur ton téléphone, jamais ici. Cette page se met à jour toute seule.</small>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "<small>lives</small>"
+msgstr "<small>lives</small>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
+msgid "<small>taken</small>"
+msgstr "<small>pris</small>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "<span class=\"o_ocd_badge_ok\">Active</span>"
+msgstr "<span class=\"o_ocd_badge_ok\">Actif</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "<span class=\"o_ocd_banner_tag\">OCD</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid "<span class=\"o_ocd_brand\">OCD</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid ""
+"<span class=\"o_ocd_brand\">OCD</span>\n"
+"                            <span class=\"o_ocd_live_badge\">LIVE</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.home
+msgid "<span class=\"o_ocd_choice_title\">At the studio</span>"
+msgstr "<span class=\"o_ocd_choice_title\">Au studio</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "<span class=\"o_ocd_howto_number\">1</span><span>Start your live at home.</span>"
+msgstr "<span class=\"o_ocd_howto_number\">1</span><span>Lance ton live chez toi.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "<span class=\"o_ocd_howto_number\">2</span><span>Send the link here.</span>"
+msgstr "<span class=\"o_ocd_howto_number\">2</span><span>Envoie le lien ici.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "<span class=\"o_ocd_howto_number\">3</span><span>The OCD team checks, then your country sees you.</span>"
+msgstr "<span class=\"o_ocd_howto_number\">3</span><span>L'équipe OCD vérifie, puis ton pays te voit.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "<span class=\"o_ocd_label\">Your banner during the live</span>"
+msgstr "<span class=\"o_ocd_label\">Ton bandeau pendant le live</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid "<span class=\"o_ocd_link_bad\" hidden=\"hidden\">It is not a live link. Copy it from \"Share\" in your app.</span>"
+msgstr "<span class=\"o_ocd_link_bad\" hidden=\"hidden\">Ce n'est pas un lien de live. Copie-le depuis « Partager » dans ton appli.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid ""
+"<span class=\"o_ocd_live_dot\" aria-hidden=\"true\"/>\n"
+"                                See where my link is"
+msgstr ""
+"<span class=\"o_ocd_live_dot\" aria-hidden=\"true\"/>\n"
+"                                Où en est mon lien"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid ""
+"<span class=\"o_ocd_live_dot\" aria-hidden=\"true\"/>\n"
+"                                Send the link of my live"
+msgstr ""
+"<span class=\"o_ocd_live_dot\" aria-hidden=\"true\"/>\n"
+"                                Envoyer le lien de mon live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "<span class=\"o_ocd_muted\">You book as</span>"
+msgstr "<span class=\"o_ocd_muted\">Tu réserves au nom de</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid ""
+"<span class=\"o_ocd_spinner\" aria-hidden=\"true\"/>\n"
+"                                <b>Payment in progress</b>"
+msgstr ""
+"<span class=\"o_ocd_spinner\" aria-hidden=\"true\"/>\n"
+"                                <b>Paiement en cours</b>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.payment_status
+msgid ""
+"<span class=\"o_ocd_spinner\" aria-hidden=\"true\"/>\n"
+"                            <b>One moment</b>"
+msgstr ""
+"<span class=\"o_ocd_spinner\" aria-hidden=\"true\"/>\n"
+"                            <b>Un instant</b>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_kanban
+msgid "<span class=\"text-danger fw-bold\" invisible=\"not needs_host\">Host to choose</span>"
+msgstr "<span class=\"text-danger fw-bold\" invisible=\"not needs_host\">Animatrice à choisir</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid ""
+"<span>\n"
+"                                    <b>No pass</b>\n"
+"                                    <small>Show your live to your country during 30 days.</small>\n"
+"                                </span>"
+msgstr ""
+"<span>\n"
+"                                    <b>Pas de pass</b>\n"
+"                                    <small>Montre ton live à ton pays pendant 30 jours.</small>\n"
+"                                </span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.home
+msgid ""
+"<span>\n"
+"                                <span class=\"o_ocd_choice_title\">From home</span>\n"
+"                                <span class=\"o_ocd_choice_text\">Remote, anywhere</span>\n"
+"                            </span>"
+msgstr ""
+"<span>\n"
+"                                <span class=\"o_ocd_choice_title\">Chez toi</span>\n"
+"                                <span class=\"o_ocd_choice_text\">À distance, partout</span>\n"
+"                            </span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_day
+msgid ""
+"<span><i class=\"o_ocd_legend_free\"/>Free</span>\n"
+"                        <span><i class=\"o_ocd_legend_almost\"><b/></i>Almost full</span>\n"
+"                        <span><s>12</s>Full</span>"
+msgstr ""
+"<span><i class=\"o_ocd_legend_free\"/>Libre</span>\n"
+"                        <span><i class=\"o_ocd_legend_almost\"><b/></i>Presque plein</span>\n"
+"                        <span><s>12</s>Complet</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.nav_links
+msgid "<span>Home</span>"
+msgstr "<span>Accueil</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid ""
+"<span>Link recognized:</span>\n"
+"                            <b class=\"o_ocd_link_platform\"/>"
+msgstr ""
+"<span>Lien reconnu :</span>\n"
+"                            <b class=\"o_ocd_link_platform\"/>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "<span>Link sent</span>"
+msgstr "<span>Lien envoyé</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.home
+msgid "<span>Live now</span>"
+msgstr "<span>En direct maintenant</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.nav_links
+msgid "<span>Lives</span>"
+msgstr "<span>Lives</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.nav_links
+msgid "<span>Me</span>"
+msgstr "<span>Moi</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
+msgid "<span>Noted. We write to you on WhatsApp as soon as an hour is free that day.</span>"
+msgstr "<span>C'est noté. On t'écrit sur WhatsApp dès qu'une heure se libère ce jour-là.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "<span>Receive on WhatsApp</span>"
+msgstr "<span>Recevoir sur WhatsApp</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "<span>Reminder on WhatsApp the day before and one hour before.</span>"
+msgstr "<span>Rappel sur WhatsApp la veille et une heure avant.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
+msgid "<span>Tell me if an hour becomes free</span>"
+msgstr "<span>Me prévenir si une heure se libère</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "<span>The ticket is sent on WhatsApp.</span>"
+msgstr "<span>Le ticket est envoyé sur WhatsApp.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "<span>Total</span>"
+msgstr "<span>Total</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "<span>With what?</span>"
+msgstr "<span>Avec quoi ?</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "<span>Your live is moved. The new ticket is below.</span>"
+msgstr "<span>Ton live est déplacé. Voici le nouveau ticket.</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.payment_status
+msgid "<span>Your payment is being processed.</span>"
+msgstr "<span>Ton paiement est en cours de traitement.</span>"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_move_limit_hours
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_move_limit_hours
+msgid "A Live Can Be Moved Until (Hours Before)"
+msgstr "Un live peut être déplacé jusqu'à (heures avant)"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "A closed day has no slot."
+msgstr "Un jour fermé n'a aucun créneau."
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__studio_need__rack
+msgid "A clothes rack"
+msgstr "Un portant"
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_credit_check_quantity
+msgid "A credit contains at least one live."
+msgstr "Un crédit contient au moins un live."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+msgid "A directory pass is needed to send a live link."
+msgstr "Il faut un pass annuaire pour envoyer un lien de live."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/product_template.py:0
+msgid "A directory pass must last at least one day."
+msgstr "Un pass annuaire dure au moins un jour."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "A live can be moved until %s hours before it starts."
+msgstr "Un live peut être déplacé jusqu'à %s heures avant son début."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "A live can only use a credit of its own vendor."
+msgstr "Un live ne peut utiliser qu'un crédit de son propre vendeur."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "A live lasts %(hours)s. We hold your hour %(minutes)s minutes while you pay."
+msgstr "Un live dure %(hours)s. On garde ton heure %(minutes)s minutes pendant que tu paies."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "A live lasts %s. It is paid by your package."
+msgstr "Un live dure %s. Il est payé par ton paquet."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "A live must start at one of the hours of the studio: %s."
+msgstr "Un live doit commencer à une des heures du studio : %s."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/product_template.py:0
+msgid "A live package must contain at least one live of a positive duration."
+msgstr "Un paquet de lives contient au moins un live d'une durée positive."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_booking_check_slot_count
+msgid "A live takes at least one slot."
+msgstr "Un live prend au moins un créneau."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "A live that took place or was cancelled cannot be moved."
+msgstr "Un live passé ou annulé ne peut pas être déplacé."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_partner.py:0
+msgid "A new personal link was created. The old one no longer works."
+msgstr "Un nouveau lien personnel a été créé. L'ancien ne marche plus."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_pass.py:0
+msgid "A pass ends after it starts."
+msgstr "Un pass se termine après son début."
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__studio_need__shelf
+msgid "A shelf"
+msgstr "Une étagère"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_min_notice_hours
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_min_notice_hours
+msgid "A slot can be booked on the website until this number of hours before it starts."
+msgstr "Un créneau peut être réservé sur le site jusqu'à ce nombre d'heures avant son début."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_hold_minutes
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_hold_minutes
+msgid "A slot chosen on the website is held for this time. Without payment, it is released and offered again."
+msgstr "Un créneau choisi sur le site est gardé pendant ce temps. Sans paiement, il est libéré et proposé à nouveau."
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__studio_need__table
+msgid "A table"
+msgstr "Une table"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_partner__ocd_vendor_state
+#: model:ir.model.fields,help:ocd_live.field_res_users__ocd_vendor_state
+msgid "A vendor is shown on the website once approved by the team."
+msgstr "Un vendeur apparaît sur le site une fois validé par l'équipe."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_directory_window_check_hours
+msgid "A window starts and ends on the same day, and ends after it starts."
+msgstr "Un créneau de vérification commence et finit le même jour, et finit après son début."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "About %s a day. Nothing is taken by itself."
+msgstr "Environ %s par jour. Rien n'est prélevé tout seul."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "Access with a password"
+msgstr "Accès avec mot de passe"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_hr_employee__ocd_is_animatrice
+msgid "Accompanies the remote lives from the studio in Lome."
+msgstr "Accompagne les lives à distance depuis le studio de Lomé."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_needaction
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_needaction
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_needaction
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__active
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__active
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__active
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__active
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__active
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_pass__state__active
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_credit__state__active
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_pass_view_search
+msgid "Active"
+msgstr "Actif"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_pass_active
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_pass_active
+msgid "Active Pass"
+msgstr "Pass actif"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Active passes"
+msgstr "Pass actifs"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_exception_decoration
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'exception d'activité"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_plans_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_plans_ids
+msgid "Activity Plans"
+msgstr "Plans d'activités"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_state
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_type_icon
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône du type d'activité"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_partner.py:0
+msgid "Add the WhatsApp number of the vendor first."
+msgstr "Ajoute d'abord le numéro WhatsApp du vendeur."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Address and map sent on WhatsApp"
+msgstr "Adresse et plan envoyés sur WhatsApp"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_directory_alert
+msgid "Alert At The Opening Of The Directory"
+msgstr "Alerte à l'ouverture de l'annuaire"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "All"
+msgstr "Tout"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_credit__state__used
+msgid "All placed"
+msgstr "Tout placé"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_credit.py:0
+msgid "All the lives of this package are already placed."
+msgstr "Tous les lives de ce paquet sont déjà placés."
+
+#. module: ocd_live
+#: model:res.groups,comment:ocd_live.group_ocd_live_manager
+msgid "Also confirms payments received by hand, changes the settings and the packages."
+msgstr "Confirme aussi les paiements reçus à la main, modifie les réglages et les paquets."
+
+#. module: ocd_live
+#: model:product.template,name:ocd_live.product_package_announce
+msgid "Announce"
+msgstr "Annonce"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_with_announce
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_with_announce
+msgid "Announce Included"
+msgstr "Annonce incluse"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "Approve the vendor"
+msgstr "Valider le vendeur"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_partner__ocd_vendor_state__approved
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_partner_view_search_ocd_vendor
+msgid "Approved"
+msgstr "Validé"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
+msgid "Ask for a new code"
+msgstr "Demander un nouveau code"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_price_rule__mode__studio
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "At the studio"
+msgstr "Au studio"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__mode__studio
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_waitlist__mode__studio
+msgid "At the studio in Lome"
+msgstr "Au studio de Lomé"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "At the studio · %s"
+msgstr "Au studio · %s"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "At the studio, you need"
+msgstr "Au studio, il te faut"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_attachment_count
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_attachment_count
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_attachment_count
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__audio
+msgid "Audio File"
+msgstr "Fichier audio"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__audio_filename
+msgid "Audio Filename"
+msgstr "Nom du fichier audio"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid "Back"
+msgstr "Retour"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_badge
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_badge
+msgid "Badge"
+msgstr "Badge"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_category__icon__beauty
+#: model:ocd.live.category,name:ocd_live.category_beauty
+msgid "Beauty"
+msgstr "Beauté"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_min_notice_hours
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_min_notice_hours
+msgid "Book At Least (Hours Before)"
+msgstr "Réserver au moins (heures avant)"
+
+#. module: ocd_live
+#: model:website.menu,name:ocd_live.menu_ocd_booking
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "Book a live"
+msgstr "Réserver un live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Book another live"
+msgstr "Réserver un autre live"
+
+#. module: ocd_live
+#: model:ir.module.module,summary:base.module_ocd_live
+msgid "Book lives at the studio in Lome or remotely, packages and credits, hosts for remote lives, live directory with checked links and monthly pass"
+msgstr "Réservation de lives au studio de Lomé ou à distance, paquets et crédits, animatrices des lives à distance, annuaire des lives avec liens vérifiés et pass mensuel"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Bookable until"
+msgstr "Réservable jusqu'à"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_booking_count
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_booking_count
+msgid "Booked Lives"
+msgstr "Lives réservés"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__booking_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Booking"
+msgstr "Réservation"
+
+#. module: ocd_live
+#: model:ir.ui.menu,name:ocd_live.ocd_live_booking_menu
+msgid "Bookings"
+msgstr "Réservations"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_booking_open_date
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_booking_open_date
+msgid "Bookings Open On"
+msgstr "Ouverture des réservations le"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__business
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__business
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_business
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_business
+msgid "Business"
+msgstr "Activité"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__calendar_key
+msgid "Calendar"
+msgstr "Calendrier"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_calendar_mode
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_calendar_mode
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Calendars"
+msgstr "Calendriers"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_refuse_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_pass_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "Cancel a confirmed live instead of deleting it."
+msgstr "Annule un live confirmé au lieu de le supprimer."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Cancel the live"
+msgstr "Annuler le live"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_alert__state__cancelled
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_pass__state__cancelled
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__state__cancelled
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_waitlist__state__cancelled
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.ocd_live_category_action
+#: model:ir.ui.menu,name:ocd_live.ocd_live_category_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_category_view_list
+msgid "Categories"
+msgstr "Catégories"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__category_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "Change number"
+msgstr "Changer de numéro"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "Change the number or the method"
+msgstr "Changer de numéro ou de moyen"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__product_template__ocd_save_tag__per_hour
+msgid "Cheaper per hour"
+msgstr "Moins cher par heure"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__product_template__ocd_save_tag__per_live
+msgid "Cheaper per live"
+msgstr "Moins cher par live"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+msgid "Check the form."
+msgstr "Vérifie le formulaire."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__checked_at
+msgid "Checked At"
+msgstr "Vérifié le"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__checked_by_id
+msgid "Checked By"
+msgstr "Vérifié par"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "Checked by the team"
+msgstr "Vérification par l'équipe"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.ocd_directory_window_action
+#: model:ir.ui.menu,name:ocd_live.ocd_directory_window_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_window_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Checking windows"
+msgstr "Créneaux de vérification"
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_directory
+msgid "Choose a country to see the lives. If you are live, touch the orange button."
+msgstr "Choisis un pays pour voir les lives. Si tu es en live, touche le bouton orange."
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_pay
+msgid "Choose how to pay, then touch the orange button."
+msgstr "Choisis comment payer, puis touche le bouton orange."
+
+#. module: ocd_live
+#: model:mail.activity.type,name:ocd_live.mail_activity_type_choose_host
+msgid "Choose the host"
+msgstr "Choisir l'animatrice"
+
+#. module: ocd_live
+#: model:mail.activity.type,summary:ocd_live.mail_activity_type_choose_host
+msgid "Choose the host of this remote live"
+msgstr "Choisir l'animatrice de ce live à distance"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+msgid "Choose what you sell."
+msgstr "Choisis ce que tu vends."
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_package
+msgid "Choose your package."
+msgstr "Choisis ton paquet."
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_home
+msgid "Choose. At the studio in Lome, or from home, remote."
+msgstr "Choisis. Au studio à Lomé, ou chez toi, à distance."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "City"
+msgstr "Ville"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_studio_city
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_studio_city
+msgid "City Of The Studio"
+msgstr "Ville du studio"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_category__icon__clothes
+#: model:ocd.live.category,name:ocd_live.category_clothes
+msgid "Clothes"
+msgstr "Habits"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Clothes rack"
+msgstr "Portant"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__code
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
+msgid "Code"
+msgstr "Code"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__color
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__color
+msgid "Color"
+msgstr "Couleur"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Coming"
+msgstr "À venir"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_res_company
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__company_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__company_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__company_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__company_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__company_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__company_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__company_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__company_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: ocd_live
+#: model:ir.ui.menu,name:ocd_live.ocd_live_menu_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Confirm (paid by hand)"
+msgstr "Confirmer (payé à la main)"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__state__confirmed
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Confirmed"
+msgstr "Confirmé"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_res_partner
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__partner_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "Continue"
+msgstr "Continuer"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__country_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+msgid "Country"
+msgstr "Pays"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.phone_field
+msgid "Country of the number"
+msgstr "Pays du numéro"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__create_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__create_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__credit_id
+msgid "Credit Used"
+msgstr "Crédit utilisé"
+
+#. module: ocd_live
+#: model:ir.ui.menu,name:ocd_live.ocd_live_credit_menu
+msgid "Credits to place"
+msgstr "Lives à placer"
+
+#. module: ocd_live
+#: model:ir.actions.client,name:ocd_live.ocd_live_dashboard_action
+#: model:ir.ui.menu,name:ocd_live.ocd_live_dashboard_menu
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__day
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_day
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Day"
+msgstr "Jour"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_company__ocd_booking_flow__day_first
+msgid "Day, hour, then package"
+msgstr "Jour, heure, puis paquet"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Days of opening of the studio"
+msgstr "Jours d'ouverture du studio"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+#: model:ir.ui.menu,name:ocd_live.ocd_live_menu_directory
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "Directory"
+msgstr "Annuaire"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_directory_window
+msgid "Directory Checking Window"
+msgstr "Créneau de vérification de l'annuaire"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_listing_refuse_reason
+msgid "Directory Link Refusal Reason"
+msgstr "Motif de refus d'un lien"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_listing_ids
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_listing_ids
+msgid "Directory Links"
+msgstr "Liens de l'annuaire"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_directory_listing
+msgid "Directory Live Link"
+msgstr "Lien de live de l'annuaire"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_directory_pass
+msgid "Directory Pass"
+msgstr "Pass annuaire"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_pass_ids
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_pass_ids
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order__ocd_pass_ids
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__ocd_pass_ids
+msgid "Directory Passes"
+msgstr "Pass annuaire"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_form
+msgid "Directory link"
+msgstr "Lien de l'annuaire"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+msgid "Directory links"
+msgstr "Liens de l'annuaire"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Directory of the lives"
+msgstr "Annuaire des lives"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__product_template__ocd_product_kind__directory_pass
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_pass_view_form
+msgid "Directory pass"
+msgstr "Pass annuaire"
+
+#. module: ocd_live
+#: model:product.template,name:ocd_live.product_directory_pass
+msgid "Directory pass (30 days)"
+msgstr "Pass annuaire (30 jours)"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.ocd_directory_pass_action
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_pass_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_pass_view_search
+msgid "Directory passes"
+msgstr "Pass annuaire"
+
+#. module: ocd_live
+#: model:product.template,name:ocd_live.product_package_discovery
+msgid "Discovery"
+msgstr "Découverte"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_dashboard__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_payment_provider__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__state__done
+msgid "Done"
+msgstr "Fait"
+
+#. module: ocd_live
+#: model:product.template,name:ocd_live.product_package_duo
+msgid "Duo"
+msgstr "Duo"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Each live lasts"
+msgstr "Chaque live dure"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Each page is read aloud, in the languages chosen by the visitor."
+msgstr "Chaque page est lue à voix haute, dans la langue choisie par le visiteur."
+
+#. module: ocd_live
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_voice_prompt_action
+msgid "Each page of the website has a sentence read aloud. Add a recording per language: the team records the sentence with a phone."
+msgstr "Chaque page du site a une phrase lue à voix haute. Ajoute un enregistrement par langue : l'équipe enregistre la phrase avec un téléphone."
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_hr_employee
+msgid "Employee"
+msgstr "Employé"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_price_rule__product_tmpl_ids
+msgid "Empty: all the packages."
+msgstr "Vide : tous les paquets."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_price_rule__date_from
+msgid "Empty: no limit."
+msgstr "Vide : pas de limite."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__end_datetime
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_form
+msgid "End"
+msgstr "Fin"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__state__ended
+msgid "Ended"
+msgstr "Terminé"
+
+#. module: ocd_live
+#: model:ocd.voice.language,name:ocd_live.voice_language_en
+msgid "English"
+msgstr "Anglais"
+
+#. module: ocd_live
+#: model:ocd.directory.window,name:ocd_live.window_evening
+msgid "Evening"
+msgstr "Soir"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_lives_channel_id
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_lives_channel_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Every confirmed booking is announced in this channel."
+msgstr "Chaque réservation confirmée est annoncée dans ce canal."
+
+#. module: ocd_live
+#: model:ocd.voice.language,name:ocd_live.voice_language_ee
+msgid "Ewe"
+msgstr "Éwé"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_pass__state__expired
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_credit__state__expired
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_pass_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_credit_view_search
+msgid "Expired"
+msgstr "Expiré"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__platform__facebook
+msgid "Facebook"
+msgstr "Facebook"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "Find your space."
+msgstr "Retrouve ton espace."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_first_slot_hour
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_first_slot_hour
+msgid "First Live Starts At"
+msgstr "Premier live à"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "First live at"
+msgstr "Premier live à"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "First live, duration of a live and number of lives per day, in the time zone of the studio."
+msgstr "Premier live, durée d'un live et nombre de lives par jour, à l'heure du studio."
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_pass
+msgid "Five thousand francs for thirty days. You send the link of your live, and your country sees you."
+msgstr "Cinq mille francs pour trente jours. Tu envoies le lien de ton live, et ton pays te voit."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_follower_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_follower_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_follower_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_partner_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_partner_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_partner_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_category__icon__food
+#: model:ocd.live.category,name:ocd_live.category_food
+msgid "Food"
+msgstr "Nourriture"
+
+#. module: ocd_live
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_live_price_rule_action
+msgid ""
+"For example, Saturday from 18:00 to 22:00: +25 %, or Monday morning: -15 %.\n"
+"                The change applies to the price of one live, in the currency of each vendor.\n"
+"                The first rule of the list that matches a live applies. Without rule, the\n"
+"                prices of the packages apply."
+msgstr ""
+"Par exemple, samedi de 18:00 à 22:00 : +25 %, ou lundi matin : -15 %.\n"
+"                La variation s'applique au prix d'un live, dans la devise de chaque vendeur.\n"
+"                La première règle de la liste qui correspond à un live s'applique. Sans règle,\n"
+"                les prix des paquets s'appliquent."
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,name:ocd_live.refuse_reason_forbidden
+msgid "Forbidden content"
+msgstr "Contenu interdit"
+
+#. module: ocd_live
+#: model:ocd.voice.language,name:ocd_live.voice_language_fr
+msgid "French"
+msgstr "Français"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Fri."
+msgstr "Ven."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__on_fri
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_open_fri
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_open_fri
+msgid "Friday"
+msgstr "Vendredi"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__date_start
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__start_hour
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__hour_from
+msgid "From"
+msgstr "De"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "From home · remote"
+msgstr "Chez toi · à distance"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "From home, remote"
+msgstr "Chez toi, à distance"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Give this code to the team when asked."
+msgstr "Donne ce code à l'équipe si on te le demande."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__has_message
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__has_message
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__has_message
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__state__draft
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Held"
+msgstr "Gardé"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__hold_until
+msgid "Held Until"
+msgstr "Gardé jusqu'au"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Held, waiting for the payment"
+msgstr "Gardé, en attente du paiement"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_category__icon__home
+#: model:ocd.live.category,name:ocd_live.category_home
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_home
+msgid "Home"
+msgstr "Maison"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__animatrice_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Host"
+msgstr "Animatrice"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_require_animatrice
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_require_animatrice
+msgid "Host Required For Remote Lives"
+msgstr "Animatrice obligatoire pour les lives à distance"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__needs_host
+msgid "Host To Choose"
+msgstr "Animatrice à choisir"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Host for every remote live"
+msgstr "Une animatrice pour chaque live à distance"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Host to choose"
+msgstr "Animatrice à choisir"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_hr_employee__ocd_booking_ids
+msgid "Hosted Lives"
+msgstr "Lives animés"
+
+#. module: ocd_live
+#: model:ir.ui.menu,name:ocd_live.ocd_live_host_menu
+msgid "Hosts"
+msgstr "Animatrices"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_hour
+msgid "Hour"
+msgstr "Heure"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_price_rule__hour_from
+msgid "Hour of the start of the live, studio time."
+msgstr "Heure de début du live, heure du studio."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_live_hours
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_live_hours
+msgid "Hours Per Live"
+msgstr "Heures par live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Hours of the studio"
+msgstr "Horaires du studio"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_vendor_login
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_vendor_login
+msgid "How The Vendors Log In"
+msgstr "Connexion des vendeurs"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "How the vendors log in"
+msgstr "Connexion des vendeurs"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "I already have my space"
+msgstr "J'ai déjà mon espace"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "I am live"
+msgstr "Je suis en live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "I finished my live"
+msgstr "J'ai fini mon live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "I received nothing: send again"
+msgstr "Je n'ai rien reçu : renvoyer"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_hr_employee__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_dashboard__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__id
+#: model:ir.model.fields,field_description:ocd_live.field_payment_provider__id
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__id
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__id
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__id
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__id
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order__id
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_exception_icon
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_exception_icon
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__activity_exception_icon
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône indiquant une activité en exception."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__message_needaction
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_pass__message_needaction
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__message_needaction
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_credit__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent ton attention."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__message_has_error
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__message_has_sms_error
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_pass__message_has_error
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_pass__message_has_sms_error
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__message_has_error
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__message_has_sms_error
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_credit__message_has_error
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_credit__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
+msgid "If your number is known, a code of 6 digits arrives on your WhatsApp."
+msgstr "Si ton numéro est connu, un code à 6 chiffres arrive sur ton WhatsApp."
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__platform__instagram
+msgid "Instagram"
+msgstr "Instagram"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_is_follower
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_is_follower
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_is_follower
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "It is booked."
+msgstr "C'est réservé."
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_ticket
+msgid "It is booked. Keep your ticket."
+msgstr "C'est réservé. Garde ton ticket."
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,name:ocd_live.refuse_reason_not_live
+msgid "It is not a live"
+msgstr "Ce n'est pas un live"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__key
+msgid "Key"
+msgstr "Clé"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__language_id
+msgid "Language"
+msgstr "Langue"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid "Language of the voice"
+msgstr "Langue de la voix"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_voice_language__speech_code
+msgid "Language of the voice of the phone used when no recording exists, e.g. fr-FR. Empty: only the recordings are played."
+msgstr "Langue de la voix du téléphone utilisée sans enregistrement, par ex. fr-FR. Vide : seuls les enregistrements sont joués."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Languages"
+msgstr "Langues"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__write_uid
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__write_date
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "Left"
+msgstr "Reste"
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_send_link
+msgid "Link of the live"
+msgstr "Lien du live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "Link opened: no live running"
+msgstr "Lien ouvert : pas de live en cours"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__listing_ids
+msgid "Links"
+msgstr "Liens"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+#: model:ir.actions.act_window,name:ocd_live.ocd_directory_listing_action
+#: model:ir.ui.menu,name:ocd_live.ocd_directory_listing_menu
+msgid "Links to check"
+msgstr "Liens à vérifier"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid "Listen to this screen"
+msgstr "Écouter cet écran"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Live"
+msgstr "Live"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_live_booking
+msgid "Live Booking"
+msgstr "Réservation de live"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_live_category
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_category_id
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_category_id
+msgid "Live Category"
+msgstr "Catégorie de live"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_live_credit
+msgid "Live Credit"
+msgstr "Crédit de live"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_credit_ids
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_credit_ids
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__ocd_credit_ids
+msgid "Live Credits"
+msgstr "Crédits de live"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_slot_hours
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_slot_hours
+msgid "Live Duration (Hours)"
+msgstr "Durée d'un live (heures)"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_hr_employee__ocd_is_animatrice
+msgid "Live Host"
+msgstr "Animatrice de live"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__url
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__live_url
+msgid "Live Link"
+msgstr "Lien du live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Live and replay"
+msgstr "Live et replay"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_credit_view_form
+msgid "Live credit"
+msgstr "Crédit de live"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.ocd_live_credit_action
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_credit_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_credit_view_search
+msgid "Live credits"
+msgstr "Crédits de live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Live done"
+msgstr "Live fait"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.hr_employee_action_ocd_host
+msgid "Live hosts"
+msgstr "Animatrices"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__product_template__ocd_product_kind__live_package
+msgid "Live package"
+msgstr "Paquet de lives"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_product_product__ocd_product_kind
+#: model:ir.model.fields,help:ocd_live.field_product_template__ocd_product_kind
+msgid "Live package: its lives become credits of the vendor once paid. Directory pass: gives the right to send live links to the directory."
+msgstr "Paquet de lives : ses lives deviennent des crédits du vendeur une fois payé. Pass annuaire : donne le droit d'envoyer des liens de live à l'annuaire."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+#: model:ir.actions.act_window,name:ocd_live.ocd_live_booking_action
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__quantity
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__mode
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_booking_ids
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_booking_ids
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order__ocd_booking_ids
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__ocd_booking_ids
+#: model:ir.ui.menu,name:ocd_live.ocd_live_menu_lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_calendar
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "Lives"
+msgstr "Lives"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order__ocd_booking_count
+msgid "Lives Count"
+msgstr "Nombre de lives"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_live_count
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_live_count
+msgid "Lives In The Package"
+msgstr "Lives dans le paquet"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_live_responsible_id
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_live_responsible_id
+msgid "Lives Manager"
+msgstr "Responsable des lives"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_slots_per_day
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_slots_per_day
+msgid "Lives Per Day"
+msgstr "Lives par jour"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_lives_remaining
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_lives_remaining
+msgid "Lives To Place"
+msgstr "Lives à placer"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_validity_days
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_validity_days
+msgid "Lives To Place Within (Days)"
+msgstr "Lives à placer dans les (jours)"
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_directory
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "Lives by country"
+msgstr "Lives par pays"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "Lives can be booked from %s."
+msgstr "Les lives sont réservables à partir du %s."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "Lives checked now · until"
+msgstr "Lives vérifiés en ce moment · jusqu'à"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Lives manager"
+msgstr "Responsable des lives"
+
+#. module: ocd_live
+#: model:website.menu,name:ocd_live.menu_ocd_directory
+msgid "Lives of the moment"
+msgstr "Lives du moment"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Lives online"
+msgstr "Lives en ligne"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Lives to place"
+msgstr "Lives à placer"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Lives to place by the vendors"
+msgstr "Lives à placer par les vendeurs"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Lives today"
+msgstr "Lives du jour"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid "Logo OCD"
+msgstr "Logo OCD"
+
+#. module: ocd_live
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_live_price_rule_action
+msgid "Make some hours more or less expensive"
+msgstr "Rends certaines heures plus ou moins chères"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Make some hours more or less expensive, e.g. Saturday evening +25 %. Without rule, the prices of the packages apply."
+msgstr "Rends certaines heures plus ou moins chères, par ex. samedi soir +25 %. Sans règle, les prix des paquets s'appliquent."
+
+#. module: ocd_live
+#: model:res.groups,name:ocd_live.group_ocd_live_manager
+msgid "Manager"
+msgstr "Responsable"
+
+#. module: ocd_live
+#: model:res.groups,comment:ocd_live.group_ocd_live_user
+msgid "Manages the bookings, chooses the hosts, checks the directory links and runs the live control room."
+msgstr "Gère les réservations, choisit les animatrices, vérifie les liens de l'annuaire et tient la régie."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__activity_type_icon
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__activity_type_icon
+msgid "Material Symbols icon e.g. checklist"
+msgstr "Icône Material Symbols, par ex. checklist"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid "Menu"
+msgstr "Menu"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__message
+msgid "Message"
+msgstr "Message"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_has_error
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_has_error
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_has_error
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_ids
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_whatsapp_optin
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_whatsapp_optin
+msgid "Messages On WhatsApp"
+msgstr "Messages sur WhatsApp"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__mimetype
+msgid "Mimetype"
+msgstr "Type MIME"
+
+#. module: ocd_live
+#: model:ocd.voice.language,name:ocd_live.voice_language_mina
+msgid "Mina"
+msgstr "Mina"
+
+#. module: ocd_live
+#: model:payment.method,name:ocd_live.payment_method_momo_team
+msgid "Mobile Money"
+msgstr "Mobile Money"
+
+#. module: ocd_live
+#: model:payment.provider,name:ocd_live.payment_provider_momo_team
+msgid "Mobile Money checked by the team"
+msgstr "Mobile Money vérifié par l'équipe"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__mode
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__mode
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Mode"
+msgstr "Mode"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Mon."
+msgstr "Lun."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__on_mon
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_open_mon
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_open_mon
+msgid "Monday"
+msgstr "Lundi"
+
+#. module: ocd_live
+#: model:product.template,name:ocd_live.product_package_monthly
+msgid "Monthly"
+msgstr "Mensuel"
+
+#. module: ocd_live
+#: model:ocd.directory.window,name:ocd_live.window_morning
+msgid "Morning"
+msgstr "Matin"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Move"
+msgstr "Déplacer"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Move a live"
+msgstr "Déplacer un live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "Move my live"
+msgstr "Déplacer mon live"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__my_activity_date_deadline
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "My next live"
+msgstr "Mon prochain live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "My receipt"
+msgstr "Mon reçu"
+
+#. module: ocd_live
+#: model:website.menu,name:ocd_live.menu_ocd_space
+msgid "My space"
+msgstr "Mon espace"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__title
+msgid "Name or shop shown in the directory."
+msgstr "Nom ou boutique affiché dans l'annuaire."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__studio_need
+msgid "Needed At The Studio"
+msgstr "Besoin au studio"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_pass.py:0
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "New day?"
+msgstr "Quel nouveau jour ?"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "New hour?"
+msgstr "Quelle nouvelle heure ?"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "New personal link"
+msgstr "Nouveau lien personnel"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "New vendors to check"
+msgstr "Nouveaux vendeurs à vérifier"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_date_deadline
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_summary
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_type_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_day
+msgid "Next month"
+msgstr "Mois suivant"
+
+#. module: ocd_live
+#: model:res.groups.privilege,placeholder:ocd_live.res_groups_privilege_ocd_live
+msgid "No"
+msgstr "Non"
+
+#. module: ocd_live
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_directory_listing_action
+msgid "No link to check"
+msgstr "Aucun lien à vérifier"
+
+#. module: ocd_live
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_live_booking_action
+msgid "No live booked yet"
+msgstr "Aucun live réservé pour l'instant"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_booking_open_date
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_booking_open_date
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "No live can be booked before this date."
+msgstr "Aucun live ne peut être réservé avant cette date."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
+msgid "No live checked here for now. Come back in a few minutes."
+msgstr "Aucun live vérifié ici pour l'instant. Reviens dans quelques minutes."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "No password. We send you a code on WhatsApp."
+msgstr "Pas de mot de passe. On t'envoie un code sur WhatsApp."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "No password. We send you a link on WhatsApp."
+msgstr "Pas de mot de passe. On t'envoie un lien sur WhatsApp."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pack_body
+msgid "Not free at this hour"
+msgstr "Pas libre à cette heure"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__note
+msgid "Note"
+msgstr "Note"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__refuse_note
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__note
+msgid "Note To The Vendor"
+msgstr "Note au vendeur"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "Noted. We write to you on WhatsApp at"
+msgstr "C'est noté. On t'écrit sur WhatsApp à"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Notes for the team..."
+msgstr "Notes pour l'équipe..."
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__studio_need__none
+msgid "Nothing"
+msgstr "Rien"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_waitlist__state__notified
+msgid "Notified"
+msgstr "Prévenu"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__notified_at
+msgid "Notified At"
+msgstr "Prévenu le"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_company__ocd_vendor_login__password
+msgid "Number and password"
+msgstr "Numéro et mot de passe"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_needaction_counter
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_needaction_counter
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_needaction_counter
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__slot_count
+msgid "Number of consecutive slots of the calendar taken by this live."
+msgstr "Nombre de créneaux consécutifs du calendrier pris par ce live."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_product_product__ocd_slot_count
+#: model:ir.model.fields,help:ocd_live.field_product_template__ocd_slot_count
+msgid "Number of consecutive slots taken by one live of this package."
+msgstr "Nombre de créneaux consécutifs pris par un live de ce paquet."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_has_error_counter
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_has_error_counter
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_has_error_counter
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__message_needaction_counter
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_pass__message_needaction_counter
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__message_needaction_counter
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_credit__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__message_has_error_counter
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_pass__message_has_error_counter
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__message_has_error_counter
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_credit__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec erreur d'envoi"
+
+#. module: ocd_live
+#. odoo-javascript
+#: code:addons/ocd_live/static/src/dashboard/dashboard.xml:0
+#: model:ir.ui.menu,name:ocd_live.ocd_live_menu_root
+#: model:product.category,name:ocd_live.product_category_lives
+#: model:res.groups.privilege,name:ocd_live.res_groups_privilege_ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+#: model_terms:ir.ui.view,arch_db:ocd_live.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "OCD Live"
+msgstr "OCD Live"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_live_dashboard
+msgid "OCD Live Dashboard"
+msgstr "Tableau de bord OCD Live"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_product_kind
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_product_kind
+msgid "OCD Live Product"
+msgstr "Produit OCD Live"
+
+#. module: ocd_live
+#: model:ir.module.module,shortdesc:base.module_ocd_live
+msgid "OCD Live: Bookings and Live Directory"
+msgstr "OCD Live : réservations et annuaire des lives"
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_expire_credits_ir_actions_server
+msgid "OCD Live: expire the old live credits"
+msgstr "OCD Live : expirer les anciens crédits de live"
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_clean_waitlist_ir_actions_server
+msgid "OCD Live: forget the old waiting lists"
+msgstr "OCD Live : oublier les anciennes listes d'attente"
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_mark_done_ir_actions_server
+msgid "OCD Live: mark the past lives as done"
+msgstr "OCD Live : marquer les lives passés comme faits"
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_update_listing_windows_ir_actions_server
+msgid "OCD Live: open and close the directory windows"
+msgstr "OCD Live : ouvrir et fermer les créneaux de l'annuaire"
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_release_expired_holds_ir_actions_server
+msgid "OCD Live: release the slots that were not paid"
+msgstr "OCD Live : libérer les créneaux non payés"
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_pass_reminders_ir_actions_server
+msgid "OCD Live: remind the passes that end soon"
+msgstr "OCD Live : rappeler les pass qui finissent bientôt"
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_check_hosts_ir_actions_server
+msgid "OCD Live: remind the remote lives without host"
+msgstr "OCD Live : rappeler les lives à distance sans animatrice"
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_update_pass_states_ir_actions_server
+msgid "OCD Live: start and end the directory passes"
+msgstr "OCD Live : démarrer et terminer les pass annuaire"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_is_vendor
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_is_vendor
+msgid "OCD Vendor"
+msgstr "Vendeur OCD"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_login_code_attempts
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_login_code_attempts
+msgid "Ocd Login Code Attempts"
+msgstr "Essais du code de connexion"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_login_code_expiry
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_login_code_expiry
+msgid "Ocd Login Code Expiry"
+msgstr "Expiration du code de connexion"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_login_code_hash
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_login_code_hash
+msgid "Ocd Login Code Hash"
+msgstr "Empreinte du code de connexion"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "One calendar when all the lives are broadcast by the same account."
+msgstr "Un seul calendrier quand tous les lives passent sur le même compte."
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_company__ocd_calendar_mode__shared
+msgid "One calendar: one live at a time"
+msgstr "Un seul calendrier : un live à la fois"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__state__published
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+msgid "Online"
+msgstr "En ligne"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "Only a confirmed live can be moved."
+msgstr "Seul un live confirmé peut être déplacé."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+msgid "Only a link to check can be published."
+msgstr "Seul un lien à vérifier peut être publié."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_partner.py:0
+msgid "Only a manager can create the access of a vendor."
+msgstr "Seul un responsable peut créer l'accès d'un vendeur."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "Only a manager of the lives can confirm a live without payment."
+msgstr "Seul un responsable des lives peut confirmer un live sans paiement."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
+msgid "Open my space"
+msgstr "Ouvrir mon espace"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Opening of the bookings"
+msgstr "Ouverture des réservations"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_refuse_view_form
+msgid "Optional: a sentence for the vendor"
+msgstr "Facultatif : une phrase pour le vendeur"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__sale_order_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__sale_order_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__sale_order_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Order"
+msgstr "Commande"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__sale_line_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__sale_line_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__sale_line_id
+msgid "Order Line"
+msgstr "Ligne de commande"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_booking_flow
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_booking_flow
+msgid "Order Of The Booking Steps"
+msgstr "Ordre des étapes de réservation"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Order of the steps on the website"
+msgstr "Ordre des étapes sur le site"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_category__icon__other
+#: model:ocd.live.category,name:ocd_live.category_other
+msgid "Other"
+msgstr "Autre"
+
+#. module: ocd_live
+#: model:product.template,name:ocd_live.product_package_pack4
+msgid "Pack 4"
+msgstr "Pack 4"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__product_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__product_id
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_package
+msgid "Package"
+msgstr "Paquet"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_company__ocd_booking_flow__package_first
+msgid "Package, then day and hour"
+msgstr "Paquet, puis jour et heure"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__product_tmpl_ids
+msgid "Packages"
+msgstr "Paquets"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.product_template_action_ocd_package
+#: model:ir.ui.menu,name:ocd_live.ocd_live_package_menu
+msgid "Packages and pass"
+msgstr "Paquets et pass"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_recording__prompt_id
+msgid "Page"
+msgstr "Page"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Paid"
+msgstr "Payé"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__product_id
+msgid "Pass"
+msgstr "Pass"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_pass_days
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_pass_days
+msgid "Pass Duration (Days)"
+msgstr "Durée du pass (jours)"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_pass_reminder_days
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_pass_reminder_days
+msgid "Pass Reminder (Days Before The End)"
+msgstr "Rappel du pass (jours avant la fin)"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_pass_end_date
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_pass_end_date
+msgid "Pass Valid Until"
+msgstr "Pass valable jusqu'au"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "Pass active until"
+msgstr "Pass actif jusqu'au"
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_pass
+msgid "Pass of the directory"
+msgstr "Pass de l'annuaire"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Pass until"
+msgstr "Pass jusqu'au"
+
+#. module: ocd_live
+#: model:ir.ui.menu,name:ocd_live.ocd_directory_pass_menu
+msgid "Passes"
+msgstr "Pass"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Passes ending soon"
+msgstr "Pass qui finissent bientôt"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "Paste the https link of the replay video first."
+msgstr "Colle d'abord le lien https de la vidéo du replay."
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_send_link
+msgid "Paste the link of your live, choose your country and what you sell, then send."
+msgstr "Colle le lien de ton live, choisis ton pays et ce que tu vends, puis envoie."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+#: model_terms:ir.ui.view,arch_db:ocd_live.payment_status
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Pay"
+msgstr "Payer"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Pay %s"
+msgstr "Payer %s"
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_pay
+msgid "Payment"
+msgstr "Paiement"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_payment_provider
+msgid "Payment Provider"
+msgstr "Fournisseur de paiement"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Payment providers"
+msgstr "Fournisseurs de paiement"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Payments"
+msgstr "Paiements"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__date_from
+msgid "Period From"
+msgstr "Période du"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__date_to
+msgid "Period To"
+msgstr "Période au"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_company__ocd_vendor_login__link
+msgid "Personal link sent on WhatsApp, without password"
+msgstr "Lien personnel envoyé sur WhatsApp, sans mot de passe"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_category__icon__phone
+#: model:ocd.live.category,name:ocd_live.category_phones
+msgid "Phones"
+msgstr "Téléphones"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_category__icon
+msgid "Pictogram shown on the website."
+msgstr "Pictogramme affiché sur le site."
+
+#. module: ocd_live
+#: model:ocd.voice.language,name:ocd_live.voice_language_pcm
+msgid "Pidgin"
+msgstr "Pidgin"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Place a live"
+msgstr "Placer un live"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "Place your live"
+msgstr "Place ton live"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__used
+msgid "Placed"
+msgstr "Placé"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__booking_ids
+msgid "Placed Lives"
+msgstr "Lives placés"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__platform
+msgid "Platform"
+msgstr "Plateforme"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_day
+msgid "Previous month"
+msgstr "Mois précédent"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Price"
+msgstr "Prix"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__percent
+msgid "Price Change (%)"
+msgstr "Variation du prix (%)"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__price_percent
+msgid "Price Of The Hour (%)"
+msgstr "Prix de l'heure (%)"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_live_price_rule
+msgid "Price Of The Hours"
+msgstr "Prix des heures"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__price_percent
+msgid "Price change of the hour of the live when it was booked (price of the hours)."
+msgstr "Variation du prix de l'heure du live à sa réservation (prix des heures)."
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__product_template__ocd_product_kind__hour_price
+#: model:product.template,name:ocd_live.product_hour_price
+msgid "Price of the hour"
+msgstr "Prix de l'heure"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/sale_order.py:0
+msgid "Price of the hour: %(day)s at %(hour)s (%(percent)s)"
+msgstr "Prix de l'heure : %(day)s à %(hour)s (%(percent)s)"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.ocd_live_price_rule_action
+#: model:ir.ui.menu,name:ocd_live.ocd_live_price_rule_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Price of the hours"
+msgstr "Prix des heures"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Publish the replay"
+msgstr "Publier le replay"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_kanban
+msgid "Put online"
+msgstr "Mettre en ligne"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "QR code of the ticket"
+msgstr "QR code du ticket"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_voice_prompt__text
+msgid "Read by the voice of the phone when the page has no recording in the language."
+msgstr "Lue par la voix du téléphone quand la page n'a pas d'enregistrement dans la langue."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__reason_id
+msgid "Reason"
+msgstr "Motif"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Receipt"
+msgstr "Reçu"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "Receive my code"
+msgstr "Recevoir mon code"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "Receive my link"
+msgstr "Recevoir mon lien"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "Receive my ticket and my reminders on WhatsApp"
+msgstr "Recevoir mon ticket et mes rappels sur WhatsApp"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_live_responsible_id
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_live_responsible_id
+msgid "Receives the activities about the lives (host to choose, replay to publish)."
+msgstr "Reçoit les activités des lives (animatrice à choisir, replay à publier)."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Receives the activities of the lives."
+msgstr "Reçoit les activités des lives."
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_voice_recording
+msgid "Recorded Voice Of A Page"
+msgstr "Voix enregistrée d'une page"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__recording_count
+msgid "Recording Count"
+msgstr "Nombre d'enregistrements"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__recording_ids
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_voice_prompt_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Recordings"
+msgstr "Enregistrements"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__name
+msgid "Reference"
+msgstr "Référence"
+
+#. module: ocd_live
+#. odoo-javascript
+#: code:addons/ocd_live/static/src/dashboard/dashboard.xml:0
+msgid "Refresh"
+msgstr "Actualiser"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__refuse_reason_id
+msgid "Refusal Reason"
+msgstr "Motif du refus"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.ocd_listing_refuse_reason_action
+#: model:ir.ui.menu,name:ocd_live.ocd_listing_refuse_reason_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_listing_refuse_reason_view_list
+msgid "Refusal reasons"
+msgstr "Motifs de refus"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_refuse_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_kanban
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "Refuse"
+msgstr "Refuser"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_directory_listing_refuse
+msgid "Refuse Directory Links"
+msgstr "Refuser des liens de l'annuaire"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_refuse_view_form
+msgid "Refuse the link"
+msgstr "Refuser le lien"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__state__refused
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_partner__ocd_vendor_state__refused
+msgid "Refused"
+msgstr "Refusé"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "Refused: your live was not running."
+msgstr "Refusé : ton live ne tournait pas."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_require_animatrice
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_require_animatrice
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Remind the team when a remote live has no host."
+msgstr "Rappelle à l'équipe quand un live à distance n'a pas d'animatrice."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__reminder_sent
+msgid "Reminder Sent"
+msgstr "Rappel envoyé"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Reminder of the pass"
+msgstr "Rappel du pass"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Reminder on WhatsApp"
+msgstr "Rappel sur WhatsApp"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__mode__remote
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_price_rule__mode__remote
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_waitlist__mode__remote
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Remote"
+msgstr "À distance"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Remote lives without host"
+msgstr "Lives à distance sans animatrice"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__replay_url
+msgid "Replay Link"
+msgstr "Lien du replay"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__replay_published
+msgid "Replay Published"
+msgstr "Replay publié"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Replay to publish"
+msgstr "Replay à publier"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Replays to publish"
+msgstr "Replays à publier"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_live_booking_slot
+msgid "Reserved Live Slot"
+msgstr "Créneau de live réservé"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__slot_ids
+msgid "Reserved Slots"
+msgstr "Créneaux réservés"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__user_id
+msgid "Responsible"
+msgstr "Responsable"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__activity_user_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_has_sms_error
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_has_sms_error
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_has_sms_error
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Ligne de bon de commande"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Sat."
+msgstr "Sam."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__on_sat
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_open_sat
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_open_sat
+msgid "Saturday"
+msgstr "Samedi"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_save_tag
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_save_tag
+msgid "Saving Shown"
+msgstr "Économie affichée"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_partner__ocd_space_token
+#: model:ir.model.fields,help:ocd_live.field_res_users__ocd_space_token
+msgid "Secret of the personal link of the vendor. Changing it disables the old link."
+msgstr "Secret du lien personnel du vendeur. Le changer désactive l'ancien lien."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
+msgid "See"
+msgstr "Voir"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "See my lives"
+msgstr "Voir mes lives"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "See my space"
+msgstr "Voir mon espace"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "See my ticket"
+msgstr "Voir mon ticket"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "See the live of %s"
+msgstr "Voir le live de %s"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "See the lives"
+msgstr "Voir les lives"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.home
+msgid "Sell live in front of all of Africa."
+msgstr "Vends en live devant toute l'Afrique."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "Send a link again"
+msgstr "Renvoyer un lien"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid "Send my live"
+msgstr "Envoyer mon live"
+
+#. module: ocd_live
+#: model_terms:payment.provider,pending_msg:ocd_live.payment_provider_momo_team
+msgid "Send the amount by Mobile Money to the number of OCD: Mixx by Yas [number], Flooz [number]. Write the reference below in the message. The team confirms once the money is received."
+msgstr "Envoie le montant par Mobile Money au numéro d'OCD : Mixx by Yas [numéro], Flooz [numéro]. Écris la référence ci-dessous dans le message. L'équipe confirme dès réception."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+msgid "Send the https link of a live on TikTok, Facebook, Instagram or YouTube."
+msgstr "Envoie le lien https d'un live sur TikTok, Facebook, Instagram ou YouTube."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "Send the link of my live"
+msgstr "Envoyer le lien de mon live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid "Send the link of your live."
+msgstr "Envoie le lien de ton live."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_partner.py:0
+msgid "Send this link to the vendor to choose a password (login: %(login)s): %(url)s"
+msgstr "Envoie ce lien au vendeur pour choisir un mot de passe (identifiant : %(login)s) : %(url)s"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_alert__state__sent
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__sent_at
+msgid "Sent At"
+msgstr "Envoyé le"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_listing_refuse_reason__message
+msgid "Sentence sent to the vendor, to explain what to do."
+msgstr "Phrase envoyée au vendeur, pour expliquer quoi faire."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_listing_refuse_reason__sequence
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__sequence
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__sequence
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__sequence
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.res_config_settings_action_ocd_live
+#: model:ir.ui.menu,name:ocd_live.ocd_live_settings_menu
+msgid "Settings"
+msgstr "Réglages"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Shelf"
+msgstr "Étagère"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_voice_language__code
+msgid "Short code, e.g. fr, en, ee."
+msgstr "Code court, par ex. fr, en, ee."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_product_product__ocd_badge
+#: model:ir.model.fields,help:ocd_live.field_product_template__ocd_badge
+msgid "Short text shown on the package button of the website, e.g. x1, x2, 4 h. Empty or +: the pictogram of the announce."
+msgstr "Texte court affiché sur le bouton du paquet sur le site, par ex. x1, x2, 4 h. Vide ou + : le pictogramme de l'annonce."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Show this code at the door of the studio."
+msgstr "Montre ce code à l'entrée du studio."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "Show your live to your country."
+msgstr "Montre ton live à ton pays."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__title
+msgid "Shown Name"
+msgstr "Nom affiché"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_product_product__ocd_save_tag
+#: model:ir.model.fields,help:ocd_live.field_product_template__ocd_save_tag
+msgid "Shown on the website only when it is true with the prices of the visitor, compared with the package of one live."
+msgstr "Affichée sur le site seulement quand c'est vrai avec les prix du visiteur, comparé au paquet d'un live."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_studio_city
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_studio_city
+msgid "Shown to the vendors: the place of the studio and the time of the lives."
+msgstr "Montrée aux vendeurs : le lieu du studio et l'heure des lives."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "Shown: %(country)s, %(category)s"
+msgstr "Affiché : %(country)s, %(category)s"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_hold_minutes
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_hold_minutes
+msgid "Slot Held During The Payment (Minutes)"
+msgstr "Créneau gardé pendant le paiement (minutes)"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_manual_hold_hours
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_manual_hold_hours
+msgid "Slot Held For A Payment Checked By The Team (Hours)"
+msgstr "Créneau gardé pour un paiement vérifié par l'équipe (heures)"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Slot held during the payment"
+msgstr "Créneau gardé pendant le paiement"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__slot_count
+msgid "Slots"
+msgstr "Créneaux"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_product_product__ocd_slot_count
+#: model:ir.model.fields,field_description:ocd_live.field_product_template__ocd_slot_count
+msgid "Slots Per Live"
+msgstr "Créneaux par live"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_space_token
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_space_token
+msgid "Space Token"
+msgstr "Jeton de l'espace"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__start_datetime
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__start_datetime
+msgid "Start"
+msgstr "Début"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_pass__state__scheduled
+msgid "Starts later"
+msgstr "Commence plus tard"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__state
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__state
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__state
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__state
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__state
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__state
+msgid "State"
+msgstr "État"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__activity_state
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : l'échéance est passée\n"
+"Aujourd'hui : l'activité est pour aujourd'hui\n"
+"Planifié : activités à venir."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "Stay live. The team opens your link during the window, and you get the answer on WhatsApp."
+msgstr "Reste en live. L'équipe ouvre ton lien pendant le créneau, et tu reçois la réponse sur WhatsApp."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Step %(step)s of %(total)s"
+msgstr "Étape %(step)s sur %(total)s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Studio"
+msgstr "Studio"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Studio OCD, %s"
+msgstr "Studio OCD, %s"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_studio_tz
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_studio_tz
+msgid "Studio Time Zone"
+msgstr "Fuseau horaire du studio"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_price_rule__mode__all
+msgid "Studio and remote"
+msgstr "Studio et à distance"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Studio calendar"
+msgstr "Calendrier du studio"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "Studio of %s"
+msgstr "Studio de %s"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Sun."
+msgstr "Dim."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__on_sun
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_open_sun
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_open_sun
+msgid "Sunday"
+msgstr "Dimanche"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Table"
+msgstr "Table"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Take the pass"
+msgstr "Prendre le pass"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "Take the pass · %s"
+msgstr "Prendre le pass · %s"
+
+#. module: ocd_live
+#: model:res.groups,name:ocd_live.group_ocd_live_user
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Team"
+msgstr "Équipe"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_lives_channel_id
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_lives_channel_id
+msgid "Team Channel For Lives"
+msgstr "Canal de l'équipe pour les lives"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Team channel"
+msgstr "Canal de l'équipe"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_voice_prompt__key
+msgid "Technical key used by the page."
+msgstr "Clé technique utilisée par la page."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "Tell me"
+msgstr "Me prévenir"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "Tell me at"
+msgstr "Me prévenir à"
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_infos
+msgid "Tell us your name, what you sell, and your WhatsApp number."
+msgstr "Dis-nous ton nom, ce que tu vends, et ton numéro WhatsApp."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_prompt__text
+msgid "Text"
+msgstr "Texte"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "Thank you. The receipt arrives on WhatsApp."
+msgstr "Merci. Le reçu arrive sur WhatsApp."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "The checking opens at"
+msgstr "La vérification ouvre à"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_vendor_login
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_vendor_login
+msgid "The code is sent on WhatsApp: it needs the module OCD Live WhatsApp."
+msgstr "Le code est envoyé sur WhatsApp : il faut le module OCD Live WhatsApp."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_product_product__ocd_validity_days
+#: model:ir.model.fields,help:ocd_live.field_product_template__ocd_validity_days
+msgid "The credits of the package expire after this number of days. 0: no limit."
+msgstr "Les crédits du paquet expirent après ce nombre de jours. 0 : pas de limite."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_alert.py:0
+msgid "The directory has no checking window."
+msgstr "L'annuaire n'a aucun créneau de vérification."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+msgid "The directory is closed for now."
+msgstr "L'annuaire est fermé pour l'instant."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_price_rule_check_hours
+msgid "The hours of a rule start and end on the same day, and end after they start."
+msgstr "Les heures d'une règle commencent et finissent le même jour, et finissent après leur début."
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,name:ocd_live.refuse_reason_broken
+msgid "The link does not open"
+msgstr "Le lien ne s'ouvre pas"
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,message:ocd_live.refuse_reason_broken
+msgid "The link does not open. Copy the link of your live again and send it."
+msgstr "Le lien ne s'ouvre pas. Copie à nouveau le lien de ton live et envoie-le."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "The link of the live and the host arrive on WhatsApp"
+msgstr "Le lien du live et l'animatrice arrivent sur WhatsApp"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid "The link of your live"
+msgstr "Le lien de ton live"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "The link of your live and your name are needed."
+msgstr "Il faut le lien de ton live et ton nom."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_partner.py:0
+msgid "The link to choose a password was sent on WhatsApp. Login: %s"
+msgstr "Le lien pour choisir un mot de passe a été envoyé sur WhatsApp. Identifiant : %s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "The live does not match the package of the credit."
+msgstr "Le live ne correspond pas au paquet du crédit."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_res_company_check_ocd_slot_hours
+msgid "The live duration must be positive."
+msgstr "La durée d'un live doit être positive."
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,name:ocd_live.refuse_reason_not_started
+msgid "The live has not started"
+msgstr "Le live n'a pas commencé"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_product_product__ocd_with_announce
+#: model:ir.model.fields,help:ocd_live.field_product_template__ocd_with_announce
+msgid "The live is announced with a video on House of Challenge."
+msgstr "Le live est annoncé par une vidéo sur House of Challenge."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+msgid "The live link is online in the directory."
+msgstr "Le lien du live est en ligne dans l'annuaire."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+msgid "The live link was refused: %s"
+msgstr "Le lien du live a été refusé : %s"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "The live links are checked and shown during these hours."
+msgstr "Les liens de live sont vérifiés et affichés pendant ces heures."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
+msgid "The lives come back at"
+msgstr "Les lives reviennent à"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_company.py:0
+msgid "The lives of a day must start and end on the same day."
+msgstr "Les lives d'une journée commencent et finissent le même jour."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "The package %(package)s takes %(count)s slots."
+msgstr "Le paquet %(package)s prend %(count)s créneaux."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+#: code:addons/ocd_live/models/ocd_live_credit.py:0
+msgid "The package %s has no live left to place."
+msgstr "Le paquet %s n'a plus de live à placer."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_pass.py:0
+msgid "The pass of %(vendor)s ends on %(date)s."
+msgstr "Le pass de %(vendor)s finit le %(date)s."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/sale_order_line.py:0
+msgid "The payment came after the slot was released: the lives of the package stay available to place."
+msgstr "Le paiement est arrivé après la libération du créneau : les lives du paquet restent à placer."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "The payment page offers the providers of Odoo that take the country and the currency of the vendor: Campay in Cameroon, Mobile Money checked by the team, and any provider added later."
+msgstr "La page de paiement propose les fournisseurs d'Odoo qui acceptent le pays et la devise du vendeur : Campay au Cameroun, Mobile Money vérifié par l'équipe, et tout fournisseur ajouté plus tard."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_price_rule_check_dates
+msgid "The period ends after it starts."
+msgstr "La période finit après son début."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "The personal link and the code are sent on WhatsApp (module OCD Live WhatsApp)."
+msgstr "Le lien personnel et le code sont envoyés sur WhatsApp (module OCD Live WhatsApp)."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_price_rule_check_percent
+msgid "The price change is a percentage, not zero, and above -100."
+msgstr "La variation du prix est un pourcentage, non nul et supérieur à -100."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "The slot is released. If the live was paid, it becomes a credit to place again."
+msgstr "Le créneau est libéré. Si le live était payé, il redevient un live à placer."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "The studio is closed on that day."
+msgstr "Le studio est fermé ce jour-là."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "The team checks your live."
+msgstr "L'équipe vérifie ton live."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "The team opened your link: no live was running. Start your live again, then send the link again. Your pass stays valid."
+msgstr "L'équipe a ouvert ton lien : aucun live n'était en cours. Relance ton live, puis renvoie le lien. Ton pass reste valable."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "The vendor is reminded before the end of the pass."
+msgstr "Le vendeur est prévenu avant la fin du pass."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "The vendor moved the live."
+msgstr "Le vendeur a déplacé le live."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_partner__ocd_whatsapp_optin
+#: model:ir.model.fields,help:ocd_live.field_res_users__ocd_whatsapp_optin
+msgid "The vendor receives the ticket, the reminders and the news on WhatsApp."
+msgstr "Le vendeur reçoit le ticket, les rappels et les nouvelles sur WhatsApp."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "The vendor will need the new link: the old one stops working."
+msgstr "Le vendeur aura besoin du nouveau lien : l'ancien ne marche plus."
+
+#. module: ocd_live
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_live_booking_action
+msgid "The vendors book their lives on the website. The team can also book one here."
+msgstr "Les vendeurs réservent leurs lives sur le site. L'équipe peut aussi en réserver un ici."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "The vendors can move their live from their space until this time before."
+msgstr "Les vendeurs peuvent déplacer leur live depuis leur espace jusqu'à ce délai avant."
+
+#. module: ocd_live
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_directory_listing_action
+msgid "The vendors with a pass send the link of their live. It shows here during the checking windows."
+msgstr "Les vendeurs avec un pass envoient le lien de leur live. Il apparaît ici pendant les créneaux de vérification."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+msgid "The window of this link is over."
+msgstr "Le créneau de ce lien est terminé."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
+msgid "Their shop"
+msgstr "Sa boutique"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Then"
+msgstr "Ensuite"
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_res_company_check_ocd_slots_per_day
+msgid "There must be at least one live per day."
+msgstr "Il faut au moins un live par jour."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_company.py:0
+msgid "These lives share a slot: %s. Move one of them before using one calendar."
+msgstr "Ces lives partagent un créneau : %s. Déplace l'un d'eux avant de passer à un seul calendrier."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_waitlist_unique_waiting
+msgid "This contact already waits for this day."
+msgstr "Ce contact attend déjà ce jour."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_directory_alert_unique_waiting
+msgid "This contact is already told about this window."
+msgstr "Ce contact est déjà prévenu pour ce créneau."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "This hour costs more: choose another hour, or book it apart."
+msgstr "Cette heure coûte plus cher : choisis une autre heure, ou réserve-la à part."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "This is not me"
+msgstr "Ce n'est pas moi"
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_voice_prompt_unique_key
+msgid "This key already exists."
+msgstr "Cette clé existe déjà."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_voice_language_unique_code
+msgid "This language code already exists."
+msgstr "Ce code de langue existe déjà."
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,message:ocd_live.refuse_reason_not_live
+msgid "This link is a video, not a live. Send the link of your live."
+msgstr "Ce lien est une vidéo, pas un live. Envoie le lien de ton live."
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,message:ocd_live.refuse_reason_forbidden
+msgid "This live cannot be shown in the directory of OCD Live."
+msgstr "Ce live ne peut pas être affiché dans l'annuaire d'OCD Live."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "This live would end after the closing of the studio."
+msgstr "Ce live finirait après la fermeture du studio."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_credit.py:0
+msgid "This package expired on %s."
+msgstr "Ce paquet a expiré le %s."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_voice_recording_unique_prompt_language
+msgid "This page already has a recording in this language."
+msgstr "Cette page a déjà un enregistrement dans cette langue."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "This time slot has just been taken. Please choose another one."
+msgstr "Ce créneau vient d'être pris. Choisis-en un autre."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_booking_slot_unique_calendar_start
+msgid "This time slot is already taken."
+msgstr "Ce créneau est déjà pris."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_booking.py:0
+msgid "This time slot is already taken. Please choose another one."
+msgstr "Ce créneau est déjà pris. Choisis-en un autre."
+
+#. module: ocd_live
+#: model:ir.model.constraint,message:ocd_live.constraint_ocd_directory_listing_unique_open_link_per_vendor
+msgid "This vendor already has a link waiting or online."
+msgstr "Ce vendeur a déjà un lien en attente ou en ligne."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_listing.py:0
+msgid "This vendor cannot send links to the directory."
+msgstr "Ce vendeur ne peut pas envoyer de liens à l'annuaire."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Thu."
+msgstr "Jeu."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__on_thu
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_open_thu
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_open_thu
+msgid "Thursday"
+msgstr "Jeudi"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__ticket_code
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_ticket
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Ticket"
+msgstr "Ticket"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Tickets and reminders on WhatsApp: off"
+msgstr "Tickets et rappels sur WhatsApp : arrêtés"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "Tickets and reminders on WhatsApp: on"
+msgstr "Tickets et rappels sur WhatsApp : activés"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__platform__tiktok
+msgid "TikTok"
+msgstr "TikTok"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Time of %s"
+msgstr "Heure de %s"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Time zone"
+msgstr "Fuseau horaire"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_studio_tz
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_studio_tz
+msgid "Time zone of the studio: the slots are defined in this time zone."
+msgstr "Fuseau horaire du studio : les créneaux sont définis dans ce fuseau."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_window__end_hour
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__hour_to
+msgid "To"
+msgstr "À"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__remaining
+msgid "To Place"
+msgstr "À placer"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__date_expiry
+msgid "To Place Before"
+msgstr "À placer avant le"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__state__to_check
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_partner__ocd_vendor_state__to_check
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_partner_view_search_ocd_vendor
+msgid "To check"
+msgstr "À vérifier"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "To pay"
+msgstr "À payer"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_credit_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "To place"
+msgstr "À placer"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_day
+msgid "Touch the day you want."
+msgstr "Touche le jour que tu veux."
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,text:ocd_live.voice_prompt_hour
+msgid "Touch the hour. A live lasts one hour and a half."
+msgstr "Touche l'heure. Un live dure une heure et demie."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Tue."
+msgstr "Mar."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__on_tue
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_open_tue
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_open_tue
+msgid "Tuesday"
+msgstr "Mardi"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_company__ocd_calendar_mode__separate
+msgid "Two calendars: one for the studio, one for the remote lives"
+msgstr "Deux calendriers : un pour le studio, un pour les lives à distance"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__activity_exception_decoration
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité en exception."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
+msgid "Type the code."
+msgstr "Tape le code."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_directory_alert.py:0
+#: code:addons/ocd_live/models/ocd_live_waitlist.py:0
+msgid "Type your WhatsApp number."
+msgstr "Tape ton numéro WhatsApp."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__date_end
+msgid "Until"
+msgstr "Jusqu'au"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__partner_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__partner_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__partner_id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__partner_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
+msgid "Vendor"
+msgstr "Vendeur"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__vendor_count
+msgid "Vendor Count"
+msgstr "Nombre de vendeurs"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__vendor_country_id
+msgid "Vendor Country"
+msgstr "Pays du vendeur"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__vendor_phone
+msgid "Vendor Phone"
+msgstr "Téléphone du vendeur"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_vendor_state
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_vendor_state
+msgid "Vendor Status"
+msgstr "Statut du vendeur"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
+msgid "Vendor country"
+msgstr "Pays du vendeur"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.res_partner_action_ocd_vendor
+#: model:ir.ui.menu,name:ocd_live.ocd_live_menu_vendors
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_partner_view_list_ocd_vendor
+msgid "Vendors"
+msgstr "Vendeurs"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_voice_language
+msgid "Voice Language"
+msgstr "Langue de la voix"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_voice_prompt
+msgid "Voice Of A Page"
+msgstr "Voix d'une page"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_voice_language__speech_code
+msgid "Voice Of The Phone"
+msgstr "Voix du téléphone"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.ocd_voice_language_action
+#: model:ir.ui.menu,name:ocd_live.ocd_voice_language_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_voice_language_view_list
+msgid "Voice languages"
+msgstr "Langues de la voix"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_voice_prompt_view_form
+msgid "Voice of a page"
+msgstr "Voix d'une page"
+
+#. module: ocd_live
+#: model:ir.actions.act_window,name:ocd_live.ocd_voice_prompt_action
+#: model:ir.ui.menu,name:ocd_live.ocd_voice_prompt_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_voice_prompt_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Voices of the pages"
+msgstr "Voix des pages"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_alert__state__waiting
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_waitlist__state__waiting
+msgid "Waiting"
+msgstr "En attente"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_live_waitlist
+msgid "Waiting List Of A Day"
+msgstr "Liste d'attente d'un jour"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__state__queued
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+msgid "Waiting for the window"
+msgstr "En attente du créneau"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "We warn you on WhatsApp"
+msgstr "On te prévient sur WhatsApp"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Wed."
+msgstr "Mer."
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_price_rule__on_wed
+#: model:ir.model.fields,field_description:ocd_live.field_res_company__ocd_open_wed
+#: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__ocd_open_wed
+msgid "Wednesday"
+msgstr "Mercredi"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid "What do you sell?"
+msgstr "Tu vends quoi ?"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_directory_listing__business
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__business
+#: model:ir.model.fields,help:ocd_live.field_res_partner__ocd_business
+#: model:ir.model.fields,help:ocd_live.field_res_users__ocd_business
+msgid "What the vendor sells, in a few words."
+msgstr "Ce que vend le vendeur, en quelques mots."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ticket
+msgid "WhatsApp is not available now: keep this page."
+msgstr "WhatsApp n'est pas disponible pour l'instant : garde cette page."
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_company__ocd_vendor_login__whatsapp_code
+msgid "WhatsApp number and a code to type"
+msgstr "Numéro WhatsApp et un code à taper"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "When and where"
+msgstr "Quand et où"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_manual_hold_hours
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_manual_hold_hours
+msgid "When the vendor pays with a method checked by the team (e.g. Mobile Money in Togo), the slot stays held for this time."
+msgstr "Quand le vendeur paie avec un moyen vérifié par l'équipe (par ex. Mobile Money au Togo), le créneau reste gardé pendant ce temps."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "Where"
+msgstr "Où"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Which day?"
+msgstr "Quel jour ?"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
+msgid "Which hour?"
+msgstr "Quelle heure ?"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_package
+msgid "Which package?"
+msgstr "Quel paquet ?"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
+msgid "Who"
+msgstr "Qui"
+
+#. module: ocd_live
+#: model:ocd.voice.prompt,name:ocd_live.voice_prompt_infos
+msgid "Who are you"
+msgstr "C'est qui"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "Who are you?"
+msgstr "C'est qui ?"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__window_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
+msgid "Window"
+msgstr "Créneau"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__window_end
+msgid "Window End"
+msgstr "Fin du créneau"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__window_start
+msgid "Window Opens At"
+msgstr "Ouverture du créneau"
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__window_start
+msgid "Window Start"
+msgstr "Début du créneau"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Windows"
+msgstr "Créneaux"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_company__ocd_calendar_mode
+#: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_calendar_mode
+msgid "With one calendar, a studio live and a remote live cannot take the same slot (one account broadcasts all the lives)."
+msgstr "Avec un seul calendrier, un live au studio et un live à distance ne peuvent pas prendre le même créneau (un seul compte diffuse tous les lives)."
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__hold_until
+msgid "Without payment by then, the slot is released."
+msgstr "Sans paiement d'ici là, le créneau est libéré."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "Without payment, the slot is released and offered again."
+msgstr "Sans paiement, le créneau est libéré et proposé à nouveau."
+
+#. module: ocd_live
+#: model:ocd.voice.language,name:ocd_live.voice_language_wo
+msgid "Wolof"
+msgstr "Wolof"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+msgid "Write your name."
+msgstr "Écris ton nom."
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,name:ocd_live.refuse_reason_category
+msgid "Wrong category"
+msgstr "Mauvaise catégorie"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "Wrong or expired code. Ask for a new code."
+msgstr "Code faux ou expiré. Demande un nouveau code."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "You already hold lives that are not paid: pay them first."
+msgstr "Tu gardes déjà des lives non payés : paie-les d'abord."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "You are online on OCD Live."
+msgstr "Tu es en ligne sur OCD Live."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "You can move your live until"
+msgstr "Tu peux déplacer ton live jusqu'à"
+
+#. module: ocd_live
+#: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__platform__youtube
+msgid "YouTube"
+msgstr "YouTube"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "Your WhatsApp"
+msgstr "Ton WhatsApp"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "Your WhatsApp number"
+msgstr "Ton numéro WhatsApp"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Your booking"
+msgstr "Ta réservation"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+msgid "Your city"
+msgstr "Ta ville"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid "Your country"
+msgstr "Ton pays"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Your hour is held %s hours."
+msgstr "Ton heure est gardée %s heures."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Your hour is held %s minutes."
+msgstr "Ton heure est gardée %s minutes."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "Your listing stays until"
+msgstr "Ta fiche reste jusqu'à"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_day
+msgid "Your live can be moved until"
+msgstr "Ton live peut être déplacé jusqu'à"
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,message:ocd_live.refuse_reason_category
+msgid "Your live does not match the chosen category. Choose the right one and send the link again."
+msgstr "Ton live ne correspond pas à la catégorie choisie. Choisis la bonne et renvoie le lien."
+
+#. module: ocd_live
+#: model:ocd.listing.refuse.reason,message:ocd_live.refuse_reason_not_started
+msgid "Your live has not started yet. Send the link again once you are live."
+msgstr "Ton live n'a pas encore commencé. Renvoie le lien une fois en live."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "Your live is booked. The ticket and the receipt arrive on WhatsApp."
+msgstr "Ton live est réservé. Le ticket et le reçu arrivent sur WhatsApp."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
+msgid "Your live is over."
+msgstr "Ton live est terminé."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Your live lasts %s. Choose its new hour."
+msgstr "Ton live dure %s. Choisis sa nouvelle heure."
+
+#. module: ocd_live
+#: model:product.template,description_sale:ocd_live.product_directory_pass
+msgid "Your live links in the directory of OCD Live for 30 days"
+msgstr "Tes liens de live dans l'annuaire d'OCD Live pendant 30 jours"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "Your live now"
+msgstr "Ton live actuel"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "Your name"
+msgstr "Ton nom"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid "Your name or your shop"
+msgstr "Ton nom ou ta boutique"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+msgid "Your number has %s digits."
+msgstr "Ton numéro a %s chiffres."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "Your package"
+msgstr "Ton paquet"
+
+#. module: ocd_live
+#: model_terms:payment.provider,auth_msg:ocd_live.payment_provider_momo_team
+msgid "Your payment has been authorized."
+msgstr "Ton paiement a été autorisé."
+
+#. module: ocd_live
+#: model_terms:payment.provider,cancel_msg:ocd_live.payment_provider_momo_team
+msgid "Your payment has been cancelled."
+msgstr "Ton paiement a été annulé."
+
+#. module: ocd_live
+#: model_terms:payment.provider,done_msg:ocd_live.payment_provider_momo_team
+msgid "Your payment has been processed."
+msgstr "Ton paiement a été traité."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.payment_status
+msgid "Your payment is on its way. You receive the confirmation on WhatsApp within a few minutes."
+msgstr "Ton paiement est en route. Tu reçois la confirmation sur WhatsApp dans quelques minutes."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "Your ticket and your reminders already come with this link. Keep this message in WhatsApp to come back whenever you want."
+msgstr "Ton ticket et tes rappels arrivent déjà avec ce lien. Garde ce message dans WhatsApp pour revenir quand tu veux."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "a clothes rack waits for you at the studio"
+msgstr "un portant t'attend au studio"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "a shelf waits for you at the studio"
+msgstr "une étagère t'attend au studio"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "a table waits for you at the studio"
+msgstr "une table t'attend au studio"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_ocd_live_booking_slot__calendar_key
+msgid "all: one shared calendar. studio or remote: one calendar per mode."
+msgstr "all : un calendrier partagé. studio ou remote : un calendrier par mode."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "almost full"
+msgstr "presque plein"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "before %s"
+msgstr "avant le %s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "cheaper per hour"
+msgstr "moins cher par heure"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "cheaper per live"
+msgstr "moins cher par live"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "closed"
+msgstr "fermé"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "clothes rack ready"
+msgstr "portant prévu"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "confirmed"
+msgstr "confirmé"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "date_end"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "days"
+msgstr "jours"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "days before the end"
+msgstr "jours avant la fin"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "days before the end, with a link to take it again."
+msgstr "jours avant la fin, avec un lien pour le reprendre."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.ocd_voice_language_view_list
+msgid "e.g. fr-FR"
+msgstr "par ex. fr-FR"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
+msgid "end"
+msgstr "fin"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
+msgid "for"
+msgstr "pour"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "free"
+msgstr "libre"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "full"
+msgstr "complet"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space
+msgid "h before."
+msgstr "h avant."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "hours before"
+msgstr "heures avant"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.booking_day
+msgid "hours before it starts."
+msgstr "heures avant son début."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "hours before the live"
+msgstr "heures avant le live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "hours for a payment checked by the team"
+msgstr "heures pour un paiement vérifié par l'équipe"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.send_link
+msgid "https://www.tiktok.com/@..."
+msgstr "https://www.tiktok.com/@..."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "lives per day"
+msgstr "lives par jour"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
+msgid "minutes for an online payment"
+msgstr "minutes pour un paiement en ligne"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "needs_host"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "ocd_is_vendor"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "rack"
+msgstr "portant"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "remote"
+msgstr "à distance"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "replay_published"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "shelf ready"
+msgstr "étagère prévue"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "start_datetime"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "state"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "studio of %s"
+msgstr "studio de %s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "table"
+msgstr "table"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/vendor_space.py:0
+msgid "table ready"
+msgstr "table prévue"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "taken"
+msgstr "pris"
