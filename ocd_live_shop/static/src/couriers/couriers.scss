@@ -1,0 +1,230 @@
+// Couriers and cash, as in the validated design (BoLivreurs)
+.o_ocd_couriers_body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.o_ocd_couriers_cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+.o_ocd_courier_card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+    label {
+        margin: 0;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: $ocd-bo-text;
+    }
+}
+.o_ocd_courier_head {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 10px;
+    align-items: center;
+    > span:last-child {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+    a {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: $ocd-ink;
+    }
+    small {
+        font-size: 12.5px;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_courier_avatar {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: $ocd-ink;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 800;
+    &.o_ocd_status_rest {
+        background: $ocd-bo-grey;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_courier_status {
+    height: 32px;
+    padding: 0 6px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 700;
+    &.o_ocd_status_round {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+    &.o_ocd_status_available {
+        background: #FFFFFF;
+        color: $ocd-ink;
+    }
+    &.o_ocd_status_rest {
+        background: $ocd-bo-grey;
+        color: $ocd-bo-text;
+    }
+}
+.o_ocd_courier_phone {
+    font-size: 12.5px;
+    color: $ocd-bo-text;
+    font-variant-numeric: tabular-nums;
+}
+.o_ocd_courier_zones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    span {
+        padding: 1px 7px;
+        border-radius: 6px;
+        background: $ocd-bo-background;
+        font-size: 12px;
+        font-weight: 600;
+    }
+}
+.o_ocd_courier_figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    padding-top: 8px;
+    border-top: 1px solid $ocd-bo-grey;
+    span {
+        display: flex;
+        flex-direction: column;
+    }
+    small {
+        font-size: 11.5px;
+        color: $ocd-bo-muted;
+    }
+    b {
+        font-size: 13.5px;
+    }
+}
+.o_ocd_courier_cash {
+    align-self: flex-start;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: $ocd-bo-grey;
+    color: $ocd-bo-text;
+    font-size: 12.5px;
+    font-weight: 700;
+    &.o_ocd_has_cash {
+        background: $ocd-yellow-soft;
+        color: $ocd-yellow-text;
+    }
+}
+.o_ocd_couriers_empty {
+    margin: 0;
+    font-size: 13.5px;
+    color: $ocd-bo-muted;
+}
+.o_ocd_cash_desk {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+}
+.o_ocd_cash_head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    h2 {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 16px;
+    }
+    span {
+        font-size: 12.5px;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_cash_table {
+    border: 1px solid $ocd-bo-line;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+.o_ocd_cash_row {
+    min-width: 760px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.1fr 1fr 1.4fr 1fr 1.3fr;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid $ocd-bo-grey;
+    font-size: 13.5px;
+    font-variant-numeric: tabular-nums;
+    &:last-child {
+        border-bottom: 0;
+    }
+}
+.o_ocd_cash_row_head {
+    background: $ocd-bo-background;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: $ocd-bo-text;
+}
+.o_ocd_cash_name {
+    font-weight: 700;
+}
+.o_ocd_cash_input {
+    height: 32px;
+    width: 100%;
+    max-width: 140px;
+    padding: 0 8px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 7px;
+    font-size: 13.5px;
+}
+.o_ocd_cash_save {
+    min-height: 32px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 7px;
+    background: $ocd-green;
+    color: #FFFFFF;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+.o_ocd_cash_state {
+    font-size: 12.5px;
+    color: $ocd-bo-muted;
+}
+.o_ocd_cash_foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: 13px;
+    color: $ocd-bo-text;
+    a {
+        font-weight: 700;
+    }
+}
+@include media-breakpoint-down(xl) {
+    .o_ocd_couriers_cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@include media-breakpoint-down(md) {
+    .o_ocd_couriers_cards {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

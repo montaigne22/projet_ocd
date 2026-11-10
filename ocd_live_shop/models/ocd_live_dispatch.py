@@ -73,7 +73,7 @@ class OcdLiveDispatch(models.AbstractModel):
                 {"id": courier.id, "name": courier.name}
                 for courier in couriers.filtered("ocd_courier_available")
             ],
-            "cash_action": self.env["ir.actions.actions"]._for_xml_id("ocd_live_shop.res_partner_action_ocd_courier"),
+            "cash_action": self.env["ir.actions.actions"]._for_xml_id("ocd_live_shop.ocd_live_couriers_action"),
         }
 
     # === CARDS === #

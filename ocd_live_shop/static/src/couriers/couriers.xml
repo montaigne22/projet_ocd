@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live_shop.Couriers">
+        <div class="o_action o_ocd_bo o_ocd_couriers">
+            <t t-set="data" t-value="this.data()"/>
+            <div class="o_ocd_bo_header">
+                <button type="button" class="btn btn-primary" t-on-click="() => this.newCourier()">New courier</button>
+                <h1 class="o_ocd_bo_title">Couriers and cash</h1>
+                <span class="o_ocd_bo_pager o_ocd_bo_push" t-out="this.countLabel(data.cards.length)"/>
+                <div class="o_ocd_bo_views" role="group" aria-label="Views">
+                    <button type="button" class="o_ocd_current" aria-pressed="true" title="Cards" aria-label="Cards">
+                        <i class="oi" data-icon="view_module" aria-hidden="true"/>
+                    </button>
+                    <button type="button" title="List" aria-label="List" t-on-click="() => this.switchView('list')">
+                        <i class="oi" data-icon="view_list" aria-hidden="true"/>
+                    </button>
+                </div>
+            </div>
+            <div class="o_ocd_bo_body o_ocd_couriers_body">
+                <div class="o_ocd_couriers_cards">
+                    <div t-foreach="data.cards" t-as="card" t-key="card.id" class="o_ocd_courier_card">
+                        <div class="o_ocd_courier_head">
+                            <span t-attf-class="o_ocd_courier_avatar o_ocd_status_#{card.status}" t-out="card.initials" aria-hidden="true"/>
+                            <span>
+                                <a href="#" t-on-click.prevent="() => this.openCourier(card)" t-out="card.name"/>
+                                <small t-out="card.kind"/>
+                            </span>
+                        </div>
+                        <label t-att-for="'o_ocd_courier_status_' + card.id">Status</label>
+                        <select t-att-id="'o_ocd_courier_status_' + card.id" t-attf-class="o_ocd_courier_status o_ocd_status_#{card.status}"
+                                t-on-change="(ev) => this.setStatus(card, ev.target.value)">
+                            <option t-foreach="data.statuses" t-as="status" t-key="status.key" t-att-value="status.key"
+                                    t-att-selected="status.key === card.status" t-out="status.label"/>
+                        </select>
+                        <span t-if="card.phone" class="o_ocd_courier_phone" t-out="card.phone"/>
+                        <div t-if="card.zones.length" class="o_ocd_courier_zones">
+                            <span t-foreach="card.zones" t-as="zone" t-key="zone_index" t-out="zone"/>
+                        </div>
+                        <div class="o_ocd_courier_figures">
+                            <span><small>Today</small><b t-out="card.today"/></span>
+                            <span><small>On time, 30 d</small><b t-out="card.on_time"/></span>
+                        </div>
+                        <span t-attf-class="o_ocd_courier_cash #{card.cash ? 'o_ocd_has_cash' : ''}" t-out="card.cash_label"/>
+                    </div>
+                    <p t-if="!data.cards.length" class="o_ocd_couriers_empty">No OCD courier yet: add the first one.</p>
+                </div>
+
+                <section class="o_ocd_cash_desk" aria-labelledby="o_ocd_cash_title">
+                    <div class="o_ocd_cash_head">
+                        <h2 id="o_ocd_cash_title" t-out="data.cash_title"/>
+                        <span t-out="data.cash_hint"/>
+                    </div>
+                    <div class="o_ocd_cash_table">
+                        <div class="o_ocd_cash_row o_ocd_cash_row_head">
+                            <span>Courier</span><span>Cash received</span><span>Paid otherwise at the door</span>
+                            <span>To hand over</span><span>Amount handed over</span><span>Difference</span><span/>
+                        </div>
+                        <div t-foreach="data.cash_rows" t-as="row" t-key="row.id" class="o_ocd_cash_row">
+                            <span class="o_ocd_cash_name" t-out="row.name"/>
+                            <span t-out="this.money(row.cash)"/>
+                            <span t-out="this.money(row.momo)"/>
+                            <b t-out="this.money(row.due)"/>
+                            <t t-if="row.due">
+                                <input type="text" inputmode="decimal" class="o_ocd_cash_input" t-att-value="this.amountOf(row)"
+                                       t-att-aria-label="row.name" t-on-input="(ev) => this.setAmount(row, ev.target.value)"/>
+                                <span t-att-class="{ 'o_ocd_alert_text': this.gap(row) !== 0 }" t-out="this.money(this.gap(row))"/>
+                                <button type="button" class="o_ocd_cash_save" t-on-click="() => this.save(row)">Save the cash</button>
+                            </t>
+                            <t t-else="">
+                                <span t-out="row.received ? this.money(row.received) : '—'"/>
+                                <span t-att-class="{ 'o_ocd_alert_text': row.difference }" t-out="row.difference ? this.money(row.difference) : '—'"/>
+                                <span class="o_ocd_cash_state" t-out="row.state"/>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="o_ocd_cash_foot">
+                        <span>The payments on the phone at the door arrive straight on the account of OCD: nothing to hand over.</span>
+                        <a href="#" t-on-click.prevent="() => this.openRemittances()">See all the cash handed over</a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </t>
+
+</templates>

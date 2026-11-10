@@ -234,6 +234,20 @@ class TestOcdParcels(OcdShopCommon):
         self.assertEqual(len(detail["lines"]), 2)
         self.assertEqual(detail["history"][0]["text"], "Order received")
 
+    def test_couriers_and_cash(self):
+        Couriers = self.env["ocd.live.couriers"]
+        data = Couriers.get_couriers_data()
+        self.assertIn(self.courier.id, [card["id"] for card in data["cards"]])
+        Couriers.ocd_set_status(self.courier.id, "rest")
+        self.assertFalse(self.courier.ocd_courier_available)
+        Couriers.ocd_set_status(self.courier.id, "available")
+        self.assertTrue(self.courier.ocd_courier_available)
+        with self.assertRaises(UserError):
+            Couriers.ocd_set_status(self.courier.id, "holiday")
+        # Nothing collected: nothing to count
+        with self.assertRaises(UserError):
+            Couriers.ocd_save_remittance(self.courier.id, 0)
+
     def _column(self, parcel):
         cards = {card["id"]: card for card in self.env["ocd.live.dispatch"].get_dispatch_data()["cards"]}
         return cards[parcel.id]["column"]

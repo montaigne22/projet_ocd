@@ -70,6 +70,7 @@ OCD Live shop and deliveries
             "ocd_live_shop/static/src/dispatch/*",
             "ocd_live_shop/static/src/orders/*",
             "ocd_live_shop/static/src/payouts/*",
+            "ocd_live_shop/static/src/couriers/*",
         ],
         "web.assets_frontend": [
             "ocd_live_shop/static/src/scss/ocd_live_shop.scss",

@@ -34,10 +34,12 @@
               action="ocd_live_dispatch_action" sequence="10"/>
     <menuitem id="ocd_live_shop_parcels_menu" name="Deliveries" parent="ocd_live_shop_menu_deliveries"
               action="stock_picking_action_ocd_dispatch" sequence="20"/>
+    <record id="ocd_live_couriers_action" model="ir.actions.client">
+        <field name="name">Couriers and cash</field>
+        <field name="tag">ocd_live_shop.couriers</field>
+    </record>
     <menuitem id="ocd_live_shop_couriers_menu" name="Couriers and cash" parent="ocd_live_shop_menu_deliveries"
-              action="res_partner_action_ocd_courier" sequence="30"/>
-    <menuitem id="ocd_live_shop_cash_menu" name="Cash of the couriers" parent="ocd_live_shop_menu_deliveries"
-              action="ocd_cash_remittance_action" sequence="40"/>
+              action="ocd_live_couriers_action" sequence="30"/>
 
     <menuitem id="ocd_live_shop_payout_menu" name="Payouts" parent="ocd_live.ocd_live_menu_vendors" sequence="20"
               action="ocd_payout_action" groups="ocd_live.group_ocd_live_manager"/>
