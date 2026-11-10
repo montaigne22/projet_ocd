@@ -219,3 +219,46 @@
         padding-right: 16px;
     }
 }
+// Pager with its arrows, and the buttons of the views, as in the bar of the lists
+.o_ocd_bo_pager_nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    .o_ocd_bo_icon_button {
+        width: 30px;
+        height: 30px;
+    }
+}
+.o_ocd_bo_views {
+    display: flex;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    overflow: hidden;
+    button {
+        width: 36px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 0;
+        background: #FFFFFF;
+        color: $ocd-bo-text;
+        & + button {
+            border-left: 1px solid $ocd-bo-input;
+        }
+        &.o_ocd_current {
+            background: $ocd-ink;
+            color: #FFFFFF;
+        }
+        &:not(.o_ocd_current):hover {
+            background: $ocd-bo-background;
+        }
+    }
+}
+.o_ocd_live_dot {
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 50%;
+    background: $ocd-red-live;
+}

@@ -4,3 +4,4 @@ from . import test_price_rule
 from . import test_security
 from . import test_settings
 from . import test_website
+from . import test_planning

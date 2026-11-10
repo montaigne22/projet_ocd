@@ -38,22 +38,37 @@ patch(NavBar.prototype, {
         return this.actionService.currentController?.action?.id || null;
     },
 
+    /**
+     * Section of the action shown. An action without menu (a list opened from the dashboard,
+     * another view of the bookings…) keeps the section and the tab shown before it.
+     */
     get ocdCurrentSection() {
         const actionId = this.ocdActionId;
-        if (!actionId) {
-            return null;
-        }
-        return (
+        const found =
+            actionId &&
             this.currentAppSections.find((section) =>
                 this.ocdLeaves(section).some((menu) => menu.actionID === actionId)
-            ) || null
-        );
+            );
+        if (found) {
+            this._ocdSectionId = found.id;
+            return found;
+        }
+        return this.currentAppSections.find((section) => section.id === this._ocdSectionId) || null;
     },
 
     get ocdCurrentMenu() {
         const actionId = this.ocdActionId;
         const section = this.ocdCurrentSection;
-        return section ? this.ocdLeaves(section).find((menu) => menu.actionID === actionId) : null;
+        if (!section) {
+            return null;
+        }
+        const leaves = this.ocdLeaves(section);
+        const found = leaves.find((menu) => menu.actionID === actionId);
+        if (found) {
+            this._ocdMenuId = found.id;
+            return found;
+        }
+        return leaves.find((menu) => menu.id === this._ocdMenuId) || null;
     },
 
     get ocdSubMenus() {

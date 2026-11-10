@@ -1,0 +1,298 @@
+// Planning of the week, as in the validated design (BoReservations)
+.o_ocd_planning_moving {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 22px;
+    background: $ocd-yellow-soft;
+    color: $ocd-yellow-text;
+    font-size: 13.5px;
+    font-weight: 700;
+    border-bottom: 1px solid $ocd-yellow-line;
+}
+.o_ocd_planning_body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 16px;
+    padding-top: 12px;
+    padding-bottom: 14px;
+}
+.o_ocd_planning_board {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+}
+.o_ocd_planning_grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 58px repeat(7, minmax(0, 1fr));
+    gap: 3px;
+}
+.o_ocd_planning_day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: $ocd-bo-text;
+    &.o_ocd_today {
+        color: $ocd-orange-dark;
+    }
+}
+.o_ocd_planning_time {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 3px 6px 0 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: $ocd-bo-muted;
+    font-variant-numeric: tabular-nums;
+}
+.o_ocd_planning_closed {
+    padding: 4px 6px;
+    border-radius: 6px;
+    background: $ocd-bo-background;
+    font-size: 11.5px;
+    line-height: 1.25;
+    color: $ocd-bo-muted;
+}
+.o_ocd_planning_cell {
+    position: relative;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    overflow: hidden;
+    padding: 4px 6px;
+    border-radius: 6px;
+    text-align: left;
+    &.o_ocd_selected {
+        box-shadow: 0 0 0 2px $ocd-orange;
+    }
+    &.o_ocd_past {
+        opacity: 0.55;
+    }
+    &:focus-visible {
+        outline: 2px solid $ocd-orange;
+        outline-offset: 1px;
+    }
+}
+.o_ocd_planning_cell_label, .o_ocd_planning_cell_sub {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+.o_ocd_planning_cell_label {
+    font-size: 12px;
+    font-weight: 700;
+}
+.o_ocd_planning_cell_sub {
+    font-size: 11px;
+    opacity: 0.9;
+}
+.o_ocd_planning_more {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    font-size: 10.5px;
+    font-weight: 800;
+}
+// Colours of the kinds of slots: cells, legend and tag of the panel
+.o_ocd_kind_studio {
+    border: 1px solid #F0C9A4;
+    background: $ocd-orange-soft;
+    color: $ocd-ink;
+}
+.o_ocd_kind_remote {
+    border: 1px solid $ocd-ink;
+    background: $ocd-ink;
+    color: #FFFFFF;
+}
+.o_ocd_kind_to_check {
+    border: 1px solid #E8CF8A;
+    background: $ocd-yellow-soft;
+    color: $ocd-yellow-text;
+}
+.o_ocd_kind_held {
+    border: 1px dashed $ocd-bo-hint;
+    background: #FFFFFF;
+    color: $ocd-bo-text;
+}
+.o_ocd_kind_free {
+    border: 1px solid $ocd-bo-line;
+    background: #FFFFFF;
+    color: $ocd-bo-muted;
+}
+.o_ocd_planning_legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: $ocd-bo-text;
+    span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    i {
+        width: 14px;
+        height: 14px;
+        box-sizing: border-box;
+        border-radius: 4px;
+    }
+}
+// Detail of the chosen slot
+.o_ocd_planning_panel {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+    overflow-y: auto;
+    h2 {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 20px;
+        line-height: 1.15;
+        color: $ocd-ink;
+    }
+}
+.o_ocd_planning_tag {
+    align-self: flex-start;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    &.o_ocd_kind_held, &.o_ocd_kind_free {
+        border: 0;
+        background: $ocd-bo-grey;
+        color: $ocd-bo-text;
+    }
+}
+.o_ocd_planning_when {
+    font-size: 13px;
+    color: $ocd-bo-text;
+}
+.o_ocd_planning_row {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid $ocd-bo-grey;
+    font-size: 13px;
+    > :first-child {
+        color: $ocd-bo-muted;
+    }
+    > :last-child {
+        font-weight: 600;
+    }
+}
+.o_ocd_planning_label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: $ocd-bo-text;
+}
+.o_ocd_planning_select {
+    height: 34px;
+    padding: 0 8px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 7px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-size: 13.5px;
+    font-weight: 600;
+    &.o_ocd_missing {
+        border-color: $ocd-red-text;
+    }
+}
+.o_ocd_planning_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 0 10px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-size: 13.5px;
+    font-weight: 700;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+    &.o_ocd_dark {
+        border: 0;
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
+    &.o_ocd_green {
+        border: 0;
+        background: $ocd-green;
+        color: #FFFFFF;
+    }
+    &.o_ocd_orange {
+        border: 0;
+        background: $ocd-orange;
+        color: $ocd-ink;
+        font-weight: 800;
+    }
+    &.o_ocd_danger {
+        color: $ocd-red-dark;
+    }
+}
+.o_ocd_planning_pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    .o_ocd_planning_button {
+        min-height: 36px;
+        font-size: 13px;
+    }
+}
+.o_ocd_planning_open {
+    align-self: flex-start;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+}
+.o_ocd_planning_empty {
+    margin: 0;
+    font-size: 13px;
+    color: $ocd-bo-muted;
+}
+.o_ocd_planning_note {
+    margin-top: auto;
+    font-size: 12px;
+    line-height: 1.4;
+    color: $ocd-bo-muted;
+}
+// Tablets and phones: the detail below the planning, the planning scrolls sideways
+@include media-breakpoint-down(xl) {
+    .o_ocd_planning_body {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .o_ocd_planning_board {
+        overflow-x: auto;
+    }
+    .o_ocd_planning_grid {
+        min-width: 760px;
+    }
+}

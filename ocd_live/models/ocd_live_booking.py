@@ -331,6 +331,34 @@ class OcdLiveBooking(models.Model):
         self.filtered(lambda b: b.state == "draft")._ocd_confirm()
         return True
 
+    def action_ocd_mark_paid(self):
+        """The team checked the payment (Mobile Money checked by hand, cash at the studio):
+        the pending payment is done, and the held lives are confirmed."""
+        if not self.env.user.has_group("ocd_live.group_ocd_live_manager"):
+            raise AccessError(self.env._("Only a manager of the lives can confirm a payment."))
+        # sudo: the payments are confirmed by a manager of the lives
+        pending = self.sudo().sale_order_id.transaction_ids.filtered(lambda tx: tx.state == "pending")
+        if pending:
+            pending._set_done()
+            pending._post_process()
+        held = self.filtered(lambda b: b.state == "draft")
+        if held:
+            held.action_confirm()
+        return True
+
+    def action_ocd_team_move(self, start):
+        """Move a live from the planning of the team, at any time, to the free slot `start`."""
+        self.ensure_one()
+        if self.state not in ("draft", "confirmed"):
+            raise UserError(self.env._("Only a coming live can be moved."))
+        start = fields.Datetime.to_datetime(start)
+        old_day = self.company_id._ocd_to_local(self.start_datetime).date()
+        self.start_datetime = start
+        self.env["ocd.live.waitlist"]._ocd_notify_free(self.company_id, old_day, self.mode)
+        day, hour, _end = self._ocd_local_labels()
+        self.message_post(body=self.env._("The team moved the live to %(day)s at %(hour)s.", day=day, hour=hour))
+        return True
+
     def _ocd_confirm(self):
         """Confirm held lives once paid: notify the team and ask for a host when needed."""
         bookings = self.filtered(lambda b: b.state == "draft")

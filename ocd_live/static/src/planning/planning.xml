@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live.Planning">
+        <div class="o_action o_ocd_bo o_ocd_planning">
+            <t t-set="data" t-value="this.data()"/>
+            <t t-set="detail" t-value="this.detail"/>
+            <div class="o_ocd_bo_header">
+                <button type="button" class="btn btn-primary" t-on-click="() => this.newBooking()">New booking</button>
+                <h1 class="o_ocd_bo_title">Bookings</h1>
+                <span t-if="data.this_week" class="o_ocd_bo_facet">This week</span>
+                <div t-att-class="{ 'o_ocd_bo_pager_nav': true, 'o_ocd_bo_push': !data.this_week }">
+                    <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.load(data.previous)"
+                            title="Previous week" aria-label="Previous week">
+                        <i class="oi" data-icon="chevron_left" aria-hidden="true"/>
+                    </button>
+                    <span class="o_ocd_bo_pager" t-out="data.range"/>
+                    <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.load(data.next)"
+                            title="Next week" aria-label="Next week">
+                        <i class="oi" data-icon="chevron_right" aria-hidden="true"/>
+                    </button>
+                    <button t-if="!data.this_week" type="button" class="btn btn-light" t-on-click="() => this.load(false)">Today</button>
+                </div>
+                <div class="o_ocd_bo_views" role="group" aria-label="Views">
+                    <button type="button" class="o_ocd_current" aria-pressed="true" title="Planning" aria-label="Planning">
+                        <i class="oi" data-icon="calendar_today" aria-hidden="true"/>
+                    </button>
+                    <button type="button" title="List" aria-label="List" t-on-click="() => this.switchView('list')">
+                        <i class="oi" data-icon="view_list" aria-hidden="true"/>
+                    </button>
+                    <button type="button" title="Kanban" aria-label="Kanban" t-on-click="() => this.switchView('kanban')">
+                        <i class="oi" data-icon="view_module" aria-hidden="true"/>
+                    </button>
+                    <button type="button" title="Activities" aria-label="Activities" t-on-click="() => this.switchView('activity')">
+                        <i class="oi" data-icon="schedule" aria-hidden="true"/>
+                    </button>
+                </div>
+            </div>
+            <div t-if="this.moving()" class="o_ocd_planning_moving" role="status">
+                <span>Move: touch a free slot to come.</span>
+                <button type="button" class="btn btn-light btn-sm" t-on-click="() => this.moving.set(false)">Cancel the move</button>
+            </div>
+            <div class="o_ocd_bo_body o_ocd_planning_body">
+                <div class="o_ocd_planning_board">
+                    <div class="o_ocd_planning_grid" t-att-style="'grid-template-rows: 30px repeat(' + data.rows.length + ', minmax(46px, 1fr))'">
+                        <span/>
+                        <span t-foreach="data.days" t-as="day" t-key="day.key"
+                              t-att-class="{ 'o_ocd_planning_day': true, 'o_ocd_today': day.today }">
+                            <t t-out="day.label"/><t t-if="day.today"> · today</t>
+                        </span>
+                        <t t-foreach="data.rows" t-as="row" t-key="row.time">
+                            <span class="o_ocd_planning_time" t-out="row.time"/>
+                            <t t-foreach="row.cells" t-as="cell" t-key="cell.key">
+                                <span t-if="cell.kind === 'closed'" class="o_ocd_planning_closed" t-out="cell.label"/>
+                                <button t-else="" type="button"
+                                        t-attf-class="o_ocd_planning_cell o_ocd_kind_#{cell.kind} #{cell.past ? 'o_ocd_past' : ''} #{this.selected() === cell.key ? 'o_ocd_selected' : ''}"
+                                        t-att-aria-pressed="this.selected() === cell.key ? 'true' : 'false'"
+                                        t-att-aria-label="this.cellLabel(cell, data.days[cell_index])"
+                                        t-on-click="() => this.pick(cell)">
+                                    <span class="o_ocd_planning_cell_label" t-out="cell.label"/>
+                                    <span t-if="cell.sub" class="o_ocd_planning_cell_sub" t-out="cell.sub"/>
+                                    <span t-if="cell.more" class="o_ocd_planning_more">+<t t-out="cell.more"/></span>
+                                </button>
+                            </t>
+                        </t>
+                    </div>
+                    <div class="o_ocd_planning_legend">
+                        <span><i class="o_ocd_kind_studio"/>At the studio, paid</span>
+                        <span><i class="o_ocd_kind_remote"/>Remote, paid</span>
+                        <span><i class="o_ocd_kind_to_check"/>Payment to check</span>
+                        <span><i class="o_ocd_kind_held"/>Held during a payment</span>
+                        <span><i class="o_ocd_kind_free"/>Free</span>
+                    </div>
+                </div>
+
+                <aside class="o_ocd_planning_panel" aria-live="polite">
+                    <t t-if="detail">
+                        <span t-attf-class="o_ocd_planning_tag o_ocd_kind_#{detail.kind}" t-out="detail.tag"/>
+                        <h2 t-out="detail.title"/>
+                        <span class="o_ocd_planning_when" t-out="detail.when"/>
+                        <div t-foreach="detail.rows" t-as="row" t-key="row_index" class="o_ocd_planning_row">
+                            <span t-out="row.label"/>
+                            <span t-out="row.value"/>
+                        </div>
+                        <t t-if="detail.remote and detail.booking_id">
+                            <label for="o_ocd_planning_host" class="o_ocd_planning_label">Host</label>
+                            <select id="o_ocd_planning_host"
+                                    t-att-class="{ 'o_ocd_planning_select': true, 'o_ocd_missing': !detail.host_id }"
+                                    t-on-change="(ev) => this.setHost(ev)">
+                                <option value="" t-att-selected="!detail.host_id">To choose</option>
+                                <option t-foreach="data.hosts" t-as="host" t-key="host.id" t-att-value="host.id"
+                                        t-att-selected="host.id === detail.host_id" t-out="host.name"/>
+                            </select>
+                        </t>
+                        <button t-if="detail.live_now and data.regie_action" type="button" class="o_ocd_planning_button o_ocd_dark"
+                                t-on-click="() => this.openRegie()">
+                            <span class="o_ocd_live_dot" aria-hidden="true"/>Open the control room: live now
+                        </button>
+                        <button t-if="detail.kind === 'held'" type="button" class="o_ocd_planning_button"
+                                t-on-click="() => this.release()">Release now</button>
+                        <button t-if="detail.kind === 'to_check' and data.can_manage" type="button" class="o_ocd_planning_button o_ocd_green"
+                                t-on-click="() => this.markPaid()">Payment received: mark paid</button>
+                        <button t-if="detail.kind === 'free' and !detail.past" type="button" class="o_ocd_planning_button o_ocd_orange"
+                                t-on-click="() => this.offer()">
+                            <t t-if="this.offered()[this.selected()]">Offered on WhatsApp to the waiting list</t>
+                            <t t-else="">Offer this slot to the waiting list</t>
+                        </button>
+                        <div t-if="detail.booking_id and detail.kind !== 'held'" class="o_ocd_planning_pair">
+                            <button t-if="detail.can_move" type="button" class="o_ocd_planning_button" t-on-click="() => this.startMove()">Move</button>
+                            <button t-if="detail.can_cancel" type="button" class="o_ocd_planning_button o_ocd_danger"
+                                    t-on-click="() => this.cancelAndCredit()">Cancel and credit</button>
+                        </div>
+                        <button t-if="detail.booking_id" type="button" class="btn btn-link o_ocd_planning_open" t-on-click="() => this.openBooking()">Open the booking</button>
+                    </t>
+                    <p t-else="" class="o_ocd_planning_empty">Touch a slot of the planning to see it here.</p>
+                    <span class="o_ocd_planning_note" t-out="data.note"/>
+                </aside>
+            </div>
+        </div>
+    </t>
+
+</templates>
