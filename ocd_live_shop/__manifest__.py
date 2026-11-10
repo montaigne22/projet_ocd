@@ -48,6 +48,7 @@ OCD Live shop and deliveries
         "data/discuss_channel_data.xml",
         "data/mail_activity_type_data.xml",
         "data/ir_cron_data.xml",
+        "data/ocd_voice_data.xml",
         "views/stock_picking_views.xml",
         "views/res_partner_views.xml",
         "views/product_template_views.xml",
@@ -58,7 +59,14 @@ OCD Live shop and deliveries
         "wizard/ocd_parcel_problem_views.xml",
         "wizard/ocd_parcel_force_views.xml",
         "wizard/ocd_parcel_code_views.xml",
+        "views/ocd_live_shop_templates.xml",
         "views/ocd_live_shop_menus.xml",
     ],
+    "assets": {
+        "web.assets_frontend": [
+            "ocd_live_shop/static/src/scss/ocd_live_shop.scss",
+            "ocd_live_shop/static/src/interactions/boutique_live.js",
+        ],
+    },
     "installable": True,
 }

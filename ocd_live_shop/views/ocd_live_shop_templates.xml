@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- === BOUTIQUE OF A VENDOR === -->
+
+    <template id="boutique" name="OCD Live: boutique of a vendor">
+        <t t-call="ocd_live.layout">
+            <h1 class="o_ocd_live_title" t-out="vendor.ocd_business or vendor.name"/>
+            <p class="o_ocd_live_summary">
+                <t t-out="vendor.name"/>
+                <t t-if="vendor.district_id"> · <t t-out="vendor.district_id.name"/></t>
+                <t t-if="vendor.city"> · <t t-out="vendor.city"/></t>
+            </p>
+            <div t-if="live" class="o_ocd_live_card o_ocd_live_shop_live" t-att-data-vendor-id="vendor.id">
+                <span class="o_ocd_live_badge o_ocd_live_badge_warning">Live now</span>
+                <a t-if="live.live_url" t-att-href="live.live_url" target="_blank" rel="noopener noreferrer"
+                   class="btn btn-primary btn-lg">Watch the live</a>
+                <p class="mb-0">On screen now: <b class="o_ocd_live_shop_on_screen" t-out="live.current_product_tmpl_id.name or '-'"/></p>
+            </div>
+            <div class="o_ocd_live_cards o_ocd_live_shop_products">
+                <t t-foreach="products" t-as="product">
+                    <div class="o_ocd_live_card">
+                        <img t-if="product.image_128" t-att-src="'/web/image/product.template/%s/image_512' % product.id"
+                             t-att-alt="product.name" class="o_ocd_live_shop_image" loading="lazy"/>
+                        <b t-out="product.name"/>
+                        <span class="o_ocd_live_price" t-field="product.list_price"
+                              t-options="{'widget': 'monetary', 'display_currency': product.currency_id}"/>
+                        <a t-if="product.ocd_sale_mode == 'ocd'" t-att-href="product.website_url" class="btn btn-primary btn-lg">Buy</a>
+                        <a t-else="" t-attf-href="/ocd/wa/#{product.id}" class="btn btn-success btn-lg" rel="nofollow">
+                            Write on WhatsApp
+                        </a>
+                    </div>
+                </t>
+            </div>
+            <p t-if="not products" class="o_ocd_live_summary">The products of this boutique are coming soon.</p>
+            <section t-if="replay" class="o_ocd_live_section">
+                <h2>Watch the last live again</h2>
+                <a t-att-href="replay.replay_url" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark btn-lg">Replay</a>
+                <div class="o_ocd_live_cards">
+                    <t t-foreach="replay.moment_ids" t-as="moment">
+                        <div class="o_ocd_live_card">
+                            <span class="o_ocd_live_badge" t-out="moment.offset_label"/>
+                            <b t-out="moment.product_tmpl_id.name"/>
+                        </div>
+                    </t>
+                </div>
+            </section>
+        </t>
+    </template>
+
+    <!-- === DELIVERY APP OF THE VENDORS AND COURIERS === -->
+
+    <template id="delivery_app" name="OCD Live: my parcels">
+        <t t-call="ocd_live.layout">
+            <t t-set="base" t-value="'/ocd/livrer/%s' % token"/>
+            <h1 class="o_ocd_live_title">My parcels</h1>
+            <p class="o_ocd_live_summary"><t t-out="partner.name"/></p>
+            <t t-call="ocd_live.message_box"/>
+            <p t-if="partner.ocd_is_courier and partner.ocd_cash_on_hand" class="alert alert-warning">
+                Cash to hand over this evening:
+                <b t-field="partner.ocd_cash_on_hand" t-options="{'widget': 'monetary', 'display_currency': partner.currency_id}"/>
+            </p>
+            <div class="o_ocd_live_cards">
+                <t t-foreach="parcels" t-as="parcel">
+                    <t t-set="delivers" t-value="parcel.ocd_courier_id == partner"/>
+                    <t t-set="prepares" t-value="parcel.ocd_vendor_id == partner"/>
+                    <div class="o_ocd_live_card o_ocd_live_shop_parcel">
+                        <div class="d-flex justify-content-between">
+                            <b t-out="parcel.partner_id.name"/>
+                            <span class="o_ocd_live_badge" t-field="parcel.ocd_stage"/>
+                        </div>
+                        <span><t t-out="parcel.ocd_district_id.name or ''"/> <t t-if="parcel.ocd_landmark">· <t t-out="parcel.ocd_landmark"/></t></span>
+                        <span t-if="parcel.ocd_customer_phone">
+                            <a t-attf-href="tel:#{parcel.ocd_customer_phone}" t-out="parcel.ocd_customer_phone"/>
+                        </span>
+                        <span class="text-muted"><t t-out="', '.join(parcel.move_ids.mapped('product_id.name'))"/></span>
+                        <span t-if="parcel.ocd_cod_state == 'to_collect'" class="fw-bold">
+                            To collect: <t t-out="parcel.ocd_cod_amount" t-options="{'widget': 'monetary', 'display_currency': parcel.ocd_currency_id}"/>
+                        </span>
+                        <span t-if="prepares and not delivers and parcel.ocd_courier_id" class="text-muted">
+                            <t t-out="parcel.ocd_courier_id.name"/> picks it up.
+                        </span>
+
+                        <form t-if="prepares and parcel.ocd_stage == 'to_prepare'" t-attf-action="#{base}/colis/#{parcel.id}/ready" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <button class="btn btn-primary btn-lg w-100">It is ready</button>
+                        </form>
+                        <form t-if="delivers and parcel.ocd_delivery_mode != 'vendor' and parcel.ocd_stage in ('to_prepare', 'ready')"
+                              t-attf-action="#{base}/colis/#{parcel.id}/pickup" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <button class="btn btn-primary btn-lg w-100">I picked it up</button>
+                        </form>
+                        <form t-if="delivers and parcel.ocd_stage in ('ready', 'picked') and (parcel.ocd_delivery_mode == 'vendor' or parcel.ocd_stage == 'picked')"
+                              t-attf-action="#{base}/colis/#{parcel.id}/leave" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <button class="btn btn-primary btn-lg w-100">I leave to deliver</button>
+                        </form>
+                        <t t-if="delivers and parcel.ocd_stage == 'on_the_way'">
+                            <t t-if="parcel.ocd_cod_state == 'to_collect'">
+                                <t t-set="methods" t-value="parcel._ocd_allowed_cod_methods(partner)"/>
+                                <form t-if="'cash' in methods" t-attf-action="#{base}/colis/#{parcel.id}/collect" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="method" value="cash"/>
+                                    <button class="btn btn-outline-dark btn-lg w-100">I received the cash</button>
+                                </form>
+                                <form t-if="'momo_campay' in methods" t-attf-action="#{base}/colis/#{parcel.id}/momo" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button class="btn btn-outline-dark btn-lg w-100">Send a Mobile Money request</button>
+                                </form>
+                                <form t-if="'momo_declared' in methods" t-attf-action="#{base}/colis/#{parcel.id}/collect" method="post" class="d-flex gap-2">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="method" value="momo_declared"/>
+                                    <label class="visually-hidden" t-attf-for="ref_#{parcel.id}">Reference of the payment</label>
+                                    <input t-attf-id="ref_#{parcel.id}" name="reference" class="form-control" placeholder="Reference of the payment" required="required"/>
+                                    <button class="btn btn-outline-dark">Mobile Money received</button>
+                                </form>
+                            </t>
+                            <form t-if="parcel.ocd_cod_state != 'to_collect'" t-attf-action="#{base}/colis/#{parcel.id}/code" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <label class="visually-hidden" t-attf-for="code_#{parcel.id}">Code of the customer</label>
+                                <input t-attf-id="code_#{parcel.id}" name="code" inputmode="numeric" maxlength="4" pattern="[0-9]*"
+                                       class="form-control form-control-lg o_ocd_live_code" placeholder="Code" required="required"/>
+                                <button class="btn btn-primary btn-lg">Delivered</button>
+                            </form>
+                            <p t-else="" class="text-muted mb-0">Collect the payment first, then type the code of the customer.</p>
+                        </t>
+                        <form t-if="delivers and parcel.ocd_stage in ('ready', 'picked', 'on_the_way')"
+                              t-attf-action="#{base}/colis/#{parcel.id}/problem" method="post" class="d-flex gap-2">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <label class="visually-hidden" t-attf-for="reason_#{parcel.id}">Problem</label>
+                            <select t-attf-id="reason_#{parcel.id}" name="reason" class="form-select">
+                                <option value="unreachable">Customer unreachable</option>
+                                <option value="absent">Customer absent</option>
+                                <option value="refused">Customer refused the parcel</option>
+                                <option value="address">Address not found</option>
+                                <option value="damaged">Parcel damaged</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <button class="btn btn-outline-danger">Problem</button>
+                        </form>
+                    </div>
+                </t>
+            </div>
+            <p t-if="not parcels" class="o_ocd_live_summary">No parcel to prepare or to deliver.</p>
+            <section t-if="done" class="o_ocd_live_section">
+                <h2>Delivered</h2>
+                <t t-foreach="done" t-as="parcel">
+                    <p class="mb-1"><t t-out="parcel.partner_id.name"/> · <t t-out="parcel.ocd_delivered_at"/></p>
+                </t>
+            </section>
+        </t>
+    </template>
+
+    <!-- === PARCELS ON THE ORDER PAGE OF THE CUSTOMER === -->
+
+    <template id="sale_order_portal_content" inherit_id="sale.sale_order_portal_content" name="OCD Live: parcels of the order">
+        <xpath expr="//div[@id='introduction']" position="after">
+            <t t-set="ocd_parcels" t-value="sale_order.sudo().ocd_parcel_ids"/>
+            <div t-if="ocd_parcels" class="p-3 border border-top-0 o_ocd_live_shop_portal_parcels">
+                <h4>Your parcels</h4>
+                <t t-foreach="ocd_parcels" t-as="parcel">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 border-bottom">
+                        <span>
+                            <b t-out="parcel.ocd_vendor_id.ocd_business or parcel.ocd_vendor_id.name or parcel.company_id.name"/>
+                            <span class="text-muted"> · <t t-out="parcel.ocd_courier_id.name or ''"/></span>
+                        </span>
+                        <span class="badge text-bg-light" t-field="parcel.ocd_stage"/>
+                        <span t-if="parcel.ocd_stage == 'on_the_way'" class="fs-4 fw-bold">
+                            Code: <t t-out="parcel.sudo().ocd_delivery_code"/>
+                        </span>
+                    </div>
+                </t>
+                <p t-if="any(p.ocd_stage == 'on_the_way' for p in ocd_parcels)" class="small text-muted mb-0 mt-2">
+                    Give the code only when you have the parcel in your hands.
+                </p>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
