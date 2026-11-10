@@ -221,6 +221,19 @@ class TestOcdParcels(OcdShopCommon):
         with self.assertRaises(UserError):
             Dispatch.ocd_assign(fatou_parcel.id, self.estelle.id)
 
+    def test_orders_of_the_week(self):
+        order = self._order(self.estelle, [(self.dress, 1), (self.butter, 2)])
+        Orders = self.env["ocd.live.orders"]
+        data = Orders.get_orders_data()
+        rows = {row["id"]: row for group in data["groups"] for row in group["rows"]}
+        self.assertIn(order.id, rows)
+        self.assertTrue(rows[order.id]["todo"])
+        self.assertEqual(rows[order.id]["ref"], order.name)
+        detail = Orders.get_order_detail(order.id)
+        self.assertEqual(len(detail["parcels"]), 2)
+        self.assertEqual(len(detail["lines"]), 2)
+        self.assertEqual(detail["history"][0]["text"], "Order received")
+
     def _column(self, parcel):
         cards = {card["id"]: card for card in self.env["ocd.live.dispatch"].get_dispatch_data()["cards"]}
         return cards[parcel.id]["column"]

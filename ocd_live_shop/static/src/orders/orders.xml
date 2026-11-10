@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live_shop.Orders">
+        <div class="o_action o_ocd_bo o_ocd_orders">
+            <t t-set="data" t-value="this.data()"/>
+            <t t-set="detail" t-value="this.detail()"/>
+            <t t-set="rows" t-value="this.rows"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">Orders</h1>
+                <span class="o_ocd_bo_facet" t-out="data.facet"/>
+                <span class="o_ocd_bo_pager" t-out="this.countLabel(rows)"/>
+                <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.load()" title="Refresh" aria-label="Refresh">
+                    <i class="oi" data-icon="refresh" aria-hidden="true"/>
+                </button>
+                <div class="o_ocd_bo_views" role="group" aria-label="Views">
+                    <button type="button" class="o_ocd_current" aria-pressed="true" title="Orders of the week" aria-label="Orders of the week">
+                        <i class="oi" data-icon="view_list" aria-hidden="true"/>
+                    </button>
+                    <button type="button" title="All the orders" aria-label="All the orders" t-on-click="() => this.switchView('list')">
+                        <i class="oi" data-icon="table_chart" aria-hidden="true"/>
+                    </button>
+                    <button type="button" title="Graph" aria-label="Graph" t-on-click="() => this.switchView('graph')">
+                        <i class="oi" data-icon="bar_chart" aria-hidden="true"/>
+                    </button>
+                </div>
+            </div>
+            <div class="o_ocd_bo_body o_ocd_orders_body">
+                <div class="o_ocd_orders_main">
+                    <div class="o_ocd_orders_filters" role="group" aria-label="Filter the orders">
+                        <button t-foreach="['all', 'todo', 'issue', 'cod']" t-as="key" t-key="key" type="button"
+                                t-att-aria-pressed="this.filter() === key ? 'true' : 'false'"
+                                t-on-click="() => this.filter.set(key)" t-out="this.filterLabel(key)"/>
+                        <span class="o_ocd_orders_hint">One order = one parcel per vendor</span>
+                    </div>
+                    <div class="o_ocd_orders_table">
+                        <div class="o_ocd_orders_row o_ocd_orders_head">
+                            <span>Ref.</span><span>Time</span><span>Customer</span><span>Vendor</span>
+                            <span class="text-end">Total</span><span>Payment</span><span>Delivery</span>
+                        </div>
+                        <div class="o_ocd_orders_scroll">
+                            <t t-foreach="this.groups" t-as="group" t-key="group.key">
+                                <div class="o_ocd_orders_group">
+                                    <b t-out="group.label"/>
+                                    <span t-out="this.sum(group.rows)"/>
+                                </div>
+                                <button t-foreach="group.rows" t-as="row" t-key="row.id" type="button"
+                                        t-att-class="{ 'o_ocd_orders_row': true, 'o_ocd_selected': detail and detail.id === row.id }"
+                                        t-att-aria-pressed="detail and detail.id === row.id ? 'true' : 'false'"
+                                        t-on-click="() => this.select(row.id)">
+                                    <b t-out="row.ref"/>
+                                    <span class="o_ocd_orders_muted" t-out="row.time"/>
+                                    <span class="o_ocd_orders_two">
+                                        <span t-out="row.client"/>
+                                        <small t-out="row.place"/>
+                                    </span>
+                                    <span class="o_ocd_orders_vendor" t-out="row.vendor"/>
+                                    <b class="text-end" t-out="row.total"/>
+                                    <span t-attf-class="o_ocd_orders_tag o_ocd_tone_#{row.payment_tone}" t-out="row.payment"/>
+                                    <span class="o_ocd_orders_status">
+                                        <span t-attf-class="o_ocd_orders_tag o_ocd_tone_#{row.status_tone}" t-out="row.status"/>
+                                        <small t-if="row.status_sub" t-out="row.status_sub"/>
+                                    </span>
+                                </button>
+                            </t>
+                            <p t-if="!rows.length" class="o_ocd_orders_empty">No order this week for this filter.</p>
+                        </div>
+                        <div class="o_ocd_orders_foot">
+                            <span t-out="this.countLabel(rows)"/>
+                            <span>Total <t t-out="this.sum(rows)"/></span>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="o_ocd_orders_panel">
+                    <t t-if="detail">
+                        <div class="o_ocd_orders_panel_head">
+                            <a href="#" t-on-click.prevent="() => this.openOrder()" t-out="detail.ref"/>
+                            <span t-attf-class="o_ocd_orders_tag o_ocd_tone_#{detail.state_tone}" t-out="detail.state"/>
+                        </div>
+                        <span class="o_ocd_orders_when" t-out="detail.when"/>
+                        <div class="o_ocd_orders_customer">
+                            <b t-out="detail.client"/>
+                            <span t-if="detail.phone" t-out="detail.phone"/>
+                            <span t-if="detail.place" class="o_ocd_orders_muted" t-out="detail.place"/>
+                        </div>
+                        <div class="o_ocd_orders_lines">
+                            <div t-foreach="detail.lines" t-as="line" t-key="line.id" class="o_ocd_orders_line">
+                                <span class="o_ocd_orders_two">
+                                    <span t-out="line.name"/>
+                                    <small t-out="line.vendor"/>
+                                </span>
+                                <span t-out="line.price"/>
+                            </div>
+                            <div t-if="detail.fee" class="o_ocd_orders_line o_ocd_orders_fee">
+                                <span>Delivery</span><span t-out="detail.fee"/>
+                            </div>
+                            <div class="o_ocd_orders_line o_ocd_orders_total">
+                                <span>Total</span><span t-out="detail.total"/>
+                            </div>
+                        </div>
+                        <div t-attf-class="o_ocd_orders_payment o_ocd_tone_#{detail.payment_tone}" t-out="detail.payment"/>
+                        <span class="o_ocd_orders_caption">
+                            <t t-if="detail.parcels.length === 1">1 parcel</t>
+                            <t t-else=""><t t-out="detail.parcels.length"/> parcels, one per vendor</t>
+                        </span>
+                        <div t-foreach="detail.parcels" t-as="parcel" t-key="parcel.id" class="o_ocd_orders_parcel">
+                            <span class="o_ocd_orders_parcel_head">
+                                <a href="#" t-on-click.prevent="() => this.openParcel(parcel)" t-out="parcel.ref"/>
+                                <span t-attf-class="o_ocd_orders_tag o_ocd_tone_#{parcel.tone}" t-out="parcel.stage"/>
+                            </span>
+                            <span t-out="parcel.route"/>
+                            <small t-att-class="{ 'o_ocd_alert_text': parcel.alert }" t-out="parcel.note"/>
+                            <span class="o_ocd_orders_actions">
+                                <button t-if="parcel.can_switch" type="button" class="o_ocd_orders_button o_ocd_orange"
+                                        t-on-click="() => this.switchToOcd(parcel)">Give to an OCD courier</button>
+                                <button t-if="parcel.can_retry" type="button" class="o_ocd_orders_button o_ocd_orange"
+                                        t-on-click="() => this.retry(parcel)">New attempt</button>
+                            </span>
+                        </div>
+                        <div class="o_ocd_orders_actions">
+                            <a t-if="detail.whatsapp_url" class="o_ocd_orders_button" t-att-href="detail.whatsapp_url" target="_blank" rel="noopener"
+                               t-out="detail.whatsapp_label"/>
+                            <button t-if="detail.todo" type="button" class="o_ocd_orders_button" t-on-click="() => this.openDispatch()">See it at the dispatch</button>
+                        </div>
+                        <span class="o_ocd_orders_caption o_ocd_orders_history_title">History</span>
+                        <div t-foreach="detail.history" t-as="event" t-key="event_index" class="o_ocd_orders_event">
+                            <span t-out="event.time"/>
+                            <span t-out="event.text"/>
+                        </div>
+                    </t>
+                    <p t-else="" class="o_ocd_orders_empty">Touch an order to see it here.</p>
+                </aside>
+            </div>
+        </div>
+    </t>
+
+</templates>
