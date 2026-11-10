@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live_recruitment.HostKanbanView" t-inherit="web.KanbanView" t-inherit-mode="primary">
+        <xpath expr="//t[@t-component='this.props.Renderer']" position="before">
+            <div t-if="this.summary()" class="o_ocd_host_offer">
+                <span class="o_ocd_host_offer_text">
+                    <b><span t-attf-class="o_ocd_host_dot #{this.summary().online ? 'o_ocd_online' : ''}" aria-hidden="true"/><t t-out="this.summary().title"/></b>
+                    <span t-out="this.summary().line"/>
+                </span>
+                <span class="o_ocd_host_chip" t-out="this.summary().positions"/>
+                <span class="o_ocd_host_chip" t-out="this.summary().refused"/>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

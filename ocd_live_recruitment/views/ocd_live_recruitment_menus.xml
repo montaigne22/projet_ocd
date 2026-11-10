@@ -1,12 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Applications of the live hosts, as in the validated design (BoRecrutement) -->
+    <record id="hr_applicant_view_kanban_ocd_host" model="ir.ui.view">
+        <field name="name">hr.applicant.view.kanban.ocd.host</field>
+        <field name="model">hr.applicant</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" js_class="ocd_host_kanban" class="o_ocd_host_kanban"
+                    quick_create="false" group_create="false" group_delete="false" sample="1">
+                <field name="stage_id"/>
+                <field name="ocd_next_label"/>
+                <field name="employee_id"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_ocd_host_card_head">
+                            <field name="partner_name" class="fw-bold"/>
+                            <field name="priority" widget="priority"/>
+                        </div>
+                        <div class="o_ocd_host_card_sub">
+                            <field name="partner_phone"/>
+                            <field name="source_id"/>
+                        </div>
+                        <field name="categ_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <div class="o_ocd_host_card_foot">
+                            <field name="activity_ids" widget="kanban_activity"/>
+                        </div>
+                        <div class="o_ocd_host_card_buttons" invisible="not active">
+                            <button name="action_ocd_next_stage" type="object" class="btn btn-sm btn-dark"
+                                    invisible="not ocd_next_label">
+                                <field name="ocd_next_label"/>
+                            </button>
+                            <button name="archive_applicant" type="object" class="btn btn-sm btn-light o_ocd_refuse"
+                                    invisible="employee_id">Refuse</button>
+                            <button name="action_open_employee" type="object" class="btn btn-sm btn-light"
+                                    invisible="not employee_id">See the employee</button>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <record id="hr_applicant_action_ocd_host" model="ir.actions.act_window">
         <field name="name">Live host · Lomé</field>
         <field name="res_model">hr.applicant</field>
         <field name="view_mode">kanban,list,form,activity</field>
         <field name="domain" eval="[('job_id', '=', ref('job_live_host'))]"/>
-        <field name="context" eval="{'default_job_id': ref('job_live_host')}"/>
+        <field name="context" eval="{'default_job_id': ref('job_live_host'), 'ocd_job_id': ref('job_live_host')}"/>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'kanban', 'view_id': ref('hr_applicant_view_kanban_ocd_host')}),
+            Command.create({'view_mode': 'list'}),
+            Command.create({'view_mode': 'form'}),
+            Command.create({'view_mode': 'activity'})]"/>
     </record>
 
     <menuitem id="ocd_live_recruitment_menu" name="Recruitment" parent="ocd_live.ocd_live_menu_root" sequence="60"/>

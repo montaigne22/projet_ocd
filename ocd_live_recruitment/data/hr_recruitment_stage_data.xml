@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Steps of the recruitment of the live hosts, as in the validated design (BoRecrutement) -->
+    <record id="stage_host_new" model="hr.recruitment.stage">
+        <field name="name">New</field>
+        <field name="sequence">1</field>
+        <field name="requirements">Watch the video</field>
+        <field name="ocd_next_label">Call</field>
+        <field name="job_ids" eval="[(4, ref('job_live_host'))]"/>
+    </record>
+    <record id="stage_host_call" model="hr.recruitment.stage">
+        <field name="name">Call</field>
+        <field name="sequence">2</field>
+        <field name="requirements">10 minutes on the phone</field>
+        <field name="ocd_next_label">Invite to the trial</field>
+        <field name="job_ids" eval="[(4, ref('job_live_host'))]"/>
+    </record>
+    <record id="stage_host_trial" model="hr.recruitment.stage">
+        <field name="name">Trial in front of the camera</field>
+        <field name="sequence">3</field>
+        <field name="requirements">15 minutes at the studio of Lome</field>
+        <field name="ocd_next_label">Make the offer</field>
+        <field name="job_ids" eval="[(4, ref('job_live_host'))]"/>
+    </record>
+    <record id="stage_host_offer" model="hr.recruitment.stage">
+        <field name="name">Offer</field>
+        <field name="sequence">4</field>
+        <field name="requirements">Hours and pay</field>
+        <field name="ocd_next_label">Hire</field>
+        <field name="job_ids" eval="[(4, ref('job_live_host'))]"/>
+    </record>
+    <record id="stage_host_hired" model="hr.recruitment.stage">
+        <field name="name">Hired</field>
+        <field name="sequence">5</field>
+        <field name="requirements">Employee record created</field>
+        <field name="hired_stage" eval="True"/>
+        <field name="job_ids" eval="[(4, ref('job_live_host'))]"/>
+    </record>
+
+</odoo>

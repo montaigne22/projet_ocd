@@ -1,0 +1,78 @@
+// Applications of the live hosts, as in the validated design (BoRecrutement)
+.o_ocd_host_offer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 12px 16px 0;
+    max-width: calc(100% - 32px);
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+}
+.o_ocd_host_offer_text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-right: auto;
+    b {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14.5px;
+    }
+    > span {
+        font-size: 13px;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_host_dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: $ocd-bo-hint;
+    &.o_ocd_online {
+        background: $ocd-green;
+    }
+}
+.o_ocd_host_chip {
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: $ocd-bo-background;
+    font-size: 13px;
+    font-weight: 600;
+}
+.o_ocd_host_kanban {
+    .o_ocd_host_card_head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        font-size: 14px;
+    }
+    .o_ocd_host_card_sub {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px 8px;
+        font-size: 12.5px;
+        color: $ocd-bo-muted;
+    }
+    .o_ocd_host_card_foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 4px;
+    }
+    .o_ocd_host_card_buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+        .o_ocd_refuse {
+            color: $ocd-red-dark;
+        }
+    }
+}
