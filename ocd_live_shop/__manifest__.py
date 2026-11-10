@@ -67,6 +67,7 @@ OCD Live shop and deliveries
     "assets": {
         "web.assets_backend": [
             "ocd_live_shop/static/src/regie/*",
+            "ocd_live_shop/static/src/dispatch/*",
         ],
         "web.assets_frontend": [
             "ocd_live_shop/static/src/scss/ocd_live_shop.scss",

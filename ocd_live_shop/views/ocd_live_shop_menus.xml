@@ -22,8 +22,14 @@
               action="product_template_action_ocd_vendor_products" sequence="30"/>
 
     <menuitem id="ocd_live_shop_menu_deliveries" name="Deliveries" parent="ocd_live.ocd_live_menu_root" sequence="30"/>
+    <record id="ocd_live_dispatch_action" model="ir.actions.client">
+        <field name="name">Dispatch</field>
+        <field name="tag">ocd_live_shop.dispatch</field>
+    </record>
     <menuitem id="ocd_live_shop_dispatch_menu" name="Dispatch" parent="ocd_live_shop_menu_deliveries"
-              action="stock_picking_action_ocd_dispatch" sequence="10"/>
+              action="ocd_live_dispatch_action" sequence="10"/>
+    <menuitem id="ocd_live_shop_parcels_menu" name="Deliveries" parent="ocd_live_shop_menu_deliveries"
+              action="stock_picking_action_ocd_dispatch" sequence="20"/>
     <menuitem id="ocd_live_shop_couriers_menu" name="Couriers and cash" parent="ocd_live_shop_menu_deliveries"
               action="res_partner_action_ocd_courier" sequence="30"/>
     <menuitem id="ocd_live_shop_cash_menu" name="Cash of the couriers" parent="ocd_live_shop_menu_deliveries"

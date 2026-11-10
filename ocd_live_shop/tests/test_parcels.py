@@ -197,6 +197,34 @@ class TestOcdParcels(OcdShopCommon):
         Regie.ocd_publish_replay(booking.id, "https://www.tiktok.com/@brenda/video/1")
         self.assertTrue(booking.replay_published)
 
+    def test_dispatch_board(self):
+        order = self._order(self.estelle, [(self.dress, 1), (self.butter, 1)])
+        brenda_parcel = self._parcel(order, self.brenda)
+        fatou_parcel = self._parcel(order, self.fatou)
+        Dispatch = self.env["ocd.live.dispatch"]
+        data = Dispatch.get_dispatch_data()
+        cards = {card["id"]: card for card in data["cards"]}
+        self.assertEqual(cards[brenda_parcel.id]["column"], "prep")
+        self.assertEqual(data["counts"]["all"], data["counts"]["ocd"] + data["counts"]["vendor"])
+        self.assertIn(self.courier.id, [row["id"] for row in data["couriers"]])
+        # A courier is chosen for a parcel picked up by OCD
+        self.assertEqual(cards[brenda_parcel.id]["by"], "ocd")
+        self.assertTrue(cards[brenda_parcel.id]["can_assign"])
+        Dispatch.ocd_assign(brenda_parcel.id, self.courier.id)
+        self.assertEqual(brenda_parcel.ocd_courier_id, self.courier)
+        # A parcel in problem gets a new attempt
+        fatou_parcel.action_ocd_ready()
+        fatou_parcel._ocd_report_problem("unreachable")
+        self.assertEqual(self._column(fatou_parcel), "problem")
+        Dispatch.ocd_retry(fatou_parcel.id)
+        self.assertEqual(fatou_parcel.ocd_stage, "ready")
+        with self.assertRaises(UserError):
+            Dispatch.ocd_assign(fatou_parcel.id, self.estelle.id)
+
+    def _column(self, parcel):
+        cards = {card["id"]: card for card in self.env["ocd.live.dispatch"].get_dispatch_data()["cards"]}
+        return cards[parcel.id]["column"]
+
     def test_unapproved_product_cannot_be_published(self):
         template = self.dress.product_tmpl_id
         template.ocd_review_state = "to_check"

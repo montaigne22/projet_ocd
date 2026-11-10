@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live_shop.Dispatch">
+        <div class="o_action o_ocd_bo o_ocd_dispatch">
+            <t t-set="data" t-value="this.data()"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">Dispatch</h1>
+                <span class="o_ocd_bo_facet">Today</span>
+                <span class="o_ocd_bo_pager"><t t-out="data.counts.all"/> parcels</span>
+                <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.load()" title="Refresh" aria-label="Refresh">
+                    <i class="oi" data-icon="refresh" aria-hidden="true"/>
+                </button>
+                <div class="o_ocd_bo_views" role="group" aria-label="Views">
+                    <button type="button" class="o_ocd_current" aria-pressed="true" title="Dispatch" aria-label="Dispatch">
+                        <i class="oi" data-icon="view_module" aria-hidden="true"/>
+                    </button>
+                    <button type="button" title="List" aria-label="List" t-on-click="() => this.switchView('list')">
+                        <i class="oi" data-icon="view_list" aria-hidden="true"/>
+                    </button>
+                    <button type="button" title="Activities" aria-label="Activities" t-on-click="() => this.switchView('activity')">
+                        <i class="oi" data-icon="schedule" aria-hidden="true"/>
+                    </button>
+                </div>
+            </div>
+            <div class="o_ocd_bo_body o_ocd_dispatch_body">
+                <div class="o_ocd_dispatch_main">
+                    <div class="o_ocd_dispatch_toolbar">
+                        <div class="o_ocd_switch" role="group" aria-label="Who delivers">
+                            <button t-foreach="['all', 'ocd', 'vendor']" t-as="key" t-key="key" type="button"
+                                    t-att-aria-pressed="this.filter() === key ? 'true' : 'false'"
+                                    t-on-click="() => this.filter.set(key)" t-out="this.filterLabel(key)"/>
+                        </div>
+                        <span class="o_ocd_dispatch_hint" t-out="data.subtitle"/>
+                        <span t-if="data.alert" class="o_ocd_dispatch_alert">
+                            <span class="o_ocd_dispatch_alert_dot" aria-hidden="true"/><t t-out="data.alert"/>
+                        </span>
+                    </div>
+                    <div class="o_ocd_dispatch_columns">
+                        <div t-foreach="data.columns" t-as="column" t-key="column.key" class="o_ocd_dispatch_column">
+                            <t t-set="cards" t-value="this.cardsOf(column)"/>
+                            <div class="o_ocd_dispatch_column_head">
+                                <span t-out="column.label"/>
+                                <span class="o_ocd_dispatch_count" t-out="cards.length"/>
+                            </div>
+                            <div t-if="!cards.length" class="o_ocd_dispatch_empty">No parcel</div>
+                            <div t-foreach="cards" t-as="card" t-key="card.id"
+                                 t-att-class="{ 'o_ocd_dispatch_card': true, 'o_ocd_alert': card.alert }">
+                                <div class="o_ocd_dispatch_card_head">
+                                    <a href="#" t-on-click.prevent="() => this.openParcel(card)" t-out="card.ref"/>
+                                    <span t-if="card.tag" t-attf-class="o_ocd_dispatch_tag o_ocd_tone_#{card.tone}" t-out="card.tag"/>
+                                </div>
+                                <span class="o_ocd_dispatch_client" t-out="card.client"/>
+                                <span t-if="card.place" class="o_ocd_dispatch_place" t-out="card.place"/>
+                                <span class="o_ocd_dispatch_items"><t t-out="card.items"/><span t-if="card.vendor"> · <t t-out="card.vendor"/></span></span>
+                                <span t-attf-class="o_ocd_dispatch_money o_ocd_tone_#{card.money_tone}" t-out="card.money"/>
+                                <span t-attf-class="o_ocd_dispatch_note #{card.alert ? 'o_ocd_alert_text' : ''}" t-out="card.note"/>
+                                <div class="o_ocd_dispatch_who">
+                                    <span t-attf-class="o_ocd_dispatch_avatar o_ocd_by_#{card.who ? card.by : 'none'}" t-out="card.initials" aria-hidden="true"/>
+                                    <span>
+                                        <span t-out="card.who_label"/>
+                                        <small t-out="card.by_label"/>
+                                    </span>
+                                </div>
+                                <select t-if="card.can_assign" class="o_ocd_dispatch_select"
+                                        t-att-aria-label="this.courierLabel(card)"
+                                        t-on-change="(ev) => this.assign(card, ev.target.value)">
+                                    <option value="">Choose a courier…</option>
+                                    <option t-foreach="data.courier_options" t-as="courier" t-key="courier.id" t-att-value="courier.id"
+                                            t-att-selected="courier.name === card.who" t-out="courier.name"/>
+                                </select>
+                                <button t-if="card.can_switch" type="button" class="o_ocd_dispatch_button o_ocd_dark"
+                                        t-on-click="() => this.switchToOcd(card)">Give to an OCD courier</button>
+                                <button t-if="card.can_retry" type="button" class="o_ocd_dispatch_button"
+                                        t-on-click="() => this.retry(card)">New attempt</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="o_ocd_dispatch_aside">
+                    <h2>OCD couriers today</h2>
+                    <div t-foreach="data.couriers" t-as="courier" t-key="courier.id" class="o_ocd_dispatch_person">
+                        <span class="o_ocd_dispatch_avatar o_ocd_by_ocd" t-out="courier.initials" aria-hidden="true"/>
+                        <span>
+                            <span class="o_ocd_dispatch_person_head">
+                                <b t-out="courier.name"/>
+                                <span t-attf-class="o_ocd_dispatch_tag o_ocd_tone_#{courier.tone}" t-out="courier.status"/>
+                            </span>
+                            <span class="o_ocd_dispatch_person_line" t-out="courier.summary"/>
+                            <span t-attf-class="o_ocd_dispatch_person_line #{courier.has_cash ? 'o_ocd_cash' : ''}" t-out="courier.cash"/>
+                        </span>
+                    </div>
+                    <p t-if="!data.couriers.length" class="o_ocd_dispatch_empty_text">No OCD courier yet.</p>
+                    <h2>Vendors who deliver</h2>
+                    <div t-foreach="data.vendors" t-as="vendor" t-key="vendor.id" class="o_ocd_dispatch_person">
+                        <span class="o_ocd_dispatch_avatar o_ocd_by_vendor" t-out="vendor.initials" aria-hidden="true"/>
+                        <span>
+                            <b t-out="vendor.name"/>
+                            <span t-attf-class="o_ocd_dispatch_person_line #{vendor.late ? 'o_ocd_alert_text' : ''}" t-out="vendor.summary"/>
+                        </span>
+                    </div>
+                    <p t-if="!data.vendors.length" class="o_ocd_dispatch_empty_text">No vendor delivers today.</p>
+                    <button type="button" class="o_ocd_dispatch_button o_ocd_dispatch_cash" t-on-click="() => this.openCash()">Cash of the couriers</button>
+                </aside>
+            </div>
+        </div>
+    </t>
+
+</templates>
