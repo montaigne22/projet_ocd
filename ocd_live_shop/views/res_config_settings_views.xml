@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ocd.live.shop</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="ocd_live.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <block name="ocd_live_directory" position="after">
+                <block title="Shop and deliveries" name="ocd_live_shop_deliveries">
+                    <setting id="ocd_default_commission_setting" string="Commission of OCD"
+                             help="Default rate for a new vendor sold by OCD. Can be changed on each vendor." company_dependent="1">
+                        <span><field name="ocd_default_commission" class="oe_inline"/> %</span>
+                    </setting>
+                    <setting id="ocd_default_delivery_mode_setting" string="Who delivers by default"
+                             help="For a new vendor sold by OCD. Can be changed on each vendor and for each parcel." company_dependent="1">
+                        <field name="ocd_default_delivery_mode"/>
+                    </setting>
+                    <setting id="ocd_prep_setting" string="Reminders"
+                             help="A vendor who is not ready is reminded, then the dispatch is alerted." company_dependent="1">
+                        <div class="d-flex flex-column gap-1">
+                            <span>Reminder after <field name="ocd_prep_hours" class="oe_inline"/> hours</span>
+                            <span>Alert <field name="ocd_escalation_hours" class="oe_inline"/> hours after the reminder</span>
+                        </div>
+                    </setting>
+                    <setting id="ocd_code_setting" string="Delivery code"
+                             help="The parcel is delivered only with the code of the customer." company_dependent="1">
+                        <div class="d-flex flex-column gap-1">
+                            <span>Locked after <field name="ocd_code_max_attempts" class="oe_inline"/> wrong codes</span>
+                            <span>Back to the vendor after <field name="ocd_max_failed_attempts" class="oe_inline"/> failed attempts</span>
+                        </div>
+                    </setting>
+                    <setting id="ocd_channel_setting" string="Team channel" help="Late parcels and problems." company_dependent="1">
+                        <field name="ocd_deliveries_channel_id"/>
+                    </setting>
+                </block>
+                <block title="Payment at the door" name="ocd_live_shop_cod">
+                    <setting id="ocd_cod_cash_setting" string="Cash" help="Handed over by the couriers every evening." company_dependent="1">
+                        <field name="ocd_cod_cash"/>
+                        <div class="mt-1" invisible="not ocd_cod_cash">
+                            Before <field name="ocd_cash_deadline" widget="float_time" class="oe_inline"/>
+                        </div>
+                    </setting>
+                    <setting id="ocd_cod_momo_campay_setting" string="Mobile Money request"
+                             help="The courier sends a payment request to the phone of the customer (Campay, Cameroon)." company_dependent="1">
+                        <field name="ocd_cod_momo_campay"/>
+                    </setting>
+                    <setting id="ocd_cod_momo_declared_setting" string="Mobile Money declared"
+                             help="The customer pays to the number of OCD and the courier types the reference." company_dependent="1">
+                        <field name="ocd_cod_momo_declared"/>
+                    </setting>
+                </block>
+                <block title="Payouts of the vendors" name="ocd_live_shop_payouts">
+                    <setting id="ocd_payout_frequency_setting" string="Rhythm"
+                             help="Default rhythm for a new vendor. Can be changed on each vendor." company_dependent="1">
+                        <div class="d-flex flex-column gap-1">
+                            <field name="ocd_default_payout_frequency"/>
+                            <span>Day: <field name="ocd_payout_weekday" class="oe_inline"/></span>
+                        </div>
+                    </setting>
+                    <setting id="ocd_payout_min_setting" string="Minimum payout"
+                             help="Below this amount, the payout waits for the next period." company_dependent="1">
+                        <field name="ocd_payout_min_amount"/>
+                    </setting>
+                    <setting id="ocd_payout_journal_setting" string="Journal of the payouts" company_dependent="1">
+                        <field name="ocd_payout_journal_id"/>
+                    </setting>
+                </block>
+            </block>
+        </field>
+    </record>
+
+</odoo>

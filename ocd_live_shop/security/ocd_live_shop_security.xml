@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The team of OCD Live dispatches the parcels and counts the cash of the couriers:
+         it needs the inventory rights; the managers validate the payouts: billing rights. -->
+    <record id="ocd_live.group_ocd_live_user" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('stock.group_stock_user'))]"/>
+    </record>
+    <record id="ocd_live.group_ocd_live_manager" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('account.group_account_invoice'))]"/>
+    </record>
+
+</odoo>

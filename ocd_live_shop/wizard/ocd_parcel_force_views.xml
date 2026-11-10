@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_parcel_force_view_form" model="ir.ui.view">
+        <field name="name">ocd.parcel.force.view.form</field>
+        <field name="model">ocd.parcel.force</field>
+        <field name="arch" type="xml">
+            <form string="Validate without the code">
+                <div class="alert alert-warning" role="alert">
+                    The parcel is delivered without the proof of the code. The vendor is paid for it.
+                </div>
+                <group>
+                    <field name="picking_id" readonly="1"/>
+                    <field name="reason" placeholder="E.g. the customer has no phone, the team called her"/>
+                    <field name="photo" widget="image"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Validate" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

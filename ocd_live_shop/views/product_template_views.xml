@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.view.form.inherit.ocd.live.shop</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="categ_id" position="after">
+                <field name="ocd_vendor_id" options="{'no_create': True}"/>
+                <field name="ocd_sale_mode" invisible="not ocd_vendor_id"/>
+                <label for="ocd_review_state" invisible="not ocd_vendor_id"/>
+                <div class="d-flex gap-2 align-items-center" invisible="not ocd_vendor_id">
+                    <field name="ocd_review_state" readonly="1" class="oe_inline"/>
+                    <button name="action_ocd_approve" type="object" string="Approve" class="btn btn-sm btn-primary"
+                            invisible="ocd_review_state != 'to_check'" groups="ocd_live.group_ocd_live_user"/>
+                    <button name="action_ocd_refuse" type="object" string="Refuse" class="btn btn-sm btn-secondary"
+                            invisible="ocd_review_state != 'to_check'" groups="ocd_live.group_ocd_live_user"/>
+                </div>
+            </field>
+        </field>
+    </record>
+
+    <record id="product_template_view_list_ocd_review" model="ir.ui.view">
+        <field name="name">product.template.view.list.ocd.review</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <list string="Products of the vendors">
+                <field name="name"/>
+                <field name="ocd_vendor_id"/>
+                <field name="list_price"/>
+                <field name="ocd_sale_mode" optional="show"/>
+                <field name="is_published" optional="show"/>
+                <field name="ocd_review_state" widget="badge" decoration-warning="ocd_review_state == 'to_check'"
+                       decoration-success="ocd_review_state == 'approved'" decoration-danger="ocd_review_state == 'refused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="product_template_action_ocd_vendor_products" model="ir.actions.act_window">
+        <field name="name">Products of the vendors</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('ocd_vendor_id', '!=', False)]</field>
+        <field name="context">{'search_default_filter_to_sell': 1}</field>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('product_template_view_list_ocd_review')}),
+            Command.create({'view_mode': 'kanban'}),
+            Command.create({'view_mode': 'form'})]"/>
+    </record>
+
+    <record id="product_template_action_ocd_to_check" model="ir.actions.act_window">
+        <field name="name">Products to check</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('ocd_vendor_id', '!=', False), ('ocd_review_state', '=', 'to_check')]</field>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('product_template_view_list_ocd_review')}),
+            Command.create({'view_mode': 'form'})]"/>
+    </record>
+
+</odoo>

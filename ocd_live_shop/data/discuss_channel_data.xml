@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="channel_deliveries" model="discuss.channel">
+        <field name="name">deliveries</field>
+        <field name="description">Late parcels, problems, locked codes, refunds to do.</field>
+        <field name="group_ids" eval="[Command.link(ref('ocd_live.group_ocd_live_user'))]"/>
+    </record>
+
+    <function model="res.company" name="write">
+        <value eval="[ref('base.main_company')]"/>
+        <value eval="{'ocd_deliveries_channel_id': ref('ocd_live_shop.channel_deliveries')}"/>
+    </function>
+
+</odoo>

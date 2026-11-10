@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_parcel_code_view_form" model="ir.ui.view">
+        <field name="name">ocd.parcel.code.view.form</field>
+        <field name="model">ocd.parcel.code</field>
+        <field name="arch" type="xml">
+            <form string="Code of the customer">
+                <group>
+                    <field name="picking_id" readonly="1"/>
+                    <field name="code" placeholder="4 digits" class="fs-2"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Check the code" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

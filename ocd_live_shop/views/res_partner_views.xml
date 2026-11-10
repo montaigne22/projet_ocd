@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit.ocd.live.shop</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.view_partner_form"/>
+        <field name="arch" type="xml">
+            <page name="ocd_live" position="inside">
+                <group invisible="not ocd_is_vendor">
+                    <group string="How the customers buy">
+                        <field name="ocd_sale_mode" widget="radio" nolabel="1" colspan="2"/>
+                        <field name="ocd_commission_rate" invisible="ocd_sale_mode != 'ocd'"/>
+                        <field name="ocd_payout_frequency" invisible="ocd_sale_mode != 'ocd'"/>
+                        <field name="ocd_payout_momo" invisible="ocd_sale_mode != 'ocd'"/>
+                    </group>
+                    <group string="Who delivers" invisible="ocd_sale_mode != 'ocd'">
+                        <field name="ocd_delivery_mode" widget="radio" nolabel="1" colspan="2"/>
+                        <field name="ocd_zone_ids" widget="many2many_tags" invisible="ocd_delivery_mode != 'vendor'"
+                               options="{'no_create': True}"/>
+                        <field name="ocd_zone_fallback" invisible="ocd_delivery_mode != 'vendor'"/>
+                        <field name="ocd_vendor_collects" invisible="ocd_delivery_mode != 'vendor'"/>
+                        <field name="ocd_prep_hours" invisible="ocd_delivery_mode == 'stock'"/>
+                        <field name="ocd_late_count"/>
+                    </group>
+                </group>
+                <group string="Courier">
+                    <group>
+                        <field name="ocd_is_courier"/>
+                        <field name="ocd_courier_kind" invisible="not ocd_is_courier"/>
+                        <field name="ocd_courier_available" invisible="not ocd_is_courier"/>
+                    </group>
+                    <group invisible="not ocd_is_courier">
+                        <field name="ocd_courier_zone_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        <field name="ocd_cash_on_hand"/>
+                    </group>
+                </group>
+            </page>
+        </field>
+    </record>
+
+    <record id="res_partner_action_ocd_courier" model="ir.actions.act_window">
+        <field name="name">Couriers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('ocd_is_courier', '=', True)]</field>
+        <field name="context">{'default_ocd_is_courier': True}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_parcel_problem_view_form" model="ir.ui.view">
+        <field name="name">ocd.parcel.problem.view.form</field>
+        <field name="model">ocd.parcel.problem</field>
+        <field name="arch" type="xml">
+            <form string="Delivery problem">
+                <group>
+                    <field name="picking_id" readonly="1"/>
+                    <field name="reason" widget="radio"/>
+                    <field name="note" placeholder="What happened?"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Save the problem" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

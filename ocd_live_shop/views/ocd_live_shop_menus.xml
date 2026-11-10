@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="ocd_live_shop_menu_shop" name="Shop" parent="ocd_live.ocd_live_menu_root" sequence="22"/>
+    <menuitem id="ocd_live_shop_orders_menu" name="Orders" parent="ocd_live_shop_menu_shop"
+              action="sale.action_orders" sequence="10"/>
+    <menuitem id="ocd_live_shop_products_menu" name="Products of the vendors" parent="ocd_live_shop_menu_shop"
+              action="product_template_action_ocd_vendor_products" sequence="20"/>
+    <menuitem id="ocd_live_shop_to_check_menu" name="Products to check" parent="ocd_live_shop_menu_shop"
+              action="product_template_action_ocd_to_check" sequence="30"/>
+
+    <menuitem id="ocd_live_shop_menu_deliveries" name="Deliveries" parent="ocd_live.ocd_live_menu_root" sequence="24"/>
+    <menuitem id="ocd_live_shop_dispatch_menu" name="Dispatch" parent="ocd_live_shop_menu_deliveries"
+              action="stock_picking_action_ocd_dispatch" sequence="10"/>
+    <menuitem id="ocd_live_shop_cash_menu" name="Cash of the couriers" parent="ocd_live_shop_menu_deliveries"
+              action="ocd_cash_remittance_action" sequence="20"/>
+    <menuitem id="ocd_live_shop_couriers_menu" name="Couriers" parent="ocd_live_shop_menu_deliveries"
+              action="res_partner_action_ocd_courier" sequence="30"/>
+
+    <menuitem id="ocd_live_shop_payout_menu" name="Payouts" parent="ocd_live.ocd_live_menu_root" sequence="35"
+              action="ocd_payout_action" groups="ocd_live.group_ocd_live_manager"/>
+
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="mail_activity_type_parcel_late" model="mail.activity.type">
+        <field name="name">Parcel not ready</field>
+        <field name="summary">The vendor has not prepared the parcel</field>
+        <field name="icon">fa-clock-o</field>
+        <field name="res_model">stock.picking</field>
+        <field name="delay_count">0</field>
+    </record>
+
+    <record id="mail_activity_type_parcel_problem" model="mail.activity.type">
+        <field name="name">Delivery problem</field>
+        <field name="summary">Call the customer or the courier</field>
+        <field name="icon">fa-exclamation-triangle</field>
+        <field name="res_model">stock.picking</field>
+        <field name="delay_count">0</field>
+    </record>
+
+    <record id="mail_activity_type_refund" model="mail.activity.type">
+        <field name="name">Refund to do</field>
+        <field name="summary">Refund the customer of the returned parcel</field>
+        <field name="icon">fa-undo</field>
+        <field name="res_model">stock.picking</field>
+        <field name="delay_count">1</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_payout_view_search" model="ir.ui.view">
+        <field name="name">ocd.payout.view.search</field>
+        <field name="model">ocd.payout</field>
+        <field name="arch" type="xml">
+            <search string="Payouts">
+                <field name="name"/>
+                <field name="vendor_id"/>
+                <filter string="To check" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="To pay" name="validated" domain="[('state', '=', 'validated')]"/>
+                <filter string="To recover" name="to_recover" domain="[('amount', '&lt;', 0), ('state', 'in', ('draft', 'validated'))]"/>
+                <group>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_payout_view_list" model="ir.ui.view">
+        <field name="name">ocd.payout.view.list</field>
+        <field name="model">ocd.payout</field>
+        <field name="arch" type="xml">
+            <list string="Payouts" decoration-danger="amount &lt; 0" decoration-muted="state in ('paid', 'cancelled')">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="vendor_id"/>
+                <field name="amount_bills" sum="Total"/>
+                <field name="amount_refunds" sum="Total"/>
+                <field name="amount" sum="Total"/>
+                <field name="momo" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="state" widget="badge" decoration-warning="state == 'draft'" decoration-info="state == 'validated'"
+                       decoration-success="state == 'paid'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_payout_view_form" model="ir.ui.view">
+        <field name="name">ocd.payout.view.form</field>
+        <field name="model">ocd.payout</field>
+        <field name="arch" type="xml">
+            <form string="Payout">
+                <header>
+                    <button name="action_validate" type="object" string="Validate" class="btn-primary"
+                            invisible="state != 'draft'" groups="ocd_live.group_ocd_live_manager"/>
+                    <button name="action_register_payment" type="object" string="Transfer done" class="btn-primary"
+                            invisible="state != 'validated'" groups="ocd_live.group_ocd_live_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state not in ('draft', 'validated')"
+                            groups="ocd_live.group_ocd_live_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validated,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="vendor_id"/>
+                            <field name="date"/>
+                            <field name="momo"/>
+                            <field name="payment_reference" readonly="state == 'paid'"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_bills"/>
+                            <field name="amount_refunds"/>
+                            <field name="amount" class="fw-bold"/>
+                        </group>
+                    </group>
+                    <field name="move_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="move_type"/>
+                            <field name="ref"/>
+                            <field name="invoice_date"/>
+                            <field name="amount_total" sum="Total"/>
+                            <field name="payment_state" widget="badge"/>
+                        </list>
+                    </field>
+                    <field name="payment_ids" widget="many2many_tags" invisible="not payment_ids"/>
+                    <field name="company_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_payout_action" model="ir.actions.act_window">
+        <field name="name">Payouts</field>
+        <field name="res_model">ocd.payout</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_draft': 1, 'search_default_validated': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No payout to prepare</p>
+            <p>The payouts are prepared at the rhythm of each vendor, from the parcels confirmed by the code of the customer.</p>
+        </field>
+    </record>
+
+</odoo>

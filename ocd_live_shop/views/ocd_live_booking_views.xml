@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_live_booking_view_form" model="ir.ui.view">
+        <field name="name">ocd.live.booking.view.form.inherit.ocd.live.shop</field>
+        <field name="model">ocd.live.booking</field>
+        <field name="inherit_id" ref="ocd_live.ocd_live_booking_view_form"/>
+        <field name="arch" type="xml">
+            <field name="note" position="before">
+                <notebook>
+                    <page name="ocd_control_room" string="Control room" invisible="state not in ('confirmed', 'done')">
+                        <group>
+                            <field name="current_product_tmpl_id" readonly="1"/>
+                        </group>
+                        <field name="vendor_product_ids" context="{'ocd_booking_id': id}" readonly="1">
+                            <list create="false" delete="false">
+                                <field name="name"/>
+                                <field name="list_price"/>
+                                <button name="action_ocd_show_on_live" type="object" string="Show on screen"
+                                        icon="fa-television" class="btn-primary"/>
+                            </list>
+                        </field>
+                        <field name="moment_ids" readonly="1">
+                            <list>
+                                <field name="offset_label"/>
+                                <field name="product_tmpl_id"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </field>
+    </record>
+
+</odoo>

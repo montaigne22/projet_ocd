@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Products of the vendor bills and credit notes created for the payouts. -->
+<odoo noupdate="1">
+
+    <record id="product_vendor_share" model="product.template">
+        <field name="name">Share of the vendor</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_vendor_delivery" model="product.template">
+        <field name="name">Delivery made by the vendor</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_vendor_collected" model="product.template">
+        <field name="name">Money collected by the vendor</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+</odoo>
