@@ -24,22 +24,45 @@ export class OcdStepper extends Interaction {
 }
 
 /**
- * Product page: the values chosen (colour, size...) give the variant, its price and its stock;
- * the values whose variants are sold out cannot be chosen.
+ * Product page: the values chosen (colour, size...) give the variant, its price, its stock and
+ * its photo (the one of the colour). A sold-out choice can still be chosen: it offers « Tell me
+ * when it is back ». The address keeps the choice (?v=), to share the red dress. The photos open
+ * full screen: swipe from one to the next, pinch or tap twice to zoom, the back button of the
+ * phone closes them.
  */
 export class OcdProductPage extends Interaction {
     static selector = ".o_ocd_product_page[data-variants]";
     dynamicContent = {
-        _root: { "t-on-change": this.update },
+        _root: { "t-on-change": this.onChange },
+        ".o_ocd_gallery_slide": { "t-on-click": this.onSlide },
+        ".o_ocd_viewer_close": { "t-on-click": this.closeViewer },
     };
 
     setup() {
         this.data = JSON.parse(this.el.dataset.variants);
+        this.trackEl = this.el.querySelector(".o_ocd_gallery_track");
+        this.dotsEl = this.el.querySelector(".o_ocd_gallery_dots");
+        this.viewerEl = this.el.querySelector(".o_ocd_viewer");
+        this.overlay = false;
     }
 
     start() {
-        this.update();
+        this.update({ initial: true });
+        if (this.trackEl) {
+            this.addListener(this.trackEl, "scroll", () => this.syncDots(), { passive: true });
+        }
+        if (this.viewerEl?.showModal) {
+            const track = this.viewerEl.querySelector(".o_ocd_viewer_track");
+            this.addListener(track, "scroll", () => this.syncCount(), { passive: true });
+            this.addListener(track, "dblclick", (ev) => this.toggleZoom(ev));
+            this.addListener(this.viewerEl, "close", () => this.onViewerClosed());
+            this.addListener(window, "popstate", () => this.viewerEl.open && this.viewerEl.close());
+        }
+        // The photos of the other colours, ready before they are chosen
+        this.waitForTimeout(() => this.preload(), 1200);
     }
+
+    // === VARIANT === //
 
     selected() {
         return [...this.el.querySelectorAll(".o_ocd_variant_input:checked")].map((input) => parseInt(input.value));
@@ -58,9 +81,17 @@ export class OcdProductPage extends Interaction {
         return position === "before" ? `${symbol} ${number}` : `${number} ${symbol}`;
     }
 
-    update() {
+    onChange(ev) {
+        if (ev.target.classList.contains("o_ocd_variant_input")) {
+            this.update({ initial: false });
+        } else if (ev.target.name === "quantity") {
+            this.update({ initial: true });
+        }
+    }
+
+    update({ initial = false } = {}) {
         const values = this.selected();
-        // Values that only lead to sold-out variants
+        // Values that only lead to sold-out variants: still chosen, to be told when they are back
         for (const input of this.el.querySelectorAll(".o_ocd_variant_input")) {
             const others = values.filter((value) => {
                 const other = this.el.querySelector(`.o_ocd_variant_input[value="${value}"]`);
@@ -70,11 +101,23 @@ export class OcdProductPage extends Interaction {
             const gone = !variant || (variant.qty !== null && variant.qty <= 0);
             input.closest(".o_ocd_product_value").classList.toggle("o_ocd_gone", gone);
         }
+        for (const fieldset of this.el.querySelectorAll(".o_ocd_product_choice")) {
+            const checked = fieldset.querySelector(".o_ocd_variant_input:checked");
+            const label = fieldset.querySelector(".o_ocd_choice_value");
+            if (checked && label) {
+                label.textContent = checked.dataset.name;
+            }
+        }
         const variant = this.variantOf(values);
         const price = this.el.querySelector(".o_ocd_variant_price");
         const stock = this.el.querySelector(".o_ocd_variant_stock");
         const add = this.el.querySelector(".o_ocd_variant_add");
         const qtyInput = this.el.querySelector("input[name=quantity]");
+        this.showPhotos(variant);
+        this.showAlert(variant);
+        if (!initial) {
+            this.keepInAddress(values);
+        }
         if (!variant) {
             if (add) {
                 add.disabled = true;
@@ -104,6 +147,168 @@ export class OcdProductPage extends Interaction {
             const out = variant.qty !== null && variant.qty <= 0;
             add.disabled = out;
             add.textContent = out ? texts.out : texts.add.replace("%s", qty > 1 ? this.money(variant.price * qty) : variant.price_text);
+        }
+    }
+
+    /** « Tell me when it is back » for a choice sold out. */
+    showAlert(variant) {
+        const box = this.el.querySelector(".o_ocd_stock_alert");
+        if (!box || box.querySelector(".o_ocd_ok")) {
+            return; // already noted: the message stays
+        }
+        const out = Boolean(variant && variant.qty !== null && variant.qty <= 0);
+        box.classList.toggle("d-none", !out);
+        if (out) {
+            box.querySelector(".o_ocd_stock_alert_variant").value = variant.id;
+            const title = box.querySelector(".o_ocd_stock_alert_title");
+            if (title) {
+                title.textContent = this.data.texts.gone.replace("%s", variant.label);
+            }
+        }
+    }
+
+    keepInAddress(values) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("v", [...values].sort((a, b) => a - b).join(","));
+        url.searchParams.delete("prevenu");
+        url.searchParams.delete("erreur");
+        url.hash = "";
+        window.history.replaceState(window.history.state, "", url);
+        document.dispatchEvent(new CustomEvent("ocd-url-change"));
+    }
+
+    // === PHOTOS === //
+
+    photosOf(variant) {
+        const { main, extras } = this.data;
+        const own = variant?.photo;
+        return [own || main, ...(own && main ? [main] : []), ...extras].filter(Boolean);
+    }
+
+    showPhotos(variant) {
+        if (!this.trackEl) {
+            return;
+        }
+        const photos = this.photosOf(variant);
+        const first = this.trackEl.querySelector(".o_ocd_gallery_slide img");
+        if (!photos.length || (first && first.getAttribute("src") === photos[0].src && this.trackEl.children.length === photos.length)) {
+            return;
+        }
+        const name = this.el.querySelector("h1")?.textContent || "";
+        const slides = photos.map((photo, index) => {
+            const slide = document.createElement("a");
+            slide.className = "o_ocd_gallery_slide";
+            slide.href = photo.full;
+            slide.target = "_blank";
+            slide.rel = "noopener";
+            slide.dataset.index = index;
+            slide.setAttribute("aria-label", `${name} · ${index + 1}/${photos.length}`);
+            const img = document.createElement("img");
+            img.src = photo.src;
+            img.alt = "";
+            img.className = "o_ocd_photo_img";
+            img.decoding = "async";
+            slide.appendChild(img);
+            return slide;
+        });
+        this.trackEl.replaceChildren(...slides);
+        this.trackEl.scrollLeft = 0;
+        if (this.dotsEl) {
+            this.dotsEl.replaceChildren(...photos.map(() => document.createElement("i")));
+            this.dotsEl.hidden = photos.length < 2;
+        }
+        this.syncDots();
+    }
+
+    syncDots() {
+        if (!this.dotsEl || !this.trackEl) {
+            return;
+        }
+        const index = Math.round(this.trackEl.scrollLeft / Math.max(this.trackEl.clientWidth, 1));
+        [...this.dotsEl.children].forEach((dot, at) => dot.classList.toggle("o_ocd_on", at === index));
+    }
+
+    preload() {
+        const seen = new Set();
+        for (const variant of this.data.variants) {
+            if (variant.photo && !seen.has(variant.photo.src)) {
+                seen.add(variant.photo.src);
+                new Image().src = variant.photo.src;
+            }
+        }
+    }
+
+    // === VIEWER === //
+
+    onSlide(ev) {
+        if (!this.viewerEl?.showModal) {
+            return; // the photo opens in a new tab
+        }
+        ev.preventDefault();
+        this.openViewer(parseInt(ev.currentTarget.dataset.index) || 0);
+    }
+
+    openViewer(index) {
+        const track = this.viewerEl.querySelector(".o_ocd_viewer_track");
+        const slides = [...this.trackEl.querySelectorAll(".o_ocd_gallery_slide")].map((slide) => {
+            const box = document.createElement("div");
+            box.className = "o_ocd_viewer_slide";
+            const img = document.createElement("img");
+            img.src = slide.href;
+            img.alt = slide.getAttribute("aria-label") || "";
+            img.decoding = "async";
+            box.appendChild(img);
+            return box;
+        });
+        track.replaceChildren(...slides);
+        this.viewerEl.showModal();
+        track.scrollLeft = index * track.clientWidth;
+        this.syncCount();
+        // The back button of the phone closes the photos, not the page
+        window.history.pushState({ ...(window.history.state || {}), ocdOverlay: true }, "");
+        this.overlay = true;
+    }
+
+    closeViewer() {
+        if (this.overlay && window.history.state?.ocdOverlay) {
+            window.history.back(); // closes the viewer (popstate)
+        } else {
+            this.viewerEl.close();
+        }
+    }
+
+    onViewerClosed() {
+        if (this.overlay && window.history.state?.ocdOverlay) {
+            this.overlay = false;
+            window.history.back(); // Escape: the entry of the photos goes too
+        }
+        this.overlay = false;
+        for (const slide of this.viewerEl.querySelectorAll(".o_ocd_zoomed")) {
+            slide.classList.remove("o_ocd_zoomed");
+        }
+    }
+
+    syncCount() {
+        const track = this.viewerEl.querySelector(".o_ocd_viewer_track");
+        const count = this.viewerEl.querySelector(".o_ocd_viewer_count");
+        const total = track.children.length;
+        const index = Math.min(Math.round(track.scrollLeft / Math.max(track.clientWidth, 1)) + 1, total);
+        count.textContent = total > 1 ? `${index} / ${total}` : "";
+    }
+
+    toggleZoom(ev) {
+        const slide = ev.target.closest(".o_ocd_viewer_slide");
+        if (!slide) {
+            return;
+        }
+        const zoomed = slide.classList.toggle("o_ocd_zoomed");
+        if (zoomed) {
+            // Zoom where the finger is
+            const rect = slide.getBoundingClientRect();
+            const x = (ev.clientX - rect.left) / rect.width;
+            const y = (ev.clientY - rect.top) / rect.height;
+            slide.scrollLeft = x * slide.scrollWidth - rect.width / 2;
+            slide.scrollTop = y * slide.scrollHeight - rect.height / 2;
         }
     }
 }
@@ -259,8 +464,26 @@ export class OcdVendorRatesForm extends Interaction {
     }
 }
 
+/**
+ * My products: the photo of a colour is sent as soon as it is chosen.
+ */
+export class OcdColourPhoto extends Interaction {
+    static selector = ".o_ocd_colour_photo";
+    dynamicContent = {
+        ".o_ocd_colour_photo_input": { "t-on-change": this.send },
+    };
+
+    send(ev) {
+        if (ev.target.files?.length) {
+            this.el.classList.add("o_ocd_sending");
+            this.el.requestSubmit ? this.el.requestSubmit() : this.el.submit();
+        }
+    }
+}
+
 registry
     .category("public.interactions")
+    .add("ocd_live_shop.colour_photo", OcdColourPhoto)
     .add("ocd_live_shop.stepper", OcdStepper)
     .add("ocd_live_shop.product_page", OcdProductPage)
     .add("ocd_live_shop.delivery_form", OcdDeliveryForm)

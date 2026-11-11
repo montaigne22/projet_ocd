@@ -12,6 +12,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | 112 pays proposés (Afrique entière, principaux d'Europe, d'Amérique, d'Asie), numéros de tous les pays | ✅ fait, testé |
 | Fil des lives façon TikTok : pays de la personne d'abord, défilement infini, jamais vide | ✅ fait, testé |
 | Paiement par carte (Stripe, clés à saisir) ; aide de l'équipe quand aucun moyen ne convient | ✅ fait, testé |
+| Photos des produits : visionneuse, photo par couleur, galerie ; « Préviens-moi » au retour en stock | ✅ fait, testé |
+| Replay lu dans la page (YouTube, TikTok, Facebook), saut au moment d'un produit | ✅ fait, testé |
 | Paiement : formulaire d'Odoo, tous les fournisseurs configurés par pays, devise par pays | ✅ fait, testé |
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
@@ -34,7 +36,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **346 tests, un seul
+`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **351 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
 ceux des colis). Sur une base neuve avec la démo, 5 tests sans échec : la démo remplit les écrans,
 conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
@@ -71,6 +73,46 @@ conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — photos des produits, replay lu dans la page, retour en stock
+- **Photos du produit** : la photo s'ouvre en plein écran (glisser d'une photo à l'autre, pincer ou
+  toucher deux fois pour zoomer, le bouton retour du téléphone la ferme) ; sans JavaScript, elle s'ouvre
+  dans un nouvel onglet. Galerie avec des points : la photo principale, puis les autres photos du produit
+  (la copie de la photo principale qu'Odoo 20 garde parmi elles n'est montrée qu'une fois).
+- **La couleur change la photo** : une photo par couleur (« Photo de la couleur »), ajoutée par le vendeur
+  dans « Mes produits » (« Photos des couleurs », une photo par couleur, envoyée dès qu'elle est choisie,
+  notée dans l'historique du produit) ou par l'équipe (Configurer, sur les valeurs de l'attribut). Elle
+  s'affiche aussitôt (photos chargées à l'avance), la taille choisie reste ; une variante qui a sa propre
+  photo passe avant ; une couleur sans photo garde la photo principale. L'adresse garde le choix
+  (`?v=…`) : un lien partagé ouvre la robe rouge, déjà choisie.
+- **Choix lisibles** : « Couleur : Bleu », « Taille : S ». **Taille épuisée** : case barrée en diagonale
+  (le « L » barré se lisait « Ł ») ; elle reste au toucher : « Rouge, L : épuisé pour l'instant » et
+  **« Préviens-moi quand c'est de retour »** (numéro WhatsApp, ou un seul bouton pour un vendeur ou un
+  client connu).
+- **Retour en stock** (`ocd.stock.alert`) : dès qu'un stock revient (réception, quantité du vendeur), puis
+  toutes les 30 minutes (automatisation « Produit de retour »), les clients reçoivent sur WhatsApp le
+  modèle « produit de retour » (français et anglais), avec le lien du produit dans cette couleur et cette
+  taille. Un produit retiré du shop termine ses alertes.
+- **Page produit** : « Vu en live sur OCD · voir le moment » ouvre le replay à la minute du produit ;
+  « Du même vendeur » en bas de page ; « Partager » dans l'en-tête ; la barre du bas ne garde que
+  « Ajouter au panier » (la question à OCD Live passe dans les informations du produit).
+- **Replay lu dans la page** : YouTube et TikTok (vidéo publiée) se lisent dans la page et vont au moment
+  d'un produit touché ; Facebook se lit dans la page et repart du moment touché. Le lecteur n'est chargé
+  qu'au premier toucher (rien n'est demandé à la plateforme avant). La barre sous la vidéo a un repère
+  par produit (on touche un repère pour y aller) ; pendant la lecture, le produit à l'écran s'allume et
+  « Commander » le suit. Instagram et les autres liens : un bouton « Ouvrir sur Instagram » et une
+  consigne honnête (« va au moment du produit »). `?t=` ouvre le replay à une seconde ; `?live=` un replay
+  précis du vendeur. Les minutes après une heure s'écrivent « 1:05:30 ».
+- **Couleur montrée pendant le live** : sur les moments de la réservation (back-office), l'équipe choisit
+  la couleur ou la taille montrée ; « Voir » et « Commander » ouvrent le produit sur elle.
+- **Replay** : « Le prochain live de Brenda » avec « Préviens-moi sur WhatsApp » (le même accord que sur la
+  boutique, retour sur le replay), « Partager » dans l'en-tête.
+- **Back-office** : OCD Live › Shop › Alertes de retour en stock (ce que les clients attendent, groupé par
+  produit).
+- **Démo** : la Robe en wax a sa photo rouge.
+- **Versions** : `ocd_live_shop` 20.0.1.5.0, `ocd_live_shop_whatsapp` 20.0.1.6.0.
+- **À faire (équipe)** : soumettre à Meta le modèle « produit de retour » (`ocd_produit_de_retour`, français
+  et anglais).
 
 ### 11 novembre 2026 — tous les pays d'Afrique et du monde, paiement par carte, fil des lives
 - **Pays proposés** (OCD Live › Configuration › Pays) : les 54 pays d'Afrique et les plus connus d'Europe

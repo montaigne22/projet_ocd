@@ -41,12 +41,24 @@ class OcdVendorProducts(http.Controller):
         for product in products:
             qty = sum(shop_common.free_qty(v) for v in product.product_variant_ids) if shop_common.tracked(product) else None
             status, status_label = self._status(product, qty)
+            colours = product.attribute_line_ids.filtered(
+                lambda line: line.attribute_id.display_type == "color"
+            ).product_template_value_ids._only_active()
             rows.append({
                 "product": product,
                 "price": common.money(product.list_price, product.currency_id),
                 "image": shop_common.image_url(product, "image_128"),
                 "qty": qty,
                 "single": len(product.product_variant_ids) == 1,
+                "colours": [
+                    {
+                        "value": value,
+                        "image": product._ocd_photo(value, "ocd_image")["src"] if value.ocd_image else False,
+                        "swatch": value.html_color or "#FFFFFF",
+                    }
+                    for value in colours
+                ],
+                "colours_done": len(colours.filtered("ocd_image")),
                 "status": status,
                 "status_label": status_label,
                 "less_aria": request.env._("One %s less", product.name),
@@ -69,6 +81,7 @@ class OcdVendorProducts(http.Controller):
             values=values or {},
             errors=errors or {},
             sent=sent,
+            photo_error=request.params.get("photo_erreur"),
             currency_symbol=common.company().currency_id.symbol,
             boutique_url=request.httprequest.url_root.rstrip("/") + f"/ocd/boutique/{vendor.id}"
             if vendor.ocd_vendor_state == "approved" else False,
@@ -133,6 +146,34 @@ class OcdVendorProducts(http.Controller):
             return self._render(vendor, values={"name": name, "price": price, "quantity": qty},
                                 errors={"photo": exc.args[0]})
         return request.redirect("/ocd/espace/moi/produits?envoye=1")
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/couleur/<int:value_id>", type="http", auth="public",
+                website=True, methods=["POST"], sitemap=False)
+    def product_colour_photo(self, product_id, value_id, photo=None, **post):
+        """The photo of the product in a colour: shown on the page as soon as the colour is
+        chosen. The team sees it in the history of the product and can change it."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        product = request.env["product.template"].sudo().browse(product_id).exists()
+        value = request.env["product.template.attribute.value"].sudo().browse(value_id).exists()
+        if not product or product.ocd_vendor_id != vendor or not value or value.product_tmpl_id != product:
+            raise request.not_found()
+        anchor = f"/ocd/espace/moi/produits#produit-{product.id}"
+        if not photo or not getattr(photo, "filename", None):
+            return request.redirect(anchor)
+        data = photo.read(MAX_PHOTO_BYTES + 1)
+        if len(data) > MAX_PHOTO_BYTES or not (photo.mimetype or "").startswith("image/"):
+            return request.redirect(f"/ocd/espace/moi/produits?photo_erreur={product.id}#produit-{product.id}")
+        try:
+            with request.env.cr.savepoint():
+                value.ocd_image = BinaryBytes(data, filename=photo.filename)
+        except (UserError, ValidationError):
+            return request.redirect(f"/ocd/espace/moi/produits?photo_erreur={product.id}#produit-{product.id}")
+        product.message_post(body=request.env._(
+            "%(vendor)s added the photo of the colour %(colour)s.", vendor=vendor.name, colour=value.name,
+        ))
+        return request.redirect(anchor)
 
     @http.route("/ocd/espace/moi/produits/<int:product_id>/stock", type="http", auth="public", website=True,
                 methods=["POST"], sitemap=False)

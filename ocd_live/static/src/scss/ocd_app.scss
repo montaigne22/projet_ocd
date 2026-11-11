@@ -1490,10 +1490,11 @@ body.o_ocd_body {
         margin-left: 8px;
     }
 }
-// Phone: with the voice beside it, the button keeps only its icon (its name stays for the
-// screen readers)
+// Phone: with the voice or the cart beside it, the button keeps only its icon (its name stays
+// for the screen readers)
 @media (max-width: 479.98px) {
-    .o_ocd_top:has(.o_ocd_voice) .o_ocd_share {
+    .o_ocd_top:has(.o_ocd_voice) .o_ocd_share,
+    .o_ocd_top:has(.o_ocd_header_pill) .o_ocd_share {
         position: relative;
         width: 46px;
         padding: 0;

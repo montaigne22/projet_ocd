@@ -78,6 +78,17 @@ class OcdBoutique(http.Controller):
             ("start_datetime", ">", fields.Datetime.now()),
         ], order="start_datetime", limit=1)
 
+    def _replay_of(self, vendor, live=None):
+        """The published replay `live` of the vendor, else its last one."""
+        if live and str(live).isdigit():
+            replay = request.env["ocd.live.booking"].sudo().search([
+                ("id", "=", int(live)), ("partner_id", "=", vendor.id),
+                ("replay_published", "=", True), ("replay_url", "!=", False),
+            ], limit=1)
+            if replay:
+                return replay
+        return self._last_replay(vendor)
+
     def _last_replay(self, vendor):
         return request.env["ocd.live.booking"].sudo().search([
             ("partner_id", "=", vendor.id),
@@ -210,13 +221,21 @@ class OcdBoutique(http.Controller):
 
     @http.route("/ocd/boutique/<int:vendor_id>/prevenir", type="http", auth="public", website=True,
                 methods=["POST"], sitemap=False)
-    def boutique_alert(self, vendor_id, phone=None, country_id=None, **post):
-        """Tell the visitor on WhatsApp when the vendor goes live."""
+    def boutique_alert(self, vendor_id, phone=None, country_id=None, replay=None, **post):
+        """Tell the visitor on WhatsApp when the vendor goes live (from the boutique, or from a
+        replay: `replay` is the live watched again, where the visitor comes back)."""
         vendor = self._vendor(vendor_id)
         if post.get("website_url"):
             raise request.not_found()
         Alert = request.env["ocd.boutique.alert"].sudo().with_company(common.company())
         visitor = common.current_vendor()
+        live = int(replay) if replay and str(replay).isdigit() else None
+
+        def again(**values):
+            if live:
+                return self.boutique_replay(vendor_id, live=live, **values)
+            return self.boutique(vendor_id, **values)
+
         try:
             if visitor:
                 Alert._ocd_register(vendor, partner=visitor)
@@ -224,10 +243,12 @@ class OcdBoutique(http.Controller):
                 country = request.env["res.country"].sudo().browse(int(country_id or 0)).exists()
                 number = common.normalize_phone(country, phone)
                 if not number:
-                    return self.boutique(vendor_id, error=common.phone_error(country))
+                    return again(error=common.phone_error(country))
                 Alert._ocd_register(vendor, phone=number)
         except (UserError, ValidationError) as exc:
-            return self.boutique(vendor_id, error=exc.args[0])
+            return again(error=exc.args[0])
+        if live:
+            return request.redirect(f"/ocd/boutique/{vendor.id}/replay?live={live}&noted=1#prevenir")
         return request.redirect(f"/ocd/boutique/{vendor.id}?noted=1")
 
     @http.route("/ocd/boutique/<int:vendor_id>/ecrire", type="http", auth="public", website=True, sitemap=False)
@@ -256,10 +277,12 @@ class OcdBoutique(http.Controller):
         }
 
     @http.route("/ocd/boutique/<int:vendor_id>/replay", type="http", auth="public", website=True, sitemap=False)
-    def boutique_replay(self, vendor_id, **kwargs):
-        """The last live again, with the moments where each product is shown."""
+    def boutique_replay(self, vendor_id, live=None, t=None, noted=None, error=None, **kwargs):
+        """A live again (the last one, or `live`), with the moments where each product is shown.
+        The video plays in the page when its platform allows it, and a product touched goes to
+        its moment; `t` starts the video at a second (link « watch the moment » of a product)."""
         vendor = self._vendor(vendor_id)
-        replay = self._last_replay(vendor)
+        replay = self._replay_of(vendor, live)
         if not replay:
             return request.redirect(f"/ocd/boutique/{vendor.id}")
         local = common.to_viewer(replay.start_datetime)
@@ -271,33 +294,66 @@ class OcdBoutique(http.Controller):
         else:
             how = request.env._("from home")
         name = platform(replay.replay_url)
+        embed = replay._ocd_replay_embed()
+        start = int(t) if t and str(t).isdigit() else 0
         rows = []
         for moment in replay.moment_ids.sorted("offset_seconds"):
             product = moment.product_tmpl_id
             if not (product.is_published and product.ocd_review_state == "approved"):
                 continue
+            variant = moment._ocd_variant_query()
             rows.append({
                 "moment": moment,
                 "product": product,
-                "see_url": product.website_url,
+                "see_url": f"{product.website_url}{variant}",
                 "price": self._price(product),
                 "url": replay._ocd_replay_url_at(moment.offset_seconds),
+                "seconds": moment.offset_seconds,
+                "on": bool(start) and moment.offset_seconds <= start,
                 "image": f"/web/image/product.template/{product.id}/image_128" if product.image_128 else False,
                 "order_label": request.env._("Order “%s”", product.name)
                 if vendor.ocd_sale_mode == "ocd" else
                 request.env._("Write to %(name)s about “%(product)s”", name=(vendor.name or "").split()[0], product=product.name),
-                "order_url": product.website_url if vendor.ocd_sale_mode == "ocd" else f"/ocd/wa/{product.id}",
+                "order_url": f"{product.website_url}{variant}" if vendor.ocd_sale_mode == "ocd" else f"/ocd/wa/{product.id}",
                 "aria": request.env._("Go to %(time)s: %(product)s", time=moment.offset_label, product=product.name),
                 "see_aria": request.env._("See the product: %s", product.name),
             })
+        # The product on screen at the start: the last one shown before `t`
+        current = [row for row in rows if row["on"]]
+        for row in rows:
+            row["on"] = bool(current) and row is current[-1]
+        if rows and not current:
+            rows[0]["on"] = True
+        seconds = max(int((replay.end_datetime - replay.start_datetime).total_seconds()), 1)
+        shown = next((row for row in rows if row["on"]), None)
+        fill = round(min(shown["seconds"] / seconds, 1) * 100, 2) if shown else 0
         place = " · ".join(part for part in (vendor.ocd_category_id.name, vendor.city) if part)
+        visitor = common.current_vendor()
+        replay_url = request.httprequest.url_root.rstrip("/") + f"/ocd/boutique/{vendor.id}/replay?live={replay.id}"
         return request.render("ocd_live_shop.replay", common.page_values(
             False,
             back=f"/ocd/boutique/{vendor.id}",
             back_label=request.env._("Back to the boutique"),
             header_title=request.env._("Watch the live again"),
+            header_share=replay_url,
             vendor=vendor,
             replay=replay,
+            embed=embed,
+            start=start,
+            fill=fill,
+            total_seconds=seconds,
+            marks=[
+                {"left": round(min(row["seconds"] / seconds, 1) * 100, 2), "seconds": row["seconds"], "label": row["moment"].offset_label}
+                for row in rows
+            ],
+            open_label=request.env._("Open on %s", name) if name else request.env._("Open the video"),
+            moments_hint=request.env._("Tap a product: the video goes to its moment.") if embed["seek"]
+            else request.env._("The video opens on %s: go to the time of the product.", name or request.env._("its site")),
+            visitor=visitor,
+            noted=bool(noted),
+            error=error,
+            dial_rows=common.dial_rows(visitor.country_id if visitor else common.default_country()),
+            first_name=(vendor.name or "").split()[0] if vendor.name else "",
             title=request.env._("Live of %s", vendor.name),
             banner=" · ".join(part for part in (vendor.name, place) if part),
             shop_line=request.env._("Their boutique on OCD Live"),

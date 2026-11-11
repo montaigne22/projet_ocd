@@ -3,6 +3,7 @@ from . import res_config_settings
 from . import res_partner
 from . import product_template
 from . import product_product
+from . import product_template_attribute_value
 from . import sale_order_line
 from . import sale_order
 from . import stock_move
@@ -13,6 +14,7 @@ from . import ocd_payout
 from . import ocd_cash_remittance
 from . import ocd_live_moment
 from . import ocd_boutique_alert
+from . import ocd_stock_alert
 from . import ocd_delivery_rate
 from . import ocd_order_delivery
 from . import delivery_carrier

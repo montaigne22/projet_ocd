@@ -1,6 +1,6 @@
 import json
 import re
-from urllib.parse import urlencode
+from urllib.parse import quote as url_quote, urlencode
 
 from odoo import http
 from odoo.fields import Domain
@@ -141,10 +141,12 @@ class OcdShop(WebsiteSale):
         return response
 
     def _ocd_variants(self, template):
-        """Each variant of the product: its values, its price and its stock, read by the page
-        to update the price, the stock and the values that are sold out."""
+        """Each variant of the product: its values, its price, its stock and its photo (its own,
+        else the one of its colour), read by the page to update the price, the stock, the photo
+        and the values that are sold out."""
         rows = []
-        for variant in template.sudo().product_variant_ids:
+        template = template.sudo()
+        for variant in template.product_variant_ids:
             amount, money_currency = shop_common.variant_price(variant)
             qty = shop_common.free_qty(variant) if shop_common.tracked(variant) else None
             rows.append({
@@ -153,8 +155,35 @@ class OcdShop(WebsiteSale):
                 "price": amount,
                 "price_text": common.money(amount, money_currency),
                 "qty": qty,
+                "photo": template._ocd_variant_photo(variant),
+                "label": ", ".join(variant.product_template_attribute_value_ids.mapped("name")) or template.name,
             })
         return rows
+
+    def _ocd_chosen_variant(self, variants):
+        """The variant asked by the address (?v=12,15: its colour and its size), else the first
+        one that is not sold out, else the first one."""
+        asked = set()
+        for part in (request.params.get("v") or "").split(","):
+            if part.strip().isdigit():
+                asked.add(int(part))
+        if asked:
+            found = [row for row in variants if asked <= set(row["values"])]
+            if found:
+                return next((row for row in found if row["qty"] is None or row["qty"] > 0), found[0])
+        return next((row for row in variants if row["qty"] is None or row["qty"] > 0), variants[0] if variants else None)
+
+    def _ocd_same_vendor(self, template, limit=6):
+        """Other products of the vendor, for « From the same vendor »."""
+        vendor = template.ocd_vendor_id
+        if not vendor:
+            return []
+        products = request.env["product.template"].sudo().search([
+            ("ocd_vendor_id", "=", vendor.id), ("id", "!=", template.id), ("is_published", "=", True),
+            ("sale_ok", "=", True), ("ocd_review_state", "=", "approved"),
+        ], order="website_sequence, id desc", limit=limit)
+        price_by_id = shop_common.prices(products)
+        return [shop_common.card(product, price_by_id) for product in products]
 
     def _ocd_product_values(self, template):
         env = request.env
@@ -162,15 +191,23 @@ class OcdShop(WebsiteSale):
         vendor = template_sudo.ocd_vendor_id
         ocd = shop_common.sold_by_ocd(template_sudo)
         variants = self._ocd_variants(template_sudo)
-        first = variants[0] if variants else {"price": template_sudo.list_price, "qty": None, "values": [], "id": False}
+        first = self._ocd_chosen_variant(variants) or {
+            "price": template_sudo.list_price, "qty": None, "values": [], "id": False, "photo": None,
+        }
+        main_photo, extra_photos = template_sudo._ocd_page_photos()
+        shown_photo = first.get("photo") or main_photo
+        photos = [photo for photo in [shown_photo, main_photo if shown_photo != main_photo else None, *extra_photos] if photo]
         money_currency = shop_common.currency()
         lines = []
         for line in template_sudo.valid_product_template_attribute_line_ids:
             if line.attribute_id.create_variant == "no_variant":
                 continue
+            values = line.product_template_value_ids._only_active()
+            chosen = values.filtered(lambda value: value.id in first["values"])[:1] or values[:1]
             lines.append({
                 "line": line,
-                "values": line.product_template_value_ids._only_active(),
+                "values": values,
+                "chosen": chosen,
                 "color": line.attribute_id.display_type == "color",
             })
         first_name = (vendor.name or "").split()[0] if vendor.name else ""
@@ -200,10 +237,13 @@ class OcdShop(WebsiteSale):
             header_pill=cart_pill(),
             template=template_sudo,
             ocd=ocd,
-            images=[f"/web/image/product.template/{template_sudo.id}/image_1024"] if template_sudo.image_128 else [],
+            images=[photo["src"] for photo in photos],
+            photos=photos,
             first=first,
             variants_json=json.dumps({
                 "variants": variants,
+                "main": main_photo,
+                "extras": extra_photos,
                 "currency": {"symbol": money_currency.symbol, "position": money_currency.position,
                              "digits": money_currency.decimal_places},
                 "texts": {
@@ -211,10 +251,18 @@ class OcdShop(WebsiteSale):
                     "low": env._("Only %s left"),
                     "out": env._("Sold out"),
                     "add": env._("Add to the cart · %s"),
+                    "gone": env._("%s: sold out for now."),
                 },
             }),
             lines=lines,
             seen_live=bool(template_sudo.ocd_moment_ids),
+            seen_live_url=self._ocd_seen_live_url(template_sudo),
+            same_vendor=self._ocd_same_vendor(template_sudo),
+            header_share=request.httprequest.url_root.rstrip("/") + (template_sudo.website_url or f"/shop/{template_sudo.id}"),
+            alerted=bool(request.params.get("prevenu")),
+            gone_title=env._("%s: sold out for now.", first.get("label") or template_sudo.name),
+            alert_dial_rows=common.dial_rows(common.current_vendor().country_id if common.current_vendor() else common.default_country()),
+            alert_partner=self._ocd_alert_partner(),
             vendor=vendor,
             vendor_initials=common.initials(vendor.name) if vendor else "OCD",
             vendor_title=env._("Sold by %s", vendor.name) if vendor else env._("Sold by OCD Live"),
@@ -235,6 +283,48 @@ class OcdShop(WebsiteSale):
             add_label=env._("Add to the cart · %s", common.money(first["price"], money_currency)),
             question_url=self._ocd_question_url(template_sudo),
         )
+
+    def _ocd_seen_live_url(self, template):
+        """The replay at the moment this product was shown, when the replay is published."""
+        moment = template._ocd_last_moment()
+        if not moment:
+            return False
+        booking = moment.booking_id
+        return f"/ocd/boutique/{booking.partner_id.id}/replay?live={booking.id}&t={moment.offset_seconds}"
+
+    def _ocd_alert_partner(self):
+        """The contact known on this browser (vendor, customer logged in): told without
+        typing a number."""
+        vendor = common.current_vendor()
+        if vendor:
+            return vendor
+        user = request.env.user
+        return user.partner_id if not user._is_public() and user.partner_id.phone else False
+
+    @http.route("/ocd/produit/prevenir", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
+    def product_alert(self, product_id=None, phone=None, country_id=None, **post):
+        """« Tell me when it is back »: a WhatsApp message when this colour and this size are
+        back in stock."""
+        variant = request.env["product.product"].sudo().browse(int(product_id or 0)).exists()
+        template = variant.product_tmpl_id
+        if post.get("website_url") or not variant or not template.is_published or not template.sale_ok:
+            raise request.not_found()
+        values = ",".join(str(value) for value in sorted(variant.product_template_attribute_value_ids.ids))
+        base = template.website_url or f"/shop/{template.id}"
+        partner = self._ocd_alert_partner()
+        Alert = request.env["ocd.stock.alert"].sudo().with_company(common.company())
+        try:
+            if partner:
+                Alert._ocd_register(variant, partner=partner)
+            else:
+                country = request.env["res.country"].sudo().browse(int(country_id or 0)).exists()
+                number = common.normalize_phone(country, phone)
+                if not number:
+                    return request.redirect(f"{base}?v={values}&erreur={url_quote(common.phone_error(country))}#prevenir")
+                Alert._ocd_register(variant, phone=number)
+        except UserError as error:
+            return request.redirect(f"{base}?v={values}&erreur={url_quote(error.args[0])}#prevenir")
+        return request.redirect(f"{base}?v={values}&prevenu=1#prevenir")
 
     def _ocd_question_url(self, template):
         digits = re.sub(r"\D", "", common.company().phone or "")

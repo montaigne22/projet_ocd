@@ -111,6 +111,12 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   client, sinon il appelle l'équipe (qui peut valider sans code, avec un motif).
 - **Reprise de livraison par le livreur** après un problème, tracée dans l'historique du colis (qui, après
   quel problème). Le nombre d'échecs compte toujours : au-delà du réglage, le colis retourne au vendeur.
+- **Une photo par couleur** (le vendeur dans « Mes produits », ou l'équipe) : la page change de photo avec
+  la couleur ; la photo s'ouvre en plein écran. Une taille ou une couleur épuisée se choisit encore, pour
+  **« Préviens-moi quand c'est de retour »** (WhatsApp, dès que le stock revient).
+- **Le replay se lit dans la page** quand la plateforme le permet (YouTube, TikTok, Facebook) : un produit
+  touché fait aller la vidéo à son moment. Le lecteur ne se charge qu'au premier toucher. Ailleurs
+  (Instagram…), la vidéo s'ouvre sur son site, avec le moment du produit écrit.
 - **Contact direct** : le produit a sa fiche sur le site, sans panier (bloqué aussi côté serveur) ; le
   bouton WhatsApp envoie au vendeur le choix (couleur, taille…) et le lien du produit.
 - **Voix des pages** gardée partout, même là où le design n'a pas de bouton ; sur téléphone, « Partager »

@@ -117,5 +117,20 @@
             <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.vendor_id.name }}', 'sample_value': 'Brenda Wax'})]"/>
         </record>
 
+        <record id="template_product_back_en" model="whatsapp.template">
+            <field name="name">OCD Live: product back in stock (English)</field>
+            <field name="template_name">ocd_produit_de_retour</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_stock_alert"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Good news: {{1}} is available again in {{2}} on OCD Live. Tap the button to order it before it is gone again.</field>
+            <field name="button_url_value">{{ object._ocd_product_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'See the product', 'url': '{base_url}/{{1}}', 'url_example': 'shop/wax-dress-20?v=12,15'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.product_id.product_tmpl_id.name }}', 'sample_value': 'Wax dress'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_variant_label() }}', 'sample_value': 'Blue, L'}),
+            ]"/>
+        </record>
+
     </data>
 </odoo>

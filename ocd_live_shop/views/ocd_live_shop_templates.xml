@@ -155,48 +155,66 @@
     <template id="replay" name="OCD Live: replay of a live">
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Replay of a live</t>
-        <t t-set="first" t-value="rows[:1] and rows[0]"/>
+        <t t-set="first" t-value="([row for row in rows if row['on']] or rows[:1] or [None])[0]"/>
         <t t-set="bottom_cta" t-value="{'href': first['order_url'], 'label': first['order_label']} if first else None"/>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
-                <main class="o_ocd_main o_ocd_replay">
-                    <div class="o_ocd_video">
-                        <span class="o_ocd_video_tag">Replay</span>
-                        <span class="o_ocd_video_where" t-out="published_on"/>
-                        <a t-att-href="replay.replay_url" target="_blank" rel="noopener noreferrer"
-                           class="o_ocd_video_play o_ocd_replay_open" aria-label="Play the replay">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="o_ocd_icon"><path d="M6 3l14 9-14 9z"/></svg>
-                        </a>
-                        <div class="o_ocd_video_bottom">
-                            <div class="o_ocd_video_banner">
-                                <span class="o_ocd_video_logo">OCD</span>
-                                <span class="o_ocd_video_banner_text">
-                                    <b t-out="banner"/>
-                                    <small t-out="shop_line"/>
-                                </span>
-                            </div>
-                            <div class="o_ocd_video_time">
-                                <span class="o_ocd_video_now" t-out="first['moment'].offset_label if first else '0:00'"/>
-                                <span class="o_ocd_video_track"><i/></span>
-                                <span t-out="duration"/>
+                <main class="o_ocd_main o_ocd_replay" t-att-data-platform="embed['platform']" t-att-data-video="embed['id']"
+                      t-att-data-seek="'1' if embed['seek'] else None" t-att-data-start="start"
+                      t-att-data-total="total_seconds">
+                    <!-- The video plays here when its platform allows it (loaded on the first tap: nothing is
+                         asked to the platform before) -->
+                    <div class="o_ocd_video o_ocd_player">
+                        <div class="o_ocd_player_frame"/>
+                        <div class="o_ocd_player_poster">
+                            <span class="o_ocd_video_tag">Replay</span>
+                            <span class="o_ocd_video_where" t-out="published_on"/>
+                            <a t-att-href="replay._ocd_replay_url_at(start)" target="_blank" rel="noopener noreferrer"
+                               class="o_ocd_video_play o_ocd_replay_open" aria-label="Play the replay">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="o_ocd_icon"><path d="M6 3l14 9-14 9z"/></svg>
+                            </a>
+                            <div class="o_ocd_video_bottom">
+                                <div class="o_ocd_video_banner">
+                                    <span class="o_ocd_video_logo">OCD</span>
+                                    <span class="o_ocd_video_banner_text">
+                                        <b t-out="banner"/>
+                                        <small t-out="shop_line"/>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div t-if="marks" class="o_ocd_player_track">
+                        <span class="o_ocd_player_now" t-out="first['moment'].offset_label if first else '00:00'"/>
+                        <div class="o_ocd_player_bar">
+                            <i class="o_ocd_player_fill" t-attf-style="width: #{fill}%"/>
+                            <t t-foreach="marks" t-as="mark">
+                                <button type="button" class="o_ocd_player_mark" t-attf-style="left: #{mark['left']}%"
+                                        t-att-data-seconds="mark['seconds']" t-att-aria-label="mark['label']"/>
+                            </t>
+                        </div>
+                        <span t-out="duration"/>
+                    </div>
+                    <a t-if="not embed['seek']" t-att-href="replay.replay_url" target="_blank" rel="noopener noreferrer"
+                       class="o_ocd_cta o_ocd_cta_line o_ocd_player_open">
+                        <t t-call="ocd_live.icon" icon.f="live"/>
+                        <span t-out="open_label"/>
+                    </a>
                     <div class="o_ocd_replay_head">
                         <h1 t-out="title"/>
                         <span t-out="line"/>
                     </div>
                     <t t-if="rows">
-                        <div class="o_ocd_section_head">
+                        <div class="o_ocd_section_head o_ocd_section_head_stack">
                             <h2>Products shown</h2>
-                            <span>Tap to go to the moment</span>
+                            <span t-out="moments_hint"/>
                         </div>
                         <div class="o_ocd_moments">
                             <t t-foreach="rows" t-as="row">
-                                <div t-attf-class="o_ocd_moment #{'o_ocd_on' if row_first else ''}">
+                                <div t-attf-class="o_ocd_moment #{'o_ocd_on' if row['on'] else ''}" t-att-data-seconds="row['seconds']">
                                     <a t-att-href="row['url']" target="_blank" rel="noopener noreferrer" class="o_ocd_moment_go"
                                        t-att-data-order-url="row['order_url']" t-att-data-order-label="row['order_label']"
-                                       t-att-data-time="row['moment'].offset_label"
+                                       t-att-data-time="row['moment'].offset_label" t-att-data-seconds="row['seconds']"
                                        t-att-aria-label="row['aria']">
                                         <span class="o_ocd_moment_time" t-out="row['moment'].offset_label"/>
                                         <span class="o_ocd_photo o_ocd_moment_photo">
@@ -213,6 +231,24 @@
                             </t>
                         </div>
                     </t>
+                    <section id="prevenir" class="o_ocd_replay_next">
+                        <h2>The next live of <t t-out="first_name"/></h2>
+                        <div t-if="noted" class="o_ocd_ok o_ocd_info_icon" role="status">
+                            <t t-call="ocd_live.icon" icon.f="check"/>
+                            <span>Noted: we write to you on WhatsApp when the live starts.</span>
+                        </div>
+                        <form t-else="" t-attf-action="/ocd/boutique/#{vendor.id}/prevenir" method="post" class="o_ocd_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="replay" t-att-value="replay.id"/>
+                            <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                            <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                            <t t-if="not visitor">
+                                <label for="rn-phone" class="o_ocd_label">Your WhatsApp</label>
+                                <t t-call="ocd_live.phone_field" field_id.f="rn-phone" phone_value="''"/>
+                            </t>
+                            <button type="submit" class="o_ocd_cta o_ocd_cta_dark">Tell me on WhatsApp</button>
+                        </form>
+                    </section>
                 </main>
             </div>
         </t>

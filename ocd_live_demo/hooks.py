@@ -3,6 +3,8 @@ import logging
 from datetime import timedelta
 
 from odoo import Command, fields
+from odoo.tools import BinaryBytes
+from odoo.tools.misc import file_open
 
 _logger = logging.getLogger(__name__)
 
@@ -84,6 +86,7 @@ class OcdLiveDemo:
         self.payment()
         self.lives()
         self.directory()
+        self.step("the photos of the colours", self.colour_photos)
         self.stock()
         self.shop()
         self.step("the WhatsApp conversations", self.whatsapp)
@@ -182,6 +185,18 @@ class OcdLiveDemo:
         "product_wax_pagne": 4,
         "product_black_soap": 0,
     }
+
+    # The photo of a colour shows on the page as soon as the colour is chosen
+    COLOUR_PHOTOS = {"product_wax_dress": {"Rouge": "robe_wax_rouge.jpg"}}
+
+    def colour_photos(self):
+        for xmlid, photos in self.COLOUR_PHOTOS.items():
+            values = self.ref(xmlid).attribute_line_ids.product_template_value_ids
+            for name, file_name in photos.items():
+                value = values.filtered(lambda v, name=name: v.name == name)[:1]
+                if value:
+                    with file_open(f"ocd_live_demo/static/img/{file_name}", "rb") as photo:
+                        value.ocd_image = BinaryBytes(photo.read(), filename=file_name)
 
     def stock(self):
         warehouse = self.env["stock.warehouse"].sudo().search([("company_id", "=", self.company.id)], limit=1)

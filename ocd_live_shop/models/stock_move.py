@@ -41,3 +41,14 @@ class StockMove(models.Model):
         for picking in pickings.filtered("ocd_is_parcel"):
             picking.ocd_goods_amount = picking._ocd_compute_goods_amount()
         pickings.filtered(lambda p: not p.ocd_is_parcel)._ocd_init_parcels()
+
+    def _action_done(self, cancel_backorder=False):
+        """A product received again: the customers who asked are told at once (the scheduled
+        task checks again every 30 minutes)."""
+        done = super()._action_done(cancel_backorder=cancel_backorder)
+        products = done.filtered(lambda move: move.location_dest_id.usage == "internal").product_id
+        if products and self.env["ocd.stock.alert"].sudo().search_count(
+            [("state", "=", "waiting"), ("product_id", "in", products.ids)], limit=1
+        ):
+            self.env.ref("ocd_live_shop.ir_cron_stock_alerts").sudo()._trigger()
+        return done

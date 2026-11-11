@@ -102,6 +102,7 @@ export class OcdLiveFeed extends Interaction {
         }
         url.searchParams.delete("page");
         window.history.replaceState(window.history.state, "", url);
+        document.dispatchEvent(new CustomEvent("ocd-url-change"));
         const cards = this.cards();
         if (cards.length - cards.indexOf(card) <= LOAD_AHEAD) {
             this.load();

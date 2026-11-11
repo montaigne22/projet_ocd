@@ -1770,3 +1770,392 @@
         gap: 8px;
     }
 }
+
+// === PRODUCT: PHOTOS, VIEWER, CHOICES SOLD OUT, ALERT, SAME VENDOR === //
+.o_ocd_app {
+    .o_ocd_product_gallery {
+        position: relative;
+        flex: none;
+    }
+    .o_ocd_product_hero.o_ocd_gallery_track {
+        height: auto;
+        aspect-ratio: 4 / 3;
+        max-height: 62vh;
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        .o_ocd_photo_none {
+            margin: auto;
+        }
+    }
+    .o_ocd_gallery_slide {
+        flex: 0 0 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        scroll-snap-align: start;
+        cursor: zoom-in;
+        .o_ocd_photo_img {
+            object-fit: contain;
+        }
+    }
+    .o_ocd_gallery_dots {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        pointer-events: none;
+        i {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba($ocd-ink, 0.25);
+            &.o_ocd_on {
+                width: 18px;
+                border-radius: 4px;
+                background: $ocd-ink;
+            }
+        }
+    }
+    .o_ocd_gallery_zoom {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(#FFFFFF, 0.9);
+        color: $ocd-ink;
+        pointer-events: none;
+        .o_ocd_icon {
+            width: 18px;
+            height: 18px;
+        }
+    }
+    .o_ocd_product_seen_link {
+        color: inherit;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .o_ocd_product_choice legend {
+        .o_ocd_choice_value {
+            color: $ocd-ink;
+        }
+    }
+    .o_ocd_product_value.o_ocd_gone > span {
+        border-style: dashed;
+        color: $ocd-faded;
+        text-decoration: none;
+        // A diagonal across the size, never a letter crossed out ("L" read « Ł »)
+        background-image: linear-gradient(to top right, transparent calc(50% - 1px), rgba($ocd-faded, 0.7) calc(50% - 1px), rgba($ocd-faded, 0.7) calc(50% + 1px), transparent calc(50% + 1px));
+    }
+    .o_ocd_product_value.o_ocd_gone input:checked + span {
+        border-color: $ocd-ink;
+        border-style: dashed;
+        background-color: $ocd-sand;
+        color: $ocd-muted;
+    }
+    .o_ocd_stock_alert {
+        scroll-margin-top: 90px;
+        .o_ocd_stock_alert_form {
+            display: grid;
+            gap: 8px;
+            padding: 14px;
+            border-radius: 16px;
+            background: $ocd-sand;
+            > span {
+                color: $ocd-muted;
+                font-size: 14.5px;
+            }
+        }
+    }
+    .o_ocd_product_question {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: $ocd-ink;
+        font-weight: 700;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .o_ocd_same_vendor {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 8px 18px 24px;
+        .o_ocd_same_vendor_row {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(150px, 46%);
+            gap: 10px;
+            overflow-x: auto;
+            scroll-snap-type: x proximity;
+            scrollbar-width: none;
+            > * {
+                scroll-snap-align: start;
+            }
+        }
+    }
+    // Viewer of the photos, full screen
+    .o_ocd_viewer {
+        width: 100vw;
+        height: 100dvh;
+        max-width: none;
+        max-height: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: #0B0A08;
+        color: #FFFFFF;
+        &[open] {
+            display: block;
+        }
+        &::backdrop {
+            background: #0B0A08;
+        }
+        .o_ocd_viewer_track {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+        .o_ocd_viewer_slide {
+            flex: 0 0 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            scroll-snap-align: start;
+            touch-action: pan-x pan-y pinch-zoom;
+            img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                user-select: none;
+            }
+            &.o_ocd_zoomed {
+                display: block;
+                overflow: auto;
+                img {
+                    max-width: none;
+                    max-height: none;
+                    width: 220%;
+                    height: auto;
+                }
+            }
+        }
+        .o_ocd_viewer_bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px 12px 18px;
+            padding-top: #{"max(12px, env(safe-area-inset-top))"};
+            background: linear-gradient(180deg, rgba(#000000, 0.55), rgba(#000000, 0));
+            font-weight: 700;
+        }
+        .o_ocd_viewer_close {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(#FFFFFF, 0.16);
+            color: #FFFFFF;
+        }
+        .o_ocd_viewer_hint {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 16px;
+            bottom: #{"max(16px, env(safe-area-inset-bottom))"};
+            text-align: center;
+            color: rgba(#FFFFFF, 0.7);
+            font-size: 13px;
+            pointer-events: none;
+        }
+    }
+}
+
+// === MY PRODUCTS: PHOTOS OF THE COLOURS === //
+.o_ocd_app {
+    .o_ocd_my_product:has(.o_ocd_colour_photos) {
+        flex-wrap: wrap;
+    }
+    .o_ocd_colour_photos {
+        flex: 1 0 100%;
+        summary {
+            cursor: pointer;
+            font-size: 14.5px;
+        }
+        .o_ocd_colour_photos_list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    }
+    .o_ocd_colour_photo {
+        display: grid;
+        justify-items: center;
+        gap: 4px;
+        width: 76px;
+        &.o_ocd_sending {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    }
+    .o_ocd_colour_photo_pick {
+        position: relative;
+        width: 76px;
+        height: 76px;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        border: 2px dashed $ocd-line;
+        border-radius: 14px;
+        background: $ocd-sand;
+        cursor: pointer;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+    }
+    .o_ocd_colour_photo_name {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        font-weight: 700;
+        i {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+        }
+    }
+}
+
+// === REPLAY: THE VIDEO IN THE PAGE, A MARK PER PRODUCT === //
+.o_ocd_app {
+    .o_ocd_player {
+        height: auto;
+        aspect-ratio: 4 / 3;
+        max-height: 60vh;
+        .o_ocd_player_frame {
+            position: absolute;
+            inset: 0;
+            display: none;
+            iframe, > div {
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }
+        }
+        &.o_ocd_playing {
+            .o_ocd_player_frame {
+                display: block;
+            }
+            .o_ocd_player_poster {
+                display: none;
+            }
+        }
+    }
+    .o_ocd_player_track {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        .o_ocd_player_now {
+            min-width: 44px;
+        }
+    }
+    .o_ocd_player_bar {
+        position: relative;
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: $ocd-line;
+        .o_ocd_player_fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            border-radius: 3px;
+            background: $ocd-orange;
+            transition: width 0.4s linear;
+        }
+        .o_ocd_player_mark {
+            position: absolute;
+            top: 50%;
+            width: 14px;
+            height: 14px;
+            margin: -7px 0 0 -7px;
+            padding: 0;
+            border: 3px solid #FFFFFF;
+            border-radius: 50%;
+            background: $ocd-ink;
+            box-shadow: 0 0 0 1px rgba($ocd-ink, 0.25);
+            // A larger area to touch than the dot
+            &::after {
+                content: "";
+                position: absolute;
+                inset: -12px;
+            }
+        }
+    }
+    .o_ocd_player_open {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .o_ocd_section_head.o_ocd_section_head_stack {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+    .o_ocd_replay_next {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
+        border-radius: 18px;
+        background: $ocd-sand;
+        scroll-margin-top: 90px;
+        h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+    }
+}

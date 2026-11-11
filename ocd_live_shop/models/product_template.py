@@ -70,6 +70,59 @@ class ProductTemplate(models.Model):
         booking._ocd_show_product(self)
         return True
 
+    # === PHOTOS OF THE PAGE === #
+
+    @api.model
+    def _ocd_photo(self, record, field=None):
+        """A photo for the page: shown (1024 px) and opened full screen (1920 px). The address
+        changes with the photo, so that a new photo is never hidden by the cache."""
+        stamp = record.write_date.strftime("%Y%m%d%H%M%S") if record.write_date else "0"
+        base = f"/web/image/{record._name}/{record.id}"
+        if field:
+            return {"src": f"{base}/{field}/1024x1024?unique={stamp}", "full": f"{base}/{field}?unique={stamp}"}
+        return {"src": f"{base}/image_1024?unique={stamp}", "full": f"{base}/image_1920?unique={stamp}"}
+
+    def _ocd_page_photos(self):
+        """The main photo of the product (or None) and its other photos. Odoo keeps a copy of
+        the main photo among the photos of the product: it is shown once."""
+        self.ensure_one()
+        main = self._ocd_photo(self) if self.image_128 else None
+        images = self.product_template_image_ids.filtered("image_128").sorted("sequence")
+        if not images:
+            return main, []
+        checksums = {
+            (row["res_model"], row["res_id"]): row["checksum"]
+            for row in self.env["ir.attachment"].sudo().search_read([
+                "|",
+                "&", ("res_model", "=", "product.template"), ("res_id", "=", self.id),
+                "&", ("res_model", "=", "product.image"), ("res_id", "in", images.ids),
+                ("res_field", "=", "image_1920"),
+            ], ["res_model", "res_id", "checksum"])
+        }
+        main_checksum = checksums.get(("product.template", self.id))
+        extras = [
+            self._ocd_photo(image) for image in images
+            if not main_checksum or checksums.get(("product.image", image.id)) != main_checksum
+        ]
+        return main, extras
+
+    def _ocd_variant_photo(self, variant):
+        """The photo of a variant: its own, else the one of its colour, else None (the main one)."""
+        self.ensure_one()
+        if variant.image_variant_128:
+            return self._ocd_photo(variant)
+        for value in variant.product_template_attribute_value_ids:
+            if value.ocd_image:
+                return self._ocd_photo(value, "ocd_image")
+        return None
+
+    def _ocd_last_moment(self):
+        """The last moment this product was shown in a live whose replay is published."""
+        self.ensure_one()
+        return self.ocd_moment_ids.filtered(
+            lambda moment: moment.booking_id.replay_published and moment.booking_id.replay_url
+        ).sorted(lambda moment: (moment.booking_id.start_datetime, moment.offset_seconds))[-1:]
+
     def _ocd_whatsapp_url(self, values=None, link=None):
         """Return the WhatsApp link to the vendor, with a message about the product: the
         values chosen (colour, size...) and the link of the product, when given."""

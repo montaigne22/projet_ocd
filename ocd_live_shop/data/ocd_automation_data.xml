@@ -113,6 +113,21 @@ Tell the customer.</field>
         <field name="tools">Scheduled task.</field>
     </record>
 
+    <record id="automation_stock_alert" model="ocd.automation">
+        <field name="code">stock_alert</field>
+        <field name="name">Product back: tell the customers who asked</field>
+        <field name="sequence">71</field>
+        <field name="group">shop</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="model_ocd_stock_alert"/>
+        <field name="cron_id" ref="ir_cron_stock_alerts"/>
+        <field name="when">When a colour or a size sold out is back in stock</field>
+        <field name="trigger">As soon as the stock comes back, and every 30 minutes.</field>
+        <field name="scope">The customers who asked « Tell me when it is back » on the page of the product.</field>
+        <field name="actions">Tell them on WhatsApp, with the link of the product in this colour and this size.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
     <record id="automation_vendor_share" model="ocd.automation">
         <field name="code">vendor_share</field>
         <field name="name">Parcel delivered: the share of the vendor</field>

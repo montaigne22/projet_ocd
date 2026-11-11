@@ -20,10 +20,11 @@
                                         icon="tv" class="btn-primary"/>
                             </list>
                         </field>
-                        <field name="moment_ids" readonly="1">
-                            <list>
-                                <field name="offset_label"/>
-                                <field name="product_tmpl_id"/>
+                        <field name="moment_ids">
+                            <list editable="bottom" create="0">
+                                <field name="offset_label" readonly="1"/>
+                                <field name="product_tmpl_id" readonly="1"/>
+                                <field name="product_id" options="{'no_create': True}" optional="show"/>
                             </list>
                         </field>
                     </page>

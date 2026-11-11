@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-11 22:21+0000\n"
-"PO-Revision-Date: 2026-11-11 22:21+0000\n"
+"POT-Creation-Date: 2026-11-11 23:35+0000\n"
+"PO-Revision-Date: 2026-11-11 23:35+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -209,6 +209,12 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "%(vendor)s added the photo of the colour %(colour)s."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
 msgid "%(vendor)s does not deliver to %(place)s yet."
 msgstr ""
@@ -405,6 +411,12 @@ msgid "%s, OCD courier, delivers your parcel"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "%s: sold out for now."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_vendor_rate_max
 #: model:ir.model.fields,help:ocd_live_shop.field_res_config_settings__ocd_vendor_rate_max
 msgid "0: no limit."
@@ -521,6 +533,11 @@ msgid "<i class=\"o_ocd_onair_dot\" aria-hidden=\"true\"/>Seen in a live on OCD"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "<i class=\"o_ocd_onair_dot\" aria-hidden=\"true\"/>Seen in a live on OCD · watch the moment"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "<small class=\"o_ocd_parcel_hint\">At 0, the product stays visible with “Sold out”. Put a quantity back when you have some.</small>"
 msgstr ""
@@ -528,6 +545,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
 msgid "<small class=\"o_ocd_product_note\">The message gives your choice and the link of the product.</small>"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "<small class=\"o_ocd_viewer_hint\">Pinch or tap twice to zoom</small>"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -676,6 +698,16 @@ msgid "<span>Mobile Money, card, or payment at the delivery.</span>"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "<span>Noted: we write to you on WhatsApp as soon as it is back.</span>"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.replay
+msgid "<span>Noted: we write to you on WhatsApp when the live starts.</span>"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_partner_view_form_ocd_vendor
 msgid "<span>On time</span>"
 msgstr ""
@@ -706,8 +738,8 @@ msgid "<span>Take a photo</span>"
 msgstr ""
 
 #. module: ocd_live_shop
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.replay
-msgid "<span>Tap to go to the moment</span>"
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "<span>Tell me on WhatsApp when it is back.</span>"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -913,6 +945,11 @@ msgid "Alert The Dispatch After The Reminder (Hours)"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_ocd_stock_alert
+msgid "Alert When A Product Is Back"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_ocd_boutique_alert
 msgid "Alert When A Vendor Goes Live"
 msgstr ""
@@ -996,6 +1033,11 @@ msgid "Archived"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ocd.automation,trigger:ocd_live_shop.automation_stock_alert
+msgid "As soon as the stock comes back, and every 30 minutes."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "Ask for a return (%s days)"
@@ -1004,6 +1046,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_list
 msgid "Ask on WhatsApp"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_stock_alert_view_list
+msgid "Asked On"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1074,6 +1121,14 @@ msgstr ""
 #: code:addons/ocd_live_shop/models/ocd_live_couriers.py:0
 #: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 msgid "Available"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.actions.act_window,name:ocd_live_shop.ocd_stock_alert_action
+#: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_stock_alert_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_stock_alert_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_stock_alert_view_search
+msgid "Back in stock alerts"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1258,6 +1313,7 @@ msgstr ""
 #: code:addons/ocd_live_shop/models/ocd_live_orders.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_boutique_alert__state__cancelled
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_payout__state__cancelled
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_stock_alert__state__cancelled
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_stage__cancelled
 msgid "Cancelled"
 msgstr ""
@@ -1496,6 +1552,11 @@ msgid "City of the OCD stock"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "Close"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__code
 msgid "Code"
 msgstr ""
@@ -1573,6 +1634,11 @@ msgid "Collects The Payment At The Door"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__product_id
+msgid "Colour Shown"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__amount_commission
 msgid "Commission"
 msgstr ""
@@ -1601,6 +1667,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__company_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__company_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__company_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__company_id
 msgid "Company"
 msgstr ""
 
@@ -1618,6 +1685,7 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_res_partner
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__partner_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__partner_id
 msgid "Contact"
 msgstr ""
 
@@ -1736,6 +1804,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__create_uid
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__create_uid
 msgid "Created by"
 msgstr ""
 
@@ -1749,6 +1818,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__create_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__create_date
 msgid "Created on"
 msgstr ""
 
@@ -2246,10 +2316,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_provider__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_transaction__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template_attribute_value__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__display_name
@@ -2536,6 +2608,11 @@ msgid "From the OCD stock"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "From the same vendor"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "From the tracking page. 0: no return from the website."
@@ -2749,10 +2826,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_provider__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_transaction__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template_attribute_value__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__id
@@ -2840,6 +2919,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__write_uid
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__write_uid
 msgid "Last Updated by"
 msgstr ""
 
@@ -2853,6 +2933,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__write_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__write_date
 msgid "Last Updated on"
 msgstr ""
 
@@ -3583,6 +3664,11 @@ msgid "OCD Live: remind the vendors and alert the dispatch"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.actions.server,name:ocd_live_shop.ir_cron_stock_alerts_ir_actions_server
+msgid "OCD Live: tell the customers that a product is back"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.actions.server,name:ocd_live_shop.ir_cron_boutique_alerts_ir_actions_server
 msgid "OCD Live: tell the visitors that a vendor is live"
 msgstr ""
@@ -3775,6 +3861,12 @@ msgid "Only a manager can validate or pay a payout."
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/boutique.py:0
+msgid "Open on %s"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/regie/regie.js:0
 msgid "Open the live"
@@ -3790,6 +3882,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/regie/regie.js:0
 msgid "Open the live on %s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/boutique.py:0
+msgid "Open the video"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4224,8 +4322,14 @@ msgid "Payouts of the vendors"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product_photo
 msgid "Photo"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template_attribute_value__ocd_image
+msgid "Photo Of The Colour"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4237,6 +4341,21 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Photo added · change it"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_product_template_attribute_value__ocd_image
+msgid "Photo of the product in this colour: the product page shows it as soon as the colour is chosen. Without it, the main photo of the product."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Photos of the colours ·"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "Photos of the product"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4368,13 +4487,25 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_product_template
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__product_tmpl_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__product_id
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_stock_alert_view_search
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
 msgid "Product"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_product_template_attribute_value
+msgid "Product Template Attribute Value"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_product_product
 msgid "Product Variant"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ocd.automation,name:ocd_live_shop.automation_stock_alert
+msgid "Product back: tell the customers who asked"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4795,6 +4926,7 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model:ocd.automation,tools:ocd_live_shop.automation_boutique_alert
+#: model:ocd.automation,tools:ocd_live_shop.automation_stock_alert
 msgid "Scheduled task."
 msgstr ""
 
@@ -4859,6 +4991,11 @@ msgid "See the shop"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Send"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_form_ocd_parcel
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_picking_form
 msgid "Send back to the vendor"
@@ -4895,11 +5032,13 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_boutique_alert__state__sent
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_stock_alert__state__sent
 msgid "Sent"
 msgstr ""
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__sent_at
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__sent_at
 msgid "Sent At"
 msgstr ""
 
@@ -5091,6 +5230,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__state
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__state
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__state
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__state
 msgid "State"
 msgstr ""
 
@@ -5135,6 +5275,12 @@ msgid "Take to the travel agency for %s"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/boutique.py:0
+msgid "Tap a product: the video goes to its moment."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_deliveries_channel_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_deliveries_channel_id
 msgid "Team Channel For Deliveries"
@@ -5154,6 +5300,21 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.boutique
 msgid "Tell me"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.replay
+msgid "Tell me on WhatsApp"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "Tell me when it is back"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ocd.automation,actions:ocd_live_shop.automation_stock_alert
+msgid "Tell them on WhatsApp, with the link of the product in this colour and this size."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5227,6 +5388,11 @@ msgid "The city of departure must be in the country of departure."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_live_moment__product_id
+msgid "The colour or the size shown during the live: the replay opens the product on it."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "The courier could not deliver. OCD Live calls you to choose a new time."
@@ -5288,6 +5454,16 @@ msgid "The customers who agreed to the messages."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.actions.act_window,help:ocd_live_shop.ocd_stock_alert_action
+msgid "The customers who asked « Tell me when it is back » on a product sold out in a colour or a size. They are told on WhatsApp as soon as the stock comes back."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ocd.automation,scope:ocd_live_shop.automation_stock_alert
+msgid "The customers who asked « Tell me when it is back » on the page of the product."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_partner_view_form_ocd_vendor
 msgid "The customers write to the vendor on WhatsApp from the boutique. OCD does not touch the money."
 msgstr ""
@@ -5342,6 +5518,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_ocd_boutique_alert__booking_id
 msgid "The live the contact was told about."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.replay
+msgid "The next live of"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5448,6 +5629,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "The payouts are prepared the evening before; the team checks them."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "The photo could not be added: an image of 10 MB at most."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5586,8 +5772,19 @@ msgid "The vendors who deliver set their prices between this amount and the high
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/boutique.py:0
+msgid "The video opens on %s: go to the time of the product."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ocd.automation,scope:ocd_live_shop.automation_boutique_alert
 msgid "The visitors who asked « Tell me » on the boutique of the vendor."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+msgid "Their boutique"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5622,6 +5819,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.constraint,message:ocd_live_shop.constraint_ocd_boutique_alert_unique_waiting
 msgid "This contact is already told about the next live of this vendor."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.constraint,message:ocd_live_shop.constraint_ocd_stock_alert_unique_waiting
+msgid "This contact is already told when this product is back."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5971,6 +6173,7 @@ msgstr ""
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_boutique_alert.py:0
+#: code:addons/ocd_live_shop/models/ocd_stock_alert.py:0
 msgid "Type your WhatsApp number."
 msgstr ""
 
@@ -6114,6 +6317,8 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_boutique_alert__state__waiting
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_stock_alert__state__waiting
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_stock_alert_view_search
 msgid "Waiting"
 msgstr ""
 
@@ -6148,6 +6353,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_wa_clicks
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_wa_clicks
 msgid "WhatsApp Contacts"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ocd.automation,when:ocd_live_shop.automation_stock_alert
+msgid "When a colour or a size sold out is back in stock"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -6341,6 +6551,8 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.boutique
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.replay
 msgid "Your WhatsApp"
 msgstr ""
 
@@ -6522,6 +6734,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
 msgid "https://"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/boutique.py:0
+msgid "its site"
 msgstr ""
 
 #. module: ocd_live_shop

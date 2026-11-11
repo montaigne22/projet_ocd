@@ -27,6 +27,8 @@ export class OcdNavigation extends Interaction {
     setup() {
         this.pages = new Map();
         this.current = null;
+        // The address of the page shown: going back to it (an overlay closed) changes nothing
+        this.shownUrl = this.pageUrl();
         if ("scrollRestoration" in history) {
             history.scrollRestoration = "manual";
         }
@@ -37,6 +39,12 @@ export class OcdNavigation extends Interaction {
         this.addListener(document, "click", this.onClick);
         this.addListener(document, "pointerdown", this.onPointerDown, { passive: true });
         this.addListener(window, "popstate", this.onPopState);
+        // A page that changes its own address (the chosen colour, the live on screen)
+        this.addListener(document, "ocd-url-change", () => (this.shownUrl = this.pageUrl()));
+    }
+
+    pageUrl() {
+        return window.location.href.split("#")[0];
     }
 
     get app() {
@@ -95,7 +103,7 @@ export class OcdNavigation extends Interaction {
     }
 
     onPopState(ev) {
-        if (ev.state?.ocdNavigation) {
+        if (ev.state?.ocdNavigation && this.pageUrl() !== this.shownUrl) {
             this.go(new URL(window.location.href), { push: false, scroll: ev.state.scroll || 0, fresh: true });
         }
     }
@@ -188,6 +196,7 @@ export class OcdNavigation extends Interaction {
         } else if (url.href !== window.location.href) {
             history.replaceState({ ...(history.state || {}), ocdNavigation: true }, "", url.href);
         }
+        this.shownUrl = this.pageUrl();
         service.startInteractions(newApp);
         // Screen readers: the new page starts at its title
         const heading = newApp.querySelector("h1") || newApp.querySelector("main");

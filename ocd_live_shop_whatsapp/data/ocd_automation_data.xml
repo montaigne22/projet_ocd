@@ -20,6 +20,9 @@
     <record id="ocd_live_shop.automation_boutique_alert" model="ocd.automation">
         <field name="template_ids" eval="[Command.set([ref('template_vendor_live')])]"/>
     </record>
+    <record id="ocd_live_shop.automation_stock_alert" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_product_back')])]"/>
+    </record>
     <record id="ocd_live_whatsapp.automation_asked" model="ocd.automation">
         <field name="template_ids" eval="[Command.link(ref('template_delivery_link'))]"/>
     </record>
