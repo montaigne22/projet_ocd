@@ -6,6 +6,23 @@
     <!-- to place, the directory pass and the WhatsApp messages.        -->
     <!-- ============================================================== -->
 
+    <template id="space_team" name="OCD Live: the team in the space of the vendors">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_team_notice">
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">You are logged in as the team.</h1>
+                    <p class="o_ocd_intro"><span>Account of</span> <b t-out="team_name"/></p>
+                    <p class="o_ocd_intro">The space is for the vendors: their lives, their packages, their pass. It opens with the WhatsApp number of the vendor, not with an account of the team.</p>
+                    <div class="o_ocd_info">A number typed with an account of the team sends nothing.</div>
+                </main>
+                <div class="o_ocd_actions">
+                    <a t-att-href="back_office_url" class="o_ocd_cta" t-out="back_office_label"/>
+                    <a href="/ocd" class="o_ocd_cta o_ocd_cta_ghost">Back to the home page</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
     <template id="space_login" name="OCD Live: find my space">
         <t t-call="ocd_live.app">
             <form action="/ocd/connexion" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">

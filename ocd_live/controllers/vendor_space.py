@@ -20,6 +20,8 @@ class OcdVendorSpace(http.Controller):
         if common.current_vendor():
             # Already known on this browser or by the Odoo account logged in: no number to give
             return request.redirect("/ocd/espace/moi")
+        if request.env.user._is_internal():
+            return self._render_team()
         if common.company().ocd_vendor_login == "password":
             return request.redirect("/web/login?redirect=/ocd/espace/moi")
         return self._render_login()
@@ -38,6 +40,9 @@ class OcdVendorSpace(http.Controller):
 
     @http.route("/ocd/connexion", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def login_phone(self, phone=None, country_id=None, **kwargs):
+        if request.env.user._is_internal():
+            # The team has no space: a number typed here would send the link to the vendor
+            return self._render_team()
         login = common.company().ocd_vendor_login
         if login == "password":
             return request.redirect("/web/login?redirect=/ocd/espace/moi")
@@ -55,6 +60,21 @@ class OcdVendorSpace(http.Controller):
         if login == "whatsapp_code":
             return self._render_code()
         return self._render_login(sent=True, phone=phone, country=country)
+
+    def _render_team(self):
+        """Page of a person of the team logged in to Odoo: the space is for the vendors, it does
+        not open with an account of the team."""
+        user = request.env.user
+        team = user.has_group("ocd_live.group_ocd_live_user")
+        return request.render("ocd_live.space_team", common.page_values(
+            False,
+            back="/ocd",
+            header_brand=True,
+            nav="me",
+            team_name=user.name,
+            back_office_url="/odoo/action-ocd_live.res_partner_action_ocd_vendor" if team else "/odoo",
+            back_office_label=request.env._("Open the vendors") if team else request.env._("Open the back office"),
+        ))
 
     def _render_code(self, error=None):
         return request.render("ocd_live.space_login_code", common.page_values(

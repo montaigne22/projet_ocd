@@ -5,6 +5,14 @@ SITE_FRAME = {
         "Réservez un live au studio ou depuis chez vous, suivez les lives du moment et achetez aux vendeurs.",
     "Links": "Liens",
     "Log out": "Se déconnecter",
+    "You are logged in as the team.": "Tu es connecté avec un compte de l'équipe.",
+    "<span>Account of</span>": "<span>Compte de</span>",
+    "The space is for the vendors: their lives, their packages, their pass. It opens with the WhatsApp number of the vendor, not with an account of the team.":
+        "L'espace est pour les vendeurs : leurs lives, leurs paquets, leur pass. Il s'ouvre avec le numéro WhatsApp du vendeur, pas avec un compte de l'équipe.",
+    "A number typed with an account of the team sends nothing.": "Un numéro tapé avec un compte de l'équipe n'envoie rien.",
+    "Open the vendors": "Ouvrir les vendeurs",
+    "Open the back office": "Ouvrir le back-office",
+    "Back to the home page": "Retour à l'accueil",
     "Search...": "Rechercher...",
     "This hour can no longer be booked: choose another one.": "Cette heure n'est plus disponible : choisis-en une autre.",
 }

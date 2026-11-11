@@ -272,6 +272,22 @@ class TestOcdLiveWebsite(HttpCase):
             # Leaving the space logs out of Odoo (forgetting the number would open it again)
             self.assertIn("/web/session/logout?redirect=/ocd/connexion", response.text, login)
 
+    def test_team_account_is_not_asked_a_number(self):
+        self.authenticate("admin", "admin")
+        for login in ("link", "whatsapp_code", "password"):
+            self.company.ocd_vendor_login = login
+            response = self.url_open("/ocd/espace/moi")
+            self.assertEqual(response.status_code, 200, login)
+            self.assertTrue(response.url.endswith("/ocd/connexion"), login)
+            self.assertIn("o_ocd_team_notice", response.text, login)
+            self.assertNotIn('name="phone"', response.text, login)
+        # A number typed with an account of the team sends nothing
+        self.company.ocd_vendor_login = "link"
+        with patch.object(type(self.env["res.partner"]), "_ocd_send_space_link") as send:
+            response = self.url_open("/ocd/connexion", data={"csrf_token": self.csrf_token(), "phone": "90 00 00 07"})
+        send.assert_not_called()
+        self.assertIn("o_ocd_team_notice", response.text)
+
     def test_space_with_a_whatsapp_code(self):
         self.company.ocd_vendor_login = "whatsapp_code"
         self.authenticate(None, None)
