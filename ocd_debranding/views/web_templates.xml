@@ -18,6 +18,16 @@
         </xpath>
     </template>
 
+    <!-- App installed on a phone or a computer: icon and colour of OCD Live -->
+    <template id="webclient_bootstrap" inherit_id="web.webclient_bootstrap" priority="99" name="App icon of OCD Live">
+        <xpath expr="//meta[@name='theme-color']" position="attributes">
+            <attribute name="content">#15130F</attribute>
+        </xpath>
+        <xpath expr="//link[@rel='apple-touch-icon']" position="attributes">
+            <attribute name="href">/ocd_debranding/static/img/ocd-icon-ios.png</attribute>
+        </xpath>
+    </template>
+
     <template id="login_layout" inherit_id="web.login_layout" priority="10" name="Login without Powered by">
         <xpath expr="//a[contains(@href, 'odoo.com')]" position="replace"/>
     </template>

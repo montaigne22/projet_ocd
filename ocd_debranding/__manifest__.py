@@ -20,7 +20,7 @@ What the team, the vendors and the customers see says OCD Live, not Odoo:
 
 The addresses of the back office keep /odoo: the web client of Odoo builds them.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Hidden",
     "author": "RollBackk",
     "license": "LGPL-3",

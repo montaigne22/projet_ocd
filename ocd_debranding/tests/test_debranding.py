@@ -14,10 +14,23 @@ class TestOcdDebranding(HttpCase):
             self.assertNotIn("odoo.com", html, path)
             self.assertNotIn('name="generator"', html, path)
 
+    def test_installed_app_shows_ocd_live(self):
+        """« Install the app » of the browser: name, icon and colours of OCD Live."""
+        manifest = self.url_open("/web/manifest.webmanifest").json()
+        self.assertEqual(manifest["name"], "OCD Live")
+        self.assertEqual(manifest["theme_color"], "#15130F")
+        self.assertTrue(manifest["icons"])
+        for icon in manifest["icons"]:
+            self.assertIn("/ocd_debranding/static/img/ocd-icon-", icon["src"])
+            self.assertEqual(self.url_open(icon["src"]).status_code, 200, icon["src"])
+        self.assertEqual({icon["purpose"] for icon in manifest["icons"]}, {"any", "maskable"})
+
     def test_back_office_page(self):
         self.authenticate("admin", "admin")
         html = self.url_open("/odoo").text
         self.assertIn("<title>OCD Live</title>", html)
+        self.assertIn('rel="apple-touch-icon" href="/ocd_debranding/static/img/ocd-icon-ios.png"', html)
+        self.assertNotIn("odoo-icon-ios.png", html)
         self.assertIn("/ocd_debranding/static/img/favicon.png", html)
 
     def test_mail_layouts(self):

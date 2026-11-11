@@ -65,6 +65,15 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
 
 ## Journal
 
+### 11 novembre 2026 — l'appli installée porte le logo d'OCD Live
+- « Installer l'appli » du navigateur montrait l'icône et les couleurs d'Odoo (le module de l'OCA
+  `web_pwa_customize` n'existe pas encore pour Odoo 20). `ocd_debranding` donne maintenant au manifeste de
+  l'appli les icônes d'OCD Live (192 et 512 px, marge pour les téléphones qui découpent l'icône en rond),
+  le fond blanc et la couleur encre ; l'icône de l'iPhone aussi. Icônes redessinées nettes depuis le logo.
+- L'icône des onglets n'a plus de coins noirs (logo rond sur fond transparent) ; le site existant la
+  reçoit à la mise à jour, sauf si l'équipe avait mis la sienne. `ocd_debranding` 20.0.1.1.0.
+- Une appli déjà installée garde l'ancienne icône : la désinstaller puis la réinstaller.
+
 ### 11 novembre 2026 — modèles WhatsApp acceptés par Meta
 - **Code de connexion refusé par Meta** (« le composant BODY a un champ inattendu : text ») : un modèle de
   catégorie *Authentification* n'a pas de texte chez Meta, qui écrit lui-même « <code> est votre code de
