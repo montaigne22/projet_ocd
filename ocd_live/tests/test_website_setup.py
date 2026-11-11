@@ -59,7 +59,7 @@ class TestOcdSiteSetup(HttpCase):
         self.assertEqual(website.logo.content, own_logo.content)
 
     def test_address_of_the_site_shows_the_home_of_ocd_live(self):
-        self.assertEqual(self.env.ref("website.default_website").homepage_url, "/ocd")
+        self.assertEqual(self.env.ref("base.default_website").homepage_url, "/ocd")
         response = self.url_open("/")
         self.assertEqual(response.status_code, 200)
         self.assertIn("o_ocd_app", response.text)

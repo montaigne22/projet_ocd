@@ -27,7 +27,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding`) : **190 tests, aucun échec** (et, sur une base neuve avec la démo, 5 tests sans échec :
+`ocd_debranding` et `theme_ocd`) : **199 tests, aucun échec** (et, sur une base neuve avec la démo, 5 tests sans échec :
 la démo remplit les écrans, conversations WhatsApp comprises, puis se désinstalle sans rien laisser).
 
 ## Reste à faire, par priorité
