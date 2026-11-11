@@ -1,7 +1,8 @@
 from datetime import timedelta
 from unittest.mock import patch
 
-from odoo import fields
+from odoo import Command, fields
+from odoo.modules.module import load_script
 from odoo.tests import tagged
 
 from odoo.addons.ocd_live_shop.tests.common import OcdShopCommon
@@ -37,16 +38,43 @@ class TestOcdParcelMessages(OcdShopCommon):
             "ocd_colis_livre",
         ])
 
-    def test_code_is_in_the_message(self):
+    def test_code_is_behind_the_button(self):
+        """Meta refuses a code in a Utility template: the message has no code, its button opens
+        the page that follows the order, where the customer reads it."""
         order = self._order(self.estelle, [(self.dress, 1)])
         parcel = order.picking_ids
         parcel.action_ocd_pick_up()
         with patch.object(WhatsappTemplate, "_send", lambda template, records: template.env["whatsapp.message"]):
             parcel.action_ocd_leave()
         template = self.env.ref("ocd_live_shop_whatsapp.template_parcel_on_the_way")
-        code_variable = template.variable_ids.filtered(lambda v: v.sequence == 4)
-        rendered = template._render(code_variable.value, parcel)
-        self.assertEqual(rendered[parcel.id], parcel.sudo().ocd_delivery_code)
+        self.assertNotIn("{{4}}", template.body)
+        self.assertFalse(template.variable_ids.filtered(lambda v: v.sequence == 4))
+        for variable in template.variable_ids:
+            self.assertNotEqual(template._render(variable.value, parcel)[parcel.id], parcel.sudo().ocd_delivery_code)
+        self.assertEqual(template.button_ids.name, "Suivre mon colis")
+        path = template._render(template.button_url_value, parcel)[parcel.id]
+        self.assertEqual(path, f"ocd/suivi/{order.id}?access_token={order.access_token}")
+
+    def test_migration_puts_the_code_behind_the_button(self):
+        """A database installed before has the refused text with the code and no button, still
+        waiting in Odoo (no webhook): the migration gives the new text and the button."""
+        xmlid = "ocd_live_shop_whatsapp.template_parcel_on_the_way"
+        template = self.env.ref(xmlid)
+        new_text = template.body
+        migration = load_script(
+            "ocd_live_shop_whatsapp/migrations/20.0.1.5.0/post-migration.py", "ocd_shop_whatsapp_texts_20_0_1_5_0"
+        )
+        template.write({
+            "body": migration.OLD_TEXTS[xmlid][0], "button_ids": [Command.clear()],
+            "button_url_value": False, "status": "pending",
+        })
+        template.variable_ids.filtered(lambda v: v.sequence == 4).value = "{{ object.ocd_delivery_code }}"
+        migration.migrate(self.env.cr, "20.0.1.4.0")
+        self.env.invalidate_all()
+        self.assertEqual(template.body, new_text)
+        self.assertEqual(template.button_ids.mapped("name"), ["Suivre mon colis"])
+        self.assertEqual(template.button_url_value, "{{ object._ocd_tracking_path() }}")
+        self.assertEqual(sorted(template.variable_ids.mapped("sequence")), [1, 2, 3])
 
     def test_message_when_the_vendor_goes_live(self):
         alert = self.env["ocd.boutique.alert"]._ocd_register(self.brenda, phone="+228 90112233")

@@ -93,6 +93,12 @@ Les textes des modèles (`data/whatsapp_template_data.xml`) suivent les règles 
 « Soumettre à Meta » et par le test `test_templates_of_the_modules_follow_meta` (`ocd_live_whatsapp`) :
 des mots avant la première variable et après la dernière (un point après la variable ne suffit pas), des
 mots entre deux variables (pas seulement une virgule ou une parenthèse), au moins 3 mots par variable.
+Dans un modèle *Utilitaire* : pas de code (Meta le prend pour un code à usage unique, réservé aux modèles
+*Authentification* : mettre le code sur une page ouverte par un bouton), pas de phrase entière dans une
+variable, pas de « mot de passe » avec un lien.
+
+Chaque modèle a sa version anglaise (`data/whatsapp_template_en_data.xml`, même nom chez Meta, langue `en`) :
+changer les deux ensemble. Le test `test_english_versions` vérifie qu'elles vont par paires.
 
 Les modèles sont des données `noupdate` : chargés à l'installation, jamais réécrits par une mise à jour
 (l'équipe peut changer les textes). **Pour corriger le texte d'un modèle fourni** : changer le XML, monter
@@ -111,7 +117,10 @@ def migrate(cr, version):
 ```
 
 Le modèle prend alors le texte du XML s'il a encore l'ancien texte et n'est ni approuvé ni en cours de
-revue chez Meta (le texte approuvé est celui que Meta envoie). Garder les mêmes variables : celles que le
+revue chez Meta (le texte approuvé est celui que Meta envoie). Pour un texte que Meta a refusé, passer
+`statuses=("unknown", "rejected", "pending")` et appeler d'abord `_cron_read_pending_from_meta()`
+(décisions de Meta) ; les boutons se changent dans la migration (exemple : `ocd_live_shop_whatsapp`
+20.0.1.5.0). Garder les mêmes variables : celles que le
 texte n'utilise plus sont retirées, une nouvelle variable est ajoutée sans valeur (la remplir dans la
 migration). Ajouter le module et sa version à `test_migrations_give_the_new_texts`.
 

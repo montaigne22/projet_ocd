@@ -110,7 +110,10 @@
             <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700;800&amp;display=swap"/>
         </t>
         <t t-call="website.layout" no_header="True" no_footer="True" body_classname.f="o_ocd_body" head="head">
-            <div t-attf-class="o_ocd_app #{'o_ocd_has_nav' if nav else ''}" t-att-data-ocd-url="replace_url">
+            <!-- data-ocd-fast: a vendor or a courier known on this browser, who changes page
+                 without reloading it (navigation.js) -->
+            <div t-attf-class="o_ocd_app #{'o_ocd_has_nav' if nav else ''}" t-att-data-ocd-url="replace_url"
+                 t-att-data-ocd-fast="'1' if ocd_fast_nav else None">
                 <div t-if="ocd_team_view" class="o_ocd_team_bar" role="status">
                     <span><span>Team view</span> · <b t-out="ocd_team_view.name"/></span>
                     <form action="/ocd/espace/equipe/quitter" method="post" class="o_ocd_inline_form">
@@ -288,6 +291,8 @@
     <!-- ============================================================== -->
 
     <template id="home" name="OCD Live: home">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Home page</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame">
                 <main class="o_ocd_main o_ocd_home">
@@ -333,6 +338,8 @@
     <!-- ============================================================== -->
 
     <template id="booking_day" name="OCD Live: day">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Book a live: the day</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_with_aside">
                 <main class="o_ocd_main">
@@ -385,6 +392,8 @@
     </template>
 
     <template id="booking_hour" name="OCD Live: hour">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Book a live: the hour</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_with_aside">
                 <main class="o_ocd_main">
@@ -479,6 +488,8 @@
     </template>
 
     <template id="booking_package" name="OCD Live: package">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Book a live: the package</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_with_aside">
                 <main class="o_ocd_main">
@@ -501,6 +512,8 @@
     </template>
 
     <template id="booking_infos" name="OCD Live: who are you">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Book a live: who are you</t>
         <t t-call="ocd_live.app">
             <form action="/reserver/confirmer" method="post" class="o_ocd_frame o_ocd_with_aside o_ocd_infos" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -610,6 +623,8 @@
     <!-- ============================================================== -->
 
     <template id="pay" name="OCD Live: pay">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Book a live: pay</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame">
                 <main class="o_ocd_main o_ocd_pay o_ocd_poll" t-att-data-state="state"
@@ -688,6 +703,8 @@
     </template>
 
     <template id="payment_status" name="OCD Live: payment in progress">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Payment in progress</t>
         <!-- The waiting page of Odoo while the payment is processed, with the look of OCD Live.
              The element named o_payment_status is used by Odoo to send the vendor back to the
              payment page of OCD Live once the payment is processed. -->
@@ -714,6 +731,8 @@
     </template>
 
     <template id="ticket" name="OCD Live: ticket">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My ticket</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_ticket_page">
                 <main class="o_ocd_main">

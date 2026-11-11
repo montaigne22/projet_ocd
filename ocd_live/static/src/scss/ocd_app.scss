@@ -2389,3 +2389,63 @@ body.o_ocd_body {
         text-decoration: none;
     }
 }
+
+// === NAVIGATION WITHOUT RELOADING (vendors and couriers) === //
+// While the next page loads: its skeleton in place of the content; the header and the menu stay
+.o_ocd_app.o_ocd_loading {
+    > :not(.o_ocd_header):not(.o_ocd_team_bar):not(.o_ocd_bottom):not(.o_ocd_skeleton) {
+        display: none !important;
+    }
+    .o_ocd_bottom_cta,
+    .o_ocd_summary {
+        visibility: hidden;
+    }
+}
+.o_ocd_skeleton {
+    margin-inline: auto;
+    .o_ocd_main {
+        gap: 14px;
+        padding-top: 18px;
+    }
+}
+.o_ocd_sk {
+    display: block;
+    border-radius: 14px;
+    background: linear-gradient(90deg, $ocd-sand 25%, #FBF9F6 37%, $ocd-sand 63%);
+    background-size: 400% 100%;
+    animation: o_ocd_shimmer 1.3s ease-in-out infinite;
+}
+.o_ocd_sk_title {
+    width: 68%;
+    height: 34px;
+}
+.o_ocd_sk_line {
+    width: 44%;
+    height: 16px;
+}
+.o_ocd_sk_chips {
+    width: 82%;
+    height: 38px;
+    border-radius: 999px;
+}
+.o_ocd_sk_card {
+    height: 104px;
+    border-radius: 18px;
+}
+@keyframes o_ocd_shimmer {
+    from {
+        background-position: 100% 50%;
+    }
+    to {
+        background-position: 0 50%;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .o_ocd_sk {
+        animation: none;
+    }
+}
+// The title of the new page gets the focus (screen readers), without a frame around it
+.o_ocd_app [tabindex="-1"]:focus {
+    outline: none;
+}

@@ -247,6 +247,18 @@ def current_vendor(token=None):
     return current_vendor_and_source(token)[0]
 
 
+# Checks of the modules for the visitors who change page without reloading it (see
+# fast_navigation): ocd_live_shop adds the couriers
+FAST_NAVIGATION_CHECKS = []
+
+
+def fast_navigation():
+    """The vendors and the couriers known on this browser go from page to page without
+    reloading them (navigation.js): their space, their parcels and the menu work like an app.
+    The other visitors keep the normal pages."""
+    return bool(current_vendor()) or any(check() for check in FAST_NAVIGATION_CHECKS)
+
+
 def space_prefix(vendor, token=None):
     """Return the base url of the space of `vendor`."""
     return "/ocd/espace/moi"
@@ -291,6 +303,7 @@ def page_values(voice_key, **values):
         "voice_caption": prompt.with_context(lang=request.env.lang).text if prompt else "",
         "ocd_company": company(),
         "ocd_team_view": team_view_vendor(),
+        "ocd_fast_nav": fast_navigation(),
         "page_languages": page_languages(),
         **values,
     }

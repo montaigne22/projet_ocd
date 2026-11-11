@@ -20,6 +20,8 @@
     </template>
 
     <template id="boutique" name="OCD Live: boutique of a vendor">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Boutique</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_vitrine">
@@ -151,6 +153,8 @@
     <!-- === REPLAY OF THE LAST LIVE (design: Replay) === -->
 
     <template id="replay" name="OCD Live: replay of a live">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Replay of a live</t>
         <t t-set="first" t-value="rows[:1] and rows[0]"/>
         <t t-set="bottom_cta" t-value="{'href': first['order_url'], 'label': first['order_label']} if first else None"/>
         <t t-call="ocd_live.app">
@@ -287,6 +291,8 @@
     </template>
 
     <template id="delivery_app" name="OCD Live: my parcels">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My parcels</t>
         <t t-set="reasons" t-value="request.env['stock.picking']._fields['ocd_problem_reason']._description_selection(request.env)"/>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
@@ -384,6 +390,8 @@
     </template>
 
     <template id="delivery_tour" name="OCD Live: tour of the courier">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My tour</t>
         <t t-set="reasons" t-value="request.env['stock.picking']._fields['ocd_problem_reason']._description_selection(request.env)"/>
         <t t-set="bottom_cta" t-value="{'href': 'tel:+%s' % dispatch_phone, 'label': call_label} if dispatch_phone else None"/>
         <t t-call="ocd_live.app">
@@ -498,6 +506,8 @@
     </template>
 
     <template id="parcel_pay" name="OCD Live: pay a parcel at the door">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Pay the parcel</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_pay" t-att-data-state="state">

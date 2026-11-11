@@ -38,6 +38,8 @@
     <!-- === SHOP === -->
 
     <template id="shop" name="OCD Live: shop">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Shop</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame">
                 <main class="o_ocd_main o_ocd_shop">
@@ -93,6 +95,8 @@
     <!-- === PRODUCT === -->
 
     <template id="product" name="OCD Live: product">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Product</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <form t-att-action="'/ocd/panier/ajouter' if ocd else '/ocd/wa/%s' % template.id"
@@ -187,6 +191,8 @@
     <!-- === CART === -->
 
     <template id="cart" name="OCD Live: cart">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My cart</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_cart">
@@ -234,6 +240,8 @@
     <!-- === DELIVERY ADDRESS === -->
 
     <template id="delivery" name="OCD Live: where do we deliver">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Delivery</t>
         <t t-call="ocd_live.app">
             <form action="/ocd/livraison" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_delivery_form" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -336,6 +344,8 @@
     <!-- === PAYMENT === -->
 
     <template id="payment" name="OCD Live: pay the order">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Pay the order</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_pay">
@@ -383,6 +393,8 @@
     <!-- === TRACKING OF THE ORDER === -->
 
     <template id="tracking" name="OCD Live: my order">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My order</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_tracking">
@@ -451,6 +463,8 @@
     <!-- === MY PRODUCTS (vendor space) === -->
 
     <template id="vendor_products" name="OCD Live: my products">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My products</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_my_products">
@@ -544,6 +558,8 @@
     <!-- === MY DELIVERY PRICES (vendor space) === -->
 
     <template id="vendor_rates" name="OCD Live: my delivery prices">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My delivery prices</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_my_rates">

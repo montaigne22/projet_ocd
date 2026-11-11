@@ -29,7 +29,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **316 tests, un seul
+`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **322 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
 ceux des colis). Sur une base neuve avec la démo, 5 tests sans échec : la démo remplit les écrans,
 conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
@@ -66,6 +66,41 @@ conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — trois modèles refusés par Meta, navigation sans rechargement
+- **Refusés par Meta** : « ticket du live », « colis en route », « choisir un mot de passe ». Le courriel
+  de Meta ne donne pas de motif. Textes revus pour ce que Meta refuse dans un modèle *Utilitaire* :
+  - plus de « code » : un code dans un modèle Utilitaire est pris pour un code à usage unique, réservé aux
+    modèles *Authentification*. Le ticket donne son **numéro de ticket** ; le message « colis en route »
+    n'écrit plus le code, son bouton **« Suivre mon colis »** ouvre la page de suivi de la commande, où le
+    client le lit (« Votre code pour ce colis ») ;
+  - plus de phrase entière dans une variable : le ticket a la même phrase pour le studio et à distance
+    (« Gardez ce message, l'équipe d'OCD Live vous le demandera le jour du live ») ;
+  - plus de « mot de passe » avec un lien (pris pour de l'hameçonnage) : « votre compte vendeur OCD Live est
+    créé. Touchez le bouton pour l'activer », bouton « Activer mon compte ».
+- **Mise à jour des bases** (`ocd_live_whatsapp`, `ocd_live_shop_whatsapp` 20.0.1.5.0) : la migration lit
+  d'abord la décision de Meta, puis donne les nouveaux textes aux modèles refusés, même encore « en attente »
+  dans Odoo (variables et boutons compris). Testé sur la base de démo.
+- **Décisions de Meta lues sans le webhook** (`whatsapp_cloud` 20.0.2.6.0) : toutes les 30 minutes, les
+  modèles en attente reçoivent leur statut et le motif d'un refus ; les responsables sont prévenus.
+  « Synchroniser les modèles » ne remet plus le texte refusé par-dessus le texte corrigé : pour un modèle
+  refusé, seule la décision de Meta est lue.
+- **Navigation sans rechargement, pour les vendeurs et les livreurs** connus du navigateur : un lien des
+  pages d'OCD Live affiche tout de suite le squelette de la page, la page se charge en arrière-plan, puis
+  seul le contenu change (l'en-tête et le menu du bas restent, l'adresse et le bouton retour suivent). Le
+  chargement commence dès que le doigt touche le lien. Les formulaires, le paiement, les pages d'un autre
+  type et toute erreur chargent la page normalement. Les visiteurs gardent les pages normales.
+- **Versions anglaises** (correction : elles sont voulues) : les 7 versions anglaises des modules WhatsApp,
+  archivées par la version précédente, sont de nouveau actives à la mise à jour ; les 20 modèles d'OCD Live
+  ont maintenant leur version anglaise (même nom chez Meta, langue anglais, mêmes variables et boutons ;
+  dates, lieux et textes des variables en anglais). Un contact anglophone reçoit la version anglaise une fois
+  approuvée par Meta, la française en attendant : une version pas encore soumise ne passe plus avant une
+  version approuvée (ses messages auraient échoué).
+- **Titres des onglets en français** : « Mon espace | OCD Live », « Mes colis », « Lives par pays »… au lieu
+  des noms techniques anglais (« OCD Live: my space »). Versions : `ocd_live` 20.0.1.5.0, `ocd_live_shop`
+  20.0.1.3.0.
+- **À faire** : mettre à jour les modules, puis soumettre à Meta les trois modèles corrigés et les versions
+  anglaises (WhatsApp › Modèles, filtre de langue « en »).
 
 ### 11 novembre 2026 — le téléphone retient le vendeur et le livreur ; messages en français seulement
 - **Vendeur « plus connecté » après Accueil puis Moi** : pas reproduit en local, avec chaque façon de se

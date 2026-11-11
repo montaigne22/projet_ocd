@@ -50,6 +50,15 @@ def forget_courier():
     common.forget_browser(COURIER_COOKIE)
 
 
+def _is_known_courier():
+    # The code of the modules is shared by the databases of the server: only where the couriers exist
+    return "ocd_is_courier" in request.env["res.partner"]._fields and bool(current_courier())
+
+
+# The couriers known on this browser change page without reloading it, as the vendors
+common.FAST_NAVIGATION_CHECKS.append(_is_known_courier)
+
+
 def courier_login_mode():
     """The couriers log in like the vendors: the personal link in the link mode, otherwise a
     code (they have no password)."""

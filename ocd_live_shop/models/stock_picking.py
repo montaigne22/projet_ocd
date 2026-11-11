@@ -1,6 +1,7 @@
 import logging
 import secrets
 from datetime import timedelta
+from urllib.parse import urlencode
 
 from odoo import Command, api, fields, models
 from odoo.exceptions import AccessError, UserError
@@ -696,6 +697,15 @@ class StockPicking(models.Model):
     def _ocd_send_code(self):
         """Send the delivery code to the customer. The customer also sees it on the order
         page of the customer portal."""
+
+    def _ocd_tracking_path(self):
+        """Path of the page that follows the order of the parcel, opened without logging in (the
+        token of the order): the customer finds there the code to give to the courier."""
+        self.ensure_one()
+        order = self.sudo().sale_id
+        if not order:
+            return ""
+        return f"ocd/suivi/{order.id}?{urlencode({'access_token': order._portal_ensure_token()})}"
 
     def _ocd_remind_vendor(self):
         """Remind the vendor of a parcel not prepared in time."""

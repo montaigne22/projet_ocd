@@ -330,6 +330,45 @@ class WhatsappTemplate(models.Model):
             template.write(vals)
 
     @api.model
+    def _cron_read_pending_from_meta(self):
+        """The templates waiting for the review of Meta: their status, and the reason of a
+        refusal, are read again every half hour. The webhook of Meta tells it at once when the
+        app is subscribed to the events of the templates; without it, Odoo would not know. Only
+        the status is read: the text and the buttons stay as submitted."""
+        for template in self.search([("status", "=", "pending"), ("wa_template_id", "!=", False)]):
+            records = self.env[template.model].browse() if template.model in self.env else self.env["res.partner"]
+            account = template._get_account(records)
+            if not account:
+                continue
+            try:
+                data = account._api_request(
+                    "GET", template.wa_template_id, params={"fields": "status,rejected_reason,quality_score"}
+                )
+            except WhatsAppApiError as error:
+                _logger.info("WhatsApp: status of the template %s not read: %s", template.wa_template_id, error)
+                continue
+            status = (data.get("status") or "").lower()
+            if status not in dict(self._fields["status"].selection):
+                status = self.STATUS_BY_EVENT.get(status.upper())
+            if not status or status == "pending":
+                continue
+            reason = data.get("rejected_reason")
+            reason = reason if reason not in (None, "NONE") else False
+            vals = {"status": status, "rejected_reason": reason}
+            quality = data.get("quality_score")
+            score = ((quality.get("score") if isinstance(quality, dict) else quality) or "").upper()
+            if score in dict(self._fields["quality_score"].selection):
+                vals["quality_score"] = score
+            template.write(vals)
+            if status != "approved":
+                account._alert_managers(_(
+                    "WhatsApp template %(name)s (%(lang)s): %(event)s at Meta. %(details)s",
+                    name=template.template_name, lang=template.lang_code,
+                    event=dict(self._fields["status"]._description_selection(self.env))[status],
+                    details=reason or "",
+                ))
+
+    @api.model
     def _process_webhook(self, account, field, value):
         """Status, quality or category of a template changed at Meta."""
         data = {
@@ -602,7 +641,7 @@ class WhatsappTemplate(models.Model):
     # === TEXTS GIVEN BY THE MODULES === #
 
     @api.model
-    def _update_module_texts(self, module, old_texts):
+    def _update_module_texts(self, module, old_texts, statuses=("unknown", "rejected")):
         """For the migration of a module that gives templates. They are loaded once (data
         noupdate): a text corrected in the module reaches an existing database only this way.
 
@@ -611,7 +650,8 @@ class WhatsappTemplate(models.Model):
         variables this text does not use any more. Kept as they are: a text written by the
         user, and the text of a template that Meta approved or reviews, since it is the one
         Meta sends. Meta writes the text of an authentication template itself: kept only for
-        the history, it always follows the module.
+        the history, it always follows the module. A migration of texts that Meta refused passes
+        `statuses` with "pending": submitted again as they are, they would be refused anyway.
 
         :return: the updated templates
         """
@@ -621,7 +661,7 @@ class WhatsappTemplate(models.Model):
             template = self.env.ref(xmlid, raise_if_not_found=False)
             if not template or template._name != self._name or xmlid not in bodies:
                 continue
-            if template.category != "authentication" and template.status not in ("unknown", "rejected"):
+            if template.category != "authentication" and template.status not in statuses:
                 continue
             if (template.body or "").strip() in {old.strip() for old in olds}:
                 template.body = bodies[xmlid]
@@ -709,6 +749,8 @@ class WhatsappTemplate(models.Model):
         """The version of this template in the language of the contact: the template of the
         same name at Meta for the same documents and account, in that language (or another
         variant of it: en for en_US), not refused by Meta. This template when there is none.
+        When this template is approved, only an approved version: a version not synchronised
+        may not be submitted to Meta yet, and its messages would fail.
         """
         self.ensure_one()
         lang = (partner.lang or "") if partner else ""
@@ -722,6 +764,8 @@ class WhatsappTemplate(models.Model):
         ]
         if self.account_id:
             domain.append(("account_id", "in", [self.account_id.id, False]))
+        if self.status == "approved":
+            domain.append(("status", "=", "approved"))
         versions = self.search(domain)
         code = lang.replace("-", "_")
         same_code = versions.filtered(lambda version: version.lang_code.replace("-", "_") == code)

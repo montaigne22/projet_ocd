@@ -24,7 +24,7 @@ the others never go to a contact who refused.
 
 The texts are editable in WhatsApp > Templates.
 """,
-    "version": "20.0.1.4.0",
+    "version": "20.0.1.5.0",
     "category": "Marketing/WhatsApp",
     "author": "RollBackk",
     "license": "LGPL-3",
@@ -32,6 +32,7 @@ The texts are editable in WhatsApp > Templates.
     "data": [
         "security/ocd_live_whatsapp_security.xml",
         "data/whatsapp_template_data.xml",
+        "data/whatsapp_template_en_data.xml",
         "data/ir_cron_data.xml",
         "data/ocd_automation_data.xml",
         "views/res_partner_views.xml",

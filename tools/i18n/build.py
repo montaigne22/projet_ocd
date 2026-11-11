@@ -16,7 +16,7 @@ SKIP = {"Create a Customer", "Next Activity Calendar Event", "Ratings"}
 SKIP_PREFIX = ("Envoie le montant par Mobile Money",)
 # Settings, automations and WhatsApp conversations: their texts are spread over the modules
 SCREENS = [ns["SETTINGS"], ns["SHOP_SETTINGS"], ns["AUTOMATIONS"], ns["WHATSAPP_SCREENS"], ns["SHOP_WHATSAPP_SCREENS"],
-           ns["NO_ODOO"]]
+           ns["NO_ODOO"], ns["PAGES_AND_ENGLISH"]]
 MODULES = {
     "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], ns["SITE_FRAME"], *SCREENS],
     "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], ns["SHOP_COURIER_LOGIN"], *SCREENS],

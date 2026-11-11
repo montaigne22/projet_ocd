@@ -713,3 +713,42 @@ Ce que voient l'équipe, les vendeurs et les clients dit OCD Live :
 Les adresses du back-office gardent /odoo : le client web les construit ainsi.
 """,
 }
+
+
+# Titles of the tabs of the pages, and names of the English versions of the WhatsApp templates
+PAGES_AND_ENGLISH = {
+    'Home page': 'Accueil',
+    'Answer of the team': "Réponse de l'équipe",
+    'Book a live: pay': 'Réserver un live : payer',
+    'Book a live: the day': 'Réserver un live : le jour',
+    'Book a live: the hour': "Réserver un live : l'heure",
+    'Book a live: the package': 'Réserver un live : le paquet',
+    'Book a live: who are you': 'Réserver un live : qui es-tu ?',
+    'Code received on WhatsApp': 'Code reçu sur WhatsApp',
+    'Find my space': 'Retrouver mon espace',
+    'Lives of the country': 'Lives du pays',
+    'My account': 'Mon compte',
+    'My ticket': 'Mon ticket',
+    'Space of the vendors': 'Espace des vendeurs',
+    'Replay of a live': "Replay d'un live",
+    'OCD Live: choose a password (English)': 'OCD Live : choisir un mot de passe (anglais)',
+    'OCD Live: free hour for the waiting list (English)': "OCD Live : créneau libéré pour la liste d'attente (anglais)",
+    'OCD Live: link online (English)': 'OCD Live : lien en ligne (anglais)',
+    'OCD Live: link received (English)': 'OCD Live : lien reçu (anglais)',
+    'OCD Live: link refused (English)': 'OCD Live : lien refusé (anglais)',
+    'OCD Live: live confirmed (English)': 'OCD Live : live confirmé (anglais)',
+    'OCD Live: login code (English)': 'OCD Live : code de connexion (anglais)',
+    'OCD Live: pass that ends (English)': 'OCD Live : pass qui se termine (anglais)',
+    'OCD Live: personal link (English)': 'OCD Live : lien personnel (anglais)',
+    'OCD Live: reminder of the live (English)': 'OCD Live : rappel du live (anglais)',
+    'OCD Live: the directory checks the links (English)': "OCD Live : l'annuaire vérifie les liens (anglais)",
+    'OCD Live: ticket of the live (English)': 'OCD Live : ticket du live (anglais)',
+    'OCD Live: delivery not possible (English)': 'OCD Live : livraison impossible (anglais)',
+    'OCD Live: link of the delivery app (English)': "OCD Live : lien de l'appli de livraison (anglais)",
+    'OCD Live: parcel delivered (English)': 'OCD Live : colis livré (anglais)',
+    'OCD Live: parcel not ready (English)': 'OCD Live : colis pas prêt (anglais)',
+    'OCD Live: parcel on the way (English)': 'OCD Live : colis en route (anglais)',
+    'OCD Live: parcel returned (English)': 'OCD Live : colis retourné (anglais)',
+    'OCD Live: parcel to prepare (English)': 'OCD Live : colis à préparer (anglais)',
+    'OCD Live: the vendor is live (English)': 'OCD Live : le vendeur est en live (anglais)',
+}

@@ -9,7 +9,7 @@ from odoo.modules.module import load_script
 from odoo.tests import TransactionCase, tagged
 
 from odoo.addons.ocd_live.tests.common import OcdLiveCommon
-from odoo.addons.ocd_live_whatsapp.hooks import archive_english_templates
+from odoo.addons.ocd_live_whatsapp.hooks import restore_english_templates
 from odoo.addons.whatsapp_cloud.models.whatsapp_template import PLACEHOLDER_RE, WhatsappTemplate
 
 
@@ -36,6 +36,16 @@ class TestOcdLiveWhatsapp(OcdLiveCommon):
         self.assertEqual(names, ["ocd_code_connexion", "ocd_lien_espace", "ocd_mot_de_passe"])
         code = calls[0][2]["ocd_login_code"]
         self.assertTrue(self.vendor._ocd_check_login_code(code), "The code sent is the code checked")
+
+    def test_english_version_speaks_english(self):
+        self.env["res.lang"]._activate_lang("en_US")
+        booking = self._book(self.starts[0], mode="remote")
+        ticket = self.env.ref("ocd_live_whatsapp.template_ticket_en")
+        values = {variable.sequence: ticket._render(variable.value, booking)[booking.id] for variable in ticket.variable_ids}
+        self.assertEqual(values[5], "remotely")
+        days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+        self.assertTrue(values[2].startswith(days), values[2])
+        self.assertEqual(values[6], booking.ticket_code)
 
     def test_live_confirmed_then_reminded(self):
         calls, patcher = self._capture()
@@ -285,23 +295,64 @@ class TestOcdTemplatesForMeta(TransactionCase):
                 variables = set(PLACEHOLDER_RE.findall(template.body))
                 self.assertGreaterEqual(len(words), 3 * len(variables) + 1)
 
-    def test_no_english_template(self):
-        """OCD Live writes in French: the English versions given by the WhatsApp modules are
-        archived, and a contact whose language is English gets the French version."""
-        data = self.env["ir.model.data"].search([("model", "=", "whatsapp.template")])
-        templates = self.env["whatsapp.template"].browse(data.mapped("res_id"))
-        english = templates.filtered(lambda template: template._lang_base(template.lang_code) == "en")
-        self.assertTrue(english, "The WhatsApp modules give English versions")
-        self.assertFalse(english.filtered("active"))
+    def test_english_versions(self):
+        """Every message exists in French and in English (same name at Meta), with the same
+        variables and buttons. An English-speaking contact receives the English version once
+        Meta approved it, the French one until then."""
+        data = self.env["ir.model.data"].search([
+            ("model", "=", "whatsapp.template"),
+            ("module", "in", ("whatsapp_cloud", "whatsapp_cloud_sale", "ocd_live_whatsapp", "ocd_live_shop_whatsapp")),
+        ])
+        templates = self.env["whatsapp.template"].with_context(active_test=False).browse(data.mapped("res_id"))
+        self.assertTrue(all(templates.mapped("active")), "The English versions are active too")
+        french = templates.filtered(lambda template: template._lang_base(template.lang_code) == "fr")
+        self.assertGreater(len(french), 25)
+        for template in french:
+            with self.subTest(template=template.template_name):
+                english = templates.filtered(lambda other: (
+                    other.template_name == template.template_name and other._lang_base(other.lang_code) == "en"
+                ))
+                self.assertEqual(len(english), 1)
+                self.assertEqual((english.model_id, english.category), (template.model_id, template.category))
+                self.assertEqual(english.variable_ids.mapped("sequence"), template.variable_ids.mapped("sequence"))
+                self.assertEqual(len(english.button_ids), len(template.button_ids))
+                self.assertEqual(english.button_url_value, template.button_url_value)
         self.env["res.lang"]._activate_lang("en_US")
-        partner = self.env["res.partner"].create({"name": "John Mensah", "lang": "en_US"})
-        follow_up = self.env.ref("whatsapp_cloud.template_conversation_follow_up")
-        self.assertEqual(follow_up._get_lang_version(partner), follow_up)
-        # The function archives only what is still active, and says what it archived
+        partner = self.env["res.partner"].create({"name": "Grace Mensah", "lang": "en_US"})
+        space = self.env.ref("ocd_live_whatsapp.template_space_link")
+        space_en = self.env.ref("ocd_live_whatsapp.template_space_link_en")
+        space.status = "approved"
+        self.assertEqual(space._get_lang_version(partner), space, "Not submitted to Meta yet")
+        space_en.status = "approved"
+        self.assertEqual(space._get_lang_version(partner), space_en)
+        # Archived by the version 20.0.1.4.0 (French only): active again at the update
         confirmed = self.env.ref("whatsapp_cloud_sale.template_order_confirmed_en")
-        confirmed.active = True
-        self.assertEqual(archive_english_templates(self.env), confirmed)
-        self.assertFalse(confirmed.active)
+        confirmed.active = False
+        self.assertEqual(restore_english_templates(self.env), confirmed)
+        self.assertTrue(confirmed.active)
+
+    def test_refused_templates_take_the_new_texts(self):
+        """Refused by Meta: the ticket (a « code », a sentence in a variable) and the access (a
+        password with a link). Still waiting in Odoo when the webhook is not set up, they take
+        the new texts; the ticket loses its variable {{7}}, the button of the access its label."""
+        migration = load_script(
+            "ocd_live_whatsapp/migrations/20.0.1.5.0/post-migration.py", "ocd_live_whatsapp_texts_20_0_1_5_0"
+        )
+        ticket = self.env.ref("ocd_live_whatsapp.template_ticket")
+        access = self.env.ref("ocd_live_whatsapp.template_access_link")
+        texts = {"ticket": ticket.body, "access": access.body}
+        self.assertNotIn("code", texts["ticket"].lower())
+        self.assertNotIn("mot de passe", texts["access"].lower())
+        ticket.write({"body": migration.OLD_TEXTS["ocd_live_whatsapp.template_ticket"][0], "status": "pending"})
+        access.write({"body": migration.OLD_TEXTS["ocd_live_whatsapp.template_access_link"][0], "status": "rejected"})
+        access.button_ids.name = "Choisir mon mot de passe"
+        self.assertIn(7, ticket.variable_ids.mapped("sequence"))
+        migration.migrate(self.env.cr, "20.0.1.4.0")
+        self.env.invalidate_all()
+        self.assertEqual(ticket.body, texts["ticket"])
+        self.assertEqual(sorted(ticket.variable_ids.mapped("sequence")), [1, 2, 3, 4, 5, 6])
+        self.assertEqual(access.body, texts["access"])
+        self.assertEqual(access.button_ids.name, "Activer mon compte")
 
     def test_migrations_give_the_new_texts(self):
         """The databases installed before keep the previous texts (data loaded once): the
@@ -311,6 +362,8 @@ class TestOcdTemplatesForMeta(TransactionCase):
             ("whatsapp_cloud_sale", "20.0.2.4.0"),
             ("ocd_live_whatsapp", "20.0.1.3.0"),
             ("ocd_live_shop_whatsapp", "20.0.1.3.0"),
+            ("ocd_live_whatsapp", "20.0.1.5.0"),
+            ("ocd_live_shop_whatsapp", "20.0.1.5.0"),
         ):
             if not Module.search_count([("name", "=", module), ("state", "=", "installed")]):
                 continue

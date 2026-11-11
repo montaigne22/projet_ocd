@@ -126,6 +126,13 @@ class TestWhatsAppCloud(WhatsAppCommon):
         # a version refused by Meta is not used
         english_version.status = "rejected"
         self.assertEqual(self.template._send(english).template_id, self.template)
+        # this template approved: a version not synchronised yet (maybe not submitted to Meta)
+        # is not used, an approved one is
+        self.template.status = "approved"
+        english_version.status = "unknown"
+        self.assertEqual(self.template._send(english).template_id, self.template)
+        english_version.status = "approved"
+        self.assertEqual(self.template._send(english).template_id, english_version)
 
     def test_sync_template_of_a_module_in_a_language_variant(self):
         Template = self.env["whatsapp.template"].with_context(active_test=False)
@@ -368,3 +375,48 @@ class TestWhatsAppCloud(WhatsAppCommon):
         with patch(REQUEST, return_value=mock_response(answer)):
             self.account.action_sync_templates()
         self.assertEqual(Template.search_count([("template_name", "=", "order_confirmed")]), 1)
+
+    def test_sync_keeps_the_text_of_a_refused_template(self):
+        """Refused by Meta: the text of Odoo is the one being corrected, the synchronisation
+        reads only the decision of Meta."""
+        self.template.write({"wa_template_id": "777", "status": "pending"})
+        answer = {"data": [{
+            "id": "777", "name": "welcome", "language": "fr", "status": "REJECTED",
+            "rejected_reason": "INVALID_FORMAT", "category": "UTILITY",
+            "components": [{"type": "BODY", "text": "Old text {{1}} refused"}],
+        }]}
+        with patch(REQUEST, return_value=mock_response(answer)):
+            self.account.action_sync_templates()
+        self.assertEqual((self.template.status, self.template.rejected_reason), ("rejected", "INVALID_FORMAT"))
+        self.assertEqual(self.template.body, "Bonjour {{1}}, votre numéro {{2}} est enregistré.")
+
+    def test_decision_of_meta_read_without_the_webhook(self):
+        """Every half hour, the templates waiting for Meta get its decision and the reason of a
+        refusal; the managers are told about a refusal. The text stays as submitted."""
+        Template = self.env["whatsapp.template"]
+        other = self.template.copy({"template_name": "welcome_two", "wa_template_id": "778", "status": "pending"})
+        self.template.write({"wa_template_id": "777", "status": "pending"})
+        answers = {
+            "777": {"status": "REJECTED", "rejected_reason": "TAG_CONTENT_MISMATCH"},
+            "778": {"status": "PENDING", "rejected_reason": "NONE"},
+        }
+
+        def meta(method, url, **kwargs):
+            self.assertEqual(kwargs["params"]["fields"], "status,rejected_reason,quality_score")
+            return mock_response(answers[url.rsplit("/", 1)[-1]])
+
+        with patch(REQUEST, side_effect=meta):
+            Template._cron_read_pending_from_meta()
+        self.assertEqual((self.template.status, self.template.rejected_reason), ("rejected", "TAG_CONTENT_MISMATCH"))
+        self.assertEqual(self.template.body, "Bonjour {{1}}, votre numéro {{2}} est enregistré.")
+        self.assertEqual(other.status, "pending", "Still under review")
+        self.assertIn("TAG_CONTENT_MISMATCH", self.account.message_ids[:1].body)
+        # Approved later; Meta out of reach: nothing changes, nothing breaks
+        answers["778"] = {"status": "APPROVED"}
+        with patch(REQUEST, side_effect=meta):
+            Template._cron_read_pending_from_meta()
+        self.assertEqual((other.status, other.rejected_reason), ("approved", False))
+        other.status = "pending"
+        with patch(REQUEST, return_value=mock_response({"error": {"message": "Unavailable"}}, status=503)):
+            Template._cron_read_pending_from_meta()
+        self.assertEqual(other.status, "pending")

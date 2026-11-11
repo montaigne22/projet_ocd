@@ -7,6 +7,8 @@
     <!-- ============================================================== -->
 
     <template id="space_team" name="OCD Live: the team in the space of the vendors">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Space of the vendors</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow o_ocd_team_notice">
                 <main class="o_ocd_main">
@@ -25,6 +27,8 @@
     </template>
 
     <template id="space_account" name="OCD Live: an account that is not a vendor">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My account</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow o_ocd_account_notice">
                 <main class="o_ocd_main">
@@ -45,6 +49,8 @@
     </template>
 
     <template id="space_login" name="OCD Live: find my space">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Find my space</t>
         <t t-call="ocd_live.app">
             <form t-att-action="form_action or '/ocd/connexion'" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -87,6 +93,8 @@
     </template>
 
     <template id="space_login_code" name="OCD Live: code received on WhatsApp">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Code received on WhatsApp</t>
         <t t-call="ocd_live.app">
             <form t-att-action="code_action or '/ocd/connexion/code'" method="post" class="o_ocd_frame o_ocd_narrow">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -110,6 +118,8 @@
     </template>
 
     <template id="space" name="OCD Live: my space">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My space</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_space">

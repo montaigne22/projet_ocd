@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- English versions of the templates of the parcels: same names at Meta, language English
+         (en). A contact whose language is English receives them once Meta approved them (the
+         French version until then). -->
+    <data noupdate="1">
+
+        <record id="template_delivery_link_en" model="whatsapp.template">
+            <field name="name">OCD Live: link of the delivery app (English)</field>
+            <field name="template_name">ocd_lien_livraison</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Hello {{1}}, here is your link to prepare and deliver the OCD Live parcels. Keep it to yourself.</field>
+            <field name="button_url_value">{{ 'ocd/livrer/' + object._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My parcels', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Junior'})]"/>
+        </record>
+
+        <record id="template_parcel_to_prepare_en" model="whatsapp.template">
+            <field name="name">OCD Live: parcel to prepare (English)</field>
+            <field name="template_name">ocd_colis_a_preparer</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">ocd_vendor_id</field>
+            <field name="body">Hello {{1}}, new parcel to prepare for {{2}}, to deliver to {{3}}. Contents: {{4}}. Tap the button when it is ready.</field>
+            <field name="button_url_value">{{ 'ocd/livrer/' + object.ocd_vendor_id._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My parcels', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_district_id.name or object.partner_id.city or \'\' }}', 'sample_value': 'Akwa'}),
+                (0, 0, {'sequence': 4, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Shea butter'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_reminder_en" model="whatsapp.template">
+            <field name="name">OCD Live: parcel not ready (English)</field>
+            <field name="template_name">ocd_colis_rappel</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">ocd_vendor_id</field>
+            <field name="body">Hello {{1}}, the parcel for {{2}} is not ready yet. The customer is waiting: prepare it and tap the button.</field>
+            <field name="button_url_value">{{ 'ocd/livrer/' + object.ocd_vendor_id._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My parcels', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Patrick'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Didier'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_on_the_way_en" model="whatsapp.template">
+            <field name="name">OCD Live: parcel on the way (English)</field>
+            <field name="template_name">ocd_colis_en_route</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <!-- No code in the message (Meta refuses it in a Utility template): the button opens the
+                 page that follows the order, where it is -->
+            <field name="body">Hello {{1}}, your parcel {{2}} is on its way with {{3}}. Tap "Track my parcel" to see the code to give to the courier, only when you have the parcel in your hands.</field>
+            <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Track my parcel', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Wax dress'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_courier_id.name }}', 'sample_value': 'Junior'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_failed_en" model="whatsapp.template">
+            <field name="name">OCD Live: delivery not possible (English)</field>
+            <field name="template_name">ocd_colis_echec</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, your parcel could not be delivered to you by {{2}}. Reply to this message to choose another time. Your delivery code stays the same.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Arnaud'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.ocd_courier_id.name or \'the courier\' }}', 'sample_value': 'Raoul'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_delivered_en" model="whatsapp.template">
+            <field name="name">OCD Live: parcel delivered (English)</field>
+            <field name="template_name">ocd_colis_livre</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, your parcel {{2}} has been delivered. Thank you for your trust!</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Wax dress'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_returned_en" model="whatsapp.template">
+            <field name="name">OCD Live: parcel returned (English)</field>
+            <field name="template_name">ocd_colis_retour</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, your parcel {{2}} could not be delivered and is going back to the vendor. The OCD Live team will contact you about what happens next.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Arnaud'}),
+                (0, 0, {'sequence': 2, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Care box'}),
+            ]"/>
+        </record>
+
+        <record id="template_vendor_live_en" model="whatsapp.template">
+            <field name="name">OCD Live: the vendor is live (English)</field>
+            <field name="template_name">ocd_vendeur_en_live</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_boutique_alert"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello, {{1}} is live now. Tap the button to watch the live and visit the boutique on OCD Live.</field>
+            <field name="button_url_value">{{ 'ocd/boutique/%s' % object.vendor_id.id }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'See the boutique', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/boutique/12'})]"/>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.vendor_id.name }}', 'sample_value': 'Brenda Wax'})]"/>
+        </record>
+
+    </data>
+</odoo>

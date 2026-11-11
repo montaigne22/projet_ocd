@@ -102,6 +102,10 @@ Hors des 24 heures qui suivent le dernier message d’un client, WhatsApp n’ac
 
 **Règles de Meta**, vérifiées par Odoo avant la soumission : le texte ne commence ni ne finit par une variable (un point ou une parenthèse après la dernière variable ne compte pas comme du texte : « … : {{2}}. » est refusé), deux variables sont séparées par des mots (une virgule seule ne suffit pas), et le texte est assez long pour ses variables (Meta ne publie pas sa limite : les modèles fournis ont au moins 3 mots par variable).
 
+Sans le webhook des modèles (§ 2), Odoo lit quand même la décision de Meta : toutes les 30 minutes, les modèles en attente reçoivent leur statut et le motif d’un refus (en rouge en haut du modèle), et les responsables sont prévenus. **Synchroniser les modèles** ne remet pas le texte refusé par Meta sur un modèle refusé : le texte d’Odoo est celui que l’on corrige, seule la décision est lue.
+
+Dans un modèle *Utilitaire*, Meta refuse un code (réservé aux modèles *Authentification*), une phrase entière dans une variable et un « mot de passe » avec un lien.
+
 Les modèles fournis sont chargés à l’installation seulement, pour garder les textes changés par l’équipe : un texte corrigé dans une nouvelle version du module arrive par la mise à jour du module, sauf sur un modèle approuvé (ou en cours de revue) par Meta et sur un texte que l’équipe a changé.
 
 **Ou créer chez Meta** (**WhatsApp Manager > Modèles de messages**) avec exactement les mêmes noms, langues et textes, puis **Synchroniser les modèles** sur le compte : les modèles fournis sont mis à jour au lieu d’être dupliqués.
@@ -120,7 +124,7 @@ Modèles fournis (en français, et en anglais pour les clients anglophones, sous
 
 - Les modèles des commandes et du devis ont un bouton lien **Suivre ma commande** / **Voir et payer** (`{base_url}/{{1}}` : l’adresse du site est ajoutée à la soumission, Odoo remplit `{{1}}` avec le lien de la commande dans l’espace client, ouvert sans connexion).
 - `delivery_feedback` a cinq réponses rapides (5 ⭐ Excellent … 1 ⭐ Mauvais) : la note est enregistrée sur la commande. Meta peut le classer en catégorie *Marketing*.
-- Chaque client reçoit la version dans **sa langue** (langue de sa fiche contact, ou du site sur lequel il a commandé), sinon la version française. Une version refusée, en pause ou en attente n’est pas utilisée.
+- Chaque client reçoit la version dans **sa langue** (langue de sa fiche contact, ou du site sur lequel il a commandé), sinon la version française. Une version refusée, en pause ou en attente n’est pas utilisée ; quand la version française est approuvée, une version pas encore synchronisée non plus (elle n’est peut-être pas soumise à Meta).
 - Les déclencheurs se règlent dans **WhatsApp > Configuration > Règles d’automatisation** (délai de l’enquête de satisfaction, autres événements…).
 
 ## 4. Répondre aux clients

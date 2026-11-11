@@ -36,9 +36,11 @@
             <field name="template_name">ocd_mot_de_passe</field>
             <field name="lang_code">fr</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="body">Bonjour {{1}}, choisissez votre mot de passe OCD Live avec ce lien. Pour vous connecter, votre identifiant est votre numéro WhatsApp.</field>
+            <!-- No « password » with a link: Meta reads it as a trap (phishing). The link opens the
+                 page where the vendor completes the account (its password) -->
+            <field name="body">Bonjour {{1}}, votre compte vendeur OCD Live est créé. Touchez le bouton pour l'activer. Pour vous connecter ensuite, votre identifiant est votre numéro WhatsApp.</field>
             <field name="button_url_value">{{ (ctx.get('ocd_access_url') or '').split('/', 3)[-1] }}</field>
-            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Choisir mon mot de passe', 'url': '{base_url}/{{1}}', 'url_example': 'web/reset_password?token=abc'})]"/>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Activer mon compte', 'url': '{base_url}/{{1}}', 'url_example': 'web/reset_password?token=abc'})]"/>
             <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Awa'})]"/>
         </record>
 
@@ -125,7 +127,9 @@ Vous pouvez envoyer un autre lien depuis votre espace OCD Live.</field>
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, voici votre ticket OCD Live pour votre live du {{2}}, de {{3}} à {{4}}. Il a lieu {{5}}. Votre code est {{6}}. Pour l'utiliser, {{7}}
+            <!-- No « code » in a Utility template (Meta sees a one-time code), no sentence in a
+                 variable: the number of the ticket, then the same text for the studio and remote -->
+            <field name="body">Bonjour {{1}}, voici votre ticket OCD Live pour votre live du {{2}}, de {{3}} à {{4}}. Il a lieu {{5}}. Numéro du ticket : {{6}}. Gardez ce message, l'équipe d'OCD Live vous le demandera le jour du live.
 
 À bientôt sur OCD Live !</field>
             <field name="button_url_value">{{ object._ocd_ticket_path() }}</field>
@@ -137,7 +141,6 @@ Vous pouvez envoyer un autre lien depuis votre espace OCD Live.</field>
                 (0, 0, {'sequence': 4, 'value': '{{ object._ocd_local_labels()[2] }}', 'sample_value': '16:00'}),
                 (0, 0, {'sequence': 5, 'value': '{{ (\'au studio de \' + (object.company_id.ocd_studio_city or \'Lomé\')) if object.mode == \'studio\' else \'à distance\' }}', 'sample_value': 'au studio de Lomé'}),
                 (0, 0, {'sequence': 6, 'value': '{{ object.ticket_code }}', 'sample_value': 'OCD-1201-1430'}),
-                (0, 0, {'sequence': 7, 'value': '{{ \'montrez-le à l’entrée du studio.\' if object.mode == \'studio\' else \'donnez-le à l’équipe quand elle le demande.\' }}', 'sample_value': 'montrez-le à l’entrée du studio.'}),
             ]"/>
         </record>
 

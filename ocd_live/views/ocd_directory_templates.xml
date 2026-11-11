@@ -18,6 +18,8 @@
     </template>
 
     <template id="lives" name="OCD Live: lives by country">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Lives by country</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame">
                 <main class="o_ocd_main">
@@ -78,6 +80,8 @@
     </template>
 
     <template id="lives_country" name="OCD Live: lives of a country">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Lives of the country</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame">
                 <main class="o_ocd_main">
@@ -119,6 +123,8 @@
     </template>
 
     <template id="pass_page" name="OCD Live: pass of the directory">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Pass of the directory</t>
         <t t-call="ocd_live.app">
             <form action="/lives/pass" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -172,6 +178,8 @@
     </template>
 
     <template id="send_link" name="OCD Live: send the link of the live">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Send the link of my live</t>
         <t t-call="ocd_live.app">
             <form action="/lives/envoyer" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_send_link" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -232,6 +240,8 @@
     </template>
 
     <template id="listing_status" name="OCD Live: answer of the team">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Answer of the team</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_poll" t-att-data-state="state"

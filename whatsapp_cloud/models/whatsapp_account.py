@@ -622,6 +622,14 @@ class WhatsappAccount(models.Model):
                 template = Template._find_from_meta(self, data)
                 vals = Template._prepare_vals_from_meta(data)
                 if template:
+                    if vals["status"] == "rejected":
+                        # Refused by Meta: the text of Odoo is the one being corrected (by the team
+                        # or a module), Meta keeps the refused one; only the decision is read
+                        vals = {
+                            key: vals[key]
+                            for key in ("status", "rejected_reason", "quality_score", "wa_template_id")
+                            if key in vals
+                        }
                     template.write(vals)
                     updated += 1
                 else:

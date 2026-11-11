@@ -1,6 +1,3 @@
-from odoo.addons.ocd_live_whatsapp.hooks import archive_english_templates
-
-
 def align_shop_consent(env):
     """The customers of the shop who did not refuse at the checkout (box of OCD Live) agree for
     WhatsApp too, unless they answered STOP."""
@@ -14,5 +11,3 @@ def align_shop_consent(env):
 
 def post_init_hook(env):
     align_shop_consent(env)
-    # The templates of the shop (whatsapp_cloud_sale, installed before this module): no English
-    archive_english_templates(env)

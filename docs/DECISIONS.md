@@ -67,6 +67,9 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   « Se déconnecter » ou un nouveau lien personnel : un cookie du navigateur (180 jours) le retrouve même
   quand la session d'Odoo se termine ou est remplacée. Se déconnecter est toujours un bouton (formulaire),
   jamais un simple lien : un navigateur ou un proxy qui charge les liens à l'avance ne déconnecte personne.
+- **Navigation sans rechargement pour les vendeurs et les livreurs** : squelette de la page au toucher
+  d'un lien, puis le contenu change seul ; les visiteurs, les formulaires et le paiement gardent les pages
+  normales.
 - Annuaire : liens vérifiés pendant les **créneaux de vérification** (8:00–11:00 et 18:00–21:00 par défaut),
   retirés à la fin du créneau. **Pass de 30 jours** pour envoyer ses liens (5 000 F par défaut).
 - Un nouveau vendeur, un nouveau produit et un lien de live sont **vérifiés par l'équipe** ; un refus
@@ -110,9 +113,11 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   « Préviens-moi ») : la demande vaut accord pour ce message.
 - Les colis d'OCD ont leurs propres messages : le « commande expédiée » du shop n'est pas envoyé pour eux,
   et la demande de note part une fois par commande, après son dernier colis.
-- **Messages en français** : les versions anglaises des modèles fournis par les modules WhatsApp sont
-  archivées (jamais envoyées, hors des listes, pas à soumettre à Meta) ; un contact anglophone reçoit la
-  version française. L'équipe peut en réactiver une (filtre « Archivé »).
+- **Pas de code ni de mot de passe dans un modèle Utilitaire** (refusés par Meta) : le code du colis est
+  sur la page de suivi, ouverte par le bouton du message ; le ticket donne son numéro.
+- **Messages en français et en anglais** : chaque modèle existe dans les deux langues (même nom chez Meta).
+  Un contact dont la langue est l'anglais reçoit la version anglaise une fois approuvée par Meta, la
+  version française en attendant.
 - **Textes des modèles** : chargés à l'installation, puis à l'équipe. Une nouvelle version d'un module ne
   change que les textes restés tels que le module les avait écrits, et jamais celui d'un modèle approuvé par
   Meta (c'est le texte que Meta envoie). Odoo refuse de soumettre un texte que Meta refuserait (variable au

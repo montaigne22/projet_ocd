@@ -28,6 +28,16 @@
             <field name="interval_number">5</field>
             <field name="interval_type">minutes</field>
         </record>
+        <!-- Without the webhook of the templates, the only way to know the review of Meta -->
+        <record id="ir_cron_read_pending_templates" model="ir.cron" forcecreate="True">
+            <field name="name">WhatsApp: read the templates waiting for Meta</field>
+            <field name="model_id" ref="model_whatsapp_template"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_read_pending_from_meta()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+        </record>
         <record id="ir_cron_check_health" model="ir.cron" forcecreate="True">
             <field name="name">WhatsApp: check the accounts at Meta</field>
             <field name="model_id" ref="model_whatsapp_account"/>

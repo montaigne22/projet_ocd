@@ -71,8 +71,6 @@ class TestWhatsAppCloudSale(TransactionCase):
     def test_order_confirmed_in_english(self):
         self.env["res.lang"]._activate_lang("en_US")
         self.partner.lang = "en_US"
-        # A shop that writes in one language archives the other versions (OCD Live: French)
-        self.env.ref("whatsapp_cloud_sale.template_order_confirmed_en").active = True
         order = self._create_order()
         order.action_confirm()
         confirmed = self._messages("whatsapp_cloud_sale.template_order_confirmed_en")
