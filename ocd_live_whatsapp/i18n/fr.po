@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-10 15:46+0000\n"
-"PO-Revision-Date: 2026-11-10 15:46+0000\n"
+"POT-Creation-Date: 2026-11-11 07:35+0000\n"
+"PO-Revision-Date: 2026-11-11 07:35+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,12 +26,44 @@ msgid ""
 "\n"
 "- personal link of the vendor space, login code (6 digits, valid 10 minutes),\n"
 "  link to choose a password;\n"
-"- live confirmed after the payment, reminder the day before;\n"
+"- live confirmed after the payment, ticket sent again, reminder the day before;\n"
+"- free hour of a full day, to the contacts of its waiting list;\n"
 "- directory pass that ends in a few days;\n"
-"- directory link online, or refused with the reason.\n"
+"- directory: link received (and when it is checked), opening of the checking window\n"
+"  for the contacts who asked, link online, or refused with the reason.\n"
+"\n"
+"One consent: the box of OCD Live (booking, vendor space, checkout) and the consent of\n"
+"WhatsApp (also changed by STOP and START) are kept the same. The messages asked by the\n"
+"contact (code, link, ticket, alert) go even without the consent to the notifications;\n"
+"the others never go to a contact who refused.\n"
 "\n"
 "The texts are editable in WhatsApp > Templates.\n"
 msgstr ""
+"\n"
+"OCD Live sur WhatsApp\n"
+"=====================\n"
+"\n"
+"Envoie les messages d'OCD Live par la connexion WhatsApp (whatsapp_cloud), avec les\n"
+"modèles de ce module (à créer chez Meta avec les mêmes noms et les mêmes textes) :\n"
+"\n"
+"- lien personnel de l'espace vendeur, code de connexion (6 chiffres, valable\n"
+"  10 minutes), lien pour choisir un mot de passe ;\n"
+"- live confirmé après le paiement, ticket renvoyé, rappel la veille ;\n"
+"- créneau libéré d'un jour complet, aux contacts de sa liste d'attente ;\n"
+"- pass annuaire qui se termine dans quelques jours ;\n"
+"- annuaire : lien reçu (et quand il est vérifié), ouverture de la fenêtre de\n"
+"  vérification pour les contacts qui l'ont demandé, lien en ligne, ou refusé avec le\n"
+"  motif.\n"
+"\n"
+"Un seul accord : la case d'OCD Live (réservation, espace vendeur, commande) et\n"
+"l'accord WhatsApp (changé aussi par STOP et START) restent identiques. Les messages\n"
+"demandés par le contact (code, lien, ticket, alerte) partent même sans accord aux\n"
+"notifications ; les autres ne partent jamais à un contact qui a refusé.\n"
+"\n"
+"Écran des conversations WhatsApp de l'équipe : liste, conversation, notes internes,\n"
+"réponses rapides, modèles hors des 24 heures, et ce qu'OCD Live sait du contact.\n"
+"\n"
+"Les textes se modifient dans WhatsApp › Modèles.\n"
 
 #. module: ocd_live_whatsapp
 #. odoo-python
@@ -40,19 +72,205 @@ msgid "%(name)s waits for an answer for %(minutes)s min"
 msgstr "%(name)s attend une réponse depuis %(minutes)s min"
 
 #. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "%s · connected"
+msgstr "%s · connecté"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "%s · to check"
+msgstr "%s · à vérifier"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "%s. The messages arrive in the WhatsApp conversations of OCD Live."
+msgstr "%s. Les messages arrivent dans les conversations WhatsApp d'OCD Live."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "24-hour window open: free answer"
+msgstr "Fenêtre de 24 h ouverte : réponse libre"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_window_alert
+msgid "A checking window opens"
+msgstr "Une fenêtre de vérification s'ouvre"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "A contact who writes STOP gets no automatic message any more; START starts them again."
+msgstr "Un contact qui écrit STOP ne reçoit plus de message automatique ; START les réactive."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "A contact who writes for the first time gets the menu with its buttons."
+msgstr "Un contact qui écrit pour la première fois reçoit le menu avec ses boutons."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_link_received
+msgid "A link is sent while no window is open"
+msgstr "Un lien est envoyé alors qu'aucune fenêtre n'est ouverte"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_free_slot
+msgid "A live of a full day is cancelled, moved or not paid"
+msgstr "Un live d'un jour complet est annulé, déplacé ou pas payé"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Accepts WhatsApp"
+msgstr "Accepte WhatsApp"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Accepts WhatsApp since %s"
+msgstr "Accepte WhatsApp depuis le %s"
+
+#. module: ocd_live_whatsapp
+#: model:ir.model,name:ocd_live_whatsapp.model_ocd_directory_alert
+msgid "Alert At The Opening Of The Directory"
+msgstr "Alerte à l'ouverture de l'annuaire"
+
+#. module: ocd_live_whatsapp
+#: model:ir.ui.menu,name:ocd_live_whatsapp.ocd_live_whatsapp_conversation_list_menu
+msgid "All the conversations"
+msgstr "Toutes les conversations"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.js:0
+msgid "All · %s"
+msgstr "Toutes · %s"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Always respected."
+msgstr "Toujours respectés."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Approved"
+msgstr "Approuvé"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "As WhatsApp asks. The messages asked by the contact (code, link, ticket, alert) always go."
+msgstr "Comme WhatsApp le demande. Les messages demandés par le contact (code, lien, ticket, alerte) partent toujours."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_asked
+msgid "Asked by the contact: code, links, ticket"
+msgstr "Demandé par le contact : code, liens, ticket"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_window_alert
+msgid "At the opening of the window (task of the windows)."
+msgstr "À l'ouverture de la fenêtre (tâche des fenêtres)."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Automatic answer"
+msgstr "Réponse automatique"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Automatic message · template %s"
+msgstr "Message automatique · modèle %s"
+
+#. module: ocd_live_whatsapp
 #: model:ir.ui.menu,name:ocd_live_whatsapp.ocd_live_whatsapp_templates_menu
 msgid "Automatic messages"
 msgstr "Messages automatiques"
 
 #. module: ocd_live_whatsapp
+#: model:ir.model,name:ocd_live_whatsapp.model_ocd_automation
+msgid "Automation Of OCD Live"
+msgstr "Automatisation d'OCD Live"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Away message"
+msgstr "Message d'absence"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Blue ticks and « typing… »"
+msgstr "Coches bleues et « en train d'écrire… »"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Channels of the team · Discuss"
+msgstr "Canaux de l'équipe · Discussion"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Choose a conversation."
+msgstr "Choisis une conversation."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Connected"
+msgstr "Connecté"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Connected with the official API of Meta: the messages arrive in the conversations."
+msgstr "Connecté par l'API officielle de Meta : les messages arrivent dans les conversations."
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
 #: model:ir.model,name:ocd_live_whatsapp.model_res_partner
 msgid "Contact"
 msgstr "Contact"
 
 #. module: ocd_live_whatsapp
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_dashboard.py:0
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+#: model:ir.actions.client,name:ocd_live_whatsapp.ocd_whatsapp_inbox_action
 #: model:ir.ui.menu,name:ocd_live_whatsapp.ocd_live_whatsapp_conversations_menu
 msgid "Conversations"
 msgstr "Conversations"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Conversations with the team"
+msgstr "Conversations avec l'équipe"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_live_reminder
+msgid "Day before the live: remind the vendor"
+msgstr "Veille du live : rappel au vendeur"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Did not agree yet to the automatic messages: answers within 24 hours only."
+msgstr "N'a pas encore accepté les messages automatiques : réponses dans les 24 h seulement."
 
 #. module: ocd_live_whatsapp
 #: model:ir.model,name:ocd_live_whatsapp.model_ocd_directory_listing
@@ -65,22 +283,140 @@ msgid "Directory Pass"
 msgstr "Pass annuaire"
 
 #. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Disabled by Meta"
+msgstr "Désactivé par Meta"
+
+#. module: ocd_live_whatsapp
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_automation__display_name
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_directory_alert__display_name
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_directory_listing__display_name
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_directory_pass__display_name
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_booking__display_name
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_dashboard__display_name
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_waitlist__display_name
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_whatsapp_inbox__display_name
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_whatsapp_template__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
 
 #. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_whatsapp_health
+msgid "Every 6 hours"
+msgstr "Toutes les 6 heures"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_whatsapp_health
+msgid "Every 6 hours."
+msgstr "Toutes les 6 heures."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_whatsapp_delays
+msgid "Every few minutes, during the opening hours"
+msgstr "Toutes les quelques minutes, pendant les heures d'ouverture"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_live_reminder
+msgid "Every hour: the day before the live from 18:00, or at least 12 hours before."
+msgstr "Chaque heure : la veille du live à partir de 18:00, ou au moins 12 heures avant."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_link_online
+msgid "Every link published."
+msgstr "Tous les liens publiés."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_link_refused
+msgid "Every link refused."
+msgstr "Tous les liens refusés."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_asked
+msgid "Every request, even without the consent to the notifications: the request is the consent to this message."
+msgstr "Chaque demande, même sans accord aux notifications : la demande vaut accord pour ce message."
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Filter the conversations"
+msgstr "Filtrer les conversations"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Form of the vendor"
+msgstr "Fiche vendeur"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_free_slot
+msgid "Hour freed: tell the waiting list"
+msgstr "Créneau libéré : prévenir la liste d'attente"
+
+#. module: ocd_live_whatsapp
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_automation__id
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_directory_alert__id
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_directory_listing__id
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_directory_pass__id
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_booking__id
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_dashboard__id
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_waitlist__id
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_whatsapp_inbox__id
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_res_partner__id
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_whatsapp_template__id
 msgid "ID"
 msgstr "ID"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "If they write STOP, no automatic message any more."
+msgstr "S'il écrit STOP, plus aucun message automatique."
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Internal note"
+msgstr "Note interne"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Internal note · not seen by the contact"
+msgstr "Note interne · invisible pour le contact"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_link_received
+msgid ""
+"Keep the link until the next window; the website shows when it is checked.\n"
+"WhatsApp to the vendor, template ocd_lien_recu, with the hour of the check."
+msgstr ""
+"Garder le lien jusqu'à la prochaine fenêtre ; le site montre quand il est vérifié.\n"
+"WhatsApp au vendeur, modèle ocd_lien_recu, avec l'heure de la vérification."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_link_online
+msgid "Link checked: tell the vendor it is online"
+msgstr "Lien vérifié : prévenir le vendeur qu'il est en ligne"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_link_received
+msgid "Link received out of the checking windows"
+msgstr "Lien reçu hors des heures de vérification"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_link_refused
+msgid "Link refused: tell the vendor why"
+msgstr "Lien refusé : prévenir avec le motif"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Live"
+msgstr "Live"
 
 #. module: ocd_live_whatsapp
 #: model:ir.model,name:ocd_live_whatsapp.model_ocd_live_booking
@@ -88,10 +424,110 @@ msgid "Live Booking"
 msgstr "Réservation de live"
 
 #. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_booking_whatsapp
+msgid "Live confirmed: WhatsApp to the vendor"
+msgstr "Live confirmé : WhatsApp au vendeur"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Message to"
+msgstr "Message à"
+
+#. module: ocd_live_whatsapp
+#: model_terms:ir.ui.view,arch_db:ocd_live_whatsapp.res_partner_view_form_ocd_vendor
+msgid "Messages On WhatsApp"
+msgstr "Messages sur WhatsApp"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Messages then go to contacts who agreed to nothing: WhatsApp can block the number."
+msgstr "Des messages partent alors à des contacts qui n'ont rien accepté : WhatsApp peut bloquer le numéro."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "More than 24 hours without a message of %s: only an approved template"
+msgstr "Plus de 24 h sans message de %s : seulement un modèle approuvé"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Next live"
+msgstr "Prochain live"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "No WhatsApp account is configured."
+msgstr "Aucun compte WhatsApp n'est configuré."
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "No WhatsApp conversation yet."
+msgstr "Aucune conversation WhatsApp pour l'instant."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "No WhatsApp number connected"
+msgstr "Aucun numéro WhatsApp connecté"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "No approved template for this contact: they write first, then the team answers."
+msgstr "Aucun modèle approuvé pour ce contact : il écrit d'abord, puis l'équipe répond."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "No message yet"
+msgstr "Aucun message pour l'instant"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "No message yet."
+msgstr "Aucun message pour l'instant."
+
+#. module: ocd_live_whatsapp
 #. odoo-python
 #: code:addons/ocd_live_whatsapp/models/ocd_live_dashboard.py:0
 msgid "Nobody is waiting"
 msgstr "Personne n'attend"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Nobody waits for an answer."
+msgstr "Personne n'attend de réponse."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Not connected: add the account of Meta (WhatsApp, Accounts)."
+msgstr "Pas connecté : ajoute le compte Meta (WhatsApp, Comptes)."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Not sent: %s"
+msgstr "Pas envoyé : %s"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Not synchronised"
+msgstr "Pas synchronisé"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Note: "
+msgstr "Note : "
 
 #. module: ocd_live_whatsapp
 #: model:ir.model,name:ocd_live_whatsapp.model_ocd_live_dashboard
@@ -109,9 +545,19 @@ msgid "OCD Live: choose a password"
 msgstr "OCD Live : choisir un mot de passe"
 
 #. module: ocd_live_whatsapp
+#: model:whatsapp.template,name:ocd_live_whatsapp.template_free_slot
+msgid "OCD Live: free hour for the waiting list"
+msgstr "OCD Live : créneau libéré pour la liste d'attente"
+
+#. module: ocd_live_whatsapp
 #: model:whatsapp.template,name:ocd_live_whatsapp.template_link_online
 msgid "OCD Live: link online"
 msgstr "OCD Live : lien en ligne"
+
+#. module: ocd_live_whatsapp
+#: model:whatsapp.template,name:ocd_live_whatsapp.template_link_received
+msgid "OCD Live: link received"
+msgstr "OCD Live : lien reçu"
 
 #. module: ocd_live_whatsapp
 #: model:whatsapp.template,name:ocd_live_whatsapp.template_link_refused
@@ -149,19 +595,477 @@ msgid "OCD Live: reminder of the live"
 msgstr "OCD Live : rappel du live"
 
 #. module: ocd_live_whatsapp
+#: model:whatsapp.template,name:ocd_live_whatsapp.template_window_open
+msgid "OCD Live: the directory checks the links"
+msgstr "OCD Live : l'annuaire vérifie les liens"
+
+#. module: ocd_live_whatsapp
+#: model:whatsapp.template,name:ocd_live_whatsapp.template_ticket
+msgid "OCD Live: ticket of the live"
+msgstr "OCD Live : ticket du live"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Only the WhatsApp agents see the conversations."
+msgstr "Seuls les agents WhatsApp voient les conversations."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Only to the contacts who agreed"
+msgstr "Seulement aux contacts qui ont accepté"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Open in Discuss"
+msgstr "Ouvrir dans Discussion"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Open the booking"
+msgstr "Ouvrir la réservation"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Out of the 24 hours after the last message of a contact, only these templates can go. They are sent to Meta from OCD Live."
+msgstr "Hors des 24 h après le dernier message d'un contact, seuls ces modèles peuvent partir. Ils sont envoyés à Meta depuis OCD Live."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Outside of the opening hours, the contact is told when the team answers."
+msgstr "En dehors des heures d'ouverture, le contact sait quand l'équipe répond."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Package"
+msgstr "Paquet"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Pass"
+msgstr "Pass"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Paused by Meta"
+msgstr "En pause chez Meta"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Place"
+msgstr "Lieu"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_whatsapp_webhook
+msgid "Put the messages in the conversations, update the ticks, apply STOP and START."
+msgstr "Mettre les messages dans les conversations, mettre à jour les coches, appliquer STOP et START."
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Quick answers"
+msgstr "Réponses rapides"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_whatsapp_health
+msgid "Read the quality, the limit of messages and the name of the number at Meta; alert the managers when something is wrong."
+msgstr "Lire la qualité, la limite de messages et le nom du numéro chez Meta ; alerter les responsables si quelque chose ne va pas."
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Refresh"
+msgstr "Actualiser"
+
+#. module: ocd_live_whatsapp
+#: model_terms:ir.ui.view,arch_db:ocd_live_whatsapp.res_partner_view_form_ocd_vendor
+msgid "Refused WhatsApp"
+msgstr "A refusé WhatsApp"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Refused by Meta"
+msgstr "Refusé par Meta"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Refused the automatic messages (STOP or box unticked)."
+msgstr "A refusé les messages automatiques (STOP ou case décochée)."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_whatsapp_delays
+msgid "Regularly, during the opening hours of the team."
+msgstr "Régulièrement, pendant les heures d'ouverture de l'équipe."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_whatsapp_delays
+msgid "Remind the agent of the conversation, then alert the managers (when the reminders are on in the Settings, WhatsApp)."
+msgstr "Relancer l'agent de la conversation, puis alerter les responsables (si les relances sont activées dans les Paramètres, WhatsApp)."
+
+#. module: ocd_live_whatsapp
 #: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_live_booking__ocd_reminder_sent
 msgid "Reminder Sent"
 msgstr "Rappel envoyé"
 
 #. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Reminders of the messages waiting for an answer"
+msgstr "Relances des messages qui attendent une réponse"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Remote"
+msgstr "À distance"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_whatsapp_webhook
+msgid "Right away, at each call of Meta"
+msgstr "Tout de suite, à chaque appel de Meta"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_whatsapp_send
+msgid "Right away, then again on errors"
+msgstr "Tout de suite, puis de nouveau en cas d'erreur"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "STOP and START"
+msgstr "STOP et START"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_live_reminder
+msgid "Scheduled task and WhatsApp templates."
+msgstr "Tâche planifiée et modèles WhatsApp."
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Send"
+msgstr "Envoyer"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Send the template"
+msgstr "Envoyer le modèle"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_whatsapp_send
+msgid "Send them to Meta, the oldest first; retry the temporary errors."
+msgstr "Les envoyer à Meta, les plus anciens d'abord ; réessayer les erreurs passagères."
+
+#. module: ocd_live_whatsapp
+#: model:ir.model,name:ocd_live_whatsapp.model_ocd_live_settings
+msgid "Settings Page Of OCD Live"
+msgstr "Page des paramètres d'OCD Live"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_whatsapp_webhook
+msgid "Started at each call of Meta."
+msgstr "Lancée à chaque appel de Meta."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_whatsapp_send
+msgid "Started at each message, and regularly for the retries."
+msgstr "Lancée à chaque message, et régulièrement pour les nouveaux essais."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Studio OCD · %s"
+msgstr "Studio OCD · %s"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Template approved by Meta"
+msgstr "Modèle approuvé par Meta"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.js:0
+msgid "Template sent."
+msgstr "Modèle envoyé."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Templates"
+msgstr "Modèles"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Templates of the messages, approved by Meta"
+msgstr "Modèles de messages approuvés par Meta"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_asked
+msgid "Tested code of OCD Live and WhatsApp templates."
+msgstr "Code testé d'OCD Live et modèles WhatsApp."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_whatsapp_health
+msgid "The WhatsApp accounts."
+msgstr "Les comptes WhatsApp."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_whatsapp_send
+msgid "The WhatsApp messages to send and the blue ticks."
+msgstr "Les messages WhatsApp à envoyer et les coches bleues."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_live_reminder
+msgid "The confirmed lives of tomorrow, at the studio or remote, once each."
+msgstr "Les lives confirmés du lendemain, au studio ou à distance, une fois chacun."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_free_slot
+msgid "The contacts on the waiting list of that day, who asked for it."
+msgstr "Les contacts de la liste d'attente de ce jour, qui l'ont demandé."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_window_alert
+msgid "The contacts who asked « Tell me at the opening »."
+msgstr "Les contacts qui ont demandé « Préviens-moi à l'ouverture »."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_whatsapp_delays
+msgid "The conversations waiting for an answer longer than the delays of the WhatsApp account."
+msgstr "Les conversations qui attendent une réponse plus longtemps que les délais du compte WhatsApp."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_live_reminder
+msgid "The day before, from 18:00 (time of the studio)"
+msgstr "La veille, à partir de 18:00 (heure du studio)"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "The delivery codes are hidden here: only the customer sees them."
+msgstr "Les codes de livraison sont masqués ici : seul le client les voit."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_link_received
+msgid "The links that wait for the next window."
+msgstr "Les liens qui attendent la prochaine fenêtre."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_whatsapp_webhook
+msgid "The messages of the contacts and the statuses of the messages sent."
+msgstr "Les messages des contacts et l'état des messages envoyés."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_booking_whatsapp
+msgid "The payment of a booking arrives"
+msgstr "Le paiement d'une réservation arrive"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_link_online
+msgid "The team publishes a link"
+msgstr "L'équipe publie un lien"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_link_refused
+msgid "The team refuses a link"
+msgstr "L'équipe refuse un lien"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_automation.py:0
+msgid "The template %s cannot be sent: refused or paused by Meta. Change its text and submit it again."
+msgstr "Le modèle %s ne peut pas partir : refusé ou mis en pause par Meta. Change son texte et soumets-le de nouveau."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_automation.py:0
+msgid "The template %s waits for the approval of Meta: until then, this message does not go."
+msgstr "Le modèle %s attend l'accord de Meta : en attendant, ce message ne part pas."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_asked
+msgid "The vendor asks on the website"
+msgstr "Le vendeur le demande sur le site"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_booking_whatsapp
+msgid "The vendors who agreed to the messages on WhatsApp."
+msgstr "Les vendeurs qui ont accepté les messages sur WhatsApp."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "This conversation does not exist any more."
+msgstr "Cette conversation n'existe plus."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "This template cannot be sent from this conversation."
+msgstr "Ce modèle ne peut pas partir depuis cette conversation."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "To check"
+msgstr "À vérifier"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Unknown number"
+msgstr "Numéro inconnu"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Unknown number: identify the contact."
+msgstr "Numéro inconnu : identifie le contact."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Vendor"
+msgstr "Vendeur"
+
+#. module: ocd_live_whatsapp
+#: model:ir.model,name:ocd_live_whatsapp.model_ocd_live_waitlist
+msgid "Waiting List Of A Day"
+msgstr "Liste d'attente d'un jour"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Waiting for Meta"
+msgstr "En attente de Meta"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Waiting for an answer"
+msgstr "En attente de réponse"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.js:0
+msgid "Waiting · %s"
+msgstr "En attente · %s"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "Welcome menu"
+msgstr "Menu d'accueil"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
 #: model:ir.ui.menu,name:ocd_live_whatsapp.ocd_live_whatsapp_menu
 msgid "WhatsApp"
 msgstr "WhatsApp"
 
 #. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "WhatsApp Business number of OCD Live"
+msgstr "Numéro WhatsApp Business d'OCD Live"
+
+#. module: ocd_live_whatsapp
+#: model:ir.model,name:ocd_live_whatsapp.model_ocd_whatsapp_inbox
+msgid "WhatsApp Conversations Of OCD Live"
+msgstr "Conversations WhatsApp d'OCD Live"
+
+#. module: ocd_live_whatsapp
+#: model:ir.model,name:ocd_live_whatsapp.model_whatsapp_template
+msgid "WhatsApp Template"
+msgstr "Modèle WhatsApp"
+
+#. module: ocd_live_whatsapp
+#: model:ir.model.fields,field_description:ocd_live_whatsapp.field_ocd_automation__template_ids
+msgid "WhatsApp Templates"
+msgstr "Modèles WhatsApp"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_live_settings.py:0
+msgid "WhatsApp accounts"
+msgstr "Comptes WhatsApp"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_whatsapp_health
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_whatsapp_send
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_whatsapp_webhook
+msgid "WhatsApp connection (built-in task)."
+msgstr "Connexion WhatsApp (tâche intégrée)."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_whatsapp_delays
+msgid "WhatsApp connection."
+msgstr "Connexion WhatsApp."
+
+#. module: ocd_live_whatsapp
 #: model:ir.module.module,summary:base.module_ocd_live_whatsapp
-msgid "WhatsApp messages of OCD Live: personal link, login code, confirmed live, reminder the day before, pass that ends, directory link online or refused"
-msgstr "Messages WhatsApp d'OCD Live : lien personnel, code de connexion, live confirmé, rappel la veille, pass qui se termine, lien de l'annuaire en ligne ou refusé"
+msgid "WhatsApp messages of OCD Live: personal link, login code, ticket, confirmed live, reminder the day before, free hour, pass that ends, directory links"
+msgstr "Messages WhatsApp d'OCD Live : lien personnel, code de connexion, ticket, live confirmé, rappel la veille, créneau libéré, pass qui se termine, liens de l'annuaire"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_asked
+msgid "WhatsApp right away with the template asked: code of 6 digits valid 10 minutes, link of the space, link of the password, or ticket."
+msgstr "WhatsApp tout de suite avec le modèle demandé : code à 6 chiffres valable 10 minutes, lien de l'espace, lien du mot de passe ou ticket."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_booking_whatsapp
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_free_slot
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_link_online
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_link_received
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_link_refused
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_window_alert
+msgid "WhatsApp templates."
+msgstr "Modèles WhatsApp."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_window_alert
+msgid "WhatsApp to each of them, template ocd_annuaire_ouvert, with the end of the window and the link to send their live."
+msgstr "WhatsApp à chacun, modèle ocd_annuaire_ouvert, avec la fin de la fenêtre et le lien pour envoyer son live."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_free_slot
+msgid "WhatsApp to each of them, template ocd_creneau_libre, with the link to book the day: the first who pays gets the hour."
+msgstr "WhatsApp à chacun, modèle ocd_creneau_libre, avec le lien pour réserver le jour : le premier qui paie prend l'heure."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_link_online
+msgid "WhatsApp to the vendor, template ocd_lien_en_ligne, with the end of the window."
+msgstr "WhatsApp au vendeur, modèle ocd_lien_en_ligne, avec la fin de la fenêtre."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_link_refused
+msgid "WhatsApp to the vendor, template ocd_lien_refuse, with the reason chosen by the team."
+msgstr "WhatsApp au vendeur, modèle ocd_lien_refuse, avec le motif choisi par l'équipe."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_booking_whatsapp
+msgid "WhatsApp to the vendor, template ocd_live_confirme: day, hours, place and reference, with the link of the vendor space."
+msgstr "WhatsApp au vendeur, modèle ocd_live_confirme : jour, heures, lieu et référence, avec le lien de l'espace vendeur."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_live_reminder
+msgid "WhatsApp to the vendor, template ocd_rappel_live: day, hour and place."
+msgstr "WhatsApp au vendeur, modèle ocd_rappel_live : jour, heure et lieu."
 
 #. module: ocd_live_whatsapp
 #. odoo-python
@@ -170,7 +1074,128 @@ msgid "WhatsApp waiting"
 msgstr "WhatsApp en attente"
 
 #. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_whatsapp_delays
+msgid "WhatsApp: contacts waiting for an answer"
+msgstr "WhatsApp : contacts qui attendent une réponse"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_whatsapp_health
+msgid "WhatsApp: health of the number"
+msgstr "WhatsApp : santé du numéro"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_whatsapp_webhook
+msgid "WhatsApp: read what Meta sends"
+msgstr "WhatsApp : lire ce que Meta envoie"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_whatsapp_send
+msgid "WhatsApp: send the messages waiting"
+msgstr "WhatsApp : envoyer les messages en attente"
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_free_slot
+msgid "When an hour of the day becomes free."
+msgstr "Quand une heure du jour se libère."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_booking_whatsapp
+msgid "When the booking is paid, or confirmed by the team."
+msgstr "Quand la réservation est payée, ou confirmée par l'équipe."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_asked
+msgid "When the contact asks for a login code, the personal link, the link of the password or the ticket."
+msgstr "Quand le contact demande un code de connexion, le lien personnel, le lien du mot de passe ou le ticket."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_link_online
+msgid "When the link is online."
+msgstr "Quand le lien est en ligne."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_link_refused
+msgid "When the link is refused."
+msgstr "Quand le lien est refusé."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_link_received
+msgid "When the link is sent."
+msgstr "Quand le lien est envoyé."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_window_alert
+msgid "Window open: tell who asked"
+msgstr "Fenêtre ouverte : prévenir qui l'a demandé"
+
+#. module: ocd_live_whatsapp
+#. odoo-javascript
+#: code:addons/ocd_live_whatsapp/static/src/inbox/inbox.xml:0
+msgid "Write a message…"
+msgstr "Écrire un message…"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Write the message first."
+msgstr "Écris d'abord le message."
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "You: "
+msgstr "Vous : "
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "delivered"
+msgstr "distribué"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "none"
+msgstr "aucun"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "not delivered"
+msgstr "non distribué"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "not sent"
+msgstr "non envoyé"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "read"
+msgstr "lu"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "sent"
+msgstr "envoyé"
+
+#. module: ocd_live_whatsapp
 #. odoo-python
 #: code:addons/ocd_live_whatsapp/models/ocd_live_dashboard.py:0
 msgid "the oldest: %s min"
 msgstr "la plus ancienne : %s min"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "to send"
+msgstr "à envoyer"
+
+#. module: ocd_live_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "until %s"
+msgstr "jusqu'au %s"

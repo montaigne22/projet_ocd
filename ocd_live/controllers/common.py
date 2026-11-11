@@ -312,7 +312,7 @@ def find_or_create_vendor(post, need_category=True):
     optin = bool(post.get("optin"))
     vendor = Partner._ocd_find_vendor_by_phone(phone)
     if vendor and vendor.name.casefold() == name.casefold():
-        if optin and not vendor.ocd_whatsapp_optin:
+        if optin and not vendor._ocd_whatsapp_consent():
             vendor.ocd_whatsapp_optin = True
         return vendor
     vendor = Partner.create({

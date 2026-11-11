@@ -81,7 +81,7 @@ class ResCompany(models.Model):
         string="Payment On The Phone Of The Customer",
         default=True,
         help="At the door, the courier shows a QR code: the customer pays on the phone with "
-        "the payment methods Odoo offers for the country of the customer (Mobile Money, card...). "
+        "the payment methods offered in the country of the customer (Mobile Money, card...). "
         "The payment is confirmed by the provider.",
     )
     ocd_cod_momo_declared = fields.Boolean(

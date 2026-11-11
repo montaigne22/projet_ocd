@@ -33,7 +33,7 @@ class OcdLiveDashboard(models.AbstractModel):
             "value": str(len(channels)),
             "sub": sub,
             "tone": "yellow" if channels else "",
-            "action": self._ocd_action("whatsapp_cloud.discuss_channel_action_whatsapp"),
+            "action": self._ocd_inbox_action(),
         })
         return tiles
 
@@ -51,6 +51,14 @@ class OcdLiveDashboard(models.AbstractModel):
                     name=channel.whatsapp_partner_id.name or channel.name,
                     minutes=self._ocd_minutes_since(channel.whatsapp_waiting_since),
                 ),
-                "action": self._ocd_action("whatsapp_cloud.discuss_channel_action_whatsapp"),
+                "action": self._ocd_inbox_action(channel),
             })
         return todos
+
+    @api.model
+    def _ocd_inbox_action(self, channel=None):
+        """The conversations of OCD Live, on `channel` when given."""
+        action = {"type": "ir.actions.client", "tag": "ocd_live_whatsapp.inbox", "name": self.env._("Conversations")}
+        if channel:
+            action["context"] = {"active_id": channel.id}
+        return action

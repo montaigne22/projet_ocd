@@ -11,12 +11,12 @@ OCD Live
   during the payment and released when the payment does not come.
 - Six packages sold as products: the lives of a package become credits that
   the vendor places later. The 4-hour live takes consecutive slots.
-- Payment page with the payment form of Odoo: it offers the providers that
+- Payment page with the standard payment form: it offers the providers that
   take the country, the currency and the amount of the order, as configured by
   the team (Campay in Cameroon today, Mobile Money checked by the team
   elsewhere, any connector added later). The prices come from the pricelist
-  Odoo gives to the country of the vendor. The booking is confirmed when the
-  payment confirms the order, never by the browser.
+  of the country of the vendor. The booking is confirmed when the payment
+  confirms the order, never by the browser.
 - A host (employee) for each remote live, with a reminder when none is chosen.
 - The team is notified in the "Lives" channel for every confirmed booking.
 - Live directory: the vendor sends the link of the live, the team checks it
@@ -44,6 +44,7 @@ OCD Live
         "data/ocd_voice_data.xml",
         "data/website_menu_data.xml",
         "data/ocd_live_dashboard_data.xml",
+        "data/ocd_automation_data.xml",
         "data/payment_provider_data.xml",
         "views/ocd_live_booking_views.xml",
         "views/ocd_live_credit_views.xml",
@@ -76,6 +77,8 @@ OCD Live
             "ocd_live/static/src/dashboard/*",
             "ocd_live/static/src/planning/*",
             "ocd_live/static/src/verification/*",
+            "ocd_live/static/src/settings/*",
+            "ocd_live/static/src/automations/*",
             "ocd_live/static/src/backend/navbar.js",
             "ocd_live/static/src/backend/navbar.xml",
             "ocd_live/static/src/backend/theme.scss",

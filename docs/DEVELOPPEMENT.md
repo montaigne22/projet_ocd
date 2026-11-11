@@ -3,8 +3,10 @@
 ## Environnement
 
 - **Odoo 20 Community** (Python 3.13, PostgreSQL 16).
-- Chemin des modules (`addons_path`) : les modules d'Odoo, **ce dépôt**, et le dossier des modules
-  complémentaires `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay`, `delivery_cameroon`.
+- Chemin des modules (`addons_path`) : les modules d'Odoo, **ce dépôt**, le dossier des modules
+  complémentaires `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay`, `delivery_cameroon`
+  (dépôt tchokos-projet), et le module `disable_odoo_online` de l'OCA (nécessaire à `ocd_debranding`) :
+  `git clone -b 20.0 --depth 1 https://github.com/OCA/server-brand`.
 - Exemple de `odoo.conf` :
 
 ```ini
@@ -24,7 +26,7 @@ En deux temps : les modules d'abord (Odoo met en place la comptabilité), puis l
 régler la société pendant qu'aucune écriture n'existe encore (pays, devise en franc CFA).
 
 ```bash
-odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo --load-language=fr_FR --stop-after-init
+odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --load-language=fr_FR --stop-after-init
 ```
 
 Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**), l'utilisateur en français (Préférences),
@@ -53,11 +55,12 @@ Le site : `/ocd` (réserver), `/lives` (annuaire), `/shop`. Le back-office : app
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_recruitment \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_recruitment --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding --stop-after-init
 ```
 
-Les tests du site (HttpCase) ont besoin du port 8069 libre.
+Puis la démo sur une autre base neuve : les mêmes modules et `ocd_live_demo`, avec `--test-tags /ocd_live_demo`.
+Les tests du site (HttpCase) ont besoin d'un port libre (`--http-port=8079` si la démo tourne sur 8069).
 
 ## Traductions
 
@@ -84,7 +87,8 @@ Pages du shop : `node tools/captures/site-shop.js <vendeur vendu par OCD> <vende
 le jeton est celui de `_ocd_get_space_token()`, pour l'appli des colis et la tournée : le créer dans
 `odoo shell` puis `env.cr.commit()`). Sur téléphone, le script remplit aussi un panier de deux vendeuses
 de Douala jusqu'au paiement (`8b`, `8c` ; produits et adresse dans `TWO_PARCELS`). Back-office : `dashboard,planning,regie,verify,orders,dispatch,parcel,
-couriers,vendor,payouts,recruit,settings,autos,rates` (`VENDOR_ID`, `PARCEL_ID` pour les fiches).
+couriers,vendor,payouts,recruit,settings,autos,rates,whatsapp` (`VENDOR_ID`, `PARCEL_ID` pour les
+fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrateurs.
 
 ## Repères dans le code
 

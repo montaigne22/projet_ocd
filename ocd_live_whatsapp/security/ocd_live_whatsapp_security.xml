@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The team of OCD Live answers on WhatsApp: its users are agents, its managers manage
+         the conversations (assignment, templates). -->
+    <record id="ocd_live.group_ocd_live_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('whatsapp_cloud.group_whatsapp_user'))]"/>
+    </record>
+    <record id="ocd_live.group_ocd_live_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('whatsapp_cloud.group_whatsapp_manager'))]"/>
+    </record>
+
+</odoo>

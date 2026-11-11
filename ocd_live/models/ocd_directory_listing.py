@@ -1,7 +1,9 @@
+from datetime import timedelta
 from urllib.parse import urlsplit
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.misc import format_date
 
 ALLOWED_HOSTS = {
     "tiktok.com": "tiktok",
@@ -141,7 +143,7 @@ class OcdDirectoryListing(models.Model):
         # Write the pending state changes (e.g. a refusal) before the unique index checks them
         self.flush_model(["state", "partner_id"])
         # sudo: called from the vendor space, the vendor was identified by the personal link
-        return self.sudo().create({
+        listing = self.sudo().create({
             "partner_id": partner.id,
             "url": url,
             "country_id": (country or partner.country_id).id,
@@ -152,6 +154,26 @@ class OcdDirectoryListing(models.Model):
             "window_end": end,
             "state": "to_check" if start <= now else "queued",
         })
+        if listing.state == "queued":
+            listing._ocd_notify_vendor("queued")
+        return listing
+
+    def _ocd_window_start_label(self):
+        """When the link is checked, in the time of the studio: "18:00", "tomorrow at 08:00"
+        or "Monday at 08:00"."""
+        self.ensure_one()
+        if not self.window_start:
+            return ""
+        company = self.company_id or self.env.company
+        start = company._ocd_to_local(self.window_start)
+        today = company._ocd_to_local(fields.Datetime.now()).date()
+        hour = f"{start:%H:%M}"
+        if start.date() == today:
+            return hour
+        if start.date() == today + timedelta(days=1):
+            return self.env._("tomorrow at %s", hour)
+        day = format_date(self.env, start.date(), date_format="EEEE")
+        return self.env._("%(day)s at %(hour)s", day=day, hour=hour)
 
     # === ACTIONS === #
 
@@ -202,6 +224,10 @@ class OcdDirectoryListing(models.Model):
         self.ensure_one()
         if event == "published":
             body = self.env._("The live link is online in the directory.")
+        elif event == "queued":
+            body = self.env._(
+                "The live link waits for the checking window: checked from %s.", self._ocd_window_start_label()
+            )
         else:
             body = self.env._(
                 "The live link was refused: %s",

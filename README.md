@@ -8,14 +8,17 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 |---|---|
 | `ocd_live` | Réservations (créneaux, paquets, crédits, prix selon l'heure), annuaire des lives et pass, espace vendeur, voix des pages, tableau de bord et écrans de l'équipe (planning, à vérifier), thème du site et du back-office |
 | `ocd_live_shop` | Shop des vendeurs : mode de vente et « qui livre » par vendeur, un colis par vendeur, code de livraison, dispatch, livreurs et caisse, paiement à la porte, reversements, régie en direct, commandes de la semaine |
-| `ocd_live_whatsapp` | Messages WhatsApp d'OCD Live (lien personnel, code, live confirmé, rappels, pass, annuaire) avec `whatsapp_cloud` |
+| `ocd_live_whatsapp` | Messages WhatsApp d'OCD Live (lien personnel, code, ticket, live confirmé, rappels, créneau libéré, pass, annuaire), un seul accord WhatsApp, écran des conversations, avec `whatsapp_cloud` |
 | `ocd_live_shop_whatsapp` | Messages WhatsApp des colis (à préparer, en route avec le code, échec, livré, retourné) |
 | `ocd_live_recruitment` | Offre « Animatrice live · Lomé » sur le site, 5 étapes de recrutement, l'embauchée devient animatrice |
 | `ocd_delivery_togo` | Régions, villes et quartiers du Togo, point de repère, modes de livraison pour Lomé et le reste du Togo |
+| `ocd_debranding` | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients : site, connexion, portail, back-office, fenêtres d'erreur, e-mails |
 | `ocd_live_demo` | Données de démonstration, retirées entièrement en désinstallant le module |
 
 Modules complémentaires requis : `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et
-`delivery_cameroon`. Ce que fait chaque outil pour OCD Live : [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md).
+`delivery_cameroon` (dépôt tchokos-projet), `disable_odoo_online` (OCA, dépôt
+[server-brand](https://github.com/OCA/server-brand), branche 20.0). Ce que fait chaque outil pour OCD
+Live : [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md).
 
 ## Pour reprendre le projet
 
@@ -32,7 +35,7 @@ Modules complémentaires requis : `whatsapp_cloud`, `whatsapp_cloud_sale`, `paym
 ## Installation rapide
 
 ```bash
-odoo -c odoo.conf -d ocd -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo --load-language=fr_FR
+odoo -c odoo.conf -d ocd -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --load-language=fr_FR
 ```
 
 Pour voir le projet avec des données : ajouter `ocd_live_demo` (le désinstaller retire tout).

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Automatic tasks of OCD Live, each one with its switch (BoAutomatisations) -->
+    <!-- Scheduled actions of OCD Live, each one with its switch (administrators) -->
     <record id="ir_cron_view_list_ocd" model="ir.ui.view">
         <field name="name">ir.cron.view.list.ocd</field>
         <field name="model">ir.cron</field>
@@ -29,7 +29,10 @@
             Command.create({'view_mode': 'form'})]"/>
     </record>
 
+    <!-- The catalogue of the automations (BoAutomatisations) is the client action
+         ocd_live.automations; this list of the scheduled actions stays for the administrators
+         (link from the catalogue). -->
     <menuitem id="ocd_live_automations_menu" name="Automations" parent="ocd_live_menu_config"
-              action="ocd_live_cron_action" sequence="15" groups="base.group_system"/>
+              action="ocd_live_automations_action" sequence="15"/>
 
 </odoo>

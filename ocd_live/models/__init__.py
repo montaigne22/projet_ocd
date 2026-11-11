@@ -23,3 +23,5 @@ from . import ocd_live_waitlist
 from . import payment_provider
 from . import ocd_directory_alert
 from . import ocd_live_price_rule
+from . import ocd_live_settings
+from . import ocd_automation

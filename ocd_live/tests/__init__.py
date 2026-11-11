@@ -6,3 +6,5 @@ from . import test_settings
 from . import test_website
 from . import test_planning
 from . import test_verification
+from . import test_settings_page
+from . import test_automations

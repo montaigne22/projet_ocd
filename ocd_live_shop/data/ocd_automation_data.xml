@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of the shop, the deliveries and the money in the catalogue of the team. -->
+<odoo>
+
+    <record id="automation_parcel_split" model="ocd.automation">
+        <field name="code">parcel_split</field>
+        <field name="name">Order confirmed: one parcel per vendor</field>
+        <field name="sequence">10</field>
+        <field name="group">shop</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="when">Order paid, or confirmed to pay at the door</field>
+        <field name="trigger">When the order is confirmed.</field>
+        <field name="scope">The orders of the shop.</field>
+        <field name="actions">Create one parcel per vendor, at the price of delivery paid for it.
+Choose who delivers from the form of the vendor and their zones: the vendor, an OCD courier, an agency, or the OCD stock.
+Tell each vendor the parcel to prepare.</field>
+        <field name="tools">Tested code of OCD Live, Sales and Inventory.</field>
+    </record>
+
+    <record id="automation_parcel_escalation" model="ocd.automation">
+        <field name="code">parcel_escalation</field>
+        <field name="name">Parcel not ready: remind the vendor, then alert the dispatch</field>
+        <field name="sequence">20</field>
+        <field name="group">shop</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="cron_id" ref="ir_cron_parcel_escalation"/>
+        <field name="when">After the time to prepare a parcel, then after the alert delay (Settings)</field>
+        <field name="trigger">Every 15 minutes.</field>
+        <field name="scope">The parcels still « to prepare » by a vendor.</field>
+        <field name="actions">Remind the vendor and note « Reminded » on the parcel.
+Still not ready: urgent activity for the dispatch and message in the channel of the deliveries; an OCD courier can take the parcel over.</field>
+        <field name="tools">Scheduled task, activities and team channels.</field>
+    </record>
+
+    <record id="automation_code_sent" model="ocd.automation">
+        <field name="code">code_sent</field>
+        <field name="name">Parcel on the way: send the code to the customer</field>
+        <field name="sequence">30</field>
+        <field name="group">shop</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">The parcel leaves</field>
+        <field name="trigger">When the parcel is « on the way ».</field>
+        <field name="scope">Every parcel.</field>
+        <field name="actions">Create a code of 4 digits, different for each parcel.
+Send it to the customer; hide it from the team and from the courier.</field>
+        <field name="tools">Tested code of OCD Live.</field>
+    </record>
+
+    <record id="automation_code_locked" model="ocd.automation">
+        <field name="code">code_locked</field>
+        <field name="name">Wrong codes: lock the parcel</field>
+        <field name="sequence">40</field>
+        <field name="group">shop</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">At the last wrong code allowed (Settings)</field>
+        <field name="trigger">When too many wrong codes are typed.</field>
+        <field name="scope">Every parcel.</field>
+        <field name="actions">Lock the parcel: it cannot be « delivered » any more without the team.
+Activity for the dispatch.</field>
+        <field name="tools">Tested code of OCD Live.</field>
+    </record>
+
+    <record id="automation_failed_return" model="ocd.automation">
+        <field name="code">failed_return</field>
+        <field name="name">Last failed attempt: return</field>
+        <field name="sequence">50</field>
+        <field name="group">shop</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">The attempts allowed have failed (Settings)</field>
+        <field name="trigger">When the last attempt fails (customer absent or unreachable).</field>
+        <field name="scope">Every parcel.</field>
+        <field name="actions">Send the parcel back to the vendor or to the OCD stock.
+When the customer paid online: the credit note to refund.
+Tell the customer.</field>
+        <field name="tools">Tested code of OCD Live, Inventory and Invoicing.</field>
+    </record>
+
+    <record id="automation_delivered_message" model="ocd.automation">
+        <field name="code">delivered_message</field>
+        <field name="name">Parcel delivered: tell the customer</field>
+        <field name="sequence">60</field>
+        <field name="group">shop</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">The parcel is delivered with the right code</field>
+        <field name="trigger">When the parcel is « delivered ».</field>
+        <field name="scope">The customers who agreed to the messages.</field>
+        <field name="actions">Thank the customer; the tracking page lets them rate the order or ask for a return.</field>
+        <field name="tools">Code of OCD Live.</field>
+    </record>
+
+    <record id="automation_boutique_alert" model="ocd.automation">
+        <field name="code">boutique_alert</field>
+        <field name="name">Vendor live: tell the visitors who asked</field>
+        <field name="sequence">70</field>
+        <field name="group">shop</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="model_ocd_boutique_alert"/>
+        <field name="cron_id" ref="ir_cron_boutique_alerts"/>
+        <field name="when">When the live of the vendor starts</field>
+        <field name="trigger">Every 5 minutes.</field>
+        <field name="scope">The visitors who asked « Tell me » on the boutique of the vendor.</field>
+        <field name="actions">Tell them that the vendor is live, with the link of the boutique.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_vendor_share" model="ocd.automation">
+        <field name="code">vendor_share</field>
+        <field name="name">Parcel delivered: the share of the vendor</field>
+        <field name="sequence">10</field>
+        <field name="group">money</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">The parcel is delivered with the right code</field>
+        <field name="trigger">When the parcel is « delivered », code checked.</field>
+        <field name="scope">The parcels sold by OCD.</field>
+        <field name="actions">Bill of the vendor: their sales minus the commission, plus their delivery minus the share of OCD.
+When the vendor kept the cash: it is withheld from the next payout.</field>
+        <field name="tools">Tested code of OCD Live, Purchase and Invoicing.</field>
+    </record>
+
+    <record id="automation_payouts" model="ocd.automation">
+        <field name="code">payouts</field>
+        <field name="name">Prepare the payouts of the vendors</field>
+        <field name="sequence">20</field>
+        <field name="group">money</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="model_ocd_payout"/>
+        <field name="cron_id" ref="ir_cron_prepare_payouts"/>
+        <field name="when">Every day, for the vendors whose payout day comes (Settings)</field>
+        <field name="trigger">Every day.</field>
+        <field name="scope">The bills of the parcels confirmed by code, not paid out yet.</field>
+        <field name="actions">Add up the bills of each vendor, minus what is withheld.
+Prepare the payouts for the team to check; below the minimum, it waits for the next one.</field>
+        <field name="tools">Code of OCD Live, Purchase and Invoicing.</field>
+    </record>
+
+</odoo>

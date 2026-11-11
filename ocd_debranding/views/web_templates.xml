@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pages of the website, the login and the portal, and the page of the back office: no
+     "Powered by Odoo", no generator tag, the tab title and icon of OCD Live. -->
+<odoo>
+
+    <template id="brand_promotion" inherit_id="web.brand_promotion" priority="99" name="No brand promotion">
+        <xpath expr="//div[hasclass('o_brand_promotion')]" position="attributes">
+            <attribute name="t-if">False</attribute>
+        </xpath>
+    </template>
+
+    <template id="layout" inherit_id="web.layout" priority="99" name="Title and icon of OCD Live">
+        <xpath expr="//title" position="attributes">
+            <attribute name="t-out">title or 'OCD Live'</attribute>
+        </xpath>
+        <xpath expr="//link[@rel='shortcut icon']" position="attributes">
+            <attribute name="t-att-href">x_icon or '/ocd_debranding/static/img/favicon.png'</attribute>
+        </xpath>
+    </template>
+
+    <template id="login_layout" inherit_id="web.login_layout" priority="10" name="Login without Powered by">
+        <xpath expr="//a[contains(@href, 'odoo.com')]" position="replace"/>
+    </template>
+
+    <template id="website_layout" inherit_id="website.layout" priority="99" name="No generator tag">
+        <xpath expr="//meta[@name='generator']" position="replace"/>
+    </template>
+
+    <template id="portal_record_sidebar" inherit_id="portal.portal_record_sidebar" priority="99" name="Portal without Powered by">
+        <xpath expr="//a[contains(@href, 'odoo.com')]/.." position="replace"/>
+    </template>
+
+</odoo>

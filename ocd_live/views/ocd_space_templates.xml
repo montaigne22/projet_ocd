@@ -148,12 +148,13 @@
 
                     <form action="/ocd/espace/moi/whatsapp" method="post">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <t t-set="whatsapp_on" t-value="vendor._ocd_whatsapp_consent()"/>
                         <button type="submit" class="o_ocd_toggle" role="switch"
-                                t-att-aria-checked="'true' if vendor.ocd_whatsapp_optin else 'false'">
+                                t-att-aria-checked="'true' if whatsapp_on else 'false'">
                             <span class="o_ocd_toggle_box" aria-hidden="true">
-                                <t t-if="vendor.ocd_whatsapp_optin" t-call="ocd_live.icon" icon.f="check"/>
+                                <t t-if="whatsapp_on" t-call="ocd_live.icon" icon.f="check"/>
                             </span>
-                            <span t-if="vendor.ocd_whatsapp_optin">Tickets and reminders on WhatsApp: on</span>
+                            <span t-if="whatsapp_on">Tickets and reminders on WhatsApp: on</span>
                             <span t-else="">Tickets and reminders on WhatsApp: off</span>
                         </button>
                     </form>

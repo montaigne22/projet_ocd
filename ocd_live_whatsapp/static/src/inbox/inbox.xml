@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live_whatsapp.Inbox">
+        <div class="o_action o_ocd_bo o_ocd_inbox">
+            <t t-set="data" t-value="this.data()"/>
+            <t t-set="current" t-value="this.current"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">Conversations</h1>
+                <span t-attf-class="o_ocd_bo_pager o_ocd_bo_push o_ocd_wa_account o_ocd_wa_tone_#{data.account.tone}"
+                      t-out="data.account.text"/>
+                <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.refresh()"
+                        title="Refresh" aria-label="Refresh">
+                    <i class="oi" data-icon="refresh" aria-hidden="true"/>
+                </button>
+            </div>
+            <div class="o_ocd_wa">
+                <div class="o_ocd_wa_box">
+                    <!-- Conversations -->
+                    <div class="o_ocd_wa_list">
+                        <div class="o_ocd_wa_chips" role="group" aria-label="Filter the conversations">
+                            <button t-foreach="this.chips" t-as="chip" t-key="chip.key" type="button" class="o_ocd_wa_chip"
+                                    t-att-aria-pressed="this.filter() === chip.key ? 'true' : 'false'"
+                                    t-on-click="() => this.filter.set(chip.key)" t-out="chip.label"/>
+                        </div>
+                        <div class="o_ocd_wa_items">
+                            <button t-foreach="this.conversations" t-as="conversation" t-key="conversation.id" type="button"
+                                    t-att-class="{ 'o_ocd_wa_item': true, 'o_ocd_current': current and current.id === conversation.id, 'o_ocd_waiting': conversation.waiting }"
+                                    t-att-aria-pressed="current and current.id === conversation.id ? 'true' : 'false'"
+                                    t-on-click="() => this.open(conversation)">
+                                <span t-attf-class="o_ocd_wa_avatar #{conversation.vendor ? 'o_ocd_wa_avatar_vendor' : ''}"
+                                      aria-hidden="true" t-out="conversation.initials"/>
+                                <span class="o_ocd_wa_item_text">
+                                    <span class="o_ocd_wa_item_top">
+                                        <span class="o_ocd_wa_item_name" t-out="conversation.name"/>
+                                        <span class="o_ocd_wa_item_role" t-out="conversation.role"/>
+                                    </span>
+                                    <span class="o_ocd_wa_item_preview" t-out="conversation.preview"/>
+                                </span>
+                                <span class="o_ocd_wa_item_side">
+                                    <span class="o_ocd_wa_item_time" t-out="conversation.time"/>
+                                    <span t-if="conversation.waiting" class="o_ocd_wa_dot" role="img"
+                                          aria-label="Waiting for an answer"/>
+                                </span>
+                            </button>
+                            <p t-if="!this.conversations.length" class="o_ocd_wa_empty">
+                                <t t-if="this.filter() === 'waiting'">Nobody waits for an answer.</t>
+                                <t t-else="">No WhatsApp conversation yet.</t>
+                            </p>
+                        </div>
+                        <div t-if="data.team_channels.length" class="o_ocd_wa_team">
+                            <span class="o_ocd_wa_team_title">Channels of the team · Discuss</span>
+                            <button t-foreach="data.team_channels" t-as="row" t-key="row_index" type="button"
+                                    class="o_ocd_wa_team_row" t-on-click="() => this.openTeamChannel(row)">
+                                <span class="o_ocd_wa_team_name" t-out="row.name"/>
+                                <span t-attf-class="o_ocd_wa_team_text o_ocd_wa_tone_#{row.tone or 'none'}"
+                                      t-out="row.time ? row.text + ' · ' + row.time : row.text"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Conversation -->
+                    <div class="o_ocd_wa_thread">
+                        <t t-if="current">
+                            <div class="o_ocd_wa_head">
+                                <span class="o_ocd_wa_head_text">
+                                    <b class="o_ocd_wa_head_name" t-out="current.name"/>
+                                    <span class="o_ocd_wa_head_sub">
+                                        <t t-out="current.phone"/> · <t t-out="current.role"/>
+                                        <t t-if="current.assigned"> · <t t-out="current.assigned"/></t>
+                                    </span>
+                                </span>
+                                <span t-attf-class="o_ocd_wa_window #{current.open ? 'o_ocd_wa_window_open' : 'o_ocd_wa_window_closed'}"
+                                      t-out="current.window"/>
+                            </div>
+                            <div class="o_ocd_wa_messages" t-ref="this.messagesRef" role="log" aria-live="polite"
+                                 t-att-aria-label="current.name">
+                                <div t-foreach="current.messages" t-as="message" t-key="message.id"
+                                     t-attf-class="o_ocd_wa_line o_ocd_wa_line_#{message.kind}">
+                                    <div t-attf-class="o_ocd_wa_bubble o_ocd_wa_bubble_#{message.kind} #{message.failed ? 'o_ocd_wa_bubble_failed' : ''}">
+                                        <span t-if="message.tag" class="o_ocd_wa_tag" t-out="message.tag"/>
+                                        <span class="o_ocd_wa_text" t-out="message.text"/>
+                                        <span t-if="message.files.length and message.text !== message.files.join(', ')" class="o_ocd_wa_files">
+                                            <span t-foreach="message.files" t-as="file" t-key="file_index" t-out="file"/>
+                                        </span>
+                                        <span class="o_ocd_wa_meta">
+                                            <t t-out="message.time"/><t t-if="message.status"> · <t t-out="message.status"/></t>
+                                        </span>
+                                    </div>
+                                </div>
+                                <p t-if="!current.messages.length" class="o_ocd_wa_empty">No message yet.</p>
+                            </div>
+                            <div t-if="current.open" class="o_ocd_wa_compose">
+                                <div t-if="current.quick.length" class="o_ocd_wa_quick">
+                                    <span class="o_ocd_wa_quick_title">Quick answers</span>
+                                    <button t-foreach="current.quick" t-as="quick" t-key="quick_index" type="button"
+                                            class="o_ocd_wa_quick_button" t-att-title="quick.text"
+                                            t-on-click="() => this.useQuick(quick)" t-out="quick.label"/>
+                                </div>
+                                <div class="o_ocd_wa_write">
+                                    <label for="o_ocd_wa_draft" class="visually-hidden">Message to <t t-out="current.name"/></label>
+                                    <textarea id="o_ocd_wa_draft" class="o_ocd_wa_input" rows="1" t-ref="this.inputRef"
+                                              placeholder="Write a message…" t-att-value="this.draft()"
+                                              t-on-input="(ev) => this.onDraft(ev)" t-on-keydown="(ev) => this.onKeydown(ev)"/>
+                                    <button type="button" class="o_ocd_wa_note_button" t-att-disabled="this.busy() or !this.draft().trim()"
+                                            t-on-click="() => this.post(true)">Internal note</button>
+                                    <button type="button" class="o_ocd_wa_send" t-att-disabled="this.busy() or !this.draft().trim()"
+                                            t-on-click="() => this.post(false)">Send</button>
+                                </div>
+                            </div>
+                            <div t-else="" class="o_ocd_wa_compose">
+                                <t t-if="current.templates.length">
+                                    <label for="o_ocd_wa_template" class="o_ocd_wa_quick_title">Template approved by Meta</label>
+                                    <select id="o_ocd_wa_template" class="o_ocd_wa_select" t-on-change="(ev) => this.onTemplate(ev)">
+                                        <option t-foreach="current.templates" t-as="template" t-key="template.key"
+                                                t-att-value="template.key"
+                                                t-att-selected="template.key === this.templateKey() ? 'selected' : undefined"
+                                                t-out="template.label"/>
+                                    </select>
+                                    <div t-if="this.template" class="o_ocd_wa_preview" t-out="this.template.preview"/>
+                                    <button type="button" class="o_ocd_wa_send o_ocd_wa_send_template" t-att-disabled="this.busy()"
+                                            t-on-click="() => this.sendTemplate()">Send the template</button>
+                                </t>
+                                <p t-else="" class="o_ocd_wa_empty">No approved template for this contact: they write first, then the team answers.</p>
+                            </div>
+                        </t>
+                        <p t-else="" class="o_ocd_wa_empty o_ocd_wa_empty_center">Choose a conversation.</p>
+                    </div>
+
+                    <!-- Contact -->
+                    <aside class="o_ocd_wa_contact" t-if="current">
+                        <div class="o_ocd_wa_contact_head">
+                            <span t-attf-class="o_ocd_wa_avatar o_ocd_wa_avatar_big #{current.vendor ? 'o_ocd_wa_avatar_vendor' : ''}"
+                                  aria-hidden="true" t-out="current.initials"/>
+                            <span class="o_ocd_wa_contact_names">
+                                <b t-out="current.name"/>
+                                <span t-out="current.place"/>
+                            </span>
+                        </div>
+                        <div t-attf-class="o_ocd_wa_consent o_ocd_wa_consent_#{current.consent.tone}">
+                            <b t-out="current.consent.text"/>
+                            <span>If they write STOP, no automatic message any more.</span>
+                        </div>
+                        <t t-foreach="current.sections" t-as="section" t-key="section_index">
+                            <span class="o_ocd_wa_section_title" t-out="section.title"/>
+                            <div t-foreach="section.rows" t-as="row" t-key="row_index" class="o_ocd_wa_row">
+                                <span class="o_ocd_wa_row_key" t-out="row.key"/>
+                                <span class="o_ocd_wa_row_value" t-out="row.value"/>
+                            </div>
+                            <div class="o_ocd_wa_links">
+                                <button t-foreach="section.links" t-as="link" t-key="link_index" type="button"
+                                        class="o_ocd_wa_link" t-on-click="() => this.run(link.action)">
+                                    <t t-out="link.label"/><span aria-hidden="true">→</span>
+                                </button>
+                            </div>
+                        </t>
+                        <div class="o_ocd_wa_links">
+                            <button t-if="current.partner_action" type="button" class="o_ocd_wa_link"
+                                    t-on-click="() => this.run(current.partner_action)">Contact<span aria-hidden="true">→</span></button>
+                            <button type="button" class="o_ocd_wa_link" t-on-click="() => this.openDiscuss()">
+                                Open in Discuss<span aria-hidden="true">→</span></button>
+                        </div>
+                        <p class="o_ocd_wa_foot">The delivery codes are hidden here: only the customer sees them.</p>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

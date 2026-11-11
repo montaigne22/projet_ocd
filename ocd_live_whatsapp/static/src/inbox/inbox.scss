@@ -1,0 +1,582 @@
+// WhatsApp conversations of the team, as in the validated design (BoWhatsApp)
+.o_ocd_wa {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    padding: 14px 22px;
+}
+.o_ocd_wa_box {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr) 290px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.o_ocd_wa_account.o_ocd_wa_tone_green {
+    color: $ocd-green-text;
+    font-weight: 700;
+}
+.o_ocd_wa_account.o_ocd_wa_tone_red {
+    color: $ocd-red-text;
+    font-weight: 700;
+}
+
+// List
+.o_ocd_wa_list {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-right: 1px solid $ocd-bo-border;
+}
+.o_ocd_wa_chips {
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px;
+    border-bottom: 1px solid $ocd-bo-grey;
+}
+.o_ocd_wa_chip {
+    min-height: 30px;
+    padding: 0 10px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    &[aria-pressed="true"] {
+        border-color: $ocd-ink;
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
+}
+.o_ocd_wa_items {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+.o_ocd_wa_item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    gap: 9px;
+    align-items: center;
+    padding: 9px 12px;
+    border: 0;
+    border-bottom: 1px solid $ocd-bo-grey;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+    &.o_ocd_current {
+        background: #FFF6EC;
+        box-shadow: inset 3px 0 0 $ocd-orange;
+    }
+    &.o_ocd_waiting .o_ocd_wa_item_name {
+        font-weight: 800;
+    }
+    &:focus-visible {
+        outline: 3px solid $ocd-orange;
+        outline-offset: -3px;
+    }
+}
+.o_ocd_wa_avatar {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: $ocd-ink;
+    color: #FFFFFF;
+    font-size: 12.5px;
+    font-weight: 800;
+    &.o_ocd_wa_avatar_vendor {
+        background: $ocd-orange-soft;
+        color: $ocd-ink;
+    }
+    &.o_ocd_wa_avatar_big {
+        width: 44px;
+        height: 44px;
+        font-size: 14px;
+    }
+}
+.o_ocd_wa_item_text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+}
+.o_ocd_wa_item_top {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+}
+.o_ocd_wa_item_name {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.o_ocd_wa_item_role {
+    flex: none;
+    font-size: 11.5px;
+    color: $ocd-bo-muted;
+}
+.o_ocd_wa_item_preview {
+    font-size: 12.5px;
+    color: $ocd-bo-text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.o_ocd_wa_item_side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+.o_ocd_wa_item_time {
+    font-size: 11.5px;
+    color: $ocd-bo-muted;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+.o_ocd_wa_dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $ocd-green;
+}
+.o_ocd_wa_team {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    border-top: 1px solid $ocd-bo-border;
+    background: #FAFAFB;
+}
+.o_ocd_wa_team_title {
+    font-size: 12px;
+    font-weight: 700;
+    color: $ocd-bo-muted;
+}
+.o_ocd_wa_team_row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 2px 0;
+    border: 0;
+    background: transparent;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    &:hover .o_ocd_wa_team_name {
+        text-decoration: underline;
+    }
+}
+.o_ocd_wa_team_name {
+    flex: none;
+    white-space: nowrap;
+}
+.o_ocd_wa_team_text {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: $ocd-bo-muted;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &.o_ocd_wa_tone_red {
+        color: $ocd-red-dark;
+        font-weight: 700;
+    }
+}
+
+// Conversation
+.o_ocd_wa_thread {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+.o_ocd_wa_head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid $ocd-bo-grey;
+}
+.o_ocd_wa_head_text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+}
+.o_ocd_wa_head_name {
+    font-size: 16px;
+}
+.o_ocd_wa_head_sub {
+    font-size: 12.5px;
+    color: $ocd-bo-muted;
+    font-variant-numeric: tabular-nums;
+}
+.o_ocd_wa_window {
+    margin-left: auto;
+    max-width: 300px;
+    padding: 4px 9px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.35;
+    &.o_ocd_wa_window_open {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+    &.o_ocd_wa_window_closed {
+        background: $ocd-yellow-soft;
+        color: $ocd-yellow-text;
+    }
+}
+.o_ocd_wa_messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px;
+    background: #F7F5F2;
+}
+.o_ocd_wa_line {
+    display: flex;
+    justify-content: flex-start;
+    &.o_ocd_wa_line_out, &.o_ocd_wa_line_auto {
+        justify-content: flex-end;
+    }
+    &.o_ocd_wa_line_note, &.o_ocd_wa_line_system {
+        justify-content: center;
+    }
+}
+.o_ocd_wa_bubble {
+    max-width: 78%;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 7px 10px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-size: 13.5px;
+    line-height: 1.4;
+    &.o_ocd_wa_bubble_in {
+        background: #FFFFFF;
+        border-color: $ocd-bo-border;
+    }
+    &.o_ocd_wa_bubble_out {
+        background: $ocd-green-soft;
+    }
+    &.o_ocd_wa_bubble_auto {
+        background: $ocd-bo-grey;
+    }
+    &.o_ocd_wa_bubble_note {
+        background: #FFF6D6;
+        border-color: #E9D48A;
+    }
+    &.o_ocd_wa_bubble_system {
+        max-width: 90%;
+        background: transparent;
+        color: $ocd-bo-muted;
+        font-size: 12.5px;
+        text-align: center;
+        .o_ocd_wa_meta {
+            align-self: center;
+        }
+    }
+    &.o_ocd_wa_bubble_failed {
+        border-color: #E8A0A6;
+        .o_ocd_wa_meta {
+            color: $ocd-red-dark;
+            font-weight: 700;
+        }
+    }
+}
+.o_ocd_wa_tag {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: $ocd-bo-text;
+    .o_ocd_wa_bubble_out & {
+        color: $ocd-green-text;
+    }
+    .o_ocd_wa_bubble_note & {
+        color: $ocd-yellow-text;
+    }
+}
+.o_ocd_wa_text {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+.o_ocd_wa_files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    span::before {
+        content: "📎 ";
+    }
+}
+.o_ocd_wa_meta {
+    align-self: flex-end;
+    font-size: 11.5px;
+    color: $ocd-bo-muted;
+    font-variant-numeric: tabular-nums;
+}
+.o_ocd_wa_compose {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 16px 12px;
+    border-top: 1px solid $ocd-bo-border;
+}
+.o_ocd_wa_quick {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.o_ocd_wa_quick_title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: $ocd-bo-muted;
+}
+.o_ocd_wa_quick_button {
+    min-height: 28px;
+    padding: 0 10px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 14px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.o_ocd_wa_write {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+.o_ocd_wa_input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 40px;
+    max-height: 120px;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+    resize: vertical;
+    &:focus {
+        outline: 0;
+        border-color: $ocd-green;
+        box-shadow: 0 0 0 3px rgba($ocd-green, 0.2);
+    }
+}
+.o_ocd_wa_note_button, .o_ocd_wa_send {
+    flex: none;
+    min-height: 40px;
+    padding: 0 14px;
+    white-space: nowrap;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    &:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+}
+.o_ocd_wa_note_button {
+    border: 1px solid $ocd-bo-input;
+    background: #FFF6D6;
+    color: $ocd-ink;
+    font-size: 13px;
+}
+.o_ocd_wa_send {
+    border: 0;
+    background: $ocd-green;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 800;
+    &.o_ocd_wa_send_template {
+        align-self: flex-end;
+    }
+}
+.o_ocd_wa_select {
+    height: 36px;
+    padding: 0 8px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    font-family: inherit;
+    font-size: 13.5px;
+}
+.o_ocd_wa_preview {
+    padding: 8px 10px;
+    border: 1px dashed $ocd-bo-input;
+    border-radius: 8px;
+    background: #FAFAFB;
+    font-size: 13.5px;
+    line-height: 1.4;
+    white-space: pre-line;
+}
+.o_ocd_wa_empty {
+    margin: 0;
+    padding: 12px;
+    font-size: 13px;
+    color: $ocd-bo-muted;
+    &.o_ocd_wa_empty_center {
+        margin: auto;
+    }
+}
+
+// Contact
+.o_ocd_wa_contact {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 14px;
+    border-left: 1px solid $ocd-bo-border;
+}
+.o_ocd_wa_contact_head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.o_ocd_wa_contact_names {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    b {
+        font-size: 15px;
+    }
+    span {
+        font-size: 12.5px;
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_wa_consent {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    line-height: 1.4;
+    &.o_ocd_wa_consent_green {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+    &.o_ocd_wa_consent_yellow {
+        background: $ocd-yellow-soft;
+        color: $ocd-yellow-text;
+    }
+    &.o_ocd_wa_consent_red {
+        background: $ocd-red-soft;
+        color: $ocd-red-dark;
+    }
+}
+.o_ocd_wa_section_title {
+    padding-top: 10px;
+    border-top: 1px solid $ocd-bo-line;
+    font-size: 13px;
+    font-weight: 700;
+    color: $ocd-bo-muted;
+}
+.o_ocd_wa_row {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.35;
+}
+.o_ocd_wa_row_key {
+    color: $ocd-bo-muted;
+    overflow-wrap: anywhere;
+}
+.o_ocd_wa_row_value {
+    font-weight: 600;
+}
+.o_ocd_wa_links {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    &:empty {
+        display: none;
+    }
+}
+.o_ocd_wa_link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 36px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+}
+.o_ocd_wa_foot {
+    margin: auto 0 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: $ocd-bo-muted;
+}
+@media (max-width: 1199.98px) {
+    .o_ocd_wa_box {
+        grid-template-columns: 260px minmax(0, 1fr);
+    }
+    .o_ocd_wa_contact {
+        display: none;
+    }
+}
+@media (max-width: 767.98px) {
+    .o_ocd_wa {
+        padding: 10px;
+    }
+    .o_ocd_wa_box {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: 40% minmax(0, 1fr);
+    }
+    .o_ocd_wa_list {
+        border-right: 0;
+        border-bottom: 1px solid $ocd-bo-border;
+    }
+}

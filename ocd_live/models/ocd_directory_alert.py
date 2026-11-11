@@ -62,3 +62,9 @@ class OcdDirectoryAlert(models.Model):
     def _ocd_send_window_open(self):
         """Send the news of the opening. Extended by ocd_live_whatsapp."""
         return False
+
+    def _ocd_window_end_label(self):
+        """End of the window that opened, in the time of the studio ("21:00")."""
+        self.ensure_one()
+        found = self.env["ocd.directory.window"].sudo()._ocd_find(moment=self.window_start, company=self.company_id)
+        return self.company_id._ocd_to_local(found[2]).strftime("%H:%M") if found else ""

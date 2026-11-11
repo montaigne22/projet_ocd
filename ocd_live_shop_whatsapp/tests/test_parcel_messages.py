@@ -74,3 +74,31 @@ class TestOcdParcelMessages(OcdShopCommon):
         template = self.env.ref("ocd_live_shop_whatsapp.template_vendor_live")
         rendered = template._render(template.variable_ids.value, alert)
         self.assertEqual(rendered[alert.id], "Brenda Wax")
+
+    def _deliver(self, parcel):
+        if parcel.ocd_stage == "to_prepare":
+            parcel.action_ocd_ready()
+        if parcel.ocd_delivery_mode != "vendor" and parcel.ocd_stage == "ready":
+            parcel.action_ocd_pick_up()
+        parcel.action_ocd_leave()
+        parcel._ocd_check_code(parcel.sudo().ocd_delivery_code)
+
+    def test_shop_messages_not_doubled_for_the_parcels(self):
+        """"Order shipped" of the shop goes when a transfer is validated, i.e. when a parcel is
+        delivered: not for the parcels, which have their own messages. The satisfaction message
+        goes once per order, after its last parcel."""
+        Template = self.env["whatsapp.template"]
+        shipped = Template.new({"template_name": "order_shipped"})
+        feedback = Template.new({"template_name": "delivery_feedback"})
+        order = self._order(self.estelle, [(self.butter, 1), (self.dress, 1)])
+        parcels = order.picking_ids
+        self.assertEqual(len(parcels), 2, "One parcel per vendor")
+        first, second = parcels.sorted("id")
+        self._deliver(first)
+        self.assertEqual(first.state, "done")
+        self.assertFalse(parcels._ocd_whatsapp_keep(shipped))
+        self.assertFalse(parcels._ocd_whatsapp_keep(feedback), "A parcel is still on its way")
+        self._deliver(second)
+        self.assertEqual(parcels._ocd_whatsapp_keep(feedback), second)
+        other = Template.new({"template_name": "ocd_colis_livre"})
+        self.assertEqual(parcels._ocd_whatsapp_keep(other), parcels)

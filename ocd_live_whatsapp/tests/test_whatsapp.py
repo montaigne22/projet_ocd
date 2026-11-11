@@ -19,7 +19,7 @@ class TestOcdLiveWhatsapp(OcdLiveCommon):
 
         def fake_send(template, records):
             calls.append((template.template_name, records, dict(template.env.context)))
-            return template.env["whatsapp.message"].browse([1])
+            return template.env["whatsapp.message"].new({"state": "queued"})
 
         return calls, patch.object(WhatsappTemplate, "_send", fake_send)
 
@@ -74,3 +74,188 @@ class TestOcdLiveWhatsapp(OcdLiveCommon):
         code_template = self.env.ref("ocd_live_whatsapp.template_login_code").with_context(ocd_login_code="654321")
         rendered = code_template._render(code_template.variable_ids.value, self.vendor)
         self.assertEqual(rendered[self.vendor.id], "654321")
+
+    # === NEW MESSAGES === #
+
+    def test_ticket_free_hour_and_directory_alerts(self):
+        calls, patcher = self._capture()
+        booking = self._book(self.starts[0])
+        booking._ocd_confirm()
+        Waitlist = self.env["ocd.live.waitlist"]
+        entry = Waitlist._ocd_register("+228 90 00 00 31", self.day, "studio")
+        window_start = fields.Datetime.now() - timedelta(minutes=1)
+        alert = self.env["ocd.directory.alert"].create({"partner_id": self.vendor.id, "window_start": window_start})
+        with patcher:
+            self.assertTrue(booking._ocd_send_ticket(), "The ticket page tells it is on its way")
+            Waitlist._ocd_notify_free(self.company, self.day, "studio")
+            self.env["ocd.directory.alert"]._ocd_send_due()
+        names = [call[0] for call in calls]
+        self.assertEqual(names, ["ocd_ticket_live", "ocd_creneau_libre", "ocd_annuaire_ouvert"])
+        self.assertTrue(all(call[2].get("ocd_whatsapp_requested") for call in calls), "Asked by the contact")
+        self.assertEqual(entry.state, "notified")
+        self.assertEqual(alert.state, "sent")
+
+    def test_link_received_out_of_the_windows(self):
+        self._sell(self.pass_product)
+        calls, patcher = self._capture()
+        day = fields.Date.today() + timedelta(days=1)
+        with patcher, freeze_time(datetime.combine(day, time(12, 0))):
+            listing = self.env["ocd.directory.listing"]._ocd_submit(self.vendor, "https://www.tiktok.com/@awa/live")
+            self.assertEqual(listing.state, "queued")
+            self.assertEqual(listing._ocd_window_start_label(), "18:00", "The studio is in Lome: UTC")
+        self.assertEqual([call[0] for call in calls], ["ocd_lien_recu"])
+        self.assertFalse(calls[0][2].get("ocd_whatsapp_requested"))
+
+    def test_new_templates_render(self):
+        booking = self._book(self.starts[1])
+        booking._ocd_confirm()
+        entry = self.env["ocd.live.waitlist"]._ocd_register("+228 90 00 00 32", self.day, "remote")
+        alert = self.env["ocd.directory.alert"].create({
+            "partner_id": self.vendor.id,
+            "window_start": datetime.combine(self.day, time(18, 0)),
+        })
+        listing = self.env["ocd.directory.listing"].create({
+            "partner_id": self.vendor.id,
+            "url": "https://www.tiktok.com/@awa/live",
+            "window_start": datetime.combine(self.day, time(18, 0)),
+            "window_end": datetime.combine(self.day, time(21, 0)),
+        })
+        for xmlid, record in (
+            ("template_ticket", booking), ("template_free_slot", entry),
+            ("template_window_open", alert), ("template_link_received", listing),
+        ):
+            template = self.env.ref(f"ocd_live_whatsapp.{xmlid}")
+            for variable in template.variable_ids:
+                self.assertTrue(template._render(variable.value, record)[record.id], f"{xmlid}: {variable.value}")
+            self.assertTrue(template._render(template.button_url_value, record)[record.id] if template.button_url_value else True)
+        self.assertEqual(booking._ocd_ticket_path(), f"ocd/ticket/{booking.id}", "No order, no secret")
+        booking.sale_order_id = self.env["sale.order"].create({"partner_id": self.vendor.id})
+        path = booking._ocd_ticket_path()
+        self.assertEqual(path, f"ocd/ticket/{booking.id}?access_token={booking.sale_order_id.access_token}")
+        self.assertEqual(entry._ocd_booking_path(), f"reserver/remote/{self.day:%Y-%m-%d}")
+        self.assertEqual(alert._ocd_window_end_label(), "21:00")
+
+
+@tagged("post_install", "-at_install")
+class TestOcdWhatsappConsent(OcdLiveCommon):
+    """One consent for OCD Live and WhatsApp; the messages asked by the contact go anyway."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.account = cls.env["whatsapp.account"].create({
+            "name": "OCD Live",
+            "phone_number_id": "1110001",
+            "waba_id": "2220002",
+            "access_token": "test-token",
+            "app_secret": "test-secret",
+            "verify_token": "test-verify-token",
+            "require_opt_in": True,
+        })
+
+    def _messages(self, template_name):
+        return self.env["whatsapp.message"].search([("template_id.template_name", "=", template_name)])
+
+    def test_one_consent(self):
+        vendor = self.vendor
+        self.assertFalse(vendor.whatsapp_opt_in, "Never asked")
+        self.assertFalse(vendor._ocd_whatsapp_consent(), "The account requires the consent")
+        vendor.ocd_whatsapp_optin = True
+        self.assertTrue(vendor.whatsapp_opt_in, "The box of OCD Live is the consent of WhatsApp")
+        self.assertTrue(vendor._ocd_whatsapp_consent())
+        vendor._whatsapp_apply_subscription_keyword("STOP")
+        self.assertFalse(vendor.ocd_whatsapp_optin, "STOP switches off the messages of OCD Live")
+        self.assertTrue(vendor._ocd_whatsapp_refused())
+        vendor._whatsapp_apply_subscription_keyword("START")
+        self.assertTrue(vendor.ocd_whatsapp_optin)
+        vendor.ocd_whatsapp_optin = False
+        self.assertTrue(vendor.whatsapp_opt_out, "The switch of the vendor space is a refusal")
+        partner = self.env["res.partner"].create({"name": "Ama", "phone": "+228 90 00 00 41", "ocd_whatsapp_optin": True})
+        self.assertTrue(partner.whatsapp_opt_in, "A box ticked in a form of OCD Live")
+
+    def test_asked_messages_go_without_consent(self):
+        vendor = self.vendor
+        self.assertTrue(vendor._ocd_send_login_code(), "The vendor asked for the code")
+        self.assertEqual(self._messages("ocd_code_connexion").state, "queued")
+        booking = self._book(self.starts[2])
+        self.assertFalse(
+            self.env["res.partner"]._ocd_whatsapp_send("ocd_live_whatsapp.template_live_confirmed", booking),
+            "A notification without consent is not on its way",
+        )
+        skipped = self._messages("ocd_live_confirme")
+        self.assertEqual(skipped.state, "skipped", "Kept with its reason for the team")
+        vendor.ocd_whatsapp_optin = True
+        self.assertTrue(self.env["res.partner"]._ocd_whatsapp_send("ocd_live_whatsapp.template_live_confirmed", booking))
+
+    def test_refused_contacts_get_no_notification(self):
+        vendor = self.vendor
+        vendor.ocd_whatsapp_optin = False
+        booking = self._book(self.starts[3])
+        self.assertFalse(self.env["res.partner"]._ocd_whatsapp_send("ocd_live_whatsapp.template_live_confirmed", booking))
+        self.assertFalse(self._messages("ocd_live_confirme"), "Not even queued")
+        self.assertTrue(vendor._ocd_send_space_link(), "A link asked by the vendor still goes")
+
+    def test_alignment_at_installation(self):
+        from odoo.addons.ocd_live_whatsapp.hooks import align_whatsapp_consent
+
+        refused = self.env["res.partner"].create({"name": "Kossi", "phone": "+228 90 00 00 42"})
+        # Written as before this module: only on the field of OCD Live
+        self.env.cr.execute("UPDATE res_partner SET ocd_whatsapp_optin = FALSE WHERE id = %s", [refused.id])
+        refused.invalidate_recordset()
+        align_whatsapp_consent(self.env)
+        self.assertTrue(refused.whatsapp_opt_out)
+        self.assertTrue(self.vendor.whatsapp_opt_in, "The vendors agreed through OCD Live")
+
+
+@tagged("post_install", "-at_install")
+class TestOcdWhatsappSettingsPage(OcdLiveCommon):
+
+    def test_whatsapp_section(self):
+        Page = self.env["ocd.live.settings"]
+        section = Page._ocd_section_whatsapp()
+        items = {item["key"]: item for item in section["items"]}
+        self.assertTrue(items["wa_require_opt_in"]["readonly"], "No account yet: nothing to change")
+        account = self.env["whatsapp.account"].create({
+            "name": "OCD Live",
+            "phone_number_id": "1110009",
+            "waba_id": "2220009",
+            "access_token": "test-token",
+            "app_secret": "test-secret",
+            "verify_token": "test-verify",
+        })
+        result = Page.save_settings_page({"wa_require_opt_in": False, "wa_welcome_menu": False})
+        self.assertTrue(result["ok"], result)
+        self.assertFalse(account.require_opt_in)
+        self.assertFalse(account.bot_enabled)
+        rows = {row["name"]: row for row in items["wa_templates"]["rows"]}
+        self.assertIn("ocd_ticket_live", rows)
+        self.assertIn("ocd_creneau_libre", rows)
+        self.assertEqual(rows["ocd_ticket_live"]["tone"], "grey", "Not synchronised with Meta yet")
+
+
+@tagged("post_install", "-at_install")
+class TestOcdWhatsappAutomations(OcdLiveCommon):
+
+    def test_paused_automation_sends_nothing(self):
+        calls = []
+
+        def fake_send(template, records):
+            calls.append(template.template_name)
+            return template.env["whatsapp.message"].new({"state": "queued"})
+
+        automation = self.env.ref("ocd_live_whatsapp.automation_free_slot")
+        automation.enabled = False
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            Waitlist = self.env["ocd.live.waitlist"]
+            Waitlist._ocd_register("+228 90 00 00 51", self.day, "studio")
+            Waitlist._ocd_notify_free(self.company, self.day, "studio")
+            self.assertFalse(calls, "Paused by the team")
+            self.assertTrue(self.vendor._ocd_send_login_code(), "A locked automation always goes")
+        self.assertEqual(calls, ["ocd_code_connexion"])
+
+    def test_template_waiting_for_meta_is_told(self):
+        automation = self.env.ref("ocd_live_whatsapp.automation_link_received")
+        automation.template_ids.status = "pending"
+        row = automation._ocd_row()
+        self.assertIn("ocd_lien_recu", row["warning"])
+        self.assertEqual(row["templates"], ["ocd_lien_recu"])

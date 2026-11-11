@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live.Automations">
+        <div class="o_action o_ocd_bo o_ocd_autos">
+            <t t-set="data" t-value="this.data()"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">Automations</h1>
+                <span class="o_ocd_bo_pager o_ocd_bo_push" t-out="data.pager"/>
+                <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.load()"
+                        title="Refresh" aria-label="Refresh">
+                    <i class="oi" data-icon="refresh" aria-hidden="true"/>
+                </button>
+            </div>
+            <div class="o_ocd_auto">
+                <div class="o_ocd_auto_main">
+                    <div class="o_ocd_auto_kinds">
+                        <span t-foreach="data.kinds" t-as="kind" t-key="kind.kind" class="o_ocd_auto_kind">
+                            <span t-attf-class="o_ocd_auto_badge o_ocd_auto_badge_#{kind.kind}" t-out="kind.count"/>
+                            <t t-out="kind.label"/>
+                        </span>
+                    </div>
+                    <div class="o_ocd_auto_table" role="table" aria-label="Automations">
+                        <div class="o_ocd_auto_head" role="row">
+                            <span role="columnheader">When… then…</span>
+                            <span role="columnheader">Runs by</span>
+                            <span role="columnheader" class="o_ocd_auto_num">Last 7 days</span>
+                            <span role="columnheader" class="o_ocd_auto_num">On</span>
+                        </div>
+                        <div class="o_ocd_auto_rows">
+                            <t t-foreach="data.groups" t-as="group" t-key="group.key">
+                                <div class="o_ocd_auto_group" role="row">
+                                    <span role="rowheader" t-out="group.label"/>
+                                </div>
+                                <div t-foreach="group.rows" t-as="row" t-key="row.id" role="row"
+                                     t-att-class="{ 'o_ocd_auto_row': true, 'o_ocd_current': row.id === this.current.id, 'o_ocd_paused': !row.active }">
+                                    <button type="button" class="o_ocd_auto_name" role="cell"
+                                            t-att-aria-pressed="row.id === this.current.id ? 'true' : 'false'"
+                                            t-on-click="() => this.pick(row)">
+                                        <span class="o_ocd_auto_title" t-out="row.name"/>
+                                        <span class="o_ocd_auto_when" t-out="row.when"/>
+                                    </button>
+                                    <span role="cell">
+                                        <span t-attf-class="o_ocd_auto_badge o_ocd_auto_badge_#{row.kind}" t-out="row.kind_label"/>
+                                    </span>
+                                    <span role="cell" class="o_ocd_auto_num" t-out="this.runs(row)"/>
+                                    <span role="cell" class="o_ocd_auto_switch">
+                                        <span t-if="row.locked" class="o_ocd_auto_always">Always</span>
+                                        <input type="checkbox" role="switch"
+                                               t-att-checked="row.active ? 'checked' : undefined"
+                                               t-att-disabled="row.locked ? 'disabled' : undefined"
+                                               t-att-aria-label="this.switchLabel(row)"
+                                               t-on-change="(ev) => this.toggle(row, ev)"/>
+                                    </span>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-set="current" t-value="this.current"/>
+                <aside t-if="current" class="o_ocd_auto_detail" aria-live="polite">
+                    <h2 class="o_ocd_auto_detail_title" t-out="current.name"/>
+                    <span class="o_ocd_auto_tags">
+                        <span t-attf-class="o_ocd_auto_badge o_ocd_auto_badge_#{current.kind}" t-out="current.kind_label"/>
+                        <span t-if="current.model" class="o_ocd_auto_badge o_ocd_auto_badge_on">On: <t t-out="current.model"/></span>
+                        <span t-attf-class="o_ocd_auto_badge #{current.active ? 'o_ocd_auto_badge_active' : 'o_ocd_auto_badge_paused'}"
+                              t-out="current.status"/>
+                    </span>
+                    <div class="o_ocd_auto_field o_ocd_auto_first">
+                        <span class="o_ocd_auto_label">When</span>
+                        <span t-out="current.trigger"/>
+                    </div>
+                    <div class="o_ocd_auto_field">
+                        <span class="o_ocd_auto_label">For</span>
+                        <span t-out="current.scope"/>
+                    </div>
+                    <div class="o_ocd_auto_field">
+                        <span class="o_ocd_auto_label">Then, in this order</span>
+                        <ol class="o_ocd_auto_steps">
+                            <li t-foreach="current.actions" t-as="action" t-key="action_index">
+                                <span class="o_ocd_auto_step" aria-hidden="true" t-out="action_index + 1"/>
+                                <span t-out="action"/>
+                            </li>
+                        </ol>
+                    </div>
+                    <div t-if="current.warning" class="o_ocd_auto_warning" role="note" t-out="current.warning"/>
+                    <div t-if="current.templates" class="o_ocd_auto_field">
+                        <span class="o_ocd_auto_label">WhatsApp templates</span>
+                        <span class="o_ocd_auto_templates">
+                            <code t-foreach="current.templates" t-as="template" t-key="template" t-out="template"/>
+                        </span>
+                    </div>
+                    <div class="o_ocd_auto_field o_ocd_auto_first">
+                        <span class="o_ocd_auto_label">History</span>
+                        <span t-out="current.history"/>
+                    </div>
+                    <div class="o_ocd_auto_field">
+                        <span class="o_ocd_auto_label">Made with</span>
+                        <span t-out="current.tools"/>
+                    </div>
+                    <p class="o_ocd_auto_foot" t-out="current.foot"/>
+                </aside>
+            </div>
+        </div>
+    </t>
+
+</templates>

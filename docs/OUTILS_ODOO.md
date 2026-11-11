@@ -18,7 +18,8 @@ fait concrètement pour OCD Live.
 | **Recrutement** | L'offre « Animatrice live · Lomé » sur le site et ses 5 étapes ; l'embauchée devient animatrice. |
 | **Discuss** | Les canaux de l'équipe : nouveaux lives réservés, colis en retard ou en problème, caisse du soir. |
 | **Activités** | Les tâches de l'équipe : choisir l'animatrice d'un live, rappeler un client, rembourser un colis retourné. |
-| **Tâches automatiques** | Libérer un créneau non payé, rappeler un live la veille, relancer un vendeur en retard, préparer les reversements du lundi, ouvrir et fermer les créneaux de l'annuaire. |
+| **Tâches automatiques** | Libérer un créneau non payé, rappeler un live la veille, relancer un vendeur en retard, préparer les reversements du lundi, ouvrir et fermer les créneaux de l'annuaire. Toutes dans le catalogue « Configuration › Automatisations », avec leurs exécutions des 7 derniers jours (gardées par Odoo une semaine). |
+| **Réponses prédéfinies** | Les réponses rapides de l'écran des conversations WhatsApp (`::livreur`, `::retard`…), écrites par chaque agent ou partagées avec l'équipe. |
 | **Portail** | L'appli de livraison des vendeurs et des livreurs, la page de suivi d'une commande avec le code. |
 
 ## Modules complémentaires
@@ -29,6 +30,7 @@ fait concrètement pour OCD Live.
 | `whatsapp_cloud_sale` | Les messages de la commande du shop au client : commande reçue, suivi. |
 | `payment_campay` | Le paiement au Cameroun : MTN MoMo, Orange Money, carte (francs CFA d'Afrique centrale). |
 | `delivery_cameroon` | Les villes et quartiers du Cameroun et le point de repère obligatoire dans l'adresse. |
+| `disable_odoo_online` (OCA) | Retire les liaisons à odoo.com du back-office : « Assistance » du menu de l'utilisateur, menus Applications et Mises à jour, notificateur de mises à jour. |
 
 ## Modules d'OCD Live
 
@@ -36,10 +38,11 @@ fait concrètement pour OCD Live.
 |---|---|
 | `ocd_live` | Réservations, paquets et lives à placer, prix selon l'heure, liste d'attente, annuaire et pass, espace vendeur, voix des pages, écrans de l'équipe. |
 | `ocd_live_shop` | Mode de vente et « qui livre » par vendeur, tarifs de livraison (vendeurs et OCD Live, un prix par colis), colis par vendeur, code de livraison, dispatch, livreurs et caisse, reversements, régie en direct. |
-| `ocd_live_whatsapp` | Messages des lives et de l'annuaire sur WhatsApp. |
+| `ocd_live_whatsapp` | Messages des lives et de l'annuaire sur WhatsApp, un seul accord WhatsApp, écran des conversations de l'équipe. |
 | `ocd_live_shop_whatsapp` | Messages des colis sur WhatsApp. |
 | `ocd_live_recruitment` | Recrutement des animatrices. |
 | `ocd_delivery_togo` | Villes et quartiers du Togo, livraison à Lomé et vers les autres villes. |
+| `ocd_debranding` | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients : site, connexion, portail, back-office, fenêtres d'erreur, e-mails ; le robot des messages s'appelle OCD Live. |
 | `ocd_live_demo` | Données de démonstration, retirées en désinstallant le module. |
 
 ## Applications payantes : pas besoin

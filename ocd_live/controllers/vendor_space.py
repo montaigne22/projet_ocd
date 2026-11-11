@@ -172,7 +172,7 @@ class OcdVendorSpace(http.Controller):
         vendor = common.current_vendor()
         if not vendor:
             return request.redirect("/ocd/connexion")
-        vendor.ocd_whatsapp_optin = not vendor.ocd_whatsapp_optin
+        vendor.ocd_whatsapp_optin = not vendor._ocd_whatsapp_consent()
         return request.redirect("/ocd/espace/moi")
 
     # === PLACE A LIVE OF A PACKAGE === #

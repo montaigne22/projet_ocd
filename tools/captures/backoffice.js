@@ -30,10 +30,13 @@ const pages = (process.argv[2] || 'dashboard').split(',');
     couriers: '/odoo/action-ocd_live_shop.ocd_live_couriers_action',
     payouts: '/odoo/action-ocd_live_shop.ocd_payout_action',
     rates: '/odoo/action-ocd_live_shop.ocd_delivery_rate_action',
-    settings: '/odoo/action-ocd_live.res_config_settings_action_ocd_live',
+    settings: '/odoo/action-ocd_live.ocd_live_settings_action',
+    odoo_settings: '/odoo/action-ocd_live.res_config_settings_action_ocd_live',
     recruit: '/odoo/action-ocd_live_recruitment.hr_applicant_action_ocd_host',
     tools: '/odoo/action-ocd_live.ocd_live_tools_action',
-    autos: '/odoo/action-ocd_live.ocd_live_cron_action',
+    autos: '/odoo/action-ocd_live.ocd_live_automations_action',
+    crons: '/odoo/action-ocd_live.ocd_live_cron_action',
+    whatsapp: '/odoo/action-ocd_live_whatsapp.ocd_whatsapp_inbox_action',
   };
   for (const name of pages) {
     await page.goto(BASE + targets[name], { waitUntil: 'domcontentloaded' });

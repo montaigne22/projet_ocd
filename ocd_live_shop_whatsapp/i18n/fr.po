@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-10 21:18+0000\n"
-"PO-Revision-Date: 2026-11-10 21:18+0000\n"
+"POT-Creation-Date: 2026-11-11 07:35+0000\n"
+"PO-Revision-Date: 2026-11-11 07:35+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,9 +15,45 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "%(count)s in progress, %(late)s late"
+msgstr "%(count)s en cours, %(late)s en retard"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "%s parcels late"
+msgstr "%s colis en retard"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "%s to hand over"
+msgstr "%s à remettre"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "1 parcel late"
+msgstr "1 colis en retard"
+
+#. module: ocd_live_shop_whatsapp
 #: model:ir.model,name:ocd_live_shop_whatsapp.model_ocd_boutique_alert
 msgid "Alert When A Vendor Goes Live"
-msgstr ""
+msgstr "Alerte quand un vendeur passe en live"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_live_settings.py:0
+msgid "Ask for a rating after the delivery"
+msgstr "Demander une note après la livraison"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Cash of the couriers"
+msgstr "Caisse des livreurs"
 
 #. module: ocd_live_shop_whatsapp
 #: model:ir.model,name:ocd_live_shop_whatsapp.model_res_partner
@@ -25,16 +61,40 @@ msgid "Contact"
 msgstr "Contact"
 
 #. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Courier"
+msgstr "Livreur"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Customer"
+msgstr "Client"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Delivery"
+msgstr "Livraison"
+
+#. module: ocd_live_shop_whatsapp
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_boutique_alert__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_whatsapp_inbox__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_res_partner__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_stock_picking__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_whatsapp_template__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
 
 #. module: ocd_live_shop_whatsapp
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_boutique_alert__id
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_whatsapp_inbox__id
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_res_partner__id
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_stock_picking__id
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_whatsapp_template__id
 msgid "ID"
 msgstr "ID"
 
@@ -84,11 +144,110 @@ msgid "OCD Live: the vendor is live"
 msgstr "OCD Live : le vendeur est en live"
 
 #. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Open the order"
+msgstr "Ouvrir la commande"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Open the parcel %s"
+msgstr "Ouvrir le colis %s"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Order %s"
+msgstr "Commande %s"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_live_settings.py:0
+msgid "Order confirmed, to the customer"
+msgstr "Commande confirmée, au client"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Parcel"
+msgstr "Colis"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Parcel %s"
+msgstr "Colis %s"
+
+#. module: ocd_live_shop_whatsapp
 #: model:ir.module.module,summary:base.module_ocd_live_shop_whatsapp
 msgid "Parcel to prepare and reminder to the vendor, parcel on the way with its code, failed attempt, delivered or returned parcel to the customer"
 msgstr "Colis à préparer et relance au vendeur, colis en route avec son code, tentative ratée, colis livré ou retourné, au client"
 
 #. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Parcels"
+msgstr "Colis"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Parcels of the vendor"
+msgstr "Colis du vendeur"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "See at the dispatch"
+msgstr "Voir au dispatch"
+
+#. module: ocd_live_shop_whatsapp
+#: model:ir.model,name:ocd_live_shop_whatsapp.model_ocd_live_settings
+msgid "Settings Page Of OCD Live"
+msgstr "Page des paramètres d'OCD Live"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "Total"
+msgstr "Total"
+
+#. module: ocd_live_shop_whatsapp
 #: model:ir.model,name:ocd_live_shop_whatsapp.model_stock_picking
 msgid "Transfer"
 msgstr "Transfert"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_live_settings.py:0
+msgid "Two days after the last parcel of the order, the customer rates it from 1 to 5."
+msgstr "Deux jours après le dernier colis de la commande, le client la note de 1 à 5."
+
+#. module: ocd_live_shop_whatsapp
+#: model:ir.model,name:ocd_live_shop_whatsapp.model_ocd_whatsapp_inbox
+msgid "WhatsApp Conversations Of OCD Live"
+msgstr "Conversations WhatsApp d'OCD Live"
+
+#. module: ocd_live_shop_whatsapp
+#: model:ir.model,name:ocd_live_shop_whatsapp.model_whatsapp_template
+msgid "WhatsApp Template"
+msgstr "Modèle WhatsApp"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_live_settings.py:0
+msgid "When the order is confirmed: paid, or to pay at the door."
+msgstr "Quand la commande est confirmée : payée, ou à payer à la livraison."
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "paid"
+msgstr "payé"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
+msgid "to pay at the door"
+msgstr "à payer à la livraison"

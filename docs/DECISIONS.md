@@ -71,3 +71,27 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   reviennent à OCD.
 - **Vers une autre ville ou un autre pays : seulement par un tarif « agence »** prévu par l'équipe, sans
   paiement à la porte. Une adresse qu'aucun tarif ne couvre est refusée avant le paiement.
+
+## WhatsApp
+
+- **Un seul accord** : la case d'OCD Live (réservation, espace vendeur, commande du shop) et l'accord de
+  WhatsApp (changé aussi par STOP et START) restent identiques. Un refus n'est jamais contourné.
+- **Les messages demandés par le contact partent toujours** (code de connexion, lien, ticket, alerte
+  « Préviens-moi ») : la demande vaut accord pour ce message.
+- Les colis d'OCD ont leurs propres messages : le « commande expédiée » du shop n'est pas envoyé pour eux,
+  et la demande de note part une fois par commande, après son dernier colis.
+
+## Back-office
+
+- **Paramètres** à sections, lus par les automatisations ; les responsables d'OCD Live les changent sans
+  être administrateurs d'Odoo ; seuls les réglages de la page sont écrits, après leurs contrôles.
+- **Automatisations** : règles que l'équipe met en pause, tâches à heure fixe, et règles du code (argent,
+  preuves de livraison) **jamais coupées** ; les tâches techniques sont toujours actives.
+- **Aucune mention d'Odoo** pour l'équipe, les vendeurs et les clients (module `ocd_debranding`, avec
+  `disable_odoo_online` de l'OCA).
+- **Les adresses du back-office gardent `/odoo/`** : ce préfixe est écrit en dur dans le cœur d'Odoo
+  (routeur du navigateur, liens des menus et des fiches, routes du serveur, liens des e-mails) ; le
+  changer demanderait de remplacer des fichiers du cœur à chaque mise à jour. Les vendeurs et les clients
+  ne le voient jamais (le site utilise `/ocd`, `/lives`, `/shop`). Pour une adresse à la marque : un
+  sous-domaine pour l'équipe (ex. `equipe.ocdlive.com`).
+

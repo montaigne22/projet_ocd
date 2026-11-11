@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- E-mails: no "Powered by Odoo"; the link to stop following stays. -->
+<odoo>
+
+    <template id="mail_notification_layout" inherit_id="mail.mail_notification_layout" priority="99"
+              name="Mail layout without Powered by">
+        <xpath expr="//div[a[contains(@href, 'odoo.com')]]" position="replace">
+            <div t-if="show_footer and show_unfollow" style="color: #555555; font-size:11px;">
+                <span id="mail_unfollow"><a href="/mail/unfollow" style="text-decoration:none; color:#555555;">Unfollow</a></span>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="mail_notification_light" inherit_id="mail.mail_notification_light" priority="99"
+              name="Light mail layout without Powered by">
+        <xpath expr="//td[a[contains(@href, 'odoo.com')]]" position="replace">
+            <td align="center" style="min-width: 590px;">
+                <span t-if="show_unfollow" id="mail_unfollow"><a href="/mail/unfollow" style="text-decoration:none; color:#555555;">Unfollow</a></span>
+            </td>
+        </xpath>
+    </template>
+
+    <template id="digest_mail_main" inherit_id="digest.digest_mail_main" priority="99" name="Digest without Powered by">
+        <xpath expr="//p[@id='powered']" position="replace"/>
+        <xpath expr="//div[hasclass('by_odoo')]/a[contains(@href, 'odoo.com')]" position="replace">
+            <span t-out="company.name"/>
+        </xpath>
+    </template>
+
+    <!-- The banner of the mobile application of Odoo in the digest -->
+    <template id="digest_section_mobile" inherit_id="digest.digest_section_mobile" priority="99" name="Digest without the mobile banner">
+        <xpath expr="//td[@colspan='3']" position="attributes">
+            <attribute name="t-if">False</attribute>
+        </xpath>
+    </template>
+
+</odoo>

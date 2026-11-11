@@ -10,6 +10,7 @@ MODULE = "ocd_live_demo"
 PARAM_MESSAGES = "ocd_live_demo.message_ids"
 PARAM_MOMO = "ocd_live_demo.momo_pending_msg"
 PARAM_COD = "ocd_live_demo.cod_published"
+PARAM_WHATSAPP = "ocd_live_demo.whatsapp_account_id"
 MOMO_MESSAGE = (
     "<p>Envoie le montant par Mobile Money au numéro d'OCD : Mixx by Yas 90 00 00 00, "
     "Flooz 99 00 00 00 (numéros d'exemple). Écris la référence ci-dessous dans le message. "
@@ -85,6 +86,7 @@ class OcdLiveDemo:
         self.directory()
         self.stock()
         self.shop()
+        self.step("the WhatsApp conversations", self.whatsapp)
         channel = self.company.ocd_lives_channel_id
         if channel:
             messages = self.env["mail.message"].sudo().search([
@@ -298,6 +300,126 @@ class OcdLiveDemo:
         self.step("the payouts", lambda: self.env["ocd.payout"].sudo()._ocd_prepare(vendors=brenda | fatou, force=True))
 
 
+    # === WHATSAPP === #
+
+    def whatsapp(self):
+        """Conversations of the WhatsApp screen: customers who wait for an answer, a parcel on
+        the way (its code hidden from the team), a vendor, a conversation of more than 24
+        hours (only a template). On an archived account: nothing is sent to Meta."""
+        if "whatsapp.account" not in self.env:
+            return
+        account = self.env["whatsapp.account"].sudo().create({
+            "name": "OCD Live (démo)",
+            "phone_number_id": "ocd-demo",
+            "waba_id": "ocd-demo",
+            "access_token": "ocd-demo",
+            "app_secret": "ocd-demo",
+            "bot_enabled": False,
+            "away_message_enabled": False,
+            "resource_calendar_id": False,
+            "active": False,
+        })
+        self.env["ir.config_parameter"].sudo().set_str(PARAM_WHATSAPP, str(account.id))
+        self.wa_account = account
+        brenda, fatou, awa = self.ref("vendor_brenda"), self.ref("vendor_fatou"), self.ref("vendor_awa")
+        estelle, herve, bertrand = self.ref("customer_estelle"), self.ref("customer_herve"), self.ref("customer_bertrand")
+        (brenda | fatou | awa | estelle | herve | bertrand).write({"ocd_whatsapp_optin": True})
+
+        def parcel(customer, vendor=None):
+            orders = self.SaleOrder.search([("partner_id", "=", customer.id)], order="id")
+            parcels = orders.picking_ids.filtered(lambda p: p.ocd_is_parcel and (not vendor or p.ocd_vendor_id == vendor))
+            return parcels[:1]
+
+        # Estelle (Akwa): her order of two parcels, a question about the courier
+        channel = self.wa_channel(estelle)
+        order = self.SaleOrder.search([("partner_id", "=", estelle.id)], order="id", limit=1)
+        self.wa_template(channel, 95, "whatsapp_cloud_sale.template_order_confirmed", order)
+        self.wa_in(channel, estelle, 12, "Bonjour, le livreur arrive à quelle heure ? Je dois sortir à 16 h.", waiting=True)
+        # Hervé (Bonabéri): on the way with Raoul, the code sent
+        channel = self.wa_channel(herve)
+        self.wa_template(channel, 48, "ocd_live_shop_whatsapp.template_parcel_on_the_way", parcel(herve))
+        self.wa_in(channel, herve, 31, "Bonjour, il est où le livreur ? Je suis à la maison.")
+        self.wa_out(channel, 27, "Raoul arrive vers 15 h, il vous appelle 10 minutes avant. Gardez bien votre code.")
+        self.wa_in(channel, herve, 25, "D'accord, merci !")
+        # Bertrand (Bonamoussadi): nobody at home, asks for another time
+        channel = self.wa_channel(bertrand)
+        self.wa_template(channel, 70, "ocd_live_shop_whatsapp.template_parcel_failed", parcel(bertrand))
+        self.wa_in(channel, bertrand, 52, "Pardon, j'étais en réunion. Vous pouvez repasser après 17 h ?", waiting=True)
+        self.wa_note(channel, 50, "Raoul peut repasser à 17 h 30 : à confirmer avec le dispatch.")
+        # Fatou: her parcel for Estelle
+        channel = self.wa_channel(fatou)
+        self.wa_template(channel, 130, "ocd_live_shop_whatsapp.template_parcel_to_prepare", parcel(estelle, fatou))
+        self.wa_in(channel, fatou, 64, "C'est prêt, je pars à 15 h 30.")
+        self.wa_out(channel, 60, "Merci Fatou ! Estelle attend son colis cet après-midi.")
+        # Awa (Lomé): her live confirmed three days ago, more than 24 hours: only a template
+        channel = self.wa_channel(awa)
+        booking = self.env["ocd.live.booking"].sudo().search(
+            [("partner_id", "=", awa.id), ("state", "=", "confirmed")], order="start_datetime", limit=1
+        )
+        self.wa_template(channel, 60 * 72, "ocd_live_whatsapp.template_live_confirmed", booking)
+        self.wa_in(channel, awa, 60 * 71, "Merci, je viens avec ma table.")
+
+    def wa_channel(self, partner):
+        number = partner._whatsapp_number()
+        return self.env["discuss.channel"].sudo()._whatsapp_get_or_create(self.wa_account, number, None, partner)
+
+    def wa_dated(self, channel, message, minutes):
+        date = fields.Datetime.now() - timedelta(minutes=minutes)
+        message.sudo().write({"date": date})
+        channel.sudo().write({"last_interest_dt": max(channel.last_interest_dt or date, date)})
+        return date
+
+    def wa_in(self, channel, partner, minutes, text, waiting=False):
+        message = channel.with_context(whatsapp_skip_send=True).message_post(
+            author_id=partner.id, body=text, message_type="whatsapp_message", subtype_xmlid="mail.mt_comment",
+        )
+        date = self.wa_dated(channel, message, minutes)
+        self.env["whatsapp.message"].sudo().create({
+            "account_id": self.wa_account.id, "direction": "incoming", "state": "received", "message_type": "text",
+            "body": text, "channel_id": channel.id, "mail_message_id": message.id, "partner_id": partner.id,
+            "phone": channel.whatsapp_number, "model": "discuss.channel", "res_id": channel.id,
+        })
+        values = {"whatsapp_last_inbound_date": date, "whatsapp_waiting_since": date if waiting else False}
+        channel.sudo().write(values)
+
+    def wa_out(self, channel, minutes, text):
+        team = self.env.ref("base.user_admin")
+        message = channel.with_user(team).with_context(whatsapp_skip_send=True).message_post(
+            body=text, message_type="whatsapp_message", subtype_xmlid="mail.mt_comment",
+        )
+        self.wa_dated(channel, message, minutes)
+        self.env["whatsapp.message"].sudo().create({
+            "account_id": self.wa_account.id, "direction": "outgoing", "state": "read", "message_type": "text",
+            "body": text, "channel_id": channel.id, "mail_message_id": message.id,
+            "partner_id": channel.whatsapp_partner_id.id, "phone": channel.whatsapp_number,
+            "model": "discuss.channel", "res_id": channel.id,
+        })
+        channel.sudo().write({"whatsapp_waiting_since": False, "whatsapp_state": "open"})
+
+    def wa_note(self, channel, minutes, text):
+        team = self.env.ref("base.user_admin")
+        channel.with_user(team).execute_command_note(body=text)
+        self.wa_dated(channel, channel.message_ids[:1], minutes)
+
+    def wa_template(self, channel, minutes, xmlid, record):
+        template = self.env.ref(xmlid, raise_if_not_found=False)
+        if not template or not record:
+            return
+        template = template.sudo()
+        values = {
+            variable._get_placeholder_key(): template._render(variable.value, record)[record.id]
+            for variable in template.variable_ids
+        }
+        partner = channel.whatsapp_partner_id
+        wa_message = self.env["whatsapp.message"].sudo().create({
+            "account_id": self.wa_account.id, "template_id": template.id, "direction": "outgoing", "state": "read",
+            "message_type": "template", "body": template._fill_body(values), "partner_id": partner.id,
+            "phone": channel.whatsapp_number, "model": record._name, "res_id": record.id,
+        })
+        message = channel._whatsapp_post_outgoing(wa_message)
+        self.wa_dated(channel, message, minutes)
+
+
 def post_init_hook(env):
     OcdLiveDemo(env).run()
 
@@ -338,6 +460,14 @@ def uninstall_hook(env):
     if template_ids:
         env["stock.quant"].sudo().search([("product_id.product_tmpl_id", "in", template_ids)]).unlink()
     params = env["ir.config_parameter"].sudo()
+    account_id = params.get_str(PARAM_WHATSAPP)
+    if account_id and "whatsapp.account" in env:
+        # The WhatsApp conversations of the demo, on its archived account
+        account = env["whatsapp.account"].sudo().with_context(active_test=False).browse(int(account_id)).exists()
+        if account:
+            env["whatsapp.message"].sudo().search([("account_id", "=", account.id)]).unlink()
+            env["discuss.channel"].sudo().search([("whatsapp_account_id", "=", account.id)]).unlink()
+            account.unlink()
     message_ids = json.loads(params.get_str(PARAM_MESSAGES) or "[]")
     env["mail.message"].sudo().browse(message_ids).exists().unlink()
     provider = env.ref("ocd_live.payment_provider_momo_team", raise_if_not_found=False)
@@ -350,4 +480,4 @@ def uninstall_hook(env):
     if cod and previous:
         # The demo had published the payment in cash at the door: back as before
         cod.write(json.loads(previous.value or "{}") or {"is_published": False})
-    params.search([("key", "in", (PARAM_MESSAGES, PARAM_MOMO, PARAM_COD))]).unlink()
+    params.search([("key", "in", (PARAM_MESSAGES, PARAM_MOMO, PARAM_COD, PARAM_WHATSAPP))]).unlink()

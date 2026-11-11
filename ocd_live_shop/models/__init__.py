@@ -25,3 +25,5 @@ from . import ocd_live_verification
 from . import ocd_live_dispatch
 from . import ocd_live_orders
 from . import ocd_live_couriers
+from . import ocd_live_settings
+from . import ocd_automation

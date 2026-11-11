@@ -2,6 +2,7 @@ import re
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.misc import format_date
 
 
 class OcdLiveWaitlist(models.Model):
@@ -69,6 +70,16 @@ class OcdLiveWaitlist(models.Model):
     def _ocd_send_free_slot(self):
         """Send the news of the free hour. Extended by ocd_live_whatsapp."""
         return False
+
+    def _ocd_day_label(self):
+        """The day waited for, as in a message: "mercredi 2 décembre"."""
+        self.ensure_one()
+        return format_date(self.env, self.day, date_format="EEEE d MMMM")
+
+    def _ocd_booking_path(self):
+        """Path of the page of the day, to choose the free hour."""
+        self.ensure_one()
+        return f"reserver/{self.mode}/{self.day:%Y-%m-%d}"
 
     @api.model
     def _cron_clean(self):

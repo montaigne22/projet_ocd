@@ -21,8 +21,8 @@ OCD Live shop and deliveries
 - After the failed attempts allowed, the parcel goes back to the vendor.
 - Payment at the door: the options are chosen by the team: cash, payment on
   the phone of the customer (the courier shows a QR code; the customer pays
-  with the payment methods Odoo offers for the country, whatever the
-  provider), Mobile Money declared by the courier and checked by the team.
+  with the payment methods offered in the country, whatever the provider),
+  Mobile Money declared by the courier and checked by the team.
 - Cash of the couriers counted every evening.
 - A vendor bill for the share of the vendor is created when the code is
   checked; a credit note when the vendor collected the money. The payouts
@@ -49,6 +49,7 @@ OCD Live shop and deliveries
         "data/discuss_channel_data.xml",
         "data/mail_activity_type_data.xml",
         "data/ir_cron_data.xml",
+        "data/ocd_automation_data.xml",
         "data/delivery_carrier_data.xml",
         "data/ocd_voice_data.xml",
         "data/ocd_refuse_reason_data.xml",

@@ -15,6 +15,12 @@ class OcdLiveBooking(models.Model):
             self.env["res.partner"]._ocd_whatsapp_send("ocd_live_whatsapp.template_live_confirmed", confirmed)
         return confirmed
 
+    def _ocd_send_ticket(self):
+        """Override of `ocd_live`: the vendor asked for the ticket on WhatsApp (ticket page)."""
+        self.ensure_one()
+        sent = self.env["res.partner"]._ocd_whatsapp_send("ocd_live_whatsapp.template_ticket", self, requested=True)
+        return sent or super()._ocd_send_ticket()
+
     @api.model
     def _cron_send_reminders(self):
         """Remind the vendors of their live: the evening before from 18:00 (time of the

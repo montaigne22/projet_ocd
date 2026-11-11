@@ -2,7 +2,7 @@
 
 Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 
-## Où en est le projet (10 novembre 2026)
+## Où en est le projet (11 novembre 2026)
 
 | Domaine | État |
 |---|---|
@@ -16,16 +16,17 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
 | Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
 | Outils Odoo utilisés : dans la documentation ([`OUTILS_ODOO.md`](OUTILS_ODOO.md)), pas dans le système | ✅ fait |
-| Back-office : paramètres, automatisations, conversations WhatsApp | 🟡 écrans d'Odoo présentés au mieux |
-| WhatsApp (messages des lives et des colis) | ✅ fait ; quelques nouveaux messages à brancher (voir plus bas) |
+| Back-office : paramètres à sections, catalogue des automatisations, conversations WhatsApp, fidèles au design | ✅ fait, testé |
+| WhatsApp : tous les messages des lives, de l'annuaire et des colis, un seul accord, messages demandés toujours envoyés | ✅ fait, testé |
+| Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients (site, back-office, erreurs, e-mails) | ✅ fait, testé |
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
 | Togo (villes, quartiers, livraison) | ✅ fait |
 | Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements) | ✅ fait, testé |
-| Traductions françaises de tous les modules | ✅ faites (à compléter à chaque nouvel écran) |
+| Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
-Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo) :
-**155 tests, aucun échec** (et, sur une base neuve avec la démo, 5 tests sans échec : la démo remplit
-les écrans, puis se désinstalle sans rien laisser).
+Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
+`ocd_debranding`) : **190 tests, aucun échec** (et, sur une base neuve avec la démo, 5 tests sans échec :
+la démo remplit les écrans, conversations WhatsApp comprises, puis se désinstalle sans rien laisser).
 
 ## Reste à faire, par priorité
 
@@ -35,25 +36,57 @@ les écrans, puis se désinstalle sans rien laisser).
    d'OCD sur les livraisons des vendeurs, ville du stock. Les modes de livraison sans prix ont donné des
    tarifs archivés : les compléter puis les activer. Sans tarif, le shop refuse l'adresse (jamais de
    livraison à un prix inconnu).
-2. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
-   (`_ocd_send_ticket`), créneau libéré pour la liste d'attente (`_ocd_send_free_slot`), ouverture du
-   créneau de l'annuaire, filtrage par accord WhatsApp du vendeur.
-3. **Paramètres** : page à sections comme le design (`BoParametres`), au lieu des réglages d'Odoo en cartes.
-4. **Automatisations** : catalogue complet « Quand… alors… » avec détail (`BoAutomatisations`).
-5. **Conversations WhatsApp** dans le style du design (`BoWhatsApp`) : écran de `whatsapp_cloud`.
+2. **WhatsApp chez Meta** (équipe) : connecter le numéro d'OCD Live (WhatsApp › Comptes), puis soumettre
+   les modèles depuis Odoo (WhatsApp › Messages automatiques) : tant qu'un modèle n'est pas approuvé, son
+   message ne part pas (les Paramètres, section WhatsApp, et les Automatisations le signalent). Les
+   réponses rapides de l'équipe se créent dans les conversations (`::livreur`, `::retard`…).
+3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
+   de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
+   back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
 
 ## Points d'attention
 
 - Sur un écran de moins de 1 534 px, Odoo met la discussion (chatter) **sous** les fiches et non à droite.
 - Les écrans sur mesure du back-office gardent un bouton vers la liste standard d'Odoo (tri, export).
 - Odoo 20 n'a plus Font Awesome : les icônes sont celles d'Odoo (`data-icon`).
-- La page « Automatisations » lit les tâches automatiques d'Odoo : elle est réservée aux administrateurs.
+- Les pages « Paramètres » et « Automatisations » sont pour les responsables d'OCD Live : ils changent les
+  réglages et les interrupteurs sans être administrateurs d'Odoo (rien d'autre n'est écrit).
+- Le module `disable_odoo_online` de l'OCA (dépôt server-brand, branche 20.0) doit être dans le chemin
+  des modules : `ocd_debranding` en dépend.
 - La confirmation d'une commande envoie un PDF : le serveur a besoin du moteur PDF d'Odoo
   (`wkhtmltopdf`), sinon la commande reste « en attente du paiement ».
 - Odoo publie au départ sa « Livraison standard » (gratuite, partout) : l'équipe ne publie que les
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — paramètres, automatisations, conversations WhatsApp, sans la marque Odoo
+- **WhatsApp** : un seul accord (la case d'OCD Live et l'accord WhatsApp, STOP et START, restent
+  identiques) ; les messages demandés par le contact (code, lien, ticket, alerte) partent toujours, les
+  autres jamais après un refus. Avant, en production, `whatsapp_cloud` aurait bloqué tous les messages
+  des vendeurs (accord jamais transmis). Nouveaux messages : ticket renvoyé, créneau libéré pour la liste
+  d'attente, ouverture de l'annuaire, lien reçu hors des fenêtres. « Commande expédiée » du shop plus
+  envoyé pour les colis d'OCD (il arrivait après « colis livré »), note demandée une fois par commande.
+- **Paramètres** (`BoParametres`) : 5 sections déclarées par les modules, plus de 50 réglages avec leurs
+  contrôles (nombres, heures, prix mini ≤ maxi, derniers lives avant minuit, au moins un jour ouvert),
+  barre « enregistré / non enregistré », question avant de quitter, avertissement quand une protection
+  est coupée ; un moyen de paiement publié ou non par case ; les responsables d'OCD Live les changent sans
+  être administrateurs.
+- **Automatisations** (`BoAutomatisations`) : catalogue de 30 automatisations réelles (règles que l'équipe
+  met en pause, heures fixes, code de l'argent et des preuves toujours actif, tâches techniques), avec
+  leurs exécutions des 7 derniers jours et la dernière ; un interrupteur coupe vraiment l'action (message
+  à l'équipe, modèle WhatsApp, tâche planifiée).
+- **Conversations WhatsApp** (`BoWhatsApp`) : sur celles de `whatsapp_cloud` (droits des agents,
+  envoi, fenêtre de 24 h) ; messages automatiques, réponses, notes internes, réponses rapides, modèles
+  hors des 24 h, contact avec sa commande et ses colis ou son prochain live, canaux de l'équipe, codes de
+  livraison masqués ; nouveaux messages par le bus et toutes les 20 secondes. L'équipe d'OCD Live est
+  agente WhatsApp. La démo a 5 conversations (sur un compte archivé : rien ne part chez Meta).
+- **Sans la marque Odoo** (`ocd_debranding`, avec `disable_odoo_online` de l'OCA) : site, connexion,
+  portail, onglet du back-office, menu de l'utilisateur, fenêtres d'erreur, e-mails, robot « OCD Live » ;
+  aucun lien vers les écrans d'Odoo dans les écrans d'OCD.
+- Traductions : tous les textes, et les longues descriptions des modules.
+- Correction : dans un groupe de champs des Paramètres, la saisie du premier champ allait dans le dernier
+  (variable de gabarit partagée) ; chaque champ porte maintenant sa clé.
 
 ### 11 novembre 2026 — démo qui remplit tous les écrans
 - Photos (illustrations) des 8 produits, robe en 2 couleurs et 4 tailles, stock par variante (« Plus que

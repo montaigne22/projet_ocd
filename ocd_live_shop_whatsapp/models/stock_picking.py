@@ -1,5 +1,12 @@
 from odoo import models
 
+# Messages of whatsapp_cloud_sale (by name at Meta) and the parcels of OCD Live:
+# - "order shipped" goes when a transfer is validated, i.e. when a parcel of OCD Live is
+#   delivered, after "your parcel is delivered": not for the parcels;
+# - the satisfaction message: once per order, after its last parcel.
+REPLACED_FOR_PARCELS = ("order_shipped", "order_ready_for_pickup")
+ONCE_PER_ORDER = ("delivery_feedback",)
+
 EVENT_TEMPLATES = {
     "failed": "ocd_live_shop_whatsapp.template_parcel_failed",
     "delivered": "ocd_live_shop_whatsapp.template_parcel_delivered",
@@ -33,3 +40,21 @@ class StockPicking(models.Model):
         super()._ocd_notify_customer(event)
         if event in EVENT_TEMPLATES:
             self._ocd_send(EVENT_TEMPLATES[event])
+
+    def _ocd_whatsapp_keep(self, template):
+        """The transfers to which the message of `template` still goes."""
+        if template.template_name in REPLACED_FOR_PARCELS:
+            return self.filtered(lambda picking: not picking.ocd_is_parcel)
+        if template.template_name in ONCE_PER_ORDER:
+            return self.filtered(lambda picking: not picking.ocd_is_parcel or picking._ocd_is_last_parcel())
+        return self
+
+    def _ocd_is_last_parcel(self):
+        """Whether every parcel of the order is over and this one was delivered last."""
+        self.ensure_one()
+        parcels = self.sale_id.picking_ids.filtered("ocd_is_parcel")
+        if any(parcel.state not in ("done", "cancel") for parcel in parcels):
+            return False
+        done = parcels.filtered(lambda parcel: parcel.state == "done")
+        last = max(done, key=lambda parcel: (parcel.date_done or parcel.write_date, parcel.id), default=None)
+        return last == self

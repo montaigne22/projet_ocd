@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_live.Settings">
+        <div class="o_action o_ocd_bo o_ocd_settings">
+            <t t-set="page" t-value="this.page()"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">Settings</h1>
+            </div>
+            <div class="o_ocd_set">
+                <nav class="o_ocd_set_nav" aria-label="Sections of the settings">
+                    <t t-foreach="page.sections" t-as="section" t-key="section.key">
+                        <t t-set="state" t-value="this.sectionState(section)"/>
+                        <button type="button" class="o_ocd_set_tab"
+                                t-att-aria-current="section.key === this.section.key ? 'page' : 'false'"
+                                t-on-click="() => this.pick(section)">
+                            <span class="o_ocd_set_icon" aria-hidden="true" t-out="section.icon"/>
+                            <span class="o_ocd_set_tab_text">
+                                <span class="o_ocd_set_tab_label" t-out="section.label"/>
+                                <span class="o_ocd_set_tab_count" t-out="section.count"/>
+                            </span>
+                            <span t-if="state === 'error'" class="o_ocd_set_dot o_ocd_set_dot_error" title="To check"
+                                  aria-label="To check"/>
+                            <span t-elif="state === 'dirty'" class="o_ocd_set_dot" title="Changed, not saved"
+                                  aria-label="Changed, not saved"/>
+                        </button>
+                    </t>
+                    <p class="o_ocd_set_nav_note">Each setting is read by the automations: no need to touch the code to change an hour or a price.</p>
+                </nav>
+
+                <div class="o_ocd_set_main">
+                    <t t-set="bar" t-value="this.bar"/>
+                    <div role="status" aria-live="polite" t-attf-class="o_ocd_set_bar o_ocd_set_bar_#{bar.tone}">
+                        <span class="o_ocd_set_bar_text" t-out="bar.text"/>
+                        <span t-if="this.dirty" class="o_ocd_set_bar_buttons">
+                            <button type="button" class="o_ocd_set_save" t-att-disabled="this.saving()"
+                                    t-on-click="() => this.save()">Save</button>
+                            <button type="button" class="o_ocd_set_cancel" t-on-click="() => this.discard()">Cancel</button>
+                        </span>
+                    </div>
+
+                    <t t-set="section" t-value="this.section"/>
+                    <section t-if="section" class="o_ocd_set_panel" t-att-aria-labelledby="'o_ocd_set_title_' + section.key">
+                        <h2 class="o_ocd_set_title" t-att-id="'o_ocd_set_title_' + section.key" t-out="section.title"/>
+                        <div class="o_ocd_set_grid">
+                            <t t-foreach="section.items" t-as="item" t-key="item.key">
+                                <t t-call="ocd_live.SettingsItem"/>
+                            </t>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="ocd_live.SettingsItem">
+        <t t-set="cid" t-value="'o_ocd_set_' + item.key"/>
+        <t t-set="single" t-value="['number', 'money', 'time', 'date', 'select', 'text'].includes(item.kind)"/>
+        <div t-attf-class="o_ocd_set_item o_ocd_set_item_#{item.kind} #{this.warnOff(item) ? 'o_ocd_set_item_off' : ''} #{this.error(item) ? 'o_ocd_set_item_error' : ''} #{item.span === 2 ? 'o_ocd_set_wide' : ''}">
+            <span class="o_ocd_set_mark">
+                <input t-if="item.kind === 'check'" type="checkbox" class="o_ocd_set_check" t-att-id="cid"
+                       t-att-checked="this.value(item) ? 'checked' : undefined"
+                       t-att-disabled="item.readonly ? 'disabled' : undefined"
+                       t-att-aria-describedby="item.help ? cid + '_help' : undefined"
+                       t-att-data-key="item.key" t-on-change="(ev) => this.onCheck(ev)"/>
+                <span t-elif="item.kind === 'warn'" class="o_ocd_set_warn_icon" aria-hidden="true">!</span>
+            </span>
+            <div class="o_ocd_set_body">
+                <label t-if="item.kind === 'check' or single" class="o_ocd_set_label" t-att-for="cid" t-out="item.title"/>
+                <span t-else="" class="o_ocd_set_label" t-out="item.title"/>
+                <span t-if="item.help" class="o_ocd_set_help" t-att-id="cid + '_help'" t-out="item.help"/>
+
+                <span t-if="single" class="o_ocd_set_field">
+                    <t t-set="input" t-value="item"/>
+                    <t t-call="ocd_live.SettingsInput"/>
+                </span>
+
+                <div t-if="item.kind === 'group'" class="o_ocd_set_fields">
+                    <span t-foreach="item.fields" t-as="field" t-key="field.key" class="o_ocd_set_field">
+                        <t t-set="input" t-value="field"/>
+                        <label t-if="field.before" class="o_ocd_set_field_label" t-att-for="'o_ocd_set_' + field.key"
+                               t-out="field.title"/>
+                        <t t-call="ocd_live.SettingsInput"/>
+                        <label t-if="!field.before" class="o_ocd_set_field_label" t-att-for="'o_ocd_set_' + field.key"
+                               t-out="field.title"/>
+                        <span t-if="this.error(field)" class="o_ocd_set_error" role="alert" t-out="this.error(field)"/>
+                    </span>
+                </div>
+
+                <div t-if="item.kind === 'checks'" class="o_ocd_set_checks" role="group" t-att-aria-label="item.title">
+                    <label t-foreach="item.fields" t-as="box" t-key="box.key" class="o_ocd_set_box">
+                        <input type="checkbox" t-att-checked="this.value(box) ? 'checked' : undefined"
+                               t-att-data-key="box.key" t-on-change="(ev) => this.onCheck(ev)"/>
+                        <span t-out="box.title"/>
+                    </label>
+                </div>
+                <span t-if="item.kind === 'checks'" t-foreach="this.subErrors(item)" t-as="message" t-key="message_index"
+                      class="o_ocd_set_error" role="alert" t-out="message"/>
+
+                <span t-if="item.kind === 'chips' and item.chips.length" class="o_ocd_set_chips">
+                    <span t-foreach="item.chips" t-as="chip" t-key="chip_index" class="o_ocd_set_chip" t-out="chip"/>
+                </span>
+
+                <div t-if="item.kind === 'templates'" class="o_ocd_set_templates" role="table" t-att-aria-label="item.title">
+                    <div t-foreach="item.rows" t-as="row" t-key="row_index" class="o_ocd_set_template" role="row">
+                        <span class="o_ocd_set_template_name" role="cell" t-out="row.name"/>
+                        <span class="o_ocd_set_template_use" role="cell" t-out="row.use"/>
+                        <span role="cell"><span t-attf-class="o_ocd_set_badge o_ocd_set_badge_#{row.tone}" t-out="row.status"/></span>
+                    </div>
+                    <p t-if="!item.rows.length" class="o_ocd_set_help">No template yet.</p>
+                </div>
+
+                <span t-if="this.warnOff(item)" class="o_ocd_set_note o_ocd_set_note_red" t-out="item.warn_off"/>
+                <span t-elif="item.note" t-attf-class="o_ocd_set_note o_ocd_set_note_#{item.note_tone or 'none'}" t-out="item.note"/>
+                <span t-if="this.error(item)" class="o_ocd_set_error" role="alert" t-out="this.error(item)"/>
+                <span t-if="item.link or item.button" class="o_ocd_set_links">
+                    <a t-if="item.link" href="#" class="o_ocd_set_link" t-att-data-key="item.key"
+                       t-on-click.prevent="(ev) => this.openLink(ev)" t-out="item.link.label"/>
+                    <button t-if="item.button" type="button" class="o_ocd_set_button" t-att-data-key="item.key"
+                            t-on-click="(ev) => this.run(ev)" t-out="item.button.label"/>
+                </span>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="ocd_live.SettingsInput">
+        <t t-set="iid" t-value="'o_ocd_set_' + input.key"/>
+        <t t-set="invalid" t-value="this.error(input) ? 'true' : 'false'"/>
+        <t t-if="input.kind === 'select'">
+            <select t-att-id="iid" class="o_ocd_set_input o_ocd_set_select" t-att-aria-invalid="invalid"
+                    t-att-disabled="input.readonly ? 'disabled' : undefined" t-att-data-key="input.key"
+                    t-on-change="(ev) => this.onSelect(ev)">
+                <option t-if="this.optionIndex(input) === -1" value="-1" selected="selected">–</option>
+                <option t-foreach="input.options" t-as="option" t-key="option_index" t-att-value="option_index"
+                        t-att-selected="option_index === this.optionIndex(input) ? 'selected' : undefined"
+                        t-out="option.label"/>
+            </select>
+        </t>
+        <t t-elif="input.kind === 'date'">
+            <input type="date" t-att-id="iid" class="o_ocd_set_input" t-att-value="this.text(input)"
+                   t-att-disabled="input.readonly ? 'disabled' : undefined" t-att-data-key="input.key"
+                   t-att-aria-invalid="invalid" t-on-change="(ev) => this.onDate(ev)"/>
+        </t>
+        <t t-else="">
+            <input type="text" t-att-id="iid" class="o_ocd_set_input" autocomplete="off"
+                   t-att-disabled="input.readonly ? 'disabled' : undefined"
+                   t-att-inputmode="input.kind === 'text' ? undefined : (input.kind === 'time' ? 'numeric' : 'decimal')"
+                   t-att-placeholder="input.kind === 'time' ? '08:30' : undefined"
+                   t-att-style="'width: ' + (input.width || (input.kind === 'time' ? 76 : 120)) + 'px'"
+                   t-att-value="this.text(input)" t-att-aria-invalid="invalid" t-att-data-key="input.key"
+                   t-on-input="(ev) => this.onInput(ev)"/>
+            <span t-if="input.suffix" class="o_ocd_set_suffix" t-out="input.suffix"/>
+        </t>
+    </t>
+
+</templates>

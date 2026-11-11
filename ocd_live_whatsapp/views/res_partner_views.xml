@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- On the vendor form, the consent of WhatsApp: the one that lets the messages go (also
+         changed by STOP and START, and kept the same as the switch of the vendor space). -->
+    <record id="res_partner_view_form_ocd_vendor" model="ir.ui.view">
+        <field name="name">res.partner.view.form.ocd.vendor.whatsapp</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.res_partner_view_form_ocd_vendor"/>
+        <field name="arch" type="xml">
+            <field name="ocd_whatsapp_optin" position="replace">
+                <field name="whatsapp_opt_in" string="Messages On WhatsApp"/>
+                <field name="whatsapp_opt_out" string="Refused WhatsApp" invisible="not whatsapp_opt_out"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

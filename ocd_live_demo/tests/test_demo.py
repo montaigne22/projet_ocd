@@ -55,6 +55,13 @@ class TestOcdLiveDemo(TransactionCase):
         self.assertTrue(couriers.filtered(lambda c: c.ocd_cash_on_hand > 0), "Cash to hand over this evening")
         orders = parcels.sale_id
         self.assertTrue(orders.ocd_delivery_line_ids, "Orders priced with one price per parcel")
+        if "whatsapp.account" in self.env:
+            channels = self.env["discuss.channel"].search(
+                [("channel_type", "=", "whatsapp"), ("whatsapp_partner_id", "in", partners.ids)]
+            )
+            self.assertGreaterEqual(len(channels), 4, "Conversations for the WhatsApp screen")
+            self.assertTrue(channels.filtered("whatsapp_waiting_since"), "Customers waiting for an answer")
+            self.assertFalse(channels.whatsapp_account_id.active, "Nothing goes to Meta from the demo")
         cod = self.env.ref("delivery.payment_provider_cod")
         self.assertTrue(cod.active and cod.is_published, "An order of the shop can be paid in cash at the door")
         bills = self.env["account.move"].search([("partner_id", "in", partners.ids), ("move_type", "=", "in_invoice")])
@@ -73,6 +80,10 @@ class TestOcdLiveDemo(TransactionCase):
             self.assertFalse(self.env[model].with_context(active_test=False).search(domain), model)
         self.assertFalse(self.env.ref("ocd_live.payment_provider_momo_team").active)
         self.assertFalse(self.env.ref("delivery.payment_provider_cod").is_published, "Back as before the demo")
+        if "whatsapp.account" in self.env:
+            self.assertFalse(self.env["discuss.channel"].search(
+                [("channel_type", "=", "whatsapp"), ("whatsapp_partner_id", "in", partners.ids)]
+            ), "The conversations of the demo are removed")
         self.assertFalse(self.env["ocd.payout"].search([("vendor_id", "in", partners.ids)]))
         self.assertFalse(self.env["account.move"].search(domain + [("move_type", "in", ("in_invoice", "in_refund"))]))
         templates = self.env["ir.model.data"].search(

@@ -107,6 +107,15 @@ class ResPartner(models.Model):
             partner.ocd_pass_end_date = end_by_partner.get(partner.id, False)
             partner.ocd_pass_active = partner.id in active_partner_ids
 
+    # === WHATSAPP CONSENT === #
+
+    def _ocd_whatsapp_consent(self):
+        """Whether the contact agreed to the messages of OCD Live on WhatsApp (tickets,
+        reminders, news). Extended by ocd_live_whatsapp, where the consent is the one of
+        WhatsApp (also changed by STOP and START)."""
+        self.ensure_one()
+        return self.ocd_whatsapp_optin
+
     # === SPACE LINK === #
 
     def _ocd_get_space_token(self):

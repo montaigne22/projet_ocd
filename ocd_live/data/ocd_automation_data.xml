@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of OCD Live in the catalogue of the team (BoAutomatisations). The
+     texts say what really happens; the switches are read by the code (`_ocd_enabled`) or
+     archive the scheduled action. The other modules add theirs. -->
+<odoo>
+
+    <record id="automation_booking_confirmed" model="ocd.automation">
+        <field name="code">booking_confirmed</field>
+        <field name="name">Booking paid: tell the team</field>
+        <field name="sequence">10</field>
+        <field name="group">lives</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_live_booking"/>
+        <field name="when">The payment of a booking arrives</field>
+        <field name="trigger">When the booking is paid, or confirmed by the team.</field>
+        <field name="scope">Every booking.</field>
+        <field name="actions">Message in the Discuss channel of the lives (Settings): who, what, when, what to prepare.</field>
+        <field name="tools">Team channels (Discuss).</field>
+    </record>
+
+    <record id="automation_hold_release" model="ocd.automation">
+        <field name="code">hold_release</field>
+        <field name="name">Slot held but not paid: release it</field>
+        <field name="sequence">20</field>
+        <field name="group">lives</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="model_ocd_live_booking"/>
+        <field name="cron_id" ref="ir_cron_release_expired_holds"/>
+        <field name="when">Every 5 minutes, after the time held for the payment</field>
+        <field name="trigger">Every 5 minutes.</field>
+        <field name="scope">The bookings still waiting for their payment after the time held (Settings).</field>
+        <field name="actions">Confirm the booking when its order was paid in the meantime.
+Else release the slot in the calendar.
+Tell the waiting list of the day that an hour is free.</field>
+        <field name="tools">Scheduled task, Sales and Payment.</field>
+    </record>
+
+    <record id="automation_remote_host" model="ocd.automation">
+        <field name="code">remote_host</field>
+        <field name="name">Remote live without host</field>
+        <field name="sequence">40</field>
+        <field name="group">lives</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="model_ocd_live_booking"/>
+        <field name="cron_id" ref="ir_cron_check_hosts"/>
+        <field name="when">At the confirmation, then every hour for the next 24 hours</field>
+        <field name="trigger">When a remote live is confirmed without host, then every hour.</field>
+        <field name="scope">The remote lives of the next 24 hours without host, when the host is required (Settings).</field>
+        <field name="actions">Activity « Choose the host » for the manager of the lives, due the day before.</field>
+        <field name="tools">Scheduled task and activities.</field>
+    </record>
+
+    <record id="automation_lives_done" model="ocd.automation">
+        <field name="code">lives_done</field>
+        <field name="name">Past lives: mark them done</field>
+        <field name="sequence">10</field>
+        <field name="group">technical</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="model_ocd_live_booking"/>
+        <field name="cron_id" ref="ir_cron_mark_done"/>
+        <field name="when">Every hour</field>
+        <field name="trigger">Every hour.</field>
+        <field name="scope">The confirmed lives that are over.</field>
+        <field name="actions">Mark them « done »: the replay can then be published.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_credits_expire" model="ocd.automation">
+        <field name="code">credits_expire</field>
+        <field name="name">Old lives of the packages: end them</field>
+        <field name="sequence">20</field>
+        <field name="group">technical</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="model_ocd_live_credit"/>
+        <field name="cron_id" ref="ir_cron_expire_credits"/>
+        <field name="when">Every day</field>
+        <field name="trigger">Every day.</field>
+        <field name="scope">The lives of the packages not placed before their end.</field>
+        <field name="actions">End them: they cannot be placed any more.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_waitlist_clean" model="ocd.automation">
+        <field name="code">waitlist_clean</field>
+        <field name="name">Waiting lists of the past days: forget them</field>
+        <field name="sequence">30</field>
+        <field name="group">technical</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="model_ocd_live_waitlist"/>
+        <field name="cron_id" ref="ir_cron_clean_waitlist"/>
+        <field name="when">Every day</field>
+        <field name="trigger">Every day.</field>
+        <field name="scope">The waiting lists of the past days.</field>
+        <field name="actions">Cancel them.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_windows" model="ocd.automation">
+        <field name="code">windows</field>
+        <field name="name">Checking windows: open and close the links</field>
+        <field name="sequence">10</field>
+        <field name="group">directory</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="model_ocd_directory_listing"/>
+        <field name="cron_id" ref="ir_cron_update_listing_windows"/>
+        <field name="when">Every 10 minutes</field>
+        <field name="trigger">Every 10 minutes.</field>
+        <field name="scope">The links of the directory and the alerts « Tell me at the opening ».</field>
+        <field name="actions">At the start of a window: the links waiting for it are to check.
+At its end: the links of the window end.
+Tell the contacts who asked that the window is open.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_pass_states" model="ocd.automation">
+        <field name="code">pass_states</field>
+        <field name="name">Directory passes: start and end them</field>
+        <field name="sequence">40</field>
+        <field name="group">technical</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="model_ocd_directory_pass"/>
+        <field name="cron_id" ref="ir_cron_update_pass_states"/>
+        <field name="when">Every hour</field>
+        <field name="trigger">Every hour.</field>
+        <field name="scope">The directory passes.</field>
+        <field name="actions">A pass starts on its first day and ends after its last day.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_pass_reminder" model="ocd.automation">
+        <field name="code">pass_reminder</field>
+        <field name="name">Pass that ends soon: remind the vendor</field>
+        <field name="sequence">50</field>
+        <field name="group">directory</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="model_ocd_directory_pass"/>
+        <field name="cron_id" ref="ir_cron_pass_reminders"/>
+        <field name="when">Every day, some days before the end of the pass</field>
+        <field name="trigger">Every day, the number of days before the end set in the Settings.</field>
+        <field name="scope">The active passes, once each.</field>
+        <field name="actions">Remind the vendor, with the link to renew the pass.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+</odoo>

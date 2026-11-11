@@ -406,8 +406,17 @@ class OcdLiveBooking(models.Model):
         return True
 
     def _ocd_send_ticket(self):
-        """Send the ticket of the live to the vendor. Extended by ocd_live_whatsapp."""
+        """Send the ticket of the live to the vendor. Return whether it is on its way.
+        Extended by ocd_live_whatsapp."""
         return False
+
+    def _ocd_ticket_path(self):
+        """Path of the ticket page with its secret (the one of the order), for a message."""
+        self.ensure_one()
+        order = self.sudo().sale_order_id
+        if not order:
+            return f"ocd/ticket/{self.id}"
+        return f"ocd/ticket/{self.id}?access_token={order._portal_ensure_token()}"
 
     def action_mark_done(self):
         self.filtered(lambda b: b.state == "confirmed").write({"state": "done"})
@@ -444,7 +453,7 @@ class OcdLiveBooking(models.Model):
         """Announce the booking in the team channel: who, which business, when, where."""
         self.ensure_one()
         channel = self.company_id.ocd_lives_channel_id
-        if not channel:
+        if not channel or not self.env["ocd.automation"]._ocd_enabled("booking_confirmed"):
             return
         day, start, end = self._ocd_local_labels()
         mode = dict(self._fields["mode"]._description_selection(self.env))[self.mode]
@@ -476,6 +485,8 @@ class OcdLiveBooking(models.Model):
         )
 
     def _ocd_schedule_host_activity(self):
+        if not self.env["ocd.automation"]._ocd_enabled("remote_host"):
+            return
         today = fields.Date.context_today(self)
         for booking in self:
             if (

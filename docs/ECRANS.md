@@ -62,10 +62,10 @@ Le design validé est dans [`prototype/design-valide/`](../prototype/design-vali
 | `BoVendeur` Fiche vendeur | vue `res_partner_view_form_ocd_vendor` (+ ajouts du shop), widget `ocd_choice_cards` | ✅ |
 | `BoReversements` Reversements | liste `ocd_payout_view_list` avec `js_class="ocd_payout_list"` | ✅ |
 | `BoRecrutement` Recrutement | kanban `hr_applicant_view_kanban_ocd_host` avec `js_class="ocd_host_kanban"` | ✅ |
-| `BoParametres` Paramètres | réglages d'Odoo (application OCD Live), présentés en cartes | 🟡 |
-| `BoAutomatisations` Automatisations | liste des tâches automatiques OCD Live, avec interrupteur (administrateurs) | 🟡 |
+| `BoParametres` Paramètres | action `ocd_live.settings`, modèle `ocd.live.settings` : sections déclarées par chaque module (lives, annuaire, shop, paiements, WhatsApp), barre « enregistré / non enregistré », contrôles entre réglages, question avant de quitter | ✅ |
+| `BoAutomatisations` Automatisations | action `ocd_live.automations`, modèle `ocd.automation` (catalogue en données, un par module) : règle modifiable, heure fixe ou code, exécutions sur 7 jours, interrupteur lu par le code | ✅ |
 | `BoOutils` Outils Odoo utilisés | dans la documentation, pas dans le système : [`docs/OUTILS_ODOO.md`](OUTILS_ODOO.md) | ✅ |
-| `BoWhatsApp` Conversations | écran de `whatsapp_cloud` | 🟡 |
+| `BoWhatsApp` Conversations | action `ocd_live_whatsapp.inbox`, modèle `ocd.whatsapp.inbox` sur les conversations de `whatsapp_cloud` : liste (toutes, en attente), messages automatiques, réponses, notes internes, fenêtre de 24 h, réponses rapides, modèles, contact (commande et colis, live), canaux de l'équipe | ✅ |
 
 ## Écrans d'équipe sur téléphone
 

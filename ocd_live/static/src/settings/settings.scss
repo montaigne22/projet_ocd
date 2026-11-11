@@ -1,0 +1,446 @@
+// Settings of OCD Live, as in the validated design (BoParametres)
+.o_ocd_set {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px 22px;
+}
+.o_ocd_set_nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 10px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+}
+.o_ocd_set_tab {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    min-height: 48px;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: $ocd-ink;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+    &[aria-current="page"] {
+        background: $ocd-orange-pale;
+        .o_ocd_set_icon {
+            background: $ocd-orange;
+            color: $ocd-ink;
+        }
+        .o_ocd_set_tab_label {
+            font-weight: 800;
+        }
+    }
+    &:focus-visible {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 1px;
+    }
+}
+.o_ocd_set_icon {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: $ocd-ink;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 800;
+}
+.o_ocd_set_tab_text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+}
+.o_ocd_set_tab_label {
+    font-size: 14px;
+    font-weight: 600;
+}
+.o_ocd_set_tab_count {
+    font-size: 12px;
+    color: $ocd-bo-muted;
+}
+.o_ocd_set_dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: $ocd-yellow-line;
+    &.o_ocd_set_dot_error {
+        background: $ocd-red;
+    }
+}
+.o_ocd_set_nav_note {
+    margin: auto 0 0;
+    padding: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: $ocd-bo-muted;
+}
+.o_ocd_set_main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    min-height: 0;
+}
+.o_ocd_set_bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 5px 12px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    color: $ocd-bo-text;
+    font-size: 13.5px;
+    font-weight: 700;
+    &.o_ocd_set_bar_yellow {
+        background: $ocd-yellow-soft;
+        border-color: $ocd-yellow-line;
+        color: $ocd-yellow-text;
+    }
+    &.o_ocd_set_bar_green {
+        background: $ocd-green-soft;
+        border-color: #A8D9BC;
+        color: $ocd-green-text;
+    }
+    &.o_ocd_set_bar_red {
+        background: $ocd-red-soft;
+        border-color: #E8A0A6;
+        color: $ocd-red-dark;
+    }
+}
+.o_ocd_set_bar_buttons {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+.o_ocd_set_save, .o_ocd_set_cancel, .o_ocd_set_button {
+    min-height: 32px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 800;
+    cursor: pointer;
+    &:focus-visible {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 2px;
+    }
+}
+.o_ocd_set_save {
+    border: 0;
+    background: $ocd-orange;
+    color: $ocd-ink;
+    &:disabled {
+        opacity: 0.6;
+        cursor: progress;
+    }
+}
+.o_ocd_set_cancel, .o_ocd_set_button {
+    border: 1px solid $ocd-bo-input;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-weight: 700;
+    padding: 0 12px;
+}
+.o_ocd_set_panel {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 14px 16px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+}
+.o_ocd_set_title {
+    margin: 0 0 12px;
+    font-family: $ocd-display;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 1.1;
+    color: $ocd-ink;
+}
+.o_ocd_set_grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    align-items: start;
+}
+.o_ocd_set_item {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+    padding: 11px 13px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-line;
+    &.o_ocd_set_wide, &.o_ocd_set_item_templates, &.o_ocd_set_item_warn {
+        grid-column: span 2;
+    }
+    &.o_ocd_set_item_warn {
+        background: #FFF6E5;
+        border-color: $ocd-yellow-line;
+    }
+    &.o_ocd_set_item_off {
+        background: #FFF5F5;
+        border-color: #E8A0A6;
+    }
+    &.o_ocd_set_item_error {
+        border-color: $ocd-red;
+    }
+}
+.o_ocd_set_mark {
+    display: flex;
+    padding-top: 2px;
+}
+.o_ocd_set_check {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: $ocd-orange;
+}
+.o_ocd_set_warn_icon {
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: $ocd-orange-dark;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 800;
+}
+.o_ocd_set_body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+.o_ocd_set_label {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: $ocd-ink;
+}
+.o_ocd_set_help {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: $ocd-bo-text;
+}
+.o_ocd_set_field, .o_ocd_set_fields {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.o_ocd_set_fields {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+.o_ocd_set_field_label, .o_ocd_set_suffix {
+    margin: 0;
+    font-size: 13px;
+    color: $ocd-bo-text;
+}
+.o_ocd_set_input {
+    height: 34px;
+    box-sizing: border-box;
+    padding: 0 9px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 7px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    &:focus {
+        outline: 0;
+        border-color: $ocd-orange;
+        box-shadow: 0 0 0 3px rgba($ocd-orange, 0.25);
+    }
+    &[aria-invalid="true"] {
+        border-color: $ocd-red;
+    }
+}
+.o_ocd_set_select {
+    width: auto;
+    min-width: 120px;
+    max-width: 100%;
+    padding: 0 28px 0 8px;
+    font-size: 13.5px;
+}
+.o_ocd_set_checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.o_ocd_set_box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    margin: 0;
+    padding: 0 10px;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    input {
+        margin: 0;
+        accent-color: $ocd-orange;
+    }
+    &:has(input:checked) {
+        background: $ocd-orange-pale;
+        border-color: $ocd-orange;
+    }
+}
+.o_ocd_set_chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.o_ocd_set_chip {
+    padding: 2px 9px;
+    border-radius: 6px;
+    background: $ocd-bo-background;
+    border: 1px solid $ocd-bo-border;
+    font-size: 13px;
+    font-weight: 600;
+}
+.o_ocd_set_templates {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $ocd-bo-line;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.o_ocd_set_template {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr) 160px;
+    gap: 10px;
+    align-items: center;
+    padding: 5px 10px;
+    border-bottom: 1px solid $ocd-bo-grey;
+    font-size: 13px;
+    &:last-child {
+        border-bottom: 0;
+    }
+}
+.o_ocd_set_template_name {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    overflow-wrap: anywhere;
+}
+.o_ocd_set_template_use {
+    color: $ocd-bo-text;
+}
+.o_ocd_set_badge {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    background: $ocd-bo-grey;
+    color: $ocd-bo-text;
+    &.o_ocd_set_badge_green {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+    &.o_ocd_set_badge_yellow {
+        background: $ocd-yellow-soft;
+        color: $ocd-yellow-text;
+    }
+    &.o_ocd_set_badge_red {
+        background: $ocd-red-soft;
+        color: $ocd-red-dark;
+    }
+}
+.o_ocd_set_note {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: $ocd-bo-text;
+    &.o_ocd_set_note_red {
+        color: $ocd-red-dark;
+    }
+    &.o_ocd_set_note_green {
+        color: $ocd-green-text;
+    }
+    &.o_ocd_set_note_yellow {
+        color: $ocd-yellow-text;
+    }
+}
+.o_ocd_set_error {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: $ocd-red-text;
+}
+.o_ocd_set_links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.o_ocd_set_link {
+    font-size: 13px;
+    font-weight: 700;
+    color: $ocd-ink !important;
+    text-decoration: underline !important;
+}
+@media (max-width: 991.98px) {
+    .o_ocd_set {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        padding: 12px 16px;
+        overflow-y: auto;
+    }
+    .o_ocd_set_nav {
+        flex-direction: row;
+        overflow-x: auto;
+        .o_ocd_set_tab {
+            flex: none;
+        }
+    }
+    .o_ocd_set_nav_note {
+        display: none;
+    }
+    .o_ocd_set_grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .o_ocd_set_item {
+        &.o_ocd_set_wide, &.o_ocd_set_item_templates, &.o_ocd_set_item_warn {
+            grid-column: auto;
+        }
+    }
+    .o_ocd_set_template {
+        grid-template-columns: minmax(0, 1fr) auto;
+        .o_ocd_set_template_use {
+            grid-column: 1 / -1;
+            grid-row: 2;
+        }
+    }
+}

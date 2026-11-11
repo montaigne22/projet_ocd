@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The WhatsApp messages of OCD Live in the catalogue of the automations: a template goes only
+     while its automation runs. -->
+<odoo>
+
+    <record id="automation_booking_whatsapp" model="ocd.automation">
+        <field name="code">booking_whatsapp</field>
+        <field name="name">Live confirmed: WhatsApp to the vendor</field>
+        <field name="sequence">15</field>
+        <field name="group">lives</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+        <field name="when">The payment of a booking arrives</field>
+        <field name="trigger">When the booking is paid, or confirmed by the team.</field>
+        <field name="scope">The vendors who agreed to the messages on WhatsApp.</field>
+        <field name="actions">WhatsApp to the vendor, template ocd_live_confirme: day, hours, place and reference, with the link of the vendor space.</field>
+        <field name="tools">WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_live_confirmed')])]"/>
+    </record>
+
+    <record id="automation_live_reminder" model="ocd.automation">
+        <field name="code">live_reminder</field>
+        <field name="name">Day before the live: remind the vendor</field>
+        <field name="sequence">30</field>
+        <field name="group">lives</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+        <field name="cron_id" ref="ir_cron_live_reminders"/>
+        <field name="when">The day before, from 18:00 (time of the studio)</field>
+        <field name="trigger">Every hour: the day before the live from 18:00, or at least 12 hours before.</field>
+        <field name="scope">The confirmed lives of tomorrow, at the studio or remote, once each.</field>
+        <field name="actions">WhatsApp to the vendor, template ocd_rappel_live: day, hour and place.</field>
+        <field name="tools">Scheduled task and WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_live_reminder')])]"/>
+    </record>
+
+    <record id="automation_free_slot" model="ocd.automation">
+        <field name="code">free_slot</field>
+        <field name="name">Hour freed: tell the waiting list</field>
+        <field name="sequence">25</field>
+        <field name="group">lives</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="ocd_live.model_ocd_live_waitlist"/>
+        <field name="when">A live of a full day is cancelled, moved or not paid</field>
+        <field name="trigger">When an hour of the day becomes free.</field>
+        <field name="scope">The contacts on the waiting list of that day, who asked for it.</field>
+        <field name="actions">WhatsApp to each of them, template ocd_creneau_libre, with the link to book the day: the first who pays gets the hour.</field>
+        <field name="tools">WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_free_slot')])]"/>
+    </record>
+
+    <record id="automation_link_received" model="ocd.automation">
+        <field name="code">link_received</field>
+        <field name="name">Link received out of the checking windows</field>
+        <field name="sequence">20</field>
+        <field name="group">directory</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="ocd_live.model_ocd_directory_listing"/>
+        <field name="when">A link is sent while no window is open</field>
+        <field name="trigger">When the link is sent.</field>
+        <field name="scope">The links that wait for the next window.</field>
+        <field name="actions">Keep the link until the next window; the website shows when it is checked.
+WhatsApp to the vendor, template ocd_lien_recu, with the hour of the check.</field>
+        <field name="tools">WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_link_received')])]"/>
+    </record>
+
+    <record id="automation_link_online" model="ocd.automation">
+        <field name="code">link_online</field>
+        <field name="name">Link checked: tell the vendor it is online</field>
+        <field name="sequence">30</field>
+        <field name="group">directory</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="ocd_live.model_ocd_directory_listing"/>
+        <field name="when">The team publishes a link</field>
+        <field name="trigger">When the link is online.</field>
+        <field name="scope">Every link published.</field>
+        <field name="actions">WhatsApp to the vendor, template ocd_lien_en_ligne, with the end of the window.</field>
+        <field name="tools">WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_link_online')])]"/>
+    </record>
+
+    <record id="automation_link_refused" model="ocd.automation">
+        <field name="code">link_refused</field>
+        <field name="name">Link refused: tell the vendor why</field>
+        <field name="sequence">35</field>
+        <field name="group">directory</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="ocd_live.model_ocd_directory_listing"/>
+        <field name="when">The team refuses a link</field>
+        <field name="trigger">When the link is refused.</field>
+        <field name="scope">Every link refused.</field>
+        <field name="actions">WhatsApp to the vendor, template ocd_lien_refuse, with the reason chosen by the team.</field>
+        <field name="tools">WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_link_refused')])]"/>
+    </record>
+
+    <record id="automation_window_alert" model="ocd.automation">
+        <field name="code">window_alert</field>
+        <field name="name">Window open: tell who asked</field>
+        <field name="sequence">40</field>
+        <field name="group">directory</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="ocd_live.model_ocd_directory_alert"/>
+        <field name="when">A checking window opens</field>
+        <field name="trigger">At the opening of the window (task of the windows).</field>
+        <field name="scope">The contacts who asked « Tell me at the opening ».</field>
+        <field name="actions">WhatsApp to each of them, template ocd_annuaire_ouvert, with the end of the window and the link to send their live.</field>
+        <field name="tools">WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_window_open')])]"/>
+    </record>
+
+    <record id="ocd_live.automation_pass_reminder" model="ocd.automation">
+        <field name="actions">WhatsApp to the vendor, template ocd_pass_fin, with the link to renew the pass.</field>
+        <field name="tools">Scheduled task and WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_pass_ending')])]"/>
+    </record>
+
+    <record id="automation_asked" model="ocd.automation">
+        <field name="code">asked</field>
+        <field name="name">Asked by the contact: code, links, ticket</field>
+        <field name="sequence">90</field>
+        <field name="group">lives</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="when">The vendor asks on the website</field>
+        <field name="trigger">When the contact asks for a login code, the personal link, the link of the password or the ticket.</field>
+        <field name="scope">Every request, even without the consent to the notifications: the request is the consent to this message.</field>
+        <field name="actions">WhatsApp right away with the template asked: code of 6 digits valid 10 minutes, link of the space, link of the password, or ticket.</field>
+        <field name="tools">Tested code of OCD Live and WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_login_code'), ref('template_space_link'), ref('template_access_link'), ref('template_ticket')])]"/>
+    </record>
+
+    <record id="automation_whatsapp_send" model="ocd.automation">
+        <field name="code">whatsapp_send</field>
+        <field name="name">WhatsApp: send the messages waiting</field>
+        <field name="sequence">50</field>
+        <field name="group">technical</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="whatsapp_cloud.model_whatsapp_message"/>
+        <field name="cron_id" ref="whatsapp_cloud.ir_cron_send_queued_messages"/>
+        <field name="when">Right away, then again on errors</field>
+        <field name="trigger">Started at each message, and regularly for the retries.</field>
+        <field name="scope">The WhatsApp messages to send and the blue ticks.</field>
+        <field name="actions">Send them to Meta, the oldest first; retry the temporary errors.</field>
+        <field name="tools">WhatsApp connection (built-in task).</field>
+    </record>
+
+    <record id="automation_whatsapp_webhook" model="ocd.automation">
+        <field name="code">whatsapp_webhook</field>
+        <field name="name">WhatsApp: read what Meta sends</field>
+        <field name="sequence">60</field>
+        <field name="group">technical</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="whatsapp_cloud.model_whatsapp_webhook_event"/>
+        <field name="cron_id" ref="whatsapp_cloud.ir_cron_process_webhook_events"/>
+        <field name="when">Right away, at each call of Meta</field>
+        <field name="trigger">Started at each call of Meta.</field>
+        <field name="scope">The messages of the contacts and the statuses of the messages sent.</field>
+        <field name="actions">Put the messages in the conversations, update the ticks, apply STOP and START.</field>
+        <field name="tools">WhatsApp connection (built-in task).</field>
+    </record>
+
+    <record id="automation_whatsapp_delays" model="ocd.automation">
+        <field name="code">whatsapp_delays</field>
+        <field name="name">WhatsApp: contacts waiting for an answer</field>
+        <field name="sequence">55</field>
+        <field name="group">technical</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="mail.model_discuss_channel"/>
+        <field name="cron_id" ref="whatsapp_cloud.ir_cron_check_answer_delays"/>
+        <field name="when">Every few minutes, during the opening hours</field>
+        <field name="trigger">Regularly, during the opening hours of the team.</field>
+        <field name="scope">The conversations waiting for an answer longer than the delays of the WhatsApp account.</field>
+        <field name="actions">Remind the agent of the conversation, then alert the managers (when the reminders are on in the Settings, WhatsApp).</field>
+        <field name="tools">WhatsApp connection.</field>
+    </record>
+
+    <record id="automation_whatsapp_health" model="ocd.automation">
+        <field name="code">whatsapp_health</field>
+        <field name="name">WhatsApp: health of the number</field>
+        <field name="sequence">70</field>
+        <field name="group">technical</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="whatsapp_cloud.model_whatsapp_account"/>
+        <field name="cron_id" ref="whatsapp_cloud.ir_cron_check_health"/>
+        <field name="when">Every 6 hours</field>
+        <field name="trigger">Every 6 hours.</field>
+        <field name="scope">The WhatsApp accounts.</field>
+        <field name="actions">Read the quality, the limit of messages and the name of the number at Meta; alert the managers when something is wrong.</field>
+        <field name="tools">WhatsApp connection (built-in task).</field>
+    </record>
+
+</odoo>
