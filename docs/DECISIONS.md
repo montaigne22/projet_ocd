@@ -70,6 +70,15 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   vérifié par l'équipe en attendant un second connecteur.
 - **La devise suit le pays** via les listes de prix d'Odoo (franc CFA BCEAO au Togo, BEAC au Cameroun).
 
+## Pays et paiement
+
+- **Pays proposés : tous les pays d'Afrique et les plus connus d'Europe, d'Amérique et d'Asie** (112),
+  réglables par l'équipe (OCD Live › Configuration › Pays). Le pays de la personne vient en premier dans
+  les listes, puis les pays où OCD Live a commencé (Togo, Cameroun, Bénin, Côte d'Ivoire, Sénégal).
+- **Numéros vérifiés avec les règles de Google** (`phonenumbers`), une règle simple sans elle.
+- **Paiement par carte avec Stripe** pour les pays sans Mobile Money ; jamais de page de paiement sans
+  issue : sans moyen de paiement, l'équipe est appelée à l'aide et l'heure reste gardée.
+
 ## Vendeurs et annuaire
 
 - Connexion du vendeur **par lien personnel envoyé sur WhatsApp** (réglable : code à 6 chiffres, ou mot de passe).
@@ -80,6 +89,9 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 - **Navigation sans rechargement pour les vendeurs et les livreurs** : squelette de la page au toucher
   d'un lien, puis le contenu change seul ; les visiteurs, les formulaires et le paiement gardent les pages
   normales.
+- **Fil des lives comme TikTok** : une carte par écran, le pays de la personne d'abord, puis les autres
+  pays (les plus actifs d'abord) ; prochains lives et replays quand aucun live n'est vérifié. Les lives
+  restent sur TikTok, Facebook… (ces plateformes ne laissent pas lire un live ailleurs) : la carte y mène.
 - Annuaire : liens vérifiés pendant les **créneaux de vérification** (8:00–11:00 et 18:00–21:00 par défaut),
   retirés à la fin du créneau. **Pass de 30 jours** pour envoyer ses liens (5 000 F par défaut).
 - Un nouveau vendeur, un nouveau produit et un lien de live sont **vérifiés par l'équipe** ; un refus

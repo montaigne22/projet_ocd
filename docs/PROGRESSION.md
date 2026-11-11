@@ -9,6 +9,9 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Réservations de lives (créneaux, paquets, crédits, liste d'attente, déplacement, prix selon l'heure) | ✅ fait, testé |
 | Ticket du live en PDF signé (vérifié à l'entrée, une seule fois), image pour annoncer son live | ✅ fait, testé |
 | Heures dans le fuseau horaire de chacun (vendeur, livreur, client) | ✅ fait, testé |
+| 112 pays proposés (Afrique entière, principaux d'Europe, d'Amérique, d'Asie), numéros de tous les pays | ✅ fait, testé |
+| Fil des lives façon TikTok : pays de la personne d'abord, défilement infini, jamais vide | ✅ fait, testé |
+| Paiement par carte (Stripe, clés à saisir) ; aide de l'équipe quand aucun moyen ne convient | ✅ fait, testé |
 | Paiement : formulaire d'Odoo, tous les fournisseurs configurés par pays, devise par pays | ✅ fait, testé |
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
@@ -31,7 +34,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **337 tests, un seul
+`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **346 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
 ceux des colis). Sur une base neuve avec la démo, 5 tests sans échec : la démo remplit les écrans,
 conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
@@ -68,6 +71,39 @@ conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — tous les pays d'Afrique et du monde, paiement par carte, fil des lives
+- **Pays proposés** (OCD Live › Configuration › Pays) : les 54 pays d'Afrique et les plus connus d'Europe
+  (23), d'Amérique (14) et d'Asie (21), soit 112 pays au lieu de 5. L'équipe en ajoute ou en retire
+  (boutons « Proposer », « Retirer », ou plusieurs à la fois depuis la liste) ; les pays des vendeurs déjà
+  inscrits restent proposés. Les Paramètres résument « Pays ouverts : 112 (54 en Afrique…) ».
+- **Champ du numéro** : la liste du téléphone, groupée (suggérés, puis chaque continent), marche sans
+  JavaScript ; avec JavaScript, une feuille avec les drapeaux et une recherche par nom ou par indicatif
+  (« cam », « +237 »), au clavier aussi. Le pays de la personne vient en premier (adresse de connexion,
+  sinon fuseau du téléphone), puis les pays où OCD Live a commencé. L'exemple de numéro suit le pays.
+  Drapeaux d'Odoo pour tous les pays.
+- **Numéros de tous les pays** vérifiés avec `phonenumbers` (0 de tête en Côte d'Ivoire, 0 à retirer en
+  France, 10 chiffres au Bénin) ; règle simple si la bibliothèque manque. Les numéros déjà enregistrés
+  gardent leur forme (« +228 90000007 »).
+- **Paiement par carte** : `payment_stripe` est installé ; il prend les paiements de tous les pays (francs
+  CFA compris) une fois ses clés saisies. **Sans moyen de paiement pour le pays**, la page de paiement le
+  dit et propose « Demander à l'équipe de m'aider à payer » (note sur la commande, message dans le canal
+  des lives, activité pour le responsable ; l'heure reste gardée le temps réglé pour l'équipe) et
+  « Écrire à OCD Live sur WhatsApp ».
+- **Fil des lives** (`/lives`), comme TikTok : une carte par écran, qui s'arrête à chaque geste. D'abord
+  le pays de la personne (vendeur : le sien ; visiteur : celui de sa connexion ou de son téléphone ; ou le
+  pays touché dans la barre), puis les autres pays, les plus actifs d'abord, chacun annoncé par sa carte.
+  Lives en cours (lien vérifié, live au studio), puis prochains lives réservés, puis replays : hors des
+  créneaux, la première carte dit quand les lives reviennent (avec « Me prévenir ») et le fil montre les
+  prochains lives et les replays, jamais vide. Cartes suivantes chargées avant la fin, sans doublon ;
+  barre des pays qui suit la carte à l'écran ; l'adresse garde la carte (retour, actualiser) ; flèches
+  et Page haut/bas au clavier ; pastille « nouveaux lives » ; sans JavaScript, « Voir plus de lives ».
+  Photo du vendeur ou de ses produits, sinon ses initiales ; boutons « Regarder sur TikTok », « Sa
+  boutique », « Partager ». Les pages par pays (`/lives/tg`) restent.
+- **Versions** : `ocd_live` 20.0.1.7.0 (migration : pays proposés sur les bases existantes).
+- **À faire (équipe)** : saisir les clés Stripe et publier le paiement par carte ; vérifier la liste des
+  pays (Configuration › Pays) ; installer `phonenumbers` sur le serveur (`pip install -r
+  requirements.txt`).
 
 ### 11 novembre 2026 — ticket en PDF, image pour annoncer son live, heures de chacun
 - **Ticket du live en PDF** (une page de 10 × 18 cm, lisible au téléphone ou imprimée) : envoyé sur

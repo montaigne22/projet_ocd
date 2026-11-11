@@ -691,8 +691,9 @@ class OcdLiveBooking(models.Model):
         given = timedelta(minutes=company.ocd_hold_minutes or 10)
         for transaction in order.transaction_ids.filtered(lambda t: t.state in ("pending", "authorized")):
             end = max(end, transaction.create_date + given)
-        if order.ocd_payment_declared_date:
-            end = max(end, order.ocd_payment_declared_date + timedelta(hours=company.ocd_manual_hold_hours))
+        for asked in (order.ocd_payment_declared_date, order.ocd_payment_help_date):
+            if asked:
+                end = max(end, asked + timedelta(hours=company.ocd_manual_hold_hours))
         return end
 
     def _ocd_expired_holds(self, now=None):

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-11 21:33+0000\n"
-"PO-Revision-Date: 2026-11-11 21:33+0000\n"
+"POT-Creation-Date: 2026-11-11 22:24+0000\n"
+"PO-Revision-Date: 2026-11-11 22:24+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -69,6 +69,12 @@ msgstr ""
 #. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "%(count)s in %(continent)s"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
 msgid "%(count)s lives of %(duration)s per day, from %(start)s to %(end)s."
 msgstr ""
 
@@ -81,6 +87,7 @@ msgstr ""
 #. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/feed.py:0
 #: code:addons/ocd_live/models/ocd_directory_listing.py:0
 msgid "%(day)s at %(hour)s"
 msgstr ""
@@ -192,6 +199,12 @@ msgstr ""
 #. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/models/sale_order.py:0
+msgid "%(vendor)s (%(country)s, %(phone)s) cannot pay %(order)s online: no payment method takes the payments of the country. Write to them on WhatsApp to agree on the payment."
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/sale_order.py:0
 msgid "%(vendor)s says the payment of %(order)s was sent (%(reference)s): check it, then confirm it."
 msgstr ""
 
@@ -252,6 +265,12 @@ msgstr ""
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "%s lives now"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/controllers/vendor_space.py:0
 msgid "%s lives to place"
 msgstr ""
@@ -266,6 +285,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_dashboard.py:0
 msgid "%s new vendors"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "%s next lives"
 msgstr ""
 
 #. module: ocd_live
@@ -349,6 +374,12 @@ msgid "1 live and your video announced on House of Challenge"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "1 live now"
+msgstr ""
+
+#. module: ocd_live
 #: model:product.template,description_sale:ocd_live.product_package_discovery
 msgid "1 live of 1 h 30"
 msgstr ""
@@ -374,6 +405,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_dashboard.py:0
 msgid "1 new vendor"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "1 next live"
 msgstr ""
 
 #. module: ocd_live
@@ -457,13 +494,6 @@ msgid ""
 msgstr ""
 
 #. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives
-msgid ""
-"<i aria-hidden=\"true\"/>\n"
-"                            <span>Closed for now</span>"
-msgstr ""
-
-#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
 msgid "<small>Type your secret code on your phone only, never here. This page updates by itself.</small>"
 msgstr ""
@@ -471,11 +501,6 @@ msgstr ""
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
 msgid "<small>Your hour then stays held while the team checks the payment. Without it, the hour is offered again to the others.</small>"
-msgstr ""
-
-#. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives
-msgid "<small>lives</small>"
 msgstr ""
 
 #. module: ocd_live
@@ -508,6 +533,21 @@ msgstr ""
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.home
 msgid "<span class=\"o_ocd_choice_title\">At the studio</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "<span class=\"o_ocd_feed_hint\">Meanwhile: the next lives and the replays. Swipe up.</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "<span class=\"o_ocd_feed_hint\">Swipe up</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "<span class=\"o_ocd_feed_new_count\"/> <span>new lives: see them</span>"
 msgstr ""
 
 #. module: ocd_live
@@ -694,8 +734,23 @@ msgid "<span>Tell me if an hour becomes free</span>"
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "<span>Thank you: the team writes to you on WhatsApp.</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "<span>The team agrees on the payment with you on WhatsApp: your hour stays held meanwhile.</span>"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.ticket
 msgid "<span>The ticket is sent on WhatsApp.</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "<span>Their boutique</span>"
 msgstr ""
 
 #. module: ocd_live
@@ -706,6 +761,11 @@ msgstr ""
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
 msgid "<span>With what?</span>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "<span>Write to OCD Live on WhatsApp</span>"
 msgstr ""
 
 #. module: ocd_live
@@ -1000,6 +1060,13 @@ msgid "Address and map sent on WhatsApp"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_country__ocd_continent__africa
+msgid "Africa"
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.model,name:ocd_live.model_ocd_directory_alert
 msgid "Alert At The Opening Of The Directory"
 msgstr ""
@@ -1055,6 +1122,13 @@ msgid "Always on: it protects the money or the proofs, or the system needs it."
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_country__ocd_continent__americas
+msgid "Americas"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.ticket
 msgid "An image without your number nor your ticket: send it to your friends, put it in your status."
 msgstr ""
@@ -1098,8 +1172,20 @@ msgid "Approved"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_country__ocd_continent__asia
+msgid "Asia"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
 msgid "Ask for a new code"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "Ask the team to help me pay"
 msgstr ""
 
 #. module: ocd_live
@@ -1117,6 +1203,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
 msgid "At most %s."
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "At the OCD Live studio"
 msgstr ""
 
 #. module: ocd_live
@@ -1220,6 +1312,16 @@ msgid "Back"
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "Back at"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "Back to the first live"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_account
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_team
 msgid "Back to the home page"
@@ -1255,6 +1357,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ocd_live.header_call_to_action
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
 msgid "Book a live"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "Book a live at the studio"
 msgstr ""
 
 #. module: ocd_live
@@ -1608,6 +1715,11 @@ msgid "City Of The Studio"
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.phone_field
+msgid "Close"
+msgstr ""
+
+#. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_planning.py:0
 msgid "Closed"
@@ -1646,6 +1758,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__color
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__color
 msgid "Color"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "Come back during the checking windows: new lives arrive all day long."
 msgstr ""
 
 #. module: ocd_live
@@ -1716,11 +1833,29 @@ msgid "Contact details"
 msgstr ""
 
 #. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_country__ocd_continent
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_search
+msgid "Continent"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
 msgid "Continue"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+#: model:ir.actions.act_window,name:ocd_live.ocd_country_action
+#: model:ir.ui.menu,name:ocd_live.ocd_live_country_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_list
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_search
+msgid "Countries"
+msgstr ""
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_res_country
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__country_id
 #: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
 msgid "Country"
@@ -1814,6 +1949,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_planning.py:0
 msgid "Depends on the package chosen"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_list
+msgid "Dialing Code"
 msgstr ""
 
 #. module: ocd_live
@@ -1945,6 +2085,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live.field_product_template__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_res_company__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_res_country__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_res_partner__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__display_name
@@ -2046,6 +2187,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/controllers/payment.py:0
 msgid "Entered at %(hour)s, let in by %(name)s."
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_country__ocd_continent__europe
+msgid "Europe"
 msgstr ""
 
 #. module: ocd_live
@@ -2182,6 +2330,11 @@ msgid "Five thousand francs for thirty days. You send the link of your live, and
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_list
+msgid "Flag"
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__message_follower_ids
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_pass__message_follower_ids
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__message_follower_ids
@@ -2291,6 +2444,12 @@ msgstr ""
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "From home, with OCD Live"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/controllers/payment.py:0
 msgid "Give its number to the team when asked."
 msgstr ""
@@ -2340,6 +2499,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_planning.py:0
 msgid "Held slot"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Hello, I want to pay my order %(order)s (%(total)s) from %(country)s."
 msgstr ""
 
 #. module: ocd_live
@@ -2462,6 +2627,11 @@ msgid "I am live"
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "I am live: show my live"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
 msgid "I finished my live"
 msgstr ""
@@ -2514,6 +2684,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live.field_product_template__id
 #: model:ir.model.fields,field_description:ocd_live.field_res_company__id
 #: model:ir.model.fields,field_description:ocd_live.field_res_config_settings__id
+#: model:ir.model.fields,field_description:ocd_live.field_res_country__id
 #: model:ir.model.fields,field_description:ocd_live.field_res_partner__id
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order__id
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__id
@@ -2773,6 +2944,8 @@ msgid "Listen to this screen"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
 msgid "Live"
 msgstr ""
@@ -2825,6 +2998,12 @@ msgstr ""
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Live at the OCD Live studio"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/models/ocd_live_ticket.py:0
 msgid "Live at the studio"
 msgstr ""
@@ -2858,6 +3037,18 @@ msgid "Live done"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Live for %s h"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Live for %s min"
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.actions.act_window,name:ocd_live.hr_employee_action_ocd_host
 msgid "Live hosts"
 msgstr ""
@@ -2871,6 +3062,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_dashboard.py:0
 msgid "Live of %(vendor)s, %(day)s: no host"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Live on %s"
 msgstr ""
 
 #. module: ocd_live
@@ -3015,6 +3212,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_dashboard.py:0
 msgid "Lives today"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "Lives, one per screen: swipe up for the next one"
 msgstr ""
 
 #. module: ocd_live
@@ -3332,6 +3534,12 @@ msgid "Next Activity Type"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Next live"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.booking_day
 msgid "Next month"
 msgstr ""
@@ -3365,6 +3573,11 @@ msgid "No checking window is set for the directory."
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.phone_field
+msgid "No country found."
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.actions.act_window,help:ocd_live.ocd_directory_listing_action
 msgid "No link to check"
 msgstr ""
@@ -3387,6 +3600,11 @@ msgid "No live checked here for now. Come back in a few minutes."
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "No live here right now. Here are the lives of the other countries: swipe up."
+msgstr ""
+
+#. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_verification.py:0
 msgid "No live waiting."
@@ -3400,6 +3618,11 @@ msgstr ""
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_login
 msgid "No password. We send you a link on WhatsApp."
+msgstr ""
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_sale_order__ocd_payment_help_date
+msgid "No payment method of the website takes the payments of the country of the vendor: the vendor asked the team for help. The hour of the live stays held meanwhile."
 msgstr ""
 
 #. module: ocd_live
@@ -3445,6 +3668,11 @@ msgid "Not free at this hour"
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_search
+msgid "Not offered"
+msgstr ""
+
+#. module: ocd_live
 #. odoo-javascript
 #: code:addons/ocd_live/static/src/settings/settings.js:0
 msgid "Not saved: %s"
@@ -3463,7 +3691,7 @@ msgid "Note To The Vendor"
 msgstr ""
 
 #. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
 msgid "Noted. We write to you on WhatsApp at"
 msgstr ""
 
@@ -3678,9 +3906,42 @@ msgid "Ocd Login Code Hash"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+#: model:ir.model.fields.selection,name:ocd_live.selection__res_country__ocd_continent__oceania
+msgid "Oceania"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_list
+msgid "Offer"
+msgstr ""
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.action_ocd_country_offer
+msgid "Offer in OCD Live"
+msgstr ""
+
+#. module: ocd_live
 #. odoo-javascript
 #: code:addons/ocd_live/static/src/planning/planning.xml:0
 msgid "Offer this slot to the waiting list"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_search
+msgid "Offered"
+msgstr ""
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_country__ocd_offered
+msgid "Offered by OCD Live"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Offered in the forms of the website (WhatsApp number, directory): the vendors of these countries book and send their links, the couriers and the customers find their country. The directory shows the countries that have lives."
 msgstr ""
 
 #. module: ocd_live
@@ -3770,6 +4031,12 @@ msgstr ""
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/models/res_country.py:0
+msgid "Only a manager of OCD Live chooses the countries."
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/models/ocd_live_booking.py:0
 msgid "Only a manager of the lives can confirm a live without payment."
 msgstr ""
@@ -3801,7 +4068,7 @@ msgstr ""
 #. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
-msgid "Open countries"
+msgid "Open countries: %(count)s (%(parts)s)"
 msgstr ""
 
 #. module: ocd_live
@@ -4054,6 +4321,12 @@ msgstr ""
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/payment.py:0
+msgid "Paying online is not open yet in your country: %s."
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/models/ocd_live_planning.py:0
 #: model:ocd.voice.prompt,name:ocd_live.voice_prompt_pay
 msgid "Payment"
@@ -4062,6 +4335,11 @@ msgstr ""
 #. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order__ocd_payment_declared_date
 msgid "Payment Announced On"
+msgstr ""
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_sale_order__ocd_payment_help_date
+msgid "Payment Help Asked On"
 msgstr ""
 
 #. module: ocd_live
@@ -4096,6 +4374,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/ocd_live/static/src/planning/planning.xml:0
 msgid "Payment received: mark paid"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/sale_order.py:0
+msgid "Payment to agree on WhatsApp"
 msgstr ""
 
 #. module: ocd_live
@@ -4535,6 +4819,12 @@ msgid "Remote, paid"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Replay"
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__replay_url
 msgid "Replay Link"
 msgstr ""
@@ -4547,6 +4837,12 @@ msgstr ""
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
 msgid "Replay to publish"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Replays"
 msgstr ""
 
 #. module: ocd_live
@@ -4699,6 +4995,11 @@ msgid "Seal"
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.phone_field
+msgid "Search a country or a code"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.website_search_box_input
 msgid "Search..."
 msgstr ""
@@ -4718,6 +5019,11 @@ msgstr ""
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
 msgid "See"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "See more lives"
 msgstr ""
 
 #. module: ocd_live
@@ -4845,6 +5151,11 @@ msgstr ""
 #. module: ocd_live
 #: model:ir.model,name:ocd_live.model_ocd_live_settings
 msgid "Settings Page Of OCD Live"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "Share"
 msgstr ""
 
 #. module: ocd_live
@@ -5081,6 +5392,12 @@ msgstr ""
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+msgid "Suggested"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_price_rule_view_list
 #: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
@@ -5163,12 +5480,12 @@ msgstr ""
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
 msgid "Tell me"
 msgstr ""
 
 #. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
 msgid "Tell me at"
 msgstr ""
 
@@ -5204,6 +5521,11 @@ msgid "The bookings still waiting for their payment after the time held (Setting
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "The checked lives come back at"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
 msgid "The checking opens at"
 msgstr ""
@@ -5217,6 +5539,11 @@ msgstr ""
 #. module: ocd_live
 #: model:ocd.automation,scope:ocd_live.automation_lives_done
 msgid "The confirmed lives that are over."
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_country_action
+msgid "The countries offered by OCD Live: the vendors, the couriers and the customers choose them in the forms of the website."
 msgstr ""
 
 #. module: ocd_live
@@ -5349,7 +5676,6 @@ msgid "The live links are checked and shown during these hours."
 msgstr ""
 
 #. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
 msgid "The lives come back at"
 msgstr ""
@@ -5527,14 +5853,13 @@ msgid "The vendors do it themselves on the website, until these times."
 msgstr ""
 
 #. module: ocd_live
-#. odoo-python
-#: code:addons/ocd_live/models/ocd_live_settings.py:0
-msgid "The vendors of these countries book, send their links and appear in the directory."
+#: model_terms:ir.actions.act_window,help:ocd_live.ocd_directory_listing_action
+msgid "The vendors with a pass send the link of their live. It shows here during the checking windows."
 msgstr ""
 
 #. module: ocd_live
-#: model_terms:ir.actions.act_window,help:ocd_live.ocd_directory_listing_action
-msgid "The vendors with a pass send the link of their live. It shows here during the checking windows."
+#: model:ir.model.fields,help:ocd_live.field_res_country__ocd_offered
+msgid "The vendors, the couriers and the customers of this country choose it in the forms (WhatsApp number, directory). At the installation: every country of Africa and the best known of Europe, the Americas and Asia."
 msgstr ""
 
 #. module: ocd_live
@@ -5659,6 +5984,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_booking.py:0
 msgid "This live would end after the closing of the studio."
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+msgid "This number is not a number of %(country)s. Example: %(example)s."
 msgstr ""
 
 #. module: ocd_live
@@ -6191,6 +6522,24 @@ msgid "Waiting lists of the past days: forget them"
 msgstr ""
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Watch again"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Watch on %s"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/feed.py:0
+msgid "Watch the live"
+msgstr ""
+
+#. module: ocd_live
 #: model:ocd.listing.refuse.reason,message:ocd_live.refuse_reason_vendor_unreachable
 msgid "We could not reach you on this number. Write to us on WhatsApp to finish your registration."
 msgstr ""
@@ -6386,6 +6735,16 @@ msgid "With one calendar, a studio live and a remote live cannot take the same s
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_list
+msgid "Withdraw"
+msgstr ""
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.action_ocd_country_withdraw
+msgid "Withdraw from OCD Live"
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__hold_until
 msgid "Without payment by then, the slot is released."
 msgstr ""
@@ -6455,6 +6814,11 @@ msgid "You can move your live until"
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
+msgid "You have seen all the lives"
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.model.fields.selection,name:ocd_live.selection__ocd_directory_listing__platform__youtube
 msgid "YouTube"
 msgstr ""
@@ -6462,7 +6826,7 @@ msgstr ""
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
 #: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.feed_cards
 #: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
 msgid "Your WhatsApp"
 msgstr ""
@@ -6927,6 +7291,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_directory_listing.py:0
 msgid "tomorrow at %s"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
+msgid "· next lives and replays"
 msgstr ""
 
 #. module: ocd_live

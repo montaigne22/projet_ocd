@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Countries offered by OCD Live: in the forms of the website (WhatsApp number, directory) -->
+    <record id="view_ocd_country_list" model="ir.ui.view">
+        <field name="name">res.country.list.ocd</field>
+        <field name="model">res.country</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list string="Countries" create="false" delete="false" edit="false"
+                  decoration-muted="not ocd_offered">
+                <field name="image_url" widget="image_url" options="{'size': [24, 16]}" string="Flag"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="phone_code" string="Dialing Code" optional="show"/>
+                <field name="ocd_continent"/>
+                <field name="ocd_offered" widget="boolean" readonly="1"/>
+                <button name="action_ocd_offer" type="object" string="Offer" icon="oi-plus"
+                        invisible="ocd_offered" class="btn-link"/>
+                <button name="action_ocd_withdraw" type="object" string="Withdraw" icon="oi-close"
+                        invisible="not ocd_offered" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ocd_country_search" model="ir.ui.view">
+        <field name="name">res.country.search.ocd</field>
+        <field name="model">res.country</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <search string="Countries">
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="offered" string="Offered" domain="[('ocd_offered', '=', True)]"/>
+                <filter name="not_offered" string="Not offered" domain="[('ocd_offered', '=', False)]"/>
+                <separator/>
+                <filter name="group_continent" string="Continent" context="{'group_by': 'ocd_continent'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_country_action" model="ir.actions.act_window">
+        <field name="name">Countries</field>
+        <field name="res_model">res.country</field>
+        <field name="view_mode">list</field>
+        <field name="view_ids" eval="[Command.clear(), Command.create({'view_mode': 'list', 'view_id': ref('view_ocd_country_list')})]"/>
+        <field name="search_view_id" ref="view_ocd_country_search"/>
+        <field name="context">{'search_default_group_continent': 1}</field>
+        <field name="help" type="html">
+            <p>The countries offered by OCD Live: the vendors, the couriers and the customers choose them in the forms of the website.</p>
+        </field>
+    </record>
+
+    <!-- Several countries at once, from the list -->
+    <record id="action_ocd_country_offer" model="ir.actions.server">
+        <field name="name">Offer in OCD Live</field>
+        <field name="model_id" ref="base.model_res_country"/>
+        <field name="binding_model_id" ref="base.model_res_country"/>
+        <field name="binding_view_types">list</field>
+        <field name="group_ids" eval="[Command.link(ref('ocd_live.group_ocd_live_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">records.action_ocd_offer()</field>
+    </record>
+    <record id="action_ocd_country_withdraw" model="ir.actions.server">
+        <field name="name">Withdraw from OCD Live</field>
+        <field name="model_id" ref="base.model_res_country"/>
+        <field name="binding_model_id" ref="base.model_res_country"/>
+        <field name="binding_view_types">list</field>
+        <field name="group_ids" eval="[Command.link(ref('ocd_live.group_ocd_live_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">records.action_ocd_withdraw()</field>
+    </record>
+
+</odoo>

@@ -18,7 +18,14 @@ data_dir = /opt/odoo20/data
 ```
 
 - Moteur PDF d'Odoo (`wkhtmltopdf`, ex. `apt-get install -y wkhtmltopdf`) : la confirmation d'une
-  commande du shop envoie un PDF.
+  commande du shop envoie un PDF, le ticket du live est un PDF. La version « avec Qt patché » est la
+  meilleure ; celle d'Ubuntu (Qt non patché) marche aussi, le ticket corrige son échelle.
+- Bibliothèques Python du dépôt (`requirements.txt`) : `pip install -r requirements.txt` dans
+  l'environnement d'Odoo. `phonenumbers` vérifie les numéros de tous les pays (règles de Google) ; sans
+  elle, une règle simple garde les formulaires utilisables (indicatif d'Odoo, 6 à 14 chiffres).
+- Paiement par carte : le module `payment_stripe` d'Odoo est installé avec `ocd_live` ; l'équipe saisit
+  les clés de son compte Stripe (Facturation › Configuration › Moyens de paiement › Stripe), puis le
+  publie. Sans moyen de paiement pour un pays, la page de paiement propose l'aide de l'équipe.
 
 ## Lancer une base de démonstration
 

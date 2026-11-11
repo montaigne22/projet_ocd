@@ -2569,3 +2569,486 @@ body.o_ocd_body {
 .o_ocd_actions_inline {
     display: grid;
 }
+
+// === COUNTRY OF A NUMBER: BUTTON AND SEARCH SHEET === //
+.o_ocd_dial.o_ocd_dial_enhanced {
+    padding: 0;
+    .o_ocd_dial_flag {
+        display: none;
+    }
+    .o_ocd_dial_select {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+.o_ocd_dial_button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 100%;
+    padding: 0 10px 0 12px;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: $ocd-ink;
+    font: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    .o_ocd_dial_chevron {
+        width: 16px;
+        height: 16px;
+        color: $ocd-muted;
+    }
+    &:focus-visible {
+        outline: 3px solid rgba($ocd-orange, 0.45);
+        outline-offset: 2px;
+    }
+}
+.o_ocd_dial_sheet {
+    width: 100%;
+    max-width: 520px;
+    max-height: 82vh;
+    max-height: #{"min(82dvh, 720px)"};
+    margin: auto auto 0;
+    padding: 0;
+    border: 0;
+    border-radius: 22px 22px 0 0;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    overflow: hidden;
+    &[open] {
+        display: flex;
+        flex-direction: column;
+    }
+    &::backdrop {
+        background: rgba($ocd-ink, 0.45);
+    }
+    @media (min-width: $ocd-tablet) {
+        margin: auto;
+        border-radius: 22px;
+    }
+    .o_ocd_dial_sheet_head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 16px 8px 20px;
+        font-family: $ocd-display;
+        font-size: 19px;
+    }
+    .o_ocd_dial_close {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 50%;
+        background: $ocd-sand;
+        color: $ocd-ink;
+    }
+    .o_ocd_dial_search {
+        margin: 0 16px 8px;
+        width: auto;
+    }
+    .o_ocd_dial_list {
+        flex: 1;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 0 8px 16px;
+    }
+    .o_ocd_dial_group {
+        position: sticky;
+        top: 0;
+        padding: 10px 12px 6px;
+        background: #FFFFFF;
+        color: $ocd-muted;
+        font-size: 12.5px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+    .o_ocd_dial_item {
+        width: 100%;
+        min-height: 48px;
+        display: grid;
+        grid-template-columns: 24px 1fr auto;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        border: 0;
+        border-radius: 12px;
+        background: transparent;
+        color: $ocd-ink;
+        font: inherit;
+        font-size: 16px;
+        text-align: left;
+        &:hover, &:focus-visible {
+            background: $ocd-sand;
+            outline: none;
+        }
+        &[aria-selected="true"] {
+            background: $ocd-orange-pale;
+            font-weight: 700;
+        }
+        .o_ocd_dial_number {
+            color: $ocd-muted;
+            font-variant-numeric: tabular-nums;
+        }
+    }
+    .o_ocd_dial_none {
+        margin: 8px 20px 20px;
+        color: $ocd-muted;
+    }
+}
+
+// === PAYMENT: NO METHOD FOR THE COUNTRY === //
+.o_ocd_no_method {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 18px;
+    background: $ocd-yellow-soft;
+    color: $ocd-yellow-text;
+    > b {
+        font-size: 16.5px;
+        color: $ocd-ink;
+    }
+    form {
+        display: grid;
+    }
+    .o_ocd_cta_line {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #FFFFFF;
+    }
+}
+
+// === FEED OF THE LIVES (/lives): ONE CARD PER SCREEN === //
+.o_ocd_main.o_ocd_feed_main {
+    padding: 0 0 8px;
+    gap: 0;
+}
+.o_ocd_feed_wrap {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+.o_ocd_feed_bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 6px 12px 10px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+.o_ocd_feed_chip {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 14px 0 10px;
+    border-radius: 999px;
+    background: $ocd-sand;
+    color: $ocd-ink;
+    font-weight: 700;
+    font-size: 14.5px;
+    text-decoration: none;
+    white-space: nowrap;
+    &:hover {
+        color: $ocd-ink;
+    }
+    &.o_ocd_on {
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
+    .o_ocd_feed_chip_count {
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        border-radius: 11px;
+        background: $ocd-red-live;
+        color: #FFFFFF;
+        font-size: 12.5px;
+        line-height: 22px;
+        text-align: center;
+    }
+}
+.o_ocd_feed_state {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 14px 8px;
+    .o_ocd_state_line {
+        min-width: 0;
+        padding: 0;
+        background: none;
+        font-size: 13.5px;
+        span {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+}
+.o_ocd_feed_new {
+    flex: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 6px 12px;
+    background: $ocd-orange;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 13.5px;
+}
+.o_ocd_feed {
+    height: calc(100dvh - 260px);
+    min-height: 360px;
+    margin: 0 8px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: y mandatory;
+    border-radius: 22px;
+    background: $ocd-ink;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    &:focus-visible {
+        outline: 3px solid rgba($ocd-orange, 0.5);
+        outline-offset: 2px;
+    }
+    .o_ocd_feed_more {
+        margin: 16px;
+    }
+}
+.o_ocd_feed_card {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    overflow: hidden;
+    outline: none;
+}
+.o_ocd_feed_person {
+    color: #FFFFFF;
+    background: linear-gradient(160deg, $ocd-orange 0%, $ocd-orange-dark 45%, $ocd-ink 100%);
+    .o_ocd_feed_media {
+        position: absolute;
+        inset: 0;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba($ocd-ink, 0.55) 0%, rgba($ocd-ink, 0) 28%, rgba($ocd-ink, 0) 45%, rgba($ocd-ink, 0.92) 100%);
+        }
+    }
+    .o_ocd_feed_initials {
+        position: absolute;
+        inset: 0 0 30%;
+        display: grid;
+        place-items: center;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: clamp(88px, 30vw, 150px);
+        color: rgba(#FFFFFF, 0.9);
+    }
+    .o_ocd_feed_top, .o_ocd_feed_body {
+        position: relative;
+        z-index: 1;
+    }
+}
+.o_ocd_feed_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px;
+}
+.o_ocd_feed_badge, .o_ocd_feed_country {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 13px;
+}
+.o_ocd_feed_badge {
+    background: #FFFFFF;
+    color: $ocd-ink;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: $ocd-red-live;
+        animation: o_ocd_feed_pulse 1.6s ease-in-out infinite;
+    }
+    &.o_ocd_feed_badge_next {
+        background: $ocd-orange;
+        color: #FFFFFF;
+    }
+    &.o_ocd_feed_badge_replay {
+        background: rgba(#FFFFFF, 0.22);
+        color: #FFFFFF;
+    }
+}
+.o_ocd_feed_country {
+    background: rgba($ocd-ink, 0.55);
+    color: #FFFFFF;
+}
+.o_ocd_feed_body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 18px 22px;
+    p {
+        margin: 0;
+    }
+}
+.o_ocd_feed_name {
+    margin: 0;
+    font-size: clamp(28px, 8vw, 38px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+}
+.o_ocd_feed_category {
+    color: rgba(#FFFFFF, 0.82);
+    font-weight: 600;
+}
+.o_ocd_feed_when {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    b {
+        font-size: 17px;
+    }
+    small {
+        color: rgba(#FFFFFF, 0.78);
+        font-size: 13.5px;
+    }
+}
+.o_ocd_feed_actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 52px;
+    gap: 8px;
+    margin-top: 10px;
+    > .o_ocd_cta:first-child {
+        grid-column: 1 / -1;
+    }
+    .o_ocd_cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 0;
+        padding: 0 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .o_ocd_cta_ghost {
+        background: rgba(#FFFFFF, 0.16);
+        border-color: rgba(#FFFFFF, 0.5);
+        color: #FFFFFF;
+    }
+    .o_ocd_feed_share {
+        grid-column: 2;
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 16px;
+        background: rgba(#FFFFFF, 0.16);
+        color: #FFFFFF;
+    }
+}
+.o_ocd_feed_divider {
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 28px 22px;
+    background: $ocd-sand;
+    color: $ocd-ink;
+    text-align: center;
+    p {
+        margin: 0;
+        color: $ocd-muted;
+        font-size: 16px;
+    }
+    .o_ocd_feed_big_flag {
+        width: 96px;
+        height: 64px;
+        border-radius: 10px;
+    }
+    .o_ocd_feed_divider_name {
+        margin: 0;
+        font-size: 32px;
+        line-height: 1.05;
+    }
+    .o_ocd_cta {
+        width: 100%;
+        max-width: 340px;
+    }
+}
+.o_ocd_feed_closed {
+    align-items: stretch;
+    justify-content: center;
+    text-align: left;
+    .o_ocd_closed_title {
+        font-family: $ocd-display;
+        font-size: 26px;
+        line-height: 1.1;
+    }
+}
+.o_ocd_feed_hint {
+    color: $ocd-muted;
+    font-weight: 700;
+    font-size: 14px;
+    &::after {
+        content: "";
+        display: block;
+        width: 12px;
+        height: 12px;
+        margin: 10px auto 0;
+        border-right: 3px solid currentColor;
+        border-bottom: 3px solid currentColor;
+        transform: rotate(-135deg);
+        animation: o_ocd_feed_up 1.4s ease-in-out infinite;
+    }
+}
+@keyframes o_ocd_feed_pulse {
+    50% { opacity: 0.35; }
+}
+@keyframes o_ocd_feed_up {
+    50% { transform: translateY(-6px) rotate(-135deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .o_ocd_feed_badge i, .o_ocd_feed_hint::after {
+        animation: none;
+    }
+}

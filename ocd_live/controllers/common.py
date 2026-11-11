@@ -8,7 +8,7 @@ from odoo.http import request
 from odoo.tools import consteq, format_date
 from odoo.tools.misc import hmac
 
-from .. import tools
+from .. import countries, tools
 
 _logger = logging.getLogger(__name__)
 
@@ -348,32 +348,38 @@ def page_values(voice_key, **values):
 def now():
     return fields.Datetime.now()
 
-# Countries of the directory: dialing code and number of digits of a mobile number
-COUNTRY_PHONES = {
-    "TG": ("+228", 8),
-    "CM": ("+237", 9),
-    "BJ": ("+229", 10),
-    "CI": ("+225", 10),
-    "SN": ("+221", 9),
-}
+def directory_countries(first=None):
+    """The countries offered by OCD Live, in the order of the lists (see
+    res.country._ocd_ordered): `first` (the one of the person), then the others."""
+    Country = request.env["res.country"].sudo()
+    return Country.browse([country.id for country, _group in Country._ocd_ordered(first)])
 
 
-def directory_countries():
-    countries = request.env["res.country"].sudo().search([("code", "in", list(COUNTRY_PHONES))])
-    order = list(COUNTRY_PHONES)
-    return countries.sorted(lambda c: order.index(c.code))
+def group_label(group):
+    env = request.env
+    return {
+        "first": env._("Suggested"),
+        "africa": env._("Africa"),
+        "europe": env._("Europe"),
+        "americas": env._("Americas"),
+        "asia": env._("Asia"),
+        "oceania": env._("Oceania"),
+    }.get(group, "")
 
 
 def dial_rows(selected=None):
-    """Return the countries of the phone fields: flag, dialing code and size of the number."""
+    """The countries of the phone fields: flag, dialing code, example of number and group of
+    the list (the suggested countries, then each continent)."""
     rows = []
-    for country in directory_countries():
-        dial, size = COUNTRY_PHONES[country.code]
+    for country, group in request.env["res.country"].sudo()._ocd_ordered(selected or None):
         rows.append({
             "country": country,
-            "flag": country.code.lower(),
-            "dial": dial,
-            "size": size,
+            "flag": (country.code or "").lower(),
+            "dial": countries.dial_code(country),
+            "size": countries.size(country),
+            "example": countries.example(country),
+            "group": group,
+            "group_label": group_label(group),
             "selected": selected == country,
         })
     if rows and not any(row["selected"] for row in rows):
@@ -381,36 +387,39 @@ def dial_rows(selected=None):
     return rows
 
 
+def country_of_tz(tz_name):
+    """The country of a time zone given by the phone (Africa/Douala: Cameroon), or None."""
+    return tools.country_of_tz(tz_name)
+
+
 def default_country():
-    """Return the country to propose first: the one of the visitor, else the one of the studio."""
-    countries = directory_countries()
-    geoip_code = request.geoip.country_code
-    return (
-        countries.filtered(lambda c: c.code == geoip_code)
-        or (company().country_id & countries)
-        or countries.filtered(lambda c: c.code == "TG")
-    )[:1]
+    """Return the country to propose first: the one of the visitor (address of the
+    connection, else time zone of the phone), else the one of the studio when OCD Live started
+    there, else Togo."""
+    offered = request.env["res.country"].sudo()._ocd_offered()
+    studio = company().country_id.code
+    codes = [
+        request.geoip.country_code,
+        country_of_tz(request.httprequest.cookies.get("tz")),
+        studio if studio in countries.MAIN_COUNTRIES else None,
+        countries.MAIN_COUNTRIES[0],
+    ]
+    for code in codes:
+        found = offered.filtered(lambda c, code=code: code and c.code == code)
+        if found:
+            return found[:1]
+    return offered[:1]
 
 
 def normalize_phone(country, phone):
-    """Return the number with its dialing code, or False when it has not the right length."""
-    digits = re.sub(r"\D", "", phone or "")
-    dial, size = COUNTRY_PHONES.get(country.code, ("", 8)) if country else ("", 8)
-    dial_digits = dial.lstrip("+")
-    if dial_digits and digits.startswith(dial_digits) and len(digits) == len(dial_digits) + size:
-        digits = digits[len(dial_digits):]
-    if len(digits) != size:
-        return False
-    return f"{dial} {digits}"
+    """Return the number with its dialing code ("+228 90000007"), or False when it is not a
+    number of `country`."""
+    return countries.normalize(country, phone)
 
 
 def local_digits(country, phone):
     """Return the number without its dialing code, as the vendor types it."""
-    digits = re.sub(r"\D", "", phone or "")
-    dial = COUNTRY_PHONES.get(country.code, ("", 8))[0].lstrip("+") if country else ""
-    if dial and digits.startswith(dial):
-        digits = digits[len(dial):]
-    return digits
+    return countries.local_digits(country, phone)
 
 
 def steps(flow, page):
@@ -500,8 +509,11 @@ class FormErrors(UserError):
 
 
 def phone_error(country):
-    size = COUNTRY_PHONES.get(country.code, ("", 8))[1] if country else 8
-    return request.env._("Your number has %s digits.", size)
+    example = countries.example(country)
+    if example:
+        return request.env._("This number is not a number of %(country)s. Example: %(example)s.",
+                             country=country.name, example=example)
+    return request.env._("Your number has %s digits.", countries.size(country))
 
 
 def find_or_create_vendor(post, need_category=True):

@@ -1,8 +1,8 @@
-from odoo import Command, http
+from odoo import Command, fields, http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 
-from . import common
+from . import common, feed
 
 PLATFORMS = {"tiktok": "TikTok", "facebook": "Facebook", "instagram": "Instagram", "youtube": "YouTube"}
 LISTING_STATES = {"queued": "pending", "to_check": "pending", "published": "live"}
@@ -15,21 +15,61 @@ class OcdLiveDirectory(http.Controller):
     # === LIVES OF THE MOMENT === #
 
     @http.route("/lives", type="http", auth="public", website=True, sitemap=True, methods=["GET"])
-    def directory(self, note=None, error=None, **kwargs):
-        listings, counts = common.live_counts()
-        vendor = common.current_vendor()
+    def directory(self, note=None, error=None, pays=None, page=None, **kwargs):
+        """The feed of the lives: the country of the person first, then the other countries.
+        `pays` puts another country first; `page` gives the next cards without JavaScript."""
+        first = feed.first_country(pays)
+        number = int(page) if page and str(page).isdigit() and int(page) > 0 else 1
+        result = feed.page(first, offset=(number - 1) * feed.PAGE_SIZE)
+        code = (first.code or "").lower() if first else ""
+        more_url = f"/lives?pays={code}&page={number + 1}" if result["next"] is not None else False
         return request.render("ocd_live.lives", common.page_values(
             "directory",
             nav="lives",
             bottom_cta=self._live_cta(),
-            windows=common.windows_info(),
-            cards=common.country_chips(counts),
-            total=len(listings),
-            noted=bool(note),
-            error=error,
-            vendor=vendor,
-            dial_rows=common.dial_rows(vendor.country_id if vendor else common.default_country()),
+            first=first,
+            bar=feed.country_bar(first, result["feed"]),
+            cards=result["cards"],
+            next_offset=result["next"],
+            more_url=more_url,
+            since=fields.Datetime.to_string(common.now()),
+            **self._feed_values(note=note, error=error),
         ))
+
+    def _feed_values(self, note=None, error=None):
+        """Values of the cards of the feed (the card « closed » has the alert form)."""
+        vendor = common.current_vendor()
+        return {
+            "windows": common.windows_info(),
+            "noted": bool(note),
+            "error": error,
+            "vendor": vendor,
+            "dial_rows": common.dial_rows(vendor.country_id if vendor else common.default_country()),
+        }
+
+    @http.route("/lives/flux", type="jsonrpc", auth="public", website=True)
+    def directory_feed(self, offset=0, pays=None):
+        """The next cards of the feed, while the person scrolls."""
+        first = feed.first_country(pays)
+        result = feed.page(first, offset=offset)
+        html = request.env["ir.qweb"]._render("ocd_live.feed_cards", {
+            "cards": result["cards"], "request": request, **self._feed_values(),
+        })
+        return {"html": str(html), "next": result["next"]}
+
+    @http.route("/lives/nouveaux", type="jsonrpc", auth="public", website=True)
+    def directory_new(self, since=None):
+        """How many lives were checked since the page was shown."""
+        return {"count": feed.new_lives_count(since)}
+
+    @http.route("/lives/image/<int:partner_id>", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
+    def directory_image(self, partner_id, **kwargs):
+        """The picture of an approved vendor, for its cards in the feed."""
+        vendor = request.env["res.partner"].sudo().browse(partner_id).exists()
+        if not vendor or not vendor.ocd_is_vendor or vendor.ocd_vendor_state != "approved" or not vendor.image_1920:
+            raise request.not_found()
+        stream = request.env["ir.binary"]._get_image_stream_from(vendor, "image_512")
+        return stream.get_response(max_age=86400)
 
     @http.route("/lives/prevenir", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def directory_alert(self, phone=None, country_id=None, **post):
@@ -170,9 +210,7 @@ class OcdLiveDirectory(http.Controller):
             back="/lives/pass",
             header_title=request.env._("I am live"),
             vendor=vendor,
-            countries=[
-                {"country": country, "flag": country.code.lower()} for country in common.directory_countries()
-            ],
+            countries=common.dial_rows(vendor.country_id or common.default_country()),
             categories=request.env["ocd.live.category"].sudo().search([]),
             values=values,
             error=error,

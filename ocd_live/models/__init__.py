@@ -1,4 +1,5 @@
 from . import res_company
+from . import res_country
 from . import res_config_settings
 from . import ocd_live_category
 from . import product_template

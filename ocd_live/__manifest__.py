@@ -26,11 +26,11 @@ OCD Live
 - Personal link without password for each vendor (sent on WhatsApp by
   ocd_live_whatsapp) to reach their space.
 """,
-    "version": "20.0.1.6.0",
+    "version": "20.0.1.7.0",
     "category": "Sales/Sales",
     "author": "RollBackk",
     "license": "LGPL-3",
-    "depends": ["sale", "website", "hr", "payment_custom"],
+    "depends": ["sale", "website", "hr", "payment_custom", "payment_stripe"],
     "data": [
         "security/ocd_live_security.xml",
         "security/ir.access.csv",
@@ -55,6 +55,7 @@ OCD Live
         "views/ocd_live_category_views.xml",
         "views/ocd_listing_refuse_reason_views.xml",
         "views/res_partner_views.xml",
+        "views/res_country_views.xml",
         "views/hr_employee_views.xml",
         "views/product_template_views.xml",
         "views/ocd_voice_views.xml",
@@ -88,6 +89,7 @@ OCD Live
         ],
         "web.assets_frontend": [
             "ocd_live/static/src/scss/ocd_app.scss",
+            "ocd_live/static/src/scss/ocd_flags.scss",
             "ocd_live/static/src/interactions/*.js",
         ],
     },

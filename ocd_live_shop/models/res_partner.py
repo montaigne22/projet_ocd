@@ -181,12 +181,23 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {"type": "ir.actions.act_url", "url": f"/ocd/boutique/{self.id}", "target": "new"}
 
-    def _ocd_public_path(self):
+    def _ocd_shop_path(self):
         """The boutique of the vendor, once the team has approved it (it opens only then)."""
         self.ensure_one()
         if self.ocd_is_vendor and self.ocd_vendor_state == "approved":
             return f"ocd/boutique/{self.id}"
-        return super()._ocd_public_path()
+        return super()._ocd_shop_path()
+
+    def _ocd_feed_image(self):
+        """The picture of the vendor, else the one of its first published product."""
+        image = super()._ocd_feed_image()
+        if image:
+            return image
+        product = self.env["product.template"].sudo().search([
+            ("ocd_vendor_id", "=", self.id), ("is_published", "=", True),
+            ("ocd_review_state", "=", "approved"), ("image_128", "!=", False),
+        ], limit=1)
+        return f"/web/image/product.template/{product.id}/image_512" if product else False
 
     def action_ocd_deliveries_to_ocd(self):
         """Give the deliveries of a vendor often late to the OCD couriers."""

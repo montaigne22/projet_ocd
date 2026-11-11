@@ -10,3 +10,4 @@ from . import test_settings_page
 from . import test_automations
 from . import test_website_setup
 from . import test_ticket
+from . import test_countries_feed

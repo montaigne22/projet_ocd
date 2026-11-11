@@ -212,9 +212,9 @@ class OcdLiveSettings(models.AbstractModel):
                 item("select", "ocd_vendor_login", _("How the vendors and the couriers log in"),
                      _("The personal link and the code go on WhatsApp. The couriers have no password: with « Number and password », they receive a code."),
                      options=self._ocd_selection_options("ocd_vendor_login")),
-                item("chips", "ocd_countries", _("Open countries"),
-                     _("The vendors of these countries book, send their links and appear in the directory."),
-                     chips=self._ocd_country_names(), span=2),
+                item("info", "ocd_countries", self._ocd_countries_title(),
+                     _("Offered in the forms of the website (WhatsApp number, directory): the vendors of these countries book and send their links, the couriers and the customers find their country. The directory shows the countries that have lives."),
+                     link={"label": _("Countries"), "action": "ocd_live.ocd_country_action"}, span=2),
                 item("info", "ocd_refuse_reasons", _("Reasons of refusal"),
                      _("Sent to the vendor when the team refuses a link."),
                      link={"label": _("Reasons of refusal"), "action": "ocd_live.ocd_listing_refuse_reason_action"}),
@@ -271,16 +271,25 @@ class OcdLiveSettings(models.AbstractModel):
 
     @api.model
     def _ocd_country_records(self):
-        """The countries of OCD Live, in their order on the website."""
-        from odoo.addons.ocd_live.controllers.common import COUNTRY_PHONES
-
-        countries = self.env["res.country"].sudo().search([("code", "in", list(COUNTRY_PHONES))])
-        order = list(COUNTRY_PHONES)
-        return countries.sorted(lambda country: order.index(country.code))
+        """The countries offered by OCD Live, in their order on the website."""
+        Country = self.env["res.country"].sudo()
+        return Country.browse([country.id for country, _group in Country._ocd_ordered()])
 
     @api.model
     def _ocd_country_names(self):
         return self._ocd_country_records().mapped("name")
+
+    @api.model
+    def _ocd_countries_title(self):
+        """ "Open countries: 112 (54 in Africa, 23 in Europe…)" """
+        countries = self._ocd_country_records()
+        labels = dict(countries._fields["ocd_continent"]._description_selection(self.env))
+        parts = [
+            self.env._("%(count)s in %(continent)s", count=count, continent=labels[continent])
+            for continent in ("africa", "europe", "americas", "asia", "oceania")
+            if (count := len(countries.filtered(lambda c, continent=continent: c.ocd_continent == continent)))
+        ]
+        return self.env._("Open countries: %(count)s (%(parts)s)", count=len(countries), parts=", ".join(parts))
 
     @api.model
     def _ocd_product_price(self, xmlid):

@@ -174,12 +174,24 @@ class ResPartner(models.Model):
         for partner in self.filtered(lambda partner: tz and partner.ocd_phone_tz != tz):
             partner.sudo().ocd_phone_tz = tz
 
+    def _ocd_shop_path(self):
+        """The boutique of the vendor on the website (without the first "/"), or False.
+        Extended by ocd_live_shop."""
+        self.ensure_one()
+        return False
+
     def _ocd_public_path(self):
-        """Public page where friends find the lives of the vendor (without the first "/"): the
-        lives of its country. The shop gives its boutique instead."""
+        """Public page where friends find the lives of the vendor (without the first "/"): its
+        boutique when it has one, else the lives of its country."""
         self.ensure_one()
         code = (self.country_id.code or "").lower()
-        return f"lives/{code}" if code else "lives"
+        return self._ocd_shop_path() or (f"lives/{code}" if code else "lives")
+
+    def _ocd_feed_image(self):
+        """Image of the vendor in the lives of the website: its own picture (logo), or False.
+        Extended by ocd_live_shop (a picture of its products)."""
+        self.ensure_one()
+        return f"/lives/image/{self.id}" if self.image_1920 else False
 
     @api.model
     def _ocd_find_by_space_token(self, token):

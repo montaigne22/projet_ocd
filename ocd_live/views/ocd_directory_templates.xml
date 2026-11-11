@@ -21,60 +21,142 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Lives by country</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame">
-                <main class="o_ocd_main">
-                    <h1 class="o_ocd_h1">Lives by country</h1>
+            <div class="o_ocd_frame o_ocd_feed_frame">
+                <main class="o_ocd_main o_ocd_feed_main">
+                    <h1 class="visually-hidden">Lives by country</h1>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
-                    <t t-if="windows['open']">
-                        <div class="o_ocd_state_line o_ocd_state_open">
-                            <i aria-hidden="true"/>
-                            <span>Lives checked now · until <t t-out="windows['end']"/></span>
-                        </div>
-                        <div class="o_ocd_countries">
-                            <t t-foreach="cards" t-as="card">
-                                <a t-attf-href="/lives/#{card['flag']}" class="o_ocd_country">
-                                    <span t-attf-class="o_ocd_flag o_ocd_flag_card o_ocd_flag_#{card['flag']}"/>
-                                    <span class="o_ocd_country_count">
-                                        <b t-out="card['count']"/>
-                                        <small>lives</small>
-                                    </span>
-                                    <span class="o_ocd_country_name" t-out="card['country'].name"/>
+                    <div class="o_ocd_feed_wrap" t-att-data-first="first.code.lower() if first else ''"
+                         t-att-data-next="next_offset if next_offset is not None else ''" t-att-data-since="since">
+                        <nav class="o_ocd_feed_bar" aria-label="Countries">
+                            <t t-foreach="bar" t-as="chip">
+                                <a t-att-href="chip['href']" t-attf-class="o_ocd_feed_chip #{'o_ocd_on' if chip['on'] else ''}"
+                                   t-att-data-country="chip['flag']" t-att-aria-current="'true' if chip['on'] else None">
+                                    <span t-attf-class="o_ocd_flag o_ocd_flag_#{chip['flag']}"/>
+                                    <span t-out="chip['country'].name"/>
+                                    <b t-if="chip['count']" class="o_ocd_feed_chip_count" t-out="chip['count']"/>
                                 </a>
                             </t>
-                        </div>
-                    </t>
-                    <t t-else="">
-                        <div class="o_ocd_state_line o_ocd_state_closed">
-                            <i aria-hidden="true"/>
-                            <span>Closed for now</span>
-                        </div>
-                        <div class="o_ocd_closed">
-                            <b class="o_ocd_closed_title">The lives come back at <t t-out="windows['next']"/>.</b>
-                            <t t-call="ocd_live.windows"/>
-                            <div t-if="noted" class="o_ocd_ok o_ocd_info_icon" role="status">
-                                <t t-call="ocd_live.icon" icon.f="check"/>
-                                <span>Noted. We write to you on WhatsApp at <t t-out="windows['next']"/>.</span>
+                        </nav>
+                        <div class="o_ocd_feed_state">
+                            <div t-if="windows['open']" class="o_ocd_state_line o_ocd_state_open">
+                                <i aria-hidden="true"/>
+                                <span>Lives checked now · until <t t-out="windows['end']"/></span>
                             </div>
-                            <form t-else="" action="/lives/prevenir" method="post" class="o_ocd_wait_form">
-                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
-                                <button t-if="vendor" type="submit" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_mid">
-                                    Tell me at <t t-out="windows['next']"/>
-                                </button>
-                                <details t-else="" class="o_ocd_wait_details">
-                                    <summary class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_mid">
-                                        Tell me at <t t-out="windows['next']"/>
-                                    </summary>
-                                    <div class="o_ocd_form o_ocd_wait_box">
-                                        <label for="a-phone" class="o_ocd_label">Your WhatsApp</label>
-                                        <t t-call="ocd_live.phone_field" field_id.f="a-phone" phone_value="''"/>
-                                        <button type="submit" class="o_ocd_cta o_ocd_cta_small">Tell me</button>
-                                    </div>
-                                </details>
-                            </form>
+                            <div t-else="" class="o_ocd_state_line o_ocd_state_closed">
+                                <i aria-hidden="true"/>
+                                <span>Back at <t t-out="windows['next']"/> · next lives and replays</span>
+                            </div>
+                            <button type="button" class="o_ocd_feed_new" hidden="">
+                                <span class="o_ocd_feed_new_count"/> <span>new lives: see them</span>
+                            </button>
                         </div>
-                    </t>
+                        <div class="o_ocd_feed" tabindex="0" aria-label="Lives, one per screen: swipe up for the next one">
+                            <t t-call="ocd_live.feed_cards"/>
+                            <a t-if="more_url" t-att-href="more_url" class="o_ocd_cta o_ocd_cta_line o_ocd_feed_more">See more lives</a>
+                        </div>
+                    </div>
                 </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The cards of the feed: the page gives the first ones, the next ones come from /lives/flux -->
+    <template id="feed_cards" name="OCD Live: cards of the feed">
+        <t t-foreach="cards" t-as="card">
+            <article t-if="card['kind'] in ('live', 'studio', 'next', 'replay')"
+                     t-attf-class="o_ocd_feed_card o_ocd_feed_person o_ocd_feed_#{card['kind']}"
+                     t-att-data-key="card['key']" t-att-data-country="card['flag']" tabindex="-1"
+                     t-att-aria-label="card['name']">
+                <div class="o_ocd_feed_media" aria-hidden="true">
+                    <img t-if="card['image']" t-att-src="card['image']" alt="" loading="lazy" decoding="async"/>
+                    <span t-else="" class="o_ocd_feed_initials" t-out="card['initials']"/>
+                </div>
+                <div class="o_ocd_feed_top">
+                    <span t-attf-class="o_ocd_feed_badge o_ocd_feed_badge_#{card['kind']}">
+                        <i t-if="card['kind'] in ('live', 'studio')" aria-hidden="true"/>
+                        <t t-out="card['badge']"/>
+                    </span>
+                    <span class="o_ocd_feed_country">
+                        <span t-attf-class="o_ocd_flag o_ocd_flag_#{card['flag']}"/>
+                        <t t-out="card['country_name']"/>
+                    </span>
+                </div>
+                <div class="o_ocd_feed_body">
+                    <h2 class="o_ocd_feed_name" t-out="card['name']"/>
+                    <p t-if="card['category']" class="o_ocd_feed_category" t-out="card['category']"/>
+                    <p class="o_ocd_feed_when">
+                        <b t-out="card['when']"/>
+                        <small t-if="card.get('zone')" t-out="card['zone']"/>
+                        <small t-if="card.get('where')" t-out="card['where']"/>
+                    </p>
+                    <div class="o_ocd_feed_actions">
+                        <a t-if="card['watch_url']" t-att-href="card['watch_url']" class="o_ocd_cta"
+                           t-att-target="'_blank' if card['external'] else None"
+                           t-att-rel="'noopener' if card['external'] else None">
+                            <t t-call="ocd_live.icon" icon.f="live"/>
+                            <span t-out="card['watch_label']"/>
+                        </a>
+                        <a t-if="card['shop_url']" t-att-href="card['shop_url']"
+                           t-attf-class="o_ocd_cta #{'o_ocd_cta_ghost' if card['watch_url'] else ''}">
+                            <t t-call="ocd_live.icon" icon.f="bag"/>
+                            <span>Their boutique</span>
+                        </a>
+                        <button type="button" class="o_ocd_feed_share o_ocd_share" t-att-data-url="card['share_url']"
+                                aria-label="Share">
+                            <t t-call="ocd_live.icon" icon.f="share"/>
+                        </button>
+                    </div>
+                </div>
+            </article>
+            <div t-elif="card['kind'] == 'country'" class="o_ocd_feed_card o_ocd_feed_divider"
+                     t-att-data-key="card['key']" t-att-data-country="card['flag']" t-att-data-country-start="card['flag']"
+                     tabindex="-1" t-att-aria-label="card['country_name']">
+                <span t-attf-class="o_ocd_flag o_ocd_feed_big_flag o_ocd_flag_#{card['flag']}"/>
+                <h2 class="o_ocd_feed_divider_name" t-out="card['country_name']"/>
+                <p t-out="card['line']"/>
+                <span class="o_ocd_feed_hint">Swipe up</span>
+            </div>
+            <div t-elif="card['kind'] == 'none'" class="o_ocd_feed_card o_ocd_feed_divider o_ocd_feed_none"
+                     t-att-data-key="card['key']" t-att-data-country="card['flag']" tabindex="-1">
+                <span t-attf-class="o_ocd_flag o_ocd_feed_big_flag o_ocd_flag_#{card['flag']}"/>
+                <h2 class="o_ocd_feed_divider_name" t-out="card['country_name']"/>
+                <p>No live here right now. Here are the lives of the other countries: swipe up.</p>
+                <a href="/lives/pass" class="o_ocd_cta o_ocd_cta_line">I am live: show my live</a>
+            </div>
+            <div t-elif="card['kind'] == 'closed'" class="o_ocd_feed_card o_ocd_feed_divider o_ocd_feed_closed"
+                     t-att-data-key="card['key']" t-att-data-country="card['flag']" tabindex="-1">
+                <b class="o_ocd_closed_title">The checked lives come back at <t t-out="windows['next']"/>.</b>
+                <t t-call="ocd_live.windows"/>
+                <div t-if="noted" class="o_ocd_ok o_ocd_info_icon" role="status">
+                    <t t-call="ocd_live.icon" icon.f="check"/>
+                    <span>Noted. We write to you on WhatsApp at <t t-out="windows['next']"/>.</span>
+                </div>
+                <form t-else="" action="/lives/prevenir" method="post" class="o_ocd_wait_form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                    <button t-if="vendor" type="submit" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_mid">
+                        Tell me at <t t-out="windows['next']"/>
+                    </button>
+                    <details t-else="" class="o_ocd_wait_details">
+                        <summary class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_mid">
+                            Tell me at <t t-out="windows['next']"/>
+                        </summary>
+                        <div class="o_ocd_form o_ocd_wait_box">
+                            <label for="a-phone" class="o_ocd_label">Your WhatsApp</label>
+                            <t t-call="ocd_live.phone_field" field_id.f="a-phone" phone_value="''"/>
+                            <button type="submit" class="o_ocd_cta o_ocd_cta_small">Tell me</button>
+                        </div>
+                    </details>
+                </form>
+                <span class="o_ocd_feed_hint">Meanwhile: the next lives and the replays. Swipe up.</span>
+            </div>
+            <div t-elif="card['kind'] == 'end'" class="o_ocd_feed_card o_ocd_feed_divider o_ocd_feed_end"
+                     t-att-data-key="card['key']" tabindex="-1">
+                <h2 class="o_ocd_feed_divider_name">You have seen all the lives</h2>
+                <p>Come back during the checking windows: new lives arrive all day long.</p>
+                <a href="/lives/pass" class="o_ocd_cta">I am live: show my live</a>
+                <a href="/reserver" class="o_ocd_cta o_ocd_cta_line">Book a live at the studio</a>
+                <a href="/lives" class="o_ocd_cta o_ocd_cta_ghost o_ocd_feed_top_link">Back to the first live</a>
             </div>
         </t>
     </template>
@@ -201,21 +283,21 @@
                         <label for="g-name" class="o_ocd_label">Your name or your shop</label>
                         <input id="g-name" name="title" class="o_ocd_input" maxlength="80" t-att-value="values.get('title')"/>
                     </div>
-                    <fieldset class="o_ocd_fieldset">
-                        <legend class="o_ocd_label">Your country</legend>
-                        <div class="o_ocd_chips o_ocd_chips_wrap">
-                            <t t-foreach="countries" t-as="item">
-                                <label class="o_ocd_chip_choice">
-                                    <input type="radio" name="country_id" t-att-value="item['country'].id"
-                                           t-att-checked="str(item['country'].id) == values.get('country_id') or None"/>
-                                    <span class="o_ocd_chip">
-                                        <span t-attf-class="o_ocd_flag o_ocd_flag_#{item['flag']}"/>
-                                        <t t-out="item['country'].name"/>
-                                    </span>
-                                </label>
+                    <div class="o_ocd_field">
+                        <label for="g-country" class="o_ocd_label">Your country</label>
+                        <select id="g-country" name="country_id" class="o_ocd_input">
+                            <t t-foreach="['first', 'africa', 'europe', 'americas', 'asia', 'oceania']" t-as="group">
+                                <t t-set="group_rows" t-value="[row for row in countries if row['group'] == group]"/>
+                                <optgroup t-if="group_rows" t-att-label="group_rows[0]['group_label']">
+                                    <t t-foreach="group_rows" t-as="row">
+                                        <option t-att-value="row['country'].id"
+                                                t-att-selected="str(row['country'].id) == values.get('country_id') or None"
+                                                t-out="row['country'].name"/>
+                                    </t>
+                                </optgroup>
                             </t>
-                        </div>
-                    </fieldset>
+                        </select>
+                    </div>
                     <fieldset class="o_ocd_fieldset">
                         <legend class="o_ocd_label">What do you sell?</legend>
                         <div class="o_ocd_tiles">

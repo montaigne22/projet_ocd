@@ -1,0 +1,25 @@
+// Flags of the countries offered by OCD Live: the images of Odoo (base/static/img/country_flags).
+// The first countries of OCD keep their flags drawn in CSS (ocd_app.scss), sharper when small.
+$ocd-flag-codes: (
+    "ad", "ae", "af", "ag", "ai", "al", "am", "ao", "ar", "as", "at", "au", "aw", "ax", "az", "ba",
+    "bb", "bd", "be", "bf", "bg", "bh", "bi", "bl", "bm", "bn", "bo", "br", "bs", "bt", "bw", "by",
+    "bz", "ca", "cc", "cd", "cf", "cg", "ch", "ck", "cl", "cn", "co", "cr", "cu", "cv", "cw", "cx",
+    "cy", "cz", "de", "dj", "dk", "dm", "do", "dz", "ec", "ee", "eg", "eh", "er", "es", "et", "fi",
+    "fj", "fk", "fm", "fo", "fr", "ga", "gb", "gd", "ge", "gg", "gh", "gi", "gl", "gm", "gn", "gq",
+    "gr", "gs", "gt", "gu", "gw", "gy", "hk", "hn", "hr", "ht", "hu", "id", "ie", "il", "im", "in",
+    "io", "iq", "ir", "is", "it", "je", "jm", "jo", "jp", "ke", "kg", "kh", "ki", "km", "kn", "kp",
+    "kr", "kw", "ky", "kz", "la", "lb", "lc", "li", "lk", "lr", "ls", "lt", "lu", "lv", "ly", "ma",
+    "mc", "md", "me", "mg", "mh", "mk", "ml", "mm", "mn", "mo", "mp", "mq", "mr", "ms", "mt", "mu",
+    "mv", "mw", "mx", "my", "mz", "na", "nc", "ne", "nf", "ng", "ni", "nl", "no", "np", "nr", "nu",
+    "nz", "om", "pa", "pe", "pf", "pg", "ph", "pk", "pl", "pm", "pn", "pr", "ps", "pt", "pw", "py",
+    "qa", "ro", "rs", "ru", "rw", "sa", "sb", "sc", "sd", "se", "sg", "sh", "si", "sk", "sl", "sm",
+    "so", "sr", "ss", "st", "sv", "sx", "sy", "sz", "tc", "td", "tf", "th", "tj", "tk", "tl", "tm",
+    "tn", "to", "tr", "tt", "tv", "tw", "tz", "ua", "ug", "us", "uy", "uz", "va", "vc", "ve", "vg",
+    "vi", "vn", "vu", "wf", "ws", "xk", "ye", "za", "zm", "zw"
+);
+
+@each $code in $ocd-flag-codes {
+    .o_ocd_flag.o_ocd_flag_#{$code} {
+        background: $ocd-line url("/base/static/img/country_flags/#{$code}.png") center / cover no-repeat;
+    }
+}

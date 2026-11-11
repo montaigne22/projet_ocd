@@ -67,6 +67,21 @@ class OcdLivePayment(http.Controller):
         }
         if state in ("form", "failed"):
             values.update(self._payment_form_values(order, env._("Pay %s", total)))
+            # No payment method for the country, the currency or the amount: the team helps,
+            # instead of a page without a way out
+            values["no_method"] = not (values.get("payment_methods_sudo") or values.get("tokens_sudo"))
+            if values["no_method"]:
+                values.update(
+                    no_method_title=env._(
+                        "Paying online is not open yet in your country: %s.", order.partner_id.country_id.name or "-"
+                    ),
+                    help_asked=bool(order.ocd_payment_help_date),
+                    help_url=f"/ocd/payer/{order.id}/aide",
+                    help_whatsapp=tools.whatsapp_url(common.company().phone, env._(
+                        "Hello, I want to pay my order %(order)s (%(total)s) from %(country)s.",
+                        order=order.name, total=total, country=order.partner_id.country_id.name or "",
+                    )),
+                )
         return request.render("ocd_live.pay", common.page_values(
             "pay",
             back=self._back(order, booking),
@@ -97,6 +112,14 @@ class OcdLivePayment(http.Controller):
         last = order.transaction_ids.sorted("id")[-1:]
         if order._ocd_payment_state() == "waiting" and last.state == "pending" and last.provider_code == "custom":
             order._ocd_announce_payment(common.clean_text(reference, 60))
+        return request.redirect(self._url(order))
+
+    @http.route("/ocd/payer/<int:order_id>/aide", type="http", auth="public", website=True, sitemap=False, methods=["POST"])
+    def pay_help(self, order_id, access_token=None, **post):
+        """No payment method fits the country of the vendor: the team is asked to help."""
+        order = self._order(order_id, access_token)
+        if order._ocd_payment_state() in ("form", "failed"):
+            order._ocd_ask_payment_help()
         return request.redirect(self._url(order))
 
     @http.route("/ocd/payer/<int:order_id>/statut", type="jsonrpc", auth="public", website=True)

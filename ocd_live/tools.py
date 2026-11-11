@@ -1,6 +1,7 @@
 """Small helpers shared by the models and the pages of OCD Live."""
 
 import base64
+import functools
 import io
 import re
 
@@ -76,3 +77,24 @@ def zone_text(env, tz_name):
 def same_offset(tz_a, tz_b, moment):
     """Whether two time zones show the same hour at `moment` (naive UTC)."""
     return to_tz(moment, tz_a).utcoffset() == to_tz(moment, tz_b).utcoffset()
+
+
+@functools.cache
+def _zone_countries():
+    return {zone: code for code in pytz.country_timezones for zone in pytz.country_timezones[code]}
+
+
+def country_of_tz(tz_name):
+    """ISO code of the country of a time zone (Africa/Douala: CM), or None."""
+    zone = valid_tz(tz_name)
+    return _zone_countries().get(zone) if zone else None
+
+
+def whatsapp_url(phone, text):
+    """Link that opens WhatsApp with `phone` and a message ready to send, or False."""
+    from urllib.parse import quote
+
+    digits = re.sub(r"\D", "", phone or "")
+    if len(digits) < 8:
+        return False
+    return f"https://wa.me/{digits}?text={quote(text)}"

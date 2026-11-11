@@ -27,6 +27,12 @@ class SaleOrder(models.Model):
         copy=False,
         help="Number that paid or reference of the transfer, given by the vendor.",
     )
+    ocd_payment_help_date = fields.Datetime(
+        string="Payment Help Asked On",
+        copy=False,
+        help="No payment method of the website takes the payments of the country of the vendor: "
+        "the vendor asked the team for help. The hour of the live stays held meanwhile.",
+    )
 
     def _ocd_announce_payment(self, reference):
         """The vendor says the payment checked by the team was sent: the hours of its lives stay
@@ -48,6 +54,45 @@ class SaleOrder(models.Model):
         channel = self.company_id.ocd_lives_channel_id
         if channel:
             channel.sudo().message_post(body=body, message_type="comment", subtype_xmlid="mail.mt_comment")
+
+    def _ocd_ask_payment_help(self):
+        """No payment method takes the payments of the country of the vendor (a country opened
+        before its payment): the vendor asks the team. The hours of its lives stay held while
+        the team answers (« Slot Held For A Payment Checked By The Team »); the team is told in
+        the order, in the channel of the lives, and by an activity for the person in charge."""
+        self.ensure_one()
+        if self.ocd_payment_help_date:
+            return False
+        now = fields.Datetime.now()
+        self.ocd_payment_help_date = now
+        hold = now + timedelta(hours=self.company_id.ocd_manual_hold_hours)
+        for booking in self.ocd_booking_ids.filtered(lambda b: b.state == "draft"):
+            booking.hold_until = max(booking.hold_until or now, hold)
+        body = self.env._(
+            "%(vendor)s (%(country)s, %(phone)s) cannot pay %(order)s online: no payment method takes "
+            "the payments of the country. Write to them on WhatsApp to agree on the payment.",
+            vendor=self.partner_id.name,
+            country=self.partner_id.country_id.name or "-",
+            phone=self.partner_id.phone or "-",
+            order=self.name,
+        )
+        self.message_post(body=body, message_type="comment", subtype_xmlid="mail.mt_note")
+        channel = self.company_id.ocd_lives_channel_id
+        if channel:
+            channel.sudo().message_post(body=body, message_type="comment", subtype_xmlid="mail.mt_comment")
+        responsible = (
+            self.company_id.ocd_live_responsible_id
+            or self.user_id
+            or self.env.ref("ocd_live.group_ocd_live_manager").sudo().all_user_ids.filtered(lambda user: user.active and not user.share)[:1]
+        )
+        if responsible:
+            self.sudo().activity_schedule(
+                "mail.mail_activity_data_todo",
+                summary=self.env._("Payment to agree on WhatsApp"),
+                note=body,
+                user_id=responsible.id,
+            )
+        return True
 
     @api.depends("ocd_booking_ids")
     def _compute_ocd_booking_count(self):

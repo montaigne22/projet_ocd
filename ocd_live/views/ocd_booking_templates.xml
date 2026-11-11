@@ -269,22 +269,49 @@
     </template>
 
     <template id="phone_field" name="OCD Live: WhatsApp number">
-        <!-- Parameters: field_id, dial_rows (countries with their dialing code), phone_value -->
+        <!-- Parameters: field_id, dial_rows (countries with their dialing code), phone_value.
+             Without JavaScript: the list of the phone, grouped (suggested, then each continent).
+             With it: a sheet to search the country by its name or its code. -->
         <t t-set="dial_selected" t-value="[row for row in dial_rows if row['selected']][:1]"/>
         <div class="o_ocd_phone">
             <span class="o_ocd_dial">
-                <span t-attf-class="o_ocd_flag o_ocd_flag_#{dial_selected[0]['flag'] if dial_selected else ''}"/>
+                <button type="button" class="o_ocd_dial_button" hidden="" aria-haspopup="dialog"
+                        t-att-aria-controls="'%s-sheet' % field_id" aria-label="Country of the number">
+                    <span t-attf-class="o_ocd_flag o_ocd_flag_#{dial_selected[0]['flag'] if dial_selected else ''}"/>
+                    <span class="o_ocd_dial_code" t-out="dial_selected[0]['dial'] if dial_selected else ''"/>
+                    <svg class="o_ocd_dial_chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <span t-attf-class="o_ocd_flag o_ocd_dial_flag o_ocd_flag_#{dial_selected[0]['flag'] if dial_selected else ''}"/>
                 <select t-attf-id="#{field_id}-country" name="country_id" class="o_ocd_dial_select" aria-label="Country of the number">
-                    <t t-foreach="dial_rows" t-as="row">
-                        <option t-att-value="row['country'].id" t-att-selected="row['selected'] or None"
-                                t-att-data-flag="row['flag']" t-att-data-size="row['size']"
-                                t-att-data-dial="row['dial']"
-                                t-out="row['dial']"/>
+                    <t t-foreach="['first', 'africa', 'europe', 'americas', 'asia', 'oceania']" t-as="group">
+                        <t t-set="group_rows" t-value="[row for row in dial_rows if row['group'] == group]"/>
+                        <optgroup t-if="group_rows" t-att-label="group_rows[0]['group_label']">
+                            <t t-foreach="group_rows" t-as="row">
+                                <option t-att-value="row['country'].id" t-att-selected="row['selected'] or None"
+                                        t-att-data-flag="row['flag']" t-att-data-size="row['size']"
+                                        t-att-data-dial="row['dial']" t-att-data-name="row['country'].name"
+                                        t-att-data-example="row['example']"
+                                        t-out="'%s (%s)' % (row['country'].name, row['dial'])"/>
+                            </t>
+                        </optgroup>
                     </t>
                 </select>
             </span>
             <input t-att-id="field_id" type="tel" name="phone" inputmode="tel" autocomplete="tel-national"
-                   class="o_ocd_input" t-att-value="phone_value" placeholder="90 00 00 00" required="required"/>
+                   class="o_ocd_input" t-att-value="phone_value" required="required"
+                   t-att-placeholder="(dial_selected[0]['example'] if dial_selected else '') or '90 00 00 00'"/>
+            <dialog t-att-id="'%s-sheet' % field_id" class="o_ocd_dial_sheet" t-att-aria-labelledby="'%s-sheet-title' % field_id">
+                <div class="o_ocd_dial_sheet_head">
+                    <b t-att-id="'%s-sheet-title' % field_id">Country of the number</b>
+                    <button type="button" class="o_ocd_dial_close" aria-label="Close">
+                        <t t-call="ocd_live.icon" icon.f="close"/>
+                    </button>
+                </div>
+                <input type="search" class="o_ocd_input o_ocd_dial_search" autocomplete="off"
+                       placeholder="Search a country or a code" aria-label="Search a country or a code"/>
+                <div class="o_ocd_dial_list" role="listbox" aria-label="Country of the number"/>
+                <p class="o_ocd_dial_none" hidden="">No country found.</p>
+            </dialog>
         </div>
     </template>
 
@@ -653,7 +680,25 @@
                                 <span class="o_ocd_with_country" t-out="country.name"/>
                             </t>
                         </div>
-                        <div class="o_ocd_payment">
+                        <div t-if="no_method" class="o_ocd_no_method" role="status">
+                            <b t-out="no_method_title"/>
+                            <span>The team agrees on the payment with you on WhatsApp: your hour stays held meanwhile.</span>
+                            <div t-if="help_asked" class="o_ocd_ok o_ocd_info_icon">
+                                <t t-call="ocd_live.icon" icon.f="check"/>
+                                <span>Thank you: the team writes to you on WhatsApp.</span>
+                            </div>
+                            <form t-else="" t-att-action="help_url" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="access_token" t-att-value="access_token"/>
+                                <button type="submit" class="o_ocd_cta">Ask the team to help me pay</button>
+                            </form>
+                            <a t-if="help_whatsapp" t-att-href="help_whatsapp" target="_blank" rel="noopener"
+                               class="o_ocd_cta o_ocd_cta_line">
+                                <t t-call="ocd_live.icon" icon.f="chat"/>
+                                <span>Write to OCD Live on WhatsApp</span>
+                            </a>
+                        </div>
+                        <div t-else="" class="o_ocd_payment">
                             <t t-call="payment.form" sale_order_id="order.id"/>
                         </div>
                         <div class="o_ocd_total">

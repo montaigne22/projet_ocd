@@ -187,6 +187,23 @@ class TestOcdLiveWebsite(HttpCase):
         other = self.url_open(f"/ocd/payer/{order.id}/envoye", data={"csrf_token": token, "access_token": "x"})
         self.assertEqual(other.status_code, 404)
 
+    def test_no_payment_method_for_the_country_asks_the_team(self):
+        booking, pay_url = self._book()
+        order = booking.sale_order_id
+        response = self.url_open(pay_url)
+        self.assertIn("Paying online is not open yet in your country", response.text, "No way to pay: never a dead end")
+        self.assertIn(f'action="/ocd/payer/{order.id}/aide"', response.text)
+        response = self.url_open(f"/ocd/payer/{order.id}/aide", data={
+            "csrf_token": self.csrf_token(), "access_token": order.access_token,
+        })
+        self.assertIn("the team writes to you on WhatsApp", response.text)
+        self.assertTrue(order.ocd_payment_help_date)
+        self.assertGreater(booking.hold_until, fields.Datetime.now() + timedelta(hours=1), "The hour stays held")
+        self.assertTrue(order.activity_ids, "The person in charge has an activity")
+        self.assertEqual(self.url_open(f"/ocd/payer/{order.id}/aide", data={
+            "csrf_token": self.csrf_token(), "access_token": "wrong",
+        }).status_code, 404)
+
     def test_payment_status_and_ticket(self):
         booking, pay_url = self._book()
         order = booking.sale_order_id

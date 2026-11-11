@@ -109,10 +109,14 @@ class OcdLiveSettings(models.AbstractModel):
         ]
         missing = self._ocd_countries_without_online_payment(providers)
         if missing:
+            shown = ", ".join(missing[:6])
+            if len(missing) > 6:
+                shown = _("%(countries)s and %(count)s others", countries=shown, count=len(missing) - 6)
             items.append(item(
                 "warn", "ocd_payment_countries",
-                _("No online payment in: %s", ", ".join(missing)),
-                _("The vendors and the customers of these countries pay with the payments checked by the team (Mobile Money, cash at the studio) or at the door."),
+                _("No online payment in: %s", shown),
+                _("The vendors and the customers of these countries pay with the payments checked by the team (Mobile Money, cash at the studio) or at the door. The card payment (Stripe) takes the payments of every country once its keys are entered."),
+                link={"label": _("Payment providers"), "action": "payment.action_payment_provider"},
             ))
         return {
             "key": "payments",
