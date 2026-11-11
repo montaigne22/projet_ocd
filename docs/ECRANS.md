@@ -42,6 +42,7 @@ Le design validé est dans [`prototype/design-valide/`](../prototype/design-vali
 | `Suivi` Suivi de commande | `/ocd/suivi/<commande>?access_token=` (après la confirmation d'Odoo) : un bloc par colis, étapes, livreur, code, note, demande de retour | ✅ |
 | `Replay` Revoir un live | `/ocd/boutique/<vendeur>/replay`, modèle `ocd_live_shop.replay` : moments du live (lien à la seconde pour YouTube), bouton « Commander » ou « Écrire » du moment choisi | ✅ |
 | `MesProduits` Mes produits | `/ocd/espace/moi/produits` : ajout avec photo (vérifié par l'équipe), stock de chaque produit, partager sa boutique | ✅ |
+| (hors design) Mes prix de livraison | `/ocd/espace/moi/livraison` : prix par ville ou quartiers, dans les bornes de l'équipe ; prix d'OCD Live depuis sa ville | ✅ |
 | `Livrer` Mes colis à livrer | `/ocd/livrer/<jeton>`, modèle `ocd_live_shop.delivery_app` : reversement à venir, onglets « À faire » et « Livrés », une carte par colis (étape, paiement, livreur qui passe, prêt, départ, paiement à la porte, code, problème, reprise) | ✅ |
 | `Tournee` Ma tournée de livreur | `/ocd/livrer/<jeton>` pour un livreur OCD, modèle `ocd_live_shop.delivery_tour` : en service ou non, espèces sur soi, étapes numérotées (récupérer puis livrer), appeler le dispatch | ✅ |
 

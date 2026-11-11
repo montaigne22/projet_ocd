@@ -33,6 +33,13 @@ class ResPartner(models.Model):
         help="Districts where the vendor delivers. Elsewhere, an OCD courier delivers when "
         "the fallback is enabled.",
     )
+    ocd_delivery_rate_ids = fields.One2many(
+        comodel_name="ocd.delivery.rate",
+        inverse_name="vendor_id",
+        string="Delivery Prices",
+        help="Prices of the deliveries made by the vendor, by zone. Elsewhere in their zones, the "
+        "vendor delivers at the price of the OCD courier of the city.",
+    )
     ocd_zone_fallback = fields.Boolean(
         string="OCD Courier Outside The Zones",
         default=True,

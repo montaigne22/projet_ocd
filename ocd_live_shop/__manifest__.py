@@ -30,7 +30,7 @@ OCD Live shop and deliveries
 - Live control room: the product shown during the live, and the moments of
   the replay.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Website/eCommerce",
     "author": "RollBackk",
     "license": "LGPL-3",
@@ -49,12 +49,14 @@ OCD Live shop and deliveries
         "data/discuss_channel_data.xml",
         "data/mail_activity_type_data.xml",
         "data/ir_cron_data.xml",
+        "data/delivery_carrier_data.xml",
         "data/ocd_voice_data.xml",
         "data/ocd_refuse_reason_data.xml",
         "views/stock_picking_views.xml",
         "views/res_partner_views.xml",
         "views/product_template_views.xml",
         "views/ocd_payout_views.xml",
+        "views/ocd_delivery_rate_views.xml",
         "views/ocd_cash_remittance_views.xml",
         "views/ocd_live_booking_views.xml",
         "views/res_config_settings_views.xml",

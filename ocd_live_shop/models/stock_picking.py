@@ -95,6 +95,20 @@ class StockPicking(models.Model):
         currency_field="ocd_currency_id",
         help="Share of the delivery fee of the order: the fee goes to the one who delivers.",
     )
+    ocd_vendor_fee_amount = fields.Monetary(
+        string="Delivery Paid To The Vendor",
+        compute="_compute_ocd_vendor_fee_amount",
+        currency_field="ocd_currency_id",
+        help="When the vendor delivers: the price of the delivery of the parcel, minus the share of "
+        "OCD Live set in the settings.",
+    )
+    ocd_rate_id = fields.Many2one(
+        comodel_name="ocd.delivery.rate", string="Delivery Rate", copy=False, readonly=True, ondelete="set null"
+    )
+    ocd_by_agency = fields.Boolean(
+        string="Through A Travel Agency", copy=False, readonly=True,
+        help="Sent to the city of the customer through a travel agency.",
+    )
     ocd_vendor_share = fields.Monetary(
         string="Share Of The Vendor",
         compute="_compute_ocd_vendor_share",
@@ -164,12 +178,23 @@ class StockPicking(models.Model):
                 order=picking.sale_id.name,
             )
 
-    @api.depends("sale_id.order_line.price_total", "sale_id.picking_ids.state")
+    @api.depends(
+        "sale_id.order_line.price_total",
+        "sale_id.picking_ids.state",
+        "sale_id.ocd_delivery_line_ids.amount",
+        "ocd_vendor_id",
+    )
     def _compute_ocd_fee_amount(self):
+        """The price of the delivery of the parcel: the one of its vendor, as the customer paid
+        it. Orders without the delivery of OCD Live share their delivery between the parcels."""
         for picking in self:
             order = picking.sale_id
             if not picking.ocd_is_parcel or not order:
                 picking.ocd_fee_amount = 0.0
+                continue
+            line, amount = order._ocd_parcel_delivery(picking.ocd_vendor_id)
+            if line:
+                picking.ocd_fee_amount = amount
                 continue
             parcels = order.picking_ids.filtered(
                 lambda p: p.ocd_is_parcel and p.ocd_stage != "cancelled" and p.state != "cancel"
@@ -177,7 +202,17 @@ class StockPicking(models.Model):
             count = len(parcels) or 1
             picking.ocd_fee_amount = order.currency_id.round(order._ocd_delivery_fee() / count)
 
-    @api.depends("ocd_goods_amount", "ocd_fee_amount", "ocd_delivery_mode", "ocd_courier_id")
+    @api.depends("ocd_fee_amount", "ocd_courier_id", "ocd_vendor_id", "company_id.ocd_delivery_commission")
+    def _compute_ocd_vendor_fee_amount(self):
+        for picking in self:
+            if not picking._ocd_vendor_delivers():
+                picking.ocd_vendor_fee_amount = 0.0
+                continue
+            share = 1 - min(max(picking.company_id.ocd_delivery_commission, 0.0), 100.0) / 100
+            fee = picking.ocd_fee_amount * share
+            picking.ocd_vendor_fee_amount = picking.ocd_currency_id.round(fee) if picking.ocd_currency_id else fee
+
+    @api.depends("ocd_goods_amount", "ocd_vendor_fee_amount", "ocd_delivery_mode", "ocd_courier_id")
     def _compute_ocd_vendor_share(self):
         for picking in self:
             share = 0.0
@@ -185,8 +220,7 @@ class StockPicking(models.Model):
                 line = move.sale_line_id
                 if line.ocd_vendor_id and line.product_uom_qty:
                     share += line.ocd_vendor_share * move.product_uom_qty / line.product_uom_qty
-            if picking._ocd_vendor_delivers():
-                share += picking.ocd_fee_amount
+            share += picking.ocd_vendor_fee_amount
             picking.ocd_vendor_share = picking.ocd_currency_id.round(share) if picking.ocd_currency_id else share
 
     @api.depends("ocd_goods_amount", "ocd_fee_amount", "ocd_cod_state", "ocd_cod_collected_amount")
@@ -205,29 +239,18 @@ class StockPicking(models.Model):
     # === CREATION OF THE PARCELS === #
 
     def _ocd_init_parcels(self):
-        """Turn the deliveries of shop orders into parcels: who delivers, courier, amounts."""
-        Partner = self.env["res.partner"]
+        """Turn the deliveries of shop orders into parcels: who delivers, courier, amounts. With
+        the delivery of OCD Live, the delivery kept on the order for the vendor decides who
+        delivers (the vendor, an OCD courier, a travel agency), as the customer paid it."""
         for picking in self:
             if picking.ocd_is_parcel or picking.picking_type_code != "outgoing" or not picking.sale_id:
                 continue
             vendor = picking.ocd_vendor_id
-            mode = (vendor.ocd_delivery_mode if vendor else "stock") or picking.company_id.ocd_default_delivery_mode
-            district = picking.partner_id.district_id
-            note = False
-            if (
-                mode == "vendor"
-                and vendor.ocd_zone_ids
-                and district
-                and district not in vendor.ocd_zone_ids
-                and vendor.ocd_zone_fallback
-            ):
-                mode = "pickup"
-                note = self.env._(
-                    "%(district)s is outside the zones of %(vendor)s: an OCD courier delivers.",
-                    district=district.name,
-                    vendor=vendor.name,
-                )
-            courier = vendor if mode == "vendor" else Partner._ocd_find_courier(district)
+            line, _amount = picking.sale_id._ocd_parcel_delivery(vendor)
+            if line:
+                mode, courier, note = picking._ocd_parcel_from_delivery(line)
+            else:
+                mode, courier, note = picking._ocd_parcel_from_zones()
             picking.write({
                 "ocd_is_parcel": True,
                 "ocd_delivery_mode": mode,
@@ -235,10 +258,66 @@ class StockPicking(models.Model):
                 "ocd_stage": "to_prepare",
                 "ocd_goods_amount": picking._ocd_compute_goods_amount(),
                 "ocd_cod_state": "none" if picking.sale_id._ocd_is_paid_online() else "to_collect",
+                "ocd_rate_id": line.rate_id.id if line else False,
+                "ocd_by_agency": bool(line) and line.operator == "agency",
             })
             if note:
                 picking.message_post(body=note)
             picking._ocd_notify_new_parcel()
+
+    def _ocd_parcel_from_delivery(self, line):
+        """(mode, courier, note) of the parcel from the delivery kept on the order."""
+        self.ensure_one()
+        Partner = self.env["res.partner"]
+        vendor = self.ocd_vendor_id
+        if line.operator == "vendor" and vendor:
+            return "vendor", vendor, False
+        mode = "stock" if not vendor or vendor.ocd_delivery_mode == "stock" else "pickup"
+        if line.operator == "agency":
+            # An OCD courier of the city of departure takes the parcel to the travel agency
+            origin_district = vendor.district_id if vendor and mode == "pickup" else self.env["res.city.district"]
+            courier = Partner._ocd_find_courier(origin_district)
+            note = self.env._(
+                "Sent through a travel agency from %(origin)s to %(city)s: the team validates the "
+                "parcel when the customer has picked it up.",
+                origin=line.origin_city_id.name or "-",
+                city=self.partner_id.city_id.name or self.partner_id.city or "-",
+            )
+            return mode, courier, note
+        courier = Partner._ocd_find_courier(self.partner_id.district_id)
+        note = False
+        if vendor and vendor.ocd_delivery_mode == "vendor":
+            note = self.env._(
+                "%(place)s is outside the zones of %(vendor)s: an OCD courier delivers.",
+                place=self.partner_id.district_id.name or self.partner_id.city or "-",
+                vendor=vendor.name,
+            )
+        return mode, courier, note
+
+    def _ocd_parcel_from_zones(self):
+        """(mode, courier, note) of a parcel of an order without the delivery of OCD Live: the
+        zones of the vendor decide who delivers."""
+        self.ensure_one()
+        Partner = self.env["res.partner"]
+        vendor = self.ocd_vendor_id
+        mode = (vendor.ocd_delivery_mode if vendor else "stock") or self.company_id.ocd_default_delivery_mode
+        district = self.partner_id.district_id
+        note = False
+        if (
+            mode == "vendor"
+            and vendor.ocd_zone_ids
+            and district
+            and district not in vendor.ocd_zone_ids
+            and vendor.ocd_zone_fallback
+        ):
+            mode = "pickup"
+            note = self.env._(
+                "%(district)s is outside the zones of %(vendor)s: an OCD courier delivers.",
+                district=district.name,
+                vendor=vendor.name,
+            )
+        courier = vendor if mode == "vendor" else Partner._ocd_find_courier(district)
+        return mode, courier, note
 
     def _ocd_compute_goods_amount(self):
         self.ensure_one()
@@ -545,7 +624,7 @@ class StockPicking(models.Model):
             vendor = picking.ocd_vendor_id
             if not vendor or picking.ocd_vendor_bill_ids.filtered(lambda m: m.move_type == "in_invoice"):
                 continue
-            share = picking.ocd_vendor_share - (picking.ocd_fee_amount if picking._ocd_vendor_delivers() else 0.0)
+            share = picking.ocd_vendor_share - picking.ocd_vendor_fee_amount
             lines = [Command.create({
                 "product_id": picking._ocd_bill_product("ocd_live_shop.product_vendor_share").id,
                 "name": self.env._("Share of the sales of %(parcel)s (%(order)s)", parcel=picking.name, order=picking.sale_id.name),
@@ -553,12 +632,12 @@ class StockPicking(models.Model):
                 "price_unit": share,
                 "tax_ids": [Command.clear()],
             })]
-            if picking._ocd_vendor_delivers() and picking.ocd_fee_amount:
+            if picking.ocd_vendor_fee_amount:
                 lines.append(Command.create({
                     "product_id": picking._ocd_bill_product("ocd_live_shop.product_vendor_delivery").id,
                     "name": self.env._("Delivery of %s", picking.name),
                     "quantity": 1,
-                    "price_unit": picking.ocd_fee_amount,
+                    "price_unit": picking.ocd_vendor_fee_amount,
                     "tax_ids": [Command.clear()],
                 }))
             bill = AccountMove.create({

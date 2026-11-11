@@ -12,7 +12,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
 | Site fidèle au design : réservation, annuaire, espace (téléphone, tablette, ordinateur) | ✅ fait |
 | Site : toutes les pages du shop fidèles au design (shop, produit, panier, livraison, paiement, suivi, boutique, replay, mes produits, mes colis, tournée) | ✅ fait, testé |
-| Frais de livraison selon le vendeur (sa ville, ses zones, ses prix) | ⬜ à faire : voir « Reste à faire » n° 1 |
+| Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
 | Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
 | Outils Odoo utilisés : dans la documentation ([`OUTILS_ODOO.md`](OUTILS_ODOO.md)), pas dans le système | ✅ fait |
@@ -24,25 +24,15 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf la démo) :
-**138 tests, aucun échec**.
+**154 tests, aucun échec** (et les 4 tests de la démo : installation puis désinstallation).
 
 ## Reste à faire, par priorité
 
-1. **Frais de livraison selon le vendeur** (risque sur l'argent, analysé le 10 novembre 2026).
-   Aujourd'hui, une seule méthode de livraison par commande, choisie et chiffrée d'après l'adresse du
-   client seulement, pour tous les vendeurs ; le prix est partagé à parts égales entre les colis ; la
-   ville et le pays du vendeur ne comptent pas, et ses zones décident seulement qui livre. Conséquences :
-   prix faux pour un vendeur d'une autre ville ou d'un autre pays, un seul prix pour plusieurs colis,
-   commandes payées que personne ne peut livrer. Recommandé :
-   - des **tarifs par vendeur** (zone : quartiers, ville ou pays ; prix ; délai ; qui livre), dans des
-     bornes fixées par l'équipe, et des **tarifs OCD par ville** (livreur OCD, agence vers les autres
-     villes) quand le vendeur ne livre pas ;
-   - un **prix par colis** (somme des colis), détaillé sur les pages Livraison et Payer ;
-   - une seule méthode d'Odoo « Livraison OCD Live » d'un nouveau type qui calcule cette somme et
-     **refuse l'adresse** qu'un colis ne peut pas atteindre (avant le paiement, jamais après) ;
-   - le même tarif décide **qui livre** à la création des colis, et le prix exact de chaque colis va à
-     celui qui livre (fin du partage égal) ;
-   - envoi vers un autre pays seulement avec un tarif « agence » explicite, sans paiement à la porte.
+1. **Tarifs à saisir par l'équipe avant l'ouverture** (OCD Live › Livraisons › Tarifs de livraison) :
+   livreurs OCD par ville, agences vers les autres villes et pays, bornes des prix des vendeurs, part
+   d'OCD sur les livraisons des vendeurs, ville du stock. Les méthodes de livraison sans prix ont donné des
+   tarifs archivés : les compléter puis les activer. Sans tarif, le shop refuse l'adresse (jamais de
+   livraison à un prix inconnu).
 2. Démo : produits avec photos, variantes et stock, colis livrés, reversements, deux autres livreurs.
 3. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
    (`_ocd_send_ticket`), créneau libéré pour la liste d'attente (`_ocd_send_free_slot`), ouverture du
@@ -63,6 +53,24 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
   méthodes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — frais de livraison selon le vendeur
+- **Un prix par colis** (un colis par vendeur), de la ville d'où part le colis au quartier, à la ville
+  ou au pays du client ; le tarif le plus précis l'emporte. Le total de la livraison est la somme des
+  colis, détaillée sur les pages Livraison et Payer.
+- **Tarifs des vendeurs qui livrent** : le vendeur les fixe dans son espace (« Mes prix de livraison »),
+  entre les bornes de l'équipe ; ailleurs dans ses zones, il livre au prix du livreur OCD de sa ville ;
+  hors zones, un livreur OCD ou une agence prend le relais si l'équipe l'autorise.
+- **Tarifs d'OCD Live** : livreurs OCD dans une ville, agences vers les autres villes et vers un autre
+  pays (jamais d'agence dans la même ville, jamais de paiement à la porte par agence ou vers un autre
+  pays). Créés au départ depuis les méthodes de livraison par ville (actifs seulement s'ils avaient un
+  prix).
+- **Une seule livraison d'Odoo « Livraison OCD Live »** qui additionne les colis et **refuse avant le
+  paiement** une adresse qu'un colis ne peut pas atteindre, avec la raison et un bouton pour retirer les
+  produits de ce vendeur. Le client choisit son pays de livraison.
+- Chaque colis reçoit **son prix exact** (fin du partage égal) et le tarif décide qui livre ; le vendeur
+  touche sa livraison moins la part d'OCD (réglable, 0 % par défaut). Colis par agence : le livreur le
+  porte à l'agence, l'équipe valide quand le client l'a retiré.
 
 ### 10 novembre 2026 — toutes les pages du shop fidèles au design
 - Shop, fiche produit, panier, livraison, paiement : les pages d'Odoo gardent leur logique (prix des

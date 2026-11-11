@@ -180,7 +180,15 @@ class OcdDeliveryApp(http.Controller):
             "pickup_note": request.env._(
                 "%s receives a WhatsApp: if it is not you, they report it.", self._first_name(parcel.ocd_vendor_id)
             ) if parcel.ocd_vendor_id else "",
-            "deliver_title": request.env._("Deliver to %s", parcel.partner_id.name),
+            "deliver_title": request.env._(
+                "Take to the travel agency for %s", parcel.partner_id.city_id.name or parcel.partner_id.city or "-"
+            ) if parcel.ocd_by_agency else request.env._("Deliver to %s", parcel.partner_id.name),
+            "agency_line": request.env._(
+                "Through a travel agency to %(city)s, for %(customer)s. Give the parcel to the agency with the "
+                "name and the WhatsApp of the customer: the team validates it when the customer has it.",
+                city=parcel.partner_id.city_id.name or parcel.partner_id.city or "-",
+                customer=parcel.partner_id.name,
+            ) if parcel.ocd_by_agency else "",
             "for_title": request.env._("For %s", parcel.partner_id.name),
             "first_pick": request.env._("First pick the parcel up at %s.", parcel.ocd_vendor_id.name or request.env._("the OCD stock")),
         }

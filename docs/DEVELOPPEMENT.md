@@ -65,6 +65,11 @@ le jeton est celui de `_ocd_get_space_token()`, pour l'appli des colis et la tou
 
 ## Repères dans le code
 
+- Frais de livraison : `ocd_live_shop/models/ocd_delivery_rate.py` (tarifs et moteur : `_ocd_quote`,
+  `_ocd_find_rate`, `_ocd_best`), `delivery_carrier.py` (livraison d'Odoo de type `ocd` : somme des
+  colis, refus d'une adresse), `sale_order.py` (`ocd_delivery_line_ids` : la livraison de chaque colis
+  telle que payée), `stock_picking.py` (`_ocd_parcel_from_delivery` : qui livre, prix exact du colis).
+
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - Thème du site : `ocd_live/static/src/scss/ocd_app.scss` (pages sous `.o_ocd_app`).
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).

@@ -349,7 +349,8 @@
                                     </form>
                                 </t>
                                 <t t-elif="card['delivers'] and parcel.ocd_stage == 'on_the_way'">
-                                    <t t-call="ocd_live_shop.parcel_on_the_way"/>
+                                    <span t-if="card['agency_line']" class="o_ocd_parcel_note" role="status" t-out="card['agency_line']"/>
+                                    <t t-else="" t-call="ocd_live_shop.parcel_on_the_way"/>
                                 </t>
                                 <t t-elif="card['prepares'] and parcel.ocd_stage == 'ready' and card['other_courier']">
                                     <span class="o_ocd_parcel_note" role="status" t-out="card['ready_line']"/>
@@ -456,7 +457,8 @@
                                     <span class="o_ocd_parcel_hint" t-out="card['leave_note']"/>
                                 </t>
                                 <t t-elif="parcel.ocd_stage == 'on_the_way'">
-                                    <t t-call="ocd_live_shop.parcel_on_the_way"/>
+                                    <span t-if="card['agency_line']" class="o_ocd_parcel_note" role="status" t-out="card['agency_line']"/>
+                                    <t t-else="" t-call="ocd_live_shop.parcel_on_the_way"/>
                                 </t>
                                 <t t-if="parcel.ocd_stage != 'on_the_way'" t-call="ocd_live_shop.parcel_feedback"/>
                             </t>

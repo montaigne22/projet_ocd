@@ -237,10 +237,18 @@
         <t t-call="ocd_live.app">
             <form action="/ocd/livraison" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_delivery_form" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                <input type="hidden" name="delivery_country_id" t-att-value="country.id"/>
+                <input t-if="len(countries) &lt; 2" type="hidden" name="delivery_country_id" t-att-value="country.id"/>
                 <main class="o_ocd_main o_ocd_form">
                     <h1 class="o_ocd_h1">Where do we deliver?</h1>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div t-if="len(countries) &gt; 1" class="o_ocd_field">
+                        <label for="d-country" class="o_ocd_label">Country</label>
+                        <select id="d-country" name="delivery_country_id" class="o_ocd_input o_ocd_delivery_country">
+                            <t t-foreach="countries" t-as="row">
+                                <option t-att-value="row.id" t-att-selected="'selected' if row == country else None" t-out="row.name"/>
+                            </t>
+                        </select>
+                    </div>
                     <div class="o_ocd_field">
                         <label for="d-name" class="o_ocd_label">Your name</label>
                         <input id="d-name" name="name" class="o_ocd_input" t-att-value="name" autocomplete="name" required="required"
@@ -293,6 +301,20 @@
                         </span>
                         <b class="o_ocd_delivery_fee" t-out="method['fee'] if method else ''"/>
                     </div>
+                    <div class="o_ocd_delivery_parcels" role="status">
+                        <t t-foreach="method['rows'] if method else []" t-as="row">
+                            <div t-attf-class="o_ocd_delivery_parcel #{'o_ocd_delivery_parcel_ko' if row['error'] else ''}">
+                                <span class="o_ocd_delivery_parcel_text">
+                                    <b t-out="row['title']"/>
+                                    <small t-if="row['error']" class="o_ocd_error" t-out="row['error']"/>
+                                    <small t-else="" t-out="row['sub']"/>
+                                </span>
+                                <b t-if="not row['error']" t-out="row['fee']"/>
+                                <button t-else="" type="submit" form="ocd-remove-vendor" name="vendor_id" t-att-value="row['vendor_id']"
+                                        class="o_ocd_link o_ocd_delivery_remove">Remove their products</button>
+                            </div>
+                        </t>
+                    </div>
                     <div class="o_ocd_total">
                         <span t-out="items_line"/>
                         <b class="o_ocd_delivery_total" t-out="total"/>
@@ -304,6 +326,9 @@
                         <t t-call="ocd_live.icon" icon.f="arrow"/>
                     </button>
                 </div>
+            </form>
+            <form id="ocd-remove-vendor" action="/ocd/panier/retirer" method="post" class="d-none">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
             </form>
         </t>
     </template>
@@ -317,7 +342,15 @@
                     <h1 class="o_ocd_h1">Pay</h1>
                     <div class="o_ocd_pay_lines">
                         <div><span t-out="items_label"/><b t-out="items_amount"/></div>
-                        <div><span t-out="delivery_label"/><b t-out="delivery_amount"/></div>
+                        <t t-if="parcel_lines">
+                            <t t-foreach="parcel_lines" t-as="line">
+                                <div>
+                                    <span><t t-out="line['label']"/><small t-if="line['sub']" class="d-block" t-out="line['sub']"/></span>
+                                    <b t-out="line['amount']"/>
+                                </div>
+                            </t>
+                        </t>
+                        <div t-else=""><span t-out="delivery_label"/><b t-out="delivery_amount"/></div>
                     </div>
                     <div t-if="payment_error" class="o_ocd_failed" role="alert">
                         <b>The payment did not go through.</b>
@@ -508,12 +541,97 @@
         </t>
     </template>
 
+    <!-- === MY DELIVERY PRICES (vendor space) === -->
+
+    <template id="vendor_rates" name="OCD Live: my delivery prices">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_my_rates">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">My delivery prices</h1>
+                    <span class="o_ocd_tag" t-out="origin_line"/>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div t-if="saved" class="o_ocd_ok" role="status">Saved. Your customers see this price at the step Delivery.</div>
+                    <t t-if="delivers">
+                        <div class="o_ocd_my_products_list">
+                            <t t-foreach="rows" t-as="row">
+                                <div class="o_ocd_my_rate">
+                                    <span class="o_ocd_my_product_text">
+                                        <b t-out="row['zone']"/>
+                                        <span><span t-out="row['price']"/><small t-if="row['description']" t-out="row['description']"/></span>
+                                    </span>
+                                    <form t-attf-action="/ocd/espace/moi/livraison/#{row['rate'].id}/supprimer" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button class="o_ocd_cart_remove">Remove</button>
+                                    </form>
+                                </div>
+                            </t>
+                            <div t-if="not rows" class="o_ocd_info">No price yet: in your zones you deliver at the price of the OCD courier.</div>
+                        </div>
+                        <form action="/ocd/espace/moi/livraison" method="post" class="o_ocd_form o_ocd_my_rates_form" novalidate="novalidate">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <h2 class="o_ocd_section">Add a price</h2>
+                            <div class="o_ocd_field">
+                                <label for="r-city" class="o_ocd_label">City</label>
+                                <select id="r-city" name="city_id" class="o_ocd_input o_ocd_rates_city">
+                                    <t t-foreach="cities" t-as="row">
+                                        <option t-att-value="row.id" t-att-selected="'selected' if row == city else None" t-out="row.name"/>
+                                    </t>
+                                </select>
+                            </div>
+                            <fieldset class="o_ocd_field o_ocd_rates_districts">
+                                <legend class="o_ocd_label">Districts (none: the whole city)</legend>
+                                <div class="o_ocd_chips o_ocd_chips_wrap o_ocd_rates_district_list">
+                                    <t t-foreach="districts" t-as="row">
+                                        <label class="o_ocd_chip_choice">
+                                            <input type="checkbox" name="district_ids" t-att-value="row.id"
+                                                   t-att-checked="'checked' if row.id in chosen else None"/>
+                                            <span class="o_ocd_chip" t-out="row.name"/>
+                                        </label>
+                                    </t>
+                                </div>
+                            </fieldset>
+                            <div class="o_ocd_field">
+                                <label for="r-price" class="o_ocd_label">Price of the delivery</label>
+                                <div class="o_ocd_price_input">
+                                    <input id="r-price" name="price" inputmode="numeric" class="o_ocd_input" t-att-value="values.get('price')" autocomplete="off"/>
+                                    <span t-out="currency_symbol"/>
+                                </div>
+                                <small t-if="bounds" class="o_ocd_parcel_hint" t-out="bounds"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="r-delay" class="o_ocd_label">Delay</label>
+                                <select id="r-delay" name="description" class="o_ocd_input">
+                                    <t t-foreach="delays" t-as="delay">
+                                        <option t-att-value="delay" t-att-selected="'selected' if values.get('description') == delay else None" t-out="delay"/>
+                                    </t>
+                                </select>
+                            </div>
+                            <button type="submit" class="o_ocd_cta">Save the price</button>
+                        </form>
+                    </t>
+                    <div t-else="" class="o_ocd_info">OCD Live delivers your parcels: the customers pay the prices of OCD Live below.</div>
+                    <t t-if="ocd_rows">
+                        <div class="o_ocd_section_head">
+                            <h2>Prices of OCD Live from your city</h2>
+                        </div>
+                        <div class="o_ocd_cart_sum">
+                            <t t-foreach="ocd_rows" t-as="row">
+                                <div><span><t t-out="row['zone']"/> <small class="d-block" t-out="row['who']"/></span><b t-out="row['price']"/></div>
+                            </t>
+                        </div>
+                    </t>
+                </main>
+            </div>
+        </t>
+    </template>
+
     <template id="space" inherit_id="ocd_live.space" name="OCD Live: products and parcels in the space">
         <xpath expr="//div[hasclass('o_ocd_space_shop')]" position="inside">
             <h2 class="o_ocd_section">My shop</h2>
             <div class="o_ocd_space_links">
                 <a href="/ocd/espace/moi/produits" class="o_ocd_button o_ocd_button_dark">My products</a>
                 <a t-if="vendor.ocd_sale_mode == 'ocd'" href="/ocd/livrer/moi" class="o_ocd_button o_ocd_button_line">My parcels</a>
+                <a t-if="vendor.ocd_sale_mode == 'ocd'" href="/ocd/espace/moi/livraison" class="o_ocd_button o_ocd_button_line">My delivery prices</a>
                 <a t-if="vendor.ocd_vendor_state == 'approved'" t-attf-href="/ocd/boutique/#{vendor.id}" class="o_ocd_button">My boutique</a>
             </div>
         </xpath>

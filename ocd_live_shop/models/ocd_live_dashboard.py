@@ -186,12 +186,11 @@ class OcdLiveDashboard(models.AbstractModel):
         for parcel in delivered:
             currency = parcel.ocd_currency_id or company.currency_id
             date = parcel.ocd_delivered_at or fields.Datetime.now()
-            vendor_delivers = parcel._ocd_vendor_delivers()
-            goods_share = parcel.ocd_vendor_share - (parcel.ocd_fee_amount if vendor_delivers else 0.0)
+            goods_share = parcel.ocd_vendor_share - parcel.ocd_vendor_fee_amount
             commissions += currency._convert(parcel.ocd_goods_amount - goods_share, company.currency_id, company, date)
-            if not vendor_delivers:
-                fees += currency._convert(parcel.ocd_fee_amount, company.currency_id, company, date)
+            # The deliveries of OCD (couriers, agencies), and its share on those of the vendors
+            fees += currency._convert(parcel.ocd_fee_amount - parcel.ocd_vendor_fee_amount, company.currency_id, company, date)
         return rows + [
             {"key": "commissions", "label": self.env._("Shop commissions"), "amount": commissions},
-            {"key": "fees", "label": self.env._("Delivery fees (OCD couriers)"), "amount": fees},
+            {"key": "fees", "label": self.env._("Delivery fees kept by OCD"), "amount": fees},
         ]

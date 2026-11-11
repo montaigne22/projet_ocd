@@ -13,6 +13,10 @@ from . import ocd_payout
 from . import ocd_cash_remittance
 from . import ocd_live_moment
 from . import ocd_boutique_alert
+from . import ocd_delivery_rate
+from . import ocd_order_delivery
+from . import delivery_carrier
+from . import payment_provider
 from . import ocd_live_booking
 from . import ocd_live_dashboard
 from . import ocd_live_regie

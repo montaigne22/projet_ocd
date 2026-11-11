@@ -12,7 +12,7 @@ fait concrètement pour OCD Live.
 | **eCommerce** | Le panier et la commande du shop, avec les prix de la liste de prix du pays du client. |
 | **Paiement** | Le formulaire de paiement propose les moyens configurés pour le pays (Campay au Cameroun, Mobile Money vérifié par l'équipe au Togo) ; la réservation est confirmée par le paiement, jamais par le navigateur. |
 | **Inventaire** | Une commande du shop donne un colis par vendeur ; retours au vendeur ou au stock OCD (dépôt-vente). |
-| **Livraison** | Les frais de livraison par quartier (Douala, Lomé…) et l'envoi par agence vers les autres villes. |
+| **Livraison** | La livraison « Livraison OCD Live » (un nouveau type de méthode) : la somme des prix des colis, chacun selon le tarif de son vendeur ou d'OCD Live ; le paiement à la livraison quand chaque colis l'accepte. |
 | **Facturation** | La part de chaque vendeur (facture fournisseur créée quand le code du client est vérifié), les avoirs, les reversements payés par Mobile Money. |
 | **Employés** | La régie, les animatrices des lives à distance, les livreurs OCD. |
 | **Recrutement** | L'offre « Animatrice live · Lomé » sur le site et ses 5 étapes ; l'embauchée devient animatrice. |
@@ -35,7 +35,7 @@ fait concrètement pour OCD Live.
 | Module | Ce qu'il apporte |
 |---|---|
 | `ocd_live` | Réservations, paquets et lives à placer, prix selon l'heure, liste d'attente, annuaire et pass, espace vendeur, voix des pages, écrans de l'équipe. |
-| `ocd_live_shop` | Mode de vente et « qui livre » par vendeur, colis par vendeur, code de livraison, dispatch, livreurs et caisse, reversements, régie en direct. |
+| `ocd_live_shop` | Mode de vente et « qui livre » par vendeur, tarifs de livraison (vendeurs et OCD Live, un prix par colis), colis par vendeur, code de livraison, dispatch, livreurs et caisse, reversements, régie en direct. |
 | `ocd_live_whatsapp` | Messages des lives et de l'annuaire sur WhatsApp. |
 | `ocd_live_shop_whatsapp` | Messages des colis sur WhatsApp. |
 | `ocd_live_recruitment` | Recrutement des animatrices. |

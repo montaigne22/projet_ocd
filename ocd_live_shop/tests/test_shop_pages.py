@@ -39,12 +39,16 @@ class TestOcdShopPages(HttpCase, OcdShopCommon):
             "ocd_vendor_id": cls.awa.id,
             "is_published": True,
         })
-        cls.carrier = cls.env.ref("delivery_cameroon.carrier_douala_home")
-        cls.carrier.write({"is_published": True, "fixed_price": 1000})
-        cls.carrier.product_id.list_price = 1000
-        # The team publishes the delivery methods of OCD Live only
-        cls.env["delivery.carrier"].search([("id", "!=", cls.carrier.id), ("is_published", "=", True)]).is_published = False
+        # The delivery of OCD Live: an OCD courier in Douala, from the city of the vendor
         cls.douala = cls.akwa.city_id
+        cls.carrier = cls.env.ref("ocd_live_shop.carrier_ocd")
+        cls.carrier.is_published = True
+        cls.env["ocd.delivery.rate"].with_context(active_test=False).search([]).unlink()
+        cls.env["ocd.delivery.rate"].create({
+            "operator": "courier", "origin_city_id": cls.douala.id, "country_id": cls.douala.country_id.id,
+            "city_ids": [(6, 0, cls.douala.ids)], "price": 1000,
+        })
+        cls.brenda.write({"country_id": cls.douala.country_id.id, "city_id": cls.douala.id})
 
     def _add_dress(self, quantity=1):
         self.authenticate(None, None)
@@ -159,7 +163,7 @@ class TestOcdShopPages(HttpCase, OcdShopCommon):
         response = self.url_open("/shop/payment")
         self.assertEqual(response.status_code, 200)
         self.assertIn("o_ocd_pay_lines", response.text)
-        self.assertIn("Delivery to Akwa, Douala", response.text)
+        self.assertIn("Delivery of the parcel of Brenda Wax", response.text)
 
     def test_delivery_price_shown_while_typing(self):
         self._add_dress()

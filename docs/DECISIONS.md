@@ -64,3 +64,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   repère ; il suit sa commande sur WhatsApp et sur la page de suivi.
 - **Retour** demandé par le client depuis la page de suivi pendant **30 jours** après la livraison
   (réglable, 0 = pas de retour) ; l'équipe reçoit une activité pour l'organiser.
+- **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
+  le quartier du client ; le client paie la somme des colis.
+- **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une
+  part réglable de ses livraisons (**0 %** au départ). Les livraisons des livreurs OCD et des agences
+  reviennent à OCD.
+- **Vers une autre ville ou un autre pays : seulement par un tarif « agence »** prévu par l'équipe, sans
+  paiement à la porte. Une adresse qu'aucun tarif ne couvre est refusée avant le paiement.

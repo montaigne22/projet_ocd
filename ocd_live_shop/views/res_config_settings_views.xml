@@ -35,6 +35,30 @@
                         <field name="ocd_deliveries_channel_id"/>
                     </setting>
                 </block>
+                <block title="Delivery prices" name="ocd_live_shop_rates">
+                    <setting id="ocd_rates_setting" string="Rates of the deliveries"
+                             help="One price per parcel, from the city of the vendor to the district of the customer. An address that a parcel cannot reach is refused before the payment."
+                             company_dependent="1">
+                        <div class="d-flex flex-column gap-2">
+                            <button name="%(ocd_live_shop.ocd_delivery_rate_action)d" type="action" string="Rates of OCD Live and of the vendors"
+                                    class="btn-link ps-0" icon="local_shipping"/>
+                            <button name="action_ocd_rates_from_carriers" type="object" string="Create the rates from the delivery methods"
+                                    class="btn-link ps-0" icon="sync"/>
+                        </div>
+                    </setting>
+                    <setting id="ocd_vendor_rate_bounds_setting" string="Prices of the vendors who deliver"
+                             help="The vendors set their prices in their space, between these amounts (0: no limit)." company_dependent="1">
+                        <span>Between <field name="ocd_vendor_rate_min" class="oe_inline"/> and <field name="ocd_vendor_rate_max" class="oe_inline"/></span>
+                    </setting>
+                    <setting id="ocd_delivery_commission_setting" string="Share of OCD on the deliveries of the vendors"
+                             help="Part of the delivery price kept by OCD Live when the vendor delivers." company_dependent="1">
+                        <span><field name="ocd_delivery_commission" class="oe_inline"/> %</span>
+                    </setting>
+                    <setting id="ocd_stock_city_setting" string="City of the OCD stock"
+                             help="The parcels of the OCD stock and the products of OCD Live leave from this city." company_dependent="1">
+                        <field name="ocd_stock_city_id" options="{'no_create': True}"/>
+                    </setting>
+                </block>
                 <block title="Payment at the door" name="ocd_live_shop_cod">
                     <setting id="ocd_cod_cash_setting" string="Cash" help="Handed over by the couriers every evening." company_dependent="1">
                         <field name="ocd_cod_cash"/>

@@ -181,7 +181,16 @@ class OcdShop(WebsiteSale):
         count = env["product.template"].sudo().search_count([
             ("ocd_vendor_id", "=", vendor.id), ("is_published", "=", True), ("sale_ok", "=", True),
         ]) if vendor else 0
-        carriers = env["delivery.carrier"].sudo().search([("website_published", "=", True)], order="sequence", limit=2)
+        if self._ocd_carrier() and ocd:
+            summary = env["ocd.delivery.rate"].sudo()._ocd_summary(vendor, common.company(), money_currency)
+            delivery_lines = ([env._("Sent from %s.", summary["origin"])] if summary["origin"] else []) + summary["lines"]
+            if summary["lines"]:
+                delivery_lines.append(env._("The exact price for your district shows at the step Delivery."))
+            else:
+                delivery_lines.append(env._("Write to OCD Live to know the price of the delivery to your city."))
+        else:
+            carriers = env["delivery.carrier"].sudo().search([("website_published", "=", True)], order="sequence", limit=2)
+            delivery_lines = [carrier.carrier_description for carrier in carriers if carrier.carrier_description]
         return common.page_values(
             "produit",
             nav="shop",
@@ -215,7 +224,7 @@ class OcdShop(WebsiteSale):
                 env._("live now") if live_now else "",
             ) if part) if vendor else "",
             live_now=live_now,
-            delivery_lines=[carrier.carrier_description for carrier in carriers if carrier.carrier_description],
+            delivery_lines=delivery_lines,
             direct_line=env._(
                 "Payment and delivery are agreed directly with %s. OCD Live does not take the money for this product.",
                 first_name,
@@ -237,11 +246,11 @@ class OcdShop(WebsiteSale):
     # === DELIVERY ADDRESS (design: Livraison) === #
 
     @http.route()
-    def shop_checkout(self, try_skip_step=None, **query_params):
+    def shop_checkout(self, try_skip_step=None, pays=None, **query_params):
         order = request.cart
         if not order or not order.order_line:
             return request.redirect("/shop/cart")
-        return self._ocd_render_delivery(order)
+        return self._ocd_render_delivery(order, values={"delivery_country_id": pays} if pays else None)
 
     @http.route()
     def shop_address(self, partner_id=None, address_type="billing", use_delivery_as_billing=None, **query_params):
@@ -251,9 +260,21 @@ class OcdShop(WebsiteSale):
         return self._ocd_render_delivery(order)
 
     def _ocd_delivery_country(self, order):
+        """Country of delivery proposed first: the one of the address of the customer, else the
+        one chosen in the shop (country of the pricelist), else the one of the company."""
         partner = order.partner_shipping_id if not order._is_anonymous_cart() else request.env["res.partner"]
-        country = partner.country_id or request.env.website.company_id.country_id or common.default_country()
-        return country
+        pricelist = getattr(request, "pricelist", None)
+        pricelist_country = pricelist.country_group_ids.country_ids[:1] if pricelist else request.env["res.country"]
+        return (
+            partner.country_id or pricelist_country or request.env.website.company_id.country_id
+            or common.default_country()
+        )
+
+    def _ocd_delivery_countries(self, country):
+        """Countries the customer can choose: the destinations of the rates, and `country`."""
+        rates = request.env["ocd.delivery.rate"].sudo()._ocd_rates(common.company())
+        countries = rates.country_id | country
+        return countries.sorted("name")
 
     def _ocd_render_delivery(self, order, values=None, errors=None, error=None):
         env = request.env
@@ -285,6 +306,7 @@ class OcdShop(WebsiteSale):
             phone_value=phone,
             optin=values.get("optin", "1" if (not partner or partner.ocd_whatsapp_optin) else ""),
             country=country,
+            countries=self._ocd_delivery_countries(country),
             dial_rows=common.dial_rows(phone_country),
             none_line=env._("Choose your city and your district: the price of the delivery shows here."),
             cities=cities,
@@ -300,12 +322,64 @@ class OcdShop(WebsiteSale):
             error=error,
         ))
 
+    def _ocd_carrier(self):
+        """The delivery of OCD Live when it is published (one price per parcel), else False:
+        the shop then offers the delivery methods of Odoo."""
+        carrier = request.env.ref("ocd_live_shop.carrier_ocd", raise_if_not_found=False)
+        carrier = carrier.sudo() if carrier else carrier
+        return carrier if carrier and carrier.active and carrier.is_published else False
+
+    def _ocd_parcel_rows(self, order, quotes):
+        """One line per parcel for the pages Livraison and Payer."""
+        env = request.env
+        rows = []
+        for quote in quotes:
+            vendor = quote["vendor"]
+            title = env._("Parcel of %s", vendor.name) if vendor else env._("Parcel of OCD Live")
+            sub = " · ".join(part for part in (
+                env._("from %s", quote["origin"].name) if quote["origin"] else "",
+                {
+                    "vendor": env._("delivered by the vendor"),
+                    "courier": env._("delivered by an OCD courier"),
+                    "agency": env._("through a travel agency"),
+                }.get(quote["operator"], ""),
+                quote["description"],
+            ) if part)
+            rows.append({
+                "vendor_id": vendor.id or 0,
+                "title": title,
+                "sub": sub,
+                "fee": (common.money(quote["price"], order.currency_id) if quote["price"] else env._("Free"))
+                if not quote["error"] else "",
+                "error": quote["error"],
+            })
+        return rows
+
     def _ocd_rate_preview(self, order, country, city, district):
-        """The delivery method and its price for the address being typed (the price is checked
-        again by Odoo when the address is saved)."""
+        """The delivery and its price for the address being typed (the price is checked again by
+        Odoo when the address is saved)."""
         partner = request.env["res.partner"].sudo().new({
             "country_id": country.id, "city_id": city.id, "district_id": district.id, "city": city.name,
         })
+        goods = order._compute_amount_total_without_delivery()
+        carrier_ocd = self._ocd_carrier()
+        if carrier_ocd:
+            quotes = order._ocd_delivery_quotes(partner=partner)
+            rows = self._ocd_parcel_rows(order, quotes)
+            if not city:
+                return False
+            ok = bool(quotes) and not any(quote["error"] for quote in quotes)
+            fee = sum(quote["price"] for quote in quotes) if ok else 0.0
+            return {
+                "carrier": carrier_ocd,
+                "name": carrier_ocd.name,
+                "note": request.env._("One price per parcel: each vendor delivers from their city.")
+                if len(quotes) > 1 else (rows[0]["sub"] if rows else ""),
+                "fee": (common.money(fee, order.currency_id) if fee else request.env._("Free")) if ok else "",
+                "total": common.money(goods + fee, order.currency_id),
+                "rows": rows,
+                "ok": ok,
+            }
         carriers = request.env["delivery.carrier"].sudo().search([
             ("website_published", "=", True),
             *request.env["delivery.carrier"]._check_company_domain(order.company_id),
@@ -315,14 +389,17 @@ class OcdShop(WebsiteSale):
             return False
         if carrier.delivery_type == "fixed":
             fee = order.pricelist_id._get_product_price(carrier.product_id, 1.0) if order.pricelist_id else carrier.fixed_price
-            if carrier.free_over and order._compute_amount_total_without_delivery() >= carrier.amount:
+            if carrier.free_over and goods >= carrier.amount:
                 fee = 0.0
             fee_text = common.money(fee, order.currency_id) if fee else request.env._("Free")
-            total = common.money(order._compute_amount_total_without_delivery() + fee, order.currency_id)
+            total = common.money(goods + fee, order.currency_id)
         else:
             fee_text = request.env._("At the payment")
-            total = common.money(order._compute_amount_total_without_delivery(), order.currency_id)
-        return {"carrier": carrier, "name": carrier.name, "note": carrier.carrier_description or "", "fee": fee_text, "total": total}
+            total = common.money(goods, order.currency_id)
+        return {
+            "carrier": carrier, "name": carrier.name, "note": carrier.carrier_description or "",
+            "fee": fee_text, "total": total, "rows": [], "ok": True,
+        }
 
     @http.route("/ocd/livraison/tarif", type="jsonrpc", auth="public", website=True)
     def ocd_delivery_rate(self, country_id=None, city_id=None, district_id=None):
@@ -337,9 +414,24 @@ class OcdShop(WebsiteSale):
         method = self._ocd_rate_preview(order, country, city, district)
         return {
             "districts": [{"id": d.id, "name": d.name} for d in districts],
-            "method": {key: method[key] for key in ("name", "note", "fee", "total")} if method else False,
+            "method": {key: method[key] for key in ("name", "note", "fee", "total", "rows", "ok")} if method else False,
             "none": env._("No delivery for this address yet: write to OCD Live on WhatsApp."),
+            "remove_label": env._("Remove their products"),
         }
+
+    @http.route("/ocd/panier/retirer", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
+    def ocd_remove_vendor(self, vendor_id=None, **post):
+        """Remove from the cart the products of a vendor who cannot deliver to the address."""
+        order = request.cart
+        if order and str(vendor_id or "").isdigit():
+            vendor_id = int(vendor_id)
+            lines = order.order_line.filtered(
+                lambda line: not line.is_delivery and (line.ocd_vendor_id.id or 0) == vendor_id
+            )
+            for line in lines:
+                order._cart_update_line_quantity(line.id, 0)
+            order._verify_cart_after_update()
+        return request.redirect("/shop/checkout")
 
     @http.route("/ocd/livraison", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def ocd_delivery_submit(self, **post):
@@ -399,8 +491,10 @@ class OcdShop(WebsiteSale):
         carriers = order._get_delivery_methods()
         carrier = order._get_preferred_delivery_method(carriers)
         if not carrier:
+            errors_of_parcels = [q["error"] for q in order._ocd_delivery_quotes() if q["error"]] if self._ocd_carrier() else []
             return self._ocd_render_delivery(
-                order, values=post, error=env._("No delivery for this address yet: write to OCD Live on WhatsApp."),
+                order, values=post,
+                error=" ".join(errors_of_parcels) or env._("No delivery for this address yet: write to OCD Live on WhatsApp."),
             )
         rate = carrier.rate_shipment(order)
         if not rate.get("success"):
@@ -435,6 +529,12 @@ class OcdShop(WebsiteSale):
             items_label=env._("%s items", count) if count != 1 else env._("1 item"),
             items_amount=common.money(sum(lines.mapped("price_total")), order.currency_id),
             delivery_label=env._("Delivery to %s", place) if place else env._("Delivery"),
+            parcel_lines=[{
+                "label": env._("Delivery of the parcel of %s", line.vendor_id.name) if line.vendor_id
+                else env._("Delivery of the parcel of OCD Live"),
+                "sub": env._("from %s", line.origin_city_id.name) if line.origin_city_id else "",
+                "amount": common.money(line.amount, order.currency_id) if line.amount else env._("Free"),
+            } for line in order.ocd_delivery_line_ids],
             delivery_amount=common.money(order.amount_delivery, order.currency_id) if order.amount_delivery else env._("Free"),
             total=common.money(order.amount_total, order.currency_id),
             country=shipping.country_id,

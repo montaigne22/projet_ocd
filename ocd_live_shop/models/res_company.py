@@ -42,6 +42,29 @@ class ResCompany(models.Model):
     )
     ocd_code_max_attempts = fields.Integer(string="Wrong Codes Before Locking", default=3)
     ocd_max_failed_attempts = fields.Integer(string="Failed Attempts Before Return", default=2)
+    ocd_vendor_rate_min = fields.Monetary(
+        string="Lowest Delivery Price Of A Vendor",
+        currency_field="currency_id",
+        help="The vendors who deliver set their prices between this amount and the highest one. "
+        "0: no limit.",
+    )
+    ocd_vendor_rate_max = fields.Monetary(
+        string="Highest Delivery Price Of A Vendor",
+        currency_field="currency_id",
+        help="0: no limit.",
+    )
+    ocd_delivery_commission = fields.Float(
+        string="Share Of OCD On The Deliveries Of The Vendors (%)",
+        default=0.0,
+        help="Part of the delivery price kept by OCD Live when the vendor delivers. The deliveries "
+        "of the OCD couriers and of the travel agencies are kept by OCD Live.",
+    )
+    ocd_stock_city_id = fields.Many2one(
+        comodel_name="res.city",
+        string="City Of The OCD Stock",
+        help="The parcels of the OCD stock leave from this city: the rates of OCD Live from this "
+        "city are used for them.",
+    )
     ocd_return_days = fields.Integer(
         string="Days To Ask For A Return",
         default=30,
@@ -86,3 +109,9 @@ class ResCompany(models.Model):
         comodel_name="discuss.channel",
         string="Team Channel For Deliveries",
     )
+
+    def _ocd_vendor_rate_bounds(self):
+        """(lowest, highest) price of a delivery of a vendor; 0 means no limit."""
+        self.ensure_one()
+        return self.ocd_vendor_rate_min or 0.0, self.ocd_vendor_rate_max or 0.0
+

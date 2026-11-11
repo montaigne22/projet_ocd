@@ -71,6 +71,21 @@
                             <field name="ocd_zone_fallback" nolabel="1"/>
                             <label for="ocd_zone_fallback" string="Outside these districts, an OCD courier picks the parcel up"/>
                         </div>
+                        <span class="o_ocd_vendor_caption">Prices of the deliveries of the vendor</span>
+                        <field name="ocd_delivery_rate_ids" nolabel="1" context="{'default_vendor_id': id, 'default_operator': 'vendor', 'default_country_id': country_id}">
+                            <list editable="bottom">
+                                <field name="country_id" options="{'no_create': True}"/>
+                                <field name="city_ids" widget="many2many_tags" options="{'no_create': True}"
+                                       domain="[('country_id', '=', country_id)]"/>
+                                <field name="district_ids" widget="many2many_tags" options="{'no_create': True}"
+                                       domain="[('city_id', 'in', city_ids)] if city_ids else [('city_id.country_id', '=', country_id)]"/>
+                                <field name="price"/>
+                                <field name="description"/>
+                                <field name="allow_cod" optional="hide"/>
+                                <field name="operator" column_invisible="True"/>
+                                <field name="currency_id" column_invisible="True"/>
+                            </list>
+                        </field>
                         <div class="o_ocd_vendor_check">
                             <field name="ocd_vendor_collects" nolabel="1"/>
                             <label for="ocd_vendor_collects" string="The vendor collects the payments at the door (the commission due is withheld from the payout)"/>

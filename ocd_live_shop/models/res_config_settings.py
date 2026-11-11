@@ -15,6 +15,10 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.ocd_max_failed_attempts", readonly=False
     )
     ocd_return_days = fields.Integer(related="company_id.ocd_return_days", readonly=False)
+    ocd_vendor_rate_min = fields.Monetary(related="company_id.ocd_vendor_rate_min", readonly=False)
+    ocd_vendor_rate_max = fields.Monetary(related="company_id.ocd_vendor_rate_max", readonly=False)
+    ocd_delivery_commission = fields.Float(related="company_id.ocd_delivery_commission", readonly=False)
+    ocd_stock_city_id = fields.Many2one(related="company_id.ocd_stock_city_id", readonly=False)
     ocd_cash_deadline = fields.Float(related="company_id.ocd_cash_deadline", readonly=False)
     ocd_cod_cash = fields.Boolean(related="company_id.ocd_cod_cash", readonly=False)
     ocd_cod_online = fields.Boolean(related="company_id.ocd_cod_online", readonly=False)
@@ -32,3 +36,18 @@ class ResConfigSettings(models.TransientModel):
     ocd_deliveries_channel_id = fields.Many2one(
         related="company_id.ocd_deliveries_channel_id", readonly=False
     )
+
+    def action_ocd_rates_from_carriers(self):
+        """Create the rates of OCD Live from the delivery methods by city, once each."""
+        created = self.env["ocd.delivery.rate"]._ocd_rates_from_carriers(self.company_id)
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "success" if created else "info",
+                "message": self.env._("%s rates created: check their prices, then activate them.", len(created))
+                if created else self.env._("No new delivery method to turn into rates."),
+                "next": {"type": "ir.actions.act_window_close"},
+            },
+        }
+

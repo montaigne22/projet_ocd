@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_delivery_rate_view_list" model="ir.ui.view">
+        <field name="name">ocd.delivery.rate.list</field>
+        <field name="model">ocd.delivery.rate</field>
+        <field name="arch" type="xml">
+            <list string="Delivery rates" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="vendor_id" optional="show"/>
+                <field name="operator"/>
+                <field name="origin_city_id" optional="show"/>
+                <field name="origin_country_id" optional="hide"/>
+                <field name="country_id"/>
+                <field name="name" string="To"/>
+                <field name="price"/>
+                <field name="free_above" optional="hide"/>
+                <field name="description" optional="show"/>
+                <field name="allow_cod" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_delivery_rate_view_form" model="ir.ui.view">
+        <field name="name">ocd.delivery.rate.form</field>
+        <field name="model">ocd.delivery.rate</field>
+        <field name="arch" type="xml">
+            <form string="Delivery rate">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Who delivers">
+                            <field name="active" invisible="1"/>
+                            <field name="vendor_id" options="{'no_create': True}"/>
+                            <field name="operator" readonly="vendor_id"/>
+                            <field name="origin_country_id" invisible="vendor_id" options="{'no_create': True}"/>
+                            <field name="origin_city_id" invisible="vendor_id" options="{'no_create': True}"
+                                   domain="[('country_id', '=?', origin_country_id)]"/>
+                        </group>
+                        <group string="To">
+                            <field name="country_id" options="{'no_create': True}"/>
+                            <field name="city_ids" widget="many2many_tags" options="{'no_create': True}"
+                                   domain="[('country_id', '=', country_id)]"/>
+                            <field name="district_ids" widget="many2many_tags" options="{'no_create': True}"
+                                   domain="[('city_id', 'in', city_ids)] if city_ids else [('city_id.country_id', '=', country_id)]"/>
+                        </group>
+                        <group string="Price">
+                            <field name="price"/>
+                            <field name="free_above"/>
+                            <field name="currency_id" groups="base.group_multi_currency" options="{'no_create': True}"/>
+                            <field name="allow_cod" invisible="operator == 'agency'"/>
+                        </group>
+                        <group string="For the customer">
+                            <field name="description"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <field name="source_carrier_id" invisible="not source_carrier_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_delivery_rate_view_search" model="ir.ui.view">
+        <field name="name">ocd.delivery.rate.search</field>
+        <field name="model">ocd.delivery.rate</field>
+        <field name="arch" type="xml">
+            <search string="Delivery rates">
+                <field name="vendor_id"/>
+                <field name="origin_city_id"/>
+                <field name="city_ids"/>
+                <field name="district_ids"/>
+                <filter name="ocd" string="OCD Live" domain="[('vendor_id', '=', False)]"/>
+                <filter name="vendors" string="Vendors" domain="[('vendor_id', '!=', False)]"/>
+                <separator/>
+                <filter name="courier" string="OCD couriers" domain="[('operator', '=', 'courier')]"/>
+                <filter name="agency" string="Travel agencies" domain="[('operator', '=', 'agency')]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_vendor" string="Vendor" context="{'group_by': 'vendor_id'}"/>
+                    <filter name="group_origin" string="From" context="{'group_by': 'origin_city_id'}"/>
+                    <filter name="group_country" string="To country" context="{'group_by': 'country_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_delivery_rate_action" model="ir.actions.act_window">
+        <field name="name">Delivery rates</field>
+        <field name="res_model">ocd.delivery.rate</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_ocd': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add the rates of the deliveries</p>
+            <p>One price per parcel, from the city of the vendor (or of the OCD stock) to the district,
+                the city or the country of the customer. The most precise rate is used.</p>
+        </field>
+    </record>
+
+    <!-- Order: the delivery of each parcel, as the customer paid it -->
+    <record id="sale_order_view_form_ocd_deliveries" model="ir.ui.view">
+        <field name="name">sale.order.form.ocd.deliveries</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Delivery of each parcel" name="ocd_deliveries" invisible="not ocd_delivery_line_ids">
+                    <field name="ocd_delivery_line_ids" readonly="1">
+                        <list>
+                            <field name="vendor_id"/>
+                            <field name="operator"/>
+                            <field name="origin_city_id"/>
+                            <field name="rate_id"/>
+                            <field name="description"/>
+                            <field name="allow_cod"/>
+                            <field name="amount" sum="Total"/>
+                            <field name="currency_id" column_invisible="True"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

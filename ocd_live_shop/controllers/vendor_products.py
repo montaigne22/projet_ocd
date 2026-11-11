@@ -112,21 +112,23 @@ class OcdVendorProducts(http.Controller):
         if errors:
             return self._render(vendor, values={"name": name, "price": price, "quantity": qty}, errors=errors)
         try:
-            # sudo: the vendor has no account; the product waits for the check of the team
-            product = env["product.template"].sudo().create({
-                "name": name,
-                "list_price": int(digits),
-                "type": "consu",
-                "is_storable": True,
-                "allow_out_of_stock_order": False,
-                "sale_ok": True,
-                "purchase_ok": False,
-                "ocd_vendor_id": vendor.id,
-                "ocd_review_state": "to_check",
-                "is_published": False,
-                "image_1920": image,
-            })
-            product._ocd_set_stock(qty)
+            # sudo: the vendor has no account; the product waits for the check of the team.
+            # A refused product leaves nothing behind (savepoint).
+            with env.cr.savepoint():
+                product = env["product.template"].sudo().create({
+                    "name": name,
+                    "list_price": int(digits),
+                    "type": "consu",
+                    "is_storable": True,
+                    "allow_out_of_stock_order": False,
+                    "sale_ok": True,
+                    "purchase_ok": False,
+                    "ocd_vendor_id": vendor.id,
+                    "ocd_review_state": "to_check",
+                    "is_published": False,
+                    "image_1920": image,
+                })
+                product._ocd_set_stock(qty)
         except (UserError, ValidationError) as exc:
             return self._render(vendor, values={"name": name, "price": price, "quantity": qty},
                                 errors={"photo": exc.args[0]})

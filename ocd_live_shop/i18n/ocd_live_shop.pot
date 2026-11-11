@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-10 22:06+0000\n"
-"PO-Revision-Date: 2026-11-10 22:06+0000\n"
+"POT-Creation-Date: 2026-11-11 01:44+0000\n"
+"PO-Revision-Date: 2026-11-11 01:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -149,6 +149,12 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "%(names)s and %(count)s more"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_dashboard.py:0
 msgid "%(parcel)s · %(reason)s"
 msgstr ""
@@ -161,14 +167,32 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/stock_picking.py:0
+msgid "%(place)s is outside the zones of %(vendor)s: an OCD courier delivers."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 msgid "%(summary)s · %(problems)s problems"
 msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "%(vendor)s (%(city)s) does not deliver to %(place)s yet."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_orders.py:0
 msgid "%(vendor)s + %(count)s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "%(vendor)s does not deliver to %(place)s yet."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -187,6 +211,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_dashboard.py:0
 msgid "%(vendors)s · %(amount)s to recover"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "%(zone)s: %(price)s"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -297,6 +327,12 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/res_config_settings.py:0
+msgid "%s rates created: check their prices, then activate them."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_orders.py:0
 msgid "%s ready"
 msgstr ""
@@ -347,6 +383,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "%s, OCD courier, delivers your parcel"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_vendor_rate_max
+#: model:ir.model.fields,help:ocd_live_shop.field_res_config_settings__ocd_vendor_rate_max
+msgid "0: no limit."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -537,6 +579,11 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_partner_view_form_ocd_vendor
+msgid "<span class=\"o_ocd_vendor_caption\">Prices of the deliveries of the vendor</span>"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_partner_view_form_ocd_vendor
 msgid "<span class=\"o_ocd_vendor_caption\">Who delivers the orders</span>"
 msgstr ""
 
@@ -688,6 +735,18 @@ msgid "A paid payout cannot be cancelled."
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/payment_provider.py:0
+msgid "A parcel of the order cannot be paid at the door"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "A price cannot be negative."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.parcel_on_the_way
 msgid "A problem?"
 msgstr ""
@@ -721,6 +780,11 @@ msgid "Action Needed"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__active
+msgid "Active"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
 msgid "Activities"
@@ -733,14 +797,30 @@ msgid "Add a photo of your product."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "Add a price"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Add a product"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.actions.act_window,help:ocd_live_shop.ocd_delivery_rate_action
+msgid "Add the rates of the deliveries"
 msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "Add to the cart · %s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Add your city to your space to set your prices: write to OCD Live."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -820,6 +900,12 @@ msgid "Amount handed over"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_delivery_rate__operator__courier
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_order_delivery__operator__courier
+msgid "An OCD courier delivers"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_company__ocd_default_delivery_mode__pickup
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_partner__ocd_delivery_mode__pickup
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_delivery_mode__pickup
@@ -837,6 +923,12 @@ msgid "Approved"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
+msgid "Archived"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "Ask for a return (%s days)"
@@ -845,6 +937,18 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_list
 msgid "Ask on WhatsApp"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "At least %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "At most %s."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -892,6 +996,7 @@ msgstr ""
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
 msgid "Back to my space"
 msgstr ""
 
@@ -969,6 +1074,17 @@ msgstr ""
 #: model:ir.model.fields,help:ocd_live_shop.field_res_config_settings__ocd_payout_min_amount
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "Below this amount, the payout waits for the next period."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Between %(low)s and %(high)s."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__sequence
+msgid "Between two rates as precise as each other, the first one is used."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1181,6 +1297,12 @@ msgid "Choose"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Choose a city."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
 msgid "Choose a courier…"
@@ -1202,6 +1324,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
 msgid "Choose the reason sent to the vendor."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "Choose the vendor of this rate."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1230,7 +1358,19 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
 msgid "City"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_stock_city_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_stock_city_id
+msgid "City Of The OCD Stock"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "City of the OCD stock"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1326,6 +1466,8 @@ msgstr ""
 #: model:ir.model,name:ocd_live_shop.model_res_company
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__company_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__company_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__company_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__company_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__company_id
 msgid "Company"
 msgstr ""
@@ -1361,6 +1503,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_cash_remittance__state__done
 msgid "Counted"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery
+msgid "Country"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1416,9 +1563,21 @@ msgid "Couriers and cash"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "Create the rates from the delivery methods"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__source_carrier_id
+msgid "Created From"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__create_uid
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__create_uid
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__create_uid
@@ -1429,7 +1588,9 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__create_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__create_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__create_date
@@ -1439,6 +1600,8 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__currency_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__currency_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__currency_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__currency_id
 msgid "Currency"
 msgstr ""
@@ -1517,6 +1680,11 @@ msgid "Default rhythm for a new vendor. Can be changed on each vendor."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "Delay"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/delivery_app.py:0
 msgid "Deliver to %s"
@@ -1578,6 +1746,12 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Delivered the same day"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/controllers/delivery_app.py:0
 msgid "Delivered to %s"
 msgstr ""
@@ -1587,6 +1761,24 @@ msgstr ""
 #: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "Delivered today"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Delivered within 2 to 4 days"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Delivered within 24 hours"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Delivered within 24 to 48 hours"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1644,6 +1836,44 @@ msgid "Delivery Fees"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_delivery_carrier
+msgid "Delivery Method"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:delivery.carrier,name:ocd_live_shop.carrier_ocd
+#: model:product.template,name:ocd_live_shop.product_delivery_ocd_product_template
+msgid "Delivery OCD Live"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_ocd_order_delivery
+msgid "Delivery Of A Parcel Of An Order"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_sale_order__ocd_delivery_line_ids
+msgid "Delivery Of Each Parcel"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_vendor_fee_amount
+msgid "Delivery Paid To The Vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__ocd_delivery_rate_ids
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_users__ocd_delivery_rate_ids
+msgid "Delivery Prices"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_ocd_delivery_rate
+#: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_rate_id
+msgid "Delivery Rate"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__ocd_zone_ids
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_users__ocd_zone_ids
 msgid "Delivery Zones"
@@ -1662,12 +1892,17 @@ msgstr ""
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_dashboard.py:0
-msgid "Delivery fees (OCD couriers)"
+msgid "Delivery fees kept by OCD"
 msgstr ""
 
 #. module: ocd_live_shop
 #: model:product.template,name:ocd_live_shop.product_vendor_delivery
 msgid "Delivery made by the vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__source_carrier_id
+msgid "Delivery method this rate was created from."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1677,11 +1912,58 @@ msgid "Delivery of %s"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.sale_order_view_form_ocd_deliveries
+msgid "Delivery of each parcel"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "Delivery of the parcel of %s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "Delivery of the parcel of OCD Live"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Delivery price added by the vendor: %(zone)s · %(price)s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Delivery price removed by the vendor: %(zone)s · %(price)s"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "Delivery prices"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 #: model:mail.activity.type,name:ocd_live_shop.mail_activity_type_parcel_problem
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_parcel_problem_view_form
 msgid "Delivery problem"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_form
+msgid "Delivery rate"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.actions.act_window,name:ocd_live_shop.ocd_delivery_rate_action
+#: model:ir.ui.menu,name:ocd_live_shop.ocd_live_shop_rates_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
+msgid "Delivery rates"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1769,8 +2051,10 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_account_move__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_delivery_carrier__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_booking__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_couriers__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_dashboard__display_name
@@ -1780,10 +2064,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_planning__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_regie__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_verification__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_payment_provider__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_transaction__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__display_name
@@ -1802,6 +2088,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "District"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "Districts (none: the whole city)"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1829,6 +2120,26 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_partner__ocd_courier_kind__employee
 msgid "Employee of OCD"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__vendor_id
+msgid "Empty: a rate of OCD Live, for its couriers or for a travel agency."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_order_delivery__vendor_id
+msgid "Empty: the products of OCD Live."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__district_ids
+msgid "Empty: the whole cities."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__city_ids
+msgid "Empty: the whole country."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1937,8 +2248,19 @@ msgid "For %s"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__description
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__description
+msgid "For The Customer"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "For a new vendor sold by OCD. Can be changed on each vendor and for each parcel."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_form
+msgid "For the customer"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1949,7 +2271,13 @@ msgstr ""
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
 msgid "Free"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__free_above
+msgid "Free Above"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1958,8 +2286,25 @@ msgid "Friday"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__origin_city_id
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "From"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_sale_order__ocd_rating
 msgid "From 1 to 5, given by the customer on the tracking page once delivered."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__origin_city_id
+msgid "From City"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__origin_country_id
+msgid "From Country"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2103,6 +2448,12 @@ msgid "Here are your parcels. Prepare them, then type the code of the customer w
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_vendor_rate_max
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_vendor_rate_max
+msgid "Highest Delivery Price Of A Vendor"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/orders/orders.xml:0
 msgid "History"
@@ -2151,8 +2502,10 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_account_move__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_delivery_carrier__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_booking__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_couriers__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_dashboard__id
@@ -2162,10 +2515,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_planning__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_regie__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_verification__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_payment_provider__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_transaction__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__id
@@ -2241,7 +2596,9 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__write_uid
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__write_uid
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__write_uid
@@ -2252,7 +2609,9 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__write_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__write_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_code__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__write_date
@@ -2406,6 +2765,12 @@ msgid "Locked code"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_vendor_rate_min
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_vendor_rate_min
+msgid "Lowest Delivery Price Of A Vendor"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__message_has_error
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__message_has_error
 msgid "Message Delivery error"
@@ -2526,6 +2891,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/product_template.py:0
 msgid "My choice: %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.space
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "My delivery prices"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2665,6 +3038,12 @@ msgid "No live today. The control room opens the live of the moment by itself."
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/res_config_settings.py:0
+msgid "No new delivery method to turn into rates."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/orders/orders.xml:0
 msgid "No order this week for this filter."
@@ -2701,6 +3080,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.actions.act_window,help:ocd_live_shop.ocd_payout_action
 msgid "No payout to prepare"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "No price yet: in your zones you deliver at the price of the OCD courier."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2814,6 +3198,11 @@ msgid "OCD Courier Outside The Zones"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
+msgid "OCD Live"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_ocd_live_verification
 msgid "OCD Live Checks"
 msgstr ""
@@ -2855,8 +3244,30 @@ msgid "OCD Live chooses your courier"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "OCD Live delivers your parcels: its prices are used."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "OCD Live delivers your parcels: the customers pay the prices of OCD Live below."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "OCD Live does not deliver to %s yet."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.module.module,shortdesc:base.module_ocd_live_shop
 msgid "OCD Live: Shop, Parcels and Vendor Payouts"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__delivery_carrier__delivery_type__ocd
+msgid "OCD Live: one price per parcel"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2904,6 +3315,7 @@ msgid "OCD courier"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "OCD couriers"
 msgstr ""
@@ -3017,6 +3429,25 @@ msgid "One order = one parcel per vendor"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.actions.act_window,help:ocd_live_shop.ocd_delivery_rate_action
+msgid ""
+"One price per parcel, from the city of the vendor (or of the OCD stock) to the district,\n"
+"                the city or the country of the customer. The most precise rate is used."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "One price per parcel, from the city of the vendor to the district of the customer. An address that a parcel cannot reach is refused before the payment."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+#: model:delivery.carrier,carrier_description:ocd_live_shop.carrier_ocd
+msgid "One price per parcel: each vendor delivers from their city."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 #: code:addons/ocd_live_shop/controllers/shop_common.py:0
@@ -3054,6 +3485,7 @@ msgid "Open the live on %s"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__order_id
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_form_ocd_parcel
 msgid "Order"
 msgstr ""
@@ -3270,6 +3702,17 @@ msgid "Parcels to deliver today"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "Part of the delivery price kept by OCD Live when the vendor delivers."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_delivery_commission
+#: model:ir.model.fields,help:ocd_live_shop.field_res_config_settings__ocd_delivery_commission
+msgid "Part of the delivery price kept by OCD Live when the vendor delivers. The deliveries of the OCD couriers and of the travel agencies are kept by OCD Live."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_prep_hours
 #: model:ir.model.fields,help:ocd_live_shop.field_res_config_settings__ocd_prep_hours
 msgid "Past this time, the vendor is reminded."
@@ -3309,6 +3752,8 @@ msgid "Payment"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__allow_cod
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__allow_cod
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_cod_state
 msgid "Payment At The Door"
 msgstr ""
@@ -3317,6 +3762,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_cod_online
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_cod_online
 msgid "Payment On The Phone Of The Customer"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_payment_provider
+msgid "Payment Provider"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -3477,8 +3927,32 @@ msgid "Prepared"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__price
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__amount
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Price"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "Price of the delivery"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "Prices of OCD Live from your city"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_partner__ocd_delivery_rate_ids
+#: model:ir.model.fields,help:ocd_live_shop.field_res_users__ocd_delivery_rate_ids
+msgid "Prices of the deliveries made by the vendor, by zone. Elsewhere in their zones, the vendor delivers at the price of the OCD courier of the city."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "Prices of the vendors who deliver"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -3578,6 +4052,11 @@ msgid "Products to check"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_delivery_carrier__delivery_type
+msgid "Provider"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/regie/regie.xml:0
 msgid "Publish the replay in the boutique"
@@ -3597,6 +4076,31 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_form_ocd_parcel
 msgid "Quantity"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__rate_id
+msgid "Rate"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "Rates of OCD Live and of the vendors"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__origin_city_id
+msgid "Rates of OCD Live: the parcel leaves from this city (the city of the vendor, or of the OCD stock). The rates of a vendor leave from the city of the vendor."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__origin_country_id
+msgid "Rates of OCD Live: the parcel leaves from this country (any city when no city is set)."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "Rates of the deliveries"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -3723,7 +4227,15 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.cart
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
 msgid "Remove"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery
+msgid "Remove their products"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -3861,8 +4373,18 @@ msgid "Save the cash"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "Save the price"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_parcel_problem_view_form
 msgid "Save the problem"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
+msgid "Saved. Your customers see this price at the step Delivery."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -3969,6 +4491,29 @@ msgid "Sent At"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "Sent from %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_delivery_rate__operator__agency
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_order_delivery__operator__agency
+msgid "Sent through a travel agency"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/stock_picking.py:0
+msgid "Sent through a travel agency from %(origin)s to %(city)s: the team validates the parcel when the customer has picked it up."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_stock_picking__ocd_by_agency
+msgid "Sent to the city of the customer through a travel agency."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_stock_picking__ocd_delivery_code
 msgid "Sent to the customer when the parcel leaves. Only the customer sees it."
 msgstr ""
@@ -3979,9 +4524,25 @@ msgid "Sent. The team checks the photo, then your product shows in your boutique
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_delivery_commission
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_delivery_commission
+msgid "Share Of OCD On The Deliveries Of The Vendors (%)"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_sale_order_line__ocd_vendor_share
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_vendor_share
 msgid "Share Of The Vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "Share of OCD on the deliveries of the vendors"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4054,6 +4615,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_booking__current_product_tmpl_id
 msgid "Shown Now"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__description
+msgid "Shown to the customer, e.g. \"Delivered within 24 to 48 hours\"."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4139,6 +4705,12 @@ msgid "Sunday"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/delivery_app.py:0
+msgid "Take to the travel agency for %s"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_deliveries_channel_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_deliveries_channel_id
 msgid "Team Channel For Deliveries"
@@ -4173,6 +4745,18 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "The cities of the rate must be in %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "The city of departure must be in the country of departure."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "The courier could not deliver. OCD Live calls you to choose a new time."
 msgstr ""
@@ -4186,6 +4770,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/sale_order.py:0
 msgid "The customer asks for a return of the order %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__allow_cod
+msgid "The customer may pay at the delivery. Never for a travel agency, nor towards another country."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4220,6 +4809,35 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_partner_view_form_ocd_vendor
 msgid "The customers write to the vendor on WhatsApp from the boutique. OCD does not touch the money."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__free_above
+msgid "The delivery is free when the products of the parcel cost at least this amount. 0: never free."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/delivery_carrier.py:0
+msgid "The delivery of OCD Live has no margin and no free delivery of its own: set them on the rates (free above an amount)."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "The districts of the rate must be in %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "The districts of the rate must be in its cities."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "The exact price for your district shows at the step Delivery."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4274,6 +4892,17 @@ msgid "The parcel is delivered without the proof of the code. The vendor is paid
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "The parcels of the OCD stock and the products of OCD Live leave from this city."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_stock_city_id
+#: model:ir.model.fields,help:ocd_live_shop.field_res_config_settings__ocd_stock_city_id
+msgid "The parcels of the OCD stock leave from this city: the rates of OCD Live from this city are used for them."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "The payment on the phone of the customer is not enabled."
@@ -4299,6 +4928,24 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_photo
 msgid "The photo of your product is blurry. Take a new photo in daylight and add the product again."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "The price of a delivery is at least %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "The price of a delivery is at most %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "The price of a delivery is between %(low)s and %(high)s."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4330,11 +4977,19 @@ msgid "The products of this boutique are coming soon."
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "The rates of a vendor are the deliveries made by the vendor."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_partner_view_form_ocd_vendor
 msgid "The vendor collects the payments at the door (the commission due is withheld from the payout)"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_delivery_rate__operator__vendor
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_order_delivery__operator__vendor
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_company__ocd_default_delivery_mode__vendor
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_partner__ocd_delivery_mode__vendor
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__stock_picking__ocd_delivery_mode__vendor
@@ -4374,6 +5029,17 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "The vendor was reminded: the parcel is not ready yet."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "The vendors set their prices in their space, between these amounts (0: no limit)."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_vendor_rate_min
+#: model:ir.model.fields,help:ocd_live_shop.field_res_config_settings__ocd_vendor_rate_min
+msgid "The vendors who deliver set their prices between this amount and the highest one. 0: no limit."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4492,6 +5158,17 @@ msgid "This step is not possible: the parcel %(parcel)s is %(stage)s."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_by_agency
+msgid "Through A Travel Agency"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/delivery_app.py:0
+msgid "Through a travel agency to %(city)s, for %(customer)s. Give the parcel to the agency with the name and the WhatsApp of the customer: the team validates it when the customer has it."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_company__ocd_payout_weekday__3
 msgid "Thursday"
 msgstr ""
@@ -4514,8 +5191,29 @@ msgid "Time to prepare a parcel"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_list
+msgid "To"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__city_ids
+msgid "To Cities"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_cod_amount
 msgid "To Collect"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__country_id
+msgid "To Country"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__district_ids
+msgid "To Districts"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4570,6 +5268,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_cash_remittance__state__draft
 msgid "To count"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
+msgid "To country"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4650,6 +5353,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_cash_remittance_view_list
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.sale_order_view_form_ocd_deliveries
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_list_ocd_dispatch
 msgid "Total"
 msgstr ""
@@ -4679,6 +5383,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_form
 msgid "Transfer done"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
+msgid "Travel agencies"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4778,7 +5487,10 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/orders/orders.xml:0
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__vendor_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__vendor_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__vendor_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__vendor_id
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "Vendor"
 msgstr ""
@@ -4801,6 +5513,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_kanban_ocd_dispatch
 msgid "Vendor:"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
+msgid "Vendors"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4879,11 +5596,18 @@ msgid "WhatsApp Contacts"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_stock_picking__ocd_vendor_fee_amount
+msgid "When the vendor delivers: the price of the delivery of the parcel, minus the share of OCD Live set in the settings."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery
 msgid "Where do we deliver?"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__operator
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__operator
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__delivery_mode
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__ocd_delivery_mode
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_users__ocd_delivery_mode
@@ -4900,6 +5624,7 @@ msgstr ""
 #. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_partner_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_picking_form
 msgid "Who delivers"
@@ -4919,6 +5644,12 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "Without courier"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Write a price in francs, for example 1000."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4945,6 +5676,12 @@ msgstr ""
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 #: code:addons/ocd_live_shop/models/ocd_live_orders.py:0
 msgid "Write to %s on WhatsApp"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "Write to OCD Live to know the price of the delivery to your city."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5023,6 +5760,17 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
+msgid "Your parcels leave from %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__name
+msgid "Zone"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/controllers/boutique.py:0
 msgid "at the OCD Live studio"
 msgstr ""
@@ -5053,6 +5801,18 @@ msgstr ""
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "delivered by an OCD courier"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "delivered by the vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "done"
 msgstr ""
 
@@ -5064,6 +5824,18 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "failed attempts"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
+msgid "free"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "from %s"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5207,6 +5979,17 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/delivery_app.py:0
 msgid "the OCD stock"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/shop.py:0
+msgid "through a travel agency"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
+msgid "to"
 msgstr ""
 
 #. module: ocd_live_shop

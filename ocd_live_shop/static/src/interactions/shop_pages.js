@@ -118,7 +118,13 @@ export class OcdDeliveryForm extends Interaction {
         ".o_ocd_delivery_city": { "t-on-change": () => this.refresh(true) },
         ".o_ocd_delivery_district": { "t-on-change": () => this.refresh(false) },
         ".o_ocd_input": { "t-on-input": this.clearError },
+        ".o_ocd_delivery_country": { "t-on-change": this.changeCountry },
     };
+
+    changeCountry(ev) {
+        // The cities and the districts are those of the country
+        window.location.assign(`/shop/checkout?pays=${encodeURIComponent(ev.currentTarget.value)}`);
+    }
 
     clearError(ev) {
         // The message of a field goes away as soon as the field is corrected
@@ -133,7 +139,7 @@ export class OcdDeliveryForm extends Interaction {
         let result;
         try {
             result = await this.waitFor(rpc("/ocd/livraison/tarif", {
-                country_id: parseInt(this.el.querySelector("input[name=delivery_country_id]").value),
+                country_id: parseInt(this.el.querySelector("[name=delivery_country_id]").value),
                 city_id: parseInt(city.value) || false,
                 district_id: cityChanged ? false : parseInt(district.value) || false,
             }));
@@ -157,6 +163,42 @@ export class OcdDeliveryForm extends Interaction {
         if (method) {
             this.el.querySelector(".o_ocd_delivery_total").textContent = method.total;
         }
+        this.renderParcels(method ? method.rows || [] : [], result.remove_label);
+    }
+
+    renderParcels(rows, removeLabel) {
+        // One line per parcel: its price, or why the vendor cannot deliver to the address
+        const box = this.el.querySelector(".o_ocd_delivery_parcels");
+        if (!box) {
+            return;
+        }
+        box.replaceChildren(...rows.map((row) => {
+            const line = document.createElement("div");
+            line.className = "o_ocd_delivery_parcel" + (row.error ? " o_ocd_delivery_parcel_ko" : "");
+            const text = document.createElement("span");
+            text.className = "o_ocd_delivery_parcel_text";
+            const title = document.createElement("b");
+            title.textContent = row.title;
+            const sub = document.createElement("small");
+            sub.textContent = row.error || row.sub;
+            if (row.error) {
+                sub.className = "o_ocd_error";
+            }
+            text.append(title, sub);
+            line.append(text);
+            if (row.error) {
+                const remove = document.createElement("button");
+                Object.assign(remove, { type: "submit", name: "vendor_id", value: row.vendor_id, className: "o_ocd_link o_ocd_delivery_remove" });
+                remove.setAttribute("form", "ocd-remove-vendor");
+                remove.textContent = removeLabel;
+                line.append(remove);
+            } else {
+                const fee = document.createElement("b");
+                fee.textContent = row.fee;
+                line.append(fee);
+            }
+            return line;
+        }));
     }
 }
 
@@ -189,9 +231,38 @@ export class OcdPhotoPick extends Interaction {
     }
 }
 
+/**
+ * My delivery prices: the districts of the city chosen.
+ */
+export class OcdVendorRatesForm extends Interaction {
+    static selector = ".o_ocd_my_rates_form";
+    dynamicContent = {
+        ".o_ocd_rates_city": { "t-on-change": this.loadDistricts },
+    };
+
+    async loadDistricts(ev) {
+        let districts = [];
+        try {
+            districts = await this.waitFor(rpc("/delivery_cameroon/districts", { city_id: parseInt(ev.currentTarget.value) }));
+        } catch {
+            return;
+        }
+        const list = this.el.querySelector(".o_ocd_rates_district_list");
+        list.replaceChildren(...districts.map((district) => {
+            const label = document.createElement("label");
+            label.className = "o_ocd_chip_choice";
+            const input = Object.assign(document.createElement("input"), { type: "checkbox", name: "district_ids", value: district.id });
+            const chip = Object.assign(document.createElement("span"), { className: "o_ocd_chip", textContent: district.name });
+            label.append(input, chip);
+            return label;
+        }));
+    }
+}
+
 registry
     .category("public.interactions")
     .add("ocd_live_shop.stepper", OcdStepper)
     .add("ocd_live_shop.product_page", OcdProductPage)
     .add("ocd_live_shop.delivery_form", OcdDeliveryForm)
-    .add("ocd_live_shop.photo_pick", OcdPhotoPick);
+    .add("ocd_live_shop.photo_pick", OcdPhotoPick)
+    .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm);

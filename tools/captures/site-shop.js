@@ -52,6 +52,7 @@ const sizes = {
     }
     if (VENDOR_TOKEN) {
       await go('/ocd/espace/moi/produits', '9-mes-produits');
+      await go('/ocd/espace/moi/livraison', '10-mes-prix-livraison');
     }
     await context.close();
   }

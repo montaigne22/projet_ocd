@@ -243,4 +243,51 @@
         <field name="ocd_review_state">to_check</field>
     </record>
 
+    <!-- Delivery rates: OCD Live in Douala and towards the other cities, Fatou delivers herself -->
+    <record id="rate_douala_courier" model="ocd.delivery.rate">
+        <field name="operator">courier</field>
+        <field name="origin_country_id" ref="base.cm"/>
+        <field name="origin_city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_ids" eval="[Command.set([ref('delivery_cameroon.city_cm_douala')])]"/>
+        <field name="price">1000</field>
+        <field name="description">Delivered within 24 to 48 hours</field>
+    </record>
+    <record id="rate_cameroon_agency" model="ocd.delivery.rate">
+        <field name="operator">agency</field>
+        <field name="origin_country_id" ref="base.cm"/>
+        <field name="country_id" ref="base.cm"/>
+        <field name="price">2500</field>
+        <field name="allow_cod" eval="False"/>
+        <field name="sequence">20</field>
+        <field name="description">Sent through a travel agency within 2 to 4 days</field>
+    </record>
+    <record id="rate_cameroon_togo_agency" model="ocd.delivery.rate">
+        <field name="operator">agency</field>
+        <field name="origin_country_id" ref="base.cm"/>
+        <field name="country_id" ref="base.tg"/>
+        <field name="price">6000</field>
+        <field name="allow_cod" eval="False"/>
+        <field name="sequence">30</field>
+        <field name="description">Sent through a travel agency within 4 to 7 days</field>
+    </record>
+    <record id="rate_fatou_makepe" model="ocd.delivery.rate">
+        <field name="vendor_id" ref="vendor_fatou"/>
+        <field name="operator">vendor</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_ids" eval="[Command.set([ref('delivery_cameroon.city_cm_douala')])]"/>
+        <field name="district_ids" eval="[Command.set([ref('delivery_cameroon.district_douala_makepe')])]"/>
+        <field name="price">500</field>
+        <field name="description">Delivered the same day</field>
+    </record>
+    <record id="rate_fatou_akwa" model="ocd.delivery.rate">
+        <field name="vendor_id" ref="vendor_fatou"/>
+        <field name="operator">vendor</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_ids" eval="[Command.set([ref('delivery_cameroon.city_cm_douala')])]"/>
+        <field name="district_ids" eval="[Command.set([ref('delivery_cameroon.district_douala_akwa')])]"/>
+        <field name="price">800</field>
+        <field name="description">Delivered within 24 hours</field>
+    </record>
+
 </odoo>

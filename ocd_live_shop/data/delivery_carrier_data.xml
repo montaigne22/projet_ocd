@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- The delivery of OCD Live: one price per parcel, from the rates of the vendors and of
+             OCD Live (OCD Live > Deliveries > Delivery rates). Once published, it is the only
+             delivery offered by the shop. -->
+        <record id="product_delivery_ocd" model="product.product">
+            <field name="name">Delivery OCD Live</field>
+            <field name="default_code">DELIVERY_OCD</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="list_price">0.0</field>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="carrier_ocd" model="delivery.carrier">
+            <field name="name">Delivery OCD Live</field>
+            <field name="sequence">1</field>
+            <field name="delivery_type">ocd</field>
+            <field name="integration_level">rate</field>
+            <field name="product_id" ref="product_delivery_ocd"/>
+            <field name="allow_cash_on_delivery" eval="True"/>
+            <field name="carrier_description">One price per parcel: each vendor delivers from their city.</field>
+            <field name="is_published" eval="True"/>
+        </record>
+    </data>
+
+    <!-- The delivery methods by city become rates of OCD Live (once; see the method) -->
+    <function model="ocd.delivery.rate" name="_ocd_init_default_rates"/>
+</odoo>
