@@ -32,7 +32,7 @@ class TestWhatsAppCloud(WhatsAppCommon):
         message = self.template._send(self.partner)
         self.assertEqual(message.state, "queued")
         self.assertEqual(message.phone, "237670000000")
-        self.assertEqual(message.body, "Bonjour Awa Ngono, votre numéro est 6 70 00 00 00.")
+        self.assertEqual(message.body, "Bonjour Awa Ngono, votre numéro 6 70 00 00 00 est enregistré.")
         answer = {"messages": [{"id": "wamid.TEST1"}]}
         with patch(REQUEST, return_value=mock_response(answer)) as request:
             message._send()
@@ -271,7 +271,7 @@ class TestWhatsAppCloud(WhatsAppCommon):
         composer = self.env["whatsapp.composer"].with_context(
             active_model="res.partner", active_ids=self.partner.ids
         ).create({"template_id": self.template.id})
-        self.assertEqual(composer.preview, "Bonjour Awa Ngono, votre numéro est 6 70 00 00 00.")
+        self.assertEqual(composer.preview, "Bonjour Awa Ngono, votre numéro 6 70 00 00 00 est enregistré.")
         self.assertEqual(composer.recipient, "Awa Ngono (+237670000000)")
         self.assertFalse(composer.warning)
         composer.action_send()

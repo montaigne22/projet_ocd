@@ -29,8 +29,10 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding` et `theme_ocd`) : **204 tests, aucun échec** (et, sur une base neuve avec la démo, 5 tests sans échec :
-la démo remplit les écrans, conversations WhatsApp comprises, puis se désinstalle sans rien laisser).
+`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **313 tests, un seul
+échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
+ceux des colis). Sur une base neuve avec la démo, 5 tests sans échec : la démo remplit les écrans,
+conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
 
 ## Reste à faire, par priorité
 

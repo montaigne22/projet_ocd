@@ -44,7 +44,7 @@ class WhatsAppCommon(TransactionCase):
             "lang_code": "fr",
             "model_id": cls.env["ir.model"]._get_id("res.partner"),
             "account_id": cls.account.id,
-            "body": "Bonjour {{1}}, votre numéro est {{2}}.",
+            "body": "Bonjour {{1}}, votre numéro {{2}} est enregistré.",
         })
         first, second = cls.template.variable_ids
         first.value = "{{ object.name }}"

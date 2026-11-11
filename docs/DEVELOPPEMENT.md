@@ -81,8 +81,8 @@ odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_l
      --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding --stop-after-init
 ```
 
-Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Un test de
-`whatsapp_cloud_sale` échoue volontairement avec OCD : « commande expédiée » y est remplacé par « colis livré ».
+Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Avec OCD, un test de
+`whatsapp_cloud_sale` échoue, c'est voulu : « commande expédiée » y est remplacé par les messages des colis.
 
 Puis la démo sur une autre base neuve : les mêmes modules et `ocd_live_demo`, avec `--test-tags /ocd_live_demo`.
 Les tests du site (HttpCase) ont besoin d'un port libre (`--http-port=8079` si la démo tourne sur 8069).
