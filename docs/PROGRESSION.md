@@ -63,6 +63,19 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
 
 ## Journal
 
+### 11 novembre 2026 — 404 sur « Moi » en administrateur, pages restées en anglais
+- **404 sur « Moi »** (staging) : le code des derniers changements était en place, mais `ocd_live` n'avait pas
+  été mis à jour dans la base : la page de l'équipe (`ocd_live.space_team`) n'y existait pas, Odoo répond
+  alors « Page introuvable ». Reproduit à l'identique. Remède : mettre à jour `ocd_live` après chaque
+  récupération du code (voir [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md)) ; la version de `ocd_live` passe à
+  20.0.1.2.0 pour les outils qui ne mettent à jour qu'un module dont la version change.
+- **Pages en anglais** : Odoo montre le site dans la langue du téléphone (ou du compte connecté) quand le
+  site la propose ; l'anglais, langue de base d'Odoo, reste proposé. Le bouton « FR » des pages d'OCD ne
+  changeait que la voix. Maintenant, ce bouton est la **langue de la page et de la voix** : il montre la
+  langue de la page ; Français ou English affiche la page dans cette langue, et le choix reste pour tout le
+  parcours ; une langue seulement parlée (éwé…) ne change que la voix. Les pages sans voix (espace,
+  connexion, shop…) ont le bouton de la langue de la page.
+
 ### 11 novembre 2026 — « Moi » quand on est déjà connecté à Odoo
 Constat : connecté à Odoo, « Moi » demandait quand même le numéro pour recevoir un lien.
 1. **Compte relié à un vendeur** (accès avec mot de passe, ou personne de la société du vendeur) :

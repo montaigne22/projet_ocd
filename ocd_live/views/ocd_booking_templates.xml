@@ -86,6 +86,18 @@
         </a>
     </template>
 
+    <template id="page_language_menu" name="OCD Live: language of the page">
+        <details class="o_ocd_lang">
+            <summary class="o_ocd_lang_code" aria-label="Language of the page" t-out="page_code.upper()"/>
+            <div class="o_ocd_lang_menu" role="menu">
+                <t t-foreach="page_languages" t-as="row">
+                    <a role="menuitemradio" class="o_ocd_lang_item" t-att-href="row['url']"
+                       t-att-lang="row['short']" t-att-aria-checked="'true' if row['current'] else 'false'" t-out="row['name']"/>
+                </t>
+            </div>
+        </details>
+    </template>
+
     <template id="app" name="OCD Live: frame of the pages">
         <!-- Parameters: back (url of the back button) and back_label, header_share (url shared
              by the Share button), header_name (name of the page beside the logo), header_pill (button of
@@ -149,23 +161,37 @@
                             <t t-call="ocd_live.icon" icon.f="share"/>
                             <span>Share</span>
                         </button>
+                        <!-- Language button: the language of the page (French, English…) and of the voice.
+                             A language of the pages shows the page again in that language; a language
+                             only spoken (Ewe…) changes the voice. -->
+                        <t t-set="page_code" t-value="([row['short'] for row in page_languages if row['current']] or [''])[0]"/>
+                        <t t-set="page_codes" t-value="[row['short'] for row in page_languages]"/>
+                        <t t-set="page_urls" t-value="dict((row['short'], row['url']) for row in page_languages if not row['current'])"/>
+                        <t t-set="voice_codes" t-value="voice_languages.mapped('code') if voice_languages else []"/>
+                        <t t-set="voice_start" t-value="page_code if page_code in voice_codes else (voice_codes[:1] or [''])[0]"/>
                         <div t-if="voice_key" class="o_ocd_voice o_ocd_live_voice" t-att-data-voice-key="voice_key"
-                             t-att-data-lang="voice_languages[:1].code if voice_languages else None">
-                            <details t-if="voice_languages and len(voice_languages) &gt; 1" class="o_ocd_lang">
-                                <summary class="o_ocd_lang_code" aria-label="Language of the voice"
-                                         t-out="voice_languages[:1].code.upper()"/>
+                             t-att-data-lang="voice_start or None" t-att-data-page-code="page_code or None">
+                            <details t-if="len(voice_codes) &gt; 1" class="o_ocd_lang">
+                                <summary class="o_ocd_lang_code" aria-label="Language of the page and of the voice"
+                                         t-out="voice_start.upper()"/>
                                 <div class="o_ocd_lang_menu" role="menu">
                                     <t t-foreach="voice_languages" t-as="voice_language">
                                         <button type="button" role="menuitemradio" class="o_ocd_lang_item"
                                                 t-att-data-code="voice_language.code"
-                                                t-att-aria-checked="'true' if voice_language_first else 'false'"
+                                                t-att-data-page-lang="'1' if voice_language.code in page_codes else None"
+                                                t-att-data-page-url="page_urls.get(voice_language.code)"
+                                                t-att-aria-checked="'true' if voice_language.code == voice_start else 'false'"
                                                 t-out="voice_language.name"/>
                                     </t>
                                 </div>
                             </details>
+                            <t t-elif="len(page_languages) &gt; 1" t-call="ocd_live.page_language_menu"/>
                             <button type="button" class="o_ocd_round o_ocd_live_voice_play" aria-label="Listen to this screen">
                                 <t t-call="ocd_live.icon" icon.f="speaker"/>
                             </button>
+                        </div>
+                        <div t-elif="len(page_languages) &gt; 1" class="o_ocd_voice">
+                            <t t-call="ocd_live.page_language_menu"/>
                         </div>
                     </div>
                 </header>

@@ -157,6 +157,29 @@ def voice_languages():
     return request.env["ocd.voice.language"].sudo().search([])
 
 
+def page_languages(url=None):
+    """Languages of the pages of the site (French, English…), each with the address of this page
+    (or of `url`) in that language: the language button of the pages of OCD Live switches the
+    page with them. Empty when the site has only one language."""
+    website = request.env.website
+    if not website or len(website.language_ids) < 2:
+        return []
+    current = request.lang.code if request.lang else website.default_lang_id.code
+    IrHttp = request.env["ir.http"]
+    rows = []
+    for lang in website.language_ids.sorted(lambda lang: (lang != website.default_lang_id, lang.name)):
+        rows.append({
+            "code": lang.code,
+            "short": (lang.iso_code or lang.code).split("_")[0].lower(),
+            "name": lang.name.split(" / ")[-1],
+            # Always with the code of the language (/fr/…, /en/…): Odoo then remembers the choice,
+            # even for the language of the site (it shows the page without the code after)
+            "url": IrHttp._url_localized(url=url, lang_code=lang.code, force_default_lang=True),
+            "current": lang.code == current,
+        })
+    return rows
+
+
 def page_values(voice_key, **values):
     """Values shared by all the pages: the voice of the page (key, languages and the sentence
     shown while it speaks) and the setting of the vendor login."""
@@ -169,6 +192,7 @@ def page_values(voice_key, **values):
         "voice_caption": prompt.with_context(lang=request.env.lang).text if prompt else "",
         "ocd_company": company(),
         "ocd_team_view": team_view_vendor(),
+        "page_languages": page_languages(),
         **values,
     }
 

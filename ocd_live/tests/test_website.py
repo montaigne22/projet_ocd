@@ -348,6 +348,23 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertIn("o_ocd_account_notice", response.text)
         self.assertIn("/web/session/logout?redirect=", response.text)
 
+    def test_language_button_switches_the_page(self):
+        french = self.env["res.lang"]._activate_lang("fr_FR")
+        self.env.ref("base.default_website").write({"language_ids": [Command.link(french.id)], "default_lang_id": french.id})
+        # A page with a voice: the button shows the language of the page, French shows it again in French
+        response = self.url_open("/en/ocd")
+        self.assertIn('data-page-code="en"', response.text)
+        self.assertRegex(response.text, r'data-code="fr"[^>]*data-page-url="/fr/ocd"')
+        self.assertIn('aria-label="Language of the page and of the voice">EN<', response.text)
+        # The address with the code of the language remembers the choice and shows the page in it
+        response = self.url_open("/fr/ocd")
+        self.assertTrue(response.url.endswith("/ocd") and "/en/" not in response.url)
+        self.assertIn('data-page-code="fr"', self.url_open("/ocd").text)
+        # A page without a voice: the button of the language of the page
+        response = self.url_open("/ocd/connexion")
+        self.assertIn('aria-label="Language of the page"', response.text)
+        self.assertIn('href="/en/ocd/connexion"', response.text)
+
     def test_space_with_a_whatsapp_code(self):
         self.company.ocd_vendor_login = "whatsapp_code"
         self.authenticate(None, None)

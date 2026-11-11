@@ -379,6 +379,7 @@ class OcdLiveBooking(http.Controller):
             # the page takes the address of its step, so that reloading it (or the phone
             # reopening the tab) shows the step again
             values["replace_url"] = page_url
+            values["page_languages"] = common.page_languages(page_url)
         return request.render(template, common.page_values(voice_key, flow=self._flow(), **values))
 
     def _check_mode(self, mode):

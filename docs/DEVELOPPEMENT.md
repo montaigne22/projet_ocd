@@ -60,6 +60,11 @@ module › Mettre à jour, ou en ligne de commande) :
 odoo -c odoo.conf -d <base> -u ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --stop-after-init
 ```
 
+**À chaque récupération du code, mettre à jour les modules.** Sans cela, le code appelle des pages qui
+n'existent pas encore dans la base, et le site répond « Page introuvable » (404) ; c'est arrivé sur « Moi »
+avec la page de l'équipe. La version d'un module augmente quand ses vues ou ses données changent, pour les
+outils qui ne mettent à jour qu'un module dont la version a changé.
+
 Les changements à faire une seule fois sur une base existante sont dans `migrations/` de chaque module
 (ex. `ocd_live` 20.0.1.1.0 : accueil d'OCD Live sur `/`, site en français, logo, menus traduits).
 

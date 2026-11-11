@@ -5,6 +5,8 @@ SITE_FRAME = {
         "Réservez un live au studio ou depuis chez vous, suivez les lives du moment et achetez aux vendeurs.",
     "Links": "Liens",
     "Log out": "Se déconnecter",
+    "Language of the page": "Langue de la page",
+    "Language of the page and of the voice": "Langue de la page et de la voix",
     "You are logged in as the team.": "Tu es connecté avec un compte de l'équipe.",
     "<span>Account of</span>": "<span>Compte de</span>",
     "The space is for the vendors: their lives, their packages, their pass. It opens with the WhatsApp number of the vendor, not with an account of the team.":

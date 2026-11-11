@@ -15,7 +15,9 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 - **Voix des pages** en plusieurs langues (français, éwé, etc.), enregistrées par l'équipe.
 - **L'adresse du site (`/`) ouvre l'accueil d'OCD Live** (`/ocd`), et non la page vide d'Odoo.
 - **Le site est en français par défaut** quand le français est installé ; les autres langues restent
-  au choix du visiteur.
+  au choix du visiteur. Odoo suit la langue du téléphone ou du compte connecté quand le site la propose.
+- **Un seul bouton de langue sur les pages d'OCD** : la langue de la page et de la voix. Français ou
+  English change la page (et le choix reste) ; une langue seulement parlée (éwé, mina…) change la voix.
 - **Les pages d'Odoo gardées telles quelles** (recrutement, connexion, portail, contact) portent le logo,
   le nom et les coordonnées d'OCD Live : pied de page d'OCD, téléphone et e-mail de la société, aucun
   texte d'exemple d'Odoo. Ce que l'équipe a déjà choisi (page d'accueil, langue, logo, nom) n'est jamais

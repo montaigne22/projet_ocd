@@ -7,13 +7,14 @@ const STORAGE_KEY = "ocd_live_voice_language";
 /**
  * Reads the page aloud: the recording of the chosen language when the team recorded one,
  * otherwise the voice of the phone in that language. The sentence is shown while it is read.
- * The chosen language is remembered on this browser.
+ * The chosen language is remembered on this browser. The same button is the language of the
+ * page: choosing a language of the pages (French, English…) shows the page again in it.
  */
 export class OcdLiveVoice extends Interaction {
     static selector = ".o_ocd_live_voice";
     dynamicContent = {
         ".o_ocd_live_voice_play": { "t-on-click": this.onPlay },
-        ".o_ocd_lang_item": { "t-on-click": this.onChooseLanguage },
+        ".o_ocd_lang_item[data-code]": { "t-on-click": this.onChooseLanguage },
     };
 
     setup() {
@@ -27,7 +28,10 @@ export class OcdLiveVoice extends Interaction {
         } catch {
             // Storage blocked (private browsing): the first language is used
         }
-        if (saved && this.el.querySelector(`.o_ocd_lang_item[data-code="${CSS.escape(saved)}"]`)) {
+        const savedItem = saved && this.el.querySelector(`.o_ocd_lang_item[data-code="${CSS.escape(saved)}"]`);
+        // A language of the pages other than the one of this page is not kept: the voice follows
+        // the language the page is shown in
+        if (savedItem && !(savedItem.dataset.pageLang && saved !== (this.el.dataset.pageCode || ""))) {
             this.setLanguage(saved);
         }
     }
@@ -44,12 +48,17 @@ export class OcdLiveVoice extends Interaction {
     }
 
     onChooseLanguage(ev) {
-        this.setLanguage(ev.currentTarget.dataset.code);
+        const item = ev.currentTarget;
+        this.setLanguage(item.dataset.code);
         this.menuEl.open = false;
         try {
             window.localStorage.setItem(STORAGE_KEY, this.language);
         } catch {
             // Storage blocked: the choice is kept for this page only
+        }
+        if (item.dataset.pageUrl) {
+            // A language of the pages: the page is shown again in it (and stays in it after)
+            window.location.assign(item.dataset.pageUrl);
         }
     }
 
