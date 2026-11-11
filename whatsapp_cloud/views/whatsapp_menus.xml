@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_canned_response_action_whatsapp" model="ir.actions.act_window">
+        <field name="name">Canned Responses</field>
+        <field name="res_model">mail.canned.response</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the answers you write often</p>
+            <p>Type :: followed by the shortcut in a conversation to insert the answer. In a WhatsApp
+               conversation, {first_name}, {name}, {agent} and {company} are replaced by the first name
+               and the name of the customer, your name and the name of the company.</p>
+        </field>
+    </record>
+
+    <menuitem id="whatsapp_menu_root" name="WhatsApp" web_icon="whatsapp_cloud,static/description/icon.png"
+              groups="base.group_user" sequence="85">
+        <menuitem id="whatsapp_menu_conversations" name="Conversations" action="discuss_channel_action_whatsapp"
+                  sequence="5" groups="whatsapp_cloud.group_whatsapp_user"/>
+        <menuitem id="whatsapp_menu_messages" name="Messages" action="whatsapp_message_action" sequence="10"/>
+        <menuitem id="whatsapp_menu_configuration" name="Configuration" sequence="90"
+                  groups="whatsapp_cloud.group_whatsapp_manager">
+            <menuitem id="whatsapp_menu_settings" name="Settings" action="whatsapp_config_settings_action"
+                      sequence="5" groups="base.group_system"/>
+            <menuitem id="whatsapp_menu_accounts" name="Accounts" action="whatsapp_account_action" sequence="10"/>
+            <menuitem id="whatsapp_menu_templates" name="Templates" action="whatsapp_template_action" sequence="20"/>
+            <menuitem id="whatsapp_menu_canned_responses" name="Canned Responses"
+                      action="mail_canned_response_action_whatsapp" sequence="25"/>
+            <menuitem id="whatsapp_menu_tags" name="Conversation Tags" action="whatsapp_tag_action" sequence="27"/>
+            <menuitem id="whatsapp_menu_automations" name="Automation Rules"
+                      action="base_automation.base_automation_act" sequence="30"/>
+            <menuitem id="whatsapp_menu_webhook_events" name="Notifications of Meta"
+                      action="whatsapp_webhook_event_action" sequence="40"/>
+        </menuitem>
+    </menuitem>
+</odoo>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="discuss_channel_view_list_whatsapp" model="ir.ui.view">
+        <field name="name">discuss.channel.list.whatsapp</field>
+        <field name="model">discuss.channel</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list create="False" default_order="last_interest_dt desc"
+                  decoration-danger="whatsapp_alert_level == 2" decoration-warning="whatsapp_alert_level == 1"
+                  decoration-muted="whatsapp_state == 'done'">
+                <field name="whatsapp_partner_id"/>
+                <field name="whatsapp_number" optional="show"/>
+                <field name="whatsapp_user_id" widget="many2one_avatar_user"/>
+                <field name="whatsapp_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+                <field name="whatsapp_waiting_since" widget="remaining_days" optional="show"/>
+                <field name="whatsapp_alert_level" column_invisible="1"/>
+                <field name="last_interest_dt" string="Last Activity"/>
+                <field name="whatsapp_channel_valid_until" optional="hide"/>
+                <field name="whatsapp_account_id" optional="hide"/>
+                <field name="whatsapp_state" widget="badge" decoration-info="whatsapp_state == 'new'"
+                       decoration-success="whatsapp_state == 'open'"/>
+                <button name="whatsapp_action_open" type="object" string="Open" icon="fa-comments"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="discuss_channel_view_kanban_whatsapp" model="ir.ui.view">
+        <field name="name">discuss.channel.kanban.whatsapp</field>
+        <field name="model">discuss.channel</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <kanban create="False" default_group_by="whatsapp_state" group_create="false" group_delete="false"
+                    records_draggable="false" default_order="last_interest_dt desc">
+                <field name="whatsapp_alert_level"/>
+                <field name="whatsapp_to_identify"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <field name="whatsapp_partner_id" class="fw-bold"/>
+                            <field name="whatsapp_user_id" widget="many2one_avatar_user"/>
+                        </div>
+                        <field name="whatsapp_number" class="text-muted"/>
+                        <field name="whatsapp_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <div t-if="record.whatsapp_to_identify.raw_value" class="text-warning small">Customer to identify</div>
+                        <div class="d-flex justify-content-between small">
+                            <span t-att-class="record.whatsapp_alert_level.raw_value ? 'text-danger' : 'text-muted'">
+                                <field name="whatsapp_waiting_since" widget="remaining_days"/>
+                            </span>
+                            <a name="whatsapp_action_open" type="object" role="button" class="btn btn-sm btn-link p-0">Open</a>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="discuss_channel_view_form_whatsapp" model="ir.ui.view">
+        <field name="name">discuss.channel.form.whatsapp</field>
+        <field name="model">discuss.channel</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <form create="False">
+                <header>
+                    <button name="whatsapp_action_open" type="object" string="Open the Conversation" class="btn-primary"/>
+                    <button name="whatsapp_action_take" type="object" string="Take It"
+                            invisible="whatsapp_user_id == uid" groups="whatsapp_cloud.group_whatsapp_user"/>
+                    <button name="whatsapp_action_transfer" type="object" string="Transfer"
+                            groups="whatsapp_cloud.group_whatsapp_user"/>
+                    <button name="whatsapp_action_send_template" type="object" string="Send a Template"
+                            groups="whatsapp_cloud.group_whatsapp_user"/>
+                    <button name="whatsapp_action_resolve" type="object" string="Resolved"
+                            invisible="whatsapp_state == 'done'" groups="whatsapp_cloud.group_whatsapp_user"/>
+                    <button name="whatsapp_action_reopen" type="object" string="Reopen"
+                            invisible="whatsapp_state != 'done'" groups="whatsapp_cloud.group_whatsapp_user"/>
+                    <field name="whatsapp_state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not whatsapp_to_identify">
+                        The customer wrote from a number unknown to Odoo: a contact was created with their
+                        WhatsApp name.
+                        <button name="whatsapp_action_link_partner" type="object" string="Identify the Customer"
+                                class="btn-link p-0"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="whatsapp_partner_id" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="whatsapp_number"/>
+                            <field name="whatsapp_user_ref" invisible="not whatsapp_user_ref"/>
+                            <field name="whatsapp_account_id"/>
+                            <field name="whatsapp_user_id" readonly="1" widget="many2one_avatar_user"/>
+                            <field name="whatsapp_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                        <group>
+                            <field name="whatsapp_last_inbound_date"/>
+                            <field name="whatsapp_channel_valid_until"/>
+                            <field name="whatsapp_waiting_since"/>
+                            <field name="whatsapp_bot_state"/>
+                            <field name="whatsapp_to_identify" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="whatsapp_message_ids" readonly="1">
+                        <list>
+                            <field name="create_date" string="Date"/>
+                            <field name="direction"/>
+                            <field name="message_type"/>
+                            <field name="body"/>
+                            <field name="state" widget="badge" decoration-success="state in ('delivered', 'read', 'received')"
+                                   decoration-danger="state == 'failed'"/>
+                            <field name="error_help" optional="hide"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="discuss_channel_view_search_whatsapp" model="ir.ui.view">
+        <field name="name">discuss.channel.search.whatsapp</field>
+        <field name="model">discuss.channel</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="whatsapp_partner_id"/>
+                <field name="whatsapp_number"/>
+                <field name="whatsapp_user_id"/>
+                <field name="whatsapp_tag_ids"/>
+                <filter name="mine" string="My Conversations" domain="[('whatsapp_user_id', '=', uid)]"/>
+                <filter name="unassigned" string="Not Assigned" domain="[('whatsapp_user_id', '=', False)]"/>
+                <separator/>
+                <filter name="waiting" string="Waiting for an Answer" domain="[('whatsapp_waiting_since', '!=', False)]"/>
+                <filter name="late" string="Late" domain="[('whatsapp_alert_level', '>', 0)]"/>
+                <filter name="to_identify" string="Customer to Identify" domain="[('whatsapp_to_identify', '=', True)]"/>
+                <separator/>
+                <filter name="not_done" string="Not Resolved" domain="[('whatsapp_state', '!=', 'done')]"/>
+                <filter name="done" string="Resolved" domain="[('whatsapp_state', '=', 'done')]"/>
+                <group>
+                    <filter name="group_user" string="Agent" context="{'group_by': 'whatsapp_user_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'whatsapp_state'}"/>
+                    <filter name="group_account" string="Account" context="{'group_by': 'whatsapp_account_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="discuss_channel_action_whatsapp" model="ir.actions.act_window">
+        <field name="name">WhatsApp Conversations</field>
+        <field name="res_model">discuss.channel</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('channel_type', '=', 'whatsapp')]</field>
+        <field name="context">{'search_default_not_done': 1}</field>
+        <field name="search_view_id" ref="discuss_channel_view_search_whatsapp"/>
+        <field name="view_ids" eval="[Command.clear(),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('discuss_channel_view_kanban_whatsapp')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('discuss_channel_view_list_whatsapp')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('discuss_channel_view_form_whatsapp')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No WhatsApp conversation yet</p>
+            <p>The conversations start when a customer writes to the WhatsApp number of the company.
+               Answer them from Discuss (WhatsApp tab).</p>
+        </field>
+    </record>
+
+    <!-- Tags -->
+    <record id="whatsapp_tag_view_list" model="ir.ui.view">
+        <field name="name">whatsapp.tag.list</field>
+        <field name="model">whatsapp.tag</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="whatsapp_tag_action" model="ir.actions.act_window">
+        <field name="name">Conversation Tags</field>
+        <field name="res_model">whatsapp.tag</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Notifications of Meta -->
+    <record id="whatsapp_webhook_event_view_list" model="ir.ui.view">
+        <field name="name">whatsapp.webhook.event.list</field>
+        <field name="model">whatsapp.webhook.event</field>
+        <field name="arch" type="xml">
+            <list create="False" decoration-danger="state == 'failed'" decoration-info="state == 'pending'">
+                <field name="create_date" string="Received on"/>
+                <field name="account_id"/>
+                <field name="field"/>
+                <field name="attempts" optional="hide"/>
+                <field name="error" optional="show"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="whatsapp_webhook_event_view_form" model="ir.ui.view">
+        <field name="name">whatsapp.webhook.event.form</field>
+        <field name="model">whatsapp.webhook.event</field>
+        <field name="arch" type="xml">
+            <form create="False" edit="False">
+                <header>
+                    <button name="action_retry" type="object" string="Process Again" invisible="state != 'failed'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="account_id"/>
+                        <field name="field"/>
+                        <field name="create_date" string="Received on"/>
+                        <field name="attempts"/>
+                        <field name="error" invisible="not error"/>
+                    </group>
+                    <field name="payload" widget="code" options="{'mode': 'javascript'}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="whatsapp_webhook_event_view_search" model="ir.ui.view">
+        <field name="name">whatsapp.webhook.event.search</field>
+        <field name="model">whatsapp.webhook.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="field"/>
+                <field name="payload"/>
+                <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
+                <filter name="pending" string="To Process" domain="[('state', '=', 'pending')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="whatsapp_webhook_event_action" model="ir.actions.act_window">
+        <field name="name">Notifications of Meta</field>
+        <field name="res_model">whatsapp.webhook.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No notification received from Meta yet</p>
+            <p>Each call of Meta to the webhook (messages, receipts, decisions on the templates) is kept
+               here for a month.</p>
+        </field>
+    </record>
+
+    <!-- Wizards -->
+    <record id="whatsapp_conversation_assign_view_form" model="ir.ui.view">
+        <field name="name">whatsapp.conversation.assign.form</field>
+        <field name="model">whatsapp.conversation.assign</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="channel_id" invisible="1"/>
+                    <field name="available_user_ids" invisible="1"/>
+                    <field name="user_id" widget="many2one_avatar_user" options="{'no_create': True}"/>
+                    <field name="note" placeholder="e.g. The customer asks for an exchange of size."/>
+                </group>
+                <footer>
+                    <button name="action_transfer" type="object" string="Transfer" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="whatsapp_link_partner_view_form" model="ir.ui.view">
+        <field name="name">whatsapp.link.partner.form</field>
+        <field name="model">whatsapp.link.partner</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>The conversation, its messages and the WhatsApp number go to the existing contact; the
+                   contact created for the unknown number is merged into it.</p>
+                <group>
+                    <field name="channel_id" invisible="1"/>
+                    <field name="current_partner_id"/>
+                    <field name="partner_id" options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_link" type="object" string="Identify" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

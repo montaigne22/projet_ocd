@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_city_tree_districts" model="ir.ui.view">
+        <field name="name">res.city.list.districts</field>
+        <field name="model">res.city</field>
+        <field name="inherit_id" ref="base_address_extended.view_city_tree"/>
+        <field name="arch" type="xml">
+            <field name="state_id" position="after">
+                <field name="district_count" string="Districts"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="res_city_view_form_districts" model="ir.ui.view">
+        <field name="name">res.city.form.districts</field>
+        <field name="model">res.city</field>
+        <field name="inherit_id" ref="base_address_extended.res_city_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='city_data']" position="after">
+                <notebook>
+                    <page name="districts" string="Districts">
+                        <field name="district_ids" context="{'default_city_id': id}">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

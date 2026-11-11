@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_order_action_whatsapp_composer" model="ir.actions.act_window">
+        <field name="name">Send WhatsApp</field>
+        <field name="res_model">whatsapp.composer</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_res_model': 'sale.order'}</field>
+    </record>
+
+    <record id="stock_picking_action_whatsapp_composer" model="ir.actions.act_window">
+        <field name="name">Send WhatsApp</field>
+        <field name="res_model">whatsapp.composer</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_res_model': 'stock.picking'}</field>
+    </record>
+
+</odoo>

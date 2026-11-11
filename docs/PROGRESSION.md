@@ -52,13 +52,21 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
 - Les pages « Paramètres » et « Automatisations » sont pour les responsables d'OCD Live : ils changent les
   réglages et les interrupteurs sans être administrateurs d'Odoo (rien d'autre n'est écrit).
 - Le module `disable_odoo_online` de l'OCA (dépôt server-brand, branche 20.0) doit être dans le chemin
-  des modules : `ocd_debranding` en dépend.
+  des modules : `ocd_debranding` en dépend. C'est le seul module qui n'est pas dans le dépôt.
 - La confirmation d'une commande envoie un PDF : le serveur a besoin du moteur PDF d'Odoo
   (`wkhtmltopdf`), sinon la commande reste « en attente du paiement ».
 - Odoo publie au départ sa « Livraison standard » (gratuite, partout) : l'équipe ne publie que les
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — branche fusionnée dans main, modules complémentaires dans le dépôt
+- `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et `delivery_cameroon` sont dans le dépôt
+  (plus de « dépendance absente » dans les Applications). Seul `disable_odoo_online` (OCA) s'ajoute à
+  part.
+- Le travail de la branche `claude/serene-johnson-x7ucgf` (boutique, replay, appli de livraison, toutes les
+  pages du shop, frais de livraison, démo, paramètres, automatisations, conversations WhatsApp, sans la
+  marque Odoo) est dans `main`.
 
 ### 11 novembre 2026 — paramètres, automatisations, conversations WhatsApp, sans la marque Odoo
 - **WhatsApp** : un seul accord (la case d'OCD Live et l'accord WhatsApp, STOP et START, restent

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Delivery methods to configure: prices, free delivery threshold and publication are set
+         in Website > Configuration > Delivery Methods. -->
+
+    <record id="product_delivery_douala" model="product.product">
+        <field name="name">Home delivery in Douala</field>
+        <field name="default_code">DELIVERY_CM_DLA</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">0.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="carrier_douala_home" model="delivery.carrier">
+        <field name="name">Home delivery in Douala</field>
+        <field name="sequence">10</field>
+        <field name="delivery_type">fixed</field>
+        <field name="fixed_price">0.0</field>
+        <field name="product_id" ref="product_delivery_douala"/>
+        <field name="country_ids" eval="[Command.set([ref('base.cm')])]"/>
+        <field name="city_ids" eval="[Command.set([ref('city_cm_douala')])]"/>
+        <field name="allow_cash_on_delivery" eval="True"/>
+        <field name="carrier_description">Delivered to your door within 24 to 48 hours. Pay on delivery with cash or Mobile Money.</field>
+        <field name="is_published" eval="False"/>
+    </record>
+
+    <record id="product_delivery_cameroon" model="product.product">
+        <field name="name">Shipping to other cities of Cameroon</field>
+        <field name="default_code">DELIVERY_CM_OTHER</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">0.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="carrier_cameroon_other_cities" model="delivery.carrier">
+        <field name="name">Shipping to other cities of Cameroon</field>
+        <field name="sequence">20</field>
+        <field name="delivery_type">fixed</field>
+        <field name="fixed_price">0.0</field>
+        <field name="product_id" ref="product_delivery_cameroon"/>
+        <field name="country_ids" eval="[Command.set([ref('base.cm')])]"/>
+        <field name="excluded_city_ids" eval="[Command.set([ref('city_cm_douala')])]"/>
+        <field name="carrier_description">Sent through a travel agency to your city, within 2 to 4 days. You collect your parcel at the agency.</field>
+        <field name="is_published" eval="False"/>
+    </record>
+
+    <record id="product_delivery_international" model="product.product">
+        <field name="name">International shipping</field>
+        <field name="default_code">DELIVERY_INTL</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">0.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="carrier_international" model="delivery.carrier">
+        <field name="name">International shipping</field>
+        <field name="sequence">30</field>
+        <field name="delivery_type">base_on_rule</field>
+        <field name="product_id" ref="product_delivery_international"/>
+        <field name="excluded_country_ids" eval="[Command.set([ref('base.cm')])]"/>
+        <field name="carrier_description">Shipped by express courier. Delivery time and price depend on the destination and the weight of the parcel.</field>
+        <field name="is_published" eval="False"/>
+    </record>
+
+</odoo>

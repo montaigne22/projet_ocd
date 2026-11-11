@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="payment_provider_form" model="ir.ui.view">
+        <field name="name">Campay Provider Form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <group name="provider_credentials" position="inside">
+                <group invisible="code != 'campay'" colspan="2">
+                    <field string="App Username" name="campay_app_username" required="code == 'campay' and is_live"/>
+                    <field string="App Password" name="campay_app_password" required="code == 'campay' and is_live" widget="password"/>
+                    <field string="Webhook Key" name="campay_webhook_key" required="code == 'campay' and is_live" widget="password"/>
+                    <div class="text-muted" colspan="2">
+                        In the Campay dashboard, set the webhook URL to
+                        <code>https://your-domain/payment/campay/webhook</code>.
+                        Without live mode, payments go through the Campay demo platform.
+                    </div>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,33 @@
+id,name,model_id,group_id/id,operation,domain
+access_whatsapp_account_user,whatsapp.account user,whatsapp.account,base.group_user,r,
+access_whatsapp_account_manager,whatsapp.account manager,whatsapp.account,group_whatsapp_manager,crud,
+access_whatsapp_account_system,whatsapp.account system,whatsapp.account,base.group_system,crud,
+access_whatsapp_template_user,whatsapp.template user,whatsapp.template,base.group_user,r,
+access_whatsapp_template_manager,whatsapp.template manager,whatsapp.template,group_whatsapp_manager,crud,
+access_whatsapp_template_system,whatsapp.template system,whatsapp.template,base.group_system,crud,
+access_whatsapp_template_variable_user,whatsapp.template.variable user,whatsapp.template.variable,base.group_user,r,
+access_whatsapp_template_variable_manager,whatsapp.template.variable manager,whatsapp.template.variable,group_whatsapp_manager,crud,
+access_whatsapp_template_variable_system,whatsapp.template.variable system,whatsapp.template.variable,base.group_system,crud,
+access_whatsapp_template_button_user,whatsapp.template.button user,whatsapp.template.button,base.group_user,r,
+access_whatsapp_template_button_manager,whatsapp.template.button manager,whatsapp.template.button,group_whatsapp_manager,crud,
+access_whatsapp_template_button_system,whatsapp.template.button system,whatsapp.template.button,base.group_system,crud,
+access_whatsapp_message_user,whatsapp.message user,whatsapp.message,base.group_user,r,
+access_whatsapp_message_manager,whatsapp.message manager,whatsapp.message,group_whatsapp_manager,crud,
+access_whatsapp_message_system,whatsapp.message system,whatsapp.message,base.group_system,crud,
+access_whatsapp_webhook_event_manager,whatsapp.webhook.event manager,whatsapp.webhook.event,group_whatsapp_manager,r,
+access_whatsapp_webhook_event_system,whatsapp.webhook.event system,whatsapp.webhook.event,base.group_system,crud,
+access_whatsapp_tag_user,whatsapp.tag user,whatsapp.tag,group_whatsapp_user,r,
+access_whatsapp_tag_manager,whatsapp.tag manager,whatsapp.tag,group_whatsapp_manager,crud,
+access_whatsapp_bot_option_user,whatsapp.bot.option user,whatsapp.bot.option,base.group_user,r,
+access_whatsapp_bot_option_manager,whatsapp.bot.option manager,whatsapp.bot.option,group_whatsapp_manager,crud,
+access_whatsapp_composer_user,whatsapp.composer user,whatsapp.composer,base.group_user,cru,
+access_whatsapp_conversation_assign_user,whatsapp.conversation.assign user,whatsapp.conversation.assign,group_whatsapp_user,cru,
+access_whatsapp_link_partner_user,whatsapp.link.partner user,whatsapp.link.partner,group_whatsapp_user,cru,
+whatsapp_account_company_rule,WhatsApp account: multi-company,whatsapp.account,,crud,"[('company_id', 'in', company_ids)]"
+whatsapp_template_company_rule,WhatsApp template: multi-company,whatsapp.template,,crud,"[('company_id', 'in', company_ids + [False])]"
+whatsapp_message_company_rule,WhatsApp message: multi-company,whatsapp.message,,crud,"[('company_id', 'in', company_ids)]"
+ir_rule_discuss_channel_whatsapp_user,discuss.channel: WhatsApp agents read the conversations not assigned yet and theirs,discuss.channel,group_whatsapp_user,r,"[('channel_type', '=', 'whatsapp'), ('whatsapp_account_id.company_id', 'in', company_ids), '|', ('whatsapp_user_id', '=', False), ('whatsapp_user_id', '=', user.id)]"
+ir_rule_discuss_channel_whatsapp_manager,discuss.channel: WhatsApp managers read all the conversations of their companies,discuss.channel,group_whatsapp_manager,r,"[('channel_type', '=', 'whatsapp'), ('whatsapp_account_id.company_id', 'in', company_ids)]"
+ir_rule_discuss_channel_member_whatsapp_user,discuss.channel.member: WhatsApp agents read and add the members of the conversations,discuss.channel.member,group_whatsapp_user,cr,"[('channel_id.channel_type', '=', 'whatsapp')]"
+whatsapp_bot_option_company_rule,WhatsApp menu option: multi-company,whatsapp.bot.option,,crud,"[('account_id.company_id', 'in', company_ids)]"
+whatsapp_webhook_event_company_rule,WhatsApp webhook event: multi-company,whatsapp.webhook.event,,crud,"['|', ('account_id', '=', False), ('account_id.company_id', 'in', company_ids)]"

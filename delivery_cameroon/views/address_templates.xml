@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="address_form_fields_cameroon" inherit_id="portal.address_form_fields">
+        <!-- The "Name" label has no French translation in Odoo 20. -->
+        <xpath expr="//label[@for='o_name']" position="replace">
+            <label class="col-form-label" for="o_name">Full name</label>
+        </xpath>
+        <xpath expr="//div[@id='div_street2']" position="after">
+            <t t-set="cm_districts" t-value="city.district_ids if city and country.code == 'CM' else []"/>
+            <div id="div_district_id"
+                 class="col-lg-6 mb-2"
+                 t-att-style="not cm_districts and 'display:none;'">
+                <label class="col-form-label" for="o_district_id">District</label>
+                <select id="o_district_id"
+                        name="district_id"
+                        class="form-select"
+                        data-country-code="CM"
+                        t-att-disabled="not cm_districts and 'disabled'">
+                    <option value="">District...</option>
+                    <option t-foreach="cm_districts" t-as="district"
+                            t-att-value="district.id"
+                            t-att-selected="partner_sudo.district_id == district"
+                            t-out="district.name"/>
+                </select>
+            </div>
+            <div id="div_delivery_landmark"
+                 class="col-lg-6 mb-2"
+                 t-att-style="country.code != 'CM' and 'display:none;'">
+                <label class="col-form-label" for="o_delivery_landmark">Landmark</label>
+                <input id="o_delivery_landmark"
+                       type="text"
+                       name="delivery_landmark"
+                       class="form-control"
+                       data-country-code="CM"
+                       placeholder="e.g. opposite the pharmacy, behind the market"
+                       t-att-disabled="country.code != 'CM' and 'disabled'"
+                       t-att-value="partner_sudo.delivery_landmark"/>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

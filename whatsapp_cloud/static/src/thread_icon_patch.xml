@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.ThreadIcon" t-inherit-mode="extension">
+        <xpath expr="//t[@name='extra']" position="after">
+            <i t-if="this.channel?.channel_type === 'whatsapp'" class="o-whatsapp-ThreadIcon oi d-flex"
+               t-att-class="this.props.className" data-icon="oi_whatsapp" title="WhatsApp"/>
+        </xpath>
+    </t>
+</templates>

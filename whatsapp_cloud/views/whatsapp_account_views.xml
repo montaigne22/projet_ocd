@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="whatsapp_account_view_list" model="ir.ui.view">
+        <field name="name">whatsapp.account.list</field>
+        <field name="model">whatsapp.account</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="display_phone_number"/>
+                <field name="phone_number_id" optional="hide"/>
+                <field name="waba_id" optional="hide"/>
+                <field name="quality_rating" widget="badge" decoration-success="quality_rating == 'GREEN'"
+                       decoration-warning="quality_rating == 'YELLOW'" decoration-danger="quality_rating == 'RED'"/>
+                <field name="health_state" widget="badge" decoration-success="health_state == 'ok'"
+                       decoration-warning="health_state == 'warning'" decoration-danger="health_state == 'error'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="whatsapp_account_view_form" model="ir.ui.view">
+        <field name="name">whatsapp.account.form</field>
+        <field name="model">whatsapp.account</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_sync_templates" type="object" string="Synchronise Templates"
+                            class="btn-primary" invisible="not id"/>
+                    <button name="action_check_health" type="object" string="Check the Account"
+                            invisible="not id"/>
+                    <button name="action_send_test" type="object" string="Send a Test Message"
+                            invisible="not id"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_conversations" type="object" class="oe_stat_button" icon="fa-whatsapp">
+                            <field name="conversation_count" widget="statinfo" string="Conversations"/>
+                        </button>
+                        <button name="action_open_templates" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="template_count" widget="statinfo" string="Templates"/>
+                        </button>
+                        <button name="action_open_messages" type="object" class="oe_stat_button" icon="fa-comments-o">
+                            <field name="message_count" widget="statinfo" string="Messages"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="health_state not in ('warning', 'error')">
+                        <field name="health_message" readonly="1"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. My Shop WhatsApp"/></h1>
+                    </div>
+                    <notebook>
+                        <page string="Connection" name="connection">
+                            <group>
+                                <group string="Meta app (WhatsApp > API Setup)">
+                                    <field name="phone_number_id"/>
+                                    <field name="waba_id"/>
+                                    <field name="access_token" password="True"/>
+                                    <field name="app_id"/>
+                                    <field name="api_version"/>
+                                </group>
+                                <group string="Webhook (WhatsApp > Configuration)">
+                                    <field name="webhook_url" widget="CopyClipboardChar"/>
+                                    <field name="verify_token" widget="CopyClipboardChar"/>
+                                    <field name="app_secret" password="True"/>
+                                    <field name="last_webhook_date"/>
+                                </group>
+                                <group string="Sending">
+                                    <field name="require_opt_in"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                    <field name="test_phone" placeholder="e.g. 6 70 00 00 00"/>
+                                </group>
+                            </group>
+                            <div class="text-muted">
+                                In the webhook settings of the Meta app, enter the callback URL and the verify
+                                token above, then subscribe to the fields messages, message_template_status_update,
+                                message_template_quality_update, template_category_update,
+                                phone_number_quality_update and account_update: the receipts, the messages of the
+                                customers and the decisions of Meta then come back to Odoo.
+                            </div>
+                        </page>
+                        <page string="Team" name="team">
+                            <group>
+                                <group string="Agents">
+                                    <field name="agent_user_ids" widget="many2many_tags" placeholder="All the WhatsApp agents"/>
+                                    <field name="assignment_mode" widget="radio"/>
+                                </group>
+                                <group string="Answer Delays">
+                                    <field name="resource_calendar_id"/>
+                                    <field name="response_delay"/>
+                                    <field name="escalation_delay"/>
+                                    <field name="escalation_user_ids" widget="many2many_tags" placeholder="The WhatsApp managers"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Automatic Answers" name="automatic_answers">
+                            <group>
+                                <group string="Welcome">
+                                    <field name="bot_enabled"/>
+                                    <field name="welcome_message" invisible="not bot_enabled" required="bot_enabled"/>
+                                    <field name="handover_invite_message"/>
+                                    <field name="handover_message"/>
+                                </group>
+                                <group string="Outside of the Opening Hours">
+                                    <field name="away_message_enabled"/>
+                                    <field name="away_message" invisible="not away_message_enabled"
+                                           required="away_message_enabled"/>
+                                </group>
+                            </group>
+                            <field name="bot_option_ids" invisible="not bot_enabled">
+                                <list editable="bottom" open_form_view="True" decoration-muted="not active">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="description" optional="hide"/>
+                                    <field name="action"/>
+                                    <field name="answer" invisible="action not in ('text', 'submenu')"
+                                           required="action == 'text'"/>
+                                    <field name="lang" invisible="action != 'lang'" required="action == 'lang'"/>
+                                    <field name="child_ids" string="Sub-menu" widget="many2many_tags"
+                                           invisible="action != 'submenu'" readonly="1" optional="hide"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                            <group string="Notifications Subscription">
+                                <field name="stop_message"/>
+                                <field name="start_message"/>
+                            </group>
+                            <div class="text-muted">
+                                Since October 1, 2026, Meta charges the answers that are not templates (welcome menu,
+                                away message, answers of the agents) beyond 1,000 per month and per number.
+                            </div>
+                        </page>
+                        <page string="Health" name="health">
+                            <group>
+                                <group>
+                                    <field name="display_phone_number"/>
+                                    <field name="verified_name"/>
+                                    <field name="name_status"/>
+                                    <field name="number_status"/>
+                                </group>
+                                <group>
+                                    <field name="quality_rating"/>
+                                    <field name="messaging_limit"/>
+                                    <field name="health_state"/>
+                                    <field name="health_check_date"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="whatsapp_account_action" model="ir.actions.act_window">
+        <field name="name">WhatsApp Accounts</field>
+        <field name="res_model">whatsapp.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Connect your WhatsApp Business number</p>
+            <p>Enter the IDs and the access token of your Meta app (WhatsApp Cloud API).</p>
+        </field>
+    </record>
+
+</odoo>

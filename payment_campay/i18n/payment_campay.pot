@@ -1,0 +1,273 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* payment_campay
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 15:30+0000\n"
+"PO-Revision-Date: 2026-10-20 15:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: payment_campay
+#: model:ir.module.module,description:base.module_payment_campay
+msgid ""
+"\n"
+"Campay payment provider\n"
+"=======================\n"
+"\n"
+"- Mobile Money (MTN Mobile Money and Orange Money): the customer enters the phone number\n"
+"  at checkout and confirms the payment on the phone, without leaving the website.\n"
+"- Card payments through the Campay payment page.\n"
+"- Signed webhook (JWT HS256 with the webhook key) and status checks with the Campay API:\n"
+"  the payment state is always read from Campay, never from the callback parameters.\n"
+msgstr ""
+
+#. module: payment_campay
+#. odoo-javascript
+#: code:addons/payment_campay/static/src/interactions/payment_form.js:0
+msgid " or dial %(code)s"
+msgstr ""
+
+#. module: payment_campay
+#. odoo-python
+#: code:addons/payment_campay/models/payment_transaction.py:0
+msgid "%(company)s order %(reference)s"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.inline_form
+msgid "<span class=\"input-group-text\">+237</span>"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.inline_form
+msgid ""
+"<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"/>\n"
+"                    <b>Confirm the payment on your phone</b>"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
+msgid "App Password"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
+msgid "App Username"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.inline_form
+msgid ""
+"Approve the request you received<span class=\"o_campay_ussd\"/>.\n"
+"                    This page updates automatically."
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields.selection,name:payment_campay.selection__payment_provider__code__campay
+#: model:payment.provider,name:payment_campay.payment_provider_campay
+msgid "Campay"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__campay_app_password
+msgid "Campay App Password"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__campay_app_username
+msgid "Campay App Username"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__campay_webhook_key
+msgid "Campay Webhook Key"
+msgstr ""
+
+#. module: payment_campay
+#. odoo-python
+#: code:addons/payment_campay/models/payment_transaction.py:0
+msgid "Campay did not return a payment link."
+msgstr ""
+
+#. module: payment_campay
+#. odoo-python
+#: code:addons/payment_campay/models/payment_transaction.py:0
+msgid "Campay did not return a transaction reference."
+msgstr ""
+
+#. module: payment_campay
+#. odoo-python
+#: code:addons/payment_campay/models/payment_provider.py:0
+msgid "Campay did not return an access token."
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.actions.server,name:payment_campay.cron_check_pending_transactions_ir_actions_server
+msgid "Campay: check pending payments"
+msgstr ""
+
+#. module: payment_campay
+#: model:payment.method,name:payment_campay.payment_method_card
+msgid "Card"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__code
+msgid "Code"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:payment.provider,pending_msg:payment_campay.payment_provider_campay
+msgid ""
+"Confirm the payment on your phone: approve the request you received, or dial\n"
+"                <b>*126#</b> (MTN) or <b>#150*50#</b> (Orange). Your order is confirmed as soon as\n"
+"                the payment is received."
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__display_name
+#: model:ir.model.fields,field_description:payment_campay.field_payment_transaction__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: payment_campay
+#. odoo-javascript
+#. odoo-python
+#: code:addons/payment_campay/models/payment_transaction.py:0
+#: code:addons/payment_campay/static/src/interactions/payment_form.js:0
+msgid ""
+"Enter a Cameroonian mobile number, e.g. 6 70 00 00 00 (MTN) or 6 90 00 00 00"
+" (Orange)."
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__id
+#: model:ir.model.fields,field_description:payment_campay.field_payment_transaction__id
+msgid "ID"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
+msgid ""
+"In the Campay dashboard, set the webhook URL to\n"
+"                        <code>https://your-domain/payment/campay/webhook</code>.\n"
+"                        Without live mode, payments go through the Campay demo platform."
+msgstr ""
+
+#. module: payment_campay
+#. odoo-javascript
+#: code:addons/payment_campay/static/src/interactions/payment_form.js:0
+msgid "Invalid number"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.inline_form
+msgid ""
+"MTN Mobile Money or Orange Money. You will confirm the payment on this "
+"phone."
+msgstr ""
+
+#. module: payment_campay
+#: model:payment.method,name:payment_campay.payment_method_mobile_money
+msgid "Mobile Money (MTN, Orange)"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.inline_form
+msgid "Mobile Money number"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.module.module,summary:base.module_payment_campay
+msgid ""
+"Mobile Money payments in Cameroon (MTN MoMo, Orange Money) and cards with "
+"Campay"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model,name:payment_campay.model_payment_provider
+msgid "Payment Provider"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.module.module,shortdesc:base.module_payment_campay
+msgid "Payment Provider: Campay"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model,name:payment_campay.model_payment_transaction
+msgid "Payment Transaction"
+msgstr ""
+
+#. module: payment_campay
+#. odoo-javascript
+#: code:addons/payment_campay/static/src/interactions/payment_form.js:0
+msgid "Payment processing failed"
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,help:payment_campay.field_payment_provider__campay_webhook_key
+msgid ""
+"The key Campay uses to sign the webhook calls, in the Webhook settings of "
+"the Campay dashboard."
+msgstr ""
+
+#. module: payment_campay
+#. odoo-python
+#: code:addons/payment_campay/models/payment_transaction.py:0
+msgid ""
+"The payment was declined or cancelled on the phone, or the balance was "
+"insufficient."
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,help:payment_campay.field_payment_provider__code
+msgid "The technical code of this payment provider."
+msgstr ""
+
+#. module: payment_campay
+#: model:ir.model.fields,help:payment_campay.field_payment_provider__campay_app_username
+msgid ""
+"The username of the application, in the API Access Keys of the Campay "
+"dashboard."
+msgstr ""
+
+#. module: payment_campay
+#. odoo-python
+#: code:addons/payment_campay/controllers/main.py:0
+msgid "This payment has already been requested."
+msgstr ""
+
+#. module: payment_campay
+#. odoo-python
+#: code:addons/payment_campay/models/payment_transaction.py:0
+msgid "Unknown payment status: %s"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
+msgid "Webhook Key"
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:payment.provider,auth_msg:payment_campay.payment_provider_campay
+msgid "Your payment has been authorized."
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:payment.provider,cancel_msg:payment_campay.payment_provider_campay
+msgid "Your payment has been cancelled."
+msgstr ""
+
+#. module: payment_campay
+#: model_terms:payment.provider,done_msg:payment_campay.payment_provider_campay
+msgid "Your payment has been processed."
+msgstr ""

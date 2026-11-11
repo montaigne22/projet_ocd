@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inline form of the Campay provider: the Mobile Money phone number. -->
+    <template id="inline_form">
+        <t t-set="campay_partner" t-value="request.env['res.partner'].sudo().browse(partner_id).exists() if partner_id else request.env['res.partner']"/>
+        <t t-set="campay_phone" t-value="campay_partner.phone or ''"/>
+        <div t-if="pm_sudo and pm_sudo.code == 'mobile_money'"
+             t-attf-id="campay-container-{{pm_sudo.id}}"
+             class="o_campay_inline_form">
+            <div class="o_campay_phone_field">
+                <label class="form-label" t-attf-for="o_campay_phone_{{pm_sudo.id}}">
+                    Mobile Money number
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">+237</span>
+                    <input t-attf-id="o_campay_phone_{{pm_sudo.id}}"
+                           name="o_campay_phone"
+                           type="tel"
+                           inputmode="tel"
+                           autocomplete="tel-national"
+                           class="form-control"
+                           placeholder="6 70 00 00 00"
+                           t-att-value="campay_phone"/>
+                </div>
+                <div class="form-text">
+                    MTN Mobile Money or Orange Money. You will confirm the payment on this phone.
+                </div>
+            </div>
+            <div class="o_campay_waiting d-none alert alert-info mb-0" role="status" aria-live="polite">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"/>
+                    <b>Confirm the payment on your phone</b>
+                </div>
+                <p class="mb-0 mt-2">
+                    Approve the request you received<span class="o_campay_ussd"/>.
+                    This page updates automatically.
+                </p>
+            </div>
+        </div>
+    </template>
+
+</odoo>

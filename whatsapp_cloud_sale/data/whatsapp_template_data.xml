@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates to create at Meta (WhatsApp Manager > Message templates, category
+         Utility, language French, and the same names in English for the English-speaking
+         customers) with the same names and texts; then synchronise them from the WhatsApp
+         account. Each customer gets the version in their language (language of their
+         contact), else the French one. Editable: texts, variables, button. -->
+    <data noupdate="1">
+
+        <record id="template_order_received" model="whatsapp.template">
+            <field name="name">Order received</field>
+            <field name="template_name">order_received</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, nous avons bien reçu votre commande {{2}} d'un montant de {{3}}. Elle sera confirmée dès réception de votre paiement ({{4}}).</field>
+            <field name="button_url_value">{{ object.get_portal_url() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Suivre ma commande', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ format_amount(object.amount_total, object.currency_id) }}', 'sample_value': '25 000 FCFA'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.transaction_ids[:1].payment_method_id.name }}', 'sample_value': 'Virement bancaire'}),
+            ]"/>
+        </record>
+
+        <record id="template_order_confirmed" model="whatsapp.template">
+            <field name="name">Order confirmed</field>
+            <field name="template_name">order_confirmed</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, merci pour votre commande {{2}} d'un montant de {{3}}, elle est confirmée. Nous vous prévenons dès son expédition.</field>
+            <field name="button_url_value">{{ object.get_portal_url() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Suivre ma commande', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ format_amount(object.amount_total, object.currency_id) }}', 'sample_value': '25 000 FCFA'}),
+            ]"/>
+        </record>
+
+        <record id="template_order_ready_for_pickup" model="whatsapp.template">
+            <field name="name">Order ready for pickup</field>
+            <field name="template_name">order_ready_for_pickup</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} est prête ! Vous pouvez la retirer au magasin {{3}}, aux heures d'ouverture, avec ce message.</field>
+            <field name="button_url_value">{{ object.get_portal_url() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Suivre ma commande', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.warehouse_id.partner_id.name or object.warehouse_id.name }}', 'sample_value': 'Boutique du centre'}),
+            ]"/>
+        </record>
+
+        <record id="template_order_shipped" model="whatsapp.template">
+            <field name="name">Order shipped</field>
+            <field name="template_name">order_shipped</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">sale_id.partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} est en route ({{3}}). Le livreur vous appellera avant de passer.</field>
+            <field name="button_url_value">{{ object.sale_id and object.sale_id.get_portal_url() or '' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Suivre ma commande', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.sale_id.partner_id.name or object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.carrier_id.name }}', 'sample_value': 'Livraison Douala'}),
+            ]"/>
+        </record>
+
+        <!-- English versions (language "English" at Meta, code en) -->
+        <record id="template_order_received_en" model="whatsapp.template">
+            <field name="name">Order received (English)</field>
+            <field name="template_name">order_received</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, we have received your order {{2}} for {{3}}. It will be confirmed as soon as your payment is received ({{4}}).</field>
+            <field name="button_url_value">{{ object.get_portal_url() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Track my order', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ format_amount(object.amount_total, object.currency_id) }}', 'sample_value': '25,000 FCFA'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.transaction_ids[:1].payment_method_id.name }}', 'sample_value': 'Bank transfer'}),
+            ]"/>
+        </record>
+
+        <record id="template_order_confirmed_en" model="whatsapp.template">
+            <field name="name">Order confirmed (English)</field>
+            <field name="template_name">order_confirmed</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, thank you for your order {{2}} for {{3}}, it is confirmed. We will let you know as soon as it is shipped.</field>
+            <field name="button_url_value">{{ object.get_portal_url() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Track my order', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ format_amount(object.amount_total, object.currency_id) }}', 'sample_value': '25,000 FCFA'}),
+            ]"/>
+        </record>
+
+        <record id="template_order_ready_for_pickup_en" model="whatsapp.template">
+            <field name="name">Order ready for pickup (English)</field>
+            <field name="template_name">order_ready_for_pickup</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, your order {{2}} is ready! You can collect it at the {{3}} store during opening hours, with this message.</field>
+            <field name="button_url_value">{{ object.get_portal_url() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Track my order', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.warehouse_id.partner_id.name or object.warehouse_id.name }}', 'sample_value': 'City centre store'}),
+            ]"/>
+        </record>
+
+        <record id="template_order_shipped_en" model="whatsapp.template">
+            <field name="name">Order shipped (English)</field>
+            <field name="template_name">order_shipped</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">sale_id.partner_id</field>
+            <field name="body">Hello {{1}}, your order {{2}} is on its way ({{3}}). The delivery person will call you before coming.</field>
+            <field name="button_url_value">{{ object.sale_id and object.sale_id.get_portal_url() or '' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Track my order', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.sale_id.partner_id.name or object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.carrier_id.name }}', 'sample_value': 'Douala delivery'}),
+            ]"/>
+        </record>
+
+        <!-- Quotation sent from the backend or a WhatsApp conversation, with its link to view and pay it -->
+        <record id="template_quotation_sent" model="whatsapp.template">
+            <field name="name">Quotation sent</field>
+            <field name="template_name">quotation_sent</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, voici votre devis {{2}} d'un montant de {{3}}. Vous pouvez le consulter et le payer en ligne avec le bouton ci-dessous.</field>
+            <field name="button_url_value">{{ object.get_portal_url() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir et payer', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ format_amount(object.amount_total, object.currency_id) }}', 'sample_value': '25 000 FCFA'}),
+            ]"/>
+        </record>
+        <record id="template_quotation_sent_en" model="whatsapp.template">
+            <field name="name">Quotation sent (English)</field>
+            <field name="template_name">quotation_sent</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, here is your quotation {{2}} for {{3}}. You can view it and pay it online with the button below.</field>
+            <field name="button_url_value">{{ object.get_portal_url() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'View and pay', 'url': '{base_url}/{{1}}', 'url_example': '/my/orders/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'S00012'}),
+                (0, 0, {'sequence': 3, 'value': '{{ format_amount(object.amount_total, object.currency_id) }}', 'sample_value': '25,000 FCFA'}),
+            ]"/>
+        </record>
+
+        <!-- Satisfaction after the delivery: the customer rates the order with a button -->
+        <record id="template_delivery_feedback" model="whatsapp.template">
+            <field name="name">Satisfaction after the delivery</field>
+            <field name="template_name">delivery_feedback</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">sale_id.partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} vous a-t-elle donné satisfaction ? Notez-la de 1 à 5 avec les boutons ci-dessous, cela nous aide beaucoup.</field>
+            <field name="button_ids" eval="[
+                (0, 0, {'sequence': 1, 'button_type': 'quick_reply', 'name': '5 ⭐ Excellent'}),
+                (0, 0, {'sequence': 2, 'button_type': 'quick_reply', 'name': '4 ⭐ Très bien'}),
+                (0, 0, {'sequence': 3, 'button_type': 'quick_reply', 'name': '3 ⭐ Correct'}),
+                (0, 0, {'sequence': 4, 'button_type': 'quick_reply', 'name': '2 ⭐ Décevant'}),
+                (0, 0, {'sequence': 5, 'button_type': 'quick_reply', 'name': '1 ⭐ Mauvais'}),
+            ]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.sale_id.partner_id.name or object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin }}', 'sample_value': 'S00012'}),
+            ]"/>
+        </record>
+        <record id="template_delivery_feedback_en" model="whatsapp.template">
+            <field name="name">Satisfaction after the delivery (English)</field>
+            <field name="template_name">delivery_feedback</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">sale_id.partner_id</field>
+            <field name="body">Hello {{1}}, were you satisfied with your order {{2}}? Rate it from 1 to 5 with the buttons below, it helps us a lot.</field>
+            <field name="button_ids" eval="[
+                (0, 0, {'sequence': 1, 'button_type': 'quick_reply', 'name': '5 ⭐ Excellent'}),
+                (0, 0, {'sequence': 2, 'button_type': 'quick_reply', 'name': '4 ⭐ Very good'}),
+                (0, 0, {'sequence': 3, 'button_type': 'quick_reply', 'name': '3 ⭐ Fair'}),
+                (0, 0, {'sequence': 4, 'button_type': 'quick_reply', 'name': '2 ⭐ Disappointing'}),
+                (0, 0, {'sequence': 5, 'button_type': 'quick_reply', 'name': '1 ⭐ Poor'}),
+            ]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.sale_id.partner_id.name or object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin }}', 'sample_value': 'S00012'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

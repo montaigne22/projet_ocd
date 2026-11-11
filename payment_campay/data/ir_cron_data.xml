@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="cron_check_pending_transactions" model="ir.cron">
+        <field name="name">Campay: check pending payments</field>
+        <field name="model_id" ref="payment.model_payment_transaction"/>
+        <field name="code">model._cron_campay_check_pending()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+    </record>
+
+</odoo>

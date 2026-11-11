@@ -1,0 +1,4253 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* whatsapp_cloud
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-03 08:44+0000\n"
+"PO-Revision-Date: 2026-11-03 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: whatsapp_cloud
+#: model:ir.module.module,description:base.module_whatsapp_cloud
+msgid ""
+"\n"
+"WhatsApp for Odoo Community\n"
+"===========================\n"
+"\n"
+"WhatsApp Business number of the company with the Cloud API of Meta (no intermediary):\n"
+"\n"
+"- Accounts: phone number ID, WhatsApp Business account ID, access token and app\n"
+"  secret, entered by an administrator in Odoo (never in the code). Health of the number\n"
+"  (quality, messaging limit, display name, token) checked every 6 hours, managers alerted.\n"
+"- Conversations in Discuss (WhatsApp tab): every type of message (texts, photos, voice\n"
+"  messages, videos, documents, locations, contacts, reactions, quoted replies), files\n"
+"  downloaded, answers of the agents with files and quotes, 24-hour window, read receipts\n"
+"  and \"typing...\", delivery ticks with the reason of the failures, internal notes (/note),\n"
+"  canned responses with variables, tags, information panel on the customer.\n"
+"- Team: agents and managers, assignment (taken by an agent, each agent in turn), transfer,\n"
+"  reminders and escalation of the messages waiting for an answer (opening hours and public\n"
+"  holidays), unknown numbers identified or merged into the right contact.\n"
+"- Automatic answers: away message outside of the opening hours, welcome menu with buttons,\n"
+"  hand over to an agent, STOP / START.\n"
+"- Templates: synchronised from Meta, or written in Odoo and submitted to Meta (header,\n"
+"  footer, quick replies, link and call buttons, examples); status, quality and category\n"
+"  updated by Meta; each contact gets the version in their language.\n"
+"- \"Send WhatsApp\" action in the automation rules and server actions.\n"
+"- Webhook signed by Meta (X-Hub-Signature-256), stored and acknowledged at once, then\n"
+"  processed in the background without duplicates.\n"
+"- Settings (WhatsApp section): each feature enabled or disabled (conversations, read\n"
+"  receipts, reminders, welcome menu, away message).\n"
+msgstr ""
+"\n"
+"WhatsApp pour Odoo Community\n"
+"============================\n"
+"\n"
+"Numéro WhatsApp Business de la société avec l’API Cloud de Meta (sans intermédiaire) :\n"
+"\n"
+"- Comptes : ID du numéro, ID du compte WhatsApp Business, jeton d’accès et clé secrète de\n"
+"  l’app, saisis par un administrateur dans Odoo (jamais dans le code). Santé du numéro\n"
+"  (qualité, limite d’envoi, nom affiché, jeton) vérifiée toutes les 6 heures, responsables alertés.\n"
+"- Conversations dans Discussion (onglet WhatsApp) : tous les types de messages (textes, photos,\n"
+"  messages vocaux, vidéos, documents, positions, contacts, réactions, réponses citées), fichiers\n"
+"  téléchargés, réponses des agents avec fichiers et citations, fenêtre de 24 heures, accusés de\n"
+"  lecture et « en train d’écrire », coches de distribution avec la raison des échecs, notes\n"
+"  internes (/note), réponses rapides avec variables, étiquettes, panneau d’information client.\n"
+"- Équipe : agents et responsables, attribution (prise par un agent, chacun son tour), transfert,\n"
+"  relances et escalade des messages en attente de réponse (horaires d’ouverture et jours fériés),\n"
+"  numéros inconnus identifiés ou fusionnés avec le bon contact.\n"
+"- Réponses automatiques : message d’absence en dehors des horaires, menu d’accueil à boutons,\n"
+"  passage à un conseiller, STOP / START.\n"
+"- Modèles : synchronisés depuis Meta, ou rédigés dans Odoo et soumis à Meta (en-tête, pied,\n"
+"  réponses rapides, boutons lien et appel, exemples) ; statut, qualité et catégorie mis à jour\n"
+"  par Meta ; chaque contact reçoit la version dans sa langue.\n"
+"- Action « Envoyer un WhatsApp » dans les règles d’automatisation et les actions serveur.\n"
+"- Webhook signé par Meta (X-Hub-Signature-256), enregistré et acquitté aussitôt, puis traité en\n"
+"  arrière-plan sans doublon.\n"
+"- Paramètres (section WhatsApp) : chaque fonction activée ou désactivée (conversations,\n"
+"  accusés de lecture, relances, menu d’accueil, message d’absence).\n"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "%(quantity)s x %(product)s (%(price)s %(currency)s)"
+msgstr "%(quantity)s x %(product)s (%(price)s %(currency)s)"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/wizard/whatsapp_composer.py:0
+msgid "%s WhatsApp message(s) being sent."
+msgstr "%s message(s) WhatsApp en cours d’envoi."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/wizard/whatsapp_composer.py:0
+msgid "%s documents"
+msgstr "%s documents"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "(Message not supported by WhatsApp Cloud API: %s)"
+msgstr "(Message non pris en charge par l’API Cloud de WhatsApp : %s)"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "(The %(type)s sent by the customer could not be downloaded: %(error)s)"
+msgstr ""
+"(Le fichier (%(type)s) envoyé par le client n’a pas pu être téléchargé : "
+"%(error)s)"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "(change of number)"
+msgstr "(changement de numéro)"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "(reaction removed)"
+msgstr "(réaction retirée)"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "24-hour window closed: send a template"
+msgstr "Fenêtre de 24 h fermée : envoyez un modèle"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\" invisible=\"whatsapp_account_count &gt; 1\">Account</span>\n"
+"                                <span class=\"o_form_label\" invisible=\"whatsapp_account_count &lt;= 1\">Accounts</span>"
+msgstr ""
+"<span class=\"o_form_label\" invisible=\"whatsapp_account_count &gt; "
+"1\">Compte</span> <span class=\"o_form_label\" "
+"invisible=\"whatsapp_account_count &lt;= 1\">Comptes</span>"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_form
+msgid "<span class=\"o_stat_text\">Document</span>"
+msgstr "<span class=\"o_stat_text\">Document</span>"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_bot_option_view_form
+msgid ""
+"<span invisible=\"action != 'text'\">Sends the answer below.</span>\n"
+"                        <span invisible=\"action != 'submenu'\">Sends the text below with the options of the\n"
+"                            sub-menu and a \"Main menu\" choice (9 options at most).</span>\n"
+"                        <span invisible=\"action != 'lang'\">The customer then receives the answers, the menus and\n"
+"                            the notifications in this language. Not offered to the customers who already use it.</span>\n"
+"                        <span invisible=\"action not in ('stop', 'start')\">The customer stops, or receives again,\n"
+"                            the WhatsApp notifications (as with STOP and START): only the useful option is offered.</span>\n"
+"                        <span invisible=\"action != 'handover'\">The conversation goes to the team.</span>"
+msgstr ""
+"<span invisible=\"action != 'text'\">Envoie la réponse ci-dessous.</span> "
+"<span invisible=\"action != 'submenu'\">Envoie le texte ci-dessous avec les "
+"options du sous-menu et un choix « Menu principal » (9 options au "
+"plus).</span> <span invisible=\"action != 'lang'\">Le client reçoit ensuite "
+"les réponses, les menus et les notifications dans cette langue. Non proposée"
+" aux clients qui l’utilisent déjà.</span> <span invisible=\"action not in "
+"('stop', 'start')\">Le client arrête, ou reçoit à nouveau, les notifications"
+" WhatsApp (comme avec STOP et START) : seule l’option utile est "
+"proposée.</span> <span invisible=\"action != 'handover'\">La conversation "
+"passe à l’équipe.</span>"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__bot_enabled
+msgid ""
+"A new conversation starts with the welcome message and the menu of the "
+"options; the conversation goes to an agent when the customer asks for it or "
+"writes something the menu does not handle."
+msgstr ""
+"Une nouvelle conversation commence par le message d’accueil et le menu des "
+"options ; elle passe à un agent quand le client le demande ou écrit quelque "
+"chose que le menu ne traite pas."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid ""
+"A new conversation starts with the welcome message and the options of the "
+"menu (texts and options on the account)."
+msgstr ""
+"Une nouvelle conversation commence par le message d’accueil et les options "
+"du menu (textes et options sur le compte)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"A parameter of the message is invalid (variables of the template, number, "
+"media...): check the template and its variables."
+msgstr ""
+"Un paramètre du message est invalide (variables du modèle, numéro, média…) :"
+" vérifiez le modèle et ses variables."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"A parameter value is invalid: check the variables of the template and the "
+"number."
+msgstr ""
+"Une valeur est invalide : vérifiez les variables du modèle et le numéro."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "A person of the team answers you"
+msgstr "Une personne de l’équipe vous répond"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "A required parameter is missing: check the variables of the template."
+msgstr "Un paramètre obligatoire manque : vérifiez les variables du modèle."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_bot_option.py:0
+msgid "A sub-menu cannot contain itself."
+msgstr "Un sous-menu ne peut pas se contenir lui-même."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "A template has 1 call button at most."
+msgstr "Un modèle a 1 bouton d’appel au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "A template has 10 buttons at most."
+msgstr "Un modèle a 10 boutons au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "A template has 2 link buttons at most."
+msgstr "Un modèle a 2 boutons lien au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"A variable of the template is invalid: check the variables of the template."
+msgstr ""
+"Une variable du modèle est invalide : vérifiez les variables du modèle."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "A variable of the template is too long once filled."
+msgstr "Une variable du modèle est trop longue une fois remplie."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__api_version
+msgid "API Version"
+msgstr "Version de l’API"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__access_token
+msgid "Access Token"
+msgstr "Jeton d’accès"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__account_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__account_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__account_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__account_id
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "Account"
+msgstr "Compte"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__account_id
+msgid ""
+"Account that sends the messages; the first account of the company if empty."
+msgstr ""
+"Compte qui envoie les messages ; le premier compte de la société si vide."
+
+#. module: whatsapp_cloud
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_accounts
+msgid "Accounts"
+msgstr "Comptes"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__action
+msgid "Action"
+msgstr "Action"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_needaction
+msgid "Action Needed"
+msgstr "Action nécessaire"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__active
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__active
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__escalation_user_ids
+msgid ""
+"Added to the conversations that wait too long for an answer. When empty: the"
+" WhatsApp managers."
+msgstr ""
+"Ajoutés aux conversations qui attendent trop longtemps une réponse. Si vide "
+": les responsables WhatsApp."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__user_id
+#: model:res.groups,name:whatsapp_cloud.group_whatsapp_user
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "Agent"
+msgstr "Agent"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__agent_user_ids
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Agents"
+msgstr "Agents"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__escalation_delay
+msgid "Alert the managers after (minutes)"
+msgstr "Alerter les responsables après (minutes)"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "All the WhatsApp agents"
+msgstr "Tous les agents WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__answer
+msgid "Answer"
+msgstr "Réponse"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Answer Delays"
+msgstr "Délais de réponse"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_bot_option__action__text
+msgid "Answer with a text"
+msgstr "Répondre par un texte"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__response_delay
+msgid "Answer within (minutes)"
+msgstr "Répondre sous (minutes)"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_channel_valid_until
+msgid "Answers Allowed until"
+msgstr "Réponses permises jusqu’au"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Answers allowed until"
+msgstr "Réponses permises jusqu’au"
+
+#. module: whatsapp_cloud
+#: model:res.groups,comment:whatsapp_cloud.group_whatsapp_user
+msgid ""
+"Answers the WhatsApp conversations assigned to them or not assigned yet."
+msgstr ""
+"Répond aux conversations WhatsApp qui lui sont attribuées ou pas encore "
+"attribuées."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Anything else?"
+msgstr "Autre chose ?"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__app_id
+msgid "App ID"
+msgstr "ID de l’app"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__app_secret
+msgid "App Secret"
+msgstr "Clé secrète de l’app"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__model_id
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_search
+msgid "Applies to"
+msgstr "S’applique à"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__status__approved
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_search
+msgid "Approved"
+msgstr "Approuvé"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_bot_option_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_assigned_date
+msgid "Assigned on"
+msgstr "Attribuée le"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_user_id
+msgid "Assigned to"
+msgstr "Attribuée à"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__assignment_mode
+msgid "Assignment"
+msgstr "Attribution"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__attachment_id
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__attempts
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__attempts
+msgid "Attempts"
+msgstr "Tentatives"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__audio
+msgid "Audio"
+msgstr "Audio"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__category__authentication
+msgid "Authentication"
+msgstr "Authentification"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_bot_state
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Automatic Answers"
+msgstr "Réponses automatiques"
+
+#. module: whatsapp_cloud
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_automations
+msgid "Automation Rules"
+msgstr "Règles d’automatisation"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__available_user_ids
+msgid "Available User"
+msgstr "Utilisateur disponible"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_config_settings__whatsapp_away_message
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__away_message
+msgid "Away Message"
+msgstr "Message d’absence"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/message_model_patch.js:0
+msgid "Being sent"
+msgstr "En cours d’envoi"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__body
+msgid "Body"
+msgstr "Texte"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__button
+msgid "Button"
+msgstr "Bouton"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__button_ids
+msgid "Buttons"
+msgstr "Boutons"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template_button__button_type__phone_number
+msgid "Call"
+msgstr "Appel"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__webhook_url
+msgid "Callback URL"
+msgstr "URL de rappel"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_composer_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_conversation_assign_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_link_partner_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.act_window,name:whatsapp_cloud.mail_canned_response_action_whatsapp
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_canned_responses
+msgid "Canned Responses"
+msgstr "Réponses rapides"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__category
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_bot_option__action__lang
+msgid "Change the language"
+msgstr "Changer de langue"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__channel_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__channel_id
+msgid "Channel"
+msgstr "Canal"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_discuss_channel_member
+msgid "Channel Member"
+msgstr "Membre du canal"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__channel_type
+msgid ""
+"Chat is private and unique between 2 persons. Group is private among invited"
+" persons. Channel can be freely joined (depending on its configuration)."
+msgstr ""
+"Le chat est privé et unique entre 2 personnes. Le groupe est privé entre les"
+" personnes invitées. Le canal peut être rejoint librement (selon sa "
+"configuration). La conversation WhatsApp relie un client et l’équipe."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Check the Account"
+msgstr "Vérifier le compte"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.ir_actions_server_view_form
+msgid "Choose a template..."
+msgstr "Choisir un modèle..."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_bot_option.py:0
+msgid "Choose the language of the option %s."
+msgstr "Choisissez la langue de l’option %s."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__color
+msgid "Color"
+msgstr "Couleur"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_res_company
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__company_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__company_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: whatsapp_cloud
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_configuration
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_account_action
+msgid "Connect your WhatsApp Business number"
+msgstr "Connectez votre numéro WhatsApp Business"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Connection"
+msgstr "Connexion"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_res_partner
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__current_partner_id
+msgid "Contact Created"
+msgstr "Contact créé"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_partner_view_form
+msgid ""
+"Contact created for a number unknown to Odoo that wrote on WhatsApp (name of their\n"
+"                    WhatsApp profile)."
+msgstr ""
+"Contact créé pour un numéro inconnu d’Odoo qui a écrit sur WhatsApp (nom de "
+"son profil WhatsApp)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_to_identify
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_partner__whatsapp_to_identify
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_users__whatsapp_to_identify
+msgid ""
+"Contact created for an unknown number that wrote on WhatsApp: associate it "
+"with the right contact, or confirm it."
+msgstr ""
+"Contact créé pour un numéro inconnu qui a écrit sur WhatsApp : associez-le "
+"au bon contact, ou confirmez-le."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__contacts
+msgid "Contacts"
+msgstr "Contacts"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__channel_id
+msgid "Conversation"
+msgstr "Conversation"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__conversation_count
+msgid "Conversation Count"
+msgstr "Nombre de conversations"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_state
+msgid "Conversation Status"
+msgstr "Statut de la conversation"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.act_window,name:whatsapp_cloud.whatsapp_tag_action
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_tags
+msgid "Conversation Tags"
+msgstr "Étiquettes des conversations"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__channel_type
+msgid "Conversation Type"
+msgstr "Type de conversation"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Conversation assigned to %s."
+msgstr "Conversation attribuée à %s."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Conversation reopened by %s."
+msgstr "Conversation rouverte par %s."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Conversation resolved by %s."
+msgstr "Conversation résolue par %s."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/wizard/whatsapp_conversation_wizards.py:0
+msgid "Conversation transferred to %(user)s by %(by)s."
+msgstr "Conversation transférée à %(user)s par %(by)s."
+
+#. module: whatsapp_cloud
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_conversations
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Conversations"
+msgstr "Conversations"
+
+#. module: whatsapp_cloud
+#: model:ir.model,website_form_label:whatsapp_cloud.model_res_partner
+msgid "Create a Customer"
+msgstr "Créer un client"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.mail_canned_response_action_whatsapp
+msgid "Create the answers you write often"
+msgstr "Créez les réponses que vous écrivez souvent"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_template_action
+msgid "Create the templates of your messages"
+msgstr "Créez les modèles de vos messages"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__create_date
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_form
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/thread_actions.js:0
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_partner_id
+msgid "Customer"
+msgstr "Client"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/wizard/whatsapp_conversation_wizards.py:0
+msgid "Customer identified by %(user)s: %(partner)s."
+msgstr "Client identifié par %(user)s : %(partner)s."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_to_identify
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "Customer to Identify"
+msgstr "Client à identifier"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_kanban_whatsapp
+msgid "Customer to identify"
+msgstr "Client à identifier"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_list
+msgid "Date"
+msgstr "Date"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/message_model_patch.js:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__state__delivered
+msgid "Delivered"
+msgstr "Distribué"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__delivered_date
+msgid "Delivered Date"
+msgstr "Distribué le"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__description
+msgid "Description"
+msgstr "Description"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__direction
+msgid "Direction"
+msgstr "Sens"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__status__disabled
+msgid "Disabled"
+msgstr "Désactivé"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_discuss_channel
+msgid "Discussion Channel"
+msgstr "Canal de discussion"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__mail_message_id
+msgid "Discussion Message"
+msgstr "Message de discussion"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel_member__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_ir_actions_server__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_mail_message__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_company__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_lang__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__name_status
+msgid "Display Name Status"
+msgstr "Statut du nom affiché"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__res_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__header_report_id
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__document
+msgid "Document"
+msgstr "Document"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__model
+msgid "Document Model"
+msgstr "Modèle du document"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__record_name
+msgid "Document Name"
+msgstr "Nom du document"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Does not receive the WhatsApp notifications"
+msgstr "Ne reçoit pas les notifications WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__assignment_mode__round_robin
+msgid "Each agent in turn"
+msgstr "Chaque agent à tour de rôle"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_webhook_event_action
+msgid ""
+"Each call of Meta to the webhook (messages, receipts, decisions on the templates) is kept\n"
+"               here for a month."
+msgstr ""
+"Chaque appel de Meta au webhook (messages, accusés, décisions sur les "
+"modèles) est conservé ici un mois."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__button_url_value
+msgid ""
+"End of the URL of the link button of the template, when its URL ends with a "
+"variable, e.g. {{ object.get_portal_url() }} for a button "
+"https://shop.example.com/{{1}}."
+msgstr ""
+"Fin de l’URL du bouton lien du modèle, quand son URL se termine par une "
+"variable, par exemple {{ object.get_portal_url() }} pour un bouton "
+"https://shop.example.com/{{1}}."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid ""
+"Enter the App ID of the Meta app on the WhatsApp account to submit a "
+"template with a document."
+msgstr ""
+"Saisissez l’ID de l’app Meta sur le compte WhatsApp pour soumettre un modèle"
+" avec un document."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_account_action
+msgid ""
+"Enter the IDs and the access token of your Meta app (WhatsApp Cloud API)."
+msgstr ""
+"Saisissez les identifiants et le jeton d’accès de votre app Meta (API Cloud "
+"WhatsApp)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Enter the number that receives the test message."
+msgstr "Saisissez le numéro qui reçoit le message de test."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__error
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__error
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__health_state__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__error_code
+msgid "Error Code"
+msgstr "Code d’erreur"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid ""
+"Escalation: the customer has been waiting for an answer for %s minutes."
+msgstr "Escalade : le client attend une réponse depuis %s minutes."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__sample_value
+msgid "Example"
+msgstr "Exemple"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_button__url_example
+msgid ""
+"Example of the end of the URL (or of the whole URL), for the review by Meta."
+msgstr ""
+"Exemple de la fin de l’URL (ou de l’URL entière), pour l’examen par Meta."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_sample
+msgid "Example of the header variable, for the review by Meta."
+msgstr "Exemple de la variable de l’en-tête, pour la vérification par Meta."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_variable__sample_value
+msgid ""
+"Example of the value, for the review of the template by Meta; when empty, "
+"the value for the latest document is used."
+msgstr ""
+"Exemple de valeur, pour la vérification du modèle par Meta ; si vide, la "
+"valeur pour le dernier document est utilisée."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__partner_id
+msgid "Existing Contact"
+msgstr "Contact existant"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Existing contact"
+msgstr "Contact existant"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__state__failed
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_webhook_event__state__failed
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_search
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_webhook_event_view_search
+msgid "Failed"
+msgstr "Échec"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__field
+msgid "Field"
+msgstr "Champ"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_webhook_event__field
+msgid "Field of the WhatsApp webhook: messages..."
+msgstr "Champ du webhook WhatsApp : messages…"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__partner_field
+msgid ""
+"Field of the document that gives the contact who receives the message, e.g. "
+"partner_id (customer of an order). Ignored on the contacts themselves."
+msgstr ""
+"Champ du document qui donne le contact destinataire, ex. partner_id (client "
+"d’une commande). Ignoré sur les contacts eux-mêmes."
+
+#. module: whatsapp_cloud
+#: model:whatsapp.template,name:whatsapp_cloud.template_conversation_follow_up
+msgid "Follow-up of the conversation"
+msgstr "Suite de la conversation"
+
+#. module: whatsapp_cloud
+#: model:whatsapp.template,name:whatsapp_cloud.template_conversation_follow_up_en
+msgid "Follow-up of the conversation (English)"
+msgstr "Suite de la conversation (anglais)"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__footer_text
+msgid "Footer"
+msgstr "Pied de message"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_bot_option_view_form
+msgid "For a sub-menu: the text above its options"
+msgstr "Pour un sous-menu : le texte au-dessus de ses options"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_channel_valid_until
+msgid ""
+"Free-form answers are allowed for 24 hours after the last message of the "
+"customer; a template is required after."
+msgstr ""
+"Les réponses libres sont permises 24 heures après le dernier message du "
+"client ; un modèle est nécessaire ensuite."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Get notifications"
+msgstr "Recevoir les alertes"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Give a sample PDF for the header of the template."
+msgstr "Donnez un PDF d’exemple pour l’en-tête du modèle."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_bot_option.py:0
+msgid "Give the answer of the option %s."
+msgstr "Donnez la réponse de l’option %s."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Give the number of the button %s."
+msgstr "Donnez le numéro du bouton %s."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_bot_option__action__handover
+msgid "Hand over to an agent"
+msgstr "Passer à un agent"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__handover_message
+msgid "Handover Message"
+msgstr "Message de passage à un conseiller"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__header_text
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "Header"
+msgstr "En-tête"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__header_sample
+msgid "Header Example"
+msgstr "Exemple d’en-tête"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__header_sample_filename
+msgid "Header Sample Filename"
+msgstr "Nom du fichier d’exemple"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__header_type
+msgid "Header Type"
+msgstr "Type d’en-tête"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__header_value
+msgid "Header Variable"
+msgstr "Variable de l’en-tête"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "Header and Buttons"
+msgstr "En-tête et boutons"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__health_state
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Health"
+msgstr "Santé"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__health_message
+msgid "Health Details"
+msgstr "Détails de la santé"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"Hello and welcome! How can we help you? Choose an option below, or write "
+"your question."
+msgstr ""
+"Bonjour et bienvenue ! Comment pouvons-nous vous aider ? Choisissez une "
+"option ci-dessous, ou écrivez votre question."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "Hello {{1}}, your order {{2}} is confirmed."
+msgstr "Bonjour {{1}}, votre commande {{2}} est confirmée."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__quality_rating__green
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__quality_score__green
+msgid "High"
+msgstr "Élevée"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__resource_calendar_id
+msgid ""
+"Hours when the team answers, with the public holidays (Time off of the "
+"working schedule): the answer delays count only these hours, and the away "
+"message is sent outside of them."
+msgstr ""
+"Heures où l’équipe répond, avec les jours fériés (congés de l’horaire de "
+"travail) : les délais de réponse ne comptent que ces heures, et le message "
+"d’absence part en dehors."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "How can we help you?"
+msgstr "Comment pouvons-nous vous aider ?"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel_member__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_ir_actions_server__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_mail_message__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_company__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_config_settings__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_lang__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__id
+msgid "ID"
+msgstr "ID"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__wa_template_id
+msgid "ID at Meta"
+msgstr "ID chez Meta"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_partner__whatsapp_user_ref
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_users__whatsapp_user_ref
+msgid ""
+"ID of the contact for the company at WhatsApp (BSUID), given by Meta: it "
+"identifies the contacts who hide their number behind a WhatsApp username."
+msgstr ""
+"ID du contact pour la société chez WhatsApp (BSUID), donné par Meta : il "
+"identifie les contacts qui cachent leur numéro derrière un nom d’utilisateur"
+" WhatsApp."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_message__user_ref
+msgid ""
+"ID of the customer for the company at WhatsApp (BSUID), given by Meta also "
+"when the customer hides their number behind a WhatsApp username."
+msgstr ""
+"ID du client pour la société chez WhatsApp (BSUID), donné par Meta, y "
+"compris quand le client cache son numéro derrière un nom d’utilisateur "
+"WhatsApp."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_user_ref
+msgid "ID of the customer for the company at WhatsApp (BSUID)."
+msgstr "ID du client pour la société chez WhatsApp (BSUID)."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_link_partner_view_form
+msgid "Identify"
+msgstr "Identifier"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_link_partner
+msgid "Identify a WhatsApp Customer"
+msgstr "Identifier un client WhatsApp"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+msgid "Identify the Customer"
+msgstr "Identifier le client"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__message_has_error
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de distribution."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__image
+msgid "Image"
+msgstr "Image"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/discuss_channel_model_patch.js:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__discuss_channel__whatsapp_state__open
+msgid "In progress"
+msgstr "En cours"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__app_id
+msgid ""
+"In the Meta app, App settings > Basic: needed only to submit templates with "
+"a document, an image or a video in their header (sample uploaded to Meta)."
+msgstr ""
+"Dans l’app Meta, Paramètres de l’app > Général : nécessaire seulement pour "
+"soumettre des modèles avec un document, une image ou une vidéo en en-tête "
+"(exemple envoyé à Meta)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__app_secret
+msgid ""
+"In the Meta app, App settings > Basic: used to check that the webhook calls "
+"come from Meta. Without it, the receipts and replies are refused."
+msgstr ""
+"Dans l’app Meta, Paramètres de l’app > Général : sert à vérifier que les "
+"appels du webhook viennent de Meta. Sans elle, les accusés et les réponses "
+"sont refusés."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__waba_id
+msgid ""
+"In the Meta app, WhatsApp > API Setup: the ID of the WhatsApp Business "
+"account."
+msgstr ""
+"Dans l’app Meta, WhatsApp > Configuration de l’API : l’ID du compte WhatsApp"
+" Business."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__phone_number_id
+msgid ""
+"In the Meta app, WhatsApp > API Setup: the ID of the phone number that sends"
+" the messages."
+msgstr ""
+"Dans l’app Meta, WhatsApp > Configuration de l’API : l’ID du numéro de "
+"téléphone qui envoie les messages."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid ""
+"In the URL of a link button, {base_url} is replaced by the address of the site when\n"
+"                                the template is submitted to Meta; end it with /{{1}} to add the Link Button Variable\n"
+"                                of each document (e.g. the link of the order in the customer account)."
+msgstr ""
+"Dans l’URL d’un bouton lien, {base_url} est remplacé par l’adresse du site "
+"lors de la soumission du modèle à Meta ; terminez-la par /{{1}} pour ajouter"
+" la Variable du bouton lien de chaque document (par exemple le lien de la "
+"commande dans l’espace client)."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid ""
+"In the webhook settings of the Meta app, enter the callback URL and the verify\n"
+"                                token above, then subscribe to the fields messages, message_template_status_update,\n"
+"                                message_template_quality_update, template_category_update,\n"
+"                                phone_number_quality_update and account_update: the receipts, the messages of the\n"
+"                                customers and the decisions of Meta then come back to Odoo."
+msgstr ""
+"Dans les paramètres du webhook de l’app Meta, saisissez l’URL de rappel et "
+"le jeton de vérification ci-dessus, puis abonnez-vous aux champs messages, "
+"message_template_status_update, message_template_quality_update, "
+"template_category_update, phone_number_quality_update et account_update : "
+"les accusés, les messages des clients et les décisions de Meta reviennent "
+"alors dans Odoo."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__interactive
+msgid "Interactive"
+msgstr "Interactif"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/channel_commands.js:0
+msgid "Internal note, not sent to the customer"
+msgstr "Note interne, non envoyée au client"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Internal note:"
+msgstr "Note interne :"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__handover_invite_message
+msgid "Invitation to Write"
+msgstr "Invitation à écrire"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_partner_view_form
+msgid "It is the right contact"
+msgstr "C’est le bon contact"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_res_lang
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__lang
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__lang_code
+msgid "Language"
+msgstr "Langue"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__lang_code
+msgid "Language code of the template at Meta: fr, en_US, en..."
+msgstr "Code de langue du modèle chez Meta : fr, en_US, en..."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_bot_option__lang
+msgid ""
+"Language of the answers, menus and notifications of the customer who chooses"
+" the option. The option is not offered to the customers who already use it."
+msgstr ""
+"Langue des réponses, menus et notifications du client qui choisit l’option. "
+"L’option n’est pas proposée aux clients qui l’utilisent déjà."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_list_whatsapp
+msgid "Last Activity"
+msgstr "Dernière activité"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__last_webhook_date
+msgid "Last Call from Meta"
+msgstr "Dernier appel de Meta"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__health_check_date
+msgid "Last Check"
+msgstr "Dernière vérification"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_last_inbound_date
+msgid "Last Message of the Customer"
+msgstr "Dernier message du client"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "Late"
+msgstr "En retard"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template_button__button_type__url
+msgid "Link"
+msgstr "Lien"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "Link Button"
+msgstr "Bouton lien"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__button_url_value
+msgid "Link Button Variable"
+msgstr "Variable du bouton lien"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__button_url_dynamic
+msgid "Link Button with Variable"
+msgstr "Bouton lien avec variable"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__location
+msgid "Location"
+msgstr "Position"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__quality_rating__red
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__quality_score__red
+msgid "Low"
+msgstr "Faible"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Main menu"
+msgstr "Menu principal"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid "Manage the Accounts"
+msgstr "Gérer les comptes"
+
+#. module: whatsapp_cloud
+#: model:res.groups,name:whatsapp_cloud.group_whatsapp_manager
+msgid "Manager"
+msgstr "Responsable"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__escalation_user_ids
+msgid "Managers to Alert"
+msgstr "Responsables à alerter"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/thread_actions.js:0
+msgid "Mark as resolved"
+msgstr "Marquer comme résolue"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__category__marketing
+msgid "Marketing"
+msgstr "Marketing"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__quality_rating__yellow
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__quality_score__yellow
+msgid "Medium"
+msgstr "Moyenne"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_bot_option_view_form
+msgid "Menu Option"
+msgstr "Option du menu"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__bot_option_ids
+msgid "Menu Options"
+msgstr "Options du menu"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_mail_message
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__body
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "Message"
+msgstr "Message"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_count
+msgid "Message Count"
+msgstr "Nombre de messages"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de distribution du message"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "Message not delivered to the customer: %s"
+msgstr "Message non distribué au client : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_ids
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_messages
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Messages"
+msgstr "Messages"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__messaging_limit
+msgid "Messaging Limit"
+msgstr "Limite d’envoi"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"Messaging limit reached because of templates in the wrong category: it is "
+"lifted automatically after a while."
+msgstr ""
+"Limite d’envoi atteinte à cause de modèles dans une mauvaise catégorie : "
+"elle est levée automatiquement après un moment."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_webhook_event.py:0
+msgid "Meta (%(field)s): %(details)s"
+msgstr "Meta (%(field)s) : %(details)s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid ""
+"Meta accepts changes only on the approved, rejected or paused templates."
+msgstr ""
+"Meta n’accepte de modifications que sur les modèles approuvés, refusés ou en"
+" pause."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Meta app (WhatsApp > API Setup)"
+msgstr "App Meta (WhatsApp > Configuration de l’API)"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Meta blocks the sending of messages."
+msgstr "Meta bloque l’envoi des messages."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"Meta could not authenticate the request: check the access token of the "
+"account."
+msgstr ""
+"Meta n’a pas pu authentifier la requête : vérifiez le jeton d’accès du "
+"compte."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"Meta did not deliver this marketing message to keep a good experience for "
+"the customer (limit of marketing messages per person). Try again later, not "
+"as soon as possible."
+msgstr ""
+"Meta n’a pas distribué ce message marketing pour préserver l’expérience du "
+"client (limite de messages marketing par personne). Réessayez plus tard, pas"
+" tout de suite."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"Meta limits the messages of the number because of their quality (spam "
+"reports): send fewer messages, only to customers who agreed."
+msgstr ""
+"Meta limite les messages du numéro à cause de leur qualité (signalements) : "
+"envoyez moins de messages, seulement aux clients qui ont accepté."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Meta limits the sending of messages."
+msgstr "Meta limite l’envoi des messages."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Meta refused the template: %s"
+msgstr "Meta a refusé le modèle : %s"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid ""
+"Meta reviews the changes again. An approved template can be edited 10 times "
+"in 30 days, once a day at most."
+msgstr ""
+"Meta vérifie à nouveau les modifications. Un modèle approuvé peut être "
+"modifié 10 fois en 30 jours, une fois par jour au plus."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid ""
+"Meta reviews the template (up to 24 hours): it can be used once approved."
+msgstr ""
+"Meta vérifie le modèle (jusqu’à 24 heures) : il peut être utilisé une fois "
+"approuvé."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"Meta temporarily blocked the number for a policy violation: see the Meta "
+"Business Support Home."
+msgstr ""
+"Meta a bloqué temporairement le numéro pour non-respect des règles : voir "
+"l’Espace d’assistance Meta Business."
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
+msgid "Mine"
+msgstr "Les miennes"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__model
+msgid "Model"
+msgstr "Modèle"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/discuss_channel_model_patch.js:0
+msgid ""
+"More than 24 hours since the last message of the customer: WhatsApp allows "
+"only a template now (Send a template)."
+msgstr ""
+"Plus de 24 heures depuis le dernier message du client : WhatsApp ne permet "
+"plus qu’un modèle (Envoyer un modèle)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid ""
+"More than 24 hours since the last message of the customer: WhatsApp allows "
+"only an approved template now (Send a template)."
+msgstr ""
+"Plus de 24 heures depuis le dernier message du client : WhatsApp ne permet "
+"plus qu’un modèle approuvé (Envoyer un modèle)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"More than 24 hours since the last message of the customer: only an approved "
+"template can be sent (Send a template)."
+msgstr ""
+"Plus de 24 heures depuis le dernier message du client : seul un modèle "
+"approuvé peut être envoyé (Envoyer un modèle)."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "My Conversations"
+msgstr "Mes conversations"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__param_name
+msgid "Name"
+msgstr "Nom"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__template_name
+msgid "Name at Meta"
+msgstr "Nom chez Meta"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__template_name
+msgid ""
+"Name of the template approved by Meta (lowercase letters, digits and _)."
+msgstr "Nom du modèle approuvé par Meta (lettres minuscules, chiffres et _)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_variable__param_name
+msgid "Name of the variable, for the templates with named variables."
+msgstr "Nom de la variable, pour les modèles à variables nommées."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__parameter_format__named
+msgid "Named: {{name}}"
+msgstr "Nommées : {{nom}}"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/discuss_channel_model_patch.js:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__discuss_channel__whatsapp_state__new
+msgid "New"
+msgstr "Nouvelle"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "New WhatsApp conversation of %s: take it to answer."
+msgstr "Nouvelle conversation WhatsApp de %s : prenez-la pour répondre."
+
+#. module: whatsapp_cloud
+#: model:res.groups.privilege,placeholder:whatsapp_cloud.res_groups_privilege_whatsapp
+msgid "No"
+msgstr "Non"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+#: code:addons/whatsapp_cloud/wizard/whatsapp_composer.py:0
+msgid "No WhatsApp account is configured."
+msgstr "Aucun compte WhatsApp n’est configuré."
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
+msgid "No WhatsApp conversation"
+msgstr "Aucune conversation WhatsApp"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.discuss_channel_action_whatsapp
+msgid "No WhatsApp conversation yet"
+msgstr "Aucune conversation WhatsApp pour l’instant"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_message_action
+msgid "No WhatsApp message yet"
+msgstr "Aucun message WhatsApp pour l’instant"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "No answer from WhatsApp (Meta): %s"
+msgstr "Pas de réponse de WhatsApp (Meta) : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"No app secret: the replies of the customers and the receipts are refused."
+msgstr ""
+"Pas de clé secrète de l’app : les réponses des clients et les accusés sont "
+"refusés."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "No contact to send the message to."
+msgstr "Aucun contact à qui envoyer le message."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "No more WhatsApp messages about your orders"
+msgstr "Plus de messages WhatsApp sur vos commandes"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_webhook_event_action
+msgid "No notification received from Meta yet"
+msgstr "Aucune notification reçue de Meta pour l’instant"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__header_type__none
+msgid "None"
+msgstr "Aucun"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "Not Assigned"
+msgstr "Non attribuées"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "Not Resolved"
+msgstr "Non résolues"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Not assigned"
+msgstr "Non attribuées"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/message_model_patch.js:0
+msgid "Not delivered"
+msgstr "Non distribué"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/message_model_patch.js:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__state__skipped
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_search
+msgid "Not sent"
+msgstr "Non envoyé"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/wizard/whatsapp_composer.py:0
+msgid "Not sent: %s"
+msgstr "Non envoyé : %s"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__unsupported
+msgid "Not supported"
+msgstr "Non pris en charge"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__status__unknown
+msgid "Not synchronised"
+msgstr "Non synchronisé"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__note
+msgid "Note"
+msgstr "Note"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Notifications Subscription"
+msgstr "Abonnement aux notifications"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.act_window,name:whatsapp_cloud.whatsapp_webhook_event_action
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_webhook_events
+msgid "Notifications of Meta"
+msgstr "Notifications de Meta"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__phone
+msgid "Number"
+msgstr "Numéro"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__number_status
+msgid "Number Status"
+msgstr "Statut du numéro"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_button__phone_number
+msgid "Number in international format, e.g. +237699000000."
+msgstr "Numéro au format international, par exemple +237699000000."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_message__phone
+msgid "Number in international format, without +."
+msgstr "Numéro au format international, sans +."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d’actions"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__messaging_limit
+msgid ""
+"Number of customers who can receive a template outside of the 24-hour "
+"window, in 24 hours, for the whole Meta Business portfolio."
+msgstr ""
+"Nombre de clients qui peuvent recevoir un modèle hors de la fenêtre de 24 "
+"heures, en 24 heures, pour tout le portefeuille Meta Business."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d’erreurs"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur de distribution"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_number
+msgid "Number of the customer in international format, without +."
+msgstr "Numéro du client au format international, sans +."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__test_phone
+msgid "Number that receives the test message (hello_world template)."
+msgstr "Numéro qui reçoit le message de test (modèle hello_world)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__parameter_format__positional
+msgid "Numbered: {{1}}"
+msgstr "Numérotées : {{1}}"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__health_state__ok
+msgid "OK"
+msgstr "OK"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Only the WhatsApp agents can handle the conversations."
+msgstr "Seuls les agents WhatsApp peuvent traiter les conversations."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Only the team can write in a WhatsApp conversation."
+msgstr "Seule l’équipe peut écrire dans une conversation WhatsApp."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__require_opt_in
+msgid "Only to Contacts who Agreed"
+msgstr "Seulement aux contacts qui ont accepté"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_kanban_whatsapp
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_list_whatsapp
+msgid "Open"
+msgstr "Ouvrir"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_bot_option__action__submenu
+msgid "Open a sub-menu"
+msgstr "Ouvrir un sous-menu"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+msgid "Open the Conversation"
+msgstr "Ouvrir la conversation"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__resource_calendar_id
+msgid "Opening Hours"
+msgstr "Horaires d’ouverture"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__response_delay
+msgid ""
+"Opening hours after which the agent is reminded of a message without answer "
+"(0: never)."
+msgstr ""
+"Heures d’ouverture après lesquelles l’agent est relancé pour un message sans"
+" réponse (0 : jamais)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__escalation_delay
+msgid ""
+"Opening hours after which the managers are alerted of a message without "
+"answer (0: never)."
+msgstr ""
+"Heures d’ouverture après lesquelles les responsables sont alertés d’un "
+"message sans réponse (0 : jamais)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__name
+msgid "Option"
+msgstr "Option"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__child_ids
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_bot_option_view_form
+msgid "Options of the Sub-menu"
+msgstr "Options du sous-menu"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__order
+msgid "Order"
+msgstr "Commande"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template_button__button_type__other
+msgid "Other (at Meta)"
+msgstr "Autre (chez Meta)"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Outside of the Opening Hours"
+msgstr "En dehors des horaires d’ouverture"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__header_type__document
+msgid "PDF document"
+msgstr "Document PDF"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_report_id
+msgid ""
+"PDF of the document sent in the header of the message (quotation, "
+"invoice...)."
+msgstr "PDF du document envoyé en en-tête du message (devis, facture...)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__parameter_format
+msgid "Parameter Format"
+msgstr "Format des variables"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__status__paused
+msgid "Paused"
+msgstr "En pause"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__payload
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__payload
+msgid "Payload"
+msgstr "Contenu de la requête"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"Payment issue of the WhatsApp Business account: add a valid payment method "
+"in the Meta Business portfolio."
+msgstr ""
+"Problème de paiement du compte WhatsApp Business : ajoutez un moyen de "
+"paiement valide dans le portefeuille Meta Business."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_search
+msgid "Pending Approval"
+msgstr "En attente d’approbation"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__status__pending
+msgid "Pending approval"
+msgstr "En attente d’approbation"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__access_token
+msgid ""
+"Permanent token of a system user of the Meta Business portfolio, with the "
+"whatsapp_business_messaging and whatsapp_business_management permissions."
+msgstr ""
+"Jeton permanent d’un utilisateur système du portefeuille Meta Business, avec"
+" les autorisations whatsapp_business_messaging et "
+"whatsapp_business_management."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__display_phone_number
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__phone_number
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__phone_number_id
+msgid "Phone Number ID"
+msgstr "ID du numéro de téléphone"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__preview
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__preview
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "Preview"
+msgstr "Aperçu"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__pricing_category
+msgid "Pricing Category"
+msgstr "Catégorie tarifaire"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_message__pricing_category
+msgid ""
+"Pricing category of the message at Meta (utility, marketing, service...)."
+msgstr ""
+"Catégorie tarifaire du message chez Meta (utilitaire, marketing, service…)."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_webhook_event_view_form
+msgid "Process Again"
+msgstr "Traiter à nouveau"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_webhook_event__state__done
+msgid "Processed"
+msgstr "Traitée"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__quality_rating
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__quality_score
+msgid "Quality"
+msgstr "Qualité"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__quality_score
+msgid ""
+"Quality of the template at Meta, from how the customers receive it: a "
+"template of low quality is paused, then disabled."
+msgstr ""
+"Qualité du modèle chez Meta, selon l’accueil des clients : un modèle de "
+"faible qualité est mis en pause, puis désactivé."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__quality_rating
+msgid ""
+"Quality rating of the number at Meta, based on how the customers received "
+"the recent messages (blocks, reports)."
+msgstr ""
+"Note de qualité du numéro chez Meta, selon l’accueil des derniers messages "
+"par les clients (blocages, signalements)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_bot_step_date
+msgid "Question Date"
+msgstr "Date de la question"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template_button__button_type__quick_reply
+msgid "Quick reply"
+msgstr "Réponse rapide"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__reaction
+msgid "Reaction"
+msgstr "Réaction"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/message_model_patch.js:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__state__read
+msgid "Read"
+msgstr "Lu"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__read_date
+msgid "Read Date"
+msgstr "Lu le"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__read_receipt
+msgid "Read Receipt"
+msgstr "Accusé de lecture"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_message__read_receipt
+msgid ""
+"Read receipt of a received message, sent to the customer when an agent reads"
+" it."
+msgstr ""
+"Accusé de lecture d’un message reçu, envoyé au client quand un agent le lit."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__rejected_reason
+msgid "Reason of Meta"
+msgstr "Motif de Meta"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_bot_option__action__start
+msgid "Receive the notifications"
+msgstr "Recevoir les notifications"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__direction__incoming
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__state__received
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_search
+msgid "Received"
+msgstr "Reçu"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_webhook_event_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_webhook_event_view_list
+msgid "Received on"
+msgstr "Reçue le"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Receives the WhatsApp notifications"
+msgstr "Reçoit les notifications WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__recipient
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__partner_field
+msgid "Recipient"
+msgstr "Destinataire"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__whatsapp_opt_out
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__whatsapp_opt_out
+msgid "Refused WhatsApp Notifications"
+msgstr "A refusé les notifications WhatsApp"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_search
+msgid "Refused or Paused"
+msgstr "Refusés ou en pause"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__status__rejected
+msgid "Rejected"
+msgstr "Refusé"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+msgid "Reopen"
+msgstr "Rouvrir"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__parent_id
+msgid "Reply to"
+msgstr "Réponse à"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__res_ids
+msgid "Res"
+msgstr "Res"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__res_model
+msgid "Res Model"
+msgstr "Modèle Res"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/discuss_channel_model_patch.js:0
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__discuss_channel__whatsapp_state__done
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "Resolved"
+msgstr "Résolue"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Right contact"
+msgstr "Bon contact"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d’envoi SMS"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__header_sample_file
+msgid "Sample Document"
+msgstr "Document d’exemple"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_sample_file
+msgid ""
+"Sample PDF for the review by Meta; when empty, the document of the latest "
+"record is used."
+msgstr ""
+"PDF d’exemple pour la vérification par Meta ; si vide, le document du "
+"dernier enregistrement est utilisé."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "See the options"
+msgstr "Voir les options"
+
+#. module: whatsapp_cloud
+#: model:res.groups,comment:whatsapp_cloud.group_whatsapp_manager
+msgid ""
+"Sees all the WhatsApp conversations, assigns them, and configures the accounts,\n"
+"            the templates and the automatic answers."
+msgstr ""
+"Voit toutes les conversations WhatsApp, les attribue, et configure les "
+"comptes, les modèles et les réponses automatiques."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_composer_view_form
+msgid "Send"
+msgstr "Envoyer"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_form
+msgid "Send Again"
+msgstr "Renvoyer"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.act_window,name:whatsapp_cloud.res_partner_action_whatsapp_composer
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__ir_actions_server__state__whatsapp
+msgid "Send WhatsApp"
+msgstr "Envoyer un WhatsApp"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/ir_actions_server.py:0
+msgid "Send WhatsApp %(template_name)s"
+msgstr "Envoyer le WhatsApp %(template_name)s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+msgid "Send a Template"
+msgstr "Envoyer un modèle"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Send a Test Message"
+msgstr "Envoyer un message de test"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_composer
+msgid "Send a WhatsApp Message"
+msgstr "Envoyer un message WhatsApp"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/thread_actions.js:0
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Send a template"
+msgstr "Envoyer un modèle"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__away_message_enabled
+msgid "Send an Away Message"
+msgstr "Envoyer un message d’absence"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__require_opt_in
+msgid ""
+"Send the notifications only to the contacts who agreed to receive WhatsApp "
+"messages (box ticked at checkout or on the contact), as required by the "
+"WhatsApp Business policy. The answers to the customers who write are always "
+"allowed."
+msgstr ""
+"N’envoyer les notifications qu’aux contacts qui ont accepté de recevoir des "
+"messages WhatsApp (case cochée lors de la commande ou sur le contact), comme"
+" l’exige la politique de WhatsApp Business. Les réponses aux clients qui "
+"écrivent sont toujours permises."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Sending"
+msgstr "Envoi"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/message_model_patch.js:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__direction__outgoing
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__read_receipt__done
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__state__sent
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_search
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__sent_date
+msgid "Sent Date"
+msgstr "Envoyé le"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid ""
+"Sent outside of the opening hours of the account, at most once every 12 "
+"hours to a customer."
+msgstr ""
+"Envoyé en dehors des horaires d’ouverture du compte, au plus une fois toutes"
+" les 12 heures à un client."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__away_message
+msgid ""
+"Sent outside of the opening hours, at most once every 12 hours to a "
+"customer."
+msgstr ""
+"Envoyé en dehors des horaires d’ouverture, au plus une fois toutes les 12 "
+"heures à un client."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__start_message
+msgid "Sent when a customer answers START to receive them again."
+msgstr "Envoyé quand un client répond START pour les recevoir à nouveau."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__stop_message
+msgid "Sent when a customer answers STOP to stop the notifications."
+msgstr "Envoyé quand un client répond STOP pour arrêter les notifications."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__handover_message
+msgid ""
+"Sent when a message of the customer that the menu does not handle goes to "
+"the team (the customer already wrote what they need)."
+msgstr ""
+"Envoyé quand un message du client que le menu ne traite pas passe à l’équipe"
+" (le client a déjà écrit ce dont il a besoin)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__handover_invite_message
+msgid ""
+"Sent when the customer asks for a person (option of the menu, "
+"\"advisor\"...): invites them to write what they need, so that the agent can"
+" answer at once."
+msgstr ""
+"Envoyé quand le client demande une personne (option du menu, « conseiller "
+"»…) : l’invite à écrire ce dont il a besoin, pour que l’agent puisse "
+"répondre aussitôt."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__sequence
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__sequence
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__sequence
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_ir_actions_server
+msgid "Server Action"
+msgstr "Action serveur"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.act_window,name:whatsapp_cloud.whatsapp_config_settings_action
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_settings
+msgid "Settings"
+msgstr "Paramètres"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_conversation_assign__note
+msgid "Shown in the conversation, for the agent who takes it over."
+msgstr "Affichée dans la conversation, pour l’agent qui la reprend."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_bot_option__description
+msgid ""
+"Shown under the option when the menu has more than 3 options (72 characters "
+"at most)."
+msgstr ""
+"Affichée sous l’option quand le menu a plus de 3 options (72 caractères au "
+"plus)."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid ""
+"Since October 1, 2026, Meta charges the answers that are not templates (welcome menu,\n"
+"                                away message, answers of the agents) beyond 1,000 per month and per number."
+msgstr ""
+"Depuis le 1er octobre 2026, Meta facture les réponses qui ne sont pas des "
+"modèles (menu d’accueil, message d’absence, réponses des agents) au-delà de "
+"1 000 par mois et par numéro."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__start_message
+msgid "Start Message"
+msgstr "Message de réabonnement"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__state
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__state
+msgid "State"
+msgstr "État"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__status
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_search
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__status
+msgid ""
+"Status of the template at Meta, read by the synchronisation. The messages "
+"are sent only with the approved and not synchronised templates."
+msgstr ""
+"Statut du modèle chez Meta, lu par la synchronisation. Les messages ne "
+"partent qu’avec les modèles approuvés ou non synchronisés."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__sticker
+msgid "Sticker"
+msgstr "Autocollant"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__stop_message
+msgid "Stop Message"
+msgstr "Message de désabonnement"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Stop notifications"
+msgstr "Arrêter les alertes"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_bot_option__action__stop
+msgid "Stop the notifications"
+msgstr "Arrêter les notifications"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Sub-menu"
+msgstr "Sous-menu"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__parent_id
+msgid "Sub-menu of"
+msgstr "Sous-menu de"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "Submit the Changes to Meta"
+msgstr "Soumettre les modifications à Meta"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "Submit to Meta"
+msgstr "Soumettre à Meta"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Synchronise Templates"
+msgstr "Synchroniser les modèles"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__system
+msgid "System"
+msgstr "Système"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_tag_ids
+msgid "Tags"
+msgstr "Étiquettes"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+msgid "Take It"
+msgstr "Prendre en charge"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/thread_actions.js:0
+msgid "Take the conversation"
+msgstr "Prendre la conversation"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/discuss_channel_model_patch.js:0
+msgid "Take the conversation to answer the customer."
+msgstr "Prenez la conversation pour répondre au client."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__assignment_mode__manual
+msgid "Taken by an agent"
+msgstr "Prise en charge par un agent"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__assignment_mode
+msgid ""
+"Taken by an agent: all the agents see the new conversation, the first one "
+"who answers (or takes it) handles it. Each agent in turn: the conversation "
+"goes to the agent with the fewest open conversations, online agents first. "
+"Salesperson of the customer: the salesperson of their latest order when they"
+" are an agent, else each agent in turn."
+msgstr ""
+"Prise en charge par un agent : tous les agents voient la nouvelle "
+"conversation, le premier qui répond (ou la prend) la traite. Chaque agent à "
+"tour de rôle : la conversation va à l’agent qui a le moins de conversations "
+"ouvertes, les agents en ligne d’abord. Vendeur du client : le vendeur de sa "
+"dernière commande s’il est agent, sinon chaque agent à tour de rôle."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Talk to an advisor"
+msgstr "Parler à l’équipe"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Team"
+msgstr "Équipe"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"Tell us here what you need (order number, item, question), you can also send"
+" a photo: an advisor will answer you as soon as possible."
+msgstr ""
+"Dites-nous ici ce dont vous avez besoin (numéro de commande, article, "
+"question), vous pouvez aussi envoyer une photo : un conseiller vous répondra"
+" dès que possible."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__template_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__template_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__template_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__template_id
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__template
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.ir_actions_server_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_search
+msgid "Template"
+msgstr "Modèle"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__template_count
+msgid "Template Count"
+msgstr "Nombre de modèles"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Template submitted to Meta: its review can take up to 24 hours."
+msgstr ""
+"Modèle soumis à Meta : sa vérification peut prendre jusqu’à 24 heures."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Template: %s"
+msgstr "Modèle : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_templates
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Templates"
+msgstr "Modèles"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Templates synchronised: %(created)s new, %(updated)s updated."
+msgstr "Modèles synchronisés : %(created)s nouveaux, %(updated)s mis à jour."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__test_phone
+msgid "Test Number"
+msgstr "Numéro de test"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Test message sent to +%s."
+msgstr "Message de test envoyé au +%s."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__name
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__text
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__header_type__text
+msgid "Text"
+msgstr "Texte"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_bot_option__name
+msgid "Text of the button (20 characters at most)."
+msgstr "Texte du bouton (20 caractères au plus)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_text
+msgid ""
+"Text of the header at Meta (60 characters), with at most one variable {{1}}."
+msgstr ""
+"Texte de l’en-tête chez Meta (60 caractères), avec au plus une variable "
+"{{1}}."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__body
+msgid ""
+"Text of the template at Meta, with its variables {{1}}, {{2}}... (filled by "
+"the synchronisation); used for the preview and the message log."
+msgstr ""
+"Texte du modèle chez Meta, avec ses variables {{1}}, {{2}}... (rempli par la"
+" synchronisation) ; sert à l’aperçu et au journal des messages."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_bot_option__answer
+msgid ""
+"Text sent when the customer chooses the option; for a sub-menu, the text "
+"above its options."
+msgstr ""
+"Texte envoyé quand le client choisit l’option ; pour un sous-menu, le texte "
+"au-dessus de ses options."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__footer_text
+msgid "Text under the message (60 characters)."
+msgstr "Texte sous le message (60 caractères)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"Thank you for your message! We are closed right now: an advisor will answer "
+"you as soon as we open."
+msgstr ""
+"Merci pour votre message ! Nous sommes fermés pour le moment : un conseiller"
+" vous répondra dès l’ouverture."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"Thank you! You will receive our WhatsApp notifications again. Send STOP to "
+"stop them."
+msgstr ""
+"Merci ! Vous recevrez à nouveau nos notifications WhatsApp. Envoyez STOP "
+"pour les arrêter."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Thank you, an advisor will answer you here as soon as possible."
+msgstr "Merci, un conseiller vous répond ici dès que possible."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The PIN was entered too fast: try again later."
+msgstr "Le code PIN a été saisi trop vite : réessayez plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The WhatsApp Business account cannot write to customers of this country."
+msgstr ""
+"Le compte WhatsApp Business ne peut pas écrire aux clients de ce pays."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The WhatsApp Business account is locked or restricted by Meta: see the Meta "
+"Business Support Home."
+msgstr ""
+"Le compte WhatsApp Business est bloqué ou restreint par Meta : voir l’Espace"
+" d’assistance Meta Business."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The WhatsApp Business account is under maintenance: Odoo sends the message "
+"again later."
+msgstr ""
+"Le compte WhatsApp Business est en maintenance : Odoo renvoie le message "
+"plus tard."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "The WhatsApp managers"
+msgstr "Les responsables WhatsApp"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The WhatsApp server is temporarily unavailable: Odoo sends the message again"
+" later."
+msgstr ""
+"Le serveur WhatsApp est momentanément indisponible : Odoo renvoie le message"
+" plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The access token lacks a permission: give it whatsapp_business_messaging and"
+" whatsapp_business_management."
+msgstr ""
+"Il manque une autorisation au jeton d’accès : donnez-lui "
+"whatsapp_business_messaging et whatsapp_business_management."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The access token of the account expired or was revoked: generate a permanent"
+" token of a system user in the Meta Business portfolio and enter it on the "
+"account."
+msgstr ""
+"Le jeton d’accès du compte a expiré ou a été révoqué : générez un jeton "
+"permanent d’un utilisateur système dans le portefeuille Meta Business et "
+"saisissez-le sur le compte."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "The account is working."
+msgstr "Le compte fonctionne."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_company__whatsapp_answer_reminders
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_config_settings__whatsapp_answer_reminders
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid ""
+"The agents are reminded of the messages waiting for an answer, then the "
+"managers are alerted (delays of the WhatsApp account)."
+msgstr ""
+"Les agents sont relancés pour les messages en attente de réponse, puis les "
+"responsables sont alertés (délais du compte WhatsApp)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The app lacks a capability or a permission: check the permissions of the "
+"token."
+msgstr ""
+"Il manque une capacité ou une autorisation à l’app : vérifiez les "
+"autorisations du jeton."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The button %s can only be edited at Meta."
+msgstr "Le bouton %s ne se modifie que chez Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The company blocked this customer on WhatsApp: unblock them to write to "
+"them."
+msgstr ""
+"La société a bloqué ce client sur WhatsApp : débloquez-le pour lui écrire."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/wizard/whatsapp_conversation_wizards.py:0
+msgid "The contact %s is a user: it cannot be merged."
+msgstr "Le contact %s est un utilisateur : il ne peut pas être fusionné."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_partner__whatsapp_opt_in
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_users__whatsapp_opt_in
+msgid ""
+"The contact agreed to receive notifications (orders, deliveries...) on "
+"WhatsApp."
+msgstr ""
+"Le contact a accepté de recevoir des notifications (commandes, "
+"livraisons...) sur WhatsApp."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The contact did not agree to receive WhatsApp messages."
+msgstr "Le contact n’a pas accepté de recevoir des messages WhatsApp."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The contact has no valid phone number."
+msgstr "Le contact n’a pas de numéro de téléphone valide."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "The contact no longer receives the WhatsApp notifications (STOP)."
+msgstr "Le contact ne reçoit plus les notifications WhatsApp (STOP)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "The contact receives the WhatsApp notifications again (START)."
+msgstr "Le contact reçoit à nouveau les notifications WhatsApp (START)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_partner__whatsapp_opt_out
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_users__whatsapp_opt_out
+msgid ""
+"The contact refused the WhatsApp notifications (box unticked, or STOP "
+"answered): the consent box is no longer ticked by default for them."
+msgstr ""
+"Le contact a refusé les notifications WhatsApp (case décochée, ou réponse "
+"STOP) : la case de consentement n’est plus cochée par défaut pour lui."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_link_partner__partner_id
+msgid ""
+"The contact who writes: the conversation, the messages and the WhatsApp "
+"number go to this contact, and the contact created for the unknown number is"
+" merged into it."
+msgstr ""
+"Le contact qui écrit : la conversation, les messages et le numéro WhatsApp "
+"vont à ce contact, et le contact créé pour le numéro inconnu y est fusionné."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "The conversation has no customer."
+msgstr "La conversation n’a pas de client."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_link_partner_view_form
+msgid ""
+"The conversation, its messages and the WhatsApp number go to the existing contact; the\n"
+"                   contact created for the unknown number is merged into it."
+msgstr ""
+"La conversation, ses messages et le numéro WhatsApp vont au contact existant"
+" ; le contact créé pour le numéro inconnu y est fusionné."
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
+msgid ""
+"The conversations start when a customer writes to the WhatsApp number of the"
+" company."
+msgstr ""
+"Les conversations commencent quand un client écrit au numéro WhatsApp de la "
+"société."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.discuss_channel_action_whatsapp
+msgid ""
+"The conversations start when a customer writes to the WhatsApp number of the company.\n"
+"               Answer them from Discuss (WhatsApp tab)."
+msgstr ""
+"Les conversations commencent quand un client écrit au numéro WhatsApp de la "
+"société. Répondez-y depuis Discussion (onglet WhatsApp)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "The customer changed their WhatsApp number."
+msgstr "Le client a changé de numéro WhatsApp."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "The customer chose the language %s."
+msgstr "Le client a choisi la langue %s."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "The customer comes from the ad: %(headline)s %(url)s"
+msgstr "Le client vient de la publicité : %(headline)s %(url)s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "The customer has been waiting for an answer for %s minutes."
+msgstr "Le client attend une réponse depuis %s minutes."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The customer is part of an experiment of Meta and does not receive marketing"
+" messages for now."
+msgstr ""
+"Le client fait partie d’une expérience de Meta et ne reçoit pas de messages "
+"marketing pour l’instant."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "The customer no longer receives the WhatsApp notifications (STOP)."
+msgstr "Le client ne reçoit plus les notifications WhatsApp (STOP)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "The customer receives the WhatsApp notifications again (START)."
+msgstr "Le client reçoit à nouveau les notifications WhatsApp (START)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The customer stopped the marketing messages of the company on WhatsApp."
+msgstr "Le client a arrêté les messages marketing de la société sur WhatsApp."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_waiting_since
+msgid "The customer waits for an answer of the team since this date."
+msgstr "Le client attend une réponse de l’équipe depuis cette date."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+msgid ""
+"The customer wrote from a number unknown to Odoo: a contact was created with their\n"
+"                        WhatsApp name."
+msgstr ""
+"Le client a écrit depuis un numéro inconnu d’Odoo : un contact a été créé "
+"avec son nom WhatsApp."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_company__whatsapp_read_receipts
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_config_settings__whatsapp_read_receipts
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid ""
+"The customers see the blue ticks when an agent reads their message, and "
+"\"typing...\" while the agent writes."
+msgstr ""
+"Les clients voient les coches bleues quand un agent lit leur message, et « "
+"en train d’écrire… » pendant que l’agent écrit."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_bot_option.py:0
+msgid "The description of the option %s is too long: 72 characters at most."
+msgstr ""
+"La description de l’option %s est trop longue : 72 caractères au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "The display name is %s at Meta."
+msgstr "Le nom affiché est %s chez Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "The file could not be downloaded from WhatsApp: %s"
+msgstr "Le fichier n’a pas pu être téléchargé depuis WhatsApp : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "The file is too big (%s bytes)."
+msgstr "Le fichier est trop volumineux (%s octets)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "The file is too big."
+msgstr "Le fichier est trop volumineux."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The flow of the template is blocked."
+msgstr "Le flux du modèle est bloqué."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The flow of the template is throttled."
+msgstr "Le flux du modèle est ralenti."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The footer is too long: 60 characters at most."
+msgstr "Le pied de message est trop long : 60 caractères au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The format of a variable is invalid (text expected, image, document...)."
+msgstr ""
+"Le format d’une variable est invalide (texte attendu, image, document…)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The header is too long: 60 characters at most."
+msgstr "L’en-tête est trop long : 60 caractères au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid ""
+"The link button of the template expects the end of its URL, but none is "
+"given (Link Button Variable)."
+msgstr ""
+"Le bouton lien du modèle attend la fin de son URL, mais aucune n’est "
+"indiquée (Variable du bouton lien)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid ""
+"The link of the button %(button)s must be a public address in https, but the"
+" address of the site is %(url)s: set it in the system parameter web.base.url"
+" (Settings > Technical > System Parameters)."
+msgstr ""
+"Le lien du bouton %(button)s doit être une adresse publique en https, mais "
+"l’adresse du site est %(url)s : réglez-la dans le paramètre système "
+"web.base.url (Paramètres > Technique > Paramètres système)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The link of the button %s must start with https://."
+msgstr "Le lien du bouton %s doit commencer par https://."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The list of the templates could not be read: synchronise again."
+msgstr "La liste des modèles n’a pas pu être lue : synchronisez à nouveau."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The marketing templates are disabled on the Cloud API for this account."
+msgstr "Les modèles marketing sont désactivés sur l’API Cloud pour ce compte."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The media could not be uploaded to Meta: check its format and size."
+msgstr ""
+"Le média n’a pas pu être envoyé à Meta : vérifiez son format et sa taille."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The media of the message could not be downloaded from Meta."
+msgstr "Le média du message n’a pas pu être téléchargé depuis Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The message could not be delivered: the number may not use WhatsApp, or have"
+" an outdated WhatsApp version, or not have accepted the latest terms. "
+"Contact the customer another way."
+msgstr ""
+"Le message n’a pas pu être distribué : le numéro n’utilise peut-être pas "
+"WhatsApp, a une version trop ancienne ou n’a pas accepté les dernières "
+"conditions. Contactez le client autrement."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_company__whatsapp_conversations
+#: model:ir.model.fields,help:whatsapp_cloud.field_res_config_settings__whatsapp_conversations
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid ""
+"The messages of the customers arrive in Discuss (WhatsApp tab), where the "
+"team answers them. Disabled: they are only noted on the contacts, without "
+"answer."
+msgstr ""
+"Les messages des clients arrivent dans Discussion (onglet WhatsApp), où "
+"l’équipe y répond. Désactivé : ils sont seulement notés sur les contacts, "
+"sans réponse."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_message_action
+msgid ""
+"The messages sent by the automation rules and the \"Send WhatsApp\" buttons, and the\n"
+"               replies of the customers, appear here with their status."
+msgstr ""
+"Les messages envoyés par les règles d’automatisation et les boutons « Envoyer un WhatsApp », et\n"
+"               les réponses des clients, apparaissent ici avec leur statut."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid ""
+"The name at Meta can only contain lowercase letters, digits and underscores:"
+" %s"
+msgstr ""
+"Le nom chez Meta ne peut contenir que des lettres minuscules, des chiffres "
+"et des tirets bas : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The number has no approved display name yet: check it in the WhatsApp "
+"Manager."
+msgstr ""
+"Le numéro n’a pas encore de nom affiché approuvé : vérifiez-le dans le "
+"Gestionnaire WhatsApp."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "The number is %s at Meta."
+msgstr "Le numéro est %s chez Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The number is not registered on the Cloud API: register it again in the Meta"
+" app."
+msgstr ""
+"Le numéro n’est pas enregistré sur l’API Cloud : enregistrez-le à nouveau "
+"dans l’app Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The number is not registered on the Cloud API: register it in the Meta app."
+msgstr ""
+"Le numéro n’est pas enregistré sur l’API Cloud : enregistrez-le dans l’app "
+"Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The number must be verified again before its registration."
+msgstr "Le numéro doit être vérifié à nouveau avant son enregistrement."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The number of variables differs from the template at Meta: synchronise the "
+"templates and check their variables."
+msgstr ""
+"Le nombre de variables diffère du modèle chez Meta : synchronisez les "
+"modèles et vérifiez leurs variables."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The number was not fully deleted before its new registration."
+msgstr ""
+"Le numéro n’a pas été entièrement supprimé avant son nouvel enregistrement."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The number was recently deleted: wait a few minutes before registering it."
+msgstr ""
+"Le numéro a été supprimé récemment : attendez quelques minutes avant de "
+"l’enregistrer."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_bot_option.py:0
+msgid "The option %s is too long: WhatsApp shows 20 characters at most."
+msgstr "L’option %s est trop longue : WhatsApp affiche 20 caractères au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The phone number of the account was deleted at Meta."
+msgstr "Le numéro du compte a été supprimé chez Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"The quality of the number is low: many customers blocked or reported the "
+"recent messages. Send fewer messages, only to customers who agreed."
+msgstr ""
+"La qualité du numéro est faible : beaucoup de clients ont bloqué ou signalé "
+"les derniers messages. Envoyez moins de messages, seulement aux clients qui "
+"ont accepté."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"The quality of the number is medium: some customers blocked or reported the "
+"recent messages."
+msgstr ""
+"La qualité du numéro est moyenne : des clients ont bloqué ou signalé les "
+"derniers messages."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid ""
+"The quick replies must follow each other, before or after the other buttons."
+msgstr ""
+"Les réponses rapides doivent se suivre, avant ou après les autres boutons."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The recipient is the number of the account itself."
+msgstr "Le destinataire est le numéro du compte lui-même."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The sample document could not be uploaded to Meta: %s"
+msgstr "Le document d’exemple n’a pas pu être envoyé à Meta : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The template does not exist at Meta in this language, or is not approved "
+"yet: synchronise the templates."
+msgstr ""
+"Le modèle n’existe pas chez Meta dans cette langue, ou n’est pas encore "
+"approuvé : synchronisez les modèles."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__button_url_dynamic
+msgid ""
+"The template has, at Meta, a link button whose URL ends with a variable "
+"(read by the synchronisation): Odoo sends the end of the URL given in Link "
+"Button Variable."
+msgstr ""
+"Le modèle a, chez Meta, un bouton lien dont l’URL se termine par une "
+"variable (lu par la synchronisation) : Odoo envoie la fin d’URL indiquée "
+"dans Variable du bouton lien."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The template is %s at Meta."
+msgstr "Le modèle est %s chez Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The template is disabled by Meta because of its low quality."
+msgstr "Le modèle est désactivé par Meta à cause de sa faible qualité."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"The template is paused by Meta because of its low quality: edit it at Meta."
+msgstr ""
+"Le modèle est mis en pause par Meta à cause de sa faible qualité : modifiez-"
+"le chez Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The template is waiting for the approval of Meta."
+msgstr "Le modèle attend l’approbation de Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "The templates could not be read from WhatsApp: %s"
+msgstr "Les modèles n’ont pas pu être lus chez WhatsApp : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "The test message was not sent: %s"
+msgstr "Le message de test n’a pas été envoyé : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The text cannot start or end with a variable."
+msgstr "Le texte ne peut ni commencer ni finir par une variable."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The text of the button %s is too long: 25 characters at most."
+msgstr "Le texte du bouton %s est trop long : 25 caractères au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The text of the template breaks the WhatsApp policy."
+msgstr "Le texte du modèle enfreint la politique de WhatsApp."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The text of the template is too long: 1024 characters at most."
+msgstr "Le texte du modèle est trop long : 1 024 caractères au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "The two-step verification PIN of the number is wrong."
+msgstr "Le code PIN de vérification en deux étapes du numéro est faux."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The variable of the link %s must be at its end."
+msgstr "La variable du lien %s doit être à sa fin."
+
+#. module: whatsapp_cloud
+#: model:ir.model.constraint,message:whatsapp_cloud.constraint_discuss_channel_whatsapp_user_ref_uniq
+msgid "There is already a conversation with this WhatsApp user."
+msgstr "Il existe déjà une conversation avec cet utilisateur WhatsApp."
+
+#. module: whatsapp_cloud
+#: model:ir.model.constraint,message:whatsapp_cloud.constraint_discuss_channel_whatsapp_number_uniq
+msgid "There is already a conversation with this number."
+msgstr "Il existe déjà une conversation avec ce numéro."
+
+#. module: whatsapp_cloud
+#: model:ir.model.constraint,message:whatsapp_cloud.constraint_whatsapp_message_wa_message_id_uniq
+msgid "This WhatsApp message already exists."
+msgstr "Ce message WhatsApp existe déjà."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "This is not a WhatsApp conversation."
+msgstr "Ce n’est pas une conversation WhatsApp."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"This message cannot be sent to a customer known only by their WhatsApp "
+"username (no number): ask for their number."
+msgstr ""
+"Ce message ne peut pas être envoyé à un client connu seulement par son nom "
+"d’utilisateur WhatsApp (sans numéro) : demandez-lui son numéro."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "This message of the customer is not available on the Cloud API."
+msgstr "Ce message du client n’est pas disponible sur l’API Cloud."
+
+#. module: whatsapp_cloud
+#: model:ir.model.constraint,message:whatsapp_cloud.constraint_whatsapp_account_phone_number_id_uniq
+msgid "This phone number is already used by another account."
+msgstr "Ce numéro de téléphone est déjà utilisé par un autre compte."
+
+#. module: whatsapp_cloud
+#: model:ir.model.constraint,message:whatsapp_cloud.constraint_whatsapp_tag_name_uniq
+msgid "This tag already exists."
+msgstr "Cette étiquette existe déjà."
+
+#. module: whatsapp_cloud
+#: model:ir.model.constraint,message:whatsapp_cloud.constraint_whatsapp_template_template_lang_account_uniq
+msgid "This template already exists in this language for this account."
+msgstr "Ce modèle existe déjà dans cette langue pour ce compte."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "This type of message is not supported."
+msgstr "Ce type de message n’est pas pris en charge."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_composer_view_form
+msgid "To"
+msgstr "À"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_webhook_event_view_search
+msgid "To Process"
+msgstr "À traiter"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__verify_token
+msgid ""
+"To enter in the webhook settings of the Meta app, with the callback URL."
+msgstr ""
+"À saisir dans les paramètres du webhook de l’app Meta, avec l’URL de rappel."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_webhook_event__state__pending
+msgid "To process"
+msgstr "À traiter"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__read_receipt__todo
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__state__queued
+msgid "To send"
+msgstr "À envoyer"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__read_receipt__typing
+msgid "To send, typing"
+msgstr "À envoyer, en train d’écrire"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "Too many PIN attempts for the number: try again later."
+msgstr "Trop d’essais de code PIN pour le numéro : réessayez plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "Too many calls of the app to Meta: Odoo tries again later."
+msgstr "Trop d’appels de l’app à Meta : Odoo réessaie plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"Too many calls to the WhatsApp Business account: Odoo tries again later."
+msgstr "Trop d’appels au compte WhatsApp Business : Odoo réessaie plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "Too many messages per second: Odoo sends the message again later."
+msgstr "Trop de messages par seconde : Odoo renvoie le message plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"Too many messages to the same customer in a short time: Odoo sends the "
+"message again later."
+msgstr ""
+"Trop de messages au même client en peu de temps : Odoo renvoie le message "
+"plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "Too many registrations of the number: try again later."
+msgstr "Trop d’enregistrements du numéro : réessayez plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_conversation_assign_view_form
+msgid "Transfer"
+msgstr "Transférer"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_conversation_assign
+msgid "Transfer a WhatsApp Conversation"
+msgstr "Transférer une conversation WhatsApp"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Transfer the Conversation"
+msgstr "Transférer la conversation"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Two variables must be separated by text."
+msgstr "Deux variables doivent être séparées par du texte."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_ir_actions_server__state
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_ir_cron__state
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_mail_mail__message_type
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_mail_message__message_type
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__message_type
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__button_type
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_search
+msgid "Type"
+msgstr "Type"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.mail_canned_response_action_whatsapp
+msgid ""
+"Type :: followed by the shortcut in a conversation to insert the answer. In a WhatsApp\n"
+"               conversation, {first_name}, {name}, {agent} and {company} are replaced by the first name\n"
+"               and the name of the customer, your name and the name of the company."
+msgstr ""
+"Tapez :: suivi du raccourci dans une conversation pour insérer la réponse. "
+"Dans une conversation WhatsApp, {prenom}, {nom}, {conseiller} et {societe} "
+"(ou {first_name}, {name}, {agent}, {company}) sont remplacés par le prénom "
+"et le nom du client, votre nom et le nom de la société."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_ir_actions_server__state
+#: model:ir.model.fields,help:whatsapp_cloud.field_ir_cron__state
+msgid ""
+"Type of server action. The following values are available:\n"
+"- 'Update a Record': update the values of a record\n"
+"- 'Create Activity': create an activity (Discuss)\n"
+"- 'Send Email': post a message, a note or send an email (Discuss)\n"
+"- 'Send SMS': send SMS, log them on documents (SMS)- 'Add/Remove Followers': add or remove followers to a record (Discuss)\n"
+"- 'Create Record': create a new record with new values\n"
+"- 'Execute Code': a block of Python code that will be executed\n"
+"- 'Send Webhook Notification': send a POST request to an external system, also known as a Webhook\n"
+"- 'Multi Actions': define an action that triggers several other server actions\n"
+msgstr ""
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__url
+msgid "URL"
+msgstr "URL"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__url_example
+msgid "URL Example"
+msgstr "Exemple d’URL"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__quality_rating__unknown
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__quality_score__unknown
+msgid "Unknown"
+msgstr "Inconnue"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "Unknown error at Meta: Odoo sends the message again later."
+msgstr "Erreur inconnue chez Meta : Odoo renvoie le message plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid "Unknown error of a parameter: check the message and the template."
+msgstr "Erreur inconnue d’un paramètre : vérifiez le message et le modèle."
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid ""
+"Unknown number: a contact was created with the WhatsApp name of the "
+"customer."
+msgstr ""
+"Numéro inconnu : un contact a été créé avec le nom WhatsApp du client."
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
+msgid "Unread"
+msgstr "Non lues"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_mail_mail__message_type
+#: model:ir.model.fields,help:whatsapp_cloud.field_mail_message__message_type
+msgid ""
+"Used to categorize message generator\n"
+"'email': generated by an incoming email e.g. mailgateway\n"
+"'comment': generated by user input e.g. through discuss or composer\n"
+"'email_outgoing': generated by a mailing\n"
+"'notification': generated by system e.g. tracking messages\n"
+"'auto_comment': generated by automated notification mechanism e.g. acknowledgment\n"
+"'user_notification': generated for a specific recipient"
+msgstr ""
+"Sert à catégoriser l'origine du message\n"
+"'email' : généré par un e-mail entrant, ex. passerelle de messagerie\n"
+"'comment' : généré par un utilisateur, ex. via Discussion ou le compositeur\n"
+"'email_outgoing' : généré par un envoi de masse\n"
+"'notification' : généré par le système, ex. messages de suivi\n"
+"'auto_comment' : généré par un mécanisme de notification automatique, ex. accusé de réception\n"
+"'user_notification' : généré pour un destinataire précis\n"
+"'whatsapp_message' : message WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__agent_user_ids
+msgid ""
+"Users who answer the conversations of this number. When empty: all the "
+"WhatsApp agents."
+msgstr ""
+"Utilisateurs qui répondent aux conversations de ce numéro. Si vide : tous "
+"les agents WhatsApp."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__category__utility
+msgid "Utility"
+msgstr "Utilitaire"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__value
+msgid "Value"
+msgstr "Valeur"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_webhook_event__payload
+msgid "Value of the change, as sent by Meta (JSON)."
+msgstr "Valeur du changement, telle qu’envoyée par Meta (JSON)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_variable__value
+msgid ""
+"Value of the variable for each document, e.g. {{ object.partner_id.name }}, "
+"{{ object.name }}, {{ format_amount(object.amount_total, object.currency_id)"
+" }}."
+msgstr ""
+"Valeur de la variable pour chaque document, ex. {{ object.partner_id.name "
+"}}, {{ object.name }}, {{ format_amount(object.amount_total, "
+"object.currency_id) }}."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_value
+msgid "Value of the variable of a text header, e.g. {{ object.name }}."
+msgstr "Valeur de la variable d’un en-tête texte, ex. {{ object.name }}."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_variable__placeholder
+msgid "Variable"
+msgstr "Variable"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__variable_ids
+msgid "Variables"
+msgstr "Variables"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__video
+msgid "Video"
+msgstr "Vidéo"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "View Contact"
+msgstr "Voir le contact"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "Voice message"
+msgstr "Message vocal"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_bot_step
+msgid "Waiting Question"
+msgstr "Question en attente"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_bot_step_data
+msgid "Waiting Question Data"
+msgstr "Données de la question en attente"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
+msgid "Waiting for an Answer"
+msgstr "En attente de réponse"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_waiting_since
+msgid "Waiting for an Answer since"
+msgstr "En attente de réponse depuis"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
+msgid "Waiting for an answer"
+msgstr "En attente de réponse"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Waiting for an answer since"
+msgstr "En attente de réponse depuis"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__warning
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__health_state__warning
+msgid "Warning"
+msgstr "Avertissement"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Webhook (WhatsApp > Configuration)"
+msgstr "Webhook (WhatsApp > Configuration)"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__verify_token
+msgid "Webhook Verify Token"
+msgstr "Jeton de vérification du webhook"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Welcome"
+msgstr "Accueil"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_config_settings__whatsapp_welcome_menu
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__bot_enabled
+msgid "Welcome Menu"
+msgstr "Menu d’accueil"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__welcome_message
+msgid "Welcome Message"
+msgstr "Message d’accueil"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__discuss_channel__whatsapp_bot_state__menu
+msgid "Welcome menu"
+msgstr "Menu d’accueil"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__error_help
+msgid "What to Do"
+msgstr "Que faire"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
+#: code:addons/whatsapp_cloud/static/src/thread_icon_patch.xml:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__mail_message__message_type__whatsapp_message
+#: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_root
+#: model:res.groups.privilege,name:whatsapp_cloud.res_groups_privilege_whatsapp
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_partner_view_form
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_account_id
+msgid "WhatsApp Account"
+msgstr "Compte WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.act_window,name:whatsapp_cloud.whatsapp_account_action
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_config_settings__whatsapp_account_count
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid "WhatsApp Accounts"
+msgstr "Comptes WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_company__whatsapp_answer_reminders
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_config_settings__whatsapp_answer_reminders
+msgid "WhatsApp Answer Reminders"
+msgstr "Relances de réponse WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_account
+msgid "WhatsApp Business Account"
+msgstr "Compte WhatsApp Business"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__waba_id
+msgid "WhatsApp Business Account ID"
+msgstr "ID du compte WhatsApp Business"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
+msgid ""
+"WhatsApp Business numbers connected with the Cloud API of Meta: identifiers,"
+" access token, team, opening hours and texts of the automatic answers."
+msgstr ""
+"Numéros WhatsApp Business connectés à l’API Cloud de Meta : identifiants, "
+"jeton d’accès, équipe, horaires d’ouverture et textes des réponses "
+"automatiques."
+
+#. module: whatsapp_cloud
+#: model:ir.module.module,summary:base.module_whatsapp_cloud
+msgid ""
+"WhatsApp Business with the Cloud API of Meta: notifications, conversations "
+"in Discuss, automatic answers, templates submitted from Odoo"
+msgstr ""
+"WhatsApp Business avec l’API Cloud de Meta : notifications, conversations "
+"dans Discussion, réponses automatiques, modèles soumis depuis Odoo"
+
+#. module: whatsapp_cloud
+#: model:ir.module.module,shortdesc:base.module_whatsapp_cloud
+msgid "WhatsApp Cloud API"
+msgstr "API Cloud WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__discuss_channel__channel_type__whatsapp
+msgid "WhatsApp Conversation"
+msgstr "Conversation WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_tag
+msgid "WhatsApp Conversation Tag"
+msgstr "Étiquette de conversation WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.act_window,name:whatsapp_cloud.discuss_channel_action_whatsapp
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_company__whatsapp_conversations
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_config_settings__whatsapp_conversations
+msgid "WhatsApp Conversations"
+msgstr "Conversations WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__verified_name
+msgid "WhatsApp Display Name"
+msgstr "Nom affiché WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__wa_message_id
+msgid "WhatsApp ID"
+msgstr "ID WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_bot_option
+msgid "WhatsApp Menu Option"
+msgstr "Option du menu WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_message
+msgid "WhatsApp Message"
+msgstr "Message WhatsApp"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/res_partner.py:0
+#: model:ir.actions.act_window,name:whatsapp_cloud.whatsapp_message_action
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_message_ids
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__whatsapp_message_ids
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__whatsapp_message_ids
+msgid "WhatsApp Messages"
+msgstr "Messages WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__whatsapp_opt_in
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__whatsapp_opt_in
+msgid "WhatsApp Notifications"
+msgstr "Notifications WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_number
+msgid "WhatsApp Number"
+msgstr "Numéro WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__whatsapp_to_identify
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__whatsapp_to_identify
+msgid "WhatsApp Number to Identify"
+msgstr "Numéro WhatsApp à identifier"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_company__whatsapp_read_receipts
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_config_settings__whatsapp_read_receipts
+msgid "WhatsApp Read Receipts"
+msgstr "Accusés de lecture WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_template
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_ir_actions_server__whatsapp_template_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_ir_cron__whatsapp_template_id
+msgid "WhatsApp Template"
+msgstr "Modèle WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_template_button
+msgid "WhatsApp Template Button"
+msgstr "Bouton de modèle WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_template_variable
+msgid "WhatsApp Template Variable"
+msgstr "Variable de modèle WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.act_window,name:whatsapp_cloud.whatsapp_template_action
+msgid "WhatsApp Templates"
+msgstr "Modèles WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_user_ref
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__whatsapp_user_ref
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__whatsapp_user_ref
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__user_ref
+msgid "WhatsApp User ID"
+msgstr "ID utilisateur WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__whatsapp_username
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__whatsapp_username
+msgid "WhatsApp Username"
+msgstr "Nom d’utilisateur WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_webhook_event
+msgid "WhatsApp Webhook Event"
+msgstr "Notification du webhook WhatsApp"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+#: code:addons/whatsapp_cloud/models/whatsapp_webhook_event.py:0
+msgid "WhatsApp account %(name)s: %(details)s"
+msgstr "Compte WhatsApp %(name)s : %(details)s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"WhatsApp account %(name)s: no receipt from Meta for %(hours)s hours although"
+" messages were sent. Check the webhook of the Meta app (callback URL, "
+"subscription to the messages field) and the app secret."
+msgstr ""
+"Compte WhatsApp %(name)s : aucun accusé de Meta depuis %(hours)s heures "
+"alors que des messages ont été envoyés. Vérifiez le webhook de l’app Meta "
+"(URL de rappel, abonnement au champ messages) et la clé secrète de l’app."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/const.py:0
+msgid ""
+"WhatsApp is temporarily unavailable: Odoo sends the message again later."
+msgstr ""
+"WhatsApp est momentanément indisponible : Odoo renvoie le message plus tard."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "WhatsApp message not sent: %s"
+msgstr "Message WhatsApp non envoyé : %s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "WhatsApp message of %(name)s (+%(number)s):"
+msgstr "Message WhatsApp de %(name)s (+%(number)s) :"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "WhatsApp message sent to +%s:"
+msgstr "Message WhatsApp envoyé au +%s :"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "WhatsApp messages about your orders"
+msgstr "Messages WhatsApp sur vos commandes"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/ir_actions_server.py:0
+msgid "WhatsApp messages can only be sent from documents, not wizards."
+msgstr ""
+"Les messages WhatsApp ne peuvent être envoyés que depuis des documents, pas "
+"des assistants."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/wizard/whatsapp_conversation_wizards.py:0
+msgid "WhatsApp number +%(number)s replaces the phone %(phone)s."
+msgstr "Le numéro WhatsApp +%(number)s remplace le téléphone %(phone)s."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "WhatsApp reply of %(name)s (+%(number)s):"
+msgstr "Réponse WhatsApp de %(name)s (+%(number)s) :"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "WhatsApp template %(name)s (%(lang)s): %(event)s at Meta. %(details)s"
+msgstr ""
+"Modèle WhatsApp %(name)s (%(lang)s) : %(event)s chez Meta. %(details)s"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid ""
+"WhatsApp template %(name)s: Meta changes its category to %(category)s in 24 "
+"hours (prices of the category)."
+msgstr ""
+"Modèle WhatsApp %(name)s : Meta change sa catégorie en %(category)s dans 24 "
+"heures (tarifs de la catégorie)."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "WhatsApp template %s: low quality at Meta, it may be paused."
+msgstr ""
+"Modèle WhatsApp %s : qualité faible chez Meta, il peut être mis en pause."
+
+#. module: whatsapp_cloud
+#: model:ir.actions.server,name:whatsapp_cloud.ir_cron_check_health_ir_actions_server
+msgid "WhatsApp: check the accounts at Meta"
+msgstr "WhatsApp : vérifier les comptes chez Meta"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.server,name:whatsapp_cloud.ir_cron_process_webhook_events_ir_actions_server
+msgid "WhatsApp: process the notifications of Meta"
+msgstr "WhatsApp : traiter les notifications de Meta"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.server,name:whatsapp_cloud.ir_cron_check_answer_delays_ir_actions_server
+msgid "WhatsApp: remind the conversations waiting for an answer"
+msgstr "WhatsApp : relancer les conversations en attente de réponse"
+
+#. module: whatsapp_cloud
+#: model:ir.actions.server,name:whatsapp_cloud.ir_cron_send_queued_messages_ir_actions_server
+msgid "WhatsApp: send the queued messages"
+msgstr "WhatsApp : envoyer les messages en attente"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_alert_level
+msgid "Whatsapp Alert Level"
+msgstr "Niveau d’alerte WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_away_date
+msgid "Whatsapp Away Date"
+msgstr "Date du message d’absence"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_partner__whatsapp_message_count
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_res_users__whatsapp_message_count
+msgid "Whatsapp Message Count"
+msgstr "Nombre de messages WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__discuss_channel__whatsapp_bot_state__agent
+msgid "With the team"
+msgstr "Avec l’équipe"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Write the text of the template."
+msgstr "Écrivez le texte du modèle."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_template_action
+msgid ""
+"Write them here and submit them to Meta, or create them at Meta and synchronise them\n"
+"               from the WhatsApp account; then choose the document they apply to and fill their\n"
+"               variables."
+msgstr ""
+"Écrivez-les ici et soumettez-les à Meta, ou créez-les chez Meta et "
+"synchronisez-les depuis le compte WhatsApp ; puis choisissez le document "
+"auquel ils s’appliquent et remplissez leurs variables."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid ""
+"You will no longer receive our WhatsApp notifications. Send START to receive"
+" them again."
+msgstr ""
+"Vous ne recevrez plus nos notifications WhatsApp. Envoyez START pour les "
+"recevoir à nouveau."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "account_id"
+msgstr "account_id"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "e.g. 6 70 00 00 00"
+msgstr "ex. 6 70 00 00 00"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "e.g. My Shop WhatsApp"
+msgstr "ex. WhatsApp Ma Boutique"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "e.g. My Shop, Douala"
+msgstr "ex. Ma Boutique, Douala"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "e.g. Order confirmed"
+msgstr "ex. Commande confirmée"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "e.g. Order {{1}}"
+msgstr "ex. Commande {{1}}"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_bot_option_view_form
+msgid "e.g. Our stores"
+msgstr "ex. Nos magasins"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_conversation_assign_view_form
+msgid "e.g. The customer asks for an exchange of size."
+msgstr "ex. Le client demande un échange de taille."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_button__url
+msgid ""
+"https://... ; for a link per document, end it with {{1}} after a slash (e.g."
+" {base_url}/{{1}}): Odoo adds the value of the Link Button Variable of the "
+"template."
+msgstr ""
+"https://... ; pour un lien propre à chaque document, terminez-la par {{1}} "
+"après une barre oblique (par exemple {base_url}/{{1}}) : Odoo ajoute la "
+"valeur de la Variable du bouton lien du modèle."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "no media"
+msgstr "pas de média"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/res_partner.py:0
+msgid "partner_id"
+msgstr "partner_id"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "{base_url}/{{1}}"
+msgstr "{base_url}/{{1}}"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "{{ object.get_portal_url() }}"
+msgstr "{{ object.get_portal_url() }}"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "{{ object.name }}"
+msgstr "{{ object.name }}"
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "{{ object.partner_id.name }}"
+msgstr "{{ object.partner_id.name }}"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "👤 Contact card"
+msgstr "👤 Fiche contact"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "📍 Location"
+msgstr "📍 Position"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "🛒 Order from the catalogue"
+msgstr "🛒 Commande depuis le catalogue"

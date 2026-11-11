@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- To start again a conversation more than 24 hours after the last message of the customer
+         (free-form answers are refused by WhatsApp then). To create at Meta with the same name and
+         text, or with "Submit to Meta". -->
+    <data noupdate="1">
+        <record id="template_conversation_follow_up" model="whatsapp.template">
+            <field name="name">Follow-up of the conversation</field>
+            <field name="template_name">conversation_follow_up</field>
+            <field name="lang_code">fr</field>
+            <field name="category">utility</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, nous revenons vers vous au sujet de votre message. Répondez à ce message pour poursuivre la conversation avec notre équipe.</field>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Awa'})]"/>
+        </record>
+        <record id="template_conversation_follow_up_en" model="whatsapp.template">
+            <field name="name">Follow-up of the conversation (English)</field>
+            <field name="template_name">conversation_follow_up</field>
+            <field name="lang_code">en</field>
+            <field name="category">utility</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Hello {{1}}, we are getting back to you about your message. Reply to this message to continue the conversation with our team.</field>
+            <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Awa'})]"/>
+        </record>
+    </data>
+</odoo>

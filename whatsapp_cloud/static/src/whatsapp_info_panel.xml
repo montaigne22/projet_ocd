@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="whatsapp_cloud.WhatsappInfoPanel">
+        <ActionPanel close="this.props.close" title.translate="Customer" minWidth="220" initialWidth="300" icon="'info'">
+            <div t-if="this.state.info" class="o-whatsapp-InfoPanel-content d-flex flex-column gap-3 pt-2">
+                <div t-if="this.state.info.partner" class="d-flex flex-column gap-1">
+                    <h6 class="mb-1" t-out="this.state.info.partner.name"/>
+                    <span t-if="this.state.info.partner.phone" class="text-muted small">
+                        <i class="oi me-1" data-icon="call"/><t t-out="this.state.info.partner.phone"/>
+                    </span>
+                    <span t-if="this.state.info.partner.username" class="text-muted small">
+                        <i class="oi me-1" data-icon="alternate_email"/><t t-out="this.state.info.partner.username"/>
+                    </span>
+                    <span t-if="this.state.info.partner.email" class="text-muted small">
+                        <i class="oi me-1" data-icon="mail"/><t t-out="this.state.info.partner.email"/>
+                    </span>
+                    <span class="small" t-att-class="this.state.info.partner.opt_in ? 'text-success' : 'text-muted'">
+                        <t t-if="this.state.info.partner.opt_in">Receives the WhatsApp notifications</t>
+                        <t t-else="">Does not receive the WhatsApp notifications</t>
+                    </span>
+                    <div t-if="this.state.info.partner.to_identify" class="alert alert-warning p-2 mb-0 small">
+                        Unknown number: a contact was created with the WhatsApp name of the customer.
+                        <div class="d-flex gap-2 mt-1">
+                            <button class="btn btn-sm btn-warning" t-on-click="() => this.call('whatsapp_action_link_partner')">Existing contact</button>
+                            <button class="btn btn-sm btn-secondary" t-on-click="() => this.call('whatsapp_action_confirm_partner')">Right contact</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-secondary mt-1" t-on-click="() => this.call('whatsapp_action_open_partner')">
+                        <i class="oi me-1" data-icon="contact_page"/>View Contact
+                    </button>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                    <h6 class="mb-1">Conversation</h6>
+                    <span class="small">
+                        <t t-out="this.channel.whatsappStateLabel"/>
+                        <t t-if="this.channel.whatsapp_user_name"> · <t t-out="this.channel.whatsapp_user_name"/></t>
+                        <t t-else=""> · <span class="text-warning">Not assigned</span></t>
+                    </span>
+                    <span class="small" t-att-class="this.channel.whatsappWindowOpen ? 'text-muted' : 'text-danger'">
+                        <t t-if="this.channel.whatsappWindowOpen">Answers allowed until <t t-out="this.validUntilText"/></t>
+                        <t t-else="">24-hour window closed: send a template</t>
+                    </span>
+                    <span t-if="this.channel.whatsapp_waiting_since" class="small text-warning">
+                        Waiting for an answer since <t t-out="this.waitingSinceText"/>
+                    </span>
+                    <div class="d-flex flex-wrap gap-1 mt-1">
+                        <button t-if="!this.channel.whatsappIsMine" class="btn btn-sm btn-primary" t-on-click="() => this.call('whatsapp_action_take')">Take It</button>
+                        <button class="btn btn-sm btn-secondary" t-on-click="() => this.call('whatsapp_action_transfer')">Transfer</button>
+                        <button t-if="this.channel.whatsapp_state !== 'done'" class="btn btn-sm btn-secondary" t-on-click="() => this.call('whatsapp_action_resolve')">Resolved</button>
+                        <button t-else="" class="btn btn-sm btn-secondary" t-on-click="() => this.call('whatsapp_action_reopen')">Reopen</button>
+                        <button class="btn btn-sm btn-secondary" t-on-click="() => this.call('whatsapp_action_send_template')">Send a template</button>
+                    </div>
+                </div>
+                <div t-if="this.state.info.all_tags.length" class="d-flex flex-column gap-1">
+                    <h6 class="mb-1">Tags</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        <t t-foreach="this.state.info.all_tags" t-as="tag" t-key="tag.id">
+                            <span role="button" t-on-click="() => this.toggleTag(tag)"
+                                  t-attf-class="badge rounded-pill o_tag_color_{{ this.hasTag(tag) ? tag.color : 0 }} {{ this.hasTag(tag) ? '' : 'opacity-50' }}"
+                                  t-out="tag.name"/>
+                        </t>
+                    </div>
+                </div>
+                <t t-foreach="this.state.info.sections" t-as="section" t-key="section_index">
+                    <div class="d-flex flex-column gap-1">
+                        <h6 class="mb-1" t-out="section.title"/>
+                        <t t-if="section.items.length">
+                            <t t-foreach="section.items" t-as="item" t-key="item.model + item.id">
+                                <a href="#" class="d-flex flex-column small text-reset" t-on-click.prevent="() => this.openRecord(item)">
+                                    <span class="fw-bold" t-out="item.name"/>
+                                    <span class="text-muted" t-out="item.detail"/>
+                                </a>
+                            </t>
+                        </t>
+                        <span t-else="" class="small text-muted" t-out="section.empty"/>
+                        <t t-foreach="section.buttons or []" t-as="button" t-key="button.method">
+                            <button class="btn btn-sm btn-secondary mt-1" t-on-click="() => this.call(button.method)" t-out="button.name"/>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </ActionPanel>
+    </t>
+
+    <t t-inherit="mail.Message.notification" t-inherit-mode="extension">
+        <xpath expr="." position="inside">
+            <span t-if="this.message.whatsappStatus" class="o-whatsapp-MessageStatus mx-1"
+                  t-att-class="{
+                      'text-danger': ['failed', 'skipped'].includes(this.message.whatsapp_status),
+                      'o-whatsapp-read': this.message.whatsapp_status === 'read',
+                      'opacity-50': ['queued', 'sent', 'delivered'].includes(this.message.whatsapp_status),
+                  }"
+                  t-att-title="this.message.whatsappStatusTitle">
+                <i class="oi" t-att-data-icon="this.message.whatsappStatus.icon" role="img" t-att-aria-label="this.message.whatsappStatusTitle"/>
+            </span>
+        </xpath>
+    </t>
+</templates>

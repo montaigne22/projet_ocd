@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="whatsapp_template_view_list" model="ir.ui.view">
+        <field name="name">whatsapp.template.list</field>
+        <field name="model">whatsapp.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="template_name"/>
+                <field name="lang_code"/>
+                <field name="category" optional="show"/>
+                <field name="model_id"/>
+                <field name="account_id"/>
+                <field name="quality_score" optional="hide"/>
+                <field name="status" widget="badge" decoration-success="status == 'approved'"
+                       decoration-warning="status == 'pending'" decoration-danger="status in ('rejected', 'disabled', 'paused')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="whatsapp_template_view_search" model="ir.ui.view">
+        <field name="name">whatsapp.template.search</field>
+        <field name="model">whatsapp.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="template_name"/>
+                <field name="model_id"/>
+                <filter name="approved" string="Approved" domain="[('status', '=', 'approved')]"/>
+                <filter name="pending" string="Pending Approval" domain="[('status', '=', 'pending')]"/>
+                <filter name="refused" string="Refused or Paused" domain="[('status', 'in', ('rejected', 'paused', 'disabled'))]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_model" string="Applies to" context="{'group_by': 'model_id'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="whatsapp_template_view_form" model="ir.ui.view">
+        <field name="name">whatsapp.template.form</field>
+        <field name="model">whatsapp.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_to_meta" type="object" string="Submit to Meta"
+                            class="btn-primary" invisible="not id or wa_template_id"
+                            groups="whatsapp_cloud.group_whatsapp_manager"
+                            confirm="Meta reviews the template (up to 24 hours): it can be used once approved."/>
+                    <button name="action_submit_to_meta" type="object" string="Submit the Changes to Meta"
+                            invisible="not wa_template_id or status not in ('approved', 'rejected', 'paused')"
+                            groups="whatsapp_cloud.group_whatsapp_manager"
+                            confirm="Meta reviews the changes again. An approved template can be edited 10 times in 30 days, once a day at most."/>
+                    <field name="status" widget="statusbar" statusbar_visible="unknown,pending,approved"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="alert alert-danger" role="alert" invisible="not rejected_reason">
+                        <field name="rejected_reason"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Order confirmed"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True}"/>
+                            <field name="model" invisible="1"/>
+                            <field name="partner_field" invisible="model == 'res.partner'"/>
+                            <field name="account_id"/>
+                        </group>
+                        <group>
+                            <field name="template_name"/>
+                            <field name="lang_code"/>
+                            <field name="category"/>
+                            <field name="parameter_format"/>
+                            <field name="wa_template_id" invisible="not wa_template_id"/>
+                            <field name="quality_score" invisible="not quality_score"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Message" name="message">
+                            <group>
+                                <field name="body" placeholder="Hello {{1}}, your order {{2}} is confirmed."/>
+                                <field name="footer_text" placeholder="e.g. My Shop, Douala"/>
+                            </group>
+                            <field name="variable_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="placeholder"/>
+                                    <field name="param_name" column_invisible="parent.parameter_format != 'named'"/>
+                                    <field name="value" placeholder="{{ object.partner_id.name }}"/>
+                                    <field name="sample_value" optional="show"/>
+                                </list>
+                            </field>
+                            <group string="Preview">
+                                <field name="preview" nolabel="1" colspan="2" class="text-muted"/>
+                            </group>
+                        </page>
+                        <page string="Header and Buttons" name="header">
+                            <group>
+                                <group string="Header">
+                                    <field name="header_type"/>
+                                    <field name="header_text" invisible="header_type != 'text'"
+                                           placeholder="e.g. Order {{1}}"/>
+                                    <field name="header_value" invisible="header_type != 'text'"
+                                           placeholder="{{ object.name }}"/>
+                                    <field name="header_sample" invisible="header_type != 'text'"/>
+                                    <field name="header_report_id" invisible="header_type != 'document'"
+                                           required="header_type == 'document'"/>
+                                    <field name="header_sample_file" filename="header_sample_filename"
+                                           invisible="header_type != 'document'"/>
+                                    <field name="header_sample_filename" invisible="1"/>
+                                </group>
+                                <group string="Link Button">
+                                    <field name="button_url_value" placeholder="{{ object.get_portal_url() }}"/>
+                                    <field name="button_url_dynamic"/>
+                                </group>
+                            </group>
+                            <field name="button_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="button_type"/>
+                                    <field name="name"/>
+                                    <field name="url" invisible="button_type != 'url'"
+                                           placeholder="{base_url}/{{1}}"/>
+                                    <field name="url_example" invisible="button_type != 'url'" optional="show"/>
+                                    <field name="phone_number" invisible="button_type != 'phone_number'"/>
+                                </list>
+                            </field>
+                            <div class="text-muted">
+                                In the URL of a link button, {base_url} is replaced by the address of the site when
+                                the template is submitted to Meta; end it with /{{1}} to add the Link Button Variable
+                                of each document (e.g. the link of the order in the customer account).
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="whatsapp_template_action" model="ir.actions.act_window">
+        <field name="name">WhatsApp Templates</field>
+        <field name="res_model">whatsapp.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the templates of your messages</p>
+            <p>Write them here and submit them to Meta, or create them at Meta and synchronise them
+               from the WhatsApp account; then choose the document they apply to and fill their
+               variables.</p>
+        </field>
+    </record>
+
+</odoo>

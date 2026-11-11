@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_view_form_whatsapp" model="ir.ui.view">
+        <field name="name">sale.order.form.whatsapp</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_quotation_send']" position="after">
+                <field name="whatsapp_quotation" invisible="1"/>
+                <button name="action_whatsapp_send_quotation" type="object" string="Send on WhatsApp"
+                        invisible="not whatsapp_quotation or state not in ('draft', 'sent')"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_config_settings_view_form_whatsapp" model="ir.ui.view">
+        <field name="name">res.config.settings.form.whatsapp.sale</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="whatsapp_cloud.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <block name="whatsapp_automatic_answers" position="after">
+                <block title="Online Shop" name="whatsapp_shop">
+                    <setting string="WhatsApp Number"
+                             help="Number of the WhatsApp links of the site. Empty: the number of the WhatsApp account, once checked at Meta.">
+                        <field name="website_whatsapp_number" placeholder="e.g. +237 6 99 00 00 00"/>
+                    </setting>
+                    <setting help="Button of the product pages: opens a conversation with the shop, with a message naming the product and the chosen options.">
+                        <field name="website_whatsapp_order_button"/>
+                    </setting>
+                    <setting help="&quot;Receive the follow-up of my orders on WhatsApp&quot; box of the checkout. The notifications are only sent to the customers who agreed.">
+                        <field name="website_whatsapp_checkout_consent"/>
+                    </setting>
+                </block>
+                <block title="Order Notifications" name="whatsapp_order_notifications">
+                    <setting help="Order awaiting its payment (bank transfer): it will be confirmed once the payment is received.">
+                        <field name="whatsapp_notify_order_received"/>
+                    </setting>
+                    <setting help="Order confirmed (paid online, or the transfer received).">
+                        <field name="whatsapp_notify_order_confirmed"/>
+                    </setting>
+                    <setting help="Order handed over to the carrier.">
+                        <field name="whatsapp_notify_order_shipped"/>
+                    </setting>
+                    <setting help="2 days after the delivery: the customer rates the order with a button; review link to the satisfied customers, unsatisfied customers handed over to the team.">
+                        <field name="whatsapp_notify_delivery_feedback"/>
+                    </setting>
+                    <setting help="The notifications are sent with the templates approved by Meta, to the customers who agreed. Their conditions and delays are set on the automation rules.">
+                        <button name="action_open_whatsapp_automations" type="object" string="Automation Rules"
+                                icon="east" class="btn-link"/>
+                    </setting>
+                </block>
+                <block title="Sales" name="whatsapp_sales">
+                    <setting help="&quot;Track my order&quot; option of the welcome menu, and order references of the customers answered with the status of their orders."
+                             invisible="not whatsapp_conversations">
+                        <field name="whatsapp_order_tracking"/>
+                    </setting>
+                    <setting help="&quot;Send on WhatsApp&quot; button of the quotations, with the link to view and pay them online.">
+                        <field name="whatsapp_quotation"/>
+                    </setting>
+                </block>
+            </block>
+        </field>
+    </record>
+
+    <record id="whatsapp_bot_option_view_form_sale" model="ir.ui.view">
+        <field name="name">whatsapp.bot.option.form.sale</field>
+        <field name="model">whatsapp.bot.option</field>
+        <field name="inherit_id" ref="whatsapp_cloud.whatsapp_bot_option_view_form"/>
+        <field name="arch" type="xml">
+            <div name="action_help" position="inside">
+                <span invisible="action != 'order_status'">The status and the link of the latest orders of
+                    the customer (of their WhatsApp number).</span>
+                <span invisible="action != 'pay'">The payment links of the quotations and orders the customer
+                    has to pay: offered only when there is one.</span>
+                <span invisible="action != 'stores'">The stores of the "Pick up in store" delivery methods
+                    published on the site: address, phone, opening hours, and their location to open in the maps.</span>
+                <span invisible="action != 'delivery_fees'">Asks the city (and the district when the fees depend
+                    on it), then gives the published delivery methods with their prices, and the pickup in store.</span>
+            </div>
+        </field>
+    </record>
+
+    <record id="whatsapp_account_view_form_sale" model="ir.ui.view">
+        <field name="name">whatsapp.account.form.sale</field>
+        <field name="model">whatsapp.account</field>
+        <field name="inherit_id" ref="whatsapp_cloud.whatsapp_account_view_form"/>
+        <field name="arch" type="xml">
+            <field name="stop_message" position="before">
+                <field name="review_url" placeholder="e.g. https://g.page/r/..."/>
+            </field>
+        </field>
+    </record>
+</odoo>

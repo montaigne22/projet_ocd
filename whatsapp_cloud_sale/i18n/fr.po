@@ -1,0 +1,998 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* whatsapp_cloud_sale
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-03 08:44+0000\n"
+"PO-Revision-Date: 2026-11-03 08:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.module.module,description:base.module_whatsapp_cloud_sale
+msgid ""
+"\n"
+"WhatsApp of the online shop\n"
+"===========================\n"
+"\n"
+"- Checkout: \"Receive the follow-up of my orders on WhatsApp\" box in the address form,\n"
+"  ticked by default unless the customer refused before (consent stored on the\n"
+"  customer, required by WhatsApp).\n"
+"- Templates and automation rules, ready to use once the templates are approved by Meta\n"
+"  (submitted from Odoo or created at Meta): order received, confirmed, shipped, ready for\n"
+"  pickup, quotation sent with its payment link, satisfaction 2 days after the delivery.\n"
+"  In French, and in English for the English-speaking customers.\n"
+"- Conversations: \"Track my order\" option of the welcome menu and order numbers answered\n"
+"  automatically (only the orders of the customer), assignment to the salesperson of the\n"
+"  customer, orders in the information panel, new quotation from the conversation.\n"
+"- Quotations: \"Send on WhatsApp\" button, as an answer in the conversation within 24 hours\n"
+"  or with the template after, with the link to view and pay online.\n"
+"- Ratings of the customers stored on the orders; review link to the satisfied customers,\n"
+"  unsatisfied customers handed over to the team.\n"
+"- \"Order on WhatsApp\" button on the product pages (product and chosen options in the\n"
+"  message), WhatsApp number of the shop.\n"
+"- Settings (WhatsApp section): each feature enabled or disabled (notifications of the\n"
+"  orders, satisfaction, order tracking, quotations, \"Order on WhatsApp\" button, consent\n"
+"  at the checkout).\n"
+msgstr ""
+"\n"
+"WhatsApp de la boutique en ligne\n"
+"================================\n"
+"\n"
+"- Commande : case « Recevoir le suivi de mes commandes sur WhatsApp » dans le formulaire\n"
+"  d’adresse, cochée par défaut sauf si le client a refusé auparavant (consentement enregistré\n"
+"  sur le client, exigé par WhatsApp).\n"
+"- Modèles et règles d’automatisation, prêts dès que les modèles sont approuvés par Meta\n"
+"  (soumis depuis Odoo ou créés chez Meta) : commande reçue, confirmée, expédiée, prête au\n"
+"  retrait, devis envoyé avec son lien de paiement, satisfaction 2 jours après la livraison.\n"
+"  En français, et en anglais pour les clients anglophones.\n"
+"- Conversations : option « Suivre ma commande » du menu d’accueil et numéros de commande\n"
+"  traités automatiquement (seulement les commandes du client), attribution au vendeur du\n"
+"  client, commandes dans le panneau d’information, nouveau devis depuis la conversation.\n"
+"- Devis : bouton « Envoyer sur WhatsApp », en réponse dans la conversation sous 24 heures ou\n"
+"  avec le modèle ensuite, avec le lien pour consulter et payer en ligne.\n"
+"- Notes des clients enregistrées sur les commandes ; lien d’avis aux clients satisfaits,\n"
+"  clients insatisfaits confiés à l’équipe.\n"
+"- Bouton « Commander sur WhatsApp » sur les fiches produit (produit et options choisies dans\n"
+"  le message), numéro WhatsApp de la boutique.\n"
+"- Paramètres (section WhatsApp) : chaque fonction activée ou désactivée (notifications des\n"
+"  commandes, satisfaction, suivi de commande, devis, bouton « Commander sur WhatsApp »,\n"
+"  consentement à la commande).\n"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_res_config_settings__website_whatsapp_order_button
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_website__whatsapp_order_button
+msgid ""
+"\"Order on WhatsApp\" button of the product pages: opens a conversation with"
+" the shop, with a message naming the product and the chosen options."
+msgstr ""
+"Bouton « Commander sur WhatsApp » des fiches produit : ouvre une "
+"conversation avec la boutique, avec un message qui nomme le produit et les "
+"options choisies."
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_res_config_settings__website_whatsapp_checkout_consent
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_website__whatsapp_checkout_consent
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid ""
+"\"Receive the follow-up of my orders on WhatsApp\" box of the checkout. The "
+"notifications are only sent to the customers who agreed."
+msgstr ""
+"Case « Recevoir le suivi de mes commandes sur WhatsApp » de la commande. Les"
+" notifications ne sont envoyées qu’aux clients qui ont accepté."
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_res_company__whatsapp_quotation
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_res_config_settings__whatsapp_quotation
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_sale_order__whatsapp_quotation
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid ""
+"\"Send on WhatsApp\" button of the quotations, with the link to view and pay"
+" them online."
+msgstr ""
+"Bouton « Envoyer sur WhatsApp » des devis, avec le lien pour les consulter "
+"et les payer en ligne."
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid ""
+"\"Track my order\" option of the welcome menu, and order references of the "
+"customers answered with the status of their orders."
+msgstr ""
+"Option « Suivre ma commande » du menu d’accueil, et références de commande "
+"des clients traitées avec le statut de leurs commandes."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/stock_warehouse.py:0
+msgid "%(days)s: %(hours)s"
+msgstr "%(days)s : %(hours)s"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid ""
+"%(district)s is not in our delivery zones of %(city)s: our fees depend on "
+"the district."
+msgstr ""
+"%(district)s ne fait pas partie de nos zones de livraison à %(city)s : nos "
+"tarifs dépendent du quartier."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "%(fee)s, free from %(amount)s"
+msgstr "%(fee)s, gratuite dès %(amount)s"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/stock_warehouse.py:0
+msgid "%(first)s – %(last)s"
+msgstr "%(first)s – %(last)s"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid ""
+"%(name)s of %(date)s, %(amount)s: %(status)s\n"
+"%(url)s"
+msgstr ""
+"%(name)s du %(date)s, %(amount)s : %(status)s\n"
+"%(url)s"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid ""
+"%(order)s: %(amount)s to pay\n"
+"%(link)s"
+msgstr ""
+"%(order)s : %(amount)s à payer\n"
+"%(link)s"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid ""
+"2 days after the delivery: the customer rates the order with a button; "
+"review link to the satisfied customers, unsatisfied customers handed over to"
+" the team."
+msgstr ""
+"2 jours après la livraison : le client note la commande avec un bouton ; "
+"lien d’avis aux clients satisfaits, clients insatisfaits confiés à l’équipe."
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.whatsapp_order_link
+msgid ""
+"<i class=\"oi me-1\" data-icon=\"oi_whatsapp\"/><span>Order on WhatsApp</span>\n"
+"            <span class=\"d-none o_whatsapp_intro\">Hello, I would like to order:</span>"
+msgstr ""
+"<i class=\"oi me-1\" data-icon=\"oi_whatsapp\"/><span>Commander sur WhatsApp</span>\n"
+"            <span class=\"d-none o_whatsapp_intro\">Bonjour, je souhaite commander :</span>"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.whatsapp_bot_option_view_form_sale
+msgid ""
+"<span invisible=\"action != 'order_status'\">The status and the link of the latest orders of\n"
+"                    the customer (of their WhatsApp number).</span>\n"
+"                <span invisible=\"action != 'pay'\">The payment links of the quotations and orders the customer\n"
+"                    has to pay: offered only when there is one.</span>\n"
+"                <span invisible=\"action != 'stores'\">The stores of the \"Pick up in store\" delivery methods\n"
+"                    published on the site: address, phone, opening hours, and their location to open in the maps.</span>\n"
+"                <span invisible=\"action != 'delivery_fees'\">Asks the city (and the district when the fees depend\n"
+"                    on it), then gives the published delivery methods with their prices, and the pickup in store.</span>"
+msgstr ""
+"<span invisible=\"action != 'order_status'\">Le statut et le lien des "
+"dernières commandes du client (de son numéro WhatsApp).</span> <span "
+"invisible=\"action != 'pay'\">Les liens de paiement des devis et commandes "
+"que le client doit payer : proposée seulement s’il y en a.</span> <span "
+"invisible=\"action != 'stores'\">Les magasins des modes de livraison « "
+"Retrait en magasin » publiés sur le site : adresse, téléphone, horaires, et "
+"leur position à ouvrir dans les cartes.</span> <span invisible=\"action != "
+"'delivery_fees'\">Demande la ville (et le quartier quand les frais en "
+"dépendent), puis donne les modes de livraison publiés avec leurs prix, et le"
+" retrait en magasin.</span>"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_bot_option__action
+msgid "Action"
+msgstr "Action"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/whatsapp_account.py:0
+msgid "Addresses, opening hours and map"
+msgstr "Adresses, horaires et plan"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Another city"
+msgstr "Autre ville"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Another district"
+msgstr "Autre quartier"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_account__assignment_mode
+msgid "Assignment"
+msgstr "Attribution"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid "Automation Rules"
+msgstr "Règles d’automatisation"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid ""
+"Button of the product pages: opens a conversation with the shop, with a "
+"message naming the product and the chosen options."
+msgstr ""
+"Bouton des fiches produit : ouvre une conversation avec la boutique, avec un"
+" message qui nomme le produit et les options choisies."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Choose the city"
+msgstr "Choisir la ville"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Choose the district"
+msgstr "Choisir le quartier"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_res_company
+msgid "Company"
+msgstr "Société"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_delivery_carrier
+msgid "Delivery Method"
+msgstr "Mode de livraison"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/whatsapp_account.py:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud_sale.selection__whatsapp_bot_option__action__delivery_fees
+msgid "Delivery fees"
+msgstr "Frais de livraison"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Delivery to %s:"
+msgstr "Livraison à %s :"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Delivery to the other cities:"
+msgstr "Livraison dans les autres villes :"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_discuss_channel
+msgid "Discussion Channel"
+msgstr "Canal de discussion"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_delivery_carrier__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_discuss_channel__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_company__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_sale_order__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_stock_warehouse__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_website__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_account__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_bot_option__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_message__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/sale_order.py:0
+msgid ""
+"Hello %(name)s, here is your quotation %(order)s for %(amount)s. You can "
+"view it and pay it online: %(url)s"
+msgstr ""
+"Bonjour %(name)s, voici votre devis %(order)s d’un montant de %(amount)s. "
+"Vous pouvez le consulter et le payer en ligne : %(url)s"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_delivery_carrier__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_discuss_channel__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_company__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_sale_order__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_stock_warehouse__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_website__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_account__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_bot_option__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_message__id
+msgid "ID"
+msgstr "ID"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_res_company__whatsapp_order_tracking
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_res_config_settings__whatsapp_order_tracking
+msgid ""
+"In the WhatsApp conversations, the \"Track my order\" option of the welcome "
+"menu and the order references written by the customers are answered with the"
+" status of their orders."
+msgstr ""
+"Dans les conversations WhatsApp, l’option « Suivre ma commande » du menu "
+"d’accueil et les références de commande écrites par les clients reçoivent le"
+" statut de leurs commandes."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "In which district of %s?"
+msgstr "Dans quel quartier de %s ?"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid ""
+"In which district of %s? Choose your zone: its districts are written under "
+"its name."
+msgstr ""
+"Dans quel quartier de %s ? Choisissez votre zone : ses quartiers sont écrits"
+" sous son nom."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "New Quotation"
+msgstr "Nouveau devis"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "No order yet."
+msgstr "Pas encore de commande."
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid ""
+"Number of the WhatsApp links of the site. Empty: the number of the WhatsApp "
+"account, once checked at Meta."
+msgstr ""
+"Numéro des liens WhatsApp du site. Vide : le numéro du compte WhatsApp, une "
+"fois vérifié chez Meta."
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid "Online Shop"
+msgstr "Boutique en ligne"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/sale_order.py:0
+msgid "Only a quotation can be sent this way."
+msgstr "Seul un devis peut être envoyé ainsi."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Or pick up your order in store:"
+msgstr "Ou retirez votre commande en magasin :"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__whatsapp_notify_order_confirmed
+msgid "Order Confirmed"
+msgstr "Commande confirmée"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid "Order Notifications"
+msgstr "Notifications des commandes"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__whatsapp_notify_order_received
+msgid "Order Received"
+msgstr "Commande reçue"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__whatsapp_notify_order_shipped
+msgid "Order Shipped"
+msgstr "Commande expédiée"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid ""
+"Order awaiting its payment (bank transfer): it will be confirmed once the "
+"payment is received."
+msgstr ""
+"Commande en attente de son paiement (virement) : elle sera confirmée dès "
+"réception du paiement."
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_order_confirmed
+msgid "Order confirmed"
+msgstr "Commande confirmée"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_order_confirmed_en
+msgid "Order confirmed (English)"
+msgstr "Commande confirmée (anglais)"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid "Order confirmed (paid online, or the transfer received)."
+msgstr "Commande confirmée (payée en ligne, ou virement reçu)."
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid "Order handed over to the carrier."
+msgstr "Commande remise au transporteur."
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__website_whatsapp_order_button
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_website__whatsapp_order_button
+msgid "Order on WhatsApp"
+msgstr "Commander sur WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_order_ready_for_pickup
+msgid "Order ready for pickup"
+msgstr "Commande prête au retrait"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_order_ready_for_pickup_en
+msgid "Order ready for pickup (English)"
+msgstr "Commande prête au retrait (anglais)"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_order_received
+msgid "Order received"
+msgstr "Commande reçue"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_order_received_en
+msgid "Order received (English)"
+msgstr "Commande reçue (anglais)"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_order_shipped
+msgid "Order shipped"
+msgstr "Commande expédiée"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_order_shipped_en
+msgid "Order shipped (English)"
+msgstr "Commande expédiée (anglais)"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "Orders"
+msgstr "Commandes"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Our delivery methods:"
+msgstr "Nos modes de livraison :"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/whatsapp_account.py:0
+#: model:ir.model.fields.selection,name:whatsapp_cloud_sale.selection__whatsapp_bot_option__action__stores
+msgid "Our stores"
+msgstr "Nos magasins"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Our stores:"
+msgstr "Nos magasins :"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Our team will tell you where to find our products."
+msgstr "Notre équipe vous indiquera où trouver nos produits."
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields.selection,name:whatsapp_cloud_sale.selection__whatsapp_bot_option__action__pay
+msgid "Pay an order"
+msgstr "Payer une commande"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/whatsapp_account.py:0
+msgid "Pay my order"
+msgstr "Payer ma commande"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Pay online, it is secure:"
+msgstr "Payez en ligne, en toute sécurité :"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/whatsapp_account.py:0
+msgid "Payment link of your orders to pay"
+msgstr "Lien de paiement de vos commandes à payer"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/whatsapp_account.py:0
+msgid "Prices and delivery methods in your city"
+msgstr "Prix et modes de livraison dans votre ville"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_quotation_sent
+msgid "Quotation sent"
+msgstr "Devis envoyé"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_quotation_sent_en
+msgid "Quotation sent (English)"
+msgstr "Devis envoyé (anglais)"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/sale_order.py:0
+msgid "Quotation sent on WhatsApp."
+msgstr "Devis envoyé sur WhatsApp."
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_company__whatsapp_quotation
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__whatsapp_quotation
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_sale_order__whatsapp_quotation
+msgid "Quotations on WhatsApp"
+msgstr "Devis sur WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/sale_order.py:0
+msgid "Rating given on WhatsApp."
+msgstr "Note donnée sur WhatsApp."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/sale_order.py:0
+msgid "Rating of the customer on WhatsApp: %s/5"
+msgstr "Note du client sur WhatsApp : %s/5"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.address_form_fields_whatsapp
+msgid "Receive the follow-up of my orders on WhatsApp"
+msgstr "Recevoir le suivi de mes commandes sur WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_whatsapp_account__review_url
+msgid "Review Link"
+msgstr "Lien pour laisser un avis"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid "Sales"
+msgstr "Ventes"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_sale_order
+msgid "Sales Order"
+msgstr "Commande client"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields.selection,name:whatsapp_cloud_sale.selection__whatsapp_account__assignment_mode__salesperson
+msgid "Salesperson of the customer"
+msgstr "Vendeur du client"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__whatsapp_notify_delivery_feedback
+msgid "Satisfaction after the Delivery"
+msgstr "Satisfaction après la livraison"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_delivery_feedback
+msgid "Satisfaction after the delivery"
+msgstr "Satisfaction après la livraison"
+
+#. module: whatsapp_cloud_sale
+#: model:whatsapp.template,name:whatsapp_cloud_sale.template_delivery_feedback_en
+msgid "Satisfaction after the delivery (English)"
+msgstr "Satisfaction après la livraison (anglais)"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/sale_order.py:0
+#: model:ir.actions.act_window,name:whatsapp_cloud_sale.sale_order_action_whatsapp_composer
+#: model:ir.actions.act_window,name:whatsapp_cloud_sale.stock_picking_action_whatsapp_composer
+msgid "Send WhatsApp"
+msgstr "Envoyer un WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.actions.server,name:whatsapp_cloud_sale.action_order_confirmed
+msgid "Send WhatsApp: order confirmed"
+msgstr "Envoyer un WhatsApp : commande confirmée"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.actions.server,name:whatsapp_cloud_sale.action_order_received
+msgid "Send WhatsApp: order received"
+msgstr "Envoyer un WhatsApp : commande reçue"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.actions.server,name:whatsapp_cloud_sale.action_order_shipped
+msgid "Send WhatsApp: order shipped"
+msgstr "Envoyer un WhatsApp : commande expédiée"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.actions.server,name:whatsapp_cloud_sale.action_delivery_feedback
+msgid "Send WhatsApp: satisfaction after the delivery"
+msgstr "Envoyer un WhatsApp : satisfaction après la livraison"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.sale_order_view_form_whatsapp
+msgid "Send on WhatsApp"
+msgstr "Envoyer sur WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_whatsapp_account__review_url
+msgid ""
+"Sent to the customers who rate their order 4 or 5 out of 5 (e.g. the Google "
+"review link of the store)."
+msgstr ""
+"Envoyé aux clients qui notent leur commande 4 ou 5 sur 5 (par exemple le "
+"lien d’avis Google du magasin)."
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields.selection,name:whatsapp_cloud_sale.selection__whatsapp_bot_option__action__order_status
+msgid "Status of the orders"
+msgstr "Statut des commandes"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/whatsapp_account.py:0
+msgid "Status of your recent orders"
+msgstr "Statut de vos dernières commandes"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_whatsapp_account__assignment_mode
+msgid ""
+"Taken by an agent: all the agents see the new conversation, the first one "
+"who answers (or takes it) handles it. Each agent in turn: the conversation "
+"goes to the agent with the fewest open conversations, online agents first. "
+"Salesperson of the customer: the salesperson of their latest order when they"
+" are an agent, else each agent in turn."
+msgstr ""
+"Prise en charge par un agent : tous les agents voient la nouvelle "
+"conversation, le premier qui répond (ou la prend) la traite. Chaque agent à "
+"tour de rôle : la conversation va à l’agent qui a le moins de conversations "
+"ouvertes, les agents en ligne d’abord. Vendeur du client : le vendeur de sa "
+"dernière commande s’il est agent, sinon chaque agent à tour de rôle."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid ""
+"Thank you for your rating. Tell us here what we could do better, we read all"
+" the messages."
+msgstr ""
+"Merci pour votre note. Dites-nous ici ce que nous pourrions mieux faire, "
+"nous lisons tous les messages."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "Thank you very much for your rating, it makes us very happy!"
+msgstr "Merci beaucoup pour votre note, elle nous fait très plaisir !"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "The exact fees are shown when you order."
+msgstr "Les frais exacts s’affichent lors de la commande."
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid ""
+"The notifications are sent with the templates approved by Meta, to the "
+"customers who agreed. Their conditions and delays are set on the automation "
+"rules."
+msgstr ""
+"Les notifications sont envoyées avec les modèles approuvés par Meta, aux "
+"clients qui ont accepté. Leurs conditions et délais se règlent sur les "
+"règles d’automatisation."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/sale_order.py:0
+msgid ""
+"The quotations on WhatsApp are disabled in the settings (WhatsApp section)."
+msgstr ""
+"Les devis sur WhatsApp sont désactivés dans les paramètres (section "
+"WhatsApp)."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/whatsapp_account.py:0
+msgid "Track my order"
+msgstr "Suivre ma commande"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "Unsatisfied customer: %(value)s/5 for %(order)s."
+msgstr "Client insatisfait : %(value)s/5 pour %(order)s."
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_stock_warehouse
+msgid "Warehouse"
+msgstr "Entrepôt"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid ""
+"We are sorry that your order did not satisfy you. Tell us here what went "
+"wrong: an advisor will answer you to find a solution."
+msgstr ""
+"Nous sommes désolés que votre commande ne vous ait pas satisfait. Dites-nous"
+" ici ce qui n’a pas été : un conseiller vous répondra pour trouver une "
+"solution."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "We do not deliver to %s yet."
+msgstr "Nous ne livrons pas encore à %s."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "We do not deliver to the other cities yet."
+msgstr "Nous ne livrons pas encore dans les autres villes."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "We find no order for this WhatsApp number."
+msgstr "Nous ne trouvons aucune commande pour ce numéro WhatsApp."
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_website
+msgid "Website"
+msgstr "Site web"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_whatsapp_account
+msgid "WhatsApp Business Account"
+msgstr "Compte WhatsApp Business"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.module.module,shortdesc:base.module_whatsapp_cloud_sale
+msgid "WhatsApp Cloud API - eCommerce"
+msgstr "API Cloud WhatsApp - eCommerce"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__website_whatsapp_checkout_consent
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_website__whatsapp_checkout_consent
+msgid "WhatsApp Consent at Checkout"
+msgstr "Consentement WhatsApp à la commande"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_whatsapp_bot_option
+msgid "WhatsApp Menu Option"
+msgstr "Option du menu WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model,name:whatsapp_cloud_sale.model_whatsapp_message
+msgid "WhatsApp Message"
+msgstr "Message WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__website_whatsapp_number
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_website__whatsapp_number
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid "WhatsApp Number"
+msgstr "Numéro WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_company__whatsapp_order_tracking
+#: model:ir.model.fields,field_description:whatsapp_cloud_sale.field_res_config_settings__whatsapp_order_tracking
+msgid "WhatsApp Order Tracking"
+msgstr "Suivi des commandes sur WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.module.module,summary:base.module_whatsapp_cloud_sale
+msgid ""
+"WhatsApp for the online shop: order notifications, order tracking, "
+"quotations with payment link, satisfaction after delivery, Order on WhatsApp"
+msgstr ""
+"WhatsApp pour la boutique en ligne : notifications des commandes, suivi de "
+"commande, devis avec lien de paiement, satisfaction après livraison, "
+"Commander sur WhatsApp"
+
+#. module: whatsapp_cloud_sale
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_res_config_settings__website_whatsapp_number
+#: model:ir.model.fields,help:whatsapp_cloud_sale.field_website__whatsapp_number
+msgid ""
+"WhatsApp number of the shop, in international format (e.g. +237 6 99 00 00 "
+"00): used by the \"Order on WhatsApp\" button of the product pages and the "
+"WhatsApp links of the site. Empty: the number of the WhatsApp account, once "
+"checked at Meta."
+msgstr ""
+"Numéro WhatsApp de la boutique, au format international (par exemple +237 6 "
+"99 00 00 00) : utilisé par le bouton « Commander sur WhatsApp » des fiches "
+"produit et les liens WhatsApp du site. Vide : le numéro du compte WhatsApp, "
+"une fois vérifié chez Meta."
+
+#. module: whatsapp_cloud_sale
+#: model:base.automation,name:whatsapp_cloud_sale.automation_order_confirmed
+msgid "WhatsApp: order confirmed"
+msgstr "WhatsApp : commande confirmée"
+
+#. module: whatsapp_cloud_sale
+#: model:base.automation,name:whatsapp_cloud_sale.automation_order_received
+msgid "WhatsApp: order received (awaiting a bank transfer)"
+msgstr "WhatsApp : commande reçue (virement attendu)"
+
+#. module: whatsapp_cloud_sale
+#: model:base.automation,name:whatsapp_cloud_sale.automation_order_shipped
+msgid "WhatsApp: order shipped"
+msgstr "WhatsApp : commande expédiée"
+
+#. module: whatsapp_cloud_sale
+#: model:base.automation,name:whatsapp_cloud_sale.automation_delivery_feedback
+msgid "WhatsApp: satisfaction after the delivery"
+msgstr "WhatsApp : satisfaction après la livraison"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Where should we deliver? Choose your city."
+msgstr "Où faut-il livrer ? Choisissez votre ville."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Where should we deliver? Write the name of your city."
+msgstr "Où faut-il livrer ? Écrivez le nom de votre ville."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "Would you share your opinion in a few words? %s"
+msgstr "Voulez-vous partager votre avis en quelques mots ? %s"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "Write the name of your district in %s."
+msgstr "Écrivez le nom de votre quartier à %s."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "You have no order to pay."
+msgstr "Vous n’avez aucune commande à payer."
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "Your order:"
+msgstr "Votre commande :"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "Your orders:"
+msgstr "Vos commandes :"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "cancelled"
+msgstr "annulée"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/stock_warehouse.py:0
+msgid "closed"
+msgstr "fermé"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "collected on %s"
+msgstr "retirée le %s"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "confirmed, being prepared"
+msgstr "confirmée, en préparation"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.res_config_settings_view_form_whatsapp
+msgid "e.g. +237 6 99 00 00 00"
+msgstr "ex. +237 6 99 00 00 00"
+
+#. module: whatsapp_cloud_sale
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_sale.whatsapp_account_view_form_sale
+msgid "e.g. https://g.page/r/..."
+msgstr "ex. https://g.page/r/…"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "free"
+msgstr "gratuite"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "from %s"
+msgstr "à partir de %s"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "partly shipped"
+msgstr "expédiée en partie"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "price given when you order"
+msgstr "prix donné lors de la commande"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "quotation waiting for your confirmation"
+msgstr "devis en attente de votre confirmation"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "rated %s/5"
+msgstr "notée %s/5"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "ready for pickup in store"
+msgstr "prête au retrait en magasin"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel.py:0
+msgid "shipped on %s"
+msgstr "expédiée le %s"
+
+#. module: whatsapp_cloud_sale
+#. odoo-python
+#: code:addons/whatsapp_cloud_sale/models/discuss_channel_shop.py:0
+msgid "• *%(name)s*: %(fee)s"
+msgstr "• *%(name)s* : %(fee)s"

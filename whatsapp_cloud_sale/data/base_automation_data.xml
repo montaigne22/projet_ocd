@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Messages sent automatically; only to the customers who agreed, and only once a
+         WhatsApp account is configured. Can be archived in the automation rules. -->
+    <data noupdate="1">
+
+        <record id="automation_order_received" model="base.automation">
+            <field name="name">WhatsApp: order received (awaiting a bank transfer)</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="trigger">on_state_set</field>
+            <field name="trg_selection_field_id" ref="sale.selection__sale_order__state__sent"/>
+            <field name="filter_domain">[('state', '=', 'sent'), ('website_id', '!=', False), ('transaction_ids.provider_code', '=', 'custom')]</field>
+        </record>
+        <record id="action_order_received" model="ir.actions.server">
+            <field name="name">Send WhatsApp: order received</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="usage">base_automation</field>
+            <field name="base_automation_id" ref="automation_order_received"/>
+            <field name="state">whatsapp</field>
+            <field name="whatsapp_template_id" ref="template_order_received"/>
+        </record>
+
+        <record id="automation_order_confirmed" model="base.automation">
+            <field name="name">WhatsApp: order confirmed</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="trigger">on_state_set</field>
+            <field name="trg_selection_field_id" ref="sale.selection__sale_order__state__sale"/>
+            <field name="filter_domain">[('state', '=', 'sale')]</field>
+        </record>
+        <record id="action_order_confirmed" model="ir.actions.server">
+            <field name="name">Send WhatsApp: order confirmed</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="usage">base_automation</field>
+            <field name="base_automation_id" ref="automation_order_confirmed"/>
+            <field name="state">whatsapp</field>
+            <field name="whatsapp_template_id" ref="template_order_confirmed"/>
+        </record>
+
+        <record id="automation_order_shipped" model="base.automation">
+            <field name="name">WhatsApp: order shipped</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="trigger">on_state_set</field>
+            <field name="trg_selection_field_id" ref="stock.selection__stock_picking__state__done"/>
+            <field name="filter_domain">[('state', '=', 'done'), ('picking_type_code', '=', 'outgoing'), ('sale_id', '!=', False), '|', ('carrier_id', '=', False), ('carrier_id.delivery_type', '!=', 'in_store')]</field>
+        </record>
+        <record id="action_order_shipped" model="ir.actions.server">
+            <field name="name">Send WhatsApp: order shipped</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="usage">base_automation</field>
+            <field name="base_automation_id" ref="automation_order_shipped"/>
+            <field name="state">whatsapp</field>
+            <field name="whatsapp_template_id" ref="template_order_shipped"/>
+        </record>
+
+        <!-- Satisfaction: 2 days after the delivery (or the pickup in store) of an order. The
+             delay can be changed on the rule. -->
+        <record id="automation_delivery_feedback" model="base.automation">
+            <field name="name">WhatsApp: satisfaction after the delivery</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="trigger">on_time</field>
+            <field name="trg_date_id" ref="stock.field_stock_picking__date_done"/>
+            <field name="trg_date_range">2</field>
+            <field name="trg_date_range_mode">after</field>
+            <field name="trg_date_range_type">day</field>
+            <field name="filter_domain">[('state', '=', 'done'), ('picking_type_code', '=', 'outgoing'), ('sale_id', '!=', False)]</field>
+        </record>
+        <record id="action_delivery_feedback" model="ir.actions.server">
+            <field name="name">Send WhatsApp: satisfaction after the delivery</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="usage">base_automation</field>
+            <field name="base_automation_id" ref="automation_delivery_feedback"/>
+            <field name="state">whatsapp</field>
+            <field name="whatsapp_template_id" ref="template_delivery_feedback"/>
+        </record>
+
+    </data>
+</odoo>

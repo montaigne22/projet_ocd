@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Consent to the WhatsApp notifications, under the phone of the customer
+         (not on the other delivery addresses of a customer): ticked by default,
+         unless the customer refused them before (box unticked, or STOP). Can be
+         disabled in the settings. -->
+    <template id="address_form_fields_whatsapp" inherit_id="website_sale.address_form_fields">
+        <xpath expr="//div[@id='div_phone']" position="after">
+            <div t-if="website.whatsapp_checkout_consent and (address_type == 'billing' or use_delivery_as_billing or is_anonymous_cart)"
+                 id="div_whatsapp_opt_in" class="col-12 mb-2">
+                <input type="hidden" name="whatsapp_opt_in_shown" value="1"/>
+                <div class="form-check">
+                    <input id="o_whatsapp_opt_in" type="checkbox" name="whatsapp_opt_in" value="1"
+                           class="form-check-input" t-att-checked="not partner_sudo.whatsapp_opt_out"/>
+                    <label class="form-check-label" for="o_whatsapp_opt_in">
+                        Receive the follow-up of my orders on WhatsApp
+                    </label>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- "Order on WhatsApp" on the product pages: opens a conversation with the shop, with a
+         message naming the product, the chosen options and the page. -->
+    <template id="product_whatsapp_order" name="Order on WhatsApp" inherit_id="website_sale.cta_wrapper">
+        <xpath expr="//div[@id='add_to_cart_wrap']" position="after">
+            <t t-set="whatsapp_link_class" t-value="'btn btn-outline-success o_whatsapp_order'"/>
+            <t t-call="whatsapp_cloud_sale.whatsapp_order_link"/>
+        </xpath>
+    </template>
+
+    <template id="whatsapp_order_link" name="Order on WhatsApp link">
+        <a t-if="website.whatsapp_order_button and website._whatsapp_get_number()" t-att-class="whatsapp_link_class or 'o_whatsapp_order'"
+           t-att-style="whatsapp_link_style" t-att-href="website._whatsapp_get_link()" target="_blank" rel="noopener"
+           t-att-data-whatsapp-number="website._whatsapp_get_number()"
+           t-att-data-whatsapp-product="product.display_name"
+           t-att-data-whatsapp-options="whatsapp_options_selector">
+            <i class="oi me-1" data-icon="oi_whatsapp"/><span>Order on WhatsApp</span>
+            <span class="d-none o_whatsapp_intro">Hello, I would like to order:</span>
+        </a>
+    </template>
+</odoo>

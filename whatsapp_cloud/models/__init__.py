@@ -1,0 +1,17 @@
+from . import (
+    discuss_channel,
+    discuss_channel_member,
+    ir_actions_server,
+    mail_message,
+    res_company,
+    res_config_settings,
+    res_lang,
+    res_partner,
+    res_users,
+    whatsapp_account,
+    whatsapp_bot_option,
+    whatsapp_message,
+    whatsapp_tag,
+    whatsapp_template,
+    whatsapp_webhook_event,
+)

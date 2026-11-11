@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_groups_privilege_whatsapp" model="res.groups.privilege">
+        <field name="name">WhatsApp</field>
+        <field name="sequence">30</field>
+        <field name="category_id" ref="base.module_category_marketing"/>
+    </record>
+
+    <record id="group_whatsapp_user" model="res.groups">
+        <field name="name">Agent</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_whatsapp"/>
+        <field name="comment">Answers the WhatsApp conversations assigned to them or not assigned yet.</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_whatsapp_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_whatsapp"/>
+        <field name="comment">Sees all the WhatsApp conversations, assigns them, and configures the accounts,
+            the templates and the automatic answers.</field>
+        <field name="implied_ids" eval="[(4, ref('group_whatsapp_user')), (4, ref('mail.group_mail_canned_response_admin'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+</odoo>

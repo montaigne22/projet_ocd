@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="payment_provider_campay" model="payment.provider">
+        <field name="name">Campay</field>
+        <field name="code">campay</field>
+        <field name="image_128" type="bytes" file="payment_campay/static/description/icon.png"/>
+        <field name="module_id" ref="base.module_payment_campay"/>
+        <field name="inline_form_view_id" ref="inline_form"/>
+        <field name="redirect_form_view_id" ref="payment.generic_redirect_form"/>
+        <field name="available_country_ids" eval="[Command.set([ref('base.cm')])]"/>
+        <field name="pending_msg" type="html">
+            <p>Confirm the payment on your phone: approve the request you received, or dial
+                <b>*126#</b> (MTN) or <b>#150*50#</b> (Orange). Your order is confirmed as soon as
+                the payment is received.</p>
+        </field>
+    </record>
+
+</odoo>

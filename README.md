@@ -15,10 +15,14 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `ocd_debranding` | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients : site, connexion, portail, back-office, fenêtres d'erreur, e-mails |
 | `ocd_live_demo` | Données de démonstration, retirées entièrement en désinstallant le module |
 
-Modules complémentaires requis : `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et
-`delivery_cameroon` (dépôt tchokos-projet), `disable_odoo_online` (OCA, dépôt
-[server-brand](https://github.com/OCA/server-brand), branche 20.0). Ce que fait chaque outil pour OCD
-Live : [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md).
+| `whatsapp_cloud` | Conversations WhatsApp dans Odoo, messages automatiques validés par Meta, STOP et START |
+| `whatsapp_cloud_sale` | Messages WhatsApp de la commande du shop au client |
+| `payment_campay` | Paiement au Cameroun : MTN MoMo, Orange Money, carte |
+| `delivery_cameroon` | Villes et quartiers du Cameroun, point de repère obligatoire dans l'adresse |
+
+Le dépôt contient tous les modules nécessaires, sauf `disable_odoo_online` (OCA, dépôt
+[server-brand](https://github.com/OCA/server-brand), branche 20.0), à ajouter au chemin des modules
+pour `ocd_debranding`. Ce que fait chaque outil pour OCD Live : [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md).
 
 ## Pour reprendre le projet
 
