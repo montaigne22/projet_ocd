@@ -2,7 +2,7 @@
     "name": "OCD Live: WhatsApp Messages Of The Parcels",
     "summary": "Parcel to prepare and reminder to the vendor, parcel on the way with its "
     "code, failed attempt, delivered or returned parcel to the customer",
-    "version": "20.0.1.2.0",
+    "version": "20.0.1.3.0",
     "category": "Marketing/WhatsApp",
     "author": "RollBackk",
     "license": "LGPL-3",

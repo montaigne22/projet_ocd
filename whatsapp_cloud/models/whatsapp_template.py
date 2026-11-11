@@ -6,10 +6,13 @@ from functools import reduce
 from urllib.parse import quote, urlsplit
 
 import requests
+from lxml import etree
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.fields import Command
+from odoo.modules.module import get_manifest
+from odoo.tools import file_open
 from odoo.tools.safe_eval import safe_eval, time
 
 from odoo.addons.whatsapp_cloud import const
@@ -18,6 +21,10 @@ from odoo.addons.whatsapp_cloud.models.whatsapp_account import WhatsAppApiError
 _logger = logging.getLogger(__name__)
 
 PLACEHOLDER_RE = re.compile(r"{{\s*(\w+)\s*}}")
+# A letter or a digit: the text that Meta wants around the variables. Spaces and punctuation
+# alone are not text for Meta: "... : {{2}}." ends with a variable, "{{1}}, {{2}}" puts two
+# variables next to each other.
+TEXT_RE = re.compile(r"[^\W_]")
 # Characters kept as they are in the end of the URL of a link button; the others (spaces,
 # accents, ":", "|"...) are percent-encoded, as Meta asks.
 URL_SAFE_CHARS = "/?=&%#-._~!$'()*+,;@"
@@ -427,10 +434,18 @@ class WhatsappTemplate(models.Model):
             raise UserError(_("Write the text of the template."))
         if len(body) > 1024:
             raise UserError(_("The text of the template is too long: 1024 characters at most."))
-        if re.search(r"{{\s*\w+\s*}}\s*{{", body):
-            raise UserError(_("Two variables must be separated by text."))
-        if re.match(r"\s*{{", body) or re.search(r"}}\s*$", body):
-            raise UserError(_("The text cannot start or end with a variable."))
+        # The texts before, between and after the variables.
+        texts = PLACEHOLDER_RE.split(body)[::2]
+        if not all(TEXT_RE.search(text) for text in texts[1:-1]):
+            raise UserError(_(
+                "Two variables must be separated by words: a space or a punctuation mark "
+                "between them is not enough for Meta."
+            ))
+        if len(texts) > 1 and not (TEXT_RE.search(texts[0]) and TEXT_RE.search(texts[-1])):
+            raise UserError(_(
+                "The text cannot start or end with a variable: write words before the first "
+                "variable and after the last one (a punctuation mark is not enough for Meta)."
+            ))
         if self.header_type == "text" and len(self.header_text or "") > 60:
             raise UserError(_("The header is too long: 60 characters at most."))
         if len(self.footer_text or "") > 60:
@@ -583,6 +598,60 @@ class WhatsappTemplate(models.Model):
         return PLACEHOLDER_RE.sub(
             lambda match: values.get(match.group(1), match.group(0)), self.body or ""
         )
+
+    # === TEXTS GIVEN BY THE MODULES === #
+
+    @api.model
+    def _update_module_texts(self, module, old_texts):
+        """For the migration of a module that gives templates. They are loaded once (data
+        noupdate): a text corrected in the module reaches an existing database only this way.
+
+        `old_texts` gives the previous texts of the module by XML ID. A template that still
+        has one of them takes its text in the data files of the module, and loses the
+        variables this text does not use any more. Kept as they are: a text written by the
+        user, and the text of a template that Meta approved or reviews, since it is the one
+        Meta sends. Meta writes the text of an authentication template itself: kept only for
+        the history, it always follows the module.
+
+        :return: the updated templates
+        """
+        bodies = self._get_module_bodies(module)
+        updated = self.browse()
+        for xmlid, olds in old_texts.items():
+            template = self.env.ref(xmlid, raise_if_not_found=False)
+            if not template or template._name != self._name or xmlid not in bodies:
+                continue
+            if template.category != "authentication" and template.status not in ("unknown", "rejected"):
+                continue
+            if (template.body or "").strip() in {old.strip() for old in olds}:
+                template.body = bodies[xmlid]
+                used = set(PLACEHOLDER_RE.findall(template.body))
+                template.variable_ids.filtered(
+                    lambda variable: variable._get_placeholder_key() not in used
+                ).unlink()
+                updated |= template
+        if updated:
+            _logger.info(
+                "WhatsApp templates with the new texts of %s: %s",
+                module, ", ".join(updated.mapped("template_name")),
+            )
+        return updated
+
+    @api.model
+    def _get_module_bodies(self, module):
+        """The texts of the templates in the data files of a module, by XML ID."""
+        bodies = {}
+        for path in get_manifest(module).get("data", ()):
+            if not path.endswith(".xml"):
+                continue
+            with file_open(f"{module}/{path}", "rb") as file:
+                tree = etree.parse(file)
+            for record in tree.iterfind(".//record[@model='whatsapp.template']"):
+                body = record.find("field[@name='body']")
+                if body is not None:
+                    xmlid = record.get("id")
+                    bodies[xmlid if "." in xmlid else f"{module}.{xmlid}"] = body.text or ""
+        return bodies
 
     # === SENDING === #
 

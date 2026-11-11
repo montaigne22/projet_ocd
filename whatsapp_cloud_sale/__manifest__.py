@@ -26,7 +26,7 @@ WhatsApp of the online shop
   orders, satisfaction, order tracking, quotations, "Order on WhatsApp" button, consent
   at the checkout).
 """,
-    "version": "20.0.2.3.0",
+    "version": "20.0.2.4.0",
     "category": "Website/Website",
     "author": "RollBackk",
     "license": "OPL-1",

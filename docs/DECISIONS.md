@@ -106,6 +106,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   « Préviens-moi ») : la demande vaut accord pour ce message.
 - Les colis d'OCD ont leurs propres messages : le « commande expédiée » du shop n'est pas envoyé pour eux,
   et la demande de note part une fois par commande, après son dernier colis.
+- **Textes des modèles** : chargés à l'installation, puis à l'équipe. Une nouvelle version d'un module ne
+  change que les textes restés tels que le module les avait écrits, et jamais celui d'un modèle approuvé par
+  Meta (c'est le texte que Meta envoie). Odoo refuse de soumettre un texte que Meta refuserait (variable au
+  début ou à la fin, deux variables sans mots entre elles).
 
 ## Back-office
 

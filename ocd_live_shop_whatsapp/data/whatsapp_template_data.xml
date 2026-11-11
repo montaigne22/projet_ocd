@@ -21,7 +21,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">ocd_vendor_id</field>
-            <field name="body">Bonjour {{1}}, nouveau colis à préparer pour {{2}} ({{3}}) : {{4}}. Touchez le bouton quand il est prêt.</field>
+            <field name="body">Bonjour {{1}}, nouveau colis à préparer pour {{2}}, à livrer à {{3}}. Contenu : {{4}}. Touchez le bouton quand il est prêt.</field>
             <field name="button_url_value">{{ 'ocd/livrer/' + object.ocd_vendor_id._ocd_get_space_token() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
             <field name="variable_ids" eval="[
@@ -68,7 +68,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, {{2}} n'a pas pu vous livrer. Répondez à ce message pour choisir un autre moment. Votre code reste le même.</field>
+            <field name="body">Bonjour {{1}}, votre colis n'a pas pu vous être livré par {{2}}. Répondez à ce message pour choisir un autre moment. Votre code de livraison reste le même.</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Arnaud'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object.ocd_courier_id.name or \'Le livreur\' }}', 'sample_value': 'Raoul'}),

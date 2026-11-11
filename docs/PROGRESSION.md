@@ -65,6 +65,32 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
 
 ## Journal
 
+### 11 novembre 2026 — modèles WhatsApp encore refusés : textes corrigés jusque dans les bases
+- **Ce qui bloquait** : les modèles fournis sont chargés une seule fois, à l'installation (pour garder les
+  textes changés par l'équipe). Les textes corrigés juste avant n'arrivaient donc pas dans une base déjà
+  installée : « lien refusé », « ticket du live » et « colis en route » gardaient leur ancien texte, bloqué
+  par la vérification d'Odoo. Et « lien reçu » finissait par « : {{2}}. » : pour Meta, le point ne compte
+  pas comme du texte, le modèle finit par une variable (refusé par Meta).
+- **Vérification d'Odoo alignée sur Meta** (`whatsapp_cloud`) : seuls les lettres et les chiffres comptent
+  comme du texte. Pas de variable au début ni à la fin, même suivie d'un point ou d'une parenthèse ; des
+  mots entre deux variables (une virgule seule ne suffit pas). Le message dit quoi corriger.
+- **Textes réécrits**, mêmes variables : lien reçu, live confirmé, rappel du live, ticket du live (aussi
+  plus de texte autour de ses 7 variables : Meta refuse un texte trop court pour ses variables), colis à
+  préparer, livraison impossible, commande reçue en français et en anglais (`whatsapp_cloud_sale`).
+- **Les bases existantes reçoivent les nouveaux textes** à la mise à jour des modules : un modèle qui a
+  encore un ancien texte du module et que Meta n'a pas approuvé prend le nouveau texte. Un texte changé par
+  l'équipe et un modèle approuvé ou en cours de revue chez Meta ne bougent pas. Le code de connexion prend le
+  texte que Meta écrit lui-même. Versions : `whatsapp_cloud` 20.0.2.5.0, `whatsapp_cloud_sale` 20.0.2.4.0,
+  `ocd_live_whatsapp` et `ocd_live_shop_whatsapp` 20.0.1.3.0. Testé sur la base de démo, restée aux anciens
+  textes comme toute base installée avant : les 11 modèles concernés ont leur nouveau texte, leurs
+  variables sont gardées, et les 34 modèles passent la vérification.
+- Tests : chaque modèle fourni passe les règles de Meta, avec au moins 3 mots par variable (Meta ne publie
+  pas sa limite) ; les migrations donnent les nouveaux textes et laissent un modèle approuvé tel quel.
+- **À faire** : mettre à jour les modules (commande dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md), elle
+  comprend maintenant `whatsapp_cloud` et `whatsapp_cloud_sale`), puis soumettre de nouveau à Meta les
+  modèles qui ne sont pas encore approuvés (WhatsApp › Modèles › « Soumettre à Meta »). Un modèle déjà refusé
+  par Meta est renvoyé comme une modification du modèle refusé.
+
 ### 11 novembre 2026 — l'appli installée porte le logo d'OCD Live
 - « Installer l'appli » du navigateur montrait l'icône et les couleurs d'Odoo (le module de l'OCA
   `web_pwa_customize` n'existe pas encore pour Odoo 20). `ocd_debranding` donne maintenant au manifeste de

@@ -1,13 +1,15 @@
+import re
 from datetime import datetime, time, timedelta
 from unittest.mock import patch
 
 from freezegun import freeze_time
 
 from odoo import fields
-from odoo.tests import tagged
+from odoo.modules.module import load_script
+from odoo.tests import TransactionCase, tagged
 
 from odoo.addons.ocd_live.tests.common import OcdLiveCommon
-from odoo.addons.whatsapp_cloud.models.whatsapp_template import WhatsappTemplate
+from odoo.addons.whatsapp_cloud.models.whatsapp_template import PLACEHOLDER_RE, WhatsappTemplate
 
 
 @tagged("post_install", "-at_install")
@@ -259,3 +261,52 @@ class TestOcdWhatsappAutomations(OcdLiveCommon):
         row = automation._ocd_row()
         self.assertIn("ocd_lien_recu", row["warning"])
         self.assertEqual(row["templates"], ["ocd_lien_recu"])
+
+
+@tagged("post_install", "-at_install")
+class TestOcdTemplatesForMeta(TransactionCase):
+
+    def test_templates_of_the_modules_follow_meta(self):
+        """Every template given by a module (OCD Live, shop, sale) is submitted to Meta as it
+        is: no variable at the start or at the end, words between two variables."""
+        self.env["ir.config_parameter"].sudo().set_str("web.base.url", "https://ocd.example.com")
+        data = self.env["ir.model.data"].search([("model", "=", "whatsapp.template")])
+        self.assertGreater(len(data), 20)
+        for xmlid in data:
+            template = self.env["whatsapp.template"].browse(xmlid.res_id)
+            with self.subTest(template=xmlid.complete_name):
+                template._check_for_meta()
+                if template.category == "authentication":
+                    continue
+                # Meta also refuses a text with too many variables for its length, without
+                # telling its limit: 3 words per variable, and 1 more, keep away from it.
+                words = re.findall(r"[^\W_][\w'’-]*", PLACEHOLDER_RE.sub(" ", template.body))
+                variables = set(PLACEHOLDER_RE.findall(template.body))
+                self.assertGreaterEqual(len(words), 3 * len(variables) + 1)
+
+    def test_migrations_give_the_new_texts(self):
+        """The databases installed before keep the previous texts (data loaded once): the
+        migrations give them the new ones, except to a template approved by Meta."""
+        Module = self.env["ir.module.module"]
+        for module, version in (
+            ("whatsapp_cloud_sale", "20.0.2.4.0"),
+            ("ocd_live_whatsapp", "20.0.1.3.0"),
+            ("ocd_live_shop_whatsapp", "20.0.1.3.0"),
+        ):
+            if not Module.search_count([("name", "=", module), ("state", "=", "installed")]):
+                continue
+            migration = load_script(
+                f"{module}/migrations/{version}/post-migration.py", f"{module}_texts_{version}"
+            )
+            templates = {xmlid: self.env.ref(xmlid) for xmlid in migration.OLD_TEXTS}
+            texts = {xmlid: template.body for xmlid, template in templates.items()}
+            for xmlid, template in templates.items():
+                template.body = migration.OLD_TEXTS[xmlid][-1]
+            approved = next(t for t in templates.values() if t.category != "authentication")
+            approved.status = "approved"
+            migration.migrate(self.env.cr, "previous version")
+            self.env.invalidate_all()
+            for xmlid, template in templates.items():
+                with self.subTest(template=xmlid):
+                    expected = migration.OLD_TEXTS[xmlid][-1] if template == approved else texts[xmlid]
+                    self.assertEqual(template.body, expected)

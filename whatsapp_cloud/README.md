@@ -100,6 +100,10 @@ Hors des 24 heures qui suivent le dernier message d’un client, WhatsApp n’ac
 
 **Soumettre depuis Odoo** (le plus simple) : **WhatsApp > Configuration > Modèles**, ouvrir le modèle, vérifier le texte, les exemples des variables et les boutons, puis **Soumettre à Meta**. Meta répond en 24 heures au plus ; sa décision arrive dans Odoo (statut *Approuvé*, ou *Refusé* avec le motif). Un modèle approuvé se modifie (**Soumettre les modifications à Meta**) 10 fois en 30 jours, une fois par jour au plus. Pour un modèle avec un document en en-tête, l’ID de l’app doit être saisi sur le compte.
 
+**Règles de Meta**, vérifiées par Odoo avant la soumission : le texte ne commence ni ne finit par une variable (un point ou une parenthèse après la dernière variable ne compte pas comme du texte : « … : {{2}}. » est refusé), deux variables sont séparées par des mots (une virgule seule ne suffit pas), et le texte est assez long pour ses variables (Meta ne publie pas sa limite : les modèles fournis ont au moins 3 mots par variable).
+
+Les modèles fournis sont chargés à l’installation seulement, pour garder les textes changés par l’équipe : un texte corrigé dans une nouvelle version du module arrive par la mise à jour du module, sauf sur un modèle approuvé (ou en cours de revue) par Meta et sur un texte que l’équipe a changé.
+
 **Ou créer chez Meta** (**WhatsApp Manager > Modèles de messages**) avec exactement les mêmes noms, langues et textes, puis **Synchroniser les modèles** sur le compte : les modèles fournis sont mis à jour au lieu d’être dupliqués.
 
 Modèles fournis (en français, et en anglais pour les clients anglophones, sous le même nom) :
@@ -107,7 +111,7 @@ Modèles fournis (en français, et en anglais pour les clients anglophones, sous
 | Nom | Envoyé quand | Texte (français) |
 | --- | --- | --- |
 | `order_confirmed` | la commande est confirmée (payée en ligne, à payer à la livraison ou au magasin, ou confirmée par l’équipe) | Bonjour {{1}}, merci pour votre commande {{2}} d'un montant de {{3}}, elle est confirmée. Nous vous prévenons dès son expédition. |
-| `order_received` | la commande attend un virement | Bonjour {{1}}, nous avons bien reçu votre commande {{2}} d'un montant de {{3}}. Elle sera confirmée dès réception de votre paiement ({{4}}). |
+| `order_received` | la commande attend un virement | Bonjour {{1}}, nous avons bien reçu votre commande {{2}} d'un montant de {{3}}. Moyen de paiement : {{4}}. Elle sera confirmée dès réception de votre paiement. |
 | `order_shipped` | le bon de livraison est validé (sauf retrait au magasin) | Bonjour {{1}}, votre commande {{2}} est en route ({{3}}). Le livreur vous appellera avant de passer. |
 | `order_ready_for_pickup` | depuis la commande, **Action > Envoyer un WhatsApp** | Bonjour {{1}}, votre commande {{2}} est prête ! Vous pouvez la retirer au magasin {{3}}, aux heures d'ouverture, avec ce message. |
 | `quotation_sent` | bouton **Envoyer sur WhatsApp** d’un devis, après 24 heures | Bonjour {{1}}, voici votre devis {{2}} d'un montant de {{3}}. Vous pouvez le consulter et le payer en ligne (MTN Mobile Money, Orange Money) avec le bouton ci-dessous. |
@@ -158,3 +162,4 @@ Mettre à jour `whatsapp_cloud` et `whatsapp_cloud_sale` (`-u whatsapp_cloud,wha
 3. abonner le webhook aux nouveaux champs (§ 2) et saisir l’ID de l’app ;
 4. soumettre à Meta les nouveaux modèles `quotation_sent`, `delivery_feedback` et `conversation_follow_up` (FR et EN) ;
 5. renseigner le numéro WhatsApp du site s’il diffère de celui du compte.
+6. soumettre de nouveau `order_received` (FR et EN) s’il n’est pas approuvé : son texte finissait par une variable, refusé par Meta ; la mise à jour lui a donné le nouveau texte.

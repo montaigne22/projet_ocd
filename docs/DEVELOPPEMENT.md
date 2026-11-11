@@ -57,7 +57,7 @@ Après un `git pull` du dépôt : redémarrer Odoo, puis mettre à jour les modu
 module › Mettre à jour, ou en ligne de commande) :
 
 ```bash
-odoo -c odoo.conf -d <base> -u ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --stop-after-init
+odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --stop-after-init
 ```
 
 **À chaque récupération du code, mettre à jour les modules.** Sans cela, le code appelle des pages qui
@@ -81,8 +81,39 @@ odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_l
      --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding --stop-after-init
 ```
 
+Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Un test de
+`whatsapp_cloud_sale` échoue volontairement avec OCD : « commande expédiée » y est remplacé par « colis livré ».
+
 Puis la démo sur une autre base neuve : les mêmes modules et `ocd_live_demo`, avec `--test-tags /ocd_live_demo`.
 Les tests du site (HttpCase) ont besoin d'un port libre (`--http-port=8079` si la démo tourne sur 8069).
+
+## Modèles WhatsApp
+
+Les textes des modèles (`data/whatsapp_template_data.xml`) suivent les règles de Meta, vérifiées par
+« Soumettre à Meta » et par le test `test_templates_of_the_modules_follow_meta` (`ocd_live_whatsapp`) :
+des mots avant la première variable et après la dernière (un point après la variable ne suffit pas), des
+mots entre deux variables (pas seulement une virgule ou une parenthèse), au moins 3 mots par variable.
+
+Les modèles sont des données `noupdate` : chargés à l'installation, jamais réécrits par une mise à jour
+(l'équipe peut changer les textes). **Pour corriger le texte d'un modèle fourni** : changer le XML, monter
+la version du module et ajouter une migration qui donne l'ancien texte, mot pour mot :
+
+```python
+# <module>/migrations/<version>/post-migration.py
+from odoo import SUPERUSER_ID, api
+
+OLD_TEXTS = {"<module>.<id du modèle>": ["<ancien texte>"]}
+
+
+def migrate(cr, version):
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    env["whatsapp.template"]._update_module_texts("<module>", OLD_TEXTS)
+```
+
+Le modèle prend alors le texte du XML s'il a encore l'ancien texte et n'est ni approuvé ni en cours de
+revue chez Meta (le texte approuvé est celui que Meta envoie). Garder les mêmes variables : celles que le
+texte n'utilise plus sont retirées, une nouvelle variable est ajoutée sans valeur (la remplir dans la
+migration). Ajouter le module et sa version à `test_migrations_give_the_new_texts`.
 
 ## Traductions
 

@@ -113,7 +113,7 @@ class TestWhatsAppCloudSale(TransactionCase):
         method = transaction.payment_method_id.with_context(
             lang=received.template_id._get_render_lang()
         )
-        self.assertIn(f"dès réception de votre paiement ({method.name}).", received.body)
+        self.assertIn(f"Moyen de paiement : {method.name}. Elle sera confirmée", received.body)
         self.assertFalse(self._messages("whatsapp_cloud_sale.template_order_confirmed"))
 
     def test_order_paid_on_delivery_is_confirmed(self):

@@ -766,6 +766,56 @@ class TestWhatsAppConversation(WhatsAppCommon):
             self.template._check_for_meta()
 
     def test_template_rules_of_meta(self):
-        self.template.body = "{{1}} {{2}}"
-        with self.assertRaises(UserError):
-            self.template._check_for_meta()
+        refused = {
+            "{{1}} {{2}}": "separated by words",
+            "Bonjour {{1}}, {{2}} arrive demain.": "separated by words",
+            "Bonjour {{1}}, rendez-vous ({{2}}) : {{3}} à la boutique.": "separated by words",
+            "{{1}}, votre commande est prête.": "start or end",
+            "Bonjour {{1}}, votre commande est prête : {{2}}": "start or end",
+            # a punctuation mark after the variable: still at the end for Meta
+            "Bonjour {{1}}, retrait à partir de {{2}}.": "start or end",
+            "Bonjour {{1}}, votre paiement ({{2}}).": "start or end",
+        }
+        for body, error in refused.items():
+            with self.subTest(body=body), self.assertRaisesRegex(UserError, error):
+                self.template.body = body
+                self.template._check_for_meta()
+        for body in (
+            "Bonjour {{1}}, votre commande {{2}} est prête.",
+            "Bonjour {{1}}, retrait à partir de {{2}}, à la boutique.",
+            "Bonjour {{1}}, livraison de {{2}} à {{3}} demain.",
+            "Hello {{ customer }}, see you soon!",
+        ):
+            with self.subTest(body=body):
+                self.template.body = body
+                self.template._check_for_meta()
+
+    def test_module_texts_reach_existing_databases(self):
+        """A text corrected in a module replaces its previous text, kept in the database by
+        the noupdate data, unless the user wrote another text or Meta approved it."""
+        Template = self.env["whatsapp.template"]
+        xmlid = "whatsapp_cloud.template_conversation_follow_up"
+        follow_up = self.env.ref(xmlid)
+        text = Template._get_module_bodies("whatsapp_cloud")[xmlid]
+        self.assertEqual(text, follow_up.body, "The text of the data file of the module")
+        old = "Bonjour {{1}}, nous revenons vers vous au sujet de {{2}}"
+        olds = {xmlid: [old]}
+        variable = follow_up.variable_ids
+        # a text written by the user: kept
+        follow_up.body = "Bonjour {{1}}, notre équipe vous répond ici."
+        self.assertFalse(Template._update_module_texts("whatsapp_cloud", olds))
+        # approved by Meta with the old text: it is the text Meta sends, kept
+        follow_up.write({"body": old, "status": "approved"})
+        self.assertFalse(Template._update_module_texts("whatsapp_cloud", olds))
+        self.assertEqual(follow_up.body, old)
+        # never submitted, or refused by Meta: the new text, with its variables only
+        for status in ("unknown", "rejected"):
+            follow_up.write({"body": old, "status": status})
+            self.assertEqual(len(follow_up.variable_ids), 2)
+            self.assertEqual(Template._update_module_texts("whatsapp_cloud", olds), follow_up)
+            self.assertEqual(follow_up.body, text)
+            self.assertEqual(follow_up.variable_ids, variable, "The variable {{2}} is gone")
+        # an authentication template: Meta writes its text, the history follows the module
+        follow_up.write({"body": old, "status": "approved", "category": "authentication"})
+        self.assertEqual(Template._update_module_texts("whatsapp_cloud", olds), follow_up)
+        self.assertEqual(follow_up.body, text)

@@ -48,7 +48,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, votre live est confirmé : {{2}}, de {{3}} à {{4}}, {{5}}. Référence {{6}}. Vous recevrez un rappel la veille.</field>
+            <field name="body">Bonjour {{1}}, votre live du {{2}} est confirmé, de {{3}} à {{4}}. Il a lieu {{5}}. Votre référence de réservation est {{6}}. Vous recevrez un rappel la veille du live.</field>
             <field name="button_url_value">{{ 'ocd/espace/' + object.partner_id._ocd_get_space_token() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon espace', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123'})]"/>
             <field name="variable_ids" eval="[
@@ -67,7 +67,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, rappel : votre live est {{2}} à {{3}}, {{4}}. Préparez vos produits. Au studio, venez 15 minutes avant.</field>
+            <field name="body">Bonjour {{1}}, rappel : votre live est {{2}} à {{3}}. Il a lieu {{4}}. Préparez vos produits. Au studio, venez 15 minutes avant.</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object._ocd_local_labels()[0] }}', 'sample_value': 'mercredi 2 décembre'}),
@@ -125,7 +125,7 @@ Vous pouvez envoyer un autre lien depuis votre espace OCD Live.</field>
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, voici votre ticket OCD Live : {{2}}, de {{3}} à {{4}}, {{5}}. Code {{6}} : {{7}}
+            <field name="body">Bonjour {{1}}, voici votre ticket OCD Live pour votre live du {{2}}, de {{3}} à {{4}}. Il a lieu {{5}}. Votre code est {{6}}. Pour l'utiliser, {{7}}
 
 À bientôt sur OCD Live !</field>
             <field name="button_url_value">{{ object._ocd_ticket_path() }}</field>
@@ -178,7 +178,7 @@ Vous pouvez envoyer un autre lien depuis votre espace OCD Live.</field>
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live.model_ocd_directory_listing"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, nous avons bien reçu le lien de votre live. Il sera vérifié dès l'ouverture de l'annuaire : {{2}}.</field>
+            <field name="body">Bonjour {{1}}, nous avons bien reçu le lien de votre live. Il sera vérifié dès l'ouverture de l'annuaire ({{2}}), puis vous recevrez un message avec la réponse.</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object._ocd_window_start_label() }}', 'sample_value': '18:00'}),
