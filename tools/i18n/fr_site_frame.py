@@ -4,6 +4,7 @@ SITE_FRAME = {
     "Book a live at the studio or from home, follow the lives of the moment and buy from the vendors.":
         "Réservez un live au studio ou depuis chez vous, suivez les lives du moment et achetez aux vendeurs.",
     "Links": "Liens",
+    "Log out": "Se déconnecter",
     "Search...": "Rechercher...",
     "This hour can no longer be booked: choose another one.": "Cette heure n'est plus disponible : choisis-en une autre.",
 }

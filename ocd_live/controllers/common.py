@@ -84,9 +84,27 @@ def find_start(day, label):
     return None
 
 
-def current_vendor(token=None):
-    """Return the vendor of the visitor: from the personal link (link mode), from the code
-    checked on this browser (code mode), or from the logged-in user (password mode)."""
+def account_vendor():
+    """Vendor of the Odoo account logged in on this browser: a vendor given an access with a
+    password, or the account of a person of the vendor's company. Empty for the visitors, the
+    team and the customers of the shop."""
+    Partner = request.env["res.partner"].sudo()
+    user = request.env.user
+    if user._is_public():
+        return Partner
+    partner = user.partner_id.sudo()
+    vendor = partner if partner.ocd_is_vendor else partner.commercial_partner_id
+    return vendor if vendor.ocd_is_vendor else Partner
+
+
+def current_vendor_and_source(token=None):
+    """Return the vendor of the visitor and how it was found:
+
+    - "link": the personal link of the vendor (link mode), which opens the space on this browser;
+    - "browser": the vendor opened on this browser with its personal link or a WhatsApp code;
+    - "account": the vendor of the Odoo account logged in, whatever the way the vendors log in
+      (an account checked by a password needs no link and no code).
+    """
     Partner = request.env["res.partner"].sudo()
     login = company().ocd_vendor_login
     if token and token != "moi":
@@ -94,16 +112,19 @@ def current_vendor(token=None):
         if vendor:
             # The personal link opens the space on this browser for the next pages
             request.session[SESSION_VENDOR] = vendor.id
-        return vendor
+        return vendor, "link" if vendor else False
     if login in ("link", "whatsapp_code"):
         vendor_id = request.session.get(SESSION_VENDOR)
         vendor = Partner.browse(vendor_id).exists() if vendor_id else Partner
-        return vendor if vendor.ocd_is_vendor else Partner
-    if login == "password" and not request.env.user._is_public():
-        partner = request.env.user.partner_id.sudo()
-        vendor = partner if partner.ocd_is_vendor else partner.commercial_partner_id
-        return vendor if vendor.ocd_is_vendor else Partner
-    return Partner
+        if vendor.ocd_is_vendor:
+            return vendor, "browser"
+    vendor = account_vendor()
+    return vendor, "account" if vendor else False
+
+
+def current_vendor(token=None):
+    """Return the vendor of the visitor (see current_vendor_and_source)."""
+    return current_vendor_and_source(token)[0]
 
 
 def space_prefix(vendor, token=None):

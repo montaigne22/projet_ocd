@@ -17,11 +17,11 @@ class OcdVendorSpace(http.Controller):
 
     @http.route("/ocd/connexion", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
     def login(self, **kwargs):
-        login = common.company().ocd_vendor_login
-        if login == "password":
-            return request.redirect("/web/login?redirect=/ocd/espace/moi")
         if common.current_vendor():
+            # Already known on this browser or by the Odoo account logged in: no number to give
             return request.redirect("/ocd/espace/moi")
+        if common.company().ocd_vendor_login == "password":
+            return request.redirect("/web/login?redirect=/ocd/espace/moi")
         return self._render_login()
 
     def _render_login(self, sent=False, error=None, phone=None, country=None):
@@ -81,16 +81,16 @@ class OcdVendorSpace(http.Controller):
     # === SPACE === #
 
     def _vendor_or_login(self, token):
-        vendor = common.current_vendor(token)
+        vendor, source = common.current_vendor_and_source(token)
         if not vendor:
             if token and token != "moi":
                 raise request.not_found()
-            return None
-        return vendor
+            return None, False
+        return vendor, source
 
     @http.route("/ocd/espace/<string:token>", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
     def space(self, token, **kwargs):
-        vendor = self._vendor_or_login(token)
+        vendor, source = self._vendor_or_login(token)
         if not vendor:
             return request.redirect("/ocd/connexion")
         env = request.env
@@ -112,10 +112,7 @@ class OcdVendorSpace(http.Controller):
         return request.render("ocd_live.space", common.page_values(
             False,
             nav="me",
-            header_link={
-                "href": "/web/session/logout?redirect=/ocd/connexion" if login == "password" else "/ocd/deconnexion",
-                "label": env._("Change number"),
-            },
+            header_link=self._header_link(source),
             vendor=vendor,
             flag=(vendor.country_id.code or "").lower(),
             vendor_line=" · ".join(filter(None, [vendor.ocd_category_id.name, vendor.city, vendor.phone])),
@@ -165,6 +162,13 @@ class OcdVendorSpace(http.Controller):
             "expiry": env._("before %s", common.day_text(credit.date_expiry)) if credit.date_expiry else False,
             "place_url": f"/ocd/espace/moi/placer/{credit.id}",
         }
+
+    def _header_link(self, source):
+        """Link of the header of the space: an Odoo account logs out of Odoo (the space would
+        open again by itself otherwise), a browser forgets the vendor and asks for a number."""
+        if source == "account":
+            return {"href": "/web/session/logout?redirect=/ocd/connexion", "label": request.env._("Log out")}
+        return {"href": "/ocd/deconnexion", "label": request.env._("Change number")}
 
     @http.route("/ocd/espace/moi/whatsapp", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def space_whatsapp(self, **post):

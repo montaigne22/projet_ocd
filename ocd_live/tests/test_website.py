@@ -2,6 +2,7 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from odoo import fields
+from odoo.fields import Command
 from odoo.tests import HttpCase, tagged
 
 
@@ -249,6 +250,27 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertEqual(self.url_open("/ocd/espace/not-a-valid-token-at-all").status_code, 404)
         self.company.ocd_vendor_login = "whatsapp_code"
         self.assertEqual(self.url_open(f"/ocd/espace/{token}").status_code, 404, "The links stop in code mode")
+
+    def _vendor_account(self):
+        self.env["res.users"].create({
+            "name": "Awa Mensah",
+            "login": "awa-ocd",
+            "password": "awa-ocd-2026",
+            "partner_id": self.vendor.id,
+            "group_ids": [Command.set(self.env.ref("base.group_portal").ids)],
+        })
+        self.authenticate("awa-ocd", "awa-ocd-2026")
+
+    def test_space_of_a_vendor_logged_in_with_an_odoo_account(self):
+        # The Odoo account (checked by a password) opens the space: no number, link or code to ask
+        self._vendor_account()
+        for login in ("link", "whatsapp_code", "password"):
+            self.company.ocd_vendor_login = login
+            response = self.url_open("/ocd/connexion")
+            self.assertTrue(response.url.endswith("/ocd/espace/moi"), login)
+            self.assertIn("Awa Mensah", response.text, login)
+            # Leaving the space logs out of Odoo (forgetting the number would open it again)
+            self.assertIn("/web/session/logout?redirect=/ocd/connexion", response.text, login)
 
     def test_space_with_a_whatsapp_code(self):
         self.company.ocd_vendor_login = "whatsapp_code"
