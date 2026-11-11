@@ -28,9 +28,10 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
 
 ## Reste à faire, par priorité
 
-1. **Tarifs à saisir par l'équipe avant l'ouverture** (OCD Live › Livraisons › Tarifs de livraison) :
+1. **Tarifs à saisir par l'équipe avant l'ouverture**, pas à pas dans [`LIVRAISONS.md`](LIVRAISONS.md)
+   (OCD Live › Livraisons › Tarifs de livraison) :
    livreurs OCD par ville, agences vers les autres villes et pays, bornes des prix des vendeurs, part
-   d'OCD sur les livraisons des vendeurs, ville du stock. Les méthodes de livraison sans prix ont donné des
+   d'OCD sur les livraisons des vendeurs, ville du stock. Les modes de livraison sans prix ont donné des
    tarifs archivés : les compléter puis les activer. Sans tarif, le shop refuse l'adresse (jamais de
    livraison à un prix inconnu).
 2. Démo : produits avec photos, variantes et stock, colis livrés, reversements, deux autres livreurs.
@@ -50,9 +51,13 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
 - La confirmation d'une commande envoie un PDF : le serveur a besoin du moteur PDF d'Odoo
   (`wkhtmltopdf`), sinon la commande reste « en attente du paiement ».
 - Odoo publie au départ sa « Livraison standard » (gratuite, partout) : l'équipe ne publie que les
-  méthodes de livraison d'OCD Live, sinon elle passe avant elles.
+  modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — guide des livraisons
+- [`docs/LIVRAISONS.md`](LIVRAISONS.md) : comment le prix d'un colis est choisi, exemples, ce que voient
+  le client et le vendeur, l'argent, la mise en route pas à pas, les questions fréquentes, le code.
 
 ### 11 novembre 2026 — frais de livraison selon le vendeur
 - **Un prix par colis** (un colis par vendeur), de la ville d'où part le colis au quartier, à la ville
@@ -63,7 +68,7 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
   hors zones, un livreur OCD ou une agence prend le relais si l'équipe l'autorise.
 - **Tarifs d'OCD Live** : livreurs OCD dans une ville, agences vers les autres villes et vers un autre
   pays (jamais d'agence dans la même ville, jamais de paiement à la porte par agence ou vers un autre
-  pays). Créés au départ depuis les méthodes de livraison par ville (actifs seulement s'ils avaient un
+  pays). Créés au départ depuis les modes de livraison par ville (actifs seulement s'ils avaient un
   prix).
 - **Une seule livraison d'Odoo « Livraison OCD Live »** qui additionne les colis et **refuse avant le
   paiement** une adresse qu'un colis ne peut pas atteindre, avec la raison et un bouton pour retirer les
@@ -74,7 +79,7 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
 
 ### 10 novembre 2026 — toutes les pages du shop fidèles au design
 - Shop, fiche produit, panier, livraison, paiement : les pages d'Odoo gardent leur logique (prix des
-  listes de prix, panier, méthodes de livraison, formulaire de paiement, confirmation) ; seul l'affichage
+  listes de prix, panier, modes de livraison, formulaire de paiement, confirmation) ; seul l'affichage
   suit le design, et les formulaires appellent les mêmes méthodes d'Odoo.
 - Fiche produit : variantes avec leur prix et leur stock (valeurs épuisées barrées), quantité ; contact
   direct : pas de panier (bloqué aussi côté serveur), WhatsApp avec le choix et le lien du produit.

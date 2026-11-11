@@ -24,6 +24,8 @@ Modules complémentaires requis : `whatsapp_cloud`, `whatsapp_cloud_sale`, `paym
 - [`docs/ECRANS.md`](docs/ECRANS.md) : chaque écran du design validé et où il est fait dans le code.
 - [`docs/DEVELOPPEMENT.md`](docs/DEVELOPPEMENT.md) : installer, lancer, tester, traduire, faire des captures.
 - [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md) : les outils d'Odoo et ce qu'ils font pour OCD Live.
+- [`docs/LIVRAISONS.md`](docs/LIVRAISONS.md) : les frais de livraison (un prix par colis), la mise en
+  route des tarifs avant l'ouverture, les questions fréquentes.
 - [`prototype/`](prototype/) : le design validé (tous les écrans) et le prototype interactif.
 - [`docs/captures/`](docs/captures/) : captures des écrans tels qu'ils sont aujourd'hui.
 
