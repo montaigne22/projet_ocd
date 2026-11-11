@@ -4,14 +4,14 @@
 
 - **Odoo 20 Community** (Python 3.13, PostgreSQL 16).
 - Chemin des modules (`addons_path`) : les modules d'Odoo, **ce dépôt** (qui contient aussi
-  `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et `delivery_cameroon`), et le module
-  `disable_odoo_online` de l'OCA (nécessaire à `ocd_debranding`) :
-  `git clone -b 20.0 --depth 1 https://github.com/OCA/server-brand`.
+  `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et `delivery_cameroon`), et son dossier
+  `marketplace/oca_server_brand` (modules de l'OCA, dont `disable_odoo_online`, nécessaire à
+  `ocd_debranding`).
 - Exemple de `odoo.conf` :
 
 ```ini
 [options]
-addons_path = /opt/odoo20/src/addons,/opt/odoo20/src/odoo/addons,/chemin/server-brand,/chemin/projet_ocd
+addons_path = /opt/odoo20/src/addons,/opt/odoo20/src/odoo/addons,/chemin/projet_ocd/marketplace/oca_server_brand,/chemin/projet_ocd
 db_host = localhost
 db_port = 5432
 data_dir = /opt/odoo20/data

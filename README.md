@@ -21,9 +21,8 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `payment_campay` | Paiement au Cameroun : MTN MoMo, Orange Money, carte |
 | `delivery_cameroon` | Villes et quartiers du Cameroun, point de repère obligatoire dans l'adresse |
 
-Le dépôt contient tous les modules nécessaires, sauf `disable_odoo_online` (OCA, dépôt
-[server-brand](https://github.com/OCA/server-brand), branche 20.0), à ajouter au chemin des modules
-pour `ocd_debranding`. Ce que fait chaque outil pour OCD Live : [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md).
+Le dépôt contient tous les modules nécessaires. `disable_odoo_online` (OCA, nécessaire à
+`ocd_debranding`) est dans `marketplace/oca_server_brand/` : ajouter ce dossier au chemin des modules. Ce que fait chaque outil pour OCD Live : [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md).
 
 ## Pour reprendre le projet
 

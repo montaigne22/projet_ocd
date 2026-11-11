@@ -53,8 +53,8 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
 - Odoo 20 n'a plus Font Awesome : les icônes sont celles d'Odoo (`data-icon`).
 - Les pages « Paramètres » et « Automatisations » sont pour les responsables d'OCD Live : ils changent les
   réglages et les interrupteurs sans être administrateurs d'Odoo (rien d'autre n'est écrit).
-- Le module `disable_odoo_online` de l'OCA (dépôt server-brand, branche 20.0) doit être dans le chemin
-  des modules : `ocd_debranding` en dépend. C'est le seul module qui n'est pas dans le dépôt.
+- Le module `disable_odoo_online` de l'OCA est dans `marketplace/oca_server_brand/` : ce dossier doit être
+  dans le chemin des modules, `ocd_debranding` en dépend.
 - La confirmation d'une commande envoie un PDF : le serveur a besoin du moteur PDF d'Odoo
   (`wkhtmltopdf`), sinon la commande reste « en attente du paiement ».
 - Odoo publie au départ sa « Livraison standard » (gratuite, partout) : l'équipe ne publie que les
