@@ -42,10 +42,11 @@
 
     <template id="space_login" name="OCD Live: find my space">
         <t t-call="ocd_live.app">
-            <form action="/ocd/connexion" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
+            <form t-att-action="form_action or '/ocd/connexion'" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <main class="o_ocd_main">
-                    <h1 class="o_ocd_h1">Find your space.</h1>
+                    <h1 t-if="target == 'livrer'" class="o_ocd_h1">Your parcels to deliver.</h1>
+                    <h1 t-else="" class="o_ocd_h1">Find your space.</h1>
                     <p class="o_ocd_intro">
                         <t t-if="login == 'whatsapp_code'">No password. We send you a code on WhatsApp.</t>
                         <t t-else="">No password. We send you a link on WhatsApp.</t>
@@ -61,11 +62,14 @@
                     </div>
                     <div t-if="sent" class="o_ocd_ok o_ocd_ok_big" role="status">
                         <b>Look at your WhatsApp.</b>
-                        <span>Touch the link you received: your space opens by itself. This link works only for you.</span>
+                        <span t-if="target == 'livrer'">Touch the link you received: your parcels open by themselves. This link works only for you.</span>
+                        <span t-else="">Touch the link you received: your space opens by itself. This link works only for you.</span>
                     </div>
+                    <div t-elif="target == 'livrer'" class="o_ocd_info">For the couriers of OCD Live and the vendors who deliver: give the number you gave to OCD Live.</div>
                     <div t-else="" class="o_ocd_info">
                         Your ticket and your reminders already come with this link. Keep this message in WhatsApp to come back whenever you want.
                     </div>
+                    <a t-if="target == 'livrer' and password_url" t-att-href="password_url" class="o_ocd_info d-block">A vendor with a password? Log in</a>
                 </main>
                 <div class="o_ocd_actions">
                     <button t-if="sent" type="submit" class="o_ocd_cta o_ocd_cta_ghost">I received nothing: send again</button>
@@ -80,7 +84,7 @@
 
     <template id="space_login_code" name="OCD Live: code received on WhatsApp">
         <t t-call="ocd_live.app">
-            <form action="/ocd/connexion/code" method="post" class="o_ocd_frame o_ocd_narrow">
+            <form t-att-action="code_action or '/ocd/connexion/code'" method="post" class="o_ocd_frame o_ocd_narrow">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <main class="o_ocd_main">
                     <h1 class="o_ocd_h1">Type the code.</h1>
@@ -93,8 +97,9 @@
                     </div>
                 </main>
                 <div class="o_ocd_actions">
-                    <button type="submit" class="o_ocd_cta">Open my space</button>
-                    <a href="/ocd/connexion" class="o_ocd_cta o_ocd_cta_ghost">Ask for a new code</a>
+                    <button t-if="target == 'livrer'" type="submit" class="o_ocd_cta">Open my parcels</button>
+                    <button t-else="" type="submit" class="o_ocd_cta">Open my space</button>
+                    <a t-att-href="form_action or '/ocd/connexion'" class="o_ocd_cta o_ocd_cta_ghost">Ask for a new code</a>
                 </div>
             </form>
         </t>

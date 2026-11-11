@@ -2,12 +2,16 @@ import re
 from datetime import timedelta
 from urllib.parse import urlencode
 
+import werkzeug.exceptions
+
 from odoo import fields, http
 from odoo.exceptions import UserError
 from odoo.http import request
 
 from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
+
+from .delivery_login import current_courier, remember_courier
 
 OPEN_STAGES = ("to_prepare", "ready", "picked", "on_the_way", "problem")
 # Label and colour of the step of a parcel, as in the design
@@ -27,19 +31,31 @@ class OcdDeliveryApp(http.Controller):
     the parcels assigned."""
 
     def _partner(self, token):
+        """The courier or the vendor of the app: from its personal link (link mode), or opened on
+        this phone (link or code). Otherwise the page of the number."""
         Partner = request.env["res.partner"].sudo()
         if token and token != "moi":
             partner = Partner._ocd_find_by_space_token(token)
+            if not (partner.ocd_is_courier or partner.ocd_is_vendor):
+                raise request.not_found()
+            if common.company().ocd_vendor_login != "link":
+                # Code or password: a personal link does not open the app, the number does
+                werkzeug.exceptions.abort(request.redirect("/ocd/livrer"))
+            # The personal link opens the app on this phone for the next times
             if partner.ocd_is_courier:
-                return partner
-            if partner.ocd_is_vendor and common.company().ocd_vendor_login == "link":
-                request.session[common.SESSION_VENDOR] = partner.id
-                return partner
-            raise request.not_found()
-        partner = common.current_vendor()
+                remember_courier(partner)
+            else:
+                common.remember_vendor(partner)
+            return partner
+        partner = current_courier() or common.current_vendor()
         if not partner:
-            raise request.not_found()
+            werkzeug.exceptions.abort(request.redirect("/ocd/livrer"))
         return partner
+
+    def _header_link(self, partner):
+        if partner.ocd_is_courier:
+            return {"href": "/ocd/livrer/deconnexion", "label": request.env._("Log out")}
+        return common.vendor_header_link(common.current_vendor_and_source()[1])
 
     def _parcels(self, partner):
         Picking = request.env["stock.picking"].sudo()
@@ -277,8 +293,12 @@ class OcdDeliveryApp(http.Controller):
             "card_id": parcel_id,
             "tab": "done" if tab == "livres" else "todo",
             "header_name": request.env._("OCD courier") if partner.ocd_is_courier else request.env._("My parcels"),
+            "header_link": self._header_link(partner),
             "nav": False if partner.ocd_is_courier else "me",
         }
+        if request.httprequest.method == "POST":
+            # After an action, reloading the page shows the app (not the address of the action)
+            values["replace_url"] = f"/ocd/livrer/{token}"
         if partner.ocd_is_courier:
             delivered_today = done.filtered(
                 lambda p: p.ocd_delivered_at and company._ocd_to_local(p.ocd_delivered_at).date() == today

@@ -26,7 +26,7 @@ OCD Live
 - Personal link without password for each vendor (sent on WhatsApp by
   ocd_live_whatsapp) to reach their space.
 """,
-    "version": "20.0.1.2.0",
+    "version": "20.0.1.3.0",
     "category": "Sales/Sales",
     "author": "RollBackk",
     "license": "LGPL-3",

@@ -19,7 +19,7 @@ SCREENS = [ns["SETTINGS"], ns["SHOP_SETTINGS"], ns["AUTOMATIONS"], ns["WHATSAPP_
            ns["NO_ODOO"]]
 MODULES = {
     "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], ns["SITE_FRAME"], *SCREENS],
-    "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], *SCREENS],
+    "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], ns["SHOP_COURIER_LOGIN"], *SCREENS],
     "ocd_live_whatsapp": [ns["WHATSAPP"], *SCREENS],
     "ocd_live_shop_whatsapp": [ns["SHOP_WHATSAPP"], *SCREENS],
     "ocd_live_recruitment": [ns["RECRUITMENT"], ns["RECRUITMENT3"], ns["RECRUITMENT_FRAME"]],

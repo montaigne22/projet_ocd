@@ -11,6 +11,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
 | « Moi » pour les comptes Odoo connectés : vendeur, équipe (« Voir son espace »), client | ✅ fait, testé |
+| Livreurs : leur numéro, puis lien ou code sur WhatsApp, comme les vendeurs ; déconnexion | ✅ fait, testé |
 | Site fidèle au design : réservation, annuaire, espace (téléphone, tablette, ordinateur) | ✅ fait |
 | Adresse du site (`/`) = accueil d'OCD Live, site en français, logo et pied de page d'OCD sur les pages d'Odoo | ✅ fait, testé |
 | Thème du site « OCD Live » (`theme_ocd`) dans le choix des thèmes d'Odoo | ✅ fait, testé |
@@ -62,6 +63,23 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — les livreurs entrent avec leur numéro
+- Page « Tes colis à livrer » (`/ocd/livrer`, « Espace livreurs » dans le pied de page) : le livreur
+  tape le numéro de sa fiche et reçoit sur WhatsApp son lien (mode lien) ou un code (mode code, et mode
+  mot de passe : il n'a pas de compte). Les vendeurs qui livrent y entrent aussi. Le numéro d'un livreur
+  tapé sur « Mon espace » reçoit aussi l'appli de livraison.
+- Seulement un contact actif coché « Livreur » ; même réponse pour tout numéro ; un compte de l'équipe
+  n'envoie rien ; un lien au plus par minute et par numéro (vendeurs compris : avant, chaque demande
+  renvoyait un message).
+- Le téléphone retient le livreur (plus besoin de garder le message) ; « Se déconnecter » dans l'appli.
+  En mode code, un lien personnel n'ouvre plus l'appli : il mène à la page du numéro (avant : page
+  introuvable pour un vendeur).
+- « Nouveau lien personnel » sur la fiche d'un livreur ; pour les livreurs comme pour les vendeurs, il
+  coupe aussi les téléphones et navigateurs déjà ouverts (ils redemandent le numéro une fois après la mise
+  à jour). Décocher « Livreur » coupe l'accès tout de suite.
+- Après une action dans l'appli (colis prêt, code…), recharger la page réaffiche l'appli.
+- Versions : `ocd_live` 20.0.1.3.0, `ocd_live_shop` 20.0.1.2.0. Captures `site-phone-l-*`.
 
 ### 11 novembre 2026 — 404 sur « Moi » en administrateur, pages restées en anglais
 - **404 sur « Moi »** (staging) : le code des derniers changements était en place, mais `ocd_live` n'avait pas

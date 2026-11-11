@@ -60,6 +60,8 @@ class ResPartner(models.Model):
     ocd_login_code_hash = fields.Char(copy=False, groups="base.group_system")
     ocd_login_code_expiry = fields.Datetime(copy=False, groups="base.group_system")
     ocd_login_code_attempts = fields.Integer(copy=False, groups="base.group_system")
+    # Last link asked with the number on a login page (one a minute at most)
+    ocd_link_sent_at = fields.Datetime(copy=False, groups="base.group_system")
 
     def _compute_ocd_booking_count(self):
         counts = {
@@ -143,7 +145,8 @@ class ResPartner(models.Model):
         return self.browse()
 
     def action_ocd_reset_space_link(self):
-        """Give the vendor a new personal link: the old one stops working."""
+        """Give a new personal link: the old one stops working, and so do the phones where it was
+        opened (they ask for the number again)."""
         for partner in self:
             partner.sudo().ocd_space_token = secrets.token_urlsafe(24)
             partner.message_post(body=self.env._("A new personal link was created. The old one no longer works."))
@@ -210,23 +213,36 @@ class ResPartner(models.Model):
     # === LOGIN WITH A CODE OR A PASSWORD === #
 
     @api.model
-    def _ocd_find_vendor_by_phone(self, phone):
-        """Return the vendor whose phone number ends like `phone` (8 digits at least)."""
+    def _ocd_find_by_phone(self, phone, domain):
+        """Return the contact of `domain` whose phone number ends like `phone` (8 digits at
+        least), for the login pages."""
         typed = re.sub(r"\D", "", phone or "")
         if len(typed) < 8:
             return self.browse()
         # sudo: login page, the number is only compared, nothing is shown
-        vendors = self.sudo().search([
-            ("ocd_is_vendor", "=", True),
-            ("phone", "!=", False),
-            ("ocd_vendor_state", "!=", "refused"),
-        ])
-        for vendor in vendors:
-            stored = re.sub(r"\D", "", vendor.phone)
+        partners = self.sudo().search(domain + [("phone", "!=", False)])
+        for partner in partners:
+            stored = re.sub(r"\D", "", partner.phone)
             size = min(len(stored), len(typed))
             if size >= 8 and stored[-size:] == typed[-size:]:
-                return vendor
+                return partner
         return self.browse()
+
+    @api.model
+    def _ocd_find_vendor_by_phone(self, phone):
+        """Return the vendor whose phone number ends like `phone` (8 digits at least)."""
+        return self._ocd_find_by_phone(phone, [("ocd_is_vendor", "=", True), ("ocd_vendor_state", "!=", "refused")])
+
+    def _ocd_may_send_link(self):
+        """A link asked with the number on a login page goes at most once a minute: nobody can
+        flood a number with messages (each one may be paid to WhatsApp)."""
+        self.ensure_one()
+        partner_sudo = self.sudo()
+        now = fields.Datetime.now()
+        if partner_sudo.ocd_link_sent_at and partner_sudo.ocd_link_sent_at > now - timedelta(minutes=1):
+            return False
+        partner_sudo.ocd_link_sent_at = now
+        return True
 
     def _ocd_hash_login_code(self, code):
         self.ensure_one()

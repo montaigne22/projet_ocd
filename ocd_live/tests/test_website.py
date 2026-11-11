@@ -365,6 +365,20 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertIn('aria-label="Language of the page"', response.text)
         self.assertIn('href="/en/ocd/connexion"', response.text)
 
+    def test_new_personal_link_ends_the_open_browsers(self):
+        token = self.vendor._ocd_get_space_token()
+        self.assertIn("Awa Mensah", self.url_open(f"/ocd/espace/{token}").text)
+        self.assertIn("Awa Mensah", self.url_open("/ocd/espace/moi").text)
+        self.vendor.action_ocd_reset_space_link()
+        self.assertTrue(self.url_open("/ocd/espace/moi").url.endswith("/ocd/connexion"))
+
+    def test_one_link_a_minute_for_a_number(self):
+        self.authenticate(None, None)
+        with patch.object(type(self.env["res.partner"]), "_ocd_send_space_link", autospec=True, return_value=True) as send:
+            for _attempt in range(3):
+                self.url_open("/ocd/connexion", data={"csrf_token": self.csrf_token(), "phone": "90 00 00 07"})
+        self.assertEqual(send.call_count, 1)
+
     def test_space_with_a_whatsapp_code(self):
         self.company.ocd_vendor_login = "whatsapp_code"
         self.authenticate(None, None)

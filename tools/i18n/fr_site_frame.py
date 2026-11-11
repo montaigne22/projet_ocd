@@ -5,6 +5,19 @@ SITE_FRAME = {
         "Réservez un live au studio ou depuis chez vous, suivez les lives du moment et achetez aux vendeurs.",
     "Links": "Liens",
     "Log out": "Se déconnecter",
+    "<b>Look at your WhatsApp.</b>": "<b>Regarde ton WhatsApp.</b>",
+    "Touch the link you received: your space opens by itself. This link works only for you.":
+        "Touche le lien reçu : ton espace s'ouvre tout seul. Ce lien ne marche que pour toi.",
+    "Touch the link you received: your parcels open by themselves. This link works only for you.":
+        "Touche le lien reçu : tes colis s'ouvrent tout seuls. Ce lien ne marche que pour toi.",
+    "Your parcels to deliver.": "Tes colis à livrer.",
+    "For the couriers of OCD Live and the vendors who deliver: give the number you gave to OCD Live.":
+        "Pour les livreurs d'OCD Live et les vendeurs qui livrent : donne le numéro que tu as donné à OCD Live.",
+    "A vendor with a password? Log in": "Vendeur avec un mot de passe ? Se connecter",
+    "Open my parcels": "Ouvrir mes colis",
+    "The vendor will need the new link: the old one stops working, and so do the phones where it was opened.":
+        "Le vendeur aura besoin du nouveau lien : l'ancien ne marche plus, ni les téléphones où il était ouvert.",
+    "Ocd Link Sent At": "Dernier lien envoyé le",
     "Language of the page": "Langue de la page",
     "Language of the page and of the voice": "Langue de la page et de la voix",
     "You are logged in as the team.": "Tu es connecté avec un compte de l'équipe.",
@@ -64,3 +77,12 @@ pages faites avec l'éditeur du site) l'allure du design validé :
 À choisir dans Site Web > Configuration > Paramètres > Choisir un thème (ou dans l'éditeur du site,
 Thème > Changer de thème).
 """
+
+# Login of the couriers (ocd_live_shop)
+SHOP_COURIER_LOGIN = {
+    "The courier will need the new link: the old one stops working, and so do the phones where it was opened.":
+        "Le livreur aura besoin du nouveau lien : l'ancien ne marche plus, ni les téléphones où il était ouvert.",
+    "Log out": "Se déconnecter",
+    "New personal link": "Nouveau lien personnel",
+    "Couriers' space": "Espace livreurs",
+}

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-11 13:03+0000\n"
-"PO-Revision-Date: 2026-11-11 13:03+0000\n"
+"POT-Creation-Date: 2026-11-11 14:56+0000\n"
+"PO-Revision-Date: 2026-11-11 14:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -434,12 +434,8 @@ msgstr "8 lives dans le mois + annonce"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_login
-msgid ""
-"<b>Look at your WhatsApp.</b>\n"
-"                        <span>Touch the link you received: your space opens by itself. This link works only for you.</span>"
-msgstr ""
-"<b>Regarde ton WhatsApp.</b>\n"
-"                        <span>Touche le lien reçu : ton espace s'ouvre tout seul. Ce lien ne marche que pour toi.</span>"
+msgid "<b>Look at your WhatsApp.</b>"
+msgstr "<b>Regarde ton WhatsApp.</b>"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
@@ -890,6 +886,11 @@ msgstr "Une table"
 #: model:ir.model.fields,help:ocd_live.field_res_users__ocd_vendor_state
 msgid "A vendor is shown on the website once approved by the team."
 msgstr "Un vendeur apparaît sur le site une fois validé par l'équipe."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "A vendor with a password? Log in"
+msgstr "Vendeur avec un mot de passe ? Se connecter"
 
 #. module: ocd_live
 #: model:ir.model.constraint,message:ocd_live.constraint_ocd_directory_window_check_hours
@@ -1394,7 +1395,7 @@ msgstr "Catégorie"
 
 #. module: ocd_live
 #. odoo-python
-#: code:addons/ocd_live/controllers/vendor_space.py:0
+#: code:addons/ocd_live/controllers/common.py:0
 msgid "Change number"
 msgstr "Changer de numéro"
 
@@ -2159,6 +2160,11 @@ msgstr ""
 "                les prix des paquets s'appliquent."
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "For the couriers of OCD Live and the vendors who deliver: give the number you gave to OCD Live."
+msgstr "Pour les livreurs d'OCD Live et les vendeurs qui livrent : donne le numéro que tu as donné à OCD Live."
+
+#. module: ocd_live
 #: model:ocd.listing.refuse.reason,name:ocd_live.refuse_reason_vendor_activity
 msgid "Forbidden activity"
 msgstr "Activité interdite"
@@ -2886,7 +2892,7 @@ msgstr "Se connecter avec un autre compte"
 
 #. module: ocd_live
 #. odoo-python
-#: code:addons/ocd_live/controllers/vendor_space.py:0
+#: code:addons/ocd_live/controllers/common.py:0
 msgid "Log out"
 msgstr "Se déconnecter"
 
@@ -3483,6 +3489,12 @@ msgid "OCD Vendor"
 msgstr "Vendeur OCD"
 
 #. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_link_sent_at
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_link_sent_at
+msgid "Ocd Link Sent At"
+msgstr "Dernier lien envoyé le"
+
+#. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_login_code_attempts
 #: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_login_code_attempts
 msgid "Ocd Login Code Attempts"
@@ -3626,6 +3638,11 @@ msgstr "Seule l'équipe d'OCD Live peut voir l'espace d'un vendeur."
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
 msgid "Open countries"
 msgstr "Pays ouverts"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
+msgid "Open my parcels"
+msgstr "Ouvrir mes colis"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
@@ -5274,8 +5291,8 @@ msgstr "Le vendeur reçoit le ticket, les rappels et les nouvelles sur WhatsApp.
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.res_partner_view_form_ocd_vendor
 #: model_terms:ir.ui.view,arch_db:ocd_live.view_partner_form
-msgid "The vendor will need the new link: the old one stops working."
-msgstr "Le vendeur aura besoin du nouveau lien : l'ancien ne marche plus."
+msgid "The vendor will need the new link: the old one stops working, and so do the phones where it was opened."
+msgstr "Le vendeur aura besoin du nouveau lien : l'ancien ne marche plus, ni les téléphones où il était ouvert."
 
 #. module: ocd_live
 #: model_terms:ir.actions.act_window,help:ocd_live.ocd_live_booking_action
@@ -5656,6 +5673,16 @@ msgstr "Touche le jour que tu veux."
 #: model:ocd.voice.prompt,text:ocd_live.voice_prompt_hour
 msgid "Touch the hour. A live lasts one hour and a half."
 msgstr "Touche l'heure. Un live dure une heure et demie."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "Touch the link you received: your parcels open by themselves. This link works only for you."
+msgstr "Touche le lien reçu : tes colis s'ouvrent tout seuls. Ce lien ne marche que pour toi."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "Touch the link you received: your space opens by itself. This link works only for you."
+msgstr "Touche le lien reçu : ton espace s'ouvre tout seul. Ce lien ne marche que pour toi."
 
 #. module: ocd_live
 #. odoo-python
@@ -6266,6 +6293,11 @@ msgstr "Ton numéro a %s chiffres."
 #: code:addons/ocd_live/controllers/vendor_space.py:0
 msgid "Your package"
 msgstr "Ton paquet"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_login
+msgid "Your parcels to deliver."
+msgstr "Tes colis à livrer."
 
 #. module: ocd_live
 #: model_terms:payment.provider,auth_msg:ocd_live.payment_provider_momo_team

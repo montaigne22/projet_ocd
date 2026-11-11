@@ -5,3 +5,4 @@ from . import test_shop_pages
 from . import test_delivery_rates
 from . import test_settings_page
 from . import test_automations
+from . import test_courier_login

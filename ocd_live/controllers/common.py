@@ -4,13 +4,16 @@ from datetime import date, timedelta
 from odoo import fields
 from odoo.exceptions import UserError
 from odoo.http import request
-from odoo.tools import format_date
+from odoo.tools import consteq, format_date
 
 from .. import tools
 
 MODES = ("studio", "remote")
 NAME_MAX = 80
 SESSION_VENDOR = "ocd_vendor_id"
+# Personal token of the vendor when the browser opened the space: a new personal link (team)
+# ends the browsers opened with the old one
+SESSION_VENDOR_TOKEN = "ocd_vendor_token"
 # Vendor whose space a person of the team opened from the back office (« See the space »)
 SESSION_TEAM_VIEW = "ocd_team_view_vendor_id"
 
@@ -99,6 +102,29 @@ def account_vendor():
     return vendor if vendor.ocd_is_vendor else Partner
 
 
+def remember_vendor(vendor):
+    """This browser opens the space of `vendor` from now on (personal link, code checked, new
+    vendor of a booking), until « Change number » or a new personal link."""
+    request.session[SESSION_VENDOR] = vendor.id
+    request.session[SESSION_VENDOR_TOKEN] = vendor.sudo()._ocd_get_space_token()
+
+
+def forget_vendor():
+    request.session.pop(SESSION_VENDOR, None)
+    request.session.pop(SESSION_VENDOR_TOKEN, None)
+
+
+def vendor_header_link(source):
+    """Link of the header of the pages of the vendor: an Odoo account logs out of Odoo (the
+    space would open again by itself otherwise), a browser forgets the vendor and asks for a
+    number, the view of the team has its own bar."""
+    if source == "team":
+        return False
+    if source == "account":
+        return {"href": "/web/session/logout?redirect=/ocd/connexion", "label": request.env._("Log out")}
+    return {"href": "/ocd/deconnexion", "label": request.env._("Change number")}
+
+
 def team_view_vendor():
     """Vendor whose space a person of the team opened from the back office (« See the space »),
     as long as this person is logged in and in the team of OCD Live."""
@@ -128,7 +154,7 @@ def current_vendor_and_source(token=None):
         vendor = Partner._ocd_find_by_space_token(token) if login == "link" else Partner
         if vendor:
             # The personal link opens the space on this browser for the next pages
-            request.session[SESSION_VENDOR] = vendor.id
+            remember_vendor(vendor)
             request.session.pop(SESSION_TEAM_VIEW, None)
         return vendor, "link" if vendor else False
     vendor = team_view_vendor()
@@ -137,8 +163,12 @@ def current_vendor_and_source(token=None):
     if login in ("link", "whatsapp_code"):
         vendor_id = request.session.get(SESSION_VENDOR)
         vendor = Partner.browse(vendor_id).exists() if vendor_id else Partner
-        if vendor.ocd_is_vendor:
+        token = request.session.get(SESSION_VENDOR_TOKEN) or ""
+        if vendor.ocd_is_vendor and vendor.ocd_space_token and consteq(vendor.ocd_space_token, token):
             return vendor, "browser"
+        if vendor_id:
+            # A new personal link was made (or the vendor is gone): this browser asks again
+            forget_vendor()
     vendor = account_vendor()
     return vendor, "account" if vendor else False
 
@@ -395,7 +425,7 @@ def find_or_create_vendor(post, need_category=True):
     })
     if company().ocd_vendor_login in ("link", "whatsapp_code"):
         # A new vendor: this browser opens its space without asking for the code
-        request.session[SESSION_VENDOR] = vendor.id
+        remember_vendor(vendor)
     return vendor
 
 

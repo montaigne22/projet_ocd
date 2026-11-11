@@ -33,6 +33,13 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   (« Voir son espace », lien signé pour la personne, barre « Vue de l'équipe » tant que dure la vue) ;
   un client connecté qui n'est pas vendeur garde le formulaire, avec son numéro prérempli.
 
+- **Les livreurs entrent comme les vendeurs** : page « Tes colis à livrer » (`/ocd/livrer`, lien
+  « Espace livreurs » en pied de page), leur numéro, puis leur lien (mode lien) ou un code (mode code ;
+  en mode mot de passe aussi, ils n'ont pas de compte) sur WhatsApp. Seulement un contact que l'équipe a
+  coché « Livreur » ; même réponse pour tout numéro ; un lien au plus par minute et par numéro. Le
+  téléphone retient le livreur jusqu'à « Se déconnecter » ; « Nouveau lien personnel » (fiche du livreur,
+  et des vendeurs) coupe aussi les téléphones déjà ouverts ; décocher « Livreur » coupe tout de suite.
+
 ## Réservations
 
 - Parcours par défaut : **jour → heure → paquet** (réglable : paquet d'abord).

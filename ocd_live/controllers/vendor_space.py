@@ -17,6 +17,32 @@ class OcdVendorSpace(http.Controller):
     WhatsApp, WhatsApp number and a code, or number and password."""
 
     # === LOGIN === #
+    # The same pages serve the space of the vendors (/ocd/connexion) and, with ocd_live_shop, the
+    # delivery app of the couriers and of the vendors who deliver (/ocd/livrer): the number,
+    # then the personal link or a code on WhatsApp, as set for the vendors.
+
+    LOGIN_PAGES = {
+        "space": {"form": "/ocd/connexion", "code": "/ocd/connexion/code", "home": "/ocd/espace/moi"},
+    }
+
+    def _login_page_mode(self, target):
+        """What the login page asks after the number: "link" (a link arrives), "whatsapp_code"
+        (a code to type) or "password" (the login of Odoo). The same for every number, known
+        or not."""
+        return common.company().ocd_vendor_login
+
+    def _ocd_login_partner(self, number, target):
+        """Contact who logs in with `number` on the page `target` (empty when unknown)."""
+        return request.env["res.partner"].sudo()._ocd_find_vendor_by_phone(number)
+
+    def _ocd_send_link(self, partner, target):
+        """Send the personal link asked on the page `target`; return whether it left."""
+        return partner._ocd_send_space_link()
+
+    def _ocd_open_session(self, partner, target):
+        """This browser now opens the pages of `partner`; return the page to show."""
+        common.remember_vendor(partner)
+        return self.LOGIN_PAGES[target]["home"]
 
     @http.route("/ocd/connexion", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
     def login(self, **kwargs):
@@ -39,18 +65,22 @@ class OcdVendorSpace(http.Controller):
         user = request.env.user
         return request.env["res.partner"] if user._is_public() else user.partner_id.sudo()
 
-    def _render_login(self, sent=False, error=None, phone=None, country=None):
+    def _render_login(self, sent=False, error=None, phone=None, country=None, target="space"):
         customer = self._customer()
         if customer and phone is None:
             # A customer logged in: the number of the account is filled in, it can be changed
             countries = common.directory_countries()
             country = customer.country_id if customer.country_id in countries else common.default_country()
             phone = common.local_digits(country, customer.phone) if common.normalize_phone(country, customer.phone) else ""
+        page = self.LOGIN_PAGES[target]
         return request.render("ocd_live.space_login", common.page_values(
             False,
             back="/ocd",
             header_brand=True,
-            login=common.company().ocd_vendor_login,
+            login=self._login_page_mode(target),
+            target=target,
+            form_action=page["form"],
+            password_url=f"/web/login?redirect={page['home']}" if common.company().ocd_vendor_login == "password" else False,
             sent=sent,
             error=error,
             phone_value=phone or "",
@@ -71,26 +101,30 @@ class OcdVendorSpace(http.Controller):
 
     @http.route("/ocd/connexion", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def login_phone(self, phone=None, country_id=None, **kwargs):
-        if request.env.user._is_internal():
-            # The team has no space: a number typed here would send the link to the vendor
-            return self._render_team()
-        login = common.company().ocd_vendor_login
-        if login == "password":
+        if common.company().ocd_vendor_login == "password" and not request.env.user._is_internal():
             return request.redirect("/web/login?redirect=/ocd/espace/moi")
+        return self._login_phone(phone, country_id, "space")
+
+    def _login_phone(self, phone, country_id, target):
+        if request.env.user._is_internal():
+            # The team has no space: a number typed here would send the link to the contact
+            return self._render_team()
+        mode = self._login_page_mode(target)
         country = request.env["res.country"].sudo().browse(int(country_id or 0)).exists() or common.default_country()
         number = common.normalize_phone(country, phone)
         if not number:
-            return self._render_login(error=common.phone_error(country), phone=phone, country=country)
-        vendor = request.env["res.partner"].sudo()._ocd_find_vendor_by_phone(number)
-        if vendor and login == "whatsapp_code":
-            vendor._ocd_send_login_code()
-            request.session[SESSION_LOGIN] = vendor.id
-        elif vendor and login == "link":
-            vendor._ocd_send_space_link()
+            return self._render_login(error=common.phone_error(country), phone=phone, country=country, target=target)
+        partner = self._ocd_login_partner(number, target)
+        request.session.pop(SESSION_LOGIN, None)
+        if partner and mode == "whatsapp_code":
+            partner._ocd_send_login_code()
+            request.session[SESSION_LOGIN] = partner.id
+        elif partner and mode == "link" and partner._ocd_may_send_link():
+            self._ocd_send_link(partner, target)
         # Same answer whether the number is known or not
-        if login == "whatsapp_code":
-            return self._render_code()
-        return self._render_login(sent=True, phone=phone, country=country)
+        if mode == "whatsapp_code":
+            return self._render_code(target=target)
+        return self._render_login(sent=True, phone=phone, country=country, target=target)
 
     def _render_team(self):
         """Page of a person of the team logged in to Odoo: the space is for the vendors, it does
@@ -107,26 +141,30 @@ class OcdVendorSpace(http.Controller):
             back_office_label=request.env._("Open the vendors") if team else request.env._("Open the back office"),
         ))
 
-    def _render_code(self, error=None):
+    def _render_code(self, error=None, target="space"):
+        page = self.LOGIN_PAGES[target]
         return request.render("ocd_live.space_login_code", common.page_values(
-            False, back="/ocd/connexion", header_brand=True, error=error,
+            False, back=page["form"], header_brand=True, error=error,
+            target=target, form_action=page["form"], code_action=page["code"],
         ))
 
     @http.route("/ocd/connexion/code", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def login_code(self, code=None, **kwargs):
-        if common.company().ocd_vendor_login != "whatsapp_code":
+        return self._login_code(code, "space")
+
+    def _login_code(self, code, target):
+        if self._login_page_mode(target) != "whatsapp_code":
             raise request.not_found()
-        vendor_id = request.session.get(SESSION_LOGIN)
-        vendor = request.env["res.partner"].sudo().browse(vendor_id).exists() if vendor_id else None
-        if vendor and vendor._ocd_check_login_code(code):
+        partner_id = request.session.get(SESSION_LOGIN)
+        partner = request.env["res.partner"].sudo().browse(partner_id).exists() if partner_id else None
+        if partner and partner._ocd_check_login_code(code):
             request.session.pop(SESSION_LOGIN, None)
-            request.session[common.SESSION_VENDOR] = vendor.id
-            return request.redirect("/ocd/espace/moi")
-        return self._render_code(error=request.env._("Wrong or expired code. Ask for a new code."))
+            return request.redirect(self._ocd_open_session(partner, target))
+        return self._render_code(error=request.env._("Wrong or expired code. Ask for a new code."), target=target)
 
     @http.route("/ocd/deconnexion", type="http", auth="public", website=True, sitemap=False)
     def logout(self, **kwargs):
-        request.session.pop(common.SESSION_VENDOR, None)
+        common.forget_vendor()
         return request.redirect("/ocd/connexion")
 
     # === THE TEAM SEES THE SPACE OF A VENDOR === #
@@ -189,7 +227,7 @@ class OcdVendorSpace(http.Controller):
         return request.render("ocd_live.space", common.page_values(
             False,
             nav="me",
-            header_link=self._header_link(source),
+            header_link=common.vendor_header_link(source),
             vendor=vendor,
             flag=(vendor.country_id.code or "").lower(),
             vendor_line=" · ".join(filter(None, [vendor.ocd_category_id.name, vendor.city, vendor.phone])),
@@ -239,16 +277,6 @@ class OcdVendorSpace(http.Controller):
             "expiry": env._("before %s", common.day_text(credit.date_expiry)) if credit.date_expiry else False,
             "place_url": f"/ocd/espace/moi/placer/{credit.id}",
         }
-
-    def _header_link(self, source):
-        """Link of the header of the space: an Odoo account logs out of Odoo (the space would
-        open again by itself otherwise), a browser forgets the vendor and asks for a number."""
-        if source == "team":
-            # The bar of the view of the team has the way out
-            return False
-        if source == "account":
-            return {"href": "/web/session/logout?redirect=/ocd/connexion", "label": request.env._("Log out")}
-        return {"href": "/ocd/deconnexion", "label": request.env._("Change number")}
 
     @http.route("/ocd/espace/moi/whatsapp", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def space_whatsapp(self, **post):

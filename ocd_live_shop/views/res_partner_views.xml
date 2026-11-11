@@ -37,6 +37,9 @@
                 </group>
                 <button name="action_ocd_delivery_app_link" type="object" string="Link of the delivery app"
                         class="btn-link ps-0" invisible="not ocd_is_courier and ocd_sale_mode != 'ocd'"/>
+                <button name="action_ocd_reset_space_link" type="object" string="New personal link"
+                        class="btn-link ps-0" invisible="not ocd_is_courier or ocd_is_vendor"
+                        confirm="The courier will need the new link: the old one stops working, and so do the phones where it was opened."/>
             </page>
         </field>
     </record>
