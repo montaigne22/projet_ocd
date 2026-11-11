@@ -1,0 +1,46 @@
+
+[![Support the OCA](https://odoo-community.org/readme-banner-image)](https://odoo-community.org/get-involved?utm_source=repo-readme)
+
+# web
+[![Runboat](https://img.shields.io/badge/runboat-Try%20me-875A7B.png)](https://runboat.odoo-community.org/builds?repo=OCA/web&target_branch=20.0)
+[![Pre-commit Status](https://github.com/OCA/web/actions/workflows/pre-commit.yml/badge.svg?branch=20.0)](https://github.com/OCA/web/actions/workflows/pre-commit.yml?query=branch%3A20.0)
+[![Build Status](https://github.com/OCA/web/actions/workflows/test.yml/badge.svg?branch=20.0)](https://github.com/OCA/web/actions/workflows/test.yml?query=branch%3A20.0)
+[![codecov](https://codecov.io/gh/OCA/web/branch/20.0/graph/badge.svg)](https://codecov.io/gh/OCA/web)
+[![Translation Status](https://translation.odoo-community.org/widgets/web-20-0/-/svg-badge.svg)](https://translation.odoo-community.org/engage/web-20-0/?utm_source=widget)
+
+<!-- /!\ do not modify above this line -->
+
+web
+
+<!-- /!\ do not modify below this line -->
+
+<!-- prettier-ignore-start -->
+
+[//]: # (addons)
+
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[web_dialog_size](web_dialog_size/) | 20.0.1.0.0 |  | A module that lets the user expand a dialog box to the full screen width.
+[web_environment_ribbon](web_environment_ribbon/) | 20.0.1.0.0 |  | Web Environment Ribbon
+[web_m2x_options](web_m2x_options/) | 20.0.1.0.0 |  | web_m2x_options
+[web_quick_start_screen](web_quick_start_screen/) | 20.0.1.0.0 |  | Configurable start screen for quick actions
+[web_responsive](web_responsive/) | 20.0.1.0.0 | <a href='https://github.com/Tardo'><img src='https://github.com/Tardo.png' width='32' height='32' style='border-radius:50%;' alt='Tardo'/></a> <a href='https://github.com/SplashS'><img src='https://github.com/SplashS.png' width='32' height='32' style='border-radius:50%;' alt='SplashS'/></a> | Responsive web client, community-supported
+
+[//]: # (end addons)
+
+<!-- prettier-ignore-end -->
+
+## Licenses
+
+This repository is licensed under [AGPL-3.0](LICENSE).
+
+However, each module can have a totally different license, as long as they adhere to Odoo Community Association (OCA)
+policy. Consult each module's `__manifest__.py` file, which contains a `license` key
+that explains its license.
+
+----
+OCA, or the [Odoo Community Association](http://odoo-community.org/), is a nonprofit
+organization whose mission is to support the collaborative development of Odoo features
+and promote its widespread use.
