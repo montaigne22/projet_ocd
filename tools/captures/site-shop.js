@@ -4,10 +4,17 @@
 //          <vendor sold by OCD> <vendor in direct contact> [token of a vendor] [token of a courier]
 // With the demo data: Brenda Wax (sold by OCD, with a replay) and Awa Mensah (direct contact);
 // the tokens open the delivery app (Livrer) and the tour of the courier (Tournee).
+// On phone, a cart of two vendors of Douala (8b, 8c): one price of delivery per parcel.
 const { chromium } = require('playwright');
 const BASE = process.env.OCD_URL || 'http://127.0.0.1:8069';
 const OUT = process.env.OUT || './';
 const [OCD_VENDOR, DIRECT_VENDOR, VENDOR_TOKEN, COURIER_TOKEN] = process.argv.slice(2);
+// The cart of two vendors (names as shown in the French shop of the demo)
+const TWO_PARCELS = {
+  products: ['Robe en wax', 'Beurre de karité'],
+  country: 'Cameroun', city: 'Douala', district: 'Akwa',
+  name: 'Estelle Ngono', phone: '670 00 00 99', landmark: 'En face de la pharmacie',
+};
 const sizes = {
   phone: { width: 390, height: 844 },
   tablet: { width: 820, height: 1180 },
@@ -56,6 +63,55 @@ const sizes = {
     }
     await context.close();
   }
+  await twoParcels(browser, errors);
   console.log(errors.length ? errors.join('\n') : 'no JS errors');
   await browser.close();
 })();
+
+// Two vendors in the cart, the address filled: a line and a price per parcel, then the payment.
+async function twoParcels(browser, errors) {
+  const context = await browser.newContext({ viewport: sizes.phone, locale: 'fr-FR' });
+  await context.addCookies([{ name: 'frontend_lang', value: 'fr_FR', url: BASE }]);
+  const page = await context.newPage();
+  page.on('pageerror', (e) => errors.push(`two parcels pageerror: ${e.message}`));
+  const t = TWO_PARCELS;
+  for (const name of t.products) {
+    await page.goto(BASE + '/shop', { waitUntil: 'networkidle' });
+    const card = page.locator('.o_ocd_products a.o_ocd_product', { hasText: name }).first();
+    if (!(await card.count())) {
+      console.log('two parcels: no product', name);
+      await context.close();
+      return;
+    }
+    await Promise.all([page.waitForNavigation(), card.click()]);
+    await page.waitForLoadState('networkidle');
+    const add = page.locator('.o_ocd_variant_add:not([disabled])').first();
+    if (await add.count()) await Promise.all([page.waitForNavigation(), add.click()]);
+  }
+  await page.goto(BASE + '/shop/checkout', { waitUntil: 'networkidle' });
+  const country = page.locator('#d-country');
+  if (await country.count()) {
+    const current = await country.evaluate((s) => s.options[s.selectedIndex]?.text.trim());
+    if (current !== t.country) {
+      await Promise.all([page.waitForNavigation(), country.selectOption({ label: t.country })]);
+      await page.waitForLoadState('networkidle');
+    }
+  }
+  await page.fill('#d-name', t.name);
+  await page.selectOption('#d-city', { label: t.city });
+  await page.selectOption('#d-district', { label: t.district });
+  await page.fill('#d-phone', t.phone);
+  await page.fill('#d-landmark', t.landmark);
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(800);
+  // The screen of the phone scrolled down to the parcels (the button stays at the bottom)
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: `${OUT}site-phone-s-8b-livraison-deux-colis.png` });
+  console.log('two parcels: delivery', await page.$$eval('.o_ocd_delivery_parcel', (rows) => rows.map((r) => r.innerText.replace(/\s+/g, ' ').trim())));
+  await Promise.all([page.waitForNavigation(), page.click('.o_ocd_actions button[type=submit]')]);
+  await page.waitForLoadState('networkidle');
+  await page.screenshot({ path: `${OUT}site-phone-s-8c-payer-deux-colis.png`, fullPage: true });
+  console.log('two parcels: payment', page.url());
+  await context.close();
+}

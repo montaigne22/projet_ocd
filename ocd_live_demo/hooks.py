@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 MODULE = "ocd_live_demo"
 PARAM_MESSAGES = "ocd_live_demo.message_ids"
 PARAM_MOMO = "ocd_live_demo.momo_pending_msg"
+PARAM_COD = "ocd_live_demo.cod_published"
 MOMO_MESSAGE = (
     "<p>Envoie le montant par Mobile Money au numéro d'OCD : Mixx by Yas 90 00 00 00, "
     "Flooz 99 00 00 00 (numéros d'exemple). Écris la référence ci-dessous dans le message. "
@@ -82,6 +83,7 @@ class OcdLiveDemo:
         self.payment()
         self.lives()
         self.directory()
+        self.stock()
         self.shop()
         channel = self.company.ocd_lives_channel_id
         if channel:
@@ -91,11 +93,18 @@ class OcdLiveDemo:
             self.env["ir.config_parameter"].sudo().set_str(PARAM_MESSAGES, json.dumps(messages.ids))
 
     def payment(self):
-        """Mobile Money checked by the team, with example numbers."""
+        """Mobile Money checked by the team, with example numbers; and the payment in cash at the
+        door, the way most customers pay, so that an order of the shop can be paid (it is offered
+        only when every parcel of the order accepts it)."""
+        params = self.env["ir.config_parameter"].sudo()
         provider = self.env.ref("ocd_live.payment_provider_momo_team", raise_if_not_found=False)
         if provider and not provider.active:
-            self.env["ir.config_parameter"].sudo().set_str(PARAM_MOMO, str(provider.pending_msg or ""))
+            params.set_str(PARAM_MOMO, str(provider.pending_msg or ""))
             provider.write({"active": True, "pending_msg": MOMO_MESSAGE})
+        cod = self.env.ref("delivery.payment_provider_cod", raise_if_not_found=False)
+        if cod and cod.company_id == self.company and not (cod.active and cod.is_published):
+            params.set_str(PARAM_COD, json.dumps({"active": cod.active, "is_published": cod.is_published}))
+            cod.write({"active": True, "is_published": True})
 
     def lives(self):
         discovery = self.product("ocd_live.product_package_discovery")
@@ -163,31 +172,130 @@ class OcdLiveDemo:
                 "checked_at": now - timedelta(minutes=5 + 7 * index) if is_open else False,
             })
 
-    def shop(self):
-        dress = self.product(f"{MODULE}.product_wax_dress")
-        shirt = self.product(f"{MODULE}.product_wax_shirt")
-        butter = self.product(f"{MODULE}.product_shea_butter")
-        estelle = self.SaleOrder.create({
-            "partner_id": self.ref("customer_estelle").id,
-            "order_line": [
-                Command.create({"product_id": dress.id, "product_uom_qty": 1}),
-                Command.create({"product_id": butter.id, "product_uom_qty": 2}),
-            ],
+    # Stock of the products followed in stock: set on the quants without stock moves, so that
+    # the uninstallation removes it all ("Only 3 left", "Sold out" on the pages)
+    STOCK = {
+        "product_wax_dress": {"Bleu": {"S": 5, "M": 3, "L": 0, "XL": 1}, "Rouge": {"S": 4, "M": 2, "L": 0, "XL": 0}},
+        "product_wax_shirt": 6,
+        "product_wax_pagne": 4,
+        "product_black_soap": 0,
+    }
+
+    def stock(self):
+        warehouse = self.env["stock.warehouse"].sudo().search([("company_id", "=", self.company.id)], limit=1)
+        if not warehouse:
+            return
+        Quant = self.env["stock.quant"].sudo()
+        for xmlid, quantities in self.STOCK.items():
+            for variant in self.ref(xmlid).product_variant_ids:
+                if isinstance(quantities, dict):
+                    names = variant.product_template_attribute_value_ids.mapped("name")
+                    color = next((n for n in names if n in quantities), None)
+                    qty = quantities.get(color, {}).get(next((n for n in names if n in quantities.get(color, {})), ""), 0)
+                else:
+                    qty = quantities
+                if qty:
+                    Quant._update_available_quantity(variant, warehouse.lot_stock_id, qty)
+
+    def order(self, partner, lines):
+        """A shop order priced with the delivery of OCD Live (one price per parcel), confirmed."""
+        order = self.SaleOrder.create({
+            "partner_id": partner.id,
+            "order_line": [Command.create({"product_id": product.id, "product_uom_qty": qty}) for product, qty in lines],
         })
-        estelle.action_confirm()
-        herve = self.sell(self.ref("customer_herve"), shirt)
-        courier = self.ref("courier_ekwalla")
-        try:
-            # Parcel of Brenda for Estelle: ready to be picked up
-            estelle.picking_ids.filtered(lambda p: p.ocd_vendor_id == self.ref("vendor_brenda")).action_ocd_ready()
-            # Parcel of Hervé: on the way with the courier
-            parcel = herve.picking_ids[:1]
+        carrier = self.env.ref("ocd_live_shop.carrier_ocd", raise_if_not_found=False)
+        if carrier and carrier.is_published:
+            rate = carrier.rate_shipment(order)
+            if rate.get("success"):
+                order.set_delivery_line(carrier, rate["price"])
+        order.action_confirm()
+        return order
+
+    def variant(self, xmlid, *values):
+        """The variant of the product `xmlid` with these values (e.g. "Bleu", "M")."""
+        variants = self.ref(xmlid).product_variant_ids
+        found = variants.filtered(lambda v: set(values) <= set(v.product_template_attribute_value_ids.mapped("name")))
+        return found[:1] or variants[:1]
+
+    def deliver(self, parcel, method, days_ago=0, courier=None):
+        """Bring a parcel to "delivered" as the apps do, without validating the stock transfer:
+        the demo moves no stock, so that it can be uninstalled."""
+        if courier and parcel.ocd_delivery_mode != "vendor":
             parcel._ocd_assign_courier(courier)
+        if parcel.ocd_stage == "to_prepare":
+            parcel.action_ocd_ready()
+        if parcel.ocd_delivery_mode != "vendor" and parcel.ocd_stage == "ready":
+            parcel.action_ocd_pick_up()
+        parcel.action_ocd_leave()
+        if parcel.ocd_cod_state == "to_collect":
+            parcel._ocd_collect(method, parcel.ocd_courier_id)
+        parcel.write({
+            "ocd_stage": "delivered",
+            "ocd_delivered_at": fields.Datetime.now() - timedelta(days=days_ago, hours=2),
+        })
+        # The bill of the vendor needs the accounting (a purchase journal): without it, the
+        # parcel stays delivered and the payouts are empty
+        self.step("the bill of the vendor", parcel._ocd_create_vendor_bills)
+
+    def step(self, label, function, *args, **kwargs):
+        """A step of the demo: shown at the step it reached when something is not configured
+        (e.g. no accounting yet)."""
+        try:
+            with self.env.cr.savepoint():
+                return function(*args, **kwargs)
+        except Exception:  # noqa: BLE001
+            _logger.warning("OCD Live demo: %s could not reach its demo step", label, exc_info=True)
+            return None
+
+    def shop(self):
+        brenda, fatou = self.ref("vendor_brenda"), self.ref("vendor_fatou")
+        junior, raoul = self.ref("courier_ekwalla"), self.ref("courier_nyobe")
+        dress = self.variant("product_wax_dress", "Bleu", "S")
+        shirt = self.product(f"{MODULE}.product_wax_shirt")
+        pagne = self.product(f"{MODULE}.product_wax_pagne")
+        butter = self.product(f"{MODULE}.product_shea_butter")
+
+        def parcel_of(order, vendor):
+            return order.picking_ids.filtered(lambda p: p.ocd_vendor_id == vendor)[:1]
+
+        # Estelle (Akwa): Brenda's parcel is ready to be picked up, Fatou prepares hers
+        estelle = self.order(self.ref("customer_estelle"), [(dress, 1), (butter, 2)])
+        self.step("the parcel of Estelle", lambda: parcel_of(estelle, brenda).action_ocd_ready())
+        # Hervé (Bonabéri): on the way with Raoul, the code sent
+        herve = self.order(self.ref("customer_herve"), [(shirt, 1)])
+
+        def on_the_way():
+            parcel = herve.picking_ids[:1]
+            parcel._ocd_assign_courier(raoul)
             parcel.action_ocd_ready()
             parcel.action_ocd_pick_up()
             parcel.action_ocd_leave()
-        except Exception:  # noqa: BLE001 - the demo shows the parcels at the steps it reached
-            _logger.warning("OCD Live demo: a parcel could not reach its demo step", exc_info=True)
+        self.step("the parcel of Hervé", on_the_way)
+        # Sandrine (Makepe): delivered yesterday by Fatou, paid on her phone
+        sandrine = self.order(self.ref("customer_sandrine"), [(butter, 2)])
+        self.step("the delivered parcel of Sandrine", self.deliver, parcel_of(sandrine, fatou), "online", days_ago=1)
+        # Ruth (Akwa): delivered today by Junior, who has the cash for the evening
+        ruth = self.order(self.ref("customer_ruth"), [(self.variant("product_wax_dress", "Rouge", "M"), 1)])
+        self.step("the delivered parcel of Ruth", self.deliver, parcel_of(ruth, brenda), "cash", courier=junior)
+        # Bertrand (Bonamoussadi): nobody at home, the dispatch offers a new time
+        bertrand = self.order(self.ref("customer_bertrand"), [(pagne, 1)])
+
+        def problem():
+            parcel = parcel_of(bertrand, brenda)
+            parcel._ocd_assign_courier(raoul)
+            parcel.action_ocd_ready()
+            parcel.action_ocd_pick_up()
+            parcel.action_ocd_leave()
+            parcel._ocd_report_problem("absent")
+        self.step("the parcel of Bertrand", problem)
+        # Sandrine again: Brenda is late, reminded then the dispatch alerted
+        late = self.order(self.ref("customer_sandrine"), [(shirt, 1)])
+        now = fields.Datetime.now()
+        self.step("the late parcel", lambda: parcel_of(late, brenda).write({
+            "ocd_reminded_at": now - timedelta(hours=3), "ocd_escalated_at": now - timedelta(hours=1),
+        }))
+        # Payouts of the vendors, to check by the team
+        self.step("the payouts", lambda: self.env["ocd.payout"].sudo()._ocd_prepare(vendors=brenda | fatou, force=True))
 
 
 def post_init_hook(env):
@@ -203,6 +311,13 @@ def uninstall_hook(env):
     ).mapped("res_id")
     if partner_ids:
         domain = [("partner_id", "in", partner_ids)]
+        # Payouts and vendor bills of the demo parcels
+        payouts = env["ocd.payout"].sudo().search([("vendor_id", "in", partner_ids)])
+        payouts.move_ids.write({"ocd_payout_id": False})
+        payouts.unlink()
+        bills = env["account.move"].sudo().search(domain + [("move_type", "in", ("in_invoice", "in_refund"))])
+        bills.filtered(lambda move: move.state == "posted").button_draft()
+        bills.with_context(force_delete=True).unlink()
         orders = env["sale.order"].sudo().with_context(active_test=False).search(domain)
         pickings = orders.picking_ids
         pickings.filtered(lambda p: p.state not in ("done", "cancel")).action_cancel()
@@ -216,6 +331,12 @@ def uninstall_hook(env):
         env["payment.transaction"].sudo().search(domain).filtered(lambda t: t.state in ("draft", "cancel", "error")).unlink()
         pickings.filtered(lambda p: p.state == "cancel").unlink()
         orders.filtered(lambda o: o.state == "cancel").unlink()
+    # Stock of the demo products (set on the quants, without stock moves)
+    template_ids = env["ir.model.data"].sudo().search(
+        [("module", "=", MODULE), ("model", "=", "product.template")]
+    ).mapped("res_id")
+    if template_ids:
+        env["stock.quant"].sudo().search([("product_id.product_tmpl_id", "in", template_ids)]).unlink()
     params = env["ir.config_parameter"].sudo()
     message_ids = json.loads(params.get_str(PARAM_MESSAGES) or "[]")
     env["mail.message"].sudo().browse(message_ids).exists().unlink()
@@ -224,4 +345,9 @@ def uninstall_hook(env):
     if provider and previous:
         # The demo had enabled it: back as before
         provider.write({"active": False, "pending_msg": previous.value or False})
-    params.search([("key", "in", (PARAM_MESSAGES, PARAM_MOMO))]).unlink()
+    cod = env.ref("delivery.payment_provider_cod", raise_if_not_found=False)
+    previous = params.search([("key", "=", PARAM_COD)])
+    if cod and previous:
+        # The demo had published the payment in cash at the door: back as before
+        cod.write(json.loads(previous.value or "{}") or {"is_published": False})
+    params.search([("key", "in", (PARAM_MESSAGES, PARAM_MOMO, PARAM_COD))]).unlink()

@@ -78,6 +78,19 @@ class TestOcdMoney(OcdShopCommon):
         payouts = self.env["ocd.payout"]._ocd_prepare(vendors=self.fatou, force=True)
         self.assertAlmostEqual(payouts.amount, -750, msg="Fatou owes the commission")
 
+    def test_payment_on_the_phone_is_not_kept_by_the_vendor(self):
+        """The customer pays on their phone at the door of a vendor who delivers: the money goes
+        to OCD Live, nothing is withheld from the vendor, who gets the sales and the delivery."""
+        order = self._order(self.estelle, [(self.butter, 2)])
+        parcel = order.picking_ids
+        parcel.action_ocd_ready()
+        parcel.action_ocd_leave()
+        parcel._ocd_collect("online", self.fatou)
+        parcel._ocd_check_code(parcel.sudo().ocd_delivery_code)
+        self.assertFalse(parcel.ocd_vendor_bill_ids.filtered(lambda m: m.move_type == "in_refund"))
+        payouts = self.env["ocd.payout"]._ocd_prepare(vendors=self.fatou, force=True)
+        self.assertAlmostEqual(payouts.amount, 4250, msg="5,000 F minus 15 %, nothing withheld")
+
     def test_payout_of_the_week(self):
         for _i in range(2):
             self._deliver(self._order(self.estelle, [(self.dress, 1)]).picking_ids)

@@ -20,11 +20,12 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | WhatsApp (messages des lives et des colis) | ✅ fait ; quelques nouveaux messages à brancher (voir plus bas) |
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
 | Togo (villes, quartiers, livraison) | ✅ fait |
-| Données de démonstration désinstallables | ✅ fait, testé |
+| Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements) | ✅ fait, testé |
 | Traductions françaises de tous les modules | ✅ faites (à compléter à chaque nouvel écran) |
 
-Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf la démo) :
-**154 tests, aucun échec** (et les 4 tests de la démo : installation puis désinstallation).
+Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo) :
+**155 tests, aucun échec** (et, sur une base neuve avec la démo, 5 tests sans échec : la démo remplit
+les écrans, puis se désinstalle sans rien laisser).
 
 ## Reste à faire, par priorité
 
@@ -34,13 +35,12 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
    d'OCD sur les livraisons des vendeurs, ville du stock. Les modes de livraison sans prix ont donné des
    tarifs archivés : les compléter puis les activer. Sans tarif, le shop refuse l'adresse (jamais de
    livraison à un prix inconnu).
-2. Démo : produits avec photos, variantes et stock, colis livrés, reversements, deux autres livreurs.
-3. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
+2. **Messages WhatsApp à brancher** sur les nouveaux points d'accroche : ticket renvoyé
    (`_ocd_send_ticket`), créneau libéré pour la liste d'attente (`_ocd_send_free_slot`), ouverture du
    créneau de l'annuaire, filtrage par accord WhatsApp du vendeur.
-4. **Paramètres** : page à sections comme le design (`BoParametres`), au lieu des réglages d'Odoo en cartes.
-5. **Automatisations** : catalogue complet « Quand… alors… » avec détail (`BoAutomatisations`).
-6. **Conversations WhatsApp** dans le style du design (`BoWhatsApp`) : écran de `whatsapp_cloud`.
+3. **Paramètres** : page à sections comme le design (`BoParametres`), au lieu des réglages d'Odoo en cartes.
+4. **Automatisations** : catalogue complet « Quand… alors… » avec détail (`BoAutomatisations`).
+5. **Conversations WhatsApp** dans le style du design (`BoWhatsApp`) : écran de `whatsapp_cloud`.
 
 ## Points d'attention
 
@@ -54,6 +54,22 @@ Derniers tests lancés (10 novembre 2026, base neuve, tous les modules OCD sauf 
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — démo qui remplit tous les écrans
+- Photos (illustrations) des 8 produits, robe en 2 couleurs et 4 tailles, stock par variante (« Plus que
+  3 », taille épuisée, savon épuisé), commandes chiffrées colis par colis.
+- Colis à chaque étape : à préparer, prêt, en route, livrés (payé sur le téléphone, espèces chez Junior),
+  en problème (client absent), en retard (vendeuse relancée, dispatch alerté).
+- Factures des vendeuses et reversements à vérifier ; deux autres livreurs (dont un en repos), trois
+  clientes et clients de plus.
+- Le paiement à la livraison est publié par la démo : une commande du shop se paie de bout en bout
+  (captures `8b` et `8c` : deux vendeuses, un prix par colis, puis le paiement). Remis comme avant à la
+  désinstallation.
+- Toujours entièrement désinstallable (vérifié par une vraie désinstallation) : le stock est posé sans
+  mouvement, les colis livrés ne valident pas le transfert, factures et reversements sont retirés.
+- Correction trouvée grâce à la démo : un paiement sur le téléphone du client (ou un Mobile Money
+  déclaré) chez un vendeur qui livre était retenu sur son reversement comme s'il avait gardé l'argent ;
+  seules les espèces gardées par le vendeur sont désormais retenues.
 
 ### 11 novembre 2026 — guide des livraisons
 - [`docs/LIVRAISONS.md`](LIVRAISONS.md) : comment le prix d'un colis est choisi, exemples, ce que voient

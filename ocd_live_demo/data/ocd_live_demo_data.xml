@@ -138,6 +138,46 @@
         <field name="ocd_courier_zone_ids" eval="[Command.set([ref('delivery_cameroon.district_douala_akwa'), ref('delivery_cameroon.district_douala_makepe'), ref('delivery_cameroon.district_douala_bonaberi')])]"/>
     </record>
 
+    <record id="courier_nyobe" model="res.partner">
+        <field name="name">Raoul Nyobe</field>
+        <field name="phone">+237 655000104</field>
+        <field name="ocd_is_courier" eval="True"/>
+        <field name="ocd_courier_kind">employee</field>
+        <field name="ocd_courier_zone_ids" eval="[Command.set([ref('delivery_cameroon.district_douala_bonaberi'), ref('delivery_cameroon.district_douala_bonamoussadi')])]"/>
+    </record>
+    <record id="courier_mbarga" model="res.partner">
+        <field name="name">Christelle Mbarga</field>
+        <field name="phone">+237 655000105</field>
+        <field name="ocd_is_courier" eval="True"/>
+        <field name="ocd_courier_kind">company</field>
+        <field name="ocd_courier_available" eval="False"/>
+        <field name="ocd_courier_zone_ids" eval="[Command.set([ref('delivery_cameroon.district_douala_bonapriso'), ref('delivery_cameroon.district_douala_deido')])]"/>
+    </record>
+    <record id="customer_sandrine" model="res.partner">
+        <field name="name">Sandrine Fouda</field>
+        <field name="phone">+237 670000106</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_makepe"/>
+        <field name="delivery_landmark">Face au terrain de foot</field>
+    </record>
+    <record id="customer_ruth" model="res.partner">
+        <field name="name">Ruth Mbarga</field>
+        <field name="phone">+237 670000107</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_akwa"/>
+        <field name="delivery_landmark">Derrière l'école publique</field>
+    </record>
+    <record id="customer_bertrand" model="res.partner">
+        <field name="name">Bertrand Atangana</field>
+        <field name="phone">+237 670000108</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_bonamoussadi"/>
+        <field name="delivery_landmark">À côté de la station Total</field>
+    </record>
+
     <!-- === Hosts of the remote lives === -->
     <record id="host_dzifa" model="hr.employee">
         <field name="name">Dzifa Agbeko</field>
@@ -174,6 +214,50 @@
         <field name="on_sun" eval="False"/>
     </record>
 
+    <!-- === Colours and sizes of the dress === -->
+    <record id="attribute_color" model="product.attribute">
+        <field name="name">Couleur</field>
+        <field name="display_type">color</field>
+        <field name="create_variant">always</field>
+    </record>
+    <record id="attribute_color_blue" model="product.attribute.value">
+        <field name="name">Bleu</field>
+        <field name="attribute_id" ref="attribute_color"/>
+        <field name="html_color">#1F4E8C</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="attribute_color_red" model="product.attribute.value">
+        <field name="name">Rouge</field>
+        <field name="attribute_id" ref="attribute_color"/>
+        <field name="html_color">#B3261E</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="attribute_size" model="product.attribute">
+        <field name="name">Taille</field>
+        <field name="display_type">pills</field>
+        <field name="create_variant">always</field>
+    </record>
+    <record id="attribute_size_s" model="product.attribute.value">
+        <field name="name">S</field>
+        <field name="attribute_id" ref="attribute_size"/>
+        <field name="sequence">1</field>
+    </record>
+    <record id="attribute_size_m" model="product.attribute.value">
+        <field name="name">M</field>
+        <field name="attribute_id" ref="attribute_size"/>
+        <field name="sequence">2</field>
+    </record>
+    <record id="attribute_size_l" model="product.attribute.value">
+        <field name="name">L</field>
+        <field name="attribute_id" ref="attribute_size"/>
+        <field name="sequence">3</field>
+    </record>
+    <record id="attribute_size_xl" model="product.attribute.value">
+        <field name="name">XL</field>
+        <field name="attribute_id" ref="attribute_size"/>
+        <field name="sequence">4</field>
+    </record>
+
     <!-- === Products of the vendors === -->
     <record id="product_wax_dress" model="product.template">
         <field name="name">Robe en wax</field>
@@ -183,6 +267,13 @@
         <field name="ocd_vendor_id" ref="vendor_brenda"/>
         <field name="is_published" eval="True"/>
         <field name="description_sale">Robe longue en wax, coupe droite, tailles S à XL.</field>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/robe_wax.jpg"/>
+        <field name="is_storable" eval="True"/>
+        <field name="allow_out_of_stock_order" eval="False"/>
+        <field name="attribute_line_ids" eval="[
+            Command.create({'attribute_id': ref('attribute_color'), 'value_ids': [Command.set([ref('attribute_color_blue'), ref('attribute_color_red')])]}),
+            Command.create({'attribute_id': ref('attribute_size'), 'value_ids': [Command.set([ref('attribute_size_s'), ref('attribute_size_m'), ref('attribute_size_l'), ref('attribute_size_xl')])]}),
+        ]"/>
     </record>
     <record id="product_wax_shirt" model="product.template">
         <field name="name">Chemise wax homme</field>
@@ -192,6 +283,9 @@
         <field name="ocd_vendor_id" ref="vendor_brenda"/>
         <field name="is_published" eval="True"/>
         <field name="description_sale">Chemise manches courtes en wax, coton.</field>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/chemise_wax.jpg"/>
+        <field name="is_storable" eval="True"/>
+        <field name="allow_out_of_stock_order" eval="False"/>
     </record>
     <record id="product_wax_pagne" model="product.template">
         <field name="name">Pagne wax 6 yards</field>
@@ -200,6 +294,9 @@
         <field name="taxes_id" eval="[Command.clear()]"/>
         <field name="ocd_vendor_id" ref="vendor_brenda"/>
         <field name="is_published" eval="True"/>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/pagne_wax.jpg"/>
+        <field name="is_storable" eval="True"/>
+        <field name="allow_out_of_stock_order" eval="False"/>
     </record>
     <record id="product_shea_butter" model="product.template">
         <field name="name">Beurre de karité 250 g</field>
@@ -208,6 +305,7 @@
         <field name="taxes_id" eval="[Command.clear()]"/>
         <field name="ocd_vendor_id" ref="vendor_fatou"/>
         <field name="is_published" eval="True"/>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/beurre_karite.jpg"/>
     </record>
     <record id="product_black_soap" model="product.template">
         <field name="name">Savon noir 200 g</field>
@@ -216,6 +314,9 @@
         <field name="taxes_id" eval="[Command.clear()]"/>
         <field name="ocd_vendor_id" ref="vendor_fatou"/>
         <field name="is_published" eval="True"/>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/savon_noir.jpg"/>
+        <field name="is_storable" eval="True"/>
+        <field name="allow_out_of_stock_order" eval="False"/>
     </record>
     <record id="product_ndole" model="product.template">
         <field name="name">Ndolé crevettes (plat)</field>
@@ -224,6 +325,7 @@
         <field name="taxes_id" eval="[Command.clear()]"/>
         <field name="ocd_vendor_id" ref="vendor_papa"/>
         <field name="is_published" eval="True"/>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/ndole.jpg"/>
     </record>
     <record id="product_chocolate_cake" model="product.template">
         <field name="name">Gâteau au chocolat</field>
@@ -232,6 +334,7 @@
         <field name="taxes_id" eval="[Command.clear()]"/>
         <field name="ocd_vendor_id" ref="vendor_awa"/>
         <field name="is_published" eval="True"/>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/gateau_chocolat.jpg"/>
     </record>
     <!-- A product added by a vendor from the space: to check by the team -->
     <record id="product_pineapple_cake" model="product.template">
@@ -241,6 +344,7 @@
         <field name="taxes_id" eval="[Command.clear()]"/>
         <field name="ocd_vendor_id" ref="vendor_awa"/>
         <field name="ocd_review_state">to_check</field>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/gateau_ananas.jpg"/>
     </record>
 
     <!-- Delivery rates: OCD Live in Douala and towards the other cities, Fatou delivers herself -->

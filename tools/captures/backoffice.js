@@ -29,6 +29,7 @@ const pages = (process.argv[2] || 'dashboard').split(',');
     orders: '/odoo/action-ocd_live_shop.ocd_live_orders_action',
     couriers: '/odoo/action-ocd_live_shop.ocd_live_couriers_action',
     payouts: '/odoo/action-ocd_live_shop.ocd_payout_action',
+    rates: '/odoo/action-ocd_live_shop.ocd_delivery_rate_action',
     settings: '/odoo/action-ocd_live.res_config_settings_action_ocd_live',
     recruit: '/odoo/action-ocd_live_recruitment.hr_applicant_action_ocd_host',
     tools: '/odoo/action-ocd_live.ocd_live_tools_action',

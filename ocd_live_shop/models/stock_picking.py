@@ -655,13 +655,16 @@ class StockPicking(models.Model):
             picking._ocd_create_collection_refund()
 
     def _ocd_create_collection_refund(self):
-        """The vendor kept the money of the customer: it is withheld from the next payout."""
+        """The vendor kept the cash of the customer: it is withheld from the next payout. A
+        payment on the phone of the customer, or a Mobile Money declared, goes to OCD Live: the
+        vendor kept nothing."""
         AccountMove = self.env["account.move"].sudo()
         for picking in self:
             vendor = picking.ocd_vendor_id
             if (
                 not vendor
                 or picking.ocd_cod_state not in ("collected", "remitted")
+                or picking.ocd_cod_method != "cash"
                 or picking.ocd_cod_collected_by_id != vendor
                 or picking.ocd_vendor_bill_ids.filtered(lambda m: m.move_type == "in_refund")
             ):

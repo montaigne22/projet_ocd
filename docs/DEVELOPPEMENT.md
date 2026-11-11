@@ -20,13 +20,33 @@ data_dir = /opt/odoo20/data
 
 ## Lancer une base de démonstration
 
+En deux temps : les modules d'abord (Odoo met en place la comptabilité), puis la démo. Entre les deux,
+régler la société pendant qu'aucune écriture n'existe encore (pays, devise en franc CFA).
+
 ```bash
-odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_live_demo --load-language=fr_FR --stop-after-init
+odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo --load-language=fr_FR --stop-after-init
+```
+
+Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**), l'utilisateur en français (Préférences),
+le français comme langue du site. Enfin :
+
+```bash
+odoo -c odoo.conf -d ocd_demo -i ocd_live_demo --stop-after-init
 odoo -c odoo.conf -d ocd_demo
 ```
 
-Mettre ensuite l'utilisateur en français (Préférences) et la devise de la société en franc CFA.
-Le site : `/ocd` (réserver), `/lives` (annuaire). Le back-office : application **OCD Live**.
+La démo remplit tous les écrans : vendeurs et lives (payé, en attente, replay, liste d'attente),
+annuaire, produits avec photos, robe en 2 couleurs et 4 tailles avec leur stock (« Plus que 3 »,
+taille épuisée, savon épuisé), tarifs de livraison (Douala, agences, prix de Fatou), colis à préparer,
+prêt, en route, livrés, en problème et en retard, espèces chez un livreur, factures des vendeuses et
+reversements à vérifier (si la comptabilité existait avant la démo), trois livreurs dont un en repos.
+Elle publie le paiement à la livraison (une commande du shop peut être payée de bout en bout) et active
+le Mobile Money vérifié par l'équipe, avec des numéros d'exemple.
+Le stock est posé sans mouvement de stock et les colis livrés ne valident pas le transfert : la
+désinstallation de `ocd_live_demo` retire tout (contacts, produits, photos, stocks, commandes, factures,
+reversements, tarifs) et remet les moyens de paiement comme avant.
+
+Le site : `/ocd` (réserver), `/lives` (annuaire), `/shop`. Le back-office : application **OCD Live**.
 
 ## Tests
 
@@ -61,7 +81,10 @@ view » pour le bouton « Tableau », « Table » restant le meuble du studio).
 Ils se connectent avec admin/admin et prennent les écrans en français.
 Pages du shop : `node tools/captures/site-shop.js <vendeur vendu par OCD> <vendeur en contact direct>
 [jeton d'un vendeur] [jeton d'un livreur]` (ids des contacts, ex. Brenda Wax et Awa Mensah de la démo ;
-le jeton est celui de `_ocd_get_space_token()`, pour l'appli des colis et la tournée).
+le jeton est celui de `_ocd_get_space_token()`, pour l'appli des colis et la tournée : le créer dans
+`odoo shell` puis `env.cr.commit()`). Sur téléphone, le script remplit aussi un panier de deux vendeuses
+de Douala jusqu'au paiement (`8b`, `8c` ; produits et adresse dans `TWO_PARCELS`). Back-office : `dashboard,planning,regie,verify,orders,dispatch,parcel,
+couriers,vendor,payouts,recruit,settings,autos,rates` (`VENDOR_ID`, `PARCEL_ID` pour les fiches).
 
 ## Repères dans le code
 
