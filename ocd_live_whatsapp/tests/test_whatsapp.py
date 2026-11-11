@@ -50,19 +50,45 @@ class TestOcdLiveWhatsapp(OcdLiveCommon):
     def test_live_confirmed_then_reminded(self):
         calls, patcher = self._capture()
         booking = self._book(self.starts[0], mode="remote")
-        # The studio is in Lome: its time is the UTC time
-        evening_before = datetime.combine(self.day - timedelta(days=1), time(19, 0))
+        # The vendor is in Cameroon: one hour after Lome (UTC)
+        evening_before = datetime.combine(self.day - timedelta(days=1), time(17, 0))
         with patcher:
             booking._ocd_confirm()
-            self.assertEqual(calls[-1][0], "ocd_live_confirme")
+            self.assertEqual(calls[-1][0], "ocd_ticket_live", "Once paid, the ticket and its PDF")
             self.assertEqual(calls[-1][1], booking)
-            with freeze_time(evening_before - timedelta(hours=3)):
+            with freeze_time(evening_before - timedelta(minutes=30)):
                 self.env["ocd.live.booking"]._cron_send_reminders()
-            self.assertFalse(booking.ocd_reminder_sent, "Not before 18:00 the day before")
+            self.assertFalse(booking.ocd_reminder_sent, "Not before 18:00 the day before, in Cameroon")
             with freeze_time(evening_before):
                 self.env["ocd.live.booking"]._cron_send_reminders()
         self.assertTrue(booking.ocd_reminder_sent)
         self.assertEqual(calls[-1][0], "ocd_rappel_live")
+
+    def test_ticket_with_its_pdf_else_the_confirmation(self):
+        ticket = self.env.ref("ocd_live_whatsapp.template_ticket")
+        self.assertEqual(ticket.header_type, "document")
+        self.assertEqual(ticket.header_report_id, self.env.ref("ocd_live.action_report_ticket"))
+        self.assertEqual(self.env.ref("ocd_live_whatsapp.template_ticket_en").header_type, "document")
+        calls = []
+
+        def fake_send(template, records):
+            calls.append(template.template_name)
+            state = "skipped" if template.status == "pending" else "queued"
+            return template.env["whatsapp.message"].new({"state": state})
+
+        ticket.status = "pending"  # waits for Meta
+        booking = self._book(self.starts[2])
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            booking._ocd_confirm()
+        self.assertEqual(calls, ["ocd_ticket_live", "ocd_live_confirme"], "The vendor always knows")
+
+    def test_moved_live_sends_its_new_ticket(self):
+        calls, patcher = self._capture()
+        booking = self._book(self.starts[0])
+        booking._ocd_confirm()
+        with patcher:
+            booking.action_ocd_team_move(self.starts[4])
+        self.assertEqual([call[0] for call in calls], ["ocd_ticket_live"])
 
     def test_directory_messages(self):
         calls, patcher = self._capture()
@@ -115,7 +141,7 @@ class TestOcdLiveWhatsapp(OcdLiveCommon):
         with patcher, freeze_time(datetime.combine(day, time(12, 0))):
             listing = self.env["ocd.directory.listing"]._ocd_submit(self.vendor, "https://www.tiktok.com/@awa/live")
             self.assertEqual(listing.state, "queued")
-            self.assertEqual(listing._ocd_window_start_label(), "18:00", "The studio is in Lome: UTC")
+            self.assertEqual(listing._ocd_window_start_label(), "19:00", "18:00 in Lome, 19:00 in Cameroon")
         self.assertEqual([call[0] for call in calls], ["ocd_lien_recu"])
         self.assertFalse(calls[0][2].get("ocd_whatsapp_requested"))
 
@@ -146,7 +172,7 @@ class TestOcdLiveWhatsapp(OcdLiveCommon):
         path = booking._ocd_ticket_path()
         self.assertEqual(path, f"ocd/ticket/{booking.id}?access_token={booking.sale_order_id.access_token}")
         self.assertEqual(entry._ocd_booking_path(), f"reserver/remote/{self.day:%Y-%m-%d}")
-        self.assertEqual(alert._ocd_window_end_label(), "21:00")
+        self.assertEqual(alert._ocd_window_end_label(), "22:00", "21:00 in Lome, 22:00 for the vendor in Cameroon")
 
 
 @tagged("post_install", "-at_install")

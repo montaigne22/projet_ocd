@@ -644,7 +644,7 @@ class OcdShop(WebsiteSale):
             who = env._("OCD Live chooses your courier")
         done_line = ""
         if stage == "delivered" and parcel.ocd_delivered_at:
-            local = parcel.company_id._ocd_to_local(parcel.ocd_delivered_at)
+            local = common.to_viewer(parcel.ocd_delivered_at)
             done_line = env._("Delivered at %s. Code checked.", local.strftime("%H:%M"))
         elif stage == "problem":
             done_line = env._("The courier could not deliver. OCD Live calls you to choose a new time.")

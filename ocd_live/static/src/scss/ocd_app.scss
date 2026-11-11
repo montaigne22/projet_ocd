@@ -2003,6 +2003,9 @@ body.o_ocd_body {
     &:empty {
         display: none;
     }
+    .o_ocd_button_wide {
+        grid-column: 1 / -1;
+    }
 }
 .o_ocd_button {
     display: inline-flex;
@@ -2448,4 +2451,121 @@ body.o_ocd_body {
 // The title of the new page gets the focus (screen readers), without a frame around it
 .o_ocd_app [tabindex="-1"]:focus {
     outline: none;
+}
+
+// === PAYMENT CHECKED BY THE TEAM: « I PAID » === //
+.o_ocd_announce,
+.o_ocd_announced {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    small {
+        color: $ocd-muted;
+    }
+}
+
+// === TICKET: PDF, SEAL AND ANNOUNCEMENT OF THE LIVE === //
+.o_ocd_ticket .o_ocd_ticket_code .o_ocd_ticket_seal {
+    color: $ocd-orange-dark;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+.o_ocd_ticket_pdf {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.o_ocd_note {
+    margin: -6px 0 0;
+    color: $ocd-muted;
+    font-size: 13.5px;
+    line-height: 1.4;
+}
+.o_ocd_h2 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+.o_ocd_announce_card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+    padding-top: 18px;
+    border-top: 2px solid $ocd-line;
+    scroll-margin-top: 80px;
+    .o_ocd_lead {
+        margin: -6px 0 0;
+    }
+    .o_ocd_announce_image {
+        display: block;
+        width: 100%;
+        max-width: 420px;
+        height: auto;
+        aspect-ratio: 1080 / 1350;
+        border-radius: 18px;
+        background: $ocd-ink;
+        box-shadow: 0 8px 24px rgba($ocd-ink, 0.18);
+    }
+    .o_ocd_cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+}
+
+// === CHECK OF A TICKET AT THE ENTRY === //
+.o_ocd_check {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px 18px;
+    border-radius: 22px;
+    background: $ocd-sand;
+    p {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.4;
+    }
+    .o_ocd_check_icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        .o_ocd_icon {
+            width: 28px;
+            height: 28px;
+        }
+    }
+    &.o_ocd_check_ok, &.o_ocd_check_entered {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        .o_ocd_check_icon {
+            background: $ocd-green;
+        }
+    }
+    &.o_ocd_check_invalid, &.o_ocd_check_used, &.o_ocd_check_cancelled, &.o_ocd_check_unpaid {
+        background: $ocd-red-soft;
+        color: $ocd-red-text;
+        .o_ocd_check_icon {
+            background: $ocd-red;
+        }
+    }
+    &.o_ocd_check_other_day, &.o_ocd_check_over {
+        background: $ocd-yellow-soft;
+        color: $ocd-yellow-text;
+        .o_ocd_check_icon {
+            background: $ocd-orange-dark;
+        }
+    }
+}
+.o_ocd_actions_inline {
+    display: grid;
 }

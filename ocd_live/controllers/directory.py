@@ -212,7 +212,6 @@ class OcdLiveDirectory(http.Controller):
     def directory_status(self, listing_id, **kwargs):
         listing = self._vendor_listing(listing_id)
         env = request.env
-        company = common.company()
         name = listing.title or listing.partner_id.name
         return request.render("ocd_live.listing_status", common.page_values(
             False,
@@ -228,8 +227,8 @@ class OcdLiveDirectory(http.Controller):
                 category=listing.category_id.name or "",
             ),
             queued=listing.state == "queued",
-            window_start=company._ocd_to_local(listing.window_start).strftime("%H:%M") if listing.window_start else "",
-            window_end=company._ocd_to_local(listing.window_end).strftime("%H:%M") if listing.window_end else "",
+            window_start=common.to_viewer(listing.window_start).strftime("%H:%M") if listing.window_start else "",
+            window_end=common.to_viewer(listing.window_end).strftime("%H:%M") if listing.window_end else "",
             reason=listing.refuse_note or listing.refuse_reason_id.message or listing.refuse_reason_id.name or "",
             poll_url=f"/lives/statut/{listing.id}/etat",
         ))

@@ -5,6 +5,8 @@ import requests
 
 from odoo.tests import tagged
 
+from odoo.addons.whatsapp_cloud import const
+
 from .common import REQUEST, WhatsAppCommon, mock_response
 
 
@@ -253,6 +255,32 @@ class TestWhatsAppCloud(WhatsAppCommon):
             {"type": "document", "document": {"id": "media-1", "filename": "S00042.pdf"}},
         ]})
         self.assertEqual(message.state, "sent")
+
+    def test_document_header_made_when_sent(self):
+        """The flow that queues a message never waits for its PDF: it is made when the message
+        is sent; when it cannot be made, the message says why, is tried again, then fails."""
+        report = self.env["ir.actions.report"].search([("report_type", "=", "qweb-pdf")], limit=1)
+        self.template.write({"header_type": "document", "header_report_id": report.id})
+        message = self.template._send(self.partner)
+        self.assertEqual(message.state, "queued")
+        self.assertFalse(message.attachment_id)
+        Template = type(self.template)
+        with patch.object(Template, "_render_document", side_effect=ValueError("engine down")), \
+                patch(REQUEST) as request:
+            message._send()
+            self.assertEqual(message.state, "queued", "Tried again by the next sending")
+            self.assertIn("engine down", message.error)
+            request.assert_not_called()
+            message.attempts = const.MAX_ATTEMPTS - 1
+            message._send()
+            self.assertEqual(message.state, "failed")
+        message.write({"state": "queued", "attempts": 0, "error": False})
+        pdf = self.env["ir.attachment"].create({"name": "S00042.pdf", "raw": b"%PDF-1.4", "mimetype": "application/pdf"})
+        answers = [mock_response({"id": "media-1"}), mock_response({"messages": [{"id": "wamid.9"}]})]
+        with patch.object(Template, "_render_document", return_value=pdf), patch(REQUEST, side_effect=answers):
+            message._send()
+        self.assertEqual(message.state, "sent")
+        self.assertEqual(message.attachment_id, pdf)
 
     def test_server_action(self):
         action = self.env["ir.actions.server"].create({

@@ -159,14 +159,14 @@ class OcdDirectoryListing(models.Model):
         return listing
 
     def _ocd_window_start_label(self):
-        """When the link is checked, in the time of the studio: "18:00", "tomorrow at 08:00"
+        """When the link is checked, in the time of the vendor: "18:00", "tomorrow at 08:00"
         or "Monday at 08:00"."""
         self.ensure_one()
         if not self.window_start:
             return ""
-        company = self.company_id or self.env.company
-        start = company._ocd_to_local(self.window_start)
-        today = company._ocd_to_local(fields.Datetime.now()).date()
+        vendor = self.partner_id
+        start = vendor._ocd_to_local(self.window_start)
+        today = vendor._ocd_to_local(fields.Datetime.now()).date()
         hour = f"{start:%H:%M}"
         if start.date() == today:
             return hour

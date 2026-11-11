@@ -46,7 +46,17 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 - **Un seul calendrier** pour le studio et la distance (réglable : un calendrier par mode).
 - Studio ouvert de **8:30 à 22:00**, 9 lives de 1 h 30 par jour (réglable : heure, durée, nombre, jours).
 - Ouverture des réservations le **1er décembre 2026** (réglable).
-- Un créneau est **gardé pendant le paiement**, puis libéré et proposé à la liste d'attente.
+- Un créneau est **gardé pendant le paiement**, puis libéré et proposé à la liste d'attente. Un live gardé
+  dont le temps est passé est libéré **tout de suite** pour les autres (même avant la tâche de 5 minutes).
+  Le Mobile Money vérifié par l'équipe garde l'heure 24 heures **seulement après « J'ai payé »** (numéro ou
+  référence du transfert donnés par le vendeur).
+- **Ticket du live : un PDF personnel**, jamais partagé (WhatsApp, téléchargement). Son QR code est signé
+  et ouvre la vérification de l'équipe, qui fait entrer **une seule fois** ; le ticket d'un live déplacé
+  n'est plus valable (le nouveau part sur WhatsApp). Pour parler de son live, le vendeur partage une
+  **image d'annonce sans donnée personnelle** (ni numéro, ni ticket).
+- **Chacun voit les heures dans son fuseau horaire** (vendeur, livreur, client) : celui de son téléphone,
+  sinon celui de son pays ; le nom du fuseau est écrit (« Heure : Cameroun »). Un live au studio vu d'un
+  autre fuseau donne aussi l'heure du studio. L'équipe et les adresses des pages gardent l'heure du studio.
 - **Prix selon l'heure et la date** : l'équipe crée des règles (+25 % le samedi soir, −15 % le lundi
   matin, une période…) ; la première règle qui correspond s'applique. Un live déplacé ne peut pas aller
   sur une heure plus chère.

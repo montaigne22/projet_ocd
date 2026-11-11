@@ -64,7 +64,12 @@ class OcdDirectoryAlert(models.Model):
         return False
 
     def _ocd_window_end_label(self):
-        """End of the window that opened, in the time of the studio ("21:00")."""
+        """End of the window that opened ("21:00"), in the time of the person (the studio's
+        for a number without a contact)."""
         self.ensure_one()
         found = self.env["ocd.directory.window"].sudo()._ocd_find(moment=self.window_start, company=self.company_id)
-        return self.company_id._ocd_to_local(found[2]).strftime("%H:%M") if found else ""
+        if not found:
+            return ""
+        person = self.partner_id
+        local = person._ocd_to_local(found[2]) if person else self.company_id._ocd_to_local(found[2])
+        return local.strftime("%H:%M")

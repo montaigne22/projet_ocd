@@ -7,6 +7,8 @@ from odoo.exceptions import AccessError
 from odoo.fields import Command
 from odoo.tests import HttpCase, tagged
 
+from .common import pending_payment
+
 
 
 @tagged("post_install", "-at_install")
@@ -164,6 +166,26 @@ class TestOcdLiveWebsite(HttpCase):
         provider.available_country_ids = self.env.ref("base.cm")
         response = self.url_open(pay_url)
         self.assertNotIn(f'data-provider-id="{provider.id}"', response.text, "Not offered outside its countries")
+
+    def test_i_paid_keeps_the_hour_while_the_team_checks(self):
+        booking, pay_url = self._book()
+        order = booking.sale_order_id
+        provider = self.env.ref("ocd_live.payment_provider_momo_team")
+        provider.active = True
+        pending_payment(self, order, provider)
+        response = self.url_open(pay_url)
+        self.assertIn(f'action="/ocd/payer/{order.id}/envoye"', response.text)
+        token = re.search(r'name="csrf_token" value="([^"]+)"', response.text).group(1)
+        response = self.url_open(f"/ocd/payer/{order.id}/envoye", data={
+            "csrf_token": token, "access_token": order.access_token, "reference": "90 11 22 33",
+        })
+        self.assertIn("the team checks your payment", response.text)
+        self.assertNotIn(f'action="/ocd/payer/{order.id}/envoye"', response.text)
+        self.assertEqual(order.ocd_payment_reference, "90 11 22 33")
+        self.assertGreater(booking.hold_until, fields.Datetime.now() + timedelta(hours=1))
+        # Without the token of the order, nothing is announced
+        other = self.url_open(f"/ocd/payer/{order.id}/envoye", data={"csrf_token": token, "access_token": "x"})
+        self.assertEqual(other.status_code, 404)
 
     def test_payment_status_and_ticket(self):
         booking, pay_url = self._book()

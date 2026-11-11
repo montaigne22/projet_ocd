@@ -8,6 +8,8 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.fields import Domain
 from odoo.tools import SQL, format_date, format_datetime
 
+from .. import tools
+
 _logger = logging.getLogger(__name__)
 
 HOST_ACTIVITY = "ocd_live.mail_activity_type_choose_host"
@@ -307,6 +309,12 @@ class OcdLiveBooking(models.Model):
             ("start_datetime", "in", [vals["start_datetime"] for vals in vals_list]),
             ("booking_id", "not in", self.ids),
         ])
+        # An unpaid live whose hold is over frees its slot now, without waiting for the
+        # scheduled release
+        expired = existing.booking_id._ocd_expired_holds()
+        existing = existing.filtered(lambda slot: slot.booking_id not in expired)
+        if expired:
+            expired.action_cancel()
         taken_keys = {(s.company_id.id, s.calendar_key, s.start_datetime) for s in existing}
         if any((v["company_id"], v["calendar_key"], v["start_datetime"]) in taken_keys for v in vals_list):
             raise ValidationError(self.env._("This time slot is already taken. Please choose another one."))
@@ -355,8 +363,10 @@ class OcdLiveBooking(models.Model):
         old_day = self.company_id._ocd_to_local(self.start_datetime).date()
         self.start_datetime = start
         self.env["ocd.live.waitlist"]._ocd_notify_free(self.company_id, old_day, self.mode)
-        day, hour, _end = self._ocd_local_labels()
+        day, hour, _end = self._ocd_studio_labels()
         self.message_post(body=self.env._("The team moved the live to %(day)s at %(hour)s.", day=day, hour=hour))
+        if self.state == "confirmed":
+            self._ocd_ticket_changed()
         return True
 
     def _ocd_confirm(self):
@@ -403,6 +413,7 @@ class OcdLiveBooking(models.Model):
         self.start_datetime = start
         self.env["ocd.live.waitlist"]._ocd_notify_free(self.company_id, old_day, self.mode)
         self.message_post(body=self.env._("The vendor moved the live."))
+        self._ocd_ticket_changed()
         return True
 
     def _ocd_send_ticket(self):
@@ -440,14 +451,20 @@ class OcdLiveBooking(models.Model):
 
     # === NOTIFICATIONS === #
 
-    def _ocd_local_labels(self):
-        """Return the day and the hours of the live in the time zone of the studio."""
+    def _ocd_local_labels(self, tz_name=None):
+        """Return the day and the hours of the live in `tz_name`, by default the time zone of
+        the vendor: their messages give their own hours (see _ocd_studio_labels for the team)."""
         self.ensure_one()
-        tz_name = self.company_id.ocd_studio_tz or "Africa/Lome"
+        tz_name = tz_name or self.partner_id._ocd_tz_name()
         day = format_datetime(self.env, self.start_datetime, tz=tz_name, dt_format="EEEE d MMMM")
         start = format_datetime(self.env, self.start_datetime, tz=tz_name, dt_format="HH:mm")
         end = format_datetime(self.env, self.end_datetime, tz=tz_name, dt_format="HH:mm")
         return day, start, end
+
+    def _ocd_studio_labels(self):
+        """The day and the hours of the live in the time of the studio, for the team."""
+        self.ensure_one()
+        return self._ocd_local_labels(self.company_id.ocd_studio_tz or "Africa/Lome")
 
     def _ocd_notify_team(self):
         """Announce the booking in the team channel: who, which business, when, where."""
@@ -455,7 +472,7 @@ class OcdLiveBooking(models.Model):
         channel = self.company_id.ocd_lives_channel_id
         if not channel or not self.env["ocd.automation"]._ocd_enabled("booking_confirmed"):
             return
-        day, start, end = self._ocd_local_labels()
+        day, start, end = self._ocd_studio_labels()
         mode = dict(self._fields["mode"]._description_selection(self.env))[self.mode]
         body = self.env._(
             "%(vendor)s (%(business)s, %(country)s) booked a live: %(mode)s, %(day)s, %(start)s - %(end)s. Ref. %(ref)s",
@@ -515,22 +532,26 @@ class OcdLiveBooking(models.Model):
         if not starts:
             return set()
         # sudo: public pages, only the starts of the taken slots are read
-        return set(
-            self.env["ocd.live.booking.slot"].sudo().search([
-                ("company_id", "=", company.id),
-                ("calendar_key", "=", company._ocd_calendar_key(mode)),
-                ("start_datetime", "in", starts),
-            ]).mapped("start_datetime")
-        )
+        slots = self.env["ocd.live.booking.slot"].sudo().search([
+            ("company_id", "=", company.id),
+            ("calendar_key", "=", company._ocd_calendar_key(mode)),
+            ("start_datetime", "in", starts),
+        ])
+        # An unpaid live whose hold is over does not take its slot any more
+        expired = slots.booking_id._ocd_expired_holds()
+        return set(slots.filtered(lambda slot: slot.booking_id not in expired).mapped("start_datetime"))
 
     @api.model
-    def _ocd_get_day_slots(self, day, slot_count=1, company=None, mode="studio"):
-        """Return the slots of `day` for the website, each with its availability.
+    def _ocd_get_day_slots(self, day, slot_count=1, company=None, mode="studio", tz_name=None):
+        """Return the slots of `day` (a day of the studio) for the website, each with its
+        availability, its hours in the time zone `tz_name` (the one of the person who books,
+        else the studio's) and its code: the hour of the studio, "1430", key of the pages.
 
         A start is available when the `slot_count` slots from it are free in the calendar of
         `mode`, inside the day, not before the opening date and far enough in the future.
         """
         company = company or self.env.company
+        tz_name = tz_name or company.ocd_studio_tz or "Africa/Lome"
         starts = company._ocd_slot_starts(day)
         taken = self._ocd_taken_starts(starts, mode, company)
         limit = fields.Datetime.now() + timedelta(hours=company.ocd_min_notice_hours)
@@ -544,12 +565,14 @@ class OcdLiveBooking(models.Model):
                 and start >= limit
                 and (not open_date or day >= open_date)
             )
-            local = company._ocd_to_local(start)
+            local = tools.to_tz(start, tz_name)
             local_end = local + timedelta(hours=company.ocd_slot_hours * slot_count)
             slots.append({
                 "start": start,
+                "code": company._ocd_to_local(start).strftime("%H%M"),
                 "label": local.strftime("%H:%M"),
                 "end_label": local_end.strftime("%H:%M"),
+                "local_day": local.date(),
                 "taken": start in taken,
                 "available": available,
             })
@@ -645,24 +668,42 @@ class OcdLiveBooking(models.Model):
     def _cron_release_expired_holds(self):
         """Release the held slots that were not paid in time."""
         now = fields.Datetime.now()
-        expired = self.search([("state", "=", "draft"), ("hold_until", "<", now)])
-        to_cancel = self.browse()
-        for booking in expired:
-            order = booking.sale_order_id
-            if order.state == "sale":
-                booking._ocd_confirm()
-                continue
-            transactions = order.transaction_ids
-            if transactions.filtered(lambda t: t.state == "done"):
-                continue  # the order is confirmed by the payment flow
-            if transactions.filtered(lambda t: t.state in ("pending", "authorized")):
-                manual_limit = booking.create_date + timedelta(hours=booking.company_id.ocd_manual_hold_hours)
-                if now < manual_limit:
-                    continue
-            to_cancel |= booking
-        if to_cancel:
-            _logger.info("Releasing %s unpaid live slots", len(to_cancel))
-            to_cancel.action_cancel()
+        held = self.search([("state", "=", "draft"), ("hold_until", "<", now)])
+        paid = held.filtered(lambda booking: booking.sale_order_id.state == "sale")
+        paid._ocd_confirm()
+        expired = (held - paid)._ocd_expired_holds(now)
+        if expired:
+            _logger.info("Releasing %s unpaid live slots", len(expired))
+            expired.action_cancel()
+
+    # === HOLD OF AN UNPAID LIVE === #
+
+    def _ocd_hold_end(self):
+        """When the hour of this unpaid live is free again: after the time given to pay
+        (« Slot Held During The Payment »), counted again from a payment started (it confirms
+        itself within minutes), and, for a payment the vendor says sent, after the time given to
+        the team to check it (« Slot Held For A Payment Checked By The Team »). A payment only
+        started, or a method chosen then left, keeps the hour no longer."""
+        self.ensure_one()
+        company = self.company_id
+        order = self.sale_order_id
+        end = self.hold_until or self.create_date
+        given = timedelta(minutes=company.ocd_hold_minutes or 10)
+        for transaction in order.transaction_ids.filtered(lambda t: t.state in ("pending", "authorized")):
+            end = max(end, transaction.create_date + given)
+        if order.ocd_payment_declared_date:
+            end = max(end, order.ocd_payment_declared_date + timedelta(hours=company.ocd_manual_hold_hours))
+        return end
+
+    def _ocd_expired_holds(self, now=None):
+        """The unpaid lives among these whose hold is over: their hours can be booked again."""
+        now = now or fields.Datetime.now()
+        return self.filtered(lambda booking: (
+            booking.state == "draft"
+            and booking.sale_order_id.state != "sale"
+            and not booking.sale_order_id.transaction_ids.filtered(lambda t: t.state == "done")
+            and booking._ocd_hold_end() <= now
+        ))
 
     @api.model
     def _cron_mark_done(self):

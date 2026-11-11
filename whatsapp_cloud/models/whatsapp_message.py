@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 
 from markupsafe import Markup
 
-from odoo import _, api, fields, models
+from odoo import Command, _, api, fields, models
 
 from odoo.addons.mail.tools.discuss import Store
 from odoo.addons.whatsapp_cloud import const
@@ -178,6 +178,8 @@ class WhatsappMessage(models.Model):
             return
         account = self.account_id
         payload = json.loads(self.sudo().payload or "{}")
+        if payload.get("type") == "template" and not self._make_header_document():
+            return
         try:
             if self.attachment_id and payload.get("type") == "template":
                 media_id = account._upload_media(self.attachment_id.sudo())
@@ -219,6 +221,40 @@ class WhatsappMessage(models.Model):
         self._bus_send_status()
         if not self.channel_id and self.model != "discuss.channel":
             self._log_on_record(_("WhatsApp message sent to +%s:", self.phone), self.body)
+
+    def _make_header_document(self):
+        """Make the PDF of the header of the template (quotation, ticket...) just before
+        sending it: the business flows never wait for the PDF engine. Return False when it
+        cannot be made now: the message says why, is tried again by the next sending, then
+        fails and the users are told."""
+        self.ensure_one()
+        template = self.template_id
+        if self.attachment_id or template.header_type != "document" or not template.header_report_id:
+            return True
+        record = self._get_record()
+        if record is None:
+            error = _("The document of the message no longer exists.")
+        else:
+            try:
+                with self.env.cr.savepoint():
+                    attachment = template._render_document(record)
+            except Exception as exc:  # noqa: BLE001 - the PDF engine fails in many ways
+                _logger.warning("WhatsApp: PDF of the message %s not made: %s", self.id, exc)
+                error = _("The PDF of the message could not be made: %s", exc)
+            else:
+                self.attachment_id = attachment
+                if self.mail_message_id and self.channel_id:
+                    # The team sees in the conversation the PDF that the customer receives
+                    attachment.write({"res_model": "discuss.channel", "res_id": self.channel_id.id})
+                    self.mail_message_id.attachment_ids = [Command.link(attachment.id)]
+                return True
+        attempts = self.attempts + 1
+        if record is not None and attempts < const.MAX_ATTEMPTS:
+            self.write({"attempts": attempts, "error": error})
+        else:
+            self.write({"attempts": attempts, "state": "failed", "error": error})
+            self._notify_failure()
+        return False
 
     def _notify_failure(self):
         """Tell the users that the message did not reach the customer, and why."""

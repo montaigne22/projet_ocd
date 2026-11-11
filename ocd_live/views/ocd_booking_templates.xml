@@ -29,6 +29,8 @@
         <svg t-elif="icon == 'studio'" class="o_ocd_icon o_ocd_icon_big" viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="12" width="24" height="17" rx="4" fill="#15130F"/><path d="M31 18.5l9-5v14l-9-5z" fill="#15130F"/><circle cx="14" cy="18.5" r="3" fill="#FFFFFF"/><path d="M19 29l-6 13M19 29l6 13M19 29v13" fill="none" stroke="#15130F" stroke-width="3.2" stroke-linecap="round"/></svg>
         <svg t-elif="icon == 'remote'" class="o_ocd_icon o_ocd_icon_big" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="13" width="21" height="31" rx="5" fill="#FFFFFF"/><rect x="11.5" y="18" width="14" height="18" rx="1.5" fill="#15130F"/><circle cx="18.5" cy="40" r="1.6" fill="#15130F"/><path d="M31 10a6 6 0 0 1 6 6M31 3.5a12.5 12.5 0 0 1 12.5 12.5" fill="none" stroke="#F46A00" stroke-width="3.2" stroke-linecap="round"/></svg>
         <svg t-elif="icon == 'announce'" class="o_ocd_icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 19v10a2 2 0 0 0 2 2h5l19 9V8L13 17H8a2 2 0 0 0-2 2z" fill="#FFFFFF"/><path d="M38 18a8 8 0 0 1 0 12" fill="none" stroke="#F46A00" stroke-width="3.2" stroke-linecap="round"/></svg>
+        <svg t-elif="icon == 'download'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <svg t-elif="icon == 'close'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </template>
 
     <template id="tile_icon" name="OCD Live: pictogram of a choice">
@@ -414,6 +416,7 @@
                                 </t>
                                 <button type="submit" class="o_ocd_slot" t-att-aria-label="slot['aria']">
                                     <b t-out="slot['label']"/>
+                                    <small t-if="slot.get('day_note')" t-out="slot['day_note']"/>
                                     <small>end <t t-out="slot['end_label']"/></small>
                                     <span t-if="slot['percent_text']"
                                           t-attf-class="o_ocd_slot_price #{'o_ocd_slot_price_down' if slot['percent'] &lt; 0 else ''}"
@@ -422,6 +425,7 @@
                             </form>
                             <a t-elif="slot['href']" t-att-href="slot['href']" class="o_ocd_slot" t-att-aria-label="slot['aria']">
                                 <b t-out="slot['label']"/>
+                                <small t-if="slot.get('day_note')" t-out="slot['day_note']"/>
                                 <small>end <t t-out="slot['end_label']"/></small>
                                 <span t-if="slot['percent_text']"
                                       t-attf-class="o_ocd_slot_price #{'o_ocd_slot_price_down' if slot['percent'] &lt; 0 else ''}"
@@ -429,6 +433,7 @@
                             </a>
                             <span t-else="" class="o_ocd_slot o_ocd_taken" t-att-aria-label="slot['aria']">
                                 <b t-out="slot['label']"/>
+                                <small t-if="slot.get('day_note')" t-out="slot['day_note']"/>
                                 <small>taken</small>
                             </span>
                         </t>
@@ -667,6 +672,22 @@
                             </div>
                             <small>Type your secret code on your phone only, never here. This page updates by itself.</small>
                         </div>
+                        <!-- Payment checked by the team: once the money is sent, « I paid » keeps the
+                             hour while the team checks it; without it, the hour is offered again -->
+                        <t t-if="tx.state == 'pending' and tx.provider_code == 'custom'">
+                            <div t-if="order.ocd_payment_declared_date" class="o_ocd_ok o_ocd_announced" role="status">
+                                <b>Thank you: the team checks your payment.</b>
+                                <span>You receive the confirmation on WhatsApp.</span>
+                            </div>
+                            <form t-else="" t-attf-action="/ocd/payer/#{order.id}/envoye" method="post" class="o_ocd_announce">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="access_token" t-att-value="access_token"/>
+                                <label for="o_ocd_reference" class="o_ocd_label">Money sent? The number that paid, or the reference of the transfer</label>
+                                <input id="o_ocd_reference" name="reference" class="o_ocd_input" maxlength="60" autocomplete="off"/>
+                                <button type="submit" class="o_ocd_cta">I paid</button>
+                                <small>Your hour then stays held while the team checks the payment. Without it, the hour is offered again to the others.</small>
+                            </form>
+                        </t>
                         <a t-if="tx.state == 'pending'" t-att-href="change_url" class="o_ocd_cta o_ocd_cta_line">Change the number or the method</a>
                         <div class="o_ocd_total">
                             <span>Total</span>
@@ -742,14 +763,14 @@
                     </div>
                     <div t-if="moved" class="o_ocd_ok o_ocd_info_icon" role="status">
                         <t t-call="ocd_live.icon" icon.f="check"/>
-                        <span>Your live is moved. The new ticket is below.</span>
+                        <span>Your live is moved. The new ticket is below: the former one is no longer valid.</span>
                     </div>
                     <div t-if="sent == '1'" class="o_ocd_ok o_ocd_info_icon" role="status">
                         <t t-call="ocd_live.icon" icon.f="check"/>
                         <span>The ticket is sent on WhatsApp.</span>
                     </div>
                     <div t-if="sent == '0'" class="o_ocd_info" role="status">
-                        WhatsApp is not available now: keep this page.
+                        WhatsApp is not available now: download your ticket below.
                     </div>
                     <div class="o_ocd_ticket">
                         <div class="o_ocd_ticket_rows">
@@ -760,14 +781,15 @@
                             <div class="o_ocd_ticket_row">
                                 <t t-call="ocd_live.icon" icon.f="clock"/>
                                 <span>
-                                    <span class="o_ocd_big" t-out="hours"/>
-                                    <small t-out="tz_line"/>
+                                    <span class="o_ocd_big" t-out="ticket['hours']"/>
+                                    <small t-out="ticket['time_zone']"/>
+                                    <small t-if="ticket['studio_hours']" t-out="ticket['studio_hours']"/>
                                 </span>
                             </div>
                             <div class="o_ocd_ticket_row">
                                 <t t-call="ocd_live.icon" icon.f="pin"/>
                                 <span>
-                                    <b t-out="place"/>
+                                    <b t-out="ticket['place']"/>
                                     <small t-out="place_line"/>
                                 </span>
                             </div>
@@ -780,14 +802,19 @@
                             </div>
                         </div>
                         <div class="o_ocd_ticket_code">
-                            <img t-attf-src="/report/barcode/QR/#{booking.ticket_code}?width=192&amp;height=192"
-                                 alt="QR code of the ticket" width="96" height="96"/>
+                            <img t-att-src="ticket['qr']" alt="QR code of the ticket" width="96" height="96"/>
                             <span>
-                                <b t-out="booking.ticket_code"/>
+                                <b t-out="ticket['code']"/>
+                                <small class="o_ocd_ticket_seal">Seal <t t-out="ticket['seal']"/></small>
                                 <small t-out="code_line"/>
                             </span>
                         </div>
                     </div>
+                    <a t-if="booking.state in ('confirmed', 'done')" t-att-href="pdf_url" class="o_ocd_cta o_ocd_cta_line o_ocd_ticket_pdf" download="">
+                        <t t-call="ocd_live.icon" icon.f="download"/>
+                        <span>Download my ticket (PDF)</span>
+                    </a>
+                    <p class="o_ocd_note">Personal ticket: keep it for you. To tell your friends about your live, share the image below.</p>
                     <div class="o_ocd_info o_ocd_info_icon">
                         <t t-call="ocd_live.icon" icon.f="bell"/>
                         <span>Reminder on WhatsApp the day before and one hour before.</span>
@@ -796,6 +823,28 @@
                         <a t-if="movable" t-att-href="move_url" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">Move my live</a>
                         <a t-if="receipt_url" t-att-href="receipt_url" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">My receipt</a>
                     </div>
+                    <section t-if="booking.state in ('confirmed', 'done')" id="annonce" class="o_ocd_announce_card">
+                        <h2 class="o_ocd_h2">Announce your live</h2>
+                        <p class="o_ocd_lead">An image without your number nor your ticket: send it to your friends, put it in your status.</p>
+                        <img class="o_ocd_announce_image" t-att-src="announce_url" loading="lazy"
+                             width="1080" height="1350" t-att-alt="announce['share_text']"/>
+                        <div class="o_ocd_grid2">
+                            <button type="button" class="o_ocd_cta o_ocd_cta_small o_ocd_share_file"
+                                    t-att-data-ocd-url="announce_url"
+                                    t-att-data-ocd-download="announce_url + ('&amp;' if '?' in announce_url else '?') + 'telecharger=1'"
+                                    t-att-data-ocd-name="announce['file_name']"
+                                    t-att-data-ocd-text="announce['share_text']"
+                                    t-att-data-ocd-link="announce['url']">
+                                <t t-call="ocd_live.icon" icon.f="share"/>
+                                <span>Share</span>
+                            </button>
+                            <a class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small" download=""
+                               t-att-href="announce_url + ('&amp;' if '?' in announce_url else '?') + 'telecharger=1'">
+                                <t t-call="ocd_live.icon" icon.f="download"/>
+                                <span>Download</span>
+                            </a>
+                        </div>
+                    </section>
                 </main>
                 <div class="o_ocd_actions">
                     <form t-att-action="send_url" method="post">
@@ -807,6 +856,80 @@
                     </form>
                     <a href="/ocd/espace/moi" class="o_ocd_cta o_ocd_cta_ghost">See my lives</a>
                 </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- The QR code of a ticket opens this page: valid or not for anyone, who it is for and
+         « Let in » for the team -->
+    <template id="ticket_check" name="OCD Live: check of a ticket">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Check of a ticket</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_check_page">
+                <main class="o_ocd_main">
+                    <div t-attf-class="o_ocd_check o_ocd_check_#{state}" role="status">
+                        <span class="o_ocd_check_icon">
+                            <t t-if="state in ('ok', 'entered')" t-call="ocd_live.icon" icon.f="check"/>
+                            <t t-elif="state in ('other_day', 'over')" t-call="ocd_live.icon" icon.f="clock"/>
+                            <t t-else="" t-call="ocd_live.icon" icon.f="close"/>
+                        </span>
+                        <h1 class="o_ocd_h1">
+                            <t t-if="state == 'entered'">Let in. Have a good live!</t>
+                            <t t-elif="state == 'ok'">Valid ticket</t>
+                            <t t-elif="state == 'used'">Ticket already used</t>
+                            <t t-elif="state == 'other_day'">Valid ticket, for another day</t>
+                            <t t-elif="state == 'over'">This live is over</t>
+                            <t t-elif="state == 'unpaid'">Payment not confirmed</t>
+                            <t t-elif="state == 'cancelled'">Live cancelled</t>
+                            <t t-else="">Ticket not valid</t>
+                        </h1>
+                        <p t-if="state == 'invalid'">This ticket is not recognised: it was changed, or its live was moved (a new ticket was sent to the vendor).</p>
+                        <p t-if="state == 'used'" t-out="checked_line"/>
+                        <p t-if="state == 'used'">A second ticket shown for the same live is a copy: do not let it in.</p>
+                    </div>
+                    <div t-if="booking" class="o_ocd_ticket">
+                        <div class="o_ocd_ticket_rows">
+                            <div class="o_ocd_ticket_row">
+                                <t t-call="ocd_live.icon" icon.f="calendar"/>
+                                <span>
+                                    <b t-out="when"/>
+                                    <small t-out="ticket['time_zone']"/>
+                                </span>
+                            </div>
+                            <div class="o_ocd_ticket_row">
+                                <t t-call="ocd_live.icon" icon.f="pin"/>
+                                <b t-out="ticket['place']"/>
+                            </div>
+                            <t t-if="team">
+                                <div class="o_ocd_ticket_row">
+                                    <t t-call="ocd_live.icon" icon.f="user"/>
+                                    <span>
+                                        <b t-out="ticket['vendor']"/>
+                                        <small t-out="' · '.join(filter(None, [ticket['category'], ticket['package'], ticket['need']]))"/>
+                                    </span>
+                                </div>
+                                <div class="o_ocd_ticket_row">
+                                    <t t-call="ocd_live.icon" icon.f="check"/>
+                                    <span>
+                                        <b t-out="ticket['code']"/>
+                                        <small>Seal <t t-out="ticket['seal']"/>: the same as on the ticket</small>
+                                    </span>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <form t-if="team and state == 'ok'" t-att-action="let_in_url" method="post" class="o_ocd_actions_inline">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="o_ocd_cta">
+                            <t t-call="ocd_live.icon" icon.f="check"/>
+                            <span t-out="let_in_label"/>
+                        </button>
+                    </form>
+                    <p t-if="booking and not team" class="o_ocd_note">
+                        For the team of OCD Live: <a t-att-href="login_url">log in</a> to let the vendor in.
+                    </p>
+                </main>
             </div>
         </t>
     </template>

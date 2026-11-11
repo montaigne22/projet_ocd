@@ -99,7 +99,7 @@
             <field name="body">Hello {{1}}, your live is in the OCD Live directory until {{2}}. Have a great live!</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Grace'}),
-                (0, 0, {'sequence': 2, 'value': '{{ object.company_id._ocd_to_local(object.window_end).strftime(\'%H:%M\') if object.window_end else \'\' }}', 'sample_value': '21:00'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.partner_id._ocd_to_local(object.window_end).strftime(\'%H:%M\') if object.window_end else \'\' }}', 'sample_value': '21:00'}),
             ]"/>
         </record>
 
@@ -124,6 +124,9 @@ You can send another link from your OCD Live space.</field>
             <field name="lang_code">en</field>
             <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
             <field name="partner_field">partner_id</field>
+            <!-- The PDF of the ticket comes with the message -->
+            <field name="header_type">document</field>
+            <field name="header_report_id" ref="ocd_live.action_report_ticket"/>
             <field name="body">Hello {{1}}, here is your OCD Live ticket for your live on {{2}}, from {{3}} to {{4}}. It takes place {{5}}. Ticket number: {{6}}. Keep this message, the OCD Live team will ask for it on the day of the live.
 
 See you soon on OCD Live!</field>

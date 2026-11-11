@@ -7,6 +7,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Domaine | État |
 |---|---|
 | Réservations de lives (créneaux, paquets, crédits, liste d'attente, déplacement, prix selon l'heure) | ✅ fait, testé |
+| Ticket du live en PDF signé (vérifié à l'entrée, une seule fois), image pour annoncer son live | ✅ fait, testé |
+| Heures dans le fuseau horaire de chacun (vendeur, livreur, client) | ✅ fait, testé |
 | Paiement : formulaire d'Odoo, tous les fournisseurs configurés par pays, devise par pays | ✅ fait, testé |
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
@@ -29,7 +31,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **322 tests, un seul
+`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **337 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
 ceux des colis). Sur une base neuve avec la démo, 5 tests sans échec : la démo remplit les écrans,
 conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
@@ -66,6 +68,52 @@ conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — ticket en PDF, image pour annoncer son live, heures de chacun
+- **Ticket du live en PDF** (une page de 10 × 18 cm, lisible au téléphone ou imprimée) : envoyé sur
+  WhatsApp dès le paiement confirmé, téléchargeable sur la page du ticket (« Télécharger mon ticket
+  (PDF) ») et imprimable par l'équipe depuis la réservation. Il est **personnel** : jamais partagé, jamais
+  gardé par un proxy. Contre les copies et les faux :
+  - son **QR code est signé** par la base (vendeur, jour et heure du live) : il ouvre la page de
+    vérification ; un ticket modifié, ou celui d'un live déplacé depuis, est « non valable » ;
+  - l'équipe le scanne à l'entrée : la page lui montre à qui il est et le bouton **« Faire entrer »**
+    (« Valider le ticket » pour un live à distance) ; un second passage du même ticket affiche
+    « Ticket déjà utilisé » avec l'heure et la personne de l'équipe ; un visiteur ne voit que si le ticket
+    est valable, sans le nom du vendeur ;
+  - un **sceau** imprimé (ex. 9562-2ED5) vient de la même signature ; le fond porte des lignes de sécurité
+    et un micro-texte propres à chaque ticket.
+  Les polices et le logo sont dans le PDF (aucune demande au site) ; le wkhtmltopdf « Qt non patché »
+  (Ubuntu) est reconnu et corrigé, la version patchée et les autres moteurs n'ont rien à faire.
+- **WhatsApp avec le PDF** : après le paiement, le message « ticket » part avec son PDF ; tant que ce modèle
+  attend Meta ou est en pause, la confirmation du live part à la place (le vendeur est toujours prévenu).
+  Après un déplacement (par le vendeur ou l'équipe), le nouveau ticket part. Le PDF est fait au moment de
+  l'envoi, en arrière-plan (`whatsapp_cloud` 20.0.2.7.0) : le paiement n'attend jamais le moteur PDF ; s'il
+  échoue, le message dit pourquoi, est réessayé, puis passe en échec avec une note sur la réservation.
+  L'exemple envoyé à Meta pour l'examen du modèle ne contient aucun vrai vendeur.
+- **Annonce du live** : une image (1080 × 1350, format des statuts) **sans donnée personnelle** (ni numéro,
+  ni ticket, ni référence) : nom public, ce que vend le vendeur, jour et heure, QR code et lien de sa
+  boutique (ou des lives de son pays). Bouton **« Partager »** : l'image elle-même part vers WhatsApp, les
+  statuts, Facebook… (sinon le texte et le lien, sinon l'image est téléchargée), et **« Télécharger »**.
+  Sur la page du ticket et depuis « Annoncer » de l'espace vendeur.
+- **Une heure non payée ne bloque plus les autres** : un live gardé dont le temps est passé est libéré
+  tout de suite (sans attendre la tâche de 5 minutes), dès qu'un autre vendeur regarde ou réserve l'heure.
+  Un paiement commencé garde l'heure le temps réglé (10 minutes) ; le Mobile Money vérifié par l'équipe
+  la garde 24 heures seulement après « J'ai payé » (numéro ou référence du transfert), avec une note pour
+  l'équipe. Sans cela, l'heure est de nouveau proposée.
+- **Les heures de chacun** : un vendeur, un livreur ou un client voit les heures **dans son fuseau
+  horaire** : celui de son téléphone (lu par le site, retenu sur sa fiche pour ses messages), sinon celui
+  de son pays. Calendrier de réservation, résumé, paiement, ticket et PDF, image d'annonce, espace vendeur,
+  annuaire, messages WhatsApp (et le rappel de la veille à 18:00 chez lui), appli des colis, boutique et
+  suivi. Le nom du fuseau est écrit (« Heure : Cameroun »). Un live au studio vu d'un autre fuseau donne
+  aussi l'heure du studio (« 10:00 – 11:30 au studio (Heure : Togo) »). L'équipe garde l'heure du studio
+  dans le back-office ; les adresses des pages gardent l'heure du studio (un lien partagé reste juste).
+- **Versions** : `ocd_live` 20.0.1.6.0, `ocd_live_shop` 20.0.1.4.0, `ocd_live_whatsapp` 20.0.1.6.0
+  (migration : le PDF dans l'en-tête des modèles « ticket » pas encore approuvés, l'heure de fin du créneau
+  de l'annuaire dans l'heure du vendeur), `whatsapp_cloud` 20.0.2.7.0.
+- **À faire (équipe)** : soumettre à Meta le modèle « ticket » avec son PDF (WhatsApp › Modèles ; l'App ID
+  de l'application Meta est demandé pour l'exemple de PDF). Un modèle « ticket » déjà approuvé sans PDF
+  reste tel quel : y mettre l'en-tête « Document PDF » (document : Ticket du live), puis le soumettre à
+  nouveau.
 
 ### 11 novembre 2026 — trois modèles refusés par Meta, navigation sans rechargement
 - **Refusés par Meta** : « ticket du live », « colis en route », « choisir un mot de passe ». Le courriel

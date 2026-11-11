@@ -1,7 +1,28 @@
 from datetime import timedelta
 
-from odoo import fields
+from odoo import Command, fields
 from odoo.tests import TransactionCase
+
+
+def pending_payment(test, order, provider=None):
+    """A payment checked by the team (Mobile Money to the number of OCD) chosen on the page of
+    the order: the transaction waits, nothing was sent yet."""
+    provider = provider or test.env["payment.provider"].search([
+        ("code", "=", "custom"), ("company_id", "=", order.company_id.id),
+    ], limit=1)
+    if not provider.payment_method_ids:
+        test.skipTest("No payment provider checked by the team in this database.")
+    transaction = test.env["payment.transaction"].create({
+        "provider_id": provider.id,
+        "payment_method_id": provider.payment_method_ids[:1].id,
+        "amount": order.amount_total,
+        "currency_id": order.currency_id.id,
+        "partner_id": order.partner_id.id,
+        "reference": f"{order.name}-T",
+        "sale_order_ids": [Command.set(order.ids)],
+    }).with_context(payment_safe_write=True)
+    transaction._set_pending()
+    return transaction
 
 
 class OcdLiveCommon(TransactionCase):

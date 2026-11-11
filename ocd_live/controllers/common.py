@@ -1,6 +1,6 @@
 import logging
 import re
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 
 from odoo import fields
 from odoo.exceptions import UserError
@@ -247,6 +247,41 @@ def current_vendor(token=None):
     return current_vendor_and_source(token)[0]
 
 
+def studio_tz():
+    return company().ocd_studio_tz or "Africa/Lome"
+
+
+def viewer_tz(partner=None):
+    """Time zone of the person who looks at the page, in which the page gives its hours: the
+    one of their phone (cookie set by the website), else the one known for the vendor (or the
+    courier given as `partner`), else the studio's. The phone of a vendor or of a courier is
+    remembered on their contact, for their messages. A person of the team who opened the space
+    of a vendor sees the hours of the vendor."""
+    if partner is None and getattr(request, "_ocd_viewer_tz", None):
+        return request._ocd_viewer_tz
+    person, source = (partner, "partner") if partner is not None else current_vendor_and_source()
+    if source == "team":
+        tz = person._ocd_tz_name()
+    else:
+        tz = tools.valid_tz(request.httprequest.cookies.get("tz"))
+        if tz and person:
+            person._ocd_remember_tz(tz)
+        tz = tz or (person._ocd_tz_name() if person else studio_tz())
+    if partner is None:
+        request._ocd_viewer_tz = tz
+    return tz
+
+
+def to_viewer(value, partner=None):
+    """A naive UTC datetime in the time zone of the person who looks at the page (aware)."""
+    return tools.to_tz(value, viewer_tz(partner))
+
+
+def viewer_zone(partner=None):
+    """Name of the time zone of the page: "Heure : Cameroun"."""
+    return tools.zone_text(request.env, viewer_tz(partner))
+
+
 # Checks of the modules for the visitors who change page without reloading it (see
 # fast_navigation): ocd_live_shop adds the couriers
 FAST_NAVIGATION_CHECKS = []
@@ -294,6 +329,7 @@ def page_languages(url=None):
 def page_values(voice_key, **values):
     """Values shared by all the pages: the voice of the page (key, languages and the sentence
     shown while it speaks) and the setting of the vendor login."""
+    viewer_tz()  # the phone of the vendor gives its time zone (kept for the messages)
     prompt = request.env["ocd.voice.prompt"].sudo()
     if voice_key:
         prompt = prompt.search([("key", "=", voice_key)], limit=1)
@@ -522,8 +558,8 @@ def windows_info(moment=None):
     windows = Window.search([("company_id", "in", (current.id, False))])
     return {
         "open": is_open,
-        "end": current._ocd_to_local(found[2]).strftime("%H:%M") if found else False,
-        "next": current._ocd_to_local(found[1]).strftime("%H:%M") if found else False,
+        "end": to_viewer(found[2]).strftime("%H:%M") if found else False,
+        "next": to_viewer(found[1]).strftime("%H:%M") if found else False,
         "next_start": found[1] if found else False,
         "rows": [
             {
@@ -536,7 +572,12 @@ def windows_info(moment=None):
 
 
 def _hour_text(value):
-    return tools.hour_text(value)
+    """An hour of the studio given as a float (18.5), in the time zone of the visitor."""
+    current = company()
+    today = current._ocd_local_today()
+    minutes = round(value * 60)
+    moment = current._ocd_to_utc(current._ocd_tz().localize(datetime.combine(today, time()) + timedelta(minutes=minutes)))
+    return to_viewer(moment).strftime("%H:%M")
 
 
 def initials(name):

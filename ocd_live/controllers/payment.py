@@ -3,11 +3,13 @@ from urllib.parse import urlencode
 
 from odoo import http
 from odoo.http import request
+from odoo.http.stream import content_disposition
 from odoo.tools import consteq
 
 from odoo.addons.payment.controllers.payment_status import PaymentStatus
 from odoo.addons.sale.controllers.portal import CustomerPortal
 
+from .. import tools
 from . import common
 
 
@@ -86,6 +88,17 @@ class OcdLivePayment(http.Controller):
         })
         return values
 
+    @http.route("/ocd/payer/<int:order_id>/envoye", type="http", auth="public", website=True, sitemap=False, methods=["POST"])
+    def pay_announced(self, order_id, access_token=None, reference=None, **post):
+        """« I paid »: the vendor says the payment checked by the team (Mobile Money to the number
+        of OCD) was sent. The hour stays held while the team checks it; without this, it is
+        offered again to the others after the time given to pay."""
+        order = self._order(order_id, access_token)
+        last = order.transaction_ids.sorted("id")[-1:]
+        if order._ocd_payment_state() == "waiting" and last.state == "pending" and last.provider_code == "custom":
+            order._ocd_announce_payment(common.clean_text(reference, 60))
+        return request.redirect(self._url(order))
+
     @http.route("/ocd/payer/<int:order_id>/statut", type="jsonrpc", auth="public", website=True)
     def pay_status(self, order_id, access_token=None):
         """Polled by the page while a payment is in progress: the provider confirms it."""
@@ -93,10 +106,11 @@ class OcdLivePayment(http.Controller):
         return {"state": order._ocd_payment_state()}
 
     def _when(self, booking):
-        """Line of the live, e.g. "Tue 1 Dec · 10:00 to 11:30 · studio of Lomé"."""
+        """Line of the live, e.g. "Tue 1 Dec · 10:00 to 11:30 · studio of Lomé", in the time
+        zone of the vendor."""
         env = request.env
-        local = booking.company_id._ocd_to_local(booking.start_datetime)
-        end = booking.company_id._ocd_to_local(booking.end_datetime)
+        local = common.to_viewer(booking.start_datetime)
+        end = common.to_viewer(booking.end_datetime)
         where = env._("studio of %s", common.studio_city()) if booking.mode == "studio" else env._("remote")
         return env._(
             "%(day)s · %(start)s to %(end)s · %(where)s",
@@ -107,9 +121,9 @@ class OcdLivePayment(http.Controller):
         )
 
     def _hold(self, booking):
-        if not booking or booking.state != "draft" or not booking.hold_until:
+        if not booking or booking.state != "draft":
             return False
-        minutes = max(1, math.ceil((booking.hold_until - common.now()).total_seconds() / 60))
+        minutes = max(1, math.ceil((booking._ocd_hold_end() - common.now()).total_seconds() / 60))
         if minutes > 120:
             return request.env._("Your hour is held %s hours.", round(minutes / 60))
         return request.env._("Your hour is held %s minutes.", minutes)
@@ -133,6 +147,9 @@ class OcdLivePayment(http.Controller):
             raise request.not_found()
         return booking
 
+    def _token_query(self, access_token):
+        return f"?access_token={access_token}" if access_token else ""
+
     @http.route("/ocd/ticket/<int:booking_id>", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
     def ticket(self, booking_id, access_token=None, envoye=None, deplace=None, **kwargs):
         booking = self._ticket_booking(booking_id, access_token)
@@ -141,47 +158,40 @@ class OcdLivePayment(http.Controller):
             return request.redirect(self._url(order))
         env = request.env
         company = booking.company_id
-        local = company._ocd_to_local(booking.start_datetime)
-        end = company._ocd_to_local(booking.end_datetime)
-        city = common.studio_city()
-        needs = {
-            "shelf": env._("a shelf waits for you at the studio"),
-            "rack": env._("a clothes rack waits for you at the studio"),
-            "table": env._("a table waits for you at the studio"),
-        }
-        package_line = booking.product_id.name
-        if booking.mode == "studio" and booking.studio_need in needs:
-            package_line = f"{package_line} · {needs[booking.studio_need]}"
+        tz_name = common.viewer_tz()
+        ticket = booking.with_context(lang=env.lang)._ocd_ticket_values(tz_name)
         movable = booking.state == "confirmed" and (
             booking.start_datetime - common.now()
         ).total_seconds() > company.ocd_move_limit_hours * 3600
-        token_query = f"?access_token={access_token}" if access_token else ""
+        query = self._token_query(access_token)
+        announce = booking.with_context(lang=env.lang)._ocd_announce_values(tz_name)
         return request.render("ocd_live.ticket", common.page_values(
             "ticket",
             booking=booking,
             access_token=access_token,
-            day=common.short_day(local.date(), capital=True),
-            hours=f"{local:%H:%M} – {end:%H:%M}",
-            tz_line=env._("Time of %s", city),
-            place=env._("Studio OCD, %s", city) if booking.mode == "studio" else env._("From home, remote"),
+            ticket=ticket,
+            day=common.short_day(tools.to_tz(booking.start_datetime, tz_name).date(), capital=True),
             place_line=(
                 env._("Address and map sent on WhatsApp")
                 if booking.mode == "studio"
                 else env._("The link of the live and the host arrive on WhatsApp")
             ),
-            who=" · ".join(filter(None, [booking.partner_id.name, booking.partner_id.ocd_category_id.name])),
-            package_line=package_line,
+            who=" · ".join(filter(None, [ticket["vendor"], ticket["category"]])),
+            package_line=" · ".join(filter(None, [ticket["package"], ticket["need"]])),
             code_line=(
-                env._("Show this code at the door of the studio.")
+                env._("Show this ticket at the door of the studio.")
                 if booking.mode == "studio"
-                else env._("Give this code to the team when asked.")
+                else env._("Give its number to the team when asked.")
             ),
             movable=movable,
-            move_url=f"/ocd/deplacer/{booking.id}{token_query}",
+            move_url=f"/ocd/deplacer/{booking.id}{query}",
             receipt_url=order.get_portal_url(report_type="pdf", download=True) if order else False,
+            pdf_url=f"/ocd/ticket/{booking.id}/pdf{query}",
+            announce=announce,
+            announce_url=f"/ocd/ticket/{booking.id}/annonce{query}",
             sent=envoye,
             moved=bool(deplace),
-            send_url=f"/ocd/ticket/{booking.id}/whatsapp{token_query}",
+            send_url=f"/ocd/ticket/{booking.id}/whatsapp{query}",
         ))
 
     @http.route(
@@ -194,6 +204,107 @@ class OcdLivePayment(http.Controller):
         if access_token:
             params["access_token"] = access_token
         return request.redirect(f"/ocd/ticket/{booking.id}?{urlencode(params)}")
+
+    @http.route("/ocd/ticket/<int:booking_id>/pdf", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
+    def ticket_pdf(self, booking_id, access_token=None, **kwargs):
+        """The ticket as a PDF: personal, for the vendor only (never cached by a proxy)."""
+        booking = self._ticket_booking(booking_id, access_token)
+        if booking.state not in ("confirmed", "done"):
+            return request.redirect(f"/ocd/ticket/{booking.id}{self._token_query(access_token)}")
+        pdf, name = booking._ocd_ticket_pdf(lang=request.env.lang, tz_name=common.viewer_tz())
+        return request.make_response(pdf, headers=[
+            ("Content-Type", "application/pdf"),
+            ("Content-Length", len(pdf)),
+            ("Content-Disposition", content_disposition(name)),
+            ("Cache-Control", "private, no-store"),
+            ("X-Robots-Tag", "noindex"),
+        ])
+
+    @http.route("/ocd/ticket/<int:booking_id>/annonce", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
+    def ticket_announce(self, booking_id, access_token=None, telecharger=None, **kwargs):
+        """The image that announces the live to the friends of the vendor: no personal
+        information on it (no number, no ticket). Opened only by the vendor."""
+        booking = self._ticket_booking(booking_id, access_token)
+        if booking.state not in ("confirmed", "done"):
+            raise request.not_found()
+        tz_name = common.viewer_tz()
+        booking = booking.with_context(lang=request.env.lang)
+        name = booking._ocd_announce_values(tz_name)["file_name"]
+        png = booking._ocd_announce_png(tz_name)
+        return request.make_response(png, headers=[
+            ("Content-Type", "image/png"),
+            ("Content-Length", len(png)),
+            ("Content-Disposition", content_disposition(name, "attachment" if telecharger else "inline")),
+            ("Cache-Control", "private, max-age=600"),
+            ("X-Robots-Tag", "noindex"),
+        ])
+
+    # === CHECK AT THE ENTRY === #
+
+    def _check_state(self, booking):
+        """What the check of a ticket answers: ok, used, other_day, over, unpaid, cancelled."""
+        if booking.state == "cancelled":
+            return "cancelled"
+        if booking.state == "draft":
+            return "unpaid"
+        if booking.state == "done" or booking.end_datetime <= common.now():
+            return "over"
+        if booking.ticket_checked_in:
+            return "used"
+        company = booking.company_id
+        if company._ocd_to_local(booking.start_datetime).date() != company._ocd_local_today():
+            return "other_day"
+        return "ok"
+
+    @http.route(
+        "/ocd/ticket/verifier/<int:booking_id>/<string:signature>",
+        type="http", auth="public", website=True, sitemap=False, methods=["GET"],
+    )
+    def ticket_check(self, booking_id, signature, entre=None, **kwargs):
+        """The QR code of the ticket opens this page. Anyone sees whether the ticket is valid;
+        the team also sees who it is for, and lets the vendor in once."""
+        booking = request.env["ocd.live.booking"].sudo().browse(booking_id).exists()
+        valid = bool(booking) and booking._ocd_ticket_check(signature)
+        user = request.env.user
+        team = not user._is_public() and user.has_group("ocd_live.group_ocd_live_user")
+        state = self._check_state(booking) if valid else "invalid"
+        if entre and state == "used" and team and booking.ticket_checked_in_by == user:
+            state = "entered"  # this person just let the vendor in
+        env = request.env
+        values = {"state": state, "team": team, "entered": bool(entre), "signature": signature}
+        if valid:
+            # The team reads the hours of the studio; the vendor, their own
+            tz_name = common.studio_tz() if team else common.viewer_tz()
+            ticket = booking.with_context(lang=env.lang)._ocd_ticket_values(tz_name)
+            values.update(
+                booking=booking,
+                ticket=ticket,
+                when=f"{ticket['day']} · {ticket['hours']}",
+                let_in_url=f"/ocd/ticket/verifier/{booking.id}/{signature}/entree",
+                let_in_label=env._("Let in") if booking.mode == "studio" else env._("Validate the ticket"),
+                checked_line=env._(
+                    "Entered at %(hour)s, let in by %(name)s.",
+                    hour=f"{tools.to_tz(booking.ticket_checked_in, tz_name):%H:%M}",
+                    name=booking.ticket_checked_in_by.name or "",
+                ) if booking.ticket_checked_in else "",
+                login_url="/web/login?redirect=" + request.httprequest.path,
+            )
+        return request.render("ocd_live.ticket_check", common.page_values(False, **values))
+
+    @http.route(
+        "/ocd/ticket/verifier/<int:booking_id>/<string:signature>/entree",
+        type="http", auth="user", website=True, sitemap=False, methods=["POST"],
+    )
+    def ticket_let_in(self, booking_id, signature, **post):
+        """The team lets the vendor in: the ticket is used from now on."""
+        if not request.env.user.has_group("ocd_live.group_ocd_live_user"):
+            raise request.not_found()
+        booking = request.env["ocd.live.booking"].browse(booking_id).exists()
+        if not booking or not booking._ocd_ticket_check(signature):
+            raise request.not_found()
+        if self._check_state(booking) == "ok":
+            booking._ocd_let_in()
+        return request.redirect(f"/ocd/ticket/verifier/{booking.id}/{signature}?entre=1")
 
 
 class OcdLivePaymentStatus(PaymentStatus):

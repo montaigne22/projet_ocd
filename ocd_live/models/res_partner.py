@@ -2,10 +2,14 @@ import re
 import secrets
 from datetime import timedelta
 
+import pytz
+
 from odoo import Command, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import consteq
 from odoo.tools.misc import hmac
+
+from .. import tools
 
 LOGIN_CODE_MINUTES = 10
 LOGIN_CODE_MAX_ATTEMPTS = 5
@@ -26,6 +30,13 @@ class ResPartner(models.Model):
         default="to_check",
         tracking=True,
         help="A vendor is shown on the website once approved by the team.",
+    )
+    ocd_phone_tz = fields.Char(
+        string="Time Zone Of The Phone",
+        readonly=True,
+        copy=False,
+        help="Time zone of the phone of the vendor or of the courier, read by the website: the "
+        "hours of their pages and of their messages follow it.",
     )
     ocd_space_token = fields.Char(
         string="Space Token",
@@ -132,6 +143,43 @@ class ResPartner(models.Model):
     def _ocd_get_space_url(self):
         self.ensure_one()
         return f"{self.get_base_url()}/ocd/espace/{self._ocd_get_space_token()}"
+
+    def _ocd_tz_name(self):
+        """Time zone of the vendor or of the courier: the one of their phone (read by the
+        website), else the one of their country, else the one written on the contact, else the
+        one of the studio. Their hours are shown in it, on the pages and in the messages."""
+        self.ensure_one()
+        tz = tools.valid_tz(self.ocd_phone_tz)
+        if tz:
+            return tz
+        code = (self.country_id.code or "").upper()
+        if code and code in pytz.country_timezones:
+            return pytz.country_timezones[code][0]
+        company = self.company_id or self.env.company
+        return tools.valid_tz(self.tz) or company.ocd_studio_tz or "Africa/Lome"
+
+    def _ocd_to_local(self, value):
+        """A naive UTC datetime, in the time zone of the contact (aware)."""
+        self.ensure_one()
+        return tools.to_tz(value, self._ocd_tz_name())
+
+    def _ocd_zone_text(self):
+        """Name of the time zone of the contact: "Heure : Cameroun"."""
+        self.ensure_one()
+        return tools.zone_text(self.env, self._ocd_tz_name())
+
+    def _ocd_remember_tz(self, tz_name):
+        """The phone of the contact gave its time zone (website): kept for the messages."""
+        tz = tools.valid_tz(tz_name)
+        for partner in self.filtered(lambda partner: tz and partner.ocd_phone_tz != tz):
+            partner.sudo().ocd_phone_tz = tz
+
+    def _ocd_public_path(self):
+        """Public page where friends find the lives of the vendor (without the first "/"): the
+        lives of its country. The shop gives its boutique instead."""
+        self.ensure_one()
+        code = (self.country_id.code or "").lower()
+        return f"lives/{code}" if code else "lives"
 
     @api.model
     def _ocd_find_by_space_token(self, token):

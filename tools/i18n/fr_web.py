@@ -182,7 +182,7 @@ WEB = {
     "Ticket": "Ticket",
     "Tickets and reminders on WhatsApp: off": "Tickets et rappels sur WhatsApp : arrêtés",
     "Tickets and reminders on WhatsApp: on": "Tickets et rappels sur WhatsApp : activés",
-    "Time of %s": "Heure de %s",
+    "%s time": "Heure de %s",
     "To pay": "À payer",
     "To place": "À placer",
     "Type the code.": "Tape le code.",

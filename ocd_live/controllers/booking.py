@@ -82,7 +82,7 @@ class OcdLiveBooking(http.Controller):
             back=back,
             step=common.steps(self._flow(), "hour"),
             lead=request.env._(
-                "%(day)s · time of %(city)s", day=common.day_label(day_value), city=common.studio_city()
+                "%(day)s · %(zone)s", day=common.day_label(day_value), zone=common.viewer_zone()
             ),
             slots=slots,
             hour_info=request.env._(
@@ -108,6 +108,7 @@ class OcdLiveBooking(http.Controller):
         self._check_mode(mode)
         day_value = self._check_day(day)
         start = self._check_start(day_value, hour)
+        local = common.to_viewer(start)
         return self._render(
             "ocd_live.booking_package",
             "package",
@@ -115,7 +116,7 @@ class OcdLiveBooking(http.Controller):
             back=f"/reserver/{mode}/{day}",
             step=common.steps(self._flow(), "package"),
             lead=request.env._(
-                "%(day)s at %(hour)s", day=common.day_label(day_value), hour=self._hour_label(hour)
+                "%(day)s at %(hour)s", day=common.day_label(local.date()), hour=f"{local:%H:%M}"
             ),
             cards=self._package_cards(
                 mode, lambda product: f"/reserver/{mode}/{day}/{hour}/{product.id}", day_value, start
@@ -238,6 +239,11 @@ class OcdLiveBooking(http.Controller):
             elif "optin" in post or post.get("optin_shown"):
                 vendor.ocd_whatsapp_optin = bool(post.get("optin"))
             held = Booking.search([("partner_id", "=", vendor.id), ("state", "=", "draft")])
+            # Lives not paid in time do not count, and free their hours now
+            expired = held._ocd_expired_holds()
+            if expired:
+                expired.action_cancel()
+                held -= expired
             same = held.filtered(lambda b: b.start_datetime == start and b.mode == mode)
             if same and same[:1].product_id == product and same[:1].sale_order_id.state in ("draft", "sent"):
                 # The vendor came back from the payment page: keep the slot already held
@@ -334,7 +340,7 @@ class OcdLiveBooking(http.Controller):
             step=False,
             title=request.env._("New hour?"),
             lead=request.env._(
-                "%(day)s · time of %(city)s", day=common.day_label(day_value), city=common.studio_city()
+                "%(day)s · %(zone)s", day=common.day_label(day_value), zone=common.viewer_zone()
             ),
             slots=slots,
             move_action=f"/ocd/deplacer/{booking.id}/{day}{token}",
@@ -407,7 +413,12 @@ class OcdLiveBooking(http.Controller):
     def _phone_error(self, country):
         return common.phone_error(country)
 
-    def _hour_label(self, hour):
+    def _hour_label(self, hour, day=None):
+        """The hour `hour` of the studio ("1430") as the person reads it: in their time zone
+        when the day is known."""
+        start = common.find_start(day, hour) if day else None
+        if start:
+            return f"{common.to_viewer(start):%H:%M}"
         return f"{hour[:2]}:{hour[2:]}"
 
     def _hours_text(self, hours):
@@ -435,7 +446,7 @@ class OcdLiveBooking(http.Controller):
         if day:
             parts.append(common.short_day(day))
         if hour:
-            parts.append(self._hour_label(hour))
+            parts.append(self._hour_label(hour, day))
         if product:
             parts.append(product.name)
         return " · ".join(parts)
@@ -448,8 +459,9 @@ class OcdLiveBooking(http.Controller):
         if hour:
             start = common.find_start(day, hour)
             hours = product.ocd_live_hours if product else common.company().ocd_slot_hours
-            end = common.company()._ocd_to_local(start) + timedelta(hours=hours)
-            rows.append((request.env._("Hour"), f"{self._hour_label(hour)} – {end:%H:%M}"))
+            local = common.to_viewer(start)
+            end = local + timedelta(hours=hours)
+            rows.append((request.env._("Hour"), f"{local:%H:%M} – {end:%H:%M}"))
         if product:
             amount, currency = common.package_price(product, self._prices())
             if hour:
@@ -467,14 +479,14 @@ class OcdLiveBooking(http.Controller):
         return common.pricelist(vendor=common.current_vendor())
 
     def _booking_line(self, booking):
-        local = booking.company_id._ocd_to_local(booking.start_datetime)
+        local = common.to_viewer(booking.start_datetime)
         return " · ".join([
             self._mode_texts(booking.mode)["short"], common.short_day(local.date()), f"{local:%H:%M}"
         ])
 
     def _aside_booking(self, booking):
-        local = booking.company_id._ocd_to_local(booking.start_datetime)
-        end = booking.company_id._ocd_to_local(booking.end_datetime)
+        local = common.to_viewer(booking.start_datetime)
+        end = common.to_viewer(booking.end_datetime)
         return {
             "title": request.env._("Your live now"),
             "rows": [
@@ -562,13 +574,14 @@ class OcdLiveBooking(http.Controller):
         """Return the hours of `day`: free ones lead to `next_url`, the others are taken."""
         count = slot_count or (product.ocd_slot_count if product else 1)
         slots = request.env["ocd.live.booking"].sudo()._ocd_get_day_slots(
-            day, slot_count=count, company=common.company(), mode=mode
+            day, slot_count=count, company=common.company(), mode=mode, tz_name=common.viewer_tz()
         )
         env = request.env
         company = common.company()
         rules = env["ocd.live.price.rule"]._ocd_rules(company)
         for slot in slots:
-            slot["code"] = slot["label"].replace(":", "")
+            # Far from the studio, an hour can fall on another day for the person
+            slot["day_note"] = common.short_day(slot["local_day"]) if slot["local_day"] != day else False
             slot["percent"] = rules._ocd_match(company, slot["start"], mode, product).percent or 0.0
             if max_percent is not None and slot["percent"] > max_percent:
                 # Moving a live: not to an hour that costs more
@@ -598,7 +611,9 @@ class OcdLiveBooking(http.Controller):
             if start:
                 count = product.ocd_slot_count
                 if count not in day_slots:
-                    day_slots[count] = Booking._ocd_get_day_slots(day, slot_count=count, company=common.company(), mode=mode)
+                    day_slots[count] = Booking._ocd_get_day_slots(
+                        day, slot_count=count, company=common.company(), mode=mode, tz_name=common.viewer_tz()
+                    )
                 slot = next((s for s in day_slots[count] if s["start"] == start), None)
                 available = bool(slot and slot["available"])
                 if product.ocd_live_count == 1 and count > 1 and slot:

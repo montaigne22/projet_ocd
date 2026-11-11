@@ -6,6 +6,7 @@ from . import res_partner
 from . import hr_employee
 from . import ocd_live_booking_slot
 from . import ocd_live_booking
+from . import ocd_live_ticket
 from . import ocd_live_credit
 from . import ocd_directory_window
 from . import ocd_listing_refuse_reason

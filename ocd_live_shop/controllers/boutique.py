@@ -111,7 +111,7 @@ class OcdBoutique(http.Controller):
         }
 
     def _next_info(self, booking):
-        local = booking.company_id._ocd_to_local(booking.start_datetime)
+        local = common.to_viewer(booking.start_datetime)
         name = platform(booking.live_url)
         if name:
             where = request.env._("On %s", name)
@@ -129,7 +129,7 @@ class OcdBoutique(http.Controller):
         }
 
     def _replay_info(self, replay):
-        local = replay.company_id._ocd_to_local(replay.start_datetime)
+        local = common.to_viewer(replay.start_datetime)
         minutes = (replay.end_datetime - replay.start_datetime).total_seconds() // 60
         count = len(replay.moment_ids.product_tmpl_id)
         return {
@@ -262,7 +262,7 @@ class OcdBoutique(http.Controller):
         replay = self._last_replay(vendor)
         if not replay:
             return request.redirect(f"/ocd/boutique/{vendor.id}")
-        local = replay.company_id._ocd_to_local(replay.start_datetime)
+        local = common.to_viewer(replay.start_datetime)
         minutes = (replay.end_datetime - replay.start_datetime).total_seconds() // 60
         if replay.mode == "studio":
             how = request.env._("at the OCD Live studio")

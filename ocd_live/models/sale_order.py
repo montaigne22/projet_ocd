@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from odoo import Command, api, fields, models
 from odoo.tools import format_date
 
@@ -14,6 +16,38 @@ class SaleOrder(models.Model):
     ocd_pass_ids = fields.One2many(
         comodel_name="ocd.directory.pass", inverse_name="sale_order_id", string="Directory Passes"
     )
+    ocd_payment_declared_date = fields.Datetime(
+        string="Payment Announced On",
+        copy=False,
+        help="The vendor says the payment checked by the team was sent (Mobile Money to the "
+        "number of OCD): the hour of the live stays held while the team checks it.",
+    )
+    ocd_payment_reference = fields.Char(
+        string="Announced Payment",
+        copy=False,
+        help="Number that paid or reference of the transfer, given by the vendor.",
+    )
+
+    def _ocd_announce_payment(self, reference):
+        """The vendor says the payment checked by the team was sent: the hours of its lives stay
+        held while the team checks it (« Slot Held For A Payment Checked By The Team »), and the
+        team is told in the order and in the channel of the lives."""
+        self.ensure_one()
+        now = fields.Datetime.now()
+        self.write({"ocd_payment_declared_date": now, "ocd_payment_reference": reference or False})
+        hold = now + timedelta(hours=self.company_id.ocd_manual_hold_hours)
+        for booking in self.ocd_booking_ids.filtered(lambda b: b.state == "draft"):
+            booking.hold_until = max(booking.hold_until or now, hold)
+        body = self.env._(
+            "%(vendor)s says the payment of %(order)s was sent (%(reference)s): check it, then confirm it.",
+            vendor=self.partner_id.name,
+            order=self.name,
+            reference=reference or self.env._("no number nor reference given"),
+        )
+        self.message_post(body=body, message_type="comment", subtype_xmlid="mail.mt_note")
+        channel = self.company_id.ocd_lives_channel_id
+        if channel:
+            channel.sudo().message_post(body=body, message_type="comment", subtype_xmlid="mail.mt_comment")
 
     @api.depends("ocd_booking_ids")
     def _compute_ocd_booking_count(self):
@@ -42,8 +76,7 @@ class SaleOrder(models.Model):
     def _ocd_add_hour_price_line(self, start, mode, percent, per_live):
         """Add the price change of the hour of a live: `percent` of the price of one live."""
         self.ensure_one()
-        company = self.company_id
-        local = company._ocd_to_local(start)
+        local = self.partner_id._ocd_to_local(start)  # read by the vendor: their hour
         product = self.env.ref("ocd_live.product_hour_price").sudo().product_variant_id
         self.sudo().write({"order_line": [Command.create({
             "product_id": product.id,

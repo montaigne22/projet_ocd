@@ -253,9 +253,8 @@ class OcdVendorSpace(http.Controller):
 
     def _live_card(self, booking):
         env = request.env
-        company = booking.company_id
-        local = company._ocd_to_local(booking.start_datetime)
-        end = company._ocd_to_local(booking.end_datetime)
+        local = common.to_viewer(booking.start_datetime)
+        end = common.to_viewer(booking.end_datetime)
         needs = {
             "shelf": env._("shelf ready"),
             "rack": env._("clothes rack ready"),
@@ -274,7 +273,8 @@ class OcdVendorSpace(http.Controller):
             "ticket_url": f"/ocd/ticket/{booking.id}",
             "move_url": f"/ocd/deplacer/{booking.id}" if booking.state == "confirmed" and (
                 booking.start_datetime - common.now()
-            ).total_seconds() > company.ocd_move_limit_hours * 3600 else False,
+            ).total_seconds() > booking.company_id.ocd_move_limit_hours * 3600 else False,
+            "announce_url": f"/ocd/ticket/{booking.id}#annonce" if booking.state == "confirmed" else False,
             "receipt_url": order.get_portal_url(report_type="pdf", download=True) if order and booking.state == "confirmed" else False,
             "pay_url": f"/ocd/payer/{order.id}?access_token={token}" if order and booking.state == "draft" else False,
         }
@@ -362,7 +362,7 @@ class OcdVendorSpace(http.Controller):
             step=False,
             title=request.env._("Which hour?"),
             lead=request.env._(
-                "%(day)s · time of %(city)s", day=common.day_label(day_value), city=common.studio_city()
+                "%(day)s · %(zone)s", day=common.day_label(day_value), zone=common.viewer_zone()
             ),
             mode_links=self._mode_links(credit, mode, day),
             slots=booking._slots(mode, day_value, credit.product_id, None),

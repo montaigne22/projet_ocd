@@ -401,7 +401,7 @@ class OcdWhatsappInbox(models.AbstractModel):
                 ("start_datetime", ">=", fields.Datetime.now() - timedelta(hours=2)),
             ], order="start_datetime", limit=1)
             if booking:
-                day, start, end = booking._ocd_local_labels()
+                day, start, end = booking._ocd_studio_labels()
                 city = booking.company_id.ocd_studio_city or ""
                 place = _("Studio OCD · %s", city) if booking.mode == "studio" else _("Remote")
                 sections.append({

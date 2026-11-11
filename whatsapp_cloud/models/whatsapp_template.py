@@ -581,7 +581,8 @@ class WhatsappTemplate(models.Model):
             record = self._get_sample_record()
             if record is None or not self.header_report_id:
                 raise UserError(_("Give a sample PDF for the header of the template."))
-            report = self.header_report_id.sudo()
+            # The reports can hide the personal data of the record shown to Meta as a sample
+            report = self.header_report_id.sudo().with_context(whatsapp_sample=True)
             content, _report_type = report._render_qweb_pdf(report.report_name, record.ids)
             name = "sample.pdf"
         version = account.api_version
@@ -854,9 +855,9 @@ class WhatsappTemplate(models.Model):
                 button=button,
                 user_ref=user_ref,
             )
+            # The PDF of a document header is made when the message is sent (see
+            # whatsapp.message._make_header_document): the flow that queues it never waits
             vals["payload"] = json.dumps(payload)
-            if self.header_type == "document" and self.header_report_id:
-                vals["attachment_id"] = self._render_document(record).id
             messages_vals.append(vals)
         messages = Message.create(messages_vals)
         if any(message.state == "queued" for message in messages):
@@ -966,9 +967,12 @@ class WhatsappTemplate(models.Model):
         return self.button_ids.sorted("sequence").ids.index(button.id) if button else 0
 
     def _render_document(self, record):
-        """PDF of the header, stored as an attachment of the message log."""
+        """PDF of the header, in the language of the template, stored as an attachment of the
+        message log."""
         self.ensure_one()
-        report = self.header_report_id.sudo()
+        lang = self._get_render_lang() or self.env.lang
+        report = self.header_report_id.sudo().with_context(lang=lang)
+        record = record.with_context(lang=lang)
         pdf, _report_type = report._render_qweb_pdf(report.report_name, record.ids)
         name = (
             report.print_report_name

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The ticket of a live: one page of 10 x 18 cm, read on a phone or printed -->
+    <record id="paperformat_ticket" model="report.paperformat">
+        <field name="name">OCD Live: ticket</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_width">100</field>
+        <field name="page_height">180</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_ticket" model="ir.actions.report">
+        <field name="name">Ticket of the live</field>
+        <field name="model">ocd.live.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ocd_live.report_ticket</field>
+        <field name="print_report_name">'Ticket %s' % object.ticket_code</field>
+        <field name="paperformat_id" ref="paperformat_ticket"/>
+        <field name="binding_model_id" ref="model_ocd_live_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Laid out in millimetres, without flex nor grid: the PDF engine is an old WebKit. The
+         fonts are in the ticket (no request to the website), the lines of the background, the
+         micro text and the seal come from the signature of the ticket. -->
+    <template id="report_ticket">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="booking">
+                <t t-set="ticket" t-value="booking._ocd_ticket_values()"/>
+                <div class="article o_ocd_tk" t-att-data-oe-model="booking._name" t-att-data-oe-id="booking.id"
+                     t-attf-style="zoom: {{ booking._ocd_ticket_zoom() }};">
+                    <style t-out="booking._ocd_ticket_css()"/>
+                    <style>
+                        html, body { margin: 0 !important; padding: 0 !important; background: #F5F2EE; }
+                        body.container { max-width: none !important; width: 100mm !important; }
+                        .o_ocd_tk { position: relative; width: 100mm; height: 179.5mm; overflow: hidden;
+                            background: #F5F2EE; font-family: 'OcdText', sans-serif; color: #15130F; }
+                        .o_ocd_tk div, .o_ocd_tk td { box-sizing: border-box; }
+                        .o_ocd_tk_card { position: absolute; left: 5mm; top: 5mm; width: 90mm; height: 169.5mm;
+                            background: #FFFFFF; border-radius: 4mm; overflow: hidden; }
+                        .o_ocd_tk_head { position: absolute; left: 0; top: 0; width: 90mm; height: 36mm;
+                            background: #15130F; overflow: hidden; }
+                        .o_ocd_tk_sun { position: absolute; right: -16mm; top: -24mm; width: 54mm; height: 54mm;
+                            border-radius: 27mm; background: #F46A00; }
+                        .o_ocd_tk_logo { position: absolute; left: 6mm; top: 6mm; width: 10mm; height: 10mm; }
+                        .o_ocd_tk_brand { position: absolute; left: 18.5mm; top: 6mm; height: 10mm; line-height: 10mm;
+                            font-family: 'OcdDisplay'; font-size: 12pt; color: #FFFFFF; }
+                        .o_ocd_tk_pill { position: absolute; right: 6mm; top: 7.5mm; height: 7mm; line-height: 7mm;
+                            padding: 0 3mm; border-radius: 3.5mm; background: #FFFFFF; color: #15130F;
+                            font-family: 'OcdTextExtra'; font-size: 7pt; letter-spacing: 0.8pt; text-transform: uppercase; }
+                        .o_ocd_tk_title { position: absolute; left: 6mm; top: 19mm; line-height: 9mm; white-space: nowrap;
+                            font-family: 'OcdDisplay'; font-size: 18pt; color: #FFFFFF; }
+                        .o_ocd_tk_code_top { position: absolute; left: 6mm; top: 28.4mm; font-family: 'OcdTextExtra';
+                            font-size: 8.5pt; letter-spacing: 0.6pt; color: #FF9A4D; }
+                        .o_ocd_tk_pattern { position: absolute; left: 0; top: 36mm; width: 90mm; height: 70mm; }
+                        .o_ocd_tk_body { position: absolute; left: 0; top: 36mm; width: 90mm; height: 66mm;
+                            padding: 6mm 6mm 0 6mm; overflow: hidden; }
+                        .o_ocd_tk_label { font-family: 'OcdTextExtra'; font-size: 6.3pt; letter-spacing: 0.9pt;
+                            text-transform: uppercase; color: #736D66; }
+                        .o_ocd_tk_name { margin-top: 0.8mm; max-height: 13.5mm; overflow: hidden; line-height: 1.12;
+                            font-family: 'OcdDisplay'; color: #15130F; }
+                        .o_ocd_tk_sub { margin-top: 0.6mm; font-size: 7.6pt; line-height: 1.25; color: #665F58; }
+                        .o_ocd_tk_value { margin-top: 0.8mm; font-family: 'OcdTextBold'; font-size: 9.6pt;
+                            line-height: 1.25; color: #15130F; }
+                        .o_ocd_tk_grid { width: 78mm; margin-top: 4.5mm; border-collapse: collapse; table-layout: fixed; }
+                        .o_ocd_tk_grid td { width: 39mm; padding: 0 0 4mm 0; vertical-align: top; }
+                        .o_ocd_tk_grid td + td { padding-left: 4mm; }
+                        .o_ocd_tk_notch { position: absolute; top: 102.5mm; width: 7mm; height: 7mm;
+                            border-radius: 3.5mm; background: #F5F2EE; }
+                        .o_ocd_tk_notch_left { left: -3.5mm; }
+                        .o_ocd_tk_notch_right { right: -3.5mm; }
+                        .o_ocd_tk_perf { position: absolute; left: 6mm; top: 105.8mm; width: 78mm; height: 0;
+                            border-top: 0.35mm dashed #D9D2CA; }
+                        .o_ocd_tk_micro { position: absolute; left: 6mm; top: 107.2mm; width: 78mm; height: 1.7mm;
+                            overflow: hidden; white-space: nowrap; font-family: 'OcdTextSemi'; font-size: 3.2pt;
+                            line-height: 1.7mm; letter-spacing: 0.15pt; color: #C9BFB3; }
+                        .o_ocd_tk_qr { position: absolute; left: 6mm; top: 111.5mm; width: 36mm; height: 36mm; }
+                        .o_ocd_tk_side { position: absolute; left: 47mm; top: 112mm; width: 37mm; }
+                        .o_ocd_tk_side_value { margin: 0.8mm 0 3.6mm 0; white-space: nowrap; font-family: 'OcdTextExtra';
+                            font-size: 10pt; letter-spacing: 0.4pt; color: #15130F; }
+                        .o_ocd_tk_seal { letter-spacing: 1pt; color: #B84F00; }
+                        .o_ocd_tk_check { font-family: 'OcdTextSemi'; font-size: 7.2pt; line-height: 1.3; color: #665F58; }
+                        .o_ocd_tk_foot { position: absolute; left: 6mm; top: 151.5mm; width: 78mm; padding-top: 2.6mm;
+                            border-top: 0.25mm solid #E7E2DC; }
+                        .o_ocd_tk_notice { font-size: 6.4pt; line-height: 1.35; color: #665F58; }
+                        .o_ocd_tk_ref { margin-top: 1.4mm; font-family: 'OcdTextSemi'; font-size: 5.8pt; color: #8A837B; }
+                    </style>
+                    <div class="o_ocd_tk_card">
+                        <div class="o_ocd_tk_head">
+                            <div class="o_ocd_tk_sun"/>
+                            <img class="o_ocd_tk_logo" t-att-src="booking._ocd_ticket_logo()" alt=""/>
+                            <div class="o_ocd_tk_brand">OCD Live</div>
+                            <div class="o_ocd_tk_pill">Ticket</div>
+                            <div class="o_ocd_tk_title" t-out="ticket['title']"/>
+                            <div class="o_ocd_tk_code_top" t-out="ticket['code']"/>
+                        </div>
+                        <img class="o_ocd_tk_pattern" t-att-src="ticket['pattern']" alt=""/>
+                        <div class="o_ocd_tk_body">
+                            <div class="o_ocd_tk_label">Vendor</div>
+                            <div class="o_ocd_tk_name" t-attf-style="font-size: {{ ticket['name_size'] }}pt;" t-out="ticket['vendor']"/>
+                            <div t-if="ticket['category']" class="o_ocd_tk_sub" t-out="ticket['category']"/>
+                            <table class="o_ocd_tk_grid">
+                                <tr>
+                                    <td>
+                                        <div class="o_ocd_tk_label">Date</div>
+                                        <div class="o_ocd_tk_value" t-out="ticket['day']"/>
+                                    </td>
+                                    <td>
+                                        <div class="o_ocd_tk_label">Hours</div>
+                                        <div class="o_ocd_tk_value" t-out="ticket['hours']"/>
+                                        <div class="o_ocd_tk_sub" t-out="ticket['time_zone']"/>
+                                        <div t-if="ticket['studio_hours']" class="o_ocd_tk_sub" t-out="ticket['studio_hours']"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="o_ocd_tk_label">Place</div>
+                                        <div class="o_ocd_tk_value" t-out="ticket['place']"/>
+                                    </td>
+                                    <td>
+                                        <div class="o_ocd_tk_label">Package</div>
+                                        <div class="o_ocd_tk_value" t-out="ticket['package']"/>
+                                        <div t-if="ticket['need']" class="o_ocd_tk_sub" t-out="ticket['need']"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="o_ocd_tk_notch o_ocd_tk_notch_left"/>
+                        <div class="o_ocd_tk_notch o_ocd_tk_notch_right"/>
+                        <div class="o_ocd_tk_perf"/>
+                        <div class="o_ocd_tk_micro" t-out="ticket['micro']"/>
+                        <img class="o_ocd_tk_qr" t-att-src="ticket['qr']" alt="QR code of the ticket"/>
+                        <div class="o_ocd_tk_side">
+                            <div class="o_ocd_tk_label">Ticket number</div>
+                            <div class="o_ocd_tk_side_value" t-out="ticket['code']"/>
+                            <div class="o_ocd_tk_label">Seal</div>
+                            <div class="o_ocd_tk_side_value o_ocd_tk_seal" t-out="ticket['seal']"/>
+                            <div class="o_ocd_tk_check" t-out="ticket['check_line']"/>
+                        </div>
+                        <div class="o_ocd_tk_foot">
+                            <div class="o_ocd_tk_notice" t-out="ticket['notice']"/>
+                            <div class="o_ocd_tk_ref"><t t-out="ticket['reference']"/> · <t t-out="ticket['issued']"/></div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,6 +1,5 @@
 import re
 from datetime import timedelta
-from urllib.parse import urlencode
 
 import werkzeug.exceptions
 
@@ -46,10 +45,12 @@ class OcdDeliveryApp(http.Controller):
                 remember_courier(partner)
             else:
                 common.remember_vendor(partner)
-            return partner
-        partner = current_courier() or common.current_vendor()
-        if not partner:
-            werkzeug.exceptions.abort(request.redirect("/ocd/livrer"))
+        else:
+            partner = current_courier() or common.current_vendor()
+            if not partner:
+                werkzeug.exceptions.abort(request.redirect("/ocd/livrer"))
+        # The hours of the app are the ones of this person (their phone, else their country)
+        request._ocd_viewer_tz = common.viewer_tz(partner)
         return partner
 
     def _header_link(self, partner):
@@ -78,13 +79,12 @@ class OcdDeliveryApp(http.Controller):
         """Return the QR code that opens the payment page of the parcel on the phone of the
         customer, and the link itself."""
         url = parcel._ocd_payment_url()
-        query = urlencode({"barcode_type": "QR", "value": url, "width": 280, "height": 280})
-        return {"url": url, "src": f"/report/barcode?{query}"}
+        return {"url": url, "src": tools.qr_data_uri(url, box_size=8)}
 
     # === WHAT THE APP SHOWS === #
 
     def _hour(self, parcel, value):
-        return parcel.company_id._ocd_to_local(value).strftime("%H:%M") if value else ""
+        return common.to_viewer(value).strftime("%H:%M") if value else ""
 
     def _first_name(self, partner):
         return (partner.name or "").split()[0] if partner.name else ""
@@ -221,10 +221,10 @@ class OcdDeliveryApp(http.Controller):
         return " · ".join(part for part in (partner.district_id.name or partner.city, partner.delivery_landmark) if part)
 
     def _done_row(self, parcel):
-        when = parcel.company_id._ocd_to_local(parcel.ocd_delivered_at) if parcel.ocd_delivered_at else None
+        when = common.to_viewer(parcel.ocd_delivered_at) if parcel.ocd_delivered_at else None
         day = ""
         if when:
-            today = parcel.company_id._ocd_local_today()
+            today = common.to_viewer(fields.Datetime.now()).date()
             day = request.env._("today, %s", when.strftime("%H:%M")) if when.date() == today else \
                 tools.day_text(request.env, when.date(), "EEE d MMM")
         return {
@@ -278,7 +278,7 @@ class OcdDeliveryApp(http.Controller):
             # The parcel left the list (delivered, returned): the message goes to the top
             parcel_id = None
         company = common.company()
-        today = company._ocd_local_today()
+        today = common.to_viewer(fields.Datetime.now()).date()
         values = {
             "partner": partner,
             "token": token,
@@ -301,7 +301,7 @@ class OcdDeliveryApp(http.Controller):
             values["replace_url"] = f"/ocd/livrer/{token}"
         if partner.ocd_is_courier:
             delivered_today = done.filtered(
-                lambda p: p.ocd_delivered_at and company._ocd_to_local(p.ocd_delivered_at).date() == today
+                lambda p: p.ocd_delivered_at and common.to_viewer(p.ocd_delivered_at).date() == today
             )
             steps = self._tour_steps(cards)
             phone = re.sub(r"\D", "", company.phone or "")
@@ -321,7 +321,7 @@ class OcdDeliveryApp(http.Controller):
                         district=parcel.ocd_district_id.name or "", hour=self._hour(parcel, parcel.ocd_delivered_at),
                     ),
                 } for parcel in delivered_today[:3]],
-                "end_line": request.env._("End of the tour: hand over the cash to the dispatch before %s.", tools.hour_text(company.ocd_cash_deadline))
+                "end_line": request.env._("End of the tour: hand over the cash to the dispatch before %s.", common._hour_text(company.ocd_cash_deadline))
                 if partner.ocd_cash_on_hand else request.env._("End of the tour when all the steps are done."),
                 "dispatch_phone": phone,
                 "call_label": request.env._("Call the dispatch"),

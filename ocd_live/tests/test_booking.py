@@ -1,10 +1,12 @@
 from datetime import timedelta
 
+from freezegun import freeze_time
+
 from odoo import fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
 
-from .common import OcdLiveCommon
+from .common import OcdLiveCommon, pending_payment
 
 
 @tagged("post_install", "-at_install")
@@ -109,6 +111,49 @@ class TestOcdLiveBooking(OcdLiveCommon):
         self.assertEqual(booking.state, "cancelled")
         self.assertEqual(order.state, "cancel")
         self.assertTrue(self._book(self.starts[6], partner=self.other_vendor))
+
+    def test_hold_over_frees_the_hour_at_once(self):
+        """An unpaid live whose hold is over frees its hour at once, before the scheduled
+        release: the calendar offers it, another vendor books it."""
+        Booking = self.env["ocd.live.booking"]
+        booking = Booking._ocd_book_from_website(self.vendor, self.discovery, self.starts[6], "remote")
+        self.assertIn(self.starts[6], Booking._ocd_taken_starts([self.starts[6]], "remote", self.company))
+        booking.hold_until = fields.Datetime.now() - timedelta(minutes=1)
+        self.assertNotIn(self.starts[6], Booking._ocd_taken_starts([self.starts[6]], "remote", self.company))
+        other = Booking._ocd_book_from_website(self.other_vendor, self.discovery, self.starts[6], "remote")
+        self.assertEqual((booking.state, other.state), ("cancelled", "draft"))
+
+    def test_payment_left_does_not_keep_the_hour(self):
+        """A payment checked by the team chosen, then nothing sent nor said: the hour is free
+        after the time given to pay, counted from the payment started."""
+        Booking = self.env["ocd.live.booking"]
+        booking = Booking._ocd_book_from_website(self.vendor, self.discovery, self.starts[6], "remote")
+        pending_payment(self, booking.sale_order_id)
+        booking.hold_until = fields.Datetime.now() - timedelta(minutes=1)
+        self.assertFalse(booking._ocd_expired_holds(), "Payment just started: a few minutes to finish it")
+        later = fields.Datetime.now() + timedelta(minutes=(self.company.ocd_hold_minutes or 10) + 1)
+        self.assertEqual(booking._ocd_expired_holds(later), booking)
+        with freeze_time(later):
+            Booking._cron_release_expired_holds()
+        self.assertEqual(booking.state, "cancelled")
+
+    def test_payment_announced_keeps_the_hour_for_the_team(self):
+        """« I paid »: the hour stays held while the team checks the payment, and the team is
+        told the number that paid."""
+        Booking = self.env["ocd.live.booking"]
+        booking = Booking._ocd_book_from_website(self.vendor, self.discovery, self.starts[6], "remote")
+        order = booking.sale_order_id
+        transaction = pending_payment(self, order)
+        order._ocd_announce_payment("90 11 22 33")
+        self.assertEqual(order.ocd_payment_reference, "90 11 22 33")
+        self.assertIn("90 11 22 33", order.message_ids[:1].body)
+        hours = self.company.ocd_manual_hold_hours
+        now = fields.Datetime.now()
+        self.assertFalse(booking._ocd_expired_holds(now + timedelta(hours=hours) - timedelta(minutes=5)))
+        self.assertEqual(booking._ocd_expired_holds(now + timedelta(hours=hours, minutes=5)), booking)
+        # Paid and confirmed by the team: never released
+        transaction._set_done()
+        self.assertFalse(booking._ocd_expired_holds(now + timedelta(days=3)))
 
     def test_late_payment_keeps_the_lives_as_credit(self):
         booking = self.env["ocd.live.booking"]._ocd_book_from_website(

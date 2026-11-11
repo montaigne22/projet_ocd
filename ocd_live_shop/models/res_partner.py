@@ -181,6 +181,13 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {"type": "ir.actions.act_url", "url": f"/ocd/boutique/{self.id}", "target": "new"}
 
+    def _ocd_public_path(self):
+        """The boutique of the vendor, once the team has approved it (it opens only then)."""
+        self.ensure_one()
+        if self.ocd_is_vendor and self.ocd_vendor_state == "approved":
+            return f"ocd/boutique/{self.id}"
+        return super()._ocd_public_path()
+
     def action_ocd_deliveries_to_ocd(self):
         """Give the deliveries of a vendor often late to the OCD couriers."""
         self.write({"ocd_delivery_mode": "pickup"})

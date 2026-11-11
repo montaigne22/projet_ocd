@@ -102,7 +102,7 @@
             <field name="body">Bonjour {{1}}, votre live est dans l'annuaire OCD Live jusqu'à {{2}}. Bon live !</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
-                (0, 0, {'sequence': 2, 'value': '{{ object.company_id._ocd_to_local(object.window_end).strftime(\'%H:%M\') if object.window_end else \'\' }}', 'sample_value': '21:00'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.partner_id._ocd_to_local(object.window_end).strftime(\'%H:%M\') if object.window_end else \'\' }}', 'sample_value': '21:00'}),
             ]"/>
         </record>
 
@@ -127,6 +127,9 @@ Vous pouvez envoyer un autre lien depuis votre espace OCD Live.</field>
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
             <field name="partner_field">partner_id</field>
+            <!-- The PDF of the ticket comes with the message -->
+            <field name="header_type">document</field>
+            <field name="header_report_id" ref="ocd_live.action_report_ticket"/>
             <!-- No « code » in a Utility template (Meta sees a one-time code), no sentence in a
                  variable: the number of the ticket, then the same text for the studio and remote -->
             <field name="body">Bonjour {{1}}, voici votre ticket OCD Live pour votre live du {{2}}, de {{3}} à {{4}}. Il a lieu {{5}}. Numéro du ticket : {{6}}. Gardez ce message, l'équipe d'OCD Live vous le demandera le jour du live.
