@@ -2339,3 +2339,31 @@ body.o_ocd_body {
         max-width: 640px;
     }
 }
+
+// Bar of the team who sees the space of a vendor (« See the space » of the back office): on every
+// page of OCD Live while the view lasts, with the way out.
+.o_ocd_team_bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    // Only the team sees this bar: room on the left for the corner of Odoo shown to the team
+    padding: 9px 16px 9px 48px;
+    background: $ocd-ink;
+    color: #FFFFFF;
+    font-family: $ocd-text;
+    font-size: 14px;
+    line-height: 1.3;
+    b {
+        font-weight: 800;
+    }
+    .o_ocd_team_bar_leave {
+        flex: none;
+        border-radius: 999px;
+        padding: 6px 14px;
+        background: $ocd-orange;
+        color: $ocd-ink;
+        font-weight: 800;
+        text-decoration: none;
+    }
+}

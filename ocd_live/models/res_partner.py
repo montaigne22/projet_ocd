@@ -168,6 +168,26 @@ class ResPartner(models.Model):
         """Return what each choice of `field_name` means, for the choice cards of the forms."""
         return {}
 
+    def _ocd_team_view_signature(self, user_id):
+        """Signature of the link « See the space » of this vendor for the person `user_id`."""
+        self.ensure_one()
+        return hmac(self.env(su=True), "ocd_live.team_view", (user_id, self.id))
+
+    def action_ocd_view_space(self):
+        """Open the space of the vendor as the vendor sees it, in a new tab: the team sees the
+        lives, the packages and the pass of the vendor, and can act for the vendor."""
+        self.ensure_one()
+        if not self.env.user.has_group("ocd_live.group_ocd_live_user"):
+            raise AccessError(self.env._("Only the team of OCD Live can see the space of a vendor."))
+        if not self.ocd_is_vendor:
+            raise UserError(self.env._("%s is not a vendor: there is no space to see.", self.display_name))
+        signature = self._ocd_team_view_signature(self.env.uid)
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"/ocd/espace/equipe/{self.id}?signature={signature}",
+            "target": "new",
+        }
+
     def action_ocd_open_whatsapp(self):
         """Open a WhatsApp conversation with the contact."""
         self.ensure_one()

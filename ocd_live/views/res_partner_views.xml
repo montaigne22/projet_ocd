@@ -28,6 +28,8 @@
                         <group string="Directory" invisible="not ocd_is_vendor">
                             <field name="ocd_pass_active"/>
                             <field name="ocd_pass_end_date"/>
+                            <button name="action_ocd_view_space" type="object" string="See the space"
+                                    class="btn-link ps-0" colspan="2" groups="ocd_live.group_ocd_live_user"/>
                             <button name="action_ocd_reset_space_link" type="object" string="New personal link"
                                     class="btn-link ps-0" colspan="2"
                                     confirm="The vendor will need the new link: the old one stops working."/>
@@ -92,6 +94,7 @@
                     <button name="action_ocd_refuse_vendor" type="object" string="Refuse"
                             invisible="ocd_vendor_state != 'to_check'"/>
                     <button name="action_ocd_open_whatsapp" type="object" string="Write on WhatsApp" invisible="not phone"/>
+                    <button name="action_ocd_view_space" type="object" string="See the space" groups="ocd_live.group_ocd_live_user"/>
                     <field name="ocd_vendor_state" widget="statusbar" statusbar_visible="to_check,approved"/>
                 </header>
                 <sheet>

@@ -99,6 +99,10 @@
         </t>
         <t t-call="website.layout" no_header="True" no_footer="True" body_classname.f="o_ocd_body" head="head">
             <div t-attf-class="o_ocd_app #{'o_ocd_has_nav' if nav else ''}" t-att-data-ocd-url="replace_url">
+                <div t-if="ocd_team_view" class="o_ocd_team_bar" role="status">
+                    <span><span>Team view</span> · <b t-out="ocd_team_view.name"/></span>
+                    <a href="/ocd/espace/equipe/quitter" class="o_ocd_team_bar_leave">Leave</a>
+                </div>
                 <header class="o_ocd_header">
                     <div t-attf-class="o_ocd_frame o_ocd_top #{'o_ocd_top_flow' if back else ''}">
                         <a t-if="header_name" href="/ocd" class="o_ocd_brandbox o_ocd_brandbox_named">

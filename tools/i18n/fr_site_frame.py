@@ -10,6 +10,13 @@ SITE_FRAME = {
     "The space is for the vendors: their lives, their packages, their pass. It opens with the WhatsApp number of the vendor, not with an account of the team.":
         "L'espace est pour les vendeurs : leurs lives, leurs paquets, leur pass. Il s'ouvre avec le numéro WhatsApp du vendeur, pas avec un compte de l'équipe.",
     "A number typed with an account of the team sends nothing.": "Un numéro tapé avec un compte de l'équipe n'envoie rien.",
+    "To see what a vendor sees: open the vendor in the back office, then « See the space ».":
+        "Pour voir ce que voit un vendeur : ouvre sa fiche dans le back-office, puis « Voir son espace ».",
+    "<span>Team view</span> ·": "<span>Vue de l'équipe</span> ·",
+    "Leave": "Quitter",
+    "See the space": "Voir son espace",
+    "Only the team of OCD Live can see the space of a vendor.": "Seule l'équipe d'OCD Live peut voir l'espace d'un vendeur.",
+    "%s is not a vendor: there is no space to see.": "%s n'est pas un vendeur : il n'y a pas d'espace à voir.",
     "Open the vendors": "Ouvrir les vendeurs",
     "Open the back office": "Ouvrir le back-office",
     "Back to the home page": "Retour à l'accueil",

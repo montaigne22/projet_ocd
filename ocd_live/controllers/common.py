@@ -11,6 +11,8 @@ from .. import tools
 MODES = ("studio", "remote")
 NAME_MAX = 80
 SESSION_VENDOR = "ocd_vendor_id"
+# Vendor whose space a person of the team opened from the back office (« See the space »)
+SESSION_TEAM_VIEW = "ocd_team_view_vendor_id"
 
 
 def parse_day(value):
@@ -97,10 +99,25 @@ def account_vendor():
     return vendor if vendor.ocd_is_vendor else Partner
 
 
+def team_view_vendor():
+    """Vendor whose space a person of the team opened from the back office (« See the space »),
+    as long as this person is logged in and in the team of OCD Live."""
+    Partner = request.env["res.partner"].sudo()
+    vendor_id = request.session.get(SESSION_TEAM_VIEW)
+    if not vendor_id:
+        return Partner
+    vendor = Partner.browse(vendor_id).exists()
+    if vendor.ocd_is_vendor and request.env.user.has_group("ocd_live.group_ocd_live_user"):
+        return vendor
+    request.session.pop(SESSION_TEAM_VIEW, None)
+    return Partner
+
+
 def current_vendor_and_source(token=None):
     """Return the vendor of the visitor and how it was found:
 
     - "link": the personal link of the vendor (link mode), which opens the space on this browser;
+    - "team": a person of the team who opened the space of the vendor from the back office;
     - "browser": the vendor opened on this browser with its personal link or a WhatsApp code;
     - "account": the vendor of the Odoo account logged in, whatever the way the vendors log in
       (an account checked by a password needs no link and no code).
@@ -112,7 +129,11 @@ def current_vendor_and_source(token=None):
         if vendor:
             # The personal link opens the space on this browser for the next pages
             request.session[SESSION_VENDOR] = vendor.id
+            request.session.pop(SESSION_TEAM_VIEW, None)
         return vendor, "link" if vendor else False
+    vendor = team_view_vendor()
+    if vendor:
+        return vendor, "team"
     if login in ("link", "whatsapp_code"):
         vendor_id = request.session.get(SESSION_VENDOR)
         vendor = Partner.browse(vendor_id).exists() if vendor_id else Partner
@@ -147,6 +168,7 @@ def page_values(voice_key, **values):
         "voice_languages": voice_languages(),
         "voice_caption": prompt.with_context(lang=request.env.lang).text if prompt else "",
         "ocd_company": company(),
+        "ocd_team_view": team_view_vendor(),
         **values,
     }
 

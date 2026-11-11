@@ -2,6 +2,7 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from odoo import fields
+from odoo.exceptions import AccessError
 from odoo.fields import Command
 from odoo.tests import HttpCase, tagged
 
@@ -287,6 +288,44 @@ class TestOcdLiveWebsite(HttpCase):
             response = self.url_open("/ocd/connexion", data={"csrf_token": self.csrf_token(), "phone": "90 00 00 07"})
         send.assert_not_called()
         self.assertIn("o_ocd_team_notice", response.text)
+
+    def _team_user(self, login):
+        return self.env["res.users"].create({
+            "name": f"Team {login}",
+            "login": login,
+            "password": f"{login}-2026",
+            "group_ids": [Command.set(self.env.ref("ocd_live.group_ocd_live_user").ids)],
+        })
+
+    def test_team_sees_the_space_of_a_vendor(self):
+        team = self._team_user("kofi-ocd")
+        other = self._team_user("ama-ocd")
+        url = self.vendor.with_user(team).action_ocd_view_space()["url"]
+        self.authenticate("kofi-ocd", "kofi-ocd-2026")
+        # A changed link, or a link signed for another person of the team, opens nothing
+        self.assertEqual(self.url_open(url.replace("signature=", "signature=0")).status_code, 404)
+        self.assertEqual(self.url_open(self.vendor.with_user(other).action_ocd_view_space()["url"]).status_code, 404)
+        response = self.url_open(url)
+        self.assertTrue(response.url.endswith("/ocd/espace/moi"))
+        self.assertIn("Awa Mensah", response.text)
+        self.assertIn("o_ocd_team_bar", response.text)
+        self.assertNotIn("/ocd/deconnexion", response.text)
+        # The bar stays on the other pages of OCD Live during the view
+        self.assertIn("o_ocd_team_bar", self.url_open("/reserver/studio").text)
+        # Leaving goes back to the vendor in the back office and ends the view
+        response = self.url_open("/ocd/espace/equipe/quitter", allow_redirects=False)
+        self.assertIn(f"res_partner_action_ocd_vendor/{self.vendor.id}", response.headers["Location"])
+        response = self.url_open("/ocd/espace/moi")
+        self.assertIn("o_ocd_team_notice", response.text)
+        self.assertNotIn("o_ocd_team_bar", response.text)
+
+    def test_only_the_team_sees_the_space_of_a_vendor(self):
+        url = self.vendor.with_user(self._team_user("kofi-ocd")).action_ocd_view_space()["url"]
+        self._vendor_account()
+        self.assertEqual(self.url_open(url).status_code, 404, "A vendor account cannot use a link of the team")
+        portal = self.env["res.users"].search([("login", "=", "awa-ocd")])
+        with self.assertRaises(AccessError):
+            self.vendor.with_user(portal).action_ocd_view_space()
 
     def test_space_with_a_whatsapp_code(self):
         self.company.ocd_vendor_login = "whatsapp_code"

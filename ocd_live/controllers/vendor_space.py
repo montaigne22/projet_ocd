@@ -1,6 +1,7 @@
 from odoo import http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
+from odoo.tools import consteq
 
 from . import common
 from .booking import OcdLiveBooking
@@ -98,6 +99,32 @@ class OcdVendorSpace(http.Controller):
         request.session.pop(common.SESSION_VENDOR, None)
         return request.redirect("/ocd/connexion")
 
+    # === THE TEAM SEES THE SPACE OF A VENDOR === #
+
+    @http.route("/ocd/espace/equipe/<int:vendor_id>", type="http", auth="user", website=True, methods=["GET"], sitemap=False)
+    def team_view(self, vendor_id, signature=None, **kwargs):
+        """« See the space » of the back office: the link is signed for the person of the team
+        who touched it, it opens nothing for anyone else."""
+        user = request.env.user
+        vendor = request.env["res.partner"].sudo().browse(vendor_id).exists()
+        if (
+            not user.has_group("ocd_live.group_ocd_live_user")
+            or not vendor.ocd_is_vendor
+            or not signature
+            or not consteq(vendor._ocd_team_view_signature(user.id), signature)
+        ):
+            raise request.not_found()
+        request.session[common.SESSION_TEAM_VIEW] = vendor.id
+        return request.redirect("/ocd/espace/moi")
+
+    @http.route("/ocd/espace/equipe/quitter", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
+    def team_view_leave(self, **kwargs):
+        """End of the view of the team: back to the vendor in the back office."""
+        vendor_id = request.session.pop(common.SESSION_TEAM_VIEW, None)
+        if vendor_id and request.env.user._is_internal():
+            return request.redirect(f"/odoo/action-ocd_live.res_partner_action_ocd_vendor/{int(vendor_id)}")
+        return request.redirect("/ocd")
+
     # === SPACE === #
 
     def _vendor_or_login(self, token):
@@ -186,6 +213,9 @@ class OcdVendorSpace(http.Controller):
     def _header_link(self, source):
         """Link of the header of the space: an Odoo account logs out of Odoo (the space would
         open again by itself otherwise), a browser forgets the vendor and asks for a number."""
+        if source == "team":
+            # The bar of the view of the team has the way out
+            return False
         if source == "account":
             return {"href": "/web/session/logout?redirect=/ocd/connexion", "label": request.env._("Log out")}
         return {"href": "/ocd/deconnexion", "label": request.env._("Change number")}
