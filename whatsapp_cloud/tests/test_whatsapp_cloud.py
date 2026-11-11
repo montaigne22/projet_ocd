@@ -277,6 +277,51 @@ class TestWhatsAppCloud(WhatsAppCommon):
         composer.action_send()
         self.assertEqual(self.partner.whatsapp_message_count, 1)
 
+    def test_authentication_template(self):
+        template = self.env["whatsapp.template"].create({
+            "name": "Login code",
+            "template_name": "login_code",
+            "lang_code": "fr",
+            "category": "authentication",
+            "model_id": self.env["ir.model"]._get_id("res.partner"),
+            "account_id": self.account.id,
+            "body": "Votre code est {{1}}.",
+        })
+        template.variable_ids.value = "{{ ctx.get('code') }}"
+        # Submitted without a text: Meta writes it, with the time of the code and the button
+        # that copies the code (a text here is refused: "unexpected field text")
+        answer = {"id": "999", "status": "PENDING", "category": "AUTHENTICATION"}
+        with patch(REQUEST, return_value=mock_response(answer)) as request:
+            template.action_submit_to_meta()
+        self.assertEqual(request.call_args.kwargs["json"]["components"], [
+            {"type": "BODY", "add_security_recommendation": True},
+            {"type": "FOOTER", "code_expiration_minutes": 10},
+            {"type": "BUTTONS", "buttons": [{"type": "OTP", "otp_type": "COPY_CODE"}]},
+        ])
+        # Sent: the code in the text and in the button that copies it
+        template.status = "approved"
+        message = template.with_context(code="482913")._send(self.partner)
+        self.assertEqual(json.loads(message.payload)["template"]["components"], [
+            {"type": "body", "parameters": [{"type": "text", "text": "482913"}]},
+            {"type": "button", "sub_type": "url", "index": "0", "parameters": [{"type": "text", "text": "482913"}]},
+        ])
+        # Read again from Meta: the time of the code is kept, the button is not stored
+        vals = template._prepare_vals_from_meta({
+            "name": "login_code", "language": "fr", "status": "APPROVED", "category": "AUTHENTICATION",
+            "components": [
+                {"type": "BODY", "text": "*{{1}}* est votre code de vérification.", "add_security_recommendation": True},
+                {"type": "FOOTER", "text": "Ce code expire dans 5 minutes.", "code_expiration_minutes": 5},
+                {"type": "BUTTONS", "buttons": [{"type": "OTP", "otp_type": "COPY_CODE", "text": "Copier le code"}]},
+            ],
+        })
+        self.assertEqual(vals["code_expiration_minutes"], 5)
+        self.assertEqual(len(vals["button_ids"]), 1, "Only the command that clears the buttons")
+        template.write(vals)
+        self.assertFalse(template.button_ids)
+        with patch(REQUEST, return_value=mock_response({"success": True})) as request:
+            template.action_submit_to_meta()
+        self.assertEqual(request.call_args.kwargs["json"]["components"][1], {"type": "FOOTER", "code_expiration_minutes": 5})
+
     def test_sync_templates(self):
         Template = self.env["whatsapp.template"].with_context(active_test=False)
         Template.search([("template_name", "in", ["order_confirmed", "provided"])]).unlink()

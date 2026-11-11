@@ -22,8 +22,12 @@
             <field name="template_name">ocd_code_connexion</field>
             <field name="lang_code">fr</field>
             <field name="category">authentication</field>
+            <!-- Authentication template: Meta writes the text itself (the code, a security advice,
+                 the time of the code) and adds the button that copies the code; this text is the
+                 one kept in the history of the contact. -->
+            <field name="code_expiration_minutes">10</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="body">Votre code OCD Live est {{1}}. Il est valable 10 minutes. Ne le donnez à personne.</field>
+            <field name="body">{{1}} est votre code de vérification. Pour votre sécurité, ne le communiquez à personne. Ce code expire dans 10 minutes.</field>
             <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ ctx.get(\'ocd_login_code\') }}', 'sample_value': '123456'})]"/>
         </record>
 
@@ -106,7 +110,9 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live.model_ocd_directory_listing"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, votre lien n'a pas été accepté dans l'annuaire : {{2}}</field>
+            <field name="body">Bonjour {{1}}, votre lien n'a pas été accepté dans l'annuaire. Raison : {{2}}
+
+Vous pouvez envoyer un autre lien depuis votre espace OCD Live.</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object.refuse_note or object.refuse_reason_id.message or object.refuse_reason_id.name }}', 'sample_value': 'Le live n a pas encore commencé.'}),
@@ -119,7 +125,9 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, voici votre ticket OCD Live : {{2}}, de {{3}} à {{4}}, {{5}}. Code {{6}} : {{7}}</field>
+            <field name="body">Bonjour {{1}}, voici votre ticket OCD Live : {{2}}, de {{3}} à {{4}}, {{5}}. Code {{6}} : {{7}}
+
+À bientôt sur OCD Live !</field>
             <field name="button_url_value">{{ object._ocd_ticket_path() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon ticket', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/ticket/42?access_token=abc'})]"/>
             <field name="variable_ids" eval="[

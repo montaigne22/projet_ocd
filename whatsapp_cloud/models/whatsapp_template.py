@@ -54,6 +54,13 @@ class WhatsappTemplate(models.Model):
         ],
         default="utility",
     )
+    code_expiration_minutes = fields.Integer(
+        string="Code Valid For (Minutes)",
+        default=10,
+        help="Authentication templates: Meta writes the text itself in the language of the "
+        "template (the code, then a security advice) and adds this time in the footer, with a "
+        "button that copies the code.",
+    )
     status = fields.Selection(
         selection=[
             ("unknown", "Not synchronised"),
@@ -274,6 +281,10 @@ class WhatsappTemplate(models.Model):
                     vals["header_text"] = component.get("text")
             elif component_type == "FOOTER":
                 vals["footer_text"] = component.get("text")
+                if component.get("code_expiration_minutes"):
+                    vals["code_expiration_minutes"] = component["code_expiration_minutes"]
+            elif component_type == "BUTTONS" and vals["category"] == "authentication":
+                continue
             elif component_type == "BUTTONS":
                 for sequence, button in enumerate(component.get("buttons", [])):
                     button_type = (button.get("type") or "").lower()
@@ -408,6 +419,9 @@ class WhatsappTemplate(models.Model):
     def _check_for_meta(self):
         """The rules of Meta for a template, checked before submitting it."""
         self.ensure_one()
+        if self.category == "authentication":
+            self._check_authentication_for_meta()
+            return
         body = self.body or ""
         if not body.strip():
             raise UserError(_("Write the text of the template."))
@@ -422,6 +436,19 @@ class WhatsappTemplate(models.Model):
         if len(self.footer_text or "") > 60:
             raise UserError(_("The footer is too long: 60 characters at most."))
         self.button_ids._check_for_meta()
+
+    def _check_authentication_for_meta(self):
+        """Authentication templates: one variable (the code), positional, and a time of 1 to 90
+        minutes; Meta writes the text and the button."""
+        self.ensure_one()
+        if self.parameter_format != "positional":
+            raise UserError(_("An authentication template uses numbered variables ({{1}}), not named ones."))
+        if len(self.variable_ids) != 1:
+            raise UserError(_(
+                "An authentication template has one variable, the code ({{1}}): Meta writes the rest of the text."
+            ))
+        if not 1 <= self.code_expiration_minutes <= 90:
+            raise UserError(_("The code of an authentication template is valid from 1 to 90 minutes."))
 
     def _get_sample_record(self):
         self.ensure_one()
@@ -445,6 +472,14 @@ class WhatsappTemplate(models.Model):
     def _prepare_meta_components(self, account):
         """Components of the template for the API of Meta (creation or edition)."""
         self.ensure_one()
+        if self.category == "authentication":
+            # Meta refuses a text here: it writes "<code> is your verification code" itself, in
+            # the language of the template, with the security advice and the time of the code
+            return [
+                {"type": "BODY", "add_security_recommendation": True},
+                {"type": "FOOTER", "code_expiration_minutes": self.code_expiration_minutes},
+                {"type": "BUTTONS", "buttons": [{"type": "OTP", "otp_type": "COPY_CODE"}]},
+            ]
         components = []
         if self.header_type == "text" and self.header_text:
             header = {"type": "HEADER", "format": "TEXT", "text": self.header_text}
@@ -746,6 +781,24 @@ class WhatsappTemplate(models.Model):
                 param["parameter_name"] = key
             return param
 
+        if self.category == "authentication":
+            # The code goes in the text and in the button that copies it
+            code = values[self.variable_ids[:1]._get_placeholder_key()] if self.variable_ids else ""
+            components = [
+                {"type": "body", "parameters": [{"type": "text", "text": code}]},
+                {"type": "button", "sub_type": "url", "index": "0", "parameters": [{"type": "text", "text": code}]},
+            ]
+            return {
+                "messaging_product": "whatsapp",
+                "recipient_type": "individual",
+                **self.env["whatsapp.message"]._get_recipient_vals(number, user_ref),
+                "type": "template",
+                "template": {
+                    "name": self.template_name,
+                    "language": {"code": self.lang_code},
+                    "components": components,
+                },
+            }
         components = []
         header_expects_value = (
             "{{" in self.header_text if self.header_text else bool(self.header_value)

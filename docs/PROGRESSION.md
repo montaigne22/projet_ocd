@@ -41,6 +41,7 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
    tarifs archivés : les compléter puis les activer. Sans tarif, le shop refuse l'adresse (jamais de
    livraison à un prix inconnu).
 2. **WhatsApp chez Meta** (équipe) : connecter le numéro d'OCD Live (WhatsApp › Comptes), puis soumettre
+   (le code de connexion est un modèle *Authentification* : Meta en écrit le texte, Odoo envoie le code)
    les modèles depuis Odoo (WhatsApp › Messages automatiques) : tant qu'un modèle n'est pas approuvé, son
    message ne part pas (les Paramètres, section WhatsApp, et les Automatisations le signalent). Les
    réponses rapides de l'équipe se créent dans les conversations (`::livreur`, `::retard`…).
@@ -63,6 +64,21 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — modèles WhatsApp acceptés par Meta
+- **Code de connexion refusé par Meta** (« le composant BODY a un champ inattendu : text ») : un modèle de
+  catégorie *Authentification* n'a pas de texte chez Meta, qui écrit lui-même « <code> est votre code de
+  vérification » dans la langue du modèle. `whatsapp_cloud` soumet maintenant ces modèles comme Meta
+  l'attend (conseil de sécurité, durée du code en pied de message, bouton « Copier le code ») et envoie le
+  code dans le texte et dans le bouton ; nouveau champ « Code valable (minutes) » (10 pour OCD Live).
+- **Modèles qui finissaient par une variable** (refusés par Meta) : « lien refusé », « ticket du live » et
+  « colis en route » finissent maintenant par du texte, mêmes variables. Tous les modèles du dépôt passent
+  les règles de Meta (début et fin sans variable, pas deux variables collées).
+- Après la mise à jour des modules WhatsApp, soumettre de nouveau ces quatre modèles à Meta.
+- `whatsapp_cloud` vient du dépôt tchokos-projet : ce changement est à reporter là-bas si le module y est
+  encore suivi.
+- Point connu : le test « commande confirmée puis expédiée » de `whatsapp_cloud_sale` échoue quand les
+  modules d'OCD sont installés, car OCD remplace volontairement « commande expédiée » par « colis livré ».
 
 ### 11 novembre 2026 — les livreurs entrent avec leur numéro
 - Page « Tes colis à livrer » (`/ocd/livrer`, « Espace livreurs » dans le pied de page) : le livreur

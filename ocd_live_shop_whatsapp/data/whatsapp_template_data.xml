@@ -53,7 +53,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, votre colis {{2}} est en route avec {{3}}. Donnez ce code au livreur seulement quand vous avez le colis en main : {{4}}</field>
+            <field name="body">Bonjour {{1}}, votre colis {{2}} est en route avec {{3}}. Votre code de livraison : {{4}}. Donnez-le au livreur seulement quand vous avez le colis en main.</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
                 (0, 0, {'sequence': 2, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Robe en wax'}),
