@@ -29,7 +29,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **313 tests, un seul
+`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **316 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
 ceux des colis). Sur une base neuve avec la démo, 5 tests sans échec : la démo remplit les écrans,
 conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
@@ -66,6 +66,33 @@ conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — le téléphone retient le vendeur et le livreur ; messages en français seulement
+- **Vendeur « plus connecté » après Accueil puis Moi** : pas reproduit en local, avec chaque façon de se
+  connecter (lien personnel, code WhatsApp, mot de passe, vue de l'équipe, administrateur connecté dans le
+  même navigateur) ; la session reste la même sur Accueil, Moi, Lives, la boutique, le retour arrière et le
+  rechargement. La cause est donc côté serveur : session d'Odoo perdue ou remplacée (requête arrivée sans
+  le cookie, proxy, plusieurs bases), ou lien « Changer de numéro » chargé à l'avance par le navigateur ou
+  un proxy (ce lien déconnectait).
+- **Correction, pour les vendeurs et les livreurs** : en plus de la session d'Odoo, un cookie du
+  navigateur (180 jours, inaccessible aux scripts de la page, signé avec le secret du lien personnel)
+  retrouve le vendeur ou le livreur quand la session l'a perdu. Il s'arrête avec « Changer de numéro » /
+  « Se déconnecter » ou un nouveau lien personnel. Le journal du serveur l'écrit (« opened again by the
+  cookie of the browser ») : s'il apparaît, la session d'Odoo se perd bien sur ce serveur.
+- **Se déconnecter est un bouton** (formulaire) : « Changer de numéro », « Ce n'est pas moi » (la même étape
+  de la réservation redemande le nom et le numéro, au lieu de la page du numéro), « Se déconnecter » du
+  livreur, « Quitter » la vue de l'équipe. Ouverts comme liens (préchargement, ancien lien), ils ne font
+  plus rien.
+- **« Se déconnecter » d'un compte avec mot de passe ne marchait plus** : Odoo 20 refuse la déconnexion
+  par lien (erreur 405) ; c'est maintenant un formulaire, comme Odoo l'attend.
+- **Messages WhatsApp en français seulement** : les versions anglaises des modèles fournis par les modules
+  WhatsApp (commande reçue, confirmée, prête, expédiée, devis, satisfaction, reprise de conversation) sont
+  archivées : jamais envoyées, hors des listes, rien à soumettre à Meta. Un contact anglophone reçoit la
+  version française. `ocd_live_shop_whatsapp` dépend maintenant de `whatsapp_cloud_sale` (déjà installé).
+- Versions : `ocd_live`, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp` 20.0.1.4.0.
+- Tests : session perdue puis retrouvée par le cookie (lien et code, vendeur et livreur), lien chargé à
+  l'avance sans effet, cookie fabriqué refusé, nouveau lien personnel qui arrête le cookie, déconnexion du
+  compte Odoo, modèles anglais archivés.
 
 ### 11 novembre 2026 — modèles WhatsApp encore refusés : textes corrigés jusque dans les bases
 - **Ce qui bloquait** : les modèles fournis sont chargés une seule fois, à l'installation (pour garder les

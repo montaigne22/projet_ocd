@@ -1,3 +1,4 @@
+import re
 from unittest.mock import patch
 
 from odoo.tests import HttpCase, tagged
@@ -59,13 +60,24 @@ class TestOcdCourierLogin(HttpCase, OcdShopCommon):
         response = self._post("/ocd/livrer/code", code=sent[0])
         self.assertTrue(response.url.endswith("/ocd/livrer/moi"))
         self.assertIn("My tour", response.text)
-        self.assertIn("/ocd/livrer/deconnexion", response.text)
-        # The phone remembers the courier
+        self.assertIn('action="/ocd/livrer/deconnexion"', response.text)
+        # The phone remembers the courier, even when the session of Odoo is lost (ended after 7
+        # days without a change, or replaced): the cookie of the phone opens the app again
         self.assertIn("My tour", self.url_open("/ocd/livrer").text)
-        # Log out: the number is asked again
-        response = self.url_open("/ocd/livrer/deconnexion")
+        self.opener.cookies.set("session_id", None)
+        page = self.url_open("/ocd/livrer/moi")
+        self.assertTrue(page.url.endswith("/ocd/livrer/moi"))
+        self.assertIn("My tour", page.text)
+        # A link loaded in advance by the browser (prefetch) logs nobody out
+        self.url_open("/ocd/livrer/deconnexion")
+        self.assertIn("My tour", self.url_open("/ocd/livrer/moi").text)
+        # Log out (a form): the number is asked again, on this phone too
+        token = re.search(r'name="csrf_token" value="([^"]+)"', page.text).group(1)
+        response = self.url_open("/ocd/livrer/deconnexion", data={"csrf_token": token})
         self.assertTrue(response.url.endswith("/ocd/livrer"))
         self.assertIn('name="phone"', response.text)
+        self.assertTrue(self.url_open("/ocd/livrer/moi").url.endswith("/ocd/livrer"))
+        self.opener.cookies.set("session_id", None)
         self.assertTrue(self.url_open("/ocd/livrer/moi").url.endswith("/ocd/livrer"))
 
     def test_password_mode_gives_a_code_to_the_couriers(self):
@@ -86,6 +98,8 @@ class TestOcdCourierLogin(HttpCase, OcdShopCommon):
         self.assertIn("My tour", self.url_open("/ocd/livrer/moi").text)
         self.courier.action_ocd_reset_space_link()
         self.assertTrue(self.url_open("/ocd/livrer/moi").url.endswith("/ocd/livrer"))
+        self.opener.cookies.set("session_id", None)
+        self.assertTrue(self.url_open("/ocd/livrer/moi").url.endswith("/ocd/livrer"), "Not by the cookie either")
         self.assertEqual(self.url_open(f"/ocd/livrer/{token}").status_code, 404)
         # No more a courier: the new link opens nothing either
         new_token = self.courier._ocd_get_space_token()

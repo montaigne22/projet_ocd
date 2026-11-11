@@ -9,6 +9,7 @@ from odoo.modules.module import load_script
 from odoo.tests import TransactionCase, tagged
 
 from odoo.addons.ocd_live.tests.common import OcdLiveCommon
+from odoo.addons.ocd_live_whatsapp.hooks import archive_english_templates
 from odoo.addons.whatsapp_cloud.models.whatsapp_template import PLACEHOLDER_RE, WhatsappTemplate
 
 
@@ -283,6 +284,24 @@ class TestOcdTemplatesForMeta(TransactionCase):
                 words = re.findall(r"[^\W_][\w'’-]*", PLACEHOLDER_RE.sub(" ", template.body))
                 variables = set(PLACEHOLDER_RE.findall(template.body))
                 self.assertGreaterEqual(len(words), 3 * len(variables) + 1)
+
+    def test_no_english_template(self):
+        """OCD Live writes in French: the English versions given by the WhatsApp modules are
+        archived, and a contact whose language is English gets the French version."""
+        data = self.env["ir.model.data"].search([("model", "=", "whatsapp.template")])
+        templates = self.env["whatsapp.template"].browse(data.mapped("res_id"))
+        english = templates.filtered(lambda template: template._lang_base(template.lang_code) == "en")
+        self.assertTrue(english, "The WhatsApp modules give English versions")
+        self.assertFalse(english.filtered("active"))
+        self.env["res.lang"]._activate_lang("en_US")
+        partner = self.env["res.partner"].create({"name": "John Mensah", "lang": "en_US"})
+        follow_up = self.env.ref("whatsapp_cloud.template_conversation_follow_up")
+        self.assertEqual(follow_up._get_lang_version(partner), follow_up)
+        # The function archives only what is still active, and says what it archived
+        confirmed = self.env.ref("whatsapp_cloud_sale.template_order_confirmed_en")
+        confirmed.active = True
+        self.assertEqual(archive_english_templates(self.env), confirmed)
+        self.assertFalse(confirmed.active)
 
     def test_migrations_give_the_new_texts(self):
         """The databases installed before keep the previous texts (data loaded once): the

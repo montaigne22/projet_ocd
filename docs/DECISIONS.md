@@ -63,6 +63,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 ## Vendeurs et annuaire
 
 - Connexion du vendeur **par lien personnel envoyé sur WhatsApp** (réglable : code à 6 chiffres, ou mot de passe).
+- **Le téléphone retient le vendeur et le livreur** (lien ou code) jusqu'à « Changer de numéro » /
+  « Se déconnecter » ou un nouveau lien personnel : un cookie du navigateur (180 jours) le retrouve même
+  quand la session d'Odoo se termine ou est remplacée. Se déconnecter est toujours un bouton (formulaire),
+  jamais un simple lien : un navigateur ou un proxy qui charge les liens à l'avance ne déconnecte personne.
 - Annuaire : liens vérifiés pendant les **créneaux de vérification** (8:00–11:00 et 18:00–21:00 par défaut),
   retirés à la fin du créneau. **Pass de 30 jours** pour envoyer ses liens (5 000 F par défaut).
 - Un nouveau vendeur, un nouveau produit et un lien de live sont **vérifiés par l'équipe** ; un refus
@@ -106,6 +110,9 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   « Préviens-moi ») : la demande vaut accord pour ce message.
 - Les colis d'OCD ont leurs propres messages : le « commande expédiée » du shop n'est pas envoyé pour eux,
   et la demande de note part une fois par commande, après son dernier colis.
+- **Messages en français** : les versions anglaises des modèles fournis par les modules WhatsApp sont
+  archivées (jamais envoyées, hors des listes, pas à soumettre à Meta) ; un contact anglophone reçoit la
+  version française. L'équipe peut en réactiver une (filtre « Archivé »).
 - **Textes des modèles** : chargés à l'installation, puis à l'équipe. Une nouvelle version d'un module ne
   change que les textes restés tels que le module les avait écrits, et jamais celui d'un modèle approuvé par
   Meta (c'est le texte que Meta envoie). Odoo refuse de soumettre un texte que Meta refuserait (variable au

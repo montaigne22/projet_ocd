@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import date, timedelta
 
@@ -5,8 +6,11 @@ from odoo import fields
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import consteq, format_date
+from odoo.tools.misc import hmac
 
 from .. import tools
+
+_logger = logging.getLogger(__name__)
 
 MODES = ("studio", "remote")
 NAME_MAX = 80
@@ -16,6 +20,11 @@ SESSION_VENDOR = "ocd_vendor_id"
 SESSION_VENDOR_TOKEN = "ocd_vendor_token"
 # Vendor whose space a person of the team opened from the back office (« See the space »)
 SESSION_TEAM_VIEW = "ocd_team_view_vendor_id"
+# Cookie of the browser that keeps the vendor opened when the session of Odoo ends (7 days
+# without a change) or is replaced: the phone remembers the vendor until « Change number »
+# or a new personal link, as promised on the pages
+VENDOR_COOKIE = "ocd_vendor"
+BROWSER_COOKIE_DAYS = 180
 
 
 def parse_day(value):
@@ -102,27 +111,79 @@ def account_vendor():
     return vendor if vendor.ocd_is_vendor else Partner
 
 
+def browser_signature(partner, kind):
+    """Signature of the cookie that keeps `partner` opened on a browser: made with the secret of
+    its personal link, so that a new personal link ends the browsers already opened."""
+    token = partner.sudo()._ocd_get_space_token()
+    return hmac(request.env(su=True), f"ocd_live-{kind}-browser", f"{partner.id}:{token}")
+
+
+def remember_browser(cookie, partner, kind):
+    """Keep `partner` opened on this browser with a cookie of its own, out of reach of the
+    scripts of the page (HttpOnly), sent only by the pages of the site (SameSite)."""
+    request.future_response.set_cookie(
+        cookie,
+        f"{partner.id}.{browser_signature(partner, kind)}",
+        max_age=BROWSER_COOKIE_DAYS * 24 * 60 * 60,
+        httponly=True,
+        samesite="Lax",
+        secure=request.httprequest.scheme == "https",
+    )
+
+
+def forget_browser(cookie):
+    request.future_response.set_cookie(cookie, "", max_age=0, expires=0, httponly=True, samesite="Lax")
+
+
+def browser_partner(cookie, kind):
+    """Contact kept on this browser by `cookie`, as long as its signature is the one of its
+    current personal link (empty otherwise)."""
+    Partner = request.env["res.partner"].sudo()
+    partner_id, _sep, signature = (request.httprequest.cookies.get(cookie) or "").partition(".")
+    if not partner_id.isdigit() or not signature:
+        return Partner
+    partner = Partner.browse(int(partner_id)).exists()
+    if partner.ocd_space_token and consteq(signature, browser_signature(partner, kind)):
+        return partner
+    return Partner
+
+
 def remember_vendor(vendor):
     """This browser opens the space of `vendor` from now on (personal link, code checked, new
-    vendor of a booking), until « Change number » or a new personal link."""
+    vendor of a booking), until « Change number » or a new personal link: in the session of Odoo,
+    and in a cookie of the browser that outlives it."""
     request.session[SESSION_VENDOR] = vendor.id
     request.session[SESSION_VENDOR_TOKEN] = vendor.sudo()._ocd_get_space_token()
+    remember_browser(VENDOR_COOKIE, vendor, "vendor")
 
 
 def forget_vendor():
     request.session.pop(SESSION_VENDOR, None)
     request.session.pop(SESSION_VENDOR_TOKEN, None)
+    forget_browser(VENDOR_COOKIE)
 
 
 def vendor_header_link(source):
-    """Link of the header of the pages of the vendor: an Odoo account logs out of Odoo (the
+    """Button of the header of the pages of the vendor: an Odoo account logs out of Odoo (the
     space would open again by itself otherwise), a browser forgets the vendor and asks for a
-    number, the view of the team has its own bar."""
+    number, the view of the team has its own bar. Both are sent by POST: a link that the browser
+    or a proxy loads in advance (prefetch) must never log out."""
     if source == "team":
         return False
     if source == "account":
-        return {"href": "/web/session/logout?redirect=/ocd/connexion", "label": request.env._("Log out")}
-    return {"href": "/ocd/deconnexion", "label": request.env._("Change number")}
+        return {
+            "href": "/web/session/logout", "post": True, "redirect": "/ocd/connexion",
+            "label": request.env._("Log out"),
+        }
+    return {"href": "/ocd/deconnexion", "post": True, "label": request.env._("Change number")}
+
+
+def local_path(path, default):
+    """`path` when it is a page of this site (/…), else `default`: never another site."""
+    path = path or ""
+    if path.startswith("/") and not path.startswith(("//", "/\\")):
+        return path
+    return default
 
 
 def team_view_vendor():
@@ -169,6 +230,14 @@ def current_vendor_and_source(token=None):
         if vendor_id:
             # A new personal link was made (or the vendor is gone): this browser asks again
             forget_vendor()
+        else:
+            vendor = browser_partner(VENDOR_COOKIE, "vendor")
+            if vendor.ocd_is_vendor:
+                # The session of Odoo lost the vendor (ended, or replaced by a new one): the
+                # cookie of this browser opens the space again
+                _logger.info("OCD Live: vendor %s opened again by the cookie of the browser", vendor.id)
+                remember_vendor(vendor)
+                return vendor, "browser"
     vendor = account_vendor()
     return vendor, "account" if vendor else False
 

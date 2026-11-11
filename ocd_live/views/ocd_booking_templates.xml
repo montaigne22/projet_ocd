@@ -113,7 +113,10 @@
             <div t-attf-class="o_ocd_app #{'o_ocd_has_nav' if nav else ''}" t-att-data-ocd-url="replace_url">
                 <div t-if="ocd_team_view" class="o_ocd_team_bar" role="status">
                     <span><span>Team view</span> · <b t-out="ocd_team_view.name"/></span>
-                    <a href="/ocd/espace/equipe/quitter" class="o_ocd_team_bar_leave">Leave</a>
+                    <form action="/ocd/espace/equipe/quitter" method="post" class="o_ocd_inline_form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="o_ocd_button_link o_ocd_team_bar_leave">Leave</button>
+                    </form>
                 </div>
                 <header class="o_ocd_header">
                     <div t-attf-class="o_ocd_frame o_ocd_top #{'o_ocd_top_flow' if back else ''}">
@@ -152,7 +155,15 @@
                         <nav class="o_ocd_topnav" aria-label="Menu">
                             <t t-call="ocd_live.nav_links"/>
                         </nav>
-                        <a t-if="header_link" t-att-href="header_link['href']" class="o_ocd_header_link" t-out="header_link['label']"/>
+                        <!-- A link that logs out is a form: the browsers and the proxies that load
+                             the links in advance (prefetch) never log anybody out -->
+                        <form t-if="header_link and header_link.get('post')" t-att-action="header_link['href']" method="post"
+                              class="o_ocd_inline_form o_ocd_header_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input t-if="header_link.get('redirect')" type="hidden" name="redirect" t-att-value="header_link['redirect']"/>
+                            <button type="submit" class="o_ocd_button_link o_ocd_header_link" t-out="header_link['label']"/>
+                        </form>
+                        <a t-elif="header_link" t-att-href="header_link['href']" class="o_ocd_header_link" t-out="header_link['label']"/>
                         <a t-if="header_pill" t-att-href="header_pill['href']" class="o_ocd_header_pill">
                             <t t-call="ocd_live.icon" icon.f="bag"/>
                             <span t-out="header_pill['label']"/>
@@ -505,7 +516,8 @@
                         <span class="o_ocd_muted">You book as</span>
                         <b t-out="vendor.name"/>
                         <span t-out="vendor.phone"/>
-                        <a href="/ocd/deconnexion" class="o_ocd_link">This is not me</a>
+                        <!-- Sends the small form below the page (a form cannot be in another one) -->
+                        <button type="submit" form="o_ocd_not_me" class="o_ocd_button_link o_ocd_link">This is not me</button>
                     </div>
                     <t t-else="">
                         <div class="o_ocd_name_city">
@@ -583,6 +595,12 @@
                 <div class="o_ocd_actions">
                     <button type="submit" class="o_ocd_cta">Continue</button>
                 </div>
+            </form>
+            <!-- « This is not me »: this browser forgets the vendor, and the same step asks the name
+                 and the number -->
+            <form t-if="vendor" id="o_ocd_not_me" action="/ocd/deconnexion" method="post" hidden="hidden">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="redirect" t-att-value="page_url"/>
             </form>
         </t>
     </template>

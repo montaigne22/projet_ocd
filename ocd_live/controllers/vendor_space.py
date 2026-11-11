@@ -1,5 +1,3 @@
-from urllib.parse import quote
-
 from odoo import http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
@@ -89,14 +87,14 @@ class OcdVendorSpace(http.Controller):
         ))
 
     def _render_account_not_vendor(self):
-        login_again = "/web/login?redirect=/ocd/espace/moi"
         return request.render("ocd_live.space_account", common.page_values(
             False,
             back="/ocd",
             header_brand=True,
             nav="me",
             account_name=self._customer().name,
-            logout_url=f"/web/session/logout?redirect={quote(login_again, safe='')}",
+            # Odoo logs out by POST only: the button sends a form, then the login page
+            logout_redirect="/web/login?redirect=/ocd/espace/moi",
         ))
 
     @http.route("/ocd/connexion", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
@@ -162,10 +160,18 @@ class OcdVendorSpace(http.Controller):
             return request.redirect(self._ocd_open_session(partner, target))
         return self._render_code(error=request.env._("Wrong or expired code. Ask for a new code."), target=target)
 
-    @http.route("/ocd/deconnexion", type="http", auth="public", website=True, sitemap=False)
-    def logout(self, **kwargs):
+    @http.route("/ocd/deconnexion", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
+    def logout_page(self, **kwargs):
+        """An old link, or a link that the browser or a proxy loads in advance: it logs nobody
+        out (« Change number » is a button that sends a form)."""
+        return request.redirect("/ocd/espace/moi")
+
+    @http.route("/ocd/deconnexion", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
+    def logout(self, redirect=None, **kwargs):
+        """« Change number », « This is not me »: this browser forgets the vendor, then the page
+        asked (the step of the booking) or the page of the number."""
         common.forget_vendor()
-        return request.redirect("/ocd/connexion")
+        return request.redirect(common.local_path(redirect, "/ocd/connexion"))
 
     # === THE TEAM SEES THE SPACE OF A VENDOR === #
 
@@ -186,6 +192,11 @@ class OcdVendorSpace(http.Controller):
         return request.redirect("/ocd/espace/moi")
 
     @http.route("/ocd/espace/equipe/quitter", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
+    def team_view_leave_page(self, **kwargs):
+        """A link loaded in advance ends nothing: « Leave » is a button that sends a form."""
+        return request.redirect("/ocd/espace/moi")
+
+    @http.route("/ocd/espace/equipe/quitter", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def team_view_leave(self, **kwargs):
         """End of the view of the team: back to the vendor in the back office."""
         vendor_id = request.session.pop(common.SESSION_TEAM_VIEW, None)

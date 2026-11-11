@@ -299,6 +299,23 @@ body.o_ocd_body {
     font-size: 14px;
     font-weight: 600;
 }
+// A button that logs out looks like the link it replaces; its form takes no room of its own
+.o_ocd_inline_form {
+    display: contents;
+}
+.o_ocd_button_link {
+    appearance: none;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    cursor: pointer;
+}
 .o_ocd_link {
     font-weight: 700;
     text-decoration: underline !important;
@@ -1423,6 +1440,9 @@ body.o_ocd_body {
     + .o_ocd_voice {
         margin-left: 8px;
     }
+}
+.o_ocd_header_form + .o_ocd_voice {
+    margin-left: 8px;
 }
 
 .o_ocd_header_pill {

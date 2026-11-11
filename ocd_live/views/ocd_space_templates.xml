@@ -33,7 +33,11 @@
                     <p class="o_ocd_intro">To reach your space, log in with the number and the password of your vendor account.</p>
                 </main>
                 <div class="o_ocd_actions">
-                    <a t-att-href="logout_url" class="o_ocd_cta">Log in with another account</a>
+                    <form action="/web/session/logout" method="post" class="o_ocd_inline_form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="redirect" t-att-value="logout_redirect"/>
+                        <button type="submit" class="o_ocd_cta">Log in with another account</button>
+                    </form>
                     <a href="/ocd" class="o_ocd_cta o_ocd_cta_ghost">Back to the home page</a>
                 </div>
             </div>

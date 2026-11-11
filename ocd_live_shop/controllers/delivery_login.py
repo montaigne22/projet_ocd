@@ -1,3 +1,5 @@
+import logging
+
 from odoo import http
 from odoo.http import request
 from odoo.tools import consteq
@@ -5,8 +7,13 @@ from odoo.tools import consteq
 from odoo.addons.ocd_live.controllers import common
 from odoo.addons.ocd_live.controllers.vendor_space import SESSION_LOGIN, OcdVendorSpace
 
+_logger = logging.getLogger(__name__)
+
 SESSION_COURIER = "ocd_courier_id"
 SESSION_COURIER_TOKEN = "ocd_courier_token"
+# The phone remembers the courier when the session of Odoo ends or is replaced (see
+# common.VENDOR_COOKIE)
+COURIER_COOKIE = "ocd_courier"
 
 
 def current_courier():
@@ -15,6 +22,12 @@ def current_courier():
     Partner = request.env["res.partner"].sudo()
     courier_id = request.session.get(SESSION_COURIER)
     if not courier_id:
+        courier = common.browser_partner(COURIER_COOKIE, "courier")
+        if courier.active and courier.ocd_is_courier:
+            # The session of Odoo lost the courier: the cookie of this phone opens the app again
+            _logger.info("OCD Live: courier %s opened again by the cookie of the browser", courier.id)
+            remember_courier(courier)
+            return courier
         return Partner
     courier = Partner.browse(courier_id).exists()
     token = request.session.get(SESSION_COURIER_TOKEN) or ""
@@ -28,11 +41,13 @@ def current_courier():
 def remember_courier(courier):
     request.session[SESSION_COURIER] = courier.id
     request.session[SESSION_COURIER_TOKEN] = courier.sudo()._ocd_get_space_token()
+    common.remember_browser(COURIER_COOKIE, courier, "courier")
 
 
 def forget_courier():
     request.session.pop(SESSION_COURIER, None)
     request.session.pop(SESSION_COURIER_TOKEN, None)
+    common.forget_browser(COURIER_COOKIE)
 
 
 def courier_login_mode():
@@ -97,7 +112,13 @@ class OcdDeliveryLogin(OcdVendorSpace):
     def delivery_login_code(self, code=None, **kwargs):
         return self._login_code(code, "livrer")
 
-    @http.route("/ocd/livrer/deconnexion", type="http", auth="public", website=True, sitemap=False)
+    @http.route("/ocd/livrer/deconnexion", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
+    def delivery_logout_page(self, **kwargs):
+        """An old link, or a link loaded in advance by the browser: it logs nobody out (« Log
+        out » is a button that sends a form)."""
+        return request.redirect("/ocd/livrer/moi")
+
+    @http.route("/ocd/livrer/deconnexion", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def delivery_logout(self, **kwargs):
         """The courier leaves the app on this phone: the number is asked again."""
         forget_courier()

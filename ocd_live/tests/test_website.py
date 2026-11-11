@@ -1,3 +1,4 @@
+import re
 from datetime import timedelta
 from unittest.mock import patch
 
@@ -50,6 +51,23 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertIn(f"/reserver/remote/paquet/{self.discovery.id}/{self.day.isoformat()}", response.text)
         response = self.url_open(f"/reserver/remote/paquet/{self.discovery.id}/{self.day.isoformat()}")
         self.assertIn(f"/reserver/remote/{self.day.isoformat()}/0830/{self.discovery.id}", response.text)
+
+    def test_this_is_not_me_asks_again_at_the_same_step(self):
+        self.url_open(f"/ocd/espace/{self.vendor._ocd_get_space_token()}")
+        infos = f"/reserver/studio/{self.day.isoformat()}/0830/{self.discovery.id}"
+        response = self.url_open(infos)
+        self.assertIn("Awa Mensah", response.text)
+        self.assertIn('form="o_ocd_not_me"', response.text)
+        self.assertNotIn('name="phone"', response.text)
+        token = re.search(r'name="csrf_token" value="([^"]+)"', response.text).group(1)
+        # Another site is never a page to go back to
+        response = self.url_open("/ocd/deconnexion", data={"csrf_token": token, "redirect": "//evil.example/x"})
+        self.assertTrue(response.url.endswith("/ocd/connexion"))
+        self.url_open(f"/ocd/espace/{self.vendor._ocd_get_space_token()}")
+        response = self.url_open("/ocd/deconnexion", data={"csrf_token": token, "redirect": infos})
+        self.assertTrue(response.url.endswith(infos))
+        self.assertIn('name="phone"', response.text, "The step asks the name and the number")
+        self.assertNotIn("o_ocd_not_me", response.text)
 
     def test_bad_urls(self):
         self.assertEqual(self.url_open("/reserver/moon").status_code, 404)
@@ -270,8 +288,14 @@ class TestOcdLiveWebsite(HttpCase):
             response = self.url_open("/ocd/connexion")
             self.assertTrue(response.url.endswith("/ocd/espace/moi"), login)
             self.assertIn("Awa Mensah", response.text, login)
-            # Leaving the space logs out of Odoo (forgetting the number would open it again)
-            self.assertIn("/web/session/logout?redirect=/ocd/connexion", response.text, login)
+            # Leaving the space logs out of Odoo (forgetting the number would open it again):
+            # a form, Odoo 20 logs out by POST only
+            self.assertIn('action="/web/session/logout"', response.text, login)
+            self.assertIn('name="redirect" value="/ocd/connexion"', response.text, login)
+        response = self.url_open("/web/session/logout", data={
+            "csrf_token": self._form_token(response), "redirect": "/ocd/connexion",
+        })
+        self.assertTrue(response.url.endswith("/web/login?redirect=/ocd/espace/moi"), "Logged out of Odoo")
 
     def test_team_account_is_not_asked_a_number(self):
         self.authenticate("admin", "admin")
@@ -312,8 +336,13 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertNotIn("/ocd/deconnexion", response.text)
         # The bar stays on the other pages of OCD Live during the view
         self.assertIn("o_ocd_team_bar", self.url_open("/reserver/studio").text)
-        # Leaving goes back to the vendor in the back office and ends the view
-        response = self.url_open("/ocd/espace/equipe/quitter", allow_redirects=False)
+        # A link loaded in advance by the browser (prefetch) does not end the view
+        self.url_open("/ocd/espace/equipe/quitter")
+        self.assertIn("o_ocd_team_bar", self.url_open("/ocd/espace/moi").text)
+        # Leaving (a form) goes back to the vendor in the back office and ends the view
+        response = self.url_open(
+            "/ocd/espace/equipe/quitter", data={"csrf_token": self.csrf_token()}, allow_redirects=False
+        )
         self.assertIn(f"res_partner_action_ocd_vendor/{self.vendor.id}", response.headers["Location"])
         response = self.url_open("/ocd/espace/moi")
         self.assertIn("o_ocd_team_notice", response.text)
@@ -346,7 +375,8 @@ class TestOcdLiveWebsite(HttpCase):
         response = self.url_open("/ocd/espace/moi")
         self.assertEqual(response.status_code, 200)
         self.assertIn("o_ocd_account_notice", response.text)
-        self.assertIn("/web/session/logout?redirect=", response.text)
+        self.assertIn('action="/web/session/logout"', response.text)
+        self.assertIn('name="redirect" value="/web/login?redirect=/ocd/espace/moi"', response.text)
 
     def test_language_button_switches_the_page(self):
         french = self.env["res.lang"]._activate_lang("fr_FR")
@@ -371,6 +401,76 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertIn("Awa Mensah", self.url_open("/ocd/espace/moi").text)
         self.vendor.action_ocd_reset_space_link()
         self.assertTrue(self.url_open("/ocd/espace/moi").url.endswith("/ocd/connexion"))
+        # The cookie of the browser does not open the space again either
+        self._lose_the_session()
+        self.assertTrue(self.url_open("/ocd/espace/moi").url.endswith("/ocd/connexion"))
+
+    def _lose_the_session(self):
+        """The session of Odoo ends (7 days without a change) or is replaced by a new one: the
+        browser keeps its other cookies."""
+        self.opener.cookies.set("session_id", None)
+
+    def _form_token(self, response):
+        return re.search(r'name="csrf_token" value="([^"]+)"', response.text).group(1)
+
+    def _open_the_space(self, login):
+        """The vendor opens its space on this browser: its personal link, or its number and the
+        code received on WhatsApp."""
+        if login == "link":
+            return self.url_open(f"/ocd/espace/{self.vendor._ocd_get_space_token()}")
+        sent = []
+        with patch.object(type(self.env["res.partner"]), "_ocd_deliver_login_code", lambda partner, code: sent.append(code) or True):
+            response = self.url_open("/ocd/connexion", data={
+                "csrf_token": self._form_token(self.url_open("/ocd/connexion")), "phone": "90 00 00 07",
+            })
+        return self.url_open("/ocd/connexion/code", data={"csrf_token": self._form_token(response), "code": sent[0]})
+
+    def test_phone_remembers_the_vendor_when_the_session_is_lost(self):
+        self.authenticate(None, None)
+        for login in ("link", "whatsapp_code"):
+            self.company.ocd_vendor_login = login
+            self.assertIn("Awa Mensah", self._open_the_space(login).text, login)
+            self.assertTrue(self.opener.cookies.get("ocd_vendor"), login)
+            self._lose_the_session()
+            response = self.url_open("/ocd/espace/moi")
+            self.assertTrue(response.url.endswith("/ocd/espace/moi"), login)
+            self.assertIn("Awa Mensah", response.text, login)
+            # The session has the vendor again: the next pages do not need the cookie
+            self.assertIn("Awa Mensah", self.url_open("/ocd/espace/moi").text, login)
+            # A link loaded in advance (prefetch) logs nobody out: « Change number » is a form
+            self.assertIn('action="/ocd/deconnexion"', response.text, login)
+            self.url_open("/ocd/deconnexion")
+            self.assertIn("Awa Mensah", self.url_open("/ocd/espace/moi").text, login)
+            # « Change number » forgets the vendor in the session and on the browser
+            response = self.url_open("/ocd/deconnexion", data={"csrf_token": self._form_token(response)})
+            self.assertTrue(response.url.endswith("/ocd/connexion"), login)
+            self.assertFalse(self.opener.cookies.get("ocd_vendor"), login)
+            self._lose_the_session()
+            self.assertTrue(self.url_open("/ocd/espace/moi").url.endswith("/ocd/connexion"), login)
+
+    def _replace_cookie(self, name, value):
+        """Replace the cookie that the site gave (same host and path), as a person could."""
+        given = next(cookie for cookie in self.opener.cookies if cookie.name == name)
+        self.opener.cookies.set(name, None)
+        self.opener.cookies.set(name, value, domain=given.domain, path=given.path)
+
+    def test_cookie_of_the_browser_cannot_be_made_by_hand(self):
+        self.authenticate(None, None)
+        self.url_open(f"/ocd/espace/{self.vendor._ocd_get_space_token()}")
+        signature = self.opener.cookies.get("ocd_vendor").partition(".")[2]
+        other = self.vendor.copy({"name": "Kossi Mensah", "phone": "+228 90 00 00 08"})
+        other._ocd_get_space_token()
+        for value in (f"{self.vendor.id}.{'0' * len(signature)}", f"{other.id}.{signature}", "x.y", "."):
+            self._lose_the_session()
+            self._replace_cookie("ocd_vendor", value)
+            self.assertTrue(self.url_open("/ocd/espace/moi").url.endswith("/ocd/connexion"), value)
+        # The genuine cookie opens the space; not in the password mode, which does not use it
+        self._lose_the_session()
+        self._replace_cookie("ocd_vendor", f"{self.vendor.id}.{signature}")
+        self.assertIn("Awa Mensah", self.url_open("/ocd/espace/moi").text)
+        self._lose_the_session()
+        self.company.ocd_vendor_login = "password"
+        self.assertIn("/web/login", self.url_open("/ocd/espace/moi").url)
 
     def test_one_link_a_minute_for_a_number(self):
         self.authenticate(None, None)

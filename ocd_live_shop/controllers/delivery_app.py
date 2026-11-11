@@ -54,7 +54,7 @@ class OcdDeliveryApp(http.Controller):
 
     def _header_link(self, partner):
         if partner.ocd_is_courier:
-            return {"href": "/ocd/livrer/deconnexion", "label": request.env._("Log out")}
+            return {"href": "/ocd/livrer/deconnexion", "post": True, "label": request.env._("Log out")}
         return common.vendor_header_link(common.current_vendor_and_source()[1])
 
     def _parcels(self, partner):
