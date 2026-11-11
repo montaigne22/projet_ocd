@@ -5,6 +5,12 @@ SITE_FRAME = {
         "Réservez un live au studio ou depuis chez vous, suivez les lives du moment et achetez aux vendeurs.",
     "Links": "Liens",
     "Log out": "Se déconnecter",
+    "How the vendors and the couriers log in": "Connexion des vendeurs et des livreurs",
+    "How The Vendors And The Couriers Log In": "Connexion des vendeurs et des livreurs",
+    "The personal link and the code are sent on WhatsApp (module OCD Live WhatsApp). The couriers have no password: with « Number and password », they receive a code.":
+        "Le lien personnel et le code sont envoyés sur WhatsApp (module OCD Live WhatsApp). Les livreurs n'ont pas de mot de passe : avec « Numéro et mot de passe », ils reçoivent un code.",
+    "The personal link and the code go on WhatsApp. The couriers have no password: with « Number and password », they receive a code.":
+        "Le lien personnel et le code partent sur WhatsApp. Les livreurs n'ont pas de mot de passe : avec « Numéro et mot de passe », ils reçoivent un code.",
     "<b>Look at your WhatsApp.</b>": "<b>Regarde ton WhatsApp.</b>",
     "Touch the link you received: your space opens by itself. This link works only for you.":
         "Touche le lien reçu : ton espace s'ouvre tout seul. Ce lien ne marche que pour toi.",

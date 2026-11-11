@@ -112,7 +112,7 @@ class ResCompany(models.Model):
             ("whatsapp_code", "WhatsApp number and a code to type"),
             ("password", "Number and password"),
         ],
-        string="How The Vendors Log In",
+        string="How The Vendors And The Couriers Log In",
         default="link",
         help="The code is sent on WhatsApp: it needs the module OCD Live WhatsApp.",
     )
