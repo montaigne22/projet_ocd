@@ -25,6 +25,12 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   pied de page sombre. Les pages d'OCD Live gardent leur propre cadre ; le thème habille les pages d'Odoo
   et celles que l'équipe crée avec l'éditeur du site (palette « OCD Live » proposée).
 
+- **Qui ouvre l'espace vendeur (« Moi »)** : un compte Odoo relié à un vendeur l'ouvre directement, quel
+  que soit le mode de connexion des vendeurs ; un compte de l'équipe ne voit pas le formulaire du numéro
+  (un numéro tapé avec ce compte n'envoie rien) ; l'équipe voit l'espace d'un vendeur depuis sa fiche
+  (« Voir son espace », lien signé pour la personne, barre « Vue de l'équipe » tant que dure la vue) ;
+  un client connecté qui n'est pas vendeur garde le formulaire, avec son numéro prérempli.
+
 ## Réservations
 
 - Parcours par défaut : **jour → heure → paquet** (réglable : paquet d'abord).

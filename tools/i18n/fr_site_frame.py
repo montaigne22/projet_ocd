@@ -15,6 +15,13 @@ SITE_FRAME = {
     "<span>Team view</span> ·": "<span>Vue de l'équipe</span> ·",
     "Leave": "Quitter",
     "See the space": "Voir son espace",
+    "<span>Logged in as</span>": "<span>Connecté en tant que</span>",
+    "This account is not linked to a vendor yet: give the WhatsApp number of your space of vendor.":
+        "Ce compte n'est pas encore relié à un vendeur : donne le numéro WhatsApp de ton espace vendeur.",
+    "This account is not a vendor account.": "Ce compte n'est pas un compte vendeur.",
+    "To reach your space, log in with the number and the password of your vendor account.":
+        "Pour ouvrir ton espace, connecte-toi avec le numéro et le mot de passe de ton compte vendeur.",
+    "Log in with another account": "Se connecter avec un autre compte",
     "Only the team of OCD Live can see the space of a vendor.": "Seule l'équipe d'OCD Live peut voir l'espace d'un vendeur.",
     "%s is not a vendor: there is no space to see.": "%s n'est pas un vendeur : il n'y a pas d'espace à voir.",
     "Open the vendors": "Ouvrir les vendeurs",

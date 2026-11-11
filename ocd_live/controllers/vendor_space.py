@@ -1,3 +1,5 @@
+from urllib.parse import quote
+
 from odoo import http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
@@ -21,13 +23,29 @@ class OcdVendorSpace(http.Controller):
         if common.current_vendor():
             # Already known on this browser or by the Odoo account logged in: no number to give
             return request.redirect("/ocd/espace/moi")
-        if request.env.user._is_internal():
+        user = request.env.user
+        if user._is_internal():
             return self._render_team()
         if common.company().ocd_vendor_login == "password":
+            if not user._is_public():
+                # Logged in with an account that is not a vendor: say it, instead of sending to
+                # the login page that would send back here
+                return self._render_account_not_vendor()
             return request.redirect("/web/login?redirect=/ocd/espace/moi")
         return self._render_login()
 
+    def _customer(self):
+        """Partner of the Odoo account logged in that is not a vendor (a customer of the shop)."""
+        user = request.env.user
+        return request.env["res.partner"] if user._is_public() else user.partner_id.sudo()
+
     def _render_login(self, sent=False, error=None, phone=None, country=None):
+        customer = self._customer()
+        if customer and phone is None:
+            # A customer logged in: the number of the account is filled in, it can be changed
+            countries = common.directory_countries()
+            country = customer.country_id if customer.country_id in countries else common.default_country()
+            phone = common.local_digits(country, customer.phone) if common.normalize_phone(country, customer.phone) else ""
         return request.render("ocd_live.space_login", common.page_values(
             False,
             back="/ocd",
@@ -37,6 +55,18 @@ class OcdVendorSpace(http.Controller):
             error=error,
             phone_value=phone or "",
             dial_rows=common.dial_rows(country or common.default_country()),
+            account_name=customer.name if customer else False,
+        ))
+
+    def _render_account_not_vendor(self):
+        login_again = "/web/login?redirect=/ocd/espace/moi"
+        return request.render("ocd_live.space_account", common.page_values(
+            False,
+            back="/ocd",
+            header_brand=True,
+            nav="me",
+            account_name=self._customer().name,
+            logout_url=f"/web/session/logout?redirect={quote(login_again, safe='')}",
         ))
 
     @http.route("/ocd/connexion", type="http", auth="public", website=True, methods=["POST"], sitemap=False)

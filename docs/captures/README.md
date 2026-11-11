@@ -11,3 +11,5 @@ Refaites à chaque évolution avec `tools/captures/` (voir `docs/DEVELOPPEMENT.m
 - `site-phone-o-*`, `site-desktop-o-*` : pages d'Odoo (recrutement, menu du site, connexion) avec le
   thème « OCD Live » (`theme_ocd`), le logo, le pied de page et les coordonnées d'OCD Live, en français.
 - `backoffice-16-choix-du-theme.png` : le thème « OCD Live » dans le choix des thèmes d'Odoo.
+- `site-phone-v-*` : « Moi » avec un compte Odoo connecté : équipe (`1`), vue de l'équipe sur l'espace
+  d'un vendeur (`2`), client avec son numéro prérempli (`3`).

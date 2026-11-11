@@ -24,6 +24,22 @@
         </t>
     </template>
 
+    <template id="space_account" name="OCD Live: an account that is not a vendor">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_account_notice">
+                <main class="o_ocd_main">
+                    <h1 class="o_ocd_h1">This account is not a vendor account.</h1>
+                    <p class="o_ocd_intro"><span>Account of</span> <b t-out="account_name"/></p>
+                    <p class="o_ocd_intro">To reach your space, log in with the number and the password of your vendor account.</p>
+                </main>
+                <div class="o_ocd_actions">
+                    <a t-att-href="logout_url" class="o_ocd_cta">Log in with another account</a>
+                    <a href="/ocd" class="o_ocd_cta o_ocd_cta_ghost">Back to the home page</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
     <template id="space_login" name="OCD Live: find my space">
         <t t-call="ocd_live.app">
             <form action="/ocd/connexion" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
@@ -34,6 +50,10 @@
                         <t t-if="login == 'whatsapp_code'">No password. We send you a code on WhatsApp.</t>
                         <t t-else="">No password. We send you a link on WhatsApp.</t>
                     </p>
+                    <div t-if="account_name" class="o_ocd_info o_ocd_account_info">
+                        <p class="mb-1"><span>Logged in as</span> <b t-out="account_name"/></p>
+                        <p class="mb-0">This account is not linked to a vendor yet: give the WhatsApp number of your space of vendor.</p>
+                    </div>
                     <div class="o_ocd_field o_ocd_field_big">
                         <label for="c-phone" class="o_ocd_label">Your WhatsApp number</label>
                         <t t-call="ocd_live.phone_field" field_id.f="c-phone"/>

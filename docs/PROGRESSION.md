@@ -10,6 +10,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Paiement : formulaire d'Odoo, tous les fournisseurs configurés par pays, devise par pays | ✅ fait, testé |
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
+| « Moi » pour les comptes Odoo connectés : vendeur, équipe (« Voir son espace »), client | ✅ fait, testé |
 | Site fidèle au design : réservation, annuaire, espace (téléphone, tablette, ordinateur) | ✅ fait |
 | Adresse du site (`/`) = accueil d'OCD Live, site en français, logo et pied de page d'OCD sur les pages d'Odoo | ✅ fait, testé |
 | Thème du site « OCD Live » (`theme_ocd`) dans le choix des thèmes d'Odoo | ✅ fait, testé |
@@ -61,6 +62,21 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — « Moi » quand on est déjà connecté à Odoo
+Constat : connecté à Odoo, « Moi » demandait quand même le numéro pour recevoir un lien.
+1. **Compte relié à un vendeur** (accès avec mot de passe, ou personne de la société du vendeur) :
+   l'espace s'ouvre directement, dans tous les modes ; on en sort par « Se déconnecter ».
+2. **Compte de l'équipe** : plus de formulaire ; une page dit que l'espace est pour les vendeurs, avec
+   « Ouvrir les vendeurs » (back-office). Un numéro envoyé avec ce compte n'envoie rien.
+3. **« Voir son espace »** sur la fiche vendeur (et l'onglet OCD Live des contacts) : l'espace du vendeur
+   s'ouvre dans un nouvel onglet, comme le vendeur le voit ; lien signé pour la personne de l'équipe
+   (modifié, ou ouvert par un autre : rien) ; barre « Vue de l'équipe · vendeur · Quitter » sur toutes les
+   pages d'OCD Live pendant la vue ; « Quitter » ramène à la fiche du vendeur.
+4. **Client connecté qui n'est pas vendeur** : le formulaire reste, avec son nom et son numéro préremplis.
+   En mode « mot de passe », une page dit que ce compte n'est pas un compte vendeur (avant : la page de
+   connexion et l'espace se renvoyaient l'un à l'autre).
+Captures `site-phone-v-*`.
 
 ### 11 novembre 2026 — thème du site « OCD Live », plus de page 404 après « Confirmer »
 - **Thème `theme_ocd`**, proposé dans Site Web › Configuration › Paramètres › Choisir un thème (et dans

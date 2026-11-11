@@ -327,6 +327,27 @@ class TestOcdLiveWebsite(HttpCase):
         with self.assertRaises(AccessError):
             self.vendor.with_user(portal).action_ocd_view_space()
 
+    def test_customer_account_gets_its_number_filled_in(self):
+        customer = self.env["res.partner"].create({
+            "name": "Efua Kumah", "phone": "+228 91 22 33 44", "country_id": self.env.ref("base.tg").id,
+        })
+        self.env["res.users"].create({
+            "name": "Efua Kumah", "login": "efua-ocd", "password": "efua-ocd-2026", "partner_id": customer.id,
+            "group_ids": [Command.set(self.env.ref("base.group_portal").ids)],
+        })
+        self.authenticate("efua-ocd", "efua-ocd-2026")
+        response = self.url_open("/ocd/espace/moi")
+        self.assertTrue(response.url.endswith("/ocd/connexion"))
+        self.assertIn("Efua Kumah", response.text)
+        self.assertIn('value="91223344"', response.text)
+        self.assertIn('name="phone"', response.text)
+        # Password mode: the account is not a vendor, no loop between the login page and the space
+        self.company.ocd_vendor_login = "password"
+        response = self.url_open("/ocd/espace/moi")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("o_ocd_account_notice", response.text)
+        self.assertIn("/web/session/logout?redirect=", response.text)
+
     def test_space_with_a_whatsapp_code(self):
         self.company.ocd_vendor_login = "whatsapp_code"
         self.authenticate(None, None)
