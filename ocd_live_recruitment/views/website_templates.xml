@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="footer_jobs_link" inherit_id="ocd_live.footer" name="OCD Live: recruitment in the footer of the site">
+        <xpath expr="//ul[@id='o_ocd_footer_links']" position="inside">
+            <li><a href="/jobs">Join the team</a></li>
+        </xpath>
+    </template>
+
+    <!-- Side of the jobs page: OCD Live and the contact details of the company, not the
+         examples of Odoo (text, photo, e-mail and phone). -->
+    <template id="job_right_side_bar" inherit_id="website_hr_recruitment.job_right_side_bar" name="OCD Live: side of the jobs page">
+        <xpath expr="//div[@id='jobs_grid_right']" position="replace">
+            <div class="col-lg-4 oe_structure oe_empty" id="jobs_grid_right" t-ignore="true">
+                <section>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12 pb24">
+                                <img src="/ocd_live/static/img/ocd_logo_round.png" alt="Logo OCD" width="64" height="64" class="mb-3"/>
+                                <p class="mb8">OCD Live hosts the lives of the vendors, at its studio or from their home. We look for hosts who like to present products and talk with the buyers.</p>
+                                <div class="s_hr pt16 pb16" data-snippet="s_hr" data-name="Separator">
+                                    <hr class="w-100 mx-auto"/>
+                                </div>
+                                <ul class="list-unstyled text-nowrap">
+                                    <li><i class="oi oi-fw oi-filled me-2" data-icon="chat_bubble"/><span><a href="/contactus">Contact us</a></span></li>
+                                    <li t-if="website.company_id.email">
+                                        <i class="oi oi-fw oi-filled me-2" data-icon="mail"/>
+                                        <span><a t-attf-href="mailto:#{website.company_id.email}" t-out="website.company_id.email"/></span>
+                                    </li>
+                                    <li t-if="website.company_id.phone">
+                                        <i class="oi oi-fw oi-filled me-2" data-icon="phone"/>
+                                        <span class="o_force_ltr"><a t-attf-href="tel:#{website.company_id.phone}" t-out="website.company_id.phone"/></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

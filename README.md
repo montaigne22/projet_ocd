@@ -14,6 +14,7 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `ocd_delivery_togo` | Régions, villes et quartiers du Togo, point de repère, modes de livraison pour Lomé et le reste du Togo |
 | `ocd_debranding` | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients : site, connexion, portail, back-office, fenêtres d'erreur, e-mails |
 | `ocd_live_demo` | Données de démonstration, retirées entièrement en désinstallant le module |
+| `theme_ocd` | Thème du site « OCD Live » (polices, couleurs, boutons, en-tête, pied de page du design) pour les pages d'Odoo : à choisir dans Site Web › Configuration › Paramètres › Choisir un thème |
 
 | `whatsapp_cloud` | Conversations WhatsApp dans Odoo, messages automatiques validés par Meta, STOP et START |
 | `whatsapp_cloud_sale` | Messages WhatsApp de la commande du shop au client |
@@ -43,3 +44,4 @@ odoo -c odoo.conf -d ocd -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_sh
 ```
 
 Pour voir le projet avec des données : ajouter `ocd_live_demo` (le désinstaller retire tout).
+Puis choisir le thème du site : Site Web › Configuration › Paramètres › **Choisir un thème** › « OCD Live ».

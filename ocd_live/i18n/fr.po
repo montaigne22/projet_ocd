@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-11 07:37+0000\n"
-"PO-Revision-Date: 2026-11-11 07:37+0000\n"
+"POT-Creation-Date: 2026-11-11 10:22+0000\n"
+"PO-Revision-Date: 2026-11-11 10:22+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1207,9 +1207,16 @@ msgstr "Réserver au moins (heures avant)"
 
 #. module: ocd_live
 #: model:website.menu,name:ocd_live.menu_ocd_booking
+#: model_terms:ir.ui.view,arch_db:ocd_live.footer
+#: model_terms:ir.ui.view,arch_db:ocd_live.header_call_to_action
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
 msgid "Book a live"
 msgstr "Réserver un live"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.footer
+msgid "Book a live at the studio or from home, follow the lives of the moment and buy from the vendors."
+msgstr "Réservez un live au studio ou depuis chez vous, suivez les lives du moment et achetez aux vendeurs."
 
 #. module: ocd_live
 #. odoo-python
@@ -1621,6 +1628,7 @@ msgstr "Confirmé"
 #: model:ir.model,name:ocd_live.model_res_partner
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__partner_id
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__partner_id
+#: model_terms:ir.ui.view,arch_db:ocd_live.footer
 msgid "Contact"
 msgstr "Contact"
 
@@ -1857,6 +1865,7 @@ msgstr "Découverte"
 #: model:ir.model.fields,field_description:ocd_live.field_res_partner__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_website__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -2376,6 +2385,7 @@ msgstr "Je n'ai rien reçu : renvoyer"
 #: model:ir.model.fields,field_description:ocd_live.field_res_partner__id
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order__id
 #: model:ir.model.fields,field_description:ocd_live.field_sale_order_line__id
+#: model:ir.model.fields,field_description:ocd_live.field_website__id
 msgid "ID"
 msgstr "ID"
 
@@ -2572,6 +2582,7 @@ msgstr "Lien ouvert : pas de live en cours"
 
 #. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing_refuse__listing_ids
+#: model_terms:ir.ui.view,arch_db:ocd_live.footer
 msgid "Links"
 msgstr "Liens"
 
@@ -2792,6 +2803,7 @@ msgstr "Responsable des lives"
 
 #. module: ocd_live
 #: model:website.menu,name:ocd_live.menu_ocd_directory
+#: model_terms:ir.ui.view,arch_db:ocd_live.footer
 msgid "Lives of the moment"
 msgstr "Lives du moment"
 
@@ -2826,6 +2838,7 @@ msgstr "Verrouillée"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.app
+#: model_terms:ir.ui.view,arch_db:ocd_live.footer
 msgid "Logo OCD"
 msgstr "Logo OCD"
 
@@ -3020,6 +3033,7 @@ msgstr "Mon reçu"
 
 #. module: ocd_live
 #: model:website.menu,name:ocd_live.menu_ocd_space
+#: model_terms:ir.ui.view,arch_db:ocd_live.footer
 msgid "My space"
 msgstr "Mon espace"
 
@@ -4382,6 +4396,11 @@ msgid "Scheduled task: its hours and delays are set in the Settings, without tou
 msgstr "Tâche planifiée : ses heures et ses délais se règlent dans les Paramètres, sans toucher au code."
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.website_search_box_input
+msgid "Search..."
+msgstr "Rechercher..."
+
+#. module: ocd_live
 #: model:ir.model.fields,help:ocd_live.field_res_partner__ocd_space_token
 #: model:ir.model.fields,help:ocd_live.field_res_users__ocd_space_token
 msgid "Secret of the personal link of the vendor. Changing it disables the old link."
@@ -5270,6 +5289,12 @@ msgstr "Ce contact est déjà prévenu pour ce créneau."
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/booking.py:0
+msgid "This hour can no longer be booked: choose another one."
+msgstr "Cette heure n'est plus disponible : choisis-en une autre."
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/models/ocd_live_booking.py:0
 msgid "This hour costs more: choose another hour, or book it apart."
 msgstr "Cette heure coûte plus cher : choisis une autre heure, ou réserve-la à part."
@@ -5768,6 +5793,11 @@ msgstr "Nous n'avons pas pu te joindre à ce numéro. Écris-nous sur WhatsApp p
 #: model_terms:ir.ui.view,arch_db:ocd_live.pass_page
 msgid "We warn you on WhatsApp"
 msgstr "On te prévient sur WhatsApp"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_website
+msgid "Website"
+msgstr "Site web"
 
 #. module: ocd_live
 #. odoo-python

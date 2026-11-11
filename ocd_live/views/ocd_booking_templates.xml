@@ -98,7 +98,7 @@
             <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700;800&amp;display=swap"/>
         </t>
         <t t-call="website.layout" no_header="True" no_footer="True" body_classname.f="o_ocd_body" head="head">
-            <div t-attf-class="o_ocd_app #{'o_ocd_has_nav' if nav else ''}">
+            <div t-attf-class="o_ocd_app #{'o_ocd_has_nav' if nav else ''}" t-att-data-ocd-url="replace_url">
                 <header class="o_ocd_header">
                     <div t-attf-class="o_ocd_frame o_ocd_top #{'o_ocd_top_flow' if back else ''}">
                         <a t-if="header_name" href="/ocd" class="o_ocd_brandbox o_ocd_brandbox_named">

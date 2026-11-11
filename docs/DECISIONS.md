@@ -13,6 +13,17 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   mêmes couleurs et polices, dans un seul fichier : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - **Données de démonstration** dans un module à part, `ocd_live_demo` : le désinstaller retire tout.
 - **Voix des pages** en plusieurs langues (français, éwé, etc.), enregistrées par l'équipe.
+- **L'adresse du site (`/`) ouvre l'accueil d'OCD Live** (`/ocd`), et non la page vide d'Odoo.
+- **Le site est en français par défaut** quand le français est installé ; les autres langues restent
+  au choix du visiteur.
+- **Les pages d'Odoo gardées telles quelles** (recrutement, connexion, portail, contact) portent le logo,
+  le nom et les coordonnées d'OCD Live : pied de page d'OCD, téléphone et e-mail de la société, aucun
+  texte d'exemple d'Odoo. Ce que l'équipe a déjà choisi (page d'accueil, langue, logo, nom) n'est jamais
+  remplacé.
+- **Un thème de site « OCD Live »** (`theme_ocd`) dans le choix des thèmes d'Odoo : polices Bricolage
+  Grotesque et Figtree, orange, encre et sable, boutons arrondis, en-tête blanc avec « Réserver un live »,
+  pied de page sombre. Les pages d'OCD Live gardent leur propre cadre ; le thème habille les pages d'Odoo
+  et celles que l'équipe crée avec l'éditeur du site (palette « OCD Live » proposée).
 
 ## Réservations
 

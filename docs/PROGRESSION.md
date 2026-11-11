@@ -11,6 +11,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
 | Site fidèle au design : réservation, annuaire, espace (téléphone, tablette, ordinateur) | ✅ fait |
+| Adresse du site (`/`) = accueil d'OCD Live, site en français, logo et pied de page d'OCD sur les pages d'Odoo | ✅ fait, testé |
+| Thème du site « OCD Live » (`theme_ocd`) dans le choix des thèmes d'Odoo | ✅ fait, testé |
 | Site : toutes les pages du shop fidèles au design (shop, produit, panier, livraison, paiement, suivi, boutique, replay, mes produits, mes colis, tournée) | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -59,6 +61,35 @@ la démo remplit les écrans, conversations WhatsApp comprises, puis se désinst
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 11 novembre 2026 — thème du site « OCD Live », plus de page 404 après « Confirmer »
+- **Thème `theme_ocd`**, proposé dans Site Web › Configuration › Paramètres › Choisir un thème (et dans
+  l'éditeur, Thème › Changer de thème) : polices Bricolage Grotesque (titres) et Figtree (textes),
+  palette orange / encre / sable, boutons arrondis, champs aux grands coins, en-tête blanc (logo, menu,
+  bouton « Réserver un live », sans barre de recherche ni téléphone), pied de page sombre aux liens
+  orange. Les pages d'OCD Live ne changent pas (leur propre cadre). Captures `site-*-o-*` et
+  `backoffice-16-choix-du-theme.png`.
+- Bouton de l'en-tête des pages d'Odoo : « Réserver un live » (vers `/ocd`) au lieu de « Contactez-nous ».
+- **`/reserver/confirmer` en 404 sur staging** : cette adresse ne reçoit que le formulaire ; ouverte
+  comme une page (page rechargée par le téléphone, retour, onglet rouvert), Odoo la prenait pour un mode
+  « confirmer » inconnu. Maintenant : ouverte sans formulaire, elle ramène au début de la réservation ;
+  après une erreur dans le formulaire, la page prend l'adresse de son étape (un rechargement réaffiche
+  l'étape) ; une heure devenue impossible (prise, trop proche) ramène au choix de l'heure avec le message
+  « Cette heure n'est plus disponible : choisis-en une autre ». Même chose pour `/reserver/attente`.
+- Test corrigé : le jeton de l'espace vendeur « modifié » pouvait retomber sur le vrai (1 fois sur 64).
+
+### 11 novembre 2026 — le site est celui d'OCD Live dès l'installation
+Constat sur un serveur où tout était installé : `/` montrait la page vide d'Odoo (« Your Logo »,
+« Bienvenue sur votre site », pied de page d'exemple, +1 555-555-5556) et le menu était en anglais.
+- `/` ouvre l'accueil d'OCD Live (réglage « URL de la page d'accueil » du site : `/ocd`).
+- Le site passe en français quand le français est installé ; logo rond et nom d'OCD Live.
+- Les menus que Odoo avait copiés pour le site en anglais (« Home », « Shop », « Jobs ») reçoivent leur
+  traduction (« Accueil », « Boutique », « Postes ») ; un menu renommé par l'équipe est laissé tel quel.
+- Pages d'Odoo (recrutement, connexion, portail, contact) : pied de page d'OCD Live (liens, téléphone,
+  e-mail et ville de la société), téléphone de la société dans l'en-tête, côté de la page des offres
+  d'emploi avec OCD Live, « Rechercher... » en français.
+- Fait à l'installation de `ocd_live` et, sur un serveur déjà installé, à la mise à jour de `ocd_live`
+  (version 20.0.1.1.0). Seul ce qui est encore comme Odoo l'installe est changé.
 
 ### 11 novembre 2026 — branche fusionnée dans main, modules complémentaires dans le dépôt
 - `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et `delivery_cameroon` sont dans le dépôt

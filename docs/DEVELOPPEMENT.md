@@ -29,8 +29,9 @@ régler la société pendant qu'aucune écriture n'existe encore (pays, devise e
 odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --load-language=fr_FR --stop-after-init
 ```
 
-Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**), l'utilisateur en français (Préférences),
-le français comme langue du site. Enfin :
+Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**, téléphone et e-mail : ils s'affichent
+dans le pied de page du site) et l'utilisateur en français (Préférences). Le site est déjà en français,
+avec l'accueil d'OCD Live sur `/` (fait par `ocd_live` à l'installation). Enfin :
 
 ```bash
 odoo -c odoo.conf -d ocd_demo -i ocd_live_demo --stop-after-init
@@ -49,6 +50,22 @@ désinstallation de `ocd_live_demo` retire tout (contacts, produits, photos, sto
 reversements, tarifs) et remet les moyens de paiement comme avant.
 
 Le site : `/ocd` (réserver), `/lives` (annuaire), `/shop`. Le back-office : application **OCD Live**.
+
+## Mettre à jour un serveur déjà installé
+
+Après un `git pull` du dépôt : redémarrer Odoo, puis mettre à jour les modules OCD (Applications ›
+module › Mettre à jour, ou en ligne de commande) :
+
+```bash
+odoo -c odoo.conf -d <base> -u ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --stop-after-init
+```
+
+Les changements à faire une seule fois sur une base existante sont dans `migrations/` de chaque module
+(ex. `ocd_live` 20.0.1.1.0 : accueil d'OCD Live sur `/`, site en français, logo, menus traduits).
+
+Un nouveau module (ex. `theme_ocd`) n'apparaît qu'après **Applications › Mettre à jour la liste des
+applications** (mode développeur). Le thème se choisit ensuite dans Site Web › Configuration ›
+Paramètres › Choisir un thème › « OCD Live » : Odoo l'installe et l'applique au site.
 
 ## Tests
 

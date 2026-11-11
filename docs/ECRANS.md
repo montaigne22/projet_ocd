@@ -46,6 +46,15 @@ Le design validé est dans [`prototype/design-valide/`](../prototype/design-vali
 | `Livrer` Mes colis à livrer | `/ocd/livrer/<jeton>`, modèle `ocd_live_shop.delivery_app` : reversement à venir, onglets « À faire » et « Livrés », une carte par colis (étape, paiement, livreur qui passe, prêt, départ, paiement à la porte, code, problème, reprise) | ✅ |
 | `Tournee` Ma tournée de livreur | `/ocd/livrer/<jeton>` pour un livreur OCD, modèle `ocd_live_shop.delivery_tour` : en service ou non, espèces sur soi, étapes numérotées (récupérer puis livrer), appeler le dispatch | ✅ |
 
+## Site : pages d'Odoo gardées
+
+Le design n'a pas d'écran pour ces pages : elles prennent l'allure d'OCD Live par le thème du site.
+
+| Page | Où | État |
+|---|---|---|
+| Accueil du site `/` | réglage du site (URL de la page d'accueil = `/ocd`), `ocd_live/models/website.py` | ✅ |
+| Recrutement, contact, connexion, portail, pages de l'éditeur | thème `theme_ocd` ; pied de page et bouton « Réserver un live » : `ocd_live/views/website_templates.xml` | ✅ |
+
 ## Back-office (équipe OCD)
 
 | Écran du design | Où | État |

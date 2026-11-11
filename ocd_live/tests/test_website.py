@@ -97,6 +97,28 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertIn('aria-invalid="true"', response.text)
         self.assertEqual(response.text.count('class="o_ocd_error"'), 2)
         self.assertFalse(self.env["ocd.live.booking"].search([("partner_id.name", "=", "R")]))
+        # Reloading the page (or the phone reopening the tab) shows the step again, not /reserver/confirmer
+        self.assertIn(
+            f'data-ocd-url="/reserver/studio/{self.day.isoformat()}/1000/{self.discovery.id}"', response.text
+        )
+
+    def test_confirm_and_waiting_list_opened_without_the_form(self):
+        for url in ("/reserver/confirmer", "/reserver/attente"):
+            response = self.url_open(url, allow_redirects=False)
+            self.assertIn(response.status_code, (302, 303), url)
+            self.assertTrue(response.headers["Location"].endswith("/reserver"), url)
+
+    def test_hour_no_longer_bookable_goes_back_to_the_hours(self):
+        self.authenticate(None, None)
+        response = self.url_open("/reserver/confirmer", data=self._confirm_form(hour="0900"), allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertIn(f"/reserver/studio/{self.day.isoformat()}?occupe=1", response.headers["Location"])
+        response = self.url_open(f"/reserver/studio/{self.day.isoformat()}?occupe=1")
+        self.assertIn("This hour can no longer be booked", response.text)
+        response = self.url_open("/reserver/confirmer", data=self._confirm_form(day="2020-01-01"), allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertTrue(response.headers["Location"].endswith("/reserver/studio"))
+        self.assertFalse(self.env["ocd.live.booking"].search([("partner_id.name", "=", "Rose Delices")]))
 
     def _book(self):
         self.authenticate(None, None)

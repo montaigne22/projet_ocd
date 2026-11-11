@@ -1,0 +1,66 @@
+// Theme of the site of OCD Live: the values of the validated design, the same as those of the
+// pages of OCD Live (ocd_live/static/src/scss/ocd_tokens.scss).
+
+$o-theme-font-configs: (
+    'Figtree': (
+        'family': ('Figtree', system-ui, sans-serif),
+        'url': 'Figtree:400,400i,500,600,700,800',
+    ),
+    'Bricolage Grotesque': (
+        'family': ('Bricolage Grotesque', 'Trebuchet MS', sans-serif),
+        'url': 'Bricolage+Grotesque:500,600,700,800',
+    ),
+);
+
+// Orange (main colour), ink, sand, white, ink: white header, dark footer.
+$o-color-palettes: map-merge($o-color-palettes, (
+    'ocd-1': (
+        'o-color-1': #F46A00,
+        'o-color-2': #15130F,
+        'o-color-3': #F5F2EE,
+        'o-color-4': #FFFFFF,
+        'o-color-5': #15130F,
+        'menu': 1,
+        'footer': 5,
+        'copyright': 5,
+    ),
+));
+$o-selected-color-palettes-names: join(('ocd-1',), $o-selected-color-palettes-names);
+
+$o-website-values-palettes: (
+    (
+        'color-palettes-name': 'ocd-1',
+
+        'font': 'Figtree',
+        'headings-font': 'Bricolage Grotesque',
+        'navbar-font': 'Figtree',
+        'buttons-font': 'Figtree',
+        'headings-font-weight': 800,
+        'btn-font-weight': 700,
+
+        'btn-padding-y': .625rem,
+        'btn-padding-x': 1.375rem,
+        'btn-padding-y-sm': .375rem,
+        'btn-padding-x-sm': .875rem,
+        'btn-padding-y-lg': .875rem,
+        'btn-padding-x-lg': 2rem,
+        'btn-border-radius': 10rem,
+        'btn-border-radius-sm': 10rem,
+        'btn-border-radius-lg': 10rem,
+
+        'input-padding-y': .625rem,
+        'input-padding-x': .875rem,
+        'input-border-width': 2px,
+        'input-border-radius': .875rem,
+        'input-border-radius-sm': .75rem,
+        'input-border-radius-lg': 1rem,
+
+        'header-template': 'default',
+        'header-links-style': 'default',
+        'logo-height': 2.75rem,
+        'menu-shadow-class': '',
+        'footer-template': 'default',
+        'link-underline': 'never',
+        'portal-card-border-radius': 1.125rem,
+    ),
+);

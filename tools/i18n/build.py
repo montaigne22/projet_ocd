@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import potlib  # noqa: E402
 
 ns = {}
-for name in ("fr_web.py", "fr_rest.py", "fr_shop.py", "fr_other.py", "fr_bo2.py", "fr_bo3.py", "fr_site_shop.py", "fr_rates.py", "fr_bo4.py"):
+for name in ("fr_web.py", "fr_rest.py", "fr_shop.py", "fr_other.py", "fr_bo2.py", "fr_bo3.py", "fr_site_shop.py", "fr_rates.py", "fr_bo4.py", "fr_site_frame.py"):
     exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), name), encoding="utf-8").read(), ns)
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
@@ -18,15 +18,17 @@ SKIP_PREFIX = ("Envoie le montant par Mobile Money",)
 SCREENS = [ns["SETTINGS"], ns["SHOP_SETTINGS"], ns["AUTOMATIONS"], ns["WHATSAPP_SCREENS"], ns["SHOP_WHATSAPP_SCREENS"],
            ns["NO_ODOO"]]
 MODULES = {
-    "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], *SCREENS],
+    "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], ns["SITE_FRAME"], *SCREENS],
     "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], *SCREENS],
     "ocd_live_whatsapp": [ns["WHATSAPP"], *SCREENS],
     "ocd_live_shop_whatsapp": [ns["SHOP_WHATSAPP"], *SCREENS],
-    "ocd_live_recruitment": [ns["RECRUITMENT"], ns["RECRUITMENT3"]],
+    "ocd_live_recruitment": [ns["RECRUITMENT"], ns["RECRUITMENT3"], ns["RECRUITMENT_FRAME"]],
     "ocd_delivery_togo": [ns["TOGO"]],
     "ocd_live_demo": [ns["DEMO"], ns["RATES_DEMO"]],
     "ocd_debranding": [ns["NO_ODOO"]],
+    "theme_ocd": [ns["THEME"]],
 }
+ns["DESCRIPTIONS"]["theme_ocd"] = ns["THEME_DESCRIPTION"]
 # Names of places and products: the same in French
 IDENTITY = {"ocd_delivery_togo", "ocd_live_demo"}
 

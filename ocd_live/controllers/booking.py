@@ -60,9 +60,11 @@ class OcdLiveBooking(http.Controller):
         ["/reserver/<string:mode>/<string:day>", "/reserver/<string:mode>/paquet/<int:product_id>/<string:day>"],
         type="http", auth="public", website=True, sitemap=False, methods=["GET"],
     )
-    def booking_hour(self, mode, day, product_id=None, attente=None, error=None, **kwargs):
+    def booking_hour(self, mode, day, product_id=None, attente=None, error=None, occupe=None, **kwargs):
         self._check_mode(mode)
         day_value = self._check_day(day)
+        if occupe and not error:
+            error = request.env._("This hour can no longer be booked: choose another one.")
         product = self._check_package(product_id) if product_id else None
         if product:
             next_url = lambda slot: f"/reserver/{mode}/{day}/{slot['code']}/{product.id}"  # noqa: E731
@@ -75,6 +77,7 @@ class OcdLiveBooking(http.Controller):
         return self._render(
             "ocd_live.booking_hour",
             "hour",
+            page_url=f"/reserver/{mode}/paquet/{product.id}/{day}" if product else f"/reserver/{mode}/{day}",
             mode=mode,
             back=back,
             step=common.steps(self._flow(), "hour"),
@@ -160,6 +163,7 @@ class OcdLiveBooking(http.Controller):
         return self._render(
             "ocd_live.booking_infos",
             "infos",
+            page_url=f"/reserver/{mode}/{day}/{hour}/{product.id}",
             mode=mode,
             back=back,
             step=common.steps(self._flow(), "infos"),
@@ -181,9 +185,11 @@ class OcdLiveBooking(http.Controller):
 
     # === ACTIONS === #
 
-    @http.route("/reserver/attente", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
-    def booking_wait(self, mode, day, product_id=None, phone=None, country_id=None, **post):
+    @http.route("/reserver/attente", type="http", auth="public", website=True, methods=["GET", "POST"], sitemap=False)
+    def booking_wait(self, mode=None, day=None, product_id=None, phone=None, country_id=None, **post):
         """Put the vendor on the waiting list of a full day."""
+        if request.httprequest.method != "POST" or not (mode and day):
+            return request.redirect("/reserver")
         self._check_mode(mode)
         day_value = self._check_day(day)
         product = self._check_package(int(product_id)) if product_id else None
@@ -205,12 +211,21 @@ class OcdLiveBooking(http.Controller):
             Waitlist.with_company(common.company())._ocd_register(number, day_value, mode)
         return request.redirect(f"{url}?attente=1")
 
-    @http.route("/reserver/confirmer", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
-    def booking_confirm(self, mode, day, hour, product_id, **post):
+    @http.route("/reserver/confirmer", type="http", auth="public", website=True, methods=["GET", "POST"], sitemap=False)
+    def booking_confirm(self, mode=None, day=None, hour=None, product_id=None, **post):
+        if request.httprequest.method != "POST" or not (mode and day and hour and product_id):
+            # Opened again without the form (page reloaded by the phone, back button, link): no
+            # empty page, the booking starts again
+            return request.redirect("/reserver")
         self._check_mode(mode)
         product = self._check_package(int(product_id))
-        day_value = self._check_day(day)
-        start = self._check_start(day_value, hour)
+        day_value = common.parse_day(day)
+        if not day_value or day_value < common.first_bookable_day():
+            return request.redirect(self._day_url(mode, product))
+        start = common.find_start(day_value, hour)
+        if not start:
+            # The hour was taken or is too close now: choose another one, with a message
+            return request.redirect(f"{self._hour_url(mode, day, product)}?occupe=1")
         if post.get("website_url"):
             # Honeypot field, hidden to the humans
             raise request.not_found()
@@ -241,6 +256,16 @@ class OcdLiveBooking(http.Controller):
         except (UserError, ValidationError) as error:
             return self.booking_infos(error=error.args[0], **retry, **post)
         return request.redirect(self._pay_url(booking.sale_order_id))
+
+    def _day_url(self, mode, product):
+        if self._flow() == "package_first":
+            return f"/reserver/{mode}/paquet/{product.id}"
+        return f"/reserver/{mode}"
+
+    def _hour_url(self, mode, day, product):
+        if self._flow() == "package_first":
+            return f"/reserver/{mode}/paquet/{product.id}/{day}"
+        return f"/reserver/{mode}/{day}"
 
     def _pay_url(self, order):
         return f"/ocd/payer/{order.id}?access_token={order._portal_ensure_token()}"
@@ -347,8 +372,13 @@ class OcdLiveBooking(http.Controller):
     def _flow(self):
         return common.company().ocd_booking_flow
 
-    def _render(self, template, voice_key, **values):
+    def _render(self, template, voice_key, page_url=None, **values):
         values.setdefault("step_label", request.env._("Step %(step)s of %(total)s", step=values.get("step"), total=5))
+        if page_url and request.httprequest.method == "POST":
+            # Shown again after a form sent with an error (/reserver/confirmer, /reserver/attente):
+            # the page takes the address of its step, so that reloading it (or the phone
+            # reopening the tab) shows the step again
+            values["replace_url"] = page_url
         return request.render(template, common.page_values(voice_key, flow=self._flow(), **values))
 
     def _check_mode(self, mode):

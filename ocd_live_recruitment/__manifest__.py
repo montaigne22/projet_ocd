@@ -10,6 +10,7 @@
     "data": [
         "data/hr_job_data.xml",
         "data/hr_recruitment_stage_data.xml",
+        "views/website_templates.xml",
         "views/ocd_live_recruitment_menus.xml",
     ],
     "assets": {

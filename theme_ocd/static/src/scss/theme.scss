@@ -1,0 +1,82 @@
+// Details of the design of OCD Live on the pages of Odoo (the pages of OCD Live, .o_ocd_app, have
+// their own frame and are not changed by this file).
+
+$ocd-theme-orange: #F46A00;
+$ocd-theme-orange-text: #FF9A4D;
+$ocd-theme-ink: #15130F;
+$ocd-theme-sand: #F5F2EE;
+$ocd-theme-line: #E7E2DC;
+$ocd-theme-muted: #665F58;
+
+body:not(.o_ocd_body) {
+    color: $ocd-theme-ink;
+    -webkit-font-smoothing: antialiased;
+}
+
+// Header: white, a thin line, the links of the menu in ink, the current one underlined in orange.
+header#top {
+    .navbar {
+        border-bottom: 1px solid $ocd-theme-line;
+    }
+    .navbar-brand.logo img {
+        border-radius: 50%;
+    }
+    .nav-link {
+        font-weight: 600;
+        color: $ocd-theme-ink;
+        &:hover, &:focus {
+            color: $ocd-theme-orange;
+        }
+        &.active {
+            color: $ocd-theme-ink;
+            box-shadow: inset 0 -3px 0 $ocd-theme-orange;
+        }
+    }
+    .btn_cta {
+        font-weight: 800;
+    }
+}
+
+// Titles in Bricolage Grotesque, tight like in the design.
+body:not(.o_ocd_body) :is(h1, h2, h3, .h1, .h2, .h3, .display-1, .display-2, .display-3, .display-4) {
+    letter-spacing: -.02em;
+    line-height: 1.1;
+}
+
+// Cards and fields with the corners and the lines of the design.
+body:not(.o_ocd_body) {
+    .card {
+        border-color: $ocd-theme-line;
+    }
+    .form-control, .form-select {
+        border-color: $ocd-theme-line;
+        &:focus {
+            border-color: $ocd-theme-orange;
+            box-shadow: none;
+        }
+    }
+}
+
+// Footer: dark, titles in Bricolage, links in light orange.
+#footer {
+    h5 {
+        font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+        font-weight: 800;
+    }
+    a:not(.btn) {
+        color: $ocd-theme-orange-text;
+        &:hover {
+            color: #FFFFFF;
+        }
+    }
+    a.text-reset strong {
+        font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+        font-weight: 800;
+    }
+}
+.o_footer_copyright {
+    color: rgba(255, 255, 255, .65);
+    a {
+        color: rgba(255, 255, 255, .8);
+    }
+}

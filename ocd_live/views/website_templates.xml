@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The pages of OCD Live have their own frame (ocd_live.app). The other pages of the site
+         (recruitment, login, portal of the customers) keep the frame of Odoo: its footer and the
+         text of its header show OCD Live and the contact details of the company, not the
+         examples of Odoo ("Useful Links", +1 555-555-5556, info@yourcompany.example.com). -->
+
+    <template id="footer" inherit_id="website.footer_custom" name="OCD Live: footer of the site">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <div id="footer" class="oe_structure oe_structure_solo border text-break" t-ignore="true" t-if="not no_footer"
+                 style="--box-border-left-width: 0px; --box-border-right-width: 0px;">
+                <t t-set="ocd_company" t-value="website.company_id"/>
+                <section class="s_text_block pt40 pb16" data-snippet="s_text_block" data-name="Container">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-5 pt24 pb24">
+                                <a href="/" class="d-inline-flex align-items-center gap-2 mb-3 text-reset text-decoration-none">
+                                    <img src="/ocd_live/static/img/ocd_logo_round.png" alt="Logo OCD" width="40" height="40"/>
+                                    <strong class="h5 mb-0" t-out="website.name"/>
+                                </a>
+                                <p>Book a live at the studio or from home, follow the lives of the moment and buy from the vendors.</p>
+                            </div>
+                            <div class="col-lg-3 pt24 pb24">
+                                <h5>Links</h5>
+                                <ul id="o_ocd_footer_links" class="list-unstyled">
+                                    <li><a href="/ocd">Book a live</a></li>
+                                    <li><a href="/lives">Lives of the moment</a></li>
+                                    <li><a href="/ocd/connexion">My space</a></li>
+                                </ul>
+                            </div>
+                            <div t-if="ocd_company.phone or ocd_company.email or ocd_company.city" class="col-lg-4 pt24 pb24">
+                                <h5>Contact</h5>
+                                <ul class="list-unstyled">
+                                    <li t-if="ocd_company.phone">
+                                        <i class="oi oi-filled oi-fw me-2" data-icon="phone"/>
+                                        <a t-attf-href="tel:#{ocd_company.phone}"><span class="o_force_ltr" t-out="ocd_company.phone"/></a>
+                                    </li>
+                                    <li t-if="ocd_company.email">
+                                        <i class="oi oi-filled oi-fw me-2" data-icon="mail"/>
+                                        <a t-attf-href="mailto:#{ocd_company.email}" t-out="ocd_company.email"/>
+                                    </li>
+                                    <li t-if="ocd_company.city">
+                                        <i class="oi oi-filled oi-fw me-2" data-icon="location_on"/>
+                                        <span t-out="', '.join(part for part in (ocd_company.city, ocd_company.country_id.name) if part)"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="header_text_element" inherit_id="website.header_text_element" name="OCD Live: phone of the company in the header">
+        <xpath expr="//li" position="replace">
+            <li t-if="website.company_id.phone or website.company_id.email" t-attf-class="#{_item_class}">
+                <div t-attf-class="s_text_block #{_div_class}" data-name="Text">
+                    <a t-if="website.company_id.phone" t-attf-href="tel:#{website.company_id.phone}" class="nav-link o_nav-link_secondary p-2">
+                        <i class="oi oi-1x oi-fw oi-filled me-1" data-icon="phone"/>
+                        <span class="o_force_ltr"><small t-out="website.company_id.phone"/></span>
+                    </a>
+                    <a t-elif="website.company_id.email" t-attf-href="mailto:#{website.company_id.email}" class="nav-link o_nav-link_secondary p-2">
+                        <i class="oi oi-1x oi-fw oi-filled me-1" data-icon="mail"/>
+                        <small t-out="website.company_id.email"/>
+                    </a>
+                </div>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- The French of Odoo has no translation for the placeholder of its search boxes. -->
+    <template id="website_search_box_input" inherit_id="website.website_search_box_input" name="OCD Live: placeholder of the search boxes">
+        <xpath expr="//t[@t-set='placeholder']" position="replace">
+            <t t-if="not placeholder" t-set="placeholder">Search...</t>
+        </xpath>
+    </template>
+
+    <!-- Button of the header: book a live, the first action of the site, in place of "Contact Us". -->
+    <template id="header_call_to_action" inherit_id="website.header_call_to_action" name="OCD Live: button of the header">
+        <xpath expr="//a[hasclass('btn_cta')]" position="replace">
+            <a href="/ocd" class="oe_unremovable btn btn-primary btn_cta">Book a live</a>
+        </xpath>
+    </template>
+
+</odoo>

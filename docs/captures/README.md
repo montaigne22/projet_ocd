@@ -8,3 +8,6 @@ Refaites à chaque évolution avec `tools/captures/` (voir `docs/DEVELOPPEMENT.m
 - `site-phone-*`, `site-tablet-*`, `site-desktop-*` : pages du site sur téléphone, tablette et ordinateur
   (`-d-` annuaire, `-s-` shop et livraisons ; `-s-8b`, `-s-8c` : un panier de deux vendeuses, un prix par
   colis).
+- `site-phone-o-*`, `site-desktop-o-*` : pages d'Odoo (recrutement, menu du site, connexion) avec le
+  thème « OCD Live » (`theme_ocd`), le logo, le pied de page et les coordonnées d'OCD Live, en français.
+- `backoffice-16-choix-du-theme.png` : le thème « OCD Live » dans le choix des thèmes d'Odoo.

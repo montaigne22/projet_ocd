@@ -40,7 +40,9 @@ class TestOcdLiveSecurity(OcdLiveCommon):
         token = self.vendor._ocd_get_space_token()
         self.assertGreaterEqual(len(token), 16)
         self.assertEqual(self.env["res.partner"]._ocd_find_by_space_token(token), self.vendor)
-        self.assertFalse(self.env["res.partner"]._ocd_find_by_space_token(token[:-1] + "x"))
+        # another token: the last character changed (never the same one)
+        other = token[:-1] + ("y" if token.endswith("x") else "x")
+        self.assertFalse(self.env["res.partner"]._ocd_find_by_space_token(other))
         self.assertFalse(self.env["res.partner"]._ocd_find_by_space_token(""))
         with self.assertRaises(AccessError):
             self.vendor.with_user(self.manager).read(["ocd_space_token"])
