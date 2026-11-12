@@ -20,10 +20,14 @@ data_dir = /opt/odoo20/data
 - Moteur PDF d'Odoo (`wkhtmltopdf`, ex. `apt-get install -y wkhtmltopdf`) : la confirmation d'une
   commande du shop envoie un PDF, le ticket du live est un PDF. La version « avec Qt patché » est la
   meilleure ; celle d'Ubuntu (Qt non patché) marche aussi, le ticket corrige son échelle.
-- **ffmpeg** (`apt-get install -y ffmpeg`, avec `ffprobe`) : la vidéo courte d'un vendeur, filmée sur
-  son téléphone (MP4, MOV, 3GP, WebM…), est rendue lisible par tous les téléphones (MP4 720 px, 30 s au
-  plus) et son affiche en est tirée. Sans ffmpeg, seules les vidéos MP4 et WebM de 15 Mo au plus sont
-  acceptées, telles quelles.
+- **ffmpeg** : la vidéo courte d'un vendeur, filmée sur son téléphone (MP4, MOV, 3GP, WebM…), est rendue
+  lisible par tous les téléphones (MP4 720 px, 30 s au plus) et son affiche en est tirée. Deux façons de
+  l'avoir :
+  - avec pip, sans accès administrateur : `imageio-ffmpeg` est dans `requirements.txt`
+    (`pip install -r requirements.txt` le pose dans l'environnement d'Odoo, avec son propre ffmpeg) ;
+  - ou celui du système : `apt-get install -y ffmpeg` (pris en premier quand il est là).
+
+  Sans ffmpeg, seules les vidéos MP4 et WebM de 15 Mo au plus sont acceptées, telles quelles.
 - Bibliothèques Python du dépôt (`requirements.txt`) : `pip install -r requirements.txt` dans
   l'environnement d'Odoo. `phonenumbers` vérifie les numéros de tous les pays (règles de Google) ; sans
   elle, une règle simple garde les formulaires utilisables (indicatif d'Odoo, 6 à 14 chiffres).
@@ -194,8 +198,12 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   `ocd_live_shop` pour le carrousel des produits) ; routes `/lives/video/<id>` (lecture par morceaux),
   `/lives/video/<id>/image` (affiche), `/lives/carte/<id>` (image) ; page `/ocd/espace/moi/carte`.
 - Vidéos : `ocd_live/media.py` (`prepare` : contrôle, conversion MP4 avec ffmpeg et affiche ; `kind` :
-  type reconnu par sa signature). ffmpeg et ffprobe sont conseillés sur le serveur
-  (`apt-get install -y ffmpeg`) ; sans eux, seuls MP4 et WebM de 15 Mo au plus sont acceptés.
+  type reconnu par sa signature ; `ffmpeg()` : celui du système, sinon celui d'`imageio-ffmpeg` ; la
+  durée et les pistes sont lues par ffprobe s'il est là, sinon par ffmpeg lui-même).
+- Un formulaire ne doit jamais être dans un autre : le navigateur ignore celui de l'intérieur et ferme
+  celui de l'extérieur à sa fin, les boutons d'après n'envoient plus rien. Un formulaire placé ailleurs
+  dans la page se relie à ses champs par l'attribut `form="<id>"` (ex. « Préviens-moi » de la page
+  produit ; `ocd_live.phone_field` prend `field_form`).
   `tools/demo/card_video.py` fabrique une vidéo de démo à partir de photos.
 - Plateformes et comptes de live : `ocd.live.platform` (`_ocd_for_url`, cache vidé à chaque changement),
   `ocd.live.account` (`_ocd_pick` : pays du vendeur d'abord, libre à l'heure). Lien d'un live :

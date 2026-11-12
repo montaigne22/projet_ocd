@@ -27,7 +27,7 @@ def clip(seconds=2, sound=False, size="160x284"):
     """A short video filmed upright, as a phone sends it (QuickTime)."""
     with tempfile.TemporaryDirectory() as folder:
         path = Path(folder) / "clip.mov"
-        command = ["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", f"testsrc=size={size}:rate=10:duration={seconds}"]
+        command = [media.ffmpeg(), "-y", "-v", "error", "-f", "lavfi", "-i", f"testsrc=size={size}:rate=10:duration={seconds}"]
         if sound:
             command += ["-f", "lavfi", "-i", f"sine=frequency=440:duration={seconds}"]
         command += ["-c:v", "libx264", "-pix_fmt", "yuv420p", "-shortest", str(path)]
@@ -81,6 +81,27 @@ class TestOcdLiveCardMedia(TransactionCase):
         vendor.ocd_card_video = False
         self.assertFalse(vendor.ocd_card_video_poster, "Removed with its poster")
         self.assertEqual(vendor._ocd_card_media(), {"kind": "initials"})
+
+    def test_video_with_the_ffmpeg_of_pip(self):
+        """Without ffmpeg on the server, the one of imageio-ffmpeg (pip install) converts the
+        video; ffmpeg describes the file itself (the package has no ffprobe)."""
+        try:
+            import imageio_ffmpeg  # noqa: PLC0415
+
+            imageio_ffmpeg.get_ffmpeg_exe()
+        except Exception:  # noqa: BLE001
+            self.skipTest("imageio-ffmpeg is not installed")
+        with patch.object(media.shutil, "which", return_value=None):
+            self.assertTrue(media.can_convert())
+            video, poster, mimetype, sound = media.prepare(clip(seconds=2, sound=True))
+            self.assertEqual(media.prepare(clip(seconds=1))[3], False, "Without sound")
+            with self.assertRaises(media.VideoError) as error:
+                media.prepare(clip(seconds=125, size="64x64"))
+        self.assertEqual(mimetype, "video/mp4")
+        self.assertEqual(guess_mimetype(video), "video/mp4")
+        self.assertTrue(poster)
+        self.assertTrue(sound)
+        self.assertEqual(error.exception.code, "too_long")
 
     def test_video_refused(self):
         with self.assertRaisesRegex(UserError, "not a video"):

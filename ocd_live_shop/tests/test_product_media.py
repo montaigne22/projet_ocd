@@ -5,6 +5,8 @@ import re
 from html import unescape
 from unittest.mock import patch
 
+from html.parser import HTMLParser
+
 from PIL import Image
 
 from odoo import Command
@@ -23,6 +25,32 @@ def other_png(colour="red"):
     output = io.BytesIO()
     Image.new("RGB", (4, 4), colour).save(output, format="PNG")
     return output.getvalue()
+
+
+class FormsOfPage(HTMLParser):
+    """The forms of a page as the browser builds them: a form opened inside another one is
+    dropped, and its end closes the outer form (its buttons after it no longer send it)."""
+
+    def __init__(self):
+        super().__init__()
+        self.open = []
+        self.nested = []
+        self.buttons = []  # (text of the button, action of its form)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "form":
+            if self.open:
+                self.nested.append(attrs.get("action"))
+                return
+            self.open.append(attrs.get("action"))
+        elif tag == "button" and attrs.get("type", "submit") == "submit":
+            owner = attrs.get("form") or (self.open[-1] if self.open else None)
+            self.buttons.append(owner)
+
+    def handle_endtag(self, tag):
+        if tag == "form" and self.open:
+            self.open.pop()
 
 
 @tagged("post_install", "-at_install")
@@ -90,6 +118,20 @@ class TestOcdProductMedia(TestOcdShopWebsite):
         response = self.url_open(f"{self.robe.website_url}?v={red.id}")
         self.assertRegex(response.text, rf'value="{red.id}"\s+checked="checked"')
         self.assertIn("product.template.attribute.value", re.search(r'o_ocd_gallery_slide[^>]*>\s*<img[^>]*src="([^"]+)"', response.text).group(1))
+
+    def test_buttons_of_the_product_page_send_their_form(self):
+        """« Add to the cart » and « Write on WhatsApp » send the form of the product, « Tell me
+        when it is back » its own one: no form inside another one."""
+        self.cake.ocd_review_state = "approved"
+        for product, action in ((self.robe, "/ocd/panier/ajouter"), (self.cake, f"/ocd/wa/{self.cake.id}")):
+            page = FormsOfPage()
+            page.feed(self.url_open(product.website_url).text)
+            self.assertFalse(page.nested, f"{product.name}: a form inside the form of the product")
+            self.assertIn(action, page.buttons, f"{product.name}: its button sends the form of the product")
+            self.assertTrue(all(page.buttons), f"{product.name}: every button of the page sends a form")
+        response = self.url_open(f"/ocd/wa/{self.cake.id}", allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertTrue(response.headers["Location"].startswith("https://wa.me/22890000007?text="))
 
     def test_sold_out_choice_tells_when_it_is_back(self):
         red_l = self._variant("Rouge", "L")

@@ -194,18 +194,24 @@
                             <t t-call="ocd_live.icon" icon.f="check"/>
                             <span>Noted: we write to you on WhatsApp as soon as it is back.</span>
                         </div>
-                        <form t-else="" action="/ocd/produit/prevenir" method="post" class="o_ocd_stock_alert_form">
-                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <input type="hidden" name="product_id" class="o_ocd_stock_alert_variant" t-att-value="first.get('id') or ''"/>
-                            <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                        <!-- Its fields belong to the form « ocd-stock-alert », after the form of the
+                             product: a form cannot be inside another one (the browser would cut the form
+                             of the product there, and its buttons would no longer send it) -->
+                        <div t-else="" class="o_ocd_stock_alert_form">
+                            <input type="hidden" name="csrf_token" form="ocd-stock-alert" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="product_id" form="ocd-stock-alert" class="o_ocd_stock_alert_variant"
+                                   t-att-value="first.get('id') or ''"/>
+                            <input type="text" name="website_url" form="ocd-stock-alert" class="o_ocd_hp" tabindex="-1"
+                                   autocomplete="off" aria-hidden="true"/>
                             <b class="o_ocd_stock_alert_title" t-out="gone_title"/>
                             <span>Tell me on WhatsApp when it is back.</span>
                             <t t-if="not alert_partner">
                                 <label for="sa-phone" class="o_ocd_label">Your WhatsApp</label>
-                                <t t-call="ocd_live.phone_field" field_id.f="sa-phone" phone_value="''" dial_rows="alert_dial_rows"/>
+                                <t t-call="ocd_live.phone_field" field_id.f="sa-phone" field_form.f="ocd-stock-alert"
+                                   phone_value="''" dial_rows="alert_dial_rows"/>
                             </t>
-                            <button type="submit" class="o_ocd_cta o_ocd_cta_dark">Tell me when it is back</button>
-                        </form>
+                            <button type="submit" form="ocd-stock-alert" class="o_ocd_cta o_ocd_cta_dark">Tell me when it is back</button>
+                        </div>
                     </div>
                     <div t-if="ocd" class="o_ocd_product_info">
                         <t t-foreach="delivery_lines" t-as="line">
@@ -233,6 +239,7 @@
                         </t>
                     </div>
                 </form>
+                <form t-if="not alerted" id="ocd-stock-alert" action="/ocd/produit/prevenir" method="post" class="d-none"/>
                 <section t-if="same_vendor" class="o_ocd_same_vendor">
                     <div class="o_ocd_section_head">
                         <h2>From the same vendor</h2>

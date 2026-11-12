@@ -82,6 +82,18 @@ paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle
 
 ## Journal
 
+### 12 novembre 2026 — page produit : « Ajouter au panier » et « Écrire sur WhatsApp » réparés ; ffmpeg par pip
+- **Les boutons du bas de la page produit ne faisaient plus rien** dans un navigateur, depuis
+  « Préviens-moi quand il revient » : son formulaire était dans celui du produit, le navigateur coupait
+  alors celui du produit avant ses boutons. Il est maintenant à part (relié à ses champs par
+  `form="…"`) : « Ajouter au panier » ajoute au panier, « Écrire à Awa sur WhatsApp » ouvre WhatsApp avec
+  le message (produit, choix, lien), « Préviens-moi » note la demande. Les tests envoyaient les formulaires
+  directement : un test vérifie maintenant qu'aucun formulaire n'est dans un autre et que chaque bouton
+  envoie le sien.
+- **ffmpeg par pip** : `imageio-ffmpeg` (dans `requirements.txt`) donne un ffmpeg sans
+  `apt-get` ; les vidéos des cartes se convertissent avec lui quand le serveur n'a pas le sien (il n'a
+  pas ffprobe : ffmpeg lit lui-même la durée et les pistes).
+
 ### 12 novembre 2026 — cartes du fil claires, médias des vendeurs, lives à distance sur les comptes d'OCD
 - **Cartes du fil épurées** : fond blanc et sable, textes à l'encre, la couleur seulement pour l'état du
   live (rouge en live, orange pour le prochain, violet pour le replay) et le bouton principal. En haut le

@@ -271,7 +271,8 @@
     </template>
 
     <template id="phone_field" name="OCD Live: WhatsApp number">
-        <!-- Parameters: field_id, dial_rows (countries with their dialing code), phone_value.
+        <!-- Parameters: field_id, dial_rows (countries with their dialing code), phone_value,
+             field_form (the id of its form when the field is not inside it).
              Without JavaScript: the list of the phone, grouped (suggested, then each continent).
              With it: a sheet to search the country by its name or its code. -->
         <t t-set="dial_selected" t-value="[row for row in dial_rows if row['selected']][:1]"/>
@@ -284,7 +285,8 @@
                     <svg class="o_ocd_dial_chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
                 <span t-attf-class="o_ocd_flag o_ocd_dial_flag o_ocd_flag_#{dial_selected[0]['flag'] if dial_selected else ''}"/>
-                <select t-attf-id="#{field_id}-country" name="country_id" class="o_ocd_dial_select" aria-label="Country of the number">
+                <select t-attf-id="#{field_id}-country" name="country_id" class="o_ocd_dial_select" aria-label="Country of the number"
+                        t-att-form="field_form or None">
                     <t t-foreach="['first', 'africa', 'europe', 'americas', 'asia', 'oceania']" t-as="group">
                         <t t-set="group_rows" t-value="[row for row in dial_rows if row['group'] == group]"/>
                         <optgroup t-if="group_rows" t-att-label="group_rows[0]['group_label']">
@@ -300,7 +302,7 @@
                 </select>
             </span>
             <input t-att-id="field_id" type="tel" name="phone" inputmode="tel" autocomplete="tel-national"
-                   class="o_ocd_input" t-att-value="phone_value" required="required"
+                   class="o_ocd_input" t-att-value="phone_value" required="required" t-att-form="field_form or None"
                    t-att-placeholder="(dial_selected[0]['example'] if dial_selected else '') or '90 00 00 00'"/>
             <dialog t-att-id="'%s-sheet' % field_id" class="o_ocd_dial_sheet" t-att-aria-labelledby="'%s-sheet-title' % field_id">
                 <div class="o_ocd_dial_sheet_head">
