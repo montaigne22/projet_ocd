@@ -366,6 +366,19 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
         remote = coming.filtered(lambda booking: booking.mode == "remote")[:1]
         self.assertEqual(remote._ocd_watch_url(), remote.account_id.live_url)
 
+    def test_currencies_by_country(self):
+        """Awa (Lomé) sees her prices in CFA (XOF), Brenda (Douala) in FCFA (XAF, the currency of
+        CamPay) for the same amount, Kadi (Paris) in euros rounded to the unit."""
+        self.assertTrue(self.env["ocd.live.currencies"]._ocd_is_set_up())
+        discovery = self.env.ref("ocd_live.product_package_discovery")
+        prices = {}
+        for xmlid, currency in (("vendor_awa", "XOF"), ("vendor_brenda", "XAF"), ("vendor_kadi", "EUR")):
+            pricelist = self.env.ref(f"ocd_live_demo.{xmlid}").property_product_pricelist
+            self.assertEqual(pricelist.currency_id.name, currency, xmlid)
+            prices[currency] = pricelist._get_product_price(discovery, 1.0)
+        self.assertAlmostEqual(prices["XAF"], prices["XOF"], places=2)
+        self.assertEqual(prices["EUR"], round(prices["XOF"] / 655.957))
+
     def test_short_link_of_a_video_in_the_settings(self):
         """A short link of TikTok (Share › Copy the link: vt.tiktok.com/ZS…) is followed to the full
         address of the video, which the replays play; one that does not open says what to paste."""

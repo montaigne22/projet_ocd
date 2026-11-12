@@ -147,6 +147,23 @@ class TestOcdDeliveryRates(OcdRatesCommon):
         expected = other._convert(3000, self.company.currency_id, self.company, fields.Date.today())
         self.assertAlmostEqual(self._quote(self.brenda, self.estelle)["price"], self.company.currency_id.round(expected))
 
+    def test_price_in_another_currency_rounded_to_the_unit(self):
+        """A delivery of 1 500 F CFA seen in euros: 2 €, rounded to the unit as the prices of
+        the products (not 2.29 €); in the currency of the rate, the price as it is."""
+        eur = self.env.ref("base.EUR")
+        if self.company.currency_id == eur:
+            self.skipTest("The company is in euros.")
+        eur.active = True
+        today = fields.Date.today()
+        self.env["res.currency.rate"].create({
+            "currency_id": eur.id, "company_id": self.company.id, "name": today, "rate": 1 / 655.957,
+        })
+        self.courier_douala.write({"currency_id": self.company.currency_id.id, "price": 1500, "free_above": 0})
+        self.assertEqual(self.courier_douala._ocd_converted_price(eur, self.company, today), 2.0)
+        self.assertEqual(self.courier_douala._ocd_converted_price(self.company.currency_id, self.company, today), 1500)
+        self.courier_douala.price = 2000  # 3.05 €
+        self.assertEqual(self.courier_douala._ocd_price(0, eur, self.company, today), 3.0)
+
     def test_prices_of_the_vendors_stay_within_the_limits(self):
         self.company.write({"ocd_vendor_rate_min": 300, "ocd_vendor_rate_max": 3000})
         with self.assertRaises(ValidationError):

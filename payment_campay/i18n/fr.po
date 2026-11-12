@@ -1,19 +1,18 @@
 # Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* payment_campay
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20 15:30+0000\n"
-"PO-Revision-Date: 2026-10-20 15:30+0000\n"
+"POT-Creation-Date: 2026-11-12 18:38+0000\n"
+"PO-Revision-Date: 2026-11-12 18:38+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: payment_campay
 #: model:ir.module.module,description:base.module_payment_campay
@@ -27,6 +26,10 @@ msgid ""
 "- Card payments through the Campay payment page.\n"
 "- Signed webhook (JWT HS256 with the webhook key) and status checks with the Campay API:\n"
 "  the payment state is always read from Campay, never from the callback parameters.\n"
+"- Demo payments, for a presentation or a test with real phones: each payment collects a\n"
+"  small amount (25 F CFA by default) instead of the price, for every number or for the\n"
+"  demo numbers only, until a last day. The pages show the real prices, the order is paid\n"
+"  as usual and the accounts record the money received.\n"
 msgstr ""
 "\n"
 "Fournisseur de paiement Campay\n"
@@ -38,6 +41,11 @@ msgstr ""
 "- Webhook signé (JWT HS256 avec la clé de webhook) et vérification du statut\n"
 "  auprès de l'API Campay : l'état du paiement est toujours lu chez Campay,\n"
 "  jamais dans les paramètres de l'appel.\n"
+"- Paiements de démo, pour une présentation ou un test avec de vrais téléphones :\n"
+"  chaque paiement encaisse un petit montant (25 F CFA par défaut) au lieu du prix,\n"
+"  pour tous les numéros ou seulement pour les numéros de démo, jusqu'à un dernier\n"
+"  jour. Les pages affichent les vrais prix, la commande est payée comme d'habitude\n"
+"  et la comptabilité enregistre l'argent reçu.\n"
 
 #. module: payment_campay
 #. odoo-javascript
@@ -64,6 +72,11 @@ msgid ""
 msgstr ""
 "<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"/>\n"
 "                    <b>Confirmez le paiement sur votre téléphone</b>"
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_transaction__campay_requested_amount
+msgid "Amount Asked To Campay"
+msgstr "Montant demandé à Campay"
 
 #. module: payment_campay
 #: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
@@ -150,28 +163,94 @@ msgstr ""
 "                réception du paiement."
 
 #. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__campay_demo_amount
+msgid "Demo Amount"
+msgstr "Montant de démo"
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__campay_demo_numbers
+msgid "Demo Numbers"
+msgstr "Numéros de démo"
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_transaction__campay_demo
+msgid "Demo Payment"
+msgstr "Paiement de démo"
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__campay_demo_active
+msgid "Demo Payments"
+msgstr "Paiements de démo"
+
+#. module: payment_campay
+#. odoo-python
+#: code:addons/payment_campay/models/payment_transaction.py:0
+msgid "Demo payment: %(collected)s collected by Campay for %(amount)s."
+msgstr "Paiement de démo : %(collected)s encaissés par Campay pour %(amount)s."
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
+#: model_terms:ir.ui.view,arch_db:payment_campay.payment_transaction_search
+msgid "Demo payments"
+msgstr "Paiements de démo"
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_ir_http__display_name
 #: model:ir.model.fields,field_description:payment_campay.field_payment_provider__display_name
 #: model:ir.model.fields,field_description:payment_campay.field_payment_transaction__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
 
 #. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
+msgid "Empty: every payment. Else e.g. 670000001, 690000002"
+msgstr "Vide : tous les paiements. Sinon ex. 670000001, 690000002"
+
+#. module: payment_campay
 #. odoo-javascript
 #. odoo-python
 #: code:addons/payment_campay/models/payment_transaction.py:0
 #: code:addons/payment_campay/static/src/interactions/payment_form.js:0
-msgid ""
-"Enter a Cameroonian mobile number, e.g. 6 70 00 00 00 (MTN) or 6 90 00 00 00"
-" (Orange)."
-msgstr ""
-"Saisissez un numéro mobile camerounais, par ex. 6 70 00 00 00 (MTN) ou 6 90 "
-"00 00 00 (Orange)."
+msgid "Enter a Cameroonian mobile number, e.g. 6 70 00 00 00 (MTN) or 6 90 00 00 00 (Orange)."
+msgstr "Saisissez un numéro mobile camerounais, par ex. 6 70 00 00 00 (MTN) ou 6 90 00 00 00 (Orange)."
 
 #. module: payment_campay
+#: model:ir.model.fields,help:payment_campay.field_payment_provider__campay_demo_active
+msgid "Every payment collects the demo amount instead of the amount of the order: the pages show the real amounts and the order is paid as usual. Until the last day below, then off by itself."
+msgstr "Chaque paiement encaisse le montant de démo au lieu du montant de la commande : les pages affichent les vrais montants et la commande est payée comme d'habitude. Jusqu'au dernier jour ci-dessous, puis arrêt tout seul."
+
+#. module: payment_campay
+#: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
+msgid ""
+"For a presentation or a test with real phones: every payment collects this amount instead of\n"
+"                        the amount of the order. The pages show the real amounts, the order is paid as usual and the\n"
+"                        accounts record the money received. Off by itself after the last day."
+msgstr ""
+"Pour une présentation ou un test avec de vrais téléphones : chaque paiement encaisse ce montant au lieu\n"
+"                        du montant de la commande. Les pages affichent les vrais montants, la commande est payée comme\n"
+"                        d'habitude et la comptabilité enregistre l'argent reçu. Arrêt tout seul après le dernier jour."
+
+#. module: payment_campay
+#: model:ir.model,name:payment_campay.model_ir_http
+msgid "HTTP Routing"
+msgstr "Routage HTTP"
+
+#. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_ir_http__id
 #: model:ir.model.fields,field_description:payment_campay.field_payment_provider__id
 #: model:ir.model.fields,field_description:payment_campay.field_payment_transaction__id
 msgid "ID"
 msgstr "ID"
+
+#. module: payment_campay
+#: model:ir.model.fields,help:payment_campay.field_payment_provider__campay_demo_amount
+msgid "In CFA francs."
+msgstr "En francs CFA."
+
+#. module: payment_campay
+#: model:ir.model.fields,help:payment_campay.field_payment_transaction__campay_requested_amount
+msgid "In CFA francs: the amount of the transaction, or the demo amount of a demo payment."
+msgstr "En francs CFA : le montant de la transaction, ou le montant de démo d'un paiement de démo."
 
 #. module: payment_campay
 #: model_terms:ir.ui.view,arch_db:payment_campay.payment_provider_form
@@ -191,13 +270,14 @@ msgid "Invalid number"
 msgstr "Numéro invalide"
 
 #. module: payment_campay
+#: model:ir.model.fields,field_description:payment_campay.field_payment_provider__campay_demo_end
+msgid "Last Day Of The Demo Payments"
+msgstr "Dernier jour des paiements de démo"
+
+#. module: payment_campay
 #: model_terms:ir.ui.view,arch_db:payment_campay.inline_form
-msgid ""
-"MTN Mobile Money or Orange Money. You will confirm the payment on this "
-"phone."
-msgstr ""
-"MTN Mobile Money ou Orange Money. Vous confirmerez le paiement sur ce "
-"téléphone."
+msgid "MTN Mobile Money or Orange Money. You will confirm the payment on this phone."
+msgstr "MTN Mobile Money ou Orange Money. Vous confirmerez le paiement sur ce téléphone."
 
 #. module: payment_campay
 #: model:payment.method,name:payment_campay.payment_method_mobile_money
@@ -211,12 +291,13 @@ msgstr "Numéro Mobile Money"
 
 #. module: payment_campay
 #: model:ir.module.module,summary:base.module_payment_campay
-msgid ""
-"Mobile Money payments in Cameroon (MTN MoMo, Orange Money) and cards with "
-"Campay"
-msgstr ""
-"Paiements Mobile Money au Cameroun (MTN MoMo, Orange Money) et par carte "
-"avec Campay"
+msgid "Mobile Money payments in Cameroon (MTN MoMo, Orange Money) and cards with Campay"
+msgstr "Paiements Mobile Money au Cameroun (MTN MoMo, Orange Money) et par carte avec Campay"
+
+#. module: payment_campay
+#: model:ir.model.fields,help:payment_campay.field_payment_provider__campay_demo_numbers
+msgid "Only the payments from these numbers collect the demo amount (separated by commas or one per line, e.g. 670000001); the others pay the real price. Empty: every payment."
+msgstr "Seuls les paiements de ces numéros encaissent le montant de démo (séparés par des virgules ou un par ligne, ex. 670000001) ; les autres paient le vrai prix. Vide : tous les paiements."
 
 #. module: payment_campay
 #: model:ir.model,name:payment_campay.model_payment_provider
@@ -241,22 +322,14 @@ msgstr "Le traitement du paiement a échoué"
 
 #. module: payment_campay
 #: model:ir.model.fields,help:payment_campay.field_payment_provider__campay_webhook_key
-msgid ""
-"The key Campay uses to sign the webhook calls, in the Webhook settings of "
-"the Campay dashboard."
-msgstr ""
-"La clé utilisée par Campay pour signer les appels du webhook, dans les "
-"réglages Webhook du tableau de bord Campay."
+msgid "The key Campay uses to sign the webhook calls, in the Webhook settings of the Campay dashboard."
+msgstr "La clé utilisée par Campay pour signer les appels du webhook, dans les réglages Webhook du tableau de bord Campay."
 
 #. module: payment_campay
 #. odoo-python
 #: code:addons/payment_campay/models/payment_transaction.py:0
-msgid ""
-"The payment was declined or cancelled on the phone, or the balance was "
-"insufficient."
-msgstr ""
-"Le paiement a été refusé ou annulé sur le téléphone, ou le solde était "
-"insuffisant."
+msgid "The payment was declined or cancelled on the phone, or the balance was insufficient."
+msgstr "Le paiement a été refusé ou annulé sur le téléphone, ou le solde était insuffisant."
 
 #. module: payment_campay
 #: model:ir.model.fields,help:payment_campay.field_payment_provider__code
@@ -265,12 +338,8 @@ msgstr "Le code technique de ce fournisseur de paiement."
 
 #. module: payment_campay
 #: model:ir.model.fields,help:payment_campay.field_payment_provider__campay_app_username
-msgid ""
-"The username of the application, in the API Access Keys of the Campay "
-"dashboard."
-msgstr ""
-"Le nom d'utilisateur de l'application, dans les clés d'accès API du tableau "
-"de bord Campay."
+msgid "The username of the application, in the API Access Keys of the Campay dashboard."
+msgstr "Le nom d'utilisateur de l'application, dans les clés d'accès API du tableau de bord Campay."
 
 #. module: payment_campay
 #. odoo-python

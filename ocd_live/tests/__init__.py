@@ -14,3 +14,4 @@ from . import test_countries_feed
 from . import test_module_texts
 from . import test_remote_live
 from . import test_card_media
+from . import test_currencies

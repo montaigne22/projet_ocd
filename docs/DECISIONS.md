@@ -75,6 +75,28 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   Odoo pour le pays, la devise et le montant. Aujourd'hui Campay au Cameroun ; au Togo, Mobile Money
   vérifié par l'équipe en attendant un second connecteur.
 - **La devise suit le pays** via les listes de prix d'Odoo (franc CFA BCEAO au Togo, BEAC au Cameroun).
+- **Devises par pays : quatre zones**, mises en place par un bouton (Paramètres › Devises par pays), jamais
+  d'elles-mêmes en production (la démo, elle, les met en place) :
+  - **XOF** : les 8 pays de l'UEMOA (Togo, Bénin, Côte d'Ivoire, Sénégal, Mali, Burkina Faso, Niger,
+    Guinée-Bissau) ;
+  - **XAF** : les 6 pays de la CEMAC (Cameroun, Gabon, Congo, Tchad, Centrafrique, Guinée équatoriale) :
+    c'est la devise de CamPay ;
+  - **EUR** : l'Europe, le reste de l'Afrique (Ghana, Nigeria, Maroc…) et la France hors d'Europe
+    (Guadeloupe, Martinique, Guyane, Réunion, Mayotte…) ;
+  - **USD** : les Amériques, l'Asie et l'Océanie.
+- **Les prix s'écrivent en XOF, la conversion est automatique** : XAF = XOF et 1 € = 655,957 F CFA
+  (parité fixe depuis 1999, remise d'office sur un taux saisi à tort) ; le dollar est lu chaque jour
+  auprès de la Banque centrale européenne (le dernier taux reste si elle ne répond pas). Les prix en euros
+  et en dollars sont **arrondis à l'unité** (15 000 F CFA → 23 € et 25 $), les frais de livraison aussi ;
+  les francs restent tels quels. Une commande garde la devise et le taux de son jour.
+- **Paiements de démo CamPay** (Paramètres › Paiements et reversements), pour une présentation ou un test
+  avec de vrais téléphones : chaque paiement CamPay encaisse le montant de démo (25 F CFA par défaut, au
+  choix) au lieu du prix, **pour tous les numéros ou seulement pour une liste de numéros** ; les pages
+  gardent les vrais prix. Il s'arrête tout seul après le dernier jour (activé sans date : ce soir). Au
+  retour, CamPay doit avoir encaissé exactement le montant demandé (tout autre montant est refusé) ; la
+  commande est alors payée comme d'habitude, la comptabilité enregistre l'argent reçu (25 F CFA), une note
+  le dit sur la commande ou la facture, une ligne rouge le rappelle sur le tableau de bord et un filtre
+  « Paiements de démo » les retrouve dans les transactions.
 
 ## Pays et paiement
 

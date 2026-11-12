@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The demo payments: what Campay collected, and a filter to find them -->
+    <record id="payment_transaction_form" model="ir.ui.view">
+        <field name="name">payment.transaction.form.campay</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.payment_transaction_form"/>
+        <field name="arch" type="xml">
+            <field name="provider_reference" position="after">
+                <field name="campay_demo" invisible="not campay_demo"/>
+                <field name="campay_requested_amount" invisible="not campay_requested_amount"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="payment_transaction_search" model="ir.ui.view">
+        <field name="name">payment.transaction.search.campay</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.payment_transaction_search"/>
+        <field name="arch" type="xml">
+            <filter name="live_transactions" position="after">
+                <filter string="Demo payments" name="campay_demo" domain="[('campay_demo', '=', True)]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

@@ -125,6 +125,9 @@ lendemain matin.
 ### 5. Le vendeur — `/ocd`
 - Réserver un live : au studio ou chez soi, les heures dans le fuseau du vendeur, le samedi complet (liste
   d'attente), le paiement (Mobile Money vérifié par l'équipe, carte), le ticket PDF et l'image à partager.
+- **Les devises par pays** : l'espace de Brenda (Douala) montre ses prix en FCFA (XAF), celui de Kadi
+  (Paris) en euros arrondis (Découverte 23 €), celui de Kossi (Lomé) en CFA (XOF). Au Cameroun, le
+  paiement propose CamPay (s'il est installé et configuré).
 - Pour montrer l'espace d'un vendeur de la démo : back-office › Vendeurs › Kossi Tech › **Voir son
   espace** (aucun code WhatsApp ne part vers un numéro de la démo).
 - Dans l'espace : **« Changer ma carte »** › « Ma carte dans le fil » : la carte telle que le fil la
@@ -171,8 +174,9 @@ S'y ajoute le live du studio en cours, d'après la semaine ci-dessus.
 
 - **Une démo installée avant le 12 novembre 2026** : mettre à jour `ocd_live`, `ocd_live_shop` et
   `ocd_live_demo` (Applications › Mettre à jour la liste des applications, puis chaque module › Mettre à
-  jour). La mise à jour installe aussi `ocd_live_demo_whatsapp`, met le nouveau scénario en place et livre
-  les colis restés figés de l'ancienne démo.
+  jour), et `payment_campay` s'il est installé. La mise à jour installe aussi `ocd_live_demo_whatsapp`,
+  met le nouveau scénario en place, livre les colis restés figés de l'ancienne démo et met en place les
+  devises par pays (les commandes déjà passées gardent leur devise).
 - L'action planifiée **« Démo d'OCD Live : garder les lives de la démo à jour »** tourne toutes les 15
   minutes. Après un arrêt du serveur, son premier passage remet tout à jour (ou « Exécuter » dans
   Paramètres › Technique › Actions planifiées).
@@ -190,6 +194,12 @@ S'y ajoute le live du studio en cours, d'après la semaine ci-dessus.
 
   Vides, la démo garde ses liens d'exemple : les comptes des vendeurs n'existent pas et la vidéo ne se
   lit pas. Un lien collé à la main sur un live de la démo reste tel quel.
+- **Payer pour de vrai pendant la présentation, pour 25 F CFA** (CamPay installé, avec ses clés) :
+  OCD Live › Configuration › Paramètres › **Paiements et reversements** › « Paiements de démo (CamPay) ».
+  Cocher, garder 25 FCFA ou choisir un autre montant, un dernier jour (vide : ce soir), et, pour que
+  seuls vos téléphones paient 25 F CFA, leurs numéros dans « Seulement ces numéros » (vide : tous les
+  paiements CamPay). Les pages gardent les vrais prix ; le tableau de bord affiche une ligne rouge tant
+  que c'est actif. Penser à décocher après la présentation (ou laisser le dernier jour l'arrêter).
 - **Les comptes de live** : OCD Live › Configuration › Comptes de live : remplacer OCD Live Togo et OCD
   Live Afrique par les vrais comptes TikTok d'OCD Live (nom sur TikTok, lien de ses lives, pays).
 - **Les numéros sont des exemples** : aucun message WhatsApp ne part vers les contacts de la démo, même

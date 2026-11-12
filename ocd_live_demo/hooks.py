@@ -100,6 +100,7 @@ class OcdLiveDemo:
     def run(self):
         last_message = self.last_message()
         self.payment()
+        self.step("the currencies by country", self.currencies)
         self.open_bookings()
         self.step("the WhatsApp account", self.whatsapp_setup)
         self.step("the photos of the colours", self.colour_photos)
@@ -127,6 +128,11 @@ class OcdLiveDemo:
             params = self.env["ir.config_parameter"].sudo()
             known = json.loads(params.get_str(PARAM_MESSAGES) or "[]")
             params.set_str(PARAM_MESSAGES, json.dumps(sorted(set(known) | set(messages.ids))))
+
+    def currencies(self):
+        """The currencies by country: the vendors of Cameroon see their prices in FCFA (XAF, the
+        currency of CamPay), Kadi (Paris) in euros, the Americas and Asia in dollars."""
+        self.env["ocd.live.currencies"]._ocd_setup(self.company)
 
     def payment(self):
         """Mobile Money checked by the team, with example numbers; and the payment in cash at the

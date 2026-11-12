@@ -5,6 +5,10 @@ Refaites à chaque évolution avec `tools/captures/` (voir `docs/DEVELOPPEMENT.m
 
 - `backoffice-*` : écrans de l'équipe sur ordinateur (1280 × 800), dont les paramètres (`12`), les
   automatisations (`13`), les tarifs de livraison (`14`) et les conversations WhatsApp (`15`).
+- `backoffice-12b-parametres-devises.png` : les devises par pays (zones, taux, ce que paie un client) ;
+  `backoffice-12c-parametres-paiements-demo.png` : les paiements de démo CamPay activés pour deux numéros ;
+  `backoffice-01b-paiements-demo-actifs.png` : la ligne rouge du tableau de bord tant qu'ils sont actifs ;
+  `site-phone-3b-forfaits-en-euros.png` : les forfaits vus par Kadi (Paris), en euros arrondis.
 - `site-phone-d-1-fil-pays.png`, `site-phone-d-3-fil-autre-pays.png`, `site-phone-d-4-fil-live-autre-pays.png` :
   le fil des lives avec la démo de présentation (le pays du visiteur d'abord, puis une carte par pays et
   ses lives en cours) ; `backoffice-01` et `backoffice-02` montrent sa journée et sa semaine du studio.

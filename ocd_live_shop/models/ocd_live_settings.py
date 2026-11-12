@@ -1,4 +1,6 @@
-from odoo import api, models
+import re
+
+from odoo import api, fields, models
 
 
 class OcdLiveSettings(models.AbstractModel):
@@ -79,6 +81,7 @@ class OcdLiveSettings(models.AbstractModel):
                  get="_ocd_get_provider_published", set="_ocd_set_provider_published", args=[provider.id])
             for provider in providers
         ]
+        items += self._ocd_campay_demo_items()
         items += [
             item("checks", "ocd_cod_methods", _("Paid at the door"),
                  _("How the customer pays when the parcel arrives."), fields=[
@@ -208,4 +211,74 @@ class OcdLiveSettings(models.AbstractModel):
         low, high = values.get("ocd_vendor_rate_min") or 0, values.get("ocd_vendor_rate_max") or 0
         if low and high and low > high:
             errors["ocd_vendor_rate_max"] = self.env._("At least the lowest price.")
+        provider = self._ocd_campay_provider()
+        if provider and "ocd_campay_demo_active" in values:
+            end = fields.Date.to_date(values.get("ocd_campay_demo_end") or False)
+            if values["ocd_campay_demo_active"] and end and end < fields.Date.context_today(self):
+                errors["ocd_campay_demo_end"] = self.env._("Choose today or a later day.")
+            wrong = [
+                number.strip() for number in re.split(r"[,;\n]+", values.get("ocd_campay_demo_numbers") or "")
+                if number.strip() and not provider._campay_normalize_phone(number)
+            ]
+            if wrong:
+                errors["ocd_campay_demo_numbers"] = self.env._(
+                    "Not a Cameroonian mobile number: %s.", ", ".join(wrong[:3])
+                )
         return errors
+
+    # === DEMO PAYMENTS (CAMPAY) === #
+
+    @api.model
+    def _ocd_campay_provider(self):
+        """The CamPay provider of the company, when its demo payments exist (module installed)."""
+        Provider = self.env["payment.provider"].sudo()
+        if "campay_demo_active" not in Provider._fields:
+            return Provider
+        return Provider.search(
+            [("code", "=", "campay"), ("company_id", "=", self.env.company.id)], order="sequence, id", limit=1
+        )
+
+    @api.model
+    def _ocd_campay_demo_items(self):
+        """The demo payments of CamPay: on or off, the amount, the last day, the numbers."""
+        provider = self._ocd_campay_provider()
+        if not provider:
+            return []
+        _ = self.env._
+        item = self._ocd_item
+        values = {"get": "_ocd_get_campay_demo", "set": "_ocd_set_campay_demo"}
+        check = item(
+            "check", "ocd_campay_demo_active", _("Demo payments (CamPay)"),
+            _("For a presentation or a test with real phones: each CamPay payment collects the demo amount instead "
+              "of the price. The pages show the real prices, the order is paid as usual and the accounts record the "
+              "money received."),
+            args=["campay_demo_active"], **values,
+        )
+        if provider._campay_demo_on():
+            check.update(note=_("On: the customers pay the demo amount."), note_tone="red")
+        return [
+            check,
+            item("group", "ocd_campay_demo", _("Demo amount"),
+                 _("Off by itself after the last day; switched on without a day, until tonight."), fields=[
+                     item("number", "ocd_campay_demo_amount", _("FCFA per payment"), args=["campay_demo_amount"],
+                          integer=True, min=1, max=1000000, width=80, **values),
+                     item("date", "ocd_campay_demo_end", _("until"), args=["campay_demo_end"], before=True, **values),
+                 ]),
+            item("text", "ocd_campay_demo_numbers", _("Only these numbers"),
+                 _("Empty: every CamPay payment. Else the numbers that pay the demo amount, separated by commas "
+                   "(e.g. 670000001, 690000002): the others pay the real price."),
+                 args=["campay_demo_numbers"], size=1000, width=460, span=2, **values),
+        ]
+
+    def _ocd_get_campay_demo(self, fname):
+        value = self._ocd_campay_provider()[fname]
+        if fname == "campay_demo_end":
+            return fields.Date.to_string(value) if value else False
+        if fname == "campay_demo_numbers":
+            return value or ""
+        return value
+
+    def _ocd_set_campay_demo(self, fname, value):
+        provider = self._ocd_campay_provider()
+        if provider:
+            provider.write({fname: value if fname == "campay_demo_amount" else (value or False)})

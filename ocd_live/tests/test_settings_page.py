@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from odoo import Command
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
@@ -96,3 +98,31 @@ class TestOcdLiveSettingsPage(OcdLiveCommon):
         self.assertFalse(result["ok"])
         self.assertIn("name", result["errors"])
         self.assertNotEqual(self.company.name, "Another company")
+
+    def test_currencies_by_country(self):
+        """The section of the currencies: one button puts them in place, then the zones, the
+        rates and what a customer pays show."""
+        section = self._page()._ocd_section_currencies()
+        self.assertEqual(section["key"], "currencies")
+        items = {item["key"]: item for item in section["items"]}
+        self.assertIn("ocd_currency_off", items)
+        self.assertEqual(items["ocd_currency_zones"]["button"]["method"], "_ocd_currencies_setup_button")
+        Currencies = self.registry["ocd.live.currencies"]
+        with patch.object(Currencies, "_ocd_read_usd_per_euro", return_value=1.1081):
+            action = self._page().run_settings_action("ocd_currency_zones")
+        self.assertEqual(action["params"]["type"], "success")
+        self.assertTrue(self.env["ocd.live.currencies"]._ocd_is_set_up())
+        section = self._page()._ocd_section_currencies()
+        items = {item["key"]: item for item in section["items"]}
+        self.assertNotIn("ocd_currency_off", items)
+        self.assertEqual(len(items["ocd_currency_zones"]["chips"]), 4)
+        self.assertIn("655.957", items["ocd_currency_rates"]["help"])
+        self.assertIn("1.1081", items["ocd_currency_rates"]["help"])
+        self.assertIn(self.discovery.name, items["ocd_currency_example"]["help"])
+        # The dollar of the day, by the button
+        with patch.object(Currencies, "_ocd_read_usd_per_euro", return_value=1.2):
+            action = self._page().run_settings_action("ocd_currency_rates")
+        self.assertIn("1.2000", action["params"]["message"])
+        with patch.object(Currencies, "_ocd_read_usd_per_euro", return_value=None):
+            action = self._page().run_settings_action("ocd_currency_rates")
+        self.assertEqual(action["params"]["type"], "warning")

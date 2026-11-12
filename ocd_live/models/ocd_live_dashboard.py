@@ -187,7 +187,7 @@ class OcdLiveDashboard(models.AbstractModel):
     def _ocd_todos(self):
         """Return what the team has to do now: dicts with `key`, `tag`, `tone` ("red", "yellow"
         or "grey"), `text` and `action`."""
-        todos = []
+        todos = self._ocd_demo_payment_todos()
         parts = [part for part in self._ocd_check_parts() if part[0]]
         if parts:
             texts = [part[1] for part in parts]
@@ -222,6 +222,39 @@ class OcdLiveDashboard(models.AbstractModel):
                     day=self._ocd_local_day(booking.start_datetime),
                 ),
                 "action": self._ocd_record_action(booking),
+            })
+        return todos
+
+    @api.model
+    def _ocd_demo_payment_todos(self):
+        """The demo payments of CamPay while they are on: the customers pay the demo amount."""
+        Provider = self.env["payment.provider"].sudo()
+        if "campay_demo_active" not in Provider._fields:
+            return []
+        providers = Provider.search([
+            ("code", "=", "campay"), ("company_id", "=", self.env.company.id), ("campay_demo_active", "=", True),
+        ])
+        todos = []
+        for provider in providers.filtered(lambda p: p._campay_demo_on()):
+            amount = self._ocd_money(provider.campay_demo_amount, self.env.ref("base.XAF"))
+            day = day_text(self.env, provider.campay_demo_end, "EEE d MMM")
+            numbers = provider._campay_demo_number_list()
+            if numbers:
+                text = self.env._(
+                    "Demo payments on for %(count)s numbers: they pay %(amount)s, until %(day)s",
+                    count=len(numbers), amount=amount, day=day,
+                )
+            else:
+                text = self.env._(
+                    "Demo payments on: each CamPay payment collects %(amount)s, until %(day)s",
+                    amount=amount, day=day,
+                )
+            todos.append({
+                "key": f"campay_demo_{provider.id}",
+                "tag": self.env._("Demo"),
+                "tone": "red",
+                "text": text,
+                "action": self._ocd_action("ocd_live.ocd_live_settings_action"),
             })
         return todos
 

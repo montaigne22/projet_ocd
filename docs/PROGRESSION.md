@@ -19,6 +19,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Photos des produits : visionneuse, photo par couleur, galerie ; « Préviens-moi » au retour en stock | ✅ fait, testé |
 | Replay lu dans la page (YouTube, TikTok, Facebook), saut au moment d'un produit | ✅ fait, testé |
 | Paiement : formulaire d'Odoo, tous les fournisseurs configurés par pays, devise par pays | ✅ fait, testé |
+| Devises par pays : XOF (UEMOA), XAF (CEMAC, CamPay), EUR (Europe, reste de l'Afrique), USD (Amériques, Asie, Océanie) ; conversion automatique arrondie, dollar du jour | ✅ fait, testé (bouton à cliquer dans les Paramètres) |
+| Paiements de démo CamPay : 25 F CFA encaissés au lieu du prix, pour tous ou pour des numéros, jusqu'à un dernier jour | ✅ fait, testé |
 | Annuaire des lives (pass, envoi du lien, vérification par créneau, statut) | ✅ fait, testé |
 | Espace vendeur sans mot de passe (lien ou code WhatsApp) | ✅ fait, testé |
 | « Moi » pour les comptes Odoo connectés : vendeur, équipe (« Voir son espace »), client | ✅ fait, testé |
@@ -48,6 +50,9 @@ une base neuve avec la démo, 17 tests sans échec : la démo remplit les écran
 tient à jour (semaine du studio, annuaire fenêtre par fenêtre, fil de chaque pays, paiement à vérifier,
 journée de la boutique heure par heure, le lendemain, rien ne s'empile), prend la vidéo et le compte des
 paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle sans rien laisser.
+Devises par pays et paiements de démo CamPay (12 novembre) : tests d'OCD sur la base de test, 286 sans
+échec ; sur une base avec CamPay, 63 tests (CamPay, devises, paramètres, frais de livraison) sans échec ;
+démo, 15 tests sans échec (devises de Brenda, Kadi et Awa comprises).
 
 ## Reste à faire, par priorité
 
@@ -81,6 +86,24 @@ paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 12 novembre 2026 — devises par pays et paiements de démo CamPay
+- **Devises par pays** (Paramètres › Devises par pays, bouton « Mettre en place les devises par pays ») :
+  quatre listes de prix par groupe de pays. Les prix restent écrits en XOF ; l'UEMOA les voit en XOF, la
+  CEMAC en XAF (donc CamPay est proposé au Cameroun), l'Europe et le reste de l'Afrique en euros, les
+  Amériques, l'Asie et l'Océanie en dollars. Les francs et l'euro sont à leur parité fixe (655,957), le
+  dollar est lu chaque jour auprès de la BCE. Prix et frais de livraison arrondis à l'unité en euros et
+  en dollars : Découverte 15 000 F CFA = 15 000 FCFA = 23 € = 25 $. La section montre les zones, les taux
+  et cet exemple ; un bouton relit le dollar du jour.
+- **Shop** : le pays affiché est celui du visiteur dans sa zone (plus le drapeau du premier pays de la
+  liste).
+- **Paiements de démo CamPay** (Paramètres › Paiements et reversements) : chaque paiement CamPay encaisse
+  25 F CFA (montant au choix) au lieu du prix, pour tous les numéros ou pour une liste, jusqu'au dernier
+  jour. Les pages gardent les vrais prix ; la commande est payée comme d'habitude, la comptabilité
+  enregistre les 25 F CFA reçus, une note le dit sur la commande ; ligne rouge sur le tableau de bord,
+  filtre « Paiements de démo » dans les transactions. Le module CamPay dépend maintenant
+  d'`account_payment` (sans quoi la comptabilité aurait pu enregistrer le prix au lieu de l'argent reçu).
+- **Démo** : les devises par pays sont en place (Brenda à Douala en FCFA, Kadi à Paris en euros).
 
 ### 12 novembre 2026 — « Ma carte dans le fil » : la photo et la vidéo d'un vendeur pas encore validé
 - **La photo cassée** : les médias d'une carte n'étaient servis que pour un vendeur validé ; un vendeur

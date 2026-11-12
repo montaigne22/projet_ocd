@@ -107,13 +107,22 @@ class OcdShop(WebsiteSale):
         )
 
     def _ocd_countries(self):
-        """Country of delivery: the pricelists the visitor can choose, with their country."""
+        """Country of delivery: the pricelists the visitor can choose, with their country. A
+        pricelist of several countries (a currency zone: XOF, XAF, EUR, USD) shows the country
+        of the visitor when it is one of them, else the name of the zone."""
         website = request.env.website
         pricelists = website.get_pricelist_available(show_visible=True)
         current = request.pricelist
+        visitor = common.default_country()
         rows = []
         for pricelist in pricelists:
-            country = pricelist.country_group_ids.country_ids[:1]
+            countries = pricelist.country_group_ids.country_ids
+            if not countries:
+                continue
+            if visitor in countries:
+                country = visitor
+            else:
+                country = countries if len(countries) == 1 else countries.browse()
             rows.append({
                 "pricelist": pricelist,
                 "country": country,
@@ -121,7 +130,6 @@ class OcdShop(WebsiteSale):
                 "label": country.name if country else pricelist.name,
                 "on": pricelist == current,
             })
-        rows = [row for row in rows if row["country"]]
         if not any(row["on"] for row in rows):
             country = website.company_id.country_id
             rows.insert(0, {

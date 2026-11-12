@@ -4,6 +4,7 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.fields import Domain
 from odoo.tools import float_round, urls
+from odoo.tools.misc import format_amount
 
 from odoo.addons.payment import utils as payment_utils
 from odoo.addons.payment.logging import get_payment_logger
@@ -15,6 +16,12 @@ _logger = get_payment_logger(__name__, const.SENSITIVE_KEYS)
 
 class PaymentTransaction(models.Model):
     _inherit = "payment.transaction"
+
+    campay_requested_amount = fields.Integer(
+        string="Amount Asked To Campay", readonly=True, copy=False,
+        help="In CFA francs: the amount of the transaction, or the demo amount of a demo payment.",
+    )
+    campay_demo = fields.Boolean(string="Demo Payment", readonly=True, copy=False)
 
     # === BUSINESS METHODS - PAYMENT FLOW === #
 
@@ -103,7 +110,7 @@ class PaymentTransaction(models.Model):
             "POST",
             "collect/",
             json={
-                "amount": self._campay_amount(),
+                "amount": self._campay_amount(msisdn),
                 "currency": self.currency_id.name,
                 "from": msisdn,
                 "description": self._campay_description(),
@@ -164,9 +171,19 @@ class PaymentTransaction(models.Model):
         for transaction in transactions:
             transaction._campay_fetch_status()
 
-    def _campay_amount(self):
-        """Return the amount as an integer number of CFA francs, as Campay expects it."""
-        return int(float_round(self.amount, precision_digits=0))
+    def _campay_amount(self, phone=None):
+        """Return the amount asked to Campay, as an integer number of CFA francs: the amount of
+        the transaction, or the demo amount while the demo payments are on for the number
+        `phone` (the pages show the real amounts). It is kept on the transaction: the amount
+        Campay collects is checked against it."""
+        self.ensure_one()
+        demo = self.provider_id._campay_demo_amount(phone or self.partner_phone)
+        amount = demo or int(float_round(self.amount, precision_digits=0))
+        if (self.campay_requested_amount, self.campay_demo) != (amount, bool(demo)):
+            self.with_context(payment_safe_write=True).write({
+                "campay_requested_amount": amount, "campay_demo": bool(demo),
+            })
+        return amount
 
     def _campay_description(self):
         description = self.env._(
@@ -212,11 +229,37 @@ class PaymentTransaction(models.Model):
             self._set_error(self.env._("Unknown payment status: %s", status))
 
     def _extract_amount_data(self, payment_data):
-        """Override of `payment` to extract the amount and currency from the payment data."""
+        """Override of `payment` to extract the amount and currency from the payment data.
+
+        A demo payment collected the demo amount: when Campay collected exactly the amount asked,
+        the transaction is paid for its own amount (the order is paid as usual); another amount
+        is refused, as for any payment."""
         if self.provider_code != "campay":
             return super()._extract_amount_data(payment_data)
-        return {
-            "amount": float(payment_data.get("amount") or 0),
-            "currency_code": payment_data.get("currency") or self.currency_id.name,
-            "precision_digits": 0,
-        }
+        amount = float(payment_data.get("amount") or 0)
+        currency_code = payment_data.get("currency") or self.currency_id.name
+        if self.campay_demo and self.campay_requested_amount and amount == self.campay_requested_amount:
+            amount = self.amount
+        return {"amount": amount, "currency_code": currency_code, "precision_digits": 0}
+
+    def _create_payment(self, **extra_create_values):
+        """Override of `account_payment`: a demo payment records the money Campay collected (the
+        demo amount), so that the accounts stay right."""
+        if self.provider_code == "campay" and self.campay_demo and self.campay_requested_amount:
+            extra_create_values.setdefault("amount", self.campay_requested_amount)
+        return super()._create_payment(**extra_create_values)
+
+    def _post_process(self):
+        """Override of `payment`: a demo payment says it on the documents it paid."""
+        super()._post_process()
+        for transaction in self.filtered(lambda t: t.provider_code == "campay" and t.campay_demo and t.state == "done"):
+            message = self.env._(
+                "Demo payment: %(collected)s collected by Campay for %(amount)s.",
+                collected=format_amount(self.env, transaction.campay_requested_amount, transaction.currency_id),
+                amount=format_amount(self.env, transaction.amount, transaction.currency_id),
+            )
+            documents = [*transaction.invoice_ids]
+            if "sale_order_ids" in transaction._fields:
+                documents += [*transaction.sale_order_ids]
+            for document in documents:
+                document.message_post(body=message)

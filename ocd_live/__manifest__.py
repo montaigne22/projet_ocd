@@ -17,6 +17,12 @@ OCD Live
   elsewhere, any connector added later). The prices come from the pricelist
   of the country of the vendor. The booking is confirmed when the payment
   confirms the order, never by the browser.
+- Currencies by country, put in place by a button of the settings: the prices
+  are written in CFA francs; the UEMOA sees them in XOF, the CEMAC in XAF
+  (Campay), Europe and the rest of Africa in euros, the Americas, Asia and
+  Oceania in dollars. The francs and the euro are fixed to each other, the
+  dollar is read every day from the European Central Bank; the prices in euros
+  and in dollars are rounded to the unit.
 - A host (employee) for each remote live, with a reminder when none is chosen.
 - The team is notified in the "Lives" channel for every confirmed booking.
 - Live directory: the vendor sends the link of the live, the team checks it
@@ -26,7 +32,7 @@ OCD Live
 - Personal link without password for each vendor (sent on WhatsApp by
   ocd_live_whatsapp) to reach their space.
 """,
-    "version": "20.0.1.10.0",
+    "version": "20.0.1.11.0",
     "category": "Sales/Sales",
     "author": "RollBackk",
     "license": "LGPL-3",

@@ -301,3 +301,108 @@ CARDS_DEMO = {
     "This short link could not be opened from the server: open it, then paste the full address of the video (the one of the page).":
         "Ce lien court n'a pas pu être ouvert depuis le serveur : ouvre-le, puis colle l'adresse complète de la vidéo (celle de la page).",
 }
+
+# === Currencies by country and demo payments (ocd_live) ===
+CURRENCIES = {
+    "Currencies Of The Countries": "Devises des pays",
+    "OCD Live: rate of the dollar of the day": "OCD Live : taux du dollar du jour",
+    "West Africa (XOF)": "Afrique de l'Ouest (XOF)",
+    "Central Africa (XAF)": "Afrique centrale (XAF)",
+    "Europe and the rest of Africa (EUR)": "Europe et reste de l'Afrique (EUR)",
+    "Americas, Asia and Oceania (USD)": "Amériques, Asie et Océanie (USD)",
+    "%(zone)s · %(count)s countries": "%(zone)s · %(count)s pays",
+    "The company is in %s: the rates are typed on the currencies.":
+        "La société est en %s : les taux se saisissent sur les devises.",
+    "XAF = XOF and 1 € = 655.957 F CFA: fixed since 1999.": "XAF = XOF et 1 € = 655,957 F CFA : fixes depuis 1999.",
+    "%(fixed)s The dollar: 1 € = %(usd)s $ on %(day)s, from the European Central Bank.":
+        "%(fixed)s Le dollar : 1 € = %(usd)s $ le %(day)s, d'après la Banque centrale européenne.",
+    "%(product)s: %(written)s → %(prices)s.": "%(product)s : %(written)s → %(prices)s.",
+    "Pricelists": "Listes de prix",
+    "Currency of each country": "Devise de chaque pays",
+    "The prices are written in %(currency)s. Each country sees them, books and pays in its currency: XOF in the 8 countries of the UEMOA, XAF in the 6 countries of the CEMAC (CamPay takes this one), EUR in Europe and the rest of Africa, USD in the Americas, Asia and Oceania.":
+        "Les prix s'écrivent en %(currency)s. Chaque pays les voit, réserve et paie dans sa devise : XOF dans les 8 pays de l'UEMOA, XAF dans les 6 pays de la CEMAC (celle que prend CamPay), EUR en Europe et dans le reste de l'Afrique, USD dans les Amériques, en Asie et en Océanie.",
+    "Update the countries and the rates": "Mettre à jour les pays et les taux",
+    "Put the currencies by country in place": "Mettre en place les devises par pays",
+    "Rates": "Taux",
+    "Read the dollar of the day": "Lire le dollar du jour",
+    "Every day by itself.": "Mis à jour tout seul chaque jour.",
+    "What a customer pays": "Ce que paie un client",
+    "Rounded to the unit in euros and in dollars.": "Arrondi à l'unité en euros et en dollars.",
+    "Today: one currency for every country": "Aujourd'hui : une seule devise pour tous les pays",
+    "Every price is shown and paid in %(currency)s, whatever the country: CamPay (XAF only) is not offered.":
+        "Tous les prix s'affichent et se paient en %(currency)s, quel que soit le pays : CamPay (XAF seulement) n'est pas proposé.",
+    "Currencies by country": "Devises par pays",
+    "Currencies by country in place: each country sees its prices in its currency.":
+        "Devises par pays en place : chaque pays voit ses prix dans sa devise.",
+    "Dollar of the day: 1 € = %s $.": "Dollar du jour : 1 € = %s $.",
+    "The European Central Bank does not answer: the last rate is kept. Try again later.":
+        "La Banque centrale européenne ne répond pas : le dernier taux est gardé. Réessayez plus tard.",
+    "Demo payments on for %(count)s numbers: they pay %(amount)s, until %(day)s":
+        "Paiements de démo actifs pour %(count)s numéros : ils paient %(amount)s, jusqu'au %(day)s",
+    "Demo payments on: each CamPay payment collects %(amount)s, until %(day)s":
+        "Paiements de démo actifs : chaque paiement CamPay encaisse %(amount)s, jusqu'au %(day)s",
+    "Demo": "Démo",
+}
+
+# === Demo payments of CamPay on the settings page (ocd_live_shop) ===
+CURRENCIES_SHOP = {
+    "Choose today or a later day.": "Choisissez aujourd'hui ou un jour suivant.",
+    "Not a Cameroonian mobile number: %s.": "Pas un numéro mobile camerounais : %s.",
+    "Demo payments (CamPay)": "Paiements de démo (CamPay)",
+    "For a presentation or a test with real phones: each CamPay payment collects the demo amount instead of the price. The pages show the real prices, the order is paid as usual and the accounts record the money received.":
+        "Pour une présentation ou un test avec de vrais téléphones : chaque paiement CamPay encaisse le montant de démo au lieu du prix. Les pages affichent les vrais prix, la commande est payée comme d'habitude et la comptabilité enregistre l'argent reçu.",
+    "On: the customers pay the demo amount.": "Actif : les clients paient le montant de démo.",
+    "Demo amount": "Montant de démo",
+    "Off by itself after the last day; switched on without a day, until tonight.":
+        "S'arrête tout seul après le dernier jour ; activé sans date, jusqu'à ce soir.",
+    "FCFA per payment": "FCFA par paiement",
+    "until": "jusqu'au",
+    "Only these numbers": "Seulement ces numéros",
+    "Empty: every CamPay payment. Else the numbers that pay the demo amount, separated by commas (e.g. 670000001, 690000002): the others pay the real price.":
+        "Vide : tous les paiements CamPay. Sinon les numéros qui paient le montant de démo, séparés par des virgules (ex. 670000001, 690000002) : les autres paient le vrai prix.",
+}
+
+# === Demo payments (payment_campay) ===
+CAMPAY = {
+    "HTTP Routing": "Routage HTTP",
+    "Demo Payments": "Paiements de démo",
+    "Every payment collects the demo amount instead of the amount of the order: the pages show the real amounts and the order is paid as usual. Until the last day below, then off by itself.":
+        "Chaque paiement encaisse le montant de démo au lieu du montant de la commande : les pages affichent les vrais montants et la commande est payée comme d'habitude. Jusqu'au dernier jour ci-dessous, puis arrêt tout seul.",
+    "Demo Amount": "Montant de démo",
+    "In CFA francs.": "En francs CFA.",
+    "Last Day Of The Demo Payments": "Dernier jour des paiements de démo",
+    "Demo Numbers": "Numéros de démo",
+    "Only the payments from these numbers collect the demo amount (separated by commas or one per line, e.g. 670000001); the others pay the real price. Empty: every payment.":
+        "Seuls les paiements de ces numéros encaissent le montant de démo (séparés par des virgules ou un par ligne, ex. 670000001) ; les autres paient le vrai prix. Vide : tous les paiements.",
+    "Amount Asked To Campay": "Montant demandé à Campay",
+    "In CFA francs: the amount of the transaction, or the demo amount of a demo payment.":
+        "En francs CFA : le montant de la transaction, ou le montant de démo d'un paiement de démo.",
+    "Demo Payment": "Paiement de démo",
+    "Demo payment: %(collected)s collected by Campay for %(amount)s.":
+        "Paiement de démo : %(collected)s encaissés par Campay pour %(amount)s.",
+    "Demo payments": "Paiements de démo",
+    "Empty: every payment. Else e.g. 670000001, 690000002": "Vide : tous les paiements. Sinon ex. 670000001, 690000002",
+    "For a presentation or a test with real phones: every payment collects this amount instead of\n"
+    "                        the amount of the order. The pages show the real amounts, the order is paid as usual and the\n"
+    "                        accounts record the money received. Off by itself after the last day.":
+        "Pour une présentation ou un test avec de vrais téléphones : chaque paiement encaisse ce montant au lieu\n"
+        "                        du montant de la commande. Les pages affichent les vrais montants, la commande est payée comme\n"
+        "                        d'habitude et la comptabilité enregistre l'argent reçu. Arrêt tout seul après le dernier jour.",
+}
+
+CAMPAY_DESCRIPTION = """
+Fournisseur de paiement Campay
+==============================
+
+- Mobile Money (MTN Mobile Money et Orange Money) : le client saisit son numéro
+  au moment du paiement et confirme sur son téléphone, sans quitter le site.
+- Paiement par carte bancaire via la page de paiement Campay.
+- Webhook signé (JWT HS256 avec la clé de webhook) et vérification du statut
+  auprès de l'API Campay : l'état du paiement est toujours lu chez Campay,
+  jamais dans les paramètres de l'appel.
+- Paiements de démo, pour une présentation ou un test avec de vrais téléphones :
+  chaque paiement encaisse un petit montant (25 F CFA par défaut) au lieu du prix,
+  pour tous les numéros ou seulement pour les numéros de démo, jusqu'à un dernier
+  jour. Les pages affichent les vrais prix, la commande est payée comme d'habitude
+  et la comptabilité enregistre l'argent reçu.
+"""

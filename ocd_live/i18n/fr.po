@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-12 13:58+0000\n"
-"PO-Revision-Date: 2026-11-12 13:58+0000\n"
+"POT-Creation-Date: 2026-11-12 18:38+0000\n"
+"PO-Revision-Date: 2026-11-12 18:38+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -32,6 +32,12 @@ msgid ""
 "  elsewhere, any connector added later). The prices come from the pricelist\n"
 "  of the country of the vendor. The booking is confirmed when the payment\n"
 "  confirms the order, never by the browser.\n"
+"- Currencies by country, put in place by a button of the settings: the prices\n"
+"  are written in CFA francs; the UEMOA sees them in XOF, the CEMAC in XAF\n"
+"  (Campay), Europe and the rest of Africa in euros, the Americas, Asia and\n"
+"  Oceania in dollars. The francs and the euro are fixed to each other, the\n"
+"  dollar is read every day from the European Central Bank; the prices in euros\n"
+"  and in dollars are rounded to the unit.\n"
 "- A host (employee) for each remote live, with a reminder when none is chosen.\n"
 "- The team is notified in the \"Lives\" channel for every confirmed booking.\n"
 "- Live directory: the vendor sends the link of the live, the team checks it\n"
@@ -58,6 +64,12 @@ msgstr ""
 "  l'équipe ailleurs, tout connecteur ajouté plus tard). Les prix viennent de la liste\n"
 "  de prix du pays du vendeur. La réservation est confirmée quand le paiement confirme\n"
 "  la commande, jamais par le navigateur.\n"
+"- Devises par pays, mises en place par un bouton des réglages : les prix s'écrivent\n"
+"  en francs CFA ; l'UEMOA les voit en XOF, la CEMAC en XAF (Campay), l'Europe et le\n"
+"  reste de l'Afrique en euros, les Amériques, l'Asie et l'Océanie en dollars. Les\n"
+"  francs et l'euro sont fixes entre eux, le dollar est lu chaque jour auprès de la\n"
+"  Banque centrale européenne ; les prix en euros et en dollars sont arrondis à\n"
+"  l'unité.\n"
 "- Une animatrice (employée) pour chaque live à distance, avec un rappel quand aucune\n"
 "  n'est choisie.\n"
 "- L'équipe est prévenue dans le canal « Lives » à chaque réservation confirmée.\n"
@@ -166,6 +178,12 @@ msgstr "%(first)s ou %(last)s"
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+msgid "%(fixed)s The dollar: 1 € = %(usd)s $ on %(day)s, from the European Central Bank."
+msgstr "%(fixed)s Le dollar : 1 € = %(usd)s $ le %(day)s, d'après la Banque centrale européenne."
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/models/ocd_live_planning.py:0
 msgid "%(hours)s h earlier than in %(city)s"
 msgstr "%(hours)s h de moins qu'à %(city)s"
@@ -193,6 +211,12 @@ msgstr "%(package)s : %(count)s à placer"
 #: code:addons/ocd_live/models/ocd_live_dashboard.py:0
 msgid "%(period)s · in %(currency)s"
 msgstr "%(period)s · en %(currency)s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+msgid "%(product)s: %(written)s → %(prices)s."
+msgstr "%(product)s : %(written)s → %(prices)s."
 
 #. module: ocd_live
 #. odoo-python
@@ -272,6 +296,12 @@ msgstr "%(vendor)s dit avoir envoyé le paiement de %(order)s (%(reference)s) : 
 #: code:addons/ocd_live/models/ocd_live_dashboard.py:0
 msgid "%(window)s window, %(count)s active passes"
 msgstr "créneau du %(window)s, %(count)s pass actifs"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+msgid "%(zone)s · %(count)s countries"
+msgstr "%(zone)s · %(count)s pays"
 
 #. module: ocd_live
 #. odoo-javascript
@@ -1398,6 +1428,14 @@ msgstr "Amérique"
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+#: model:product.pricelist,name:ocd_live.pricelist_usd
+#: model:res.country.group,name:ocd_live.country_group_usd
+msgid "Americas, Asia and Oceania (USD)"
+msgstr "Amériques, Asie et Océanie (USD)"
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/models/res_partner.py:0
 #: model:ir.model.fields.selection,name:ocd_live.selection__res_partner__ocd_card_media__image
 msgid "An image"
@@ -1918,6 +1956,14 @@ msgid "Category"
 msgstr "Catégorie"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+#: model:product.pricelist,name:ocd_live.pricelist_xaf
+#: model:res.country.group,name:ocd_live.country_group_xaf
+msgid "Central Africa (XAF)"
+msgstr "Afrique centrale (XAF)"
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space
 msgid "Change my card"
 msgstr "Changer ma carte"
@@ -2339,6 +2385,29 @@ msgid "Credit Used"
 msgstr "Crédit utilisé"
 
 #. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ocd_live_currencies
+msgid "Currencies Of The Countries"
+msgstr "Devises des pays"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Currencies by country"
+msgstr "Devises par pays"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Currencies by country in place: each country sees its prices in its currency."
+msgstr "Devises par pays en place : chaque pays voit ses prix dans sa devise."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Currency of each country"
+msgstr "Devise de chaque pays"
+
+#. module: ocd_live
 #. odoo-javascript
 #: code:addons/ocd_live/static/src/dashboard/dashboard.xml:0
 #: model:ir.actions.client,name:ocd_live.ocd_live_dashboard_action
@@ -2371,6 +2440,24 @@ msgstr "Jour, heure, puis paquet"
 #: model_terms:ir.ui.view,arch_db:ocd_live.res_config_settings_view_form
 msgid "Days of opening of the studio"
 msgstr "Jours d'ouverture du studio"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Demo"
+msgstr "Démo"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Demo payments on for %(count)s numbers: they pay %(amount)s, until %(day)s"
+msgstr "Paiements de démo actifs pour %(count)s numéros : ils paient %(amount)s, jusqu'au %(day)s"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_dashboard.py:0
+msgid "Demo payments on: each CamPay payment collects %(amount)s, until %(day)s"
+msgstr "Paiements de démo actifs : chaque paiement CamPay encaisse %(amount)s, jusqu'au %(day)s"
 
 #. module: ocd_live
 #. odoo-python
@@ -2501,6 +2588,7 @@ msgstr "Découverte"
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_currencies__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_dashboard__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_planning__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_platform__display_name
@@ -2522,6 +2610,12 @@ msgstr "Découverte"
 #: model:ir.model.fields,field_description:ocd_live.field_website__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Dollar of the day: 1 € = %s $."
+msgstr "Dollar du jour : 1 € = %s $."
 
 #. module: ocd_live
 #: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__state__done
@@ -2636,6 +2730,14 @@ msgid "Europe"
 msgstr "Europe"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+#: model:product.pricelist,name:ocd_live.pricelist_eur
+#: model:res.country.group,name:ocd_live.country_group_eur
+msgid "Europe and the rest of Africa (EUR)"
+msgstr "Europe et reste de l'Afrique (EUR)"
+
+#. module: ocd_live
 #: model:ocd.directory.window,name:ocd_live.window_evening
 msgid "Evening"
 msgstr "Soir"
@@ -2689,6 +2791,12 @@ msgid "Every day"
 msgstr "Chaque jour"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Every day by itself."
+msgstr "Mis à jour tout seul chaque jour."
+
+#. module: ocd_live
 #: model:ocd.automation,when:ocd_live.automation_pass_reminder
 msgid "Every day, some days before the end of the pass"
 msgstr "Chaque jour, quelques jours avant la fin du pass"
@@ -2715,6 +2823,12 @@ msgstr "Chaque heure"
 #: model:ocd.automation,trigger:ocd_live.automation_pass_states
 msgid "Every hour."
 msgstr "Chaque heure."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Every price is shown and paid in %(currency)s, whatever the country: CamPay (XAF only) is not offered."
+msgstr "Tous les prix s'affichent et se paient en %(currency)s, quel que soit le pays : CamPay (XAF seulement) n'est pas proposé."
 
 #. module: ocd_live
 #: model:ocd.voice.language,name:ocd_live.voice_language_ee
@@ -3162,6 +3276,7 @@ msgstr "Je serai en retard"
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__id
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_category__id
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_credit__id
+#: model:ir.model.fields,field_description:ocd_live.field_ocd_live_currencies__id
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_dashboard__id
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_planning__id
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_platform__id
@@ -4573,6 +4688,11 @@ msgid "OCD Live: prepare the videos of the cards (readable by every phone)"
 msgstr "OCD Live : préparer les vidéos des cartes (lisibles par tous les téléphones)"
 
 #. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_usd_rate_ir_actions_server
+msgid "OCD Live: rate of the dollar of the day"
+msgstr "OCD Live : taux du dollar du jour"
+
+#. module: ocd_live
 #: model:ir.actions.server,name:ocd_live.ir_cron_release_expired_holds_ir_actions_server
 msgid "OCD Live: release the slots that were not paid"
 msgstr "OCD Live : libérer les créneaux non payés"
@@ -5325,6 +5445,12 @@ msgid "Price of the hours"
 msgstr "Prix des heures"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Pricelists"
+msgstr "Listes de prix"
+
+#. module: ocd_live
 #: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__ocd_join_state__problem
 msgid "Problem"
 msgstr "Problème"
@@ -5372,6 +5498,12 @@ msgid "Put online"
 msgstr "Mettre en ligne"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Put the currencies by country in place"
+msgstr "Mettre en place les devises par pays"
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.report_ticket
 #: model_terms:ir.ui.view,arch_db:ocd_live.ticket
 msgid "QR code of the ticket"
@@ -5383,9 +5515,21 @@ msgid "Quality"
 msgstr "Qualité"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Rates"
+msgstr "Taux"
+
+#. module: ocd_live
 #: model:ir.model.fields,help:ocd_live.field_ocd_voice_prompt__text
 msgid "Read by the voice of the phone when the page has no recording in the language."
 msgstr "Lue par la voix du téléphone quand la page n'a pas d'enregistrement dans la langue."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Read the dollar of the day"
+msgstr "Lire le dollar du jour"
 
 #. module: ocd_live
 #: model:ir.model.fields.selection,name:ocd_live.selection__ocd_live_booking__ocd_join_state__ready
@@ -5701,6 +5845,12 @@ msgstr "Responsable"
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__activity_user_id
 msgid "Responsible User"
 msgstr "Utilisateur responsable"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Rounded to the unit in euros and in dollars."
+msgstr "Arrondi à l'unité en euros et en dollars."
 
 #. module: ocd_live
 #: model:ir.model.fields.selection,name:ocd_live.selection__ocd_automation__kind__rule
@@ -6421,6 +6571,12 @@ msgid "Thank you. The receipt arrives on WhatsApp."
 msgstr "Merci. Le reçu arrive sur WhatsApp."
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "The European Central Bank does not answer: the last rate is kept. Try again later."
+msgstr "La Banque centrale européenne ne répond pas : le dernier taux est gardé. Réessayez plus tard."
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.join
 msgid "The account"
 msgstr "Le compte"
@@ -6479,6 +6635,12 @@ msgstr "La vérification ouvre à"
 #: model:ir.model.fields,help:ocd_live.field_res_config_settings__ocd_vendor_login
 msgid "The code is sent on WhatsApp: it needs the module OCD Live WhatsApp."
 msgstr "Le code est envoyé sur WhatsApp : il faut le module OCD Live WhatsApp."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+msgid "The company is in %s: the rates are typed on the currencies."
+msgstr "La société est en %s : les taux se saisissent sur les devises."
 
 #. module: ocd_live
 #: model:ocd.automation,scope:ocd_live.automation_lives_done
@@ -6749,6 +6911,12 @@ msgstr "La plateforme du lien, parmi les plateformes de live (Configuration)."
 #: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_price_rule_check_percent
 msgid "The price change is a percentage, not zero, and above -100."
 msgstr "La variation du prix est un pourcentage, non nul et supérieur à -100."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "The prices are written in %(currency)s. Each country sees them, books and pays in its currency: XOF in the 8 countries of the UEMOA, XAF in the 6 countries of the CEMAC (CamPay takes this one), EUR in Europe and the rest of Africa, USD in the Americas, Asia and Oceania."
+msgstr "Les prix s'écrivent en %(currency)s. Chaque pays les voit, réserve et paie dans sa devise : XOF dans les 8 pays de l'UEMOA, XAF dans les 6 pays de la CEMAC (celle que prend CamPay), EUR en Europe et dans le reste de l'Afrique, USD dans les Amériques, en Asie et en Océanie."
 
 #. module: ocd_live
 #. odoo-python
@@ -7360,6 +7528,12 @@ msgstr "Aujourd'hui, à venir"
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Today: one currency for every country"
+msgstr "Aujourd'hui : une seule devise pour tous les pays"
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/controllers/feed.py:0
 msgid "Tomorrow at %s"
 msgstr "Demain à %s"
@@ -7473,6 +7647,12 @@ msgstr "Jusqu'au"
 #: code:addons/ocd_live/controllers/vendor_space.py:0
 msgid "Until then, your card shows %s."
 msgstr "En attendant, ta carte montre %s."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Update the countries and the rates"
+msgstr "Mettre à jour les pays et les taux"
 
 #. module: ocd_live
 #. odoo-javascript
@@ -7755,6 +7935,20 @@ msgid "Wednesday"
 msgstr "Mercredi"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+#: model:product.pricelist,name:ocd_live.pricelist_xof
+#: model:res.country.group,name:ocd_live.country_group_xof
+msgid "West Africa (XOF)"
+msgstr "Afrique de l'Ouest (XOF)"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "What a customer pays"
+msgstr "Ce que paie un client"
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.booking_infos
 #: model_terms:ir.ui.view,arch_db:ocd_live.send_link
 msgid "What do you sell?"
@@ -8006,6 +8200,12 @@ msgstr "Mauvaise catégorie"
 #: code:addons/ocd_live/controllers/vendor_space.py:0
 msgid "Wrong or expired code. Ask for a new code."
 msgstr "Code faux ou expiré. Demande un nouveau code."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_currencies.py:0
+msgid "XAF = XOF and 1 € = 655.957 F CFA: fixed since 1999."
+msgstr "XAF = XOF et 1 € = 655,957 F CFA : fixes depuis 1999."
 
 #. module: ocd_live
 #: model:ocd.listing.refuse.reason,message:ocd_live.refuse_reason_vendor_duplicate

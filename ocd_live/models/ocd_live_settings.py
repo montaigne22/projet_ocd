@@ -1,6 +1,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools.misc import format_amount
+from odoo.tools.misc import format_amount, formatLang
 
 from odoo.addons.ocd_live.models.res_company import OPEN_DAY_FIELDS
 
@@ -104,7 +104,7 @@ class OcdLiveSettings(models.AbstractModel):
     def _ocd_sections(self):
         """Sections of the page: [{"key", "sequence", "icon", "label", "title", "items"}].
         Extended by the other modules of OCD Live."""
-        return [self._ocd_section_lives(), self._ocd_section_directory()]
+        return [self._ocd_section_lives(), self._ocd_section_directory(), self._ocd_section_currencies()]
 
     @api.model
     def _ocd_item(self, kind, key, title, help="", **extra):  # noqa: A002
@@ -219,6 +219,82 @@ class OcdLiveSettings(models.AbstractModel):
                      _("Sent to the vendor when the team refuses a link."),
                      link={"label": _("Reasons of refusal"), "action": "ocd_live.ocd_listing_refuse_reason_action"}),
             ],
+        }
+
+    @api.model
+    def _ocd_section_currencies(self):
+        """The currency of each country: the prices written in the currency of the company,
+        converted for the four zones (XOF, XAF, EUR, USD), the rates and an example."""
+        _ = self.env._
+        company = self.env.company
+        item = self._ocd_item
+        Currencies = self.env["ocd.live.currencies"]
+        ready = Currencies._ocd_is_set_up()
+        link = {"label": _("Pricelists"), "action": "product.product_pricelist_action2"}
+        zones = item(
+            "chips", "ocd_currency_zones", _("Currency of each country"),
+            _("The prices are written in %(currency)s. Each country sees them, books and pays in its currency: "
+              "XOF in the 8 countries of the UEMOA, XAF in the 6 countries of the CEMAC (CamPay takes this one), "
+              "EUR in Europe and the rest of Africa, USD in the Americas, Asia and Oceania.",
+              currency=company.currency_id.name),
+            chips=Currencies._ocd_zone_chips() if ready else [],
+            button={
+                "label": _("Update the countries and the rates") if ready else _("Put the currencies by country in place"),
+                "method": "_ocd_currencies_setup_button",
+            },
+            span=2,
+        )
+        if ready:
+            zones["link"] = link
+        items = [zones]
+        if ready:
+            items += [
+                item("info", "ocd_currency_rates", _("Rates"), Currencies._ocd_rates_text(company),
+                     button={"label": _("Read the dollar of the day"), "method": "_ocd_usd_rate_button"},
+                     note=_("Every day by itself."), note_tone="green"),
+                item("info", "ocd_currency_example", _("What a customer pays"), Currencies._ocd_example_text(),
+                     note=_("Rounded to the unit in euros and in dollars."), note_tone="none"),
+            ]
+        else:
+            items.append(item(
+                "info", "ocd_currency_off", _("Today: one currency for every country"),
+                _("Every price is shown and paid in %(currency)s, whatever the country: CamPay (XAF only) is not offered.",
+                  currency=company.currency_id.name),
+            ))
+        return {
+            "key": "currencies",
+            "sequence": 45,
+            "icon": "DV",
+            "label": _("Currencies by country"),
+            "title": _("Currencies by country"),
+            "items": items,
+        }
+
+    def _ocd_currencies_setup_button(self):
+        self.env["ocd.live.currencies"]._ocd_setup()
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "success",
+                "message": self.env._("Currencies by country in place: each country sees its prices in its currency."),
+            },
+        }
+
+    def _ocd_usd_rate_button(self):
+        Currencies = self.env["ocd.live.currencies"]
+        usd_per_euro = Currencies._ocd_read_usd_per_euro()
+        if usd_per_euro:
+            Currencies._ocd_set_rates(self.env.company, usd_per_euro)
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "success" if usd_per_euro else "warning",
+                "message": self.env._("Dollar of the day: 1 € = %s $.", formatLang(self.env, usd_per_euro, digits=4))
+                if usd_per_euro
+                else self.env._("The European Central Bank does not answer: the last rate is kept. Try again later."),
+            },
         }
 
     # === HELPERS OF THE SECTIONS === #

@@ -581,6 +581,12 @@ OCD Live
   l'équipe ailleurs, tout connecteur ajouté plus tard). Les prix viennent de la liste
   de prix du pays du vendeur. La réservation est confirmée quand le paiement confirme
   la commande, jamais par le navigateur.
+- Devises par pays, mises en place par un bouton des réglages : les prix s'écrivent
+  en francs CFA ; l'UEMOA les voit en XOF, la CEMAC en XAF (Campay), l'Europe et le
+  reste de l'Afrique en euros, les Amériques, l'Asie et l'Océanie en dollars. Les
+  francs et l'euro sont fixes entre eux, le dollar est lu chaque jour auprès de la
+  Banque centrale européenne ; les prix en euros et en dollars sont arrondis à
+  l'unité.
 - Une animatrice (employée) pour chaque live à distance, avec un rappel quand aucune
   n'est choisie.
 - L'équipe est prévenue dans le canal « Lives » à chaque réservation confirmée.

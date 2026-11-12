@@ -101,4 +101,14 @@
         <field name="interval_type">days</field>
     </record>
 
+    <record id="ir_cron_usd_rate" model="ir.cron">
+        <field name="name">OCD Live: rate of the dollar of the day</field>
+        <field name="model_id" ref="model_ocd_live_currencies"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_update_usd_rate()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+
 </odoo>

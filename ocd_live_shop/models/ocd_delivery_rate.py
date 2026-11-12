@@ -11,6 +11,7 @@ step is a method, so that a module can change one rule without copying the other
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import float_round
 
 OPERATORS = [
     ("vendor", "The vendor delivers"),
@@ -305,12 +306,21 @@ class OcdDeliveryRate(models.Model):
         """The price of the rate in `currency`; free above the amount of the rate."""
         self.ensure_one()
         date = date or fields.Date.context_today(self)
-        price = self.currency_id._convert(self.price, currency, company, date)
+        price = self._ocd_converted_price(currency, company, date)
         if self.free_above:
             threshold = self.currency_id._convert(self.free_above, currency, company, date)
             if currency.compare_amounts(goods_amount, threshold) >= 0:
                 price = 0.0
         return currency.round(price)
+
+    def _ocd_converted_price(self, currency, company, date):
+        """The price of the rate in `currency`: converted, then rounded to the unit as the prices
+        of the products (1 500 F CFA: 2 € and 3 $, not 2.29 € and 2.53 $)."""
+        self.ensure_one()
+        price = self.currency_id._convert(self.price, currency, company, date)
+        if currency != self.currency_id:
+            price = float_round(price, precision_rounding=1.0)
+        return price
 
     def _ocd_allows_cod(self, origin, partner, operator):
         """Payment at the door: never through a travel agency, nor towards another country."""
@@ -348,7 +358,7 @@ class OcdDeliveryRate(models.Model):
             )
         lines = []
         for rate in shown.sorted(lambda r: (r.vendor_id.id or 0, r.operator == "agency", r.sequence, r.price))[:limit]:
-            price = rate.currency_id._convert(rate.price, currency, company, fields.Date.context_today(self))
+            price = rate._ocd_converted_price(currency, company, fields.Date.context_today(self))
             lines.append(self.env._(
                 "%(zone)s: %(price)s", zone=rate._ocd_zone_label(limit=2),
                 price=currency.format(price) if price else self.env._("free"),

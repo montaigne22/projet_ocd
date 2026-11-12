@@ -17,6 +17,18 @@
                         Without live mode, payments go through the Campay demo platform.
                     </div>
                 </group>
+                <group invisible="code != 'campay'" colspan="2" string="Demo payments">
+                    <field name="campay_demo_active"/>
+                    <field name="campay_demo_amount" invisible="not campay_demo_active"/>
+                    <field name="campay_demo_end" invisible="not campay_demo_active"/>
+                    <field name="campay_demo_numbers" invisible="not campay_demo_active"
+                           placeholder="Empty: every payment. Else e.g. 670000001, 690000002"/>
+                    <div class="text-muted" colspan="2">
+                        For a presentation or a test with real phones: every payment collects this amount instead of
+                        the amount of the order. The pages show the real amounts, the order is paid as usual and the
+                        accounts record the money received. Off by itself after the last day.
+                    </div>
+                </group>
             </group>
         </field>
     </record>

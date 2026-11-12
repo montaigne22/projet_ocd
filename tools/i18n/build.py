@@ -18,8 +18,8 @@ SKIP_PREFIX = ("Envoie le montant par Mobile Money",)
 SCREENS = [ns["SETTINGS"], ns["SHOP_SETTINGS"], ns["AUTOMATIONS"], ns["WHATSAPP_SCREENS"], ns["SHOP_WHATSAPP_SCREENS"],
            ns["NO_ODOO"], ns["PAGES_AND_ENGLISH"]]
 MODULES = {
-    "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], ns["SITE_FRAME"], ns["TICKET"], ns["COUNTRIES"], ns["CARDS"], *SCREENS],
-    "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], ns["SHOP_COURIER_LOGIN"], ns["SHOP_COUNTRIES"], ns["MEDIA_SHOP"], ns["CARDS"], ns["CARDS_SHOP"], *SCREENS],
+    "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], ns["SITE_FRAME"], ns["TICKET"], ns["COUNTRIES"], ns["CARDS"], ns["CURRENCIES"], *SCREENS],
+    "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], ns["SHOP_COURIER_LOGIN"], ns["SHOP_COUNTRIES"], ns["MEDIA_SHOP"], ns["CARDS"], ns["CARDS_SHOP"], ns["CURRENCIES_SHOP"], *SCREENS],
     "ocd_live_whatsapp": [ns["WHATSAPP"], ns["CARDS_WHATSAPP"], *SCREENS],
     "ocd_live_shop_whatsapp": [ns["SHOP_WHATSAPP"], ns["MEDIA_SHOP_WHATSAPP"], *SCREENS],
     "ocd_live_recruitment": [ns["RECRUITMENT"], ns["RECRUITMENT3"], ns["RECRUITMENT_FRAME"]],
@@ -28,8 +28,10 @@ MODULES = {
     "ocd_live_demo_whatsapp": [ns["DEMO_WHATSAPP"]],
     "ocd_debranding": [ns["NO_ODOO"]],
     "theme_ocd": [ns["THEME"]],
+    "payment_campay": [ns["CAMPAY"]],
 }
 ns["DESCRIPTIONS"]["theme_ocd"] = ns["THEME_DESCRIPTION"]
+ns["DESCRIPTIONS"]["payment_campay"] = ns["CAMPAY_DESCRIPTION"]
 # Names of places and products: the same in French
 IDENTITY = {"ocd_delivery_togo", "ocd_live_demo"}
 

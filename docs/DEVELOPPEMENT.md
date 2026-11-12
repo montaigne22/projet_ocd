@@ -100,7 +100,7 @@ avec la page de l'équipe. La version d'un module augmente quand ses vues ou ses
 outils qui ne mettent à jour qu'un module dont la version a changé.
 
 Avec la démo, ajouter `ocd_live_demo` à la liste : sa mise à jour met le nouveau scénario en place et
-installe `ocd_live_demo_whatsapp` (voir [`DEMO.md`](DEMO.md)).
+installe `ocd_live_demo_whatsapp` (voir [`DEMO.md`](DEMO.md)). Avec CamPay, ajouter `payment_campay`.
 
 Les changements à faire une seule fois sur une base existante sont dans `migrations/` de chaque module
 (ex. `ocd_live` 20.0.1.1.0 : accueil d'OCD Live sur `/`, site en français, logo, menus traduits).
@@ -221,6 +221,17 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   toutes les 5 minutes : appel 30 min avant, invitation 15 min avant via `_ocd_send_join_invitation`,
   surchargé par `ocd_live_whatsapp`, alerte 5 min avant), page `ocd_live/controllers/remote.py`
   (`/ocd/live/<id>/rejoindre/<secret>`, secret signé qui change si le live est déplacé).
+- Devises par pays : `ocd_live/models/ocd_live_currencies.py` (`zone_of` : zone d'un pays ;
+  `_ocd_setup` : devises, taux, groupes de pays `ocd_live.country_group_<zone>` et listes de prix
+  `ocd_live.pricelist_<zone>` créés une fois puis mis à jour ; `_ocd_set_rates` : parité fixe des francs
+  et de l'euro, dollar du jour ; tâche planifiée quotidienne `_cron_update_usd_rate`, qui lit la BCE).
+  Les frais de livraison convertis sont arrondis par `ocd.delivery.rate._ocd_converted_price`.
+- Paiements de démo CamPay : `payment_campay/models/payment_provider.py` (`_campay_demo_on`,
+  `_campay_demo_amount` : montant pour un numéro), `payment_transaction.py` (`_campay_amount` garde le
+  montant demandé, `_extract_amount_data` paie la transaction quand CamPay a encaissé exactement ce
+  montant, `_create_payment` enregistre l'argent reçu). Réglages : `ocd_live_shop/models/ocd_live_settings.py`
+  (`_ocd_campay_demo_items`), ligne du tableau de bord : `ocd.live.dashboard._ocd_demo_payment_todos`.
+  Les tests de `payment_campay` se lancent sur une base où il est installé (`--test-tags /payment_campay`).
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - Thème du site : `ocd_live/static/src/scss/ocd_app.scss` (pages sous `.o_ocd_app`).
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).
