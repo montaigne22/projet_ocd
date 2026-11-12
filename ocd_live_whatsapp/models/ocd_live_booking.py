@@ -33,6 +33,27 @@ class OcdLiveBooking(models.Model):
             sent = self.env["res.partner"]._ocd_whatsapp_send("ocd_live_whatsapp.template_ticket", booking) or sent
         return sent or super()._ocd_ticket_changed()
 
+    def write(self, vals):
+        """The host of a confirmed remote live is chosen or changed: the vendor is told who
+        calls them before the live."""
+        hosts = {booking.id: booking.animatrice_id for booking in self} if "animatrice_id" in vals else {}
+        result = super().write(vals)
+        if hosts:
+            now = fields.Datetime.now()
+            told = self.filtered(lambda booking: (
+                booking.mode == "remote" and booking.state == "confirmed" and booking.animatrice_id
+                and booking.animatrice_id != hosts.get(booking.id) and booking.start_datetime > now
+            ))
+            if told:
+                self.env["res.partner"]._ocd_whatsapp_send("ocd_live_whatsapp.template_live_host", told)
+        return result
+
+    def _ocd_send_join_invitation(self):
+        """Override of `ocd_live`: the invitation to join the remote live, with its button."""
+        self.ensure_one()
+        sent = self.env["res.partner"]._ocd_whatsapp_send("ocd_live_whatsapp.template_live_join", self)
+        return sent or super()._ocd_send_join_invitation()
+
     @api.model
     def _cron_send_reminders(self):
         """Remind the vendors of their live: the evening before from 18:00 (in the time zone

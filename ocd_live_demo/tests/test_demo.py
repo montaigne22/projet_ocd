@@ -338,6 +338,30 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
         self.assertNotIn(video, (replays - by_hand).mapped("replay_url"), "The examples again")
         self.assertNotIn(account, coming.mapped("live_url"))
 
+    def test_cards_of_the_feed_and_accounts_of_ocd_live(self):
+        """The cards show a short video (Awa), an image (Ama), the products (Kossi); the lives go
+        on the accounts of OCD Live on TikTok, the vendors of the remote lives join them."""
+        awa = self.env.ref("ocd_live_demo.vendor_awa")
+        ama = self.env.ref("ocd_live_demo.vendor_ama")
+        kossi = self.env.ref("ocd_live_demo.vendor_kossi")
+        self.assertEqual(awa._ocd_card_media()["kind"], "video")
+        self.assertEqual(ama._ocd_card_media()["kind"], "image")
+        self.assertEqual(kossi._ocd_card_media()["kind"], "products")
+        self.assertEqual(awa.ocd_live_handle, "@awa.gateaux", "Its name on TikTok, for the host")
+        self.assertTrue(self.env.ref("ocd_live_demo.host_dzifa").mobile_phone)
+        togo = self.env.ref("ocd_live_demo.account_togo")
+        africa = self.env.ref("ocd_live_demo.account_africa")
+        coming = self.env["ocd.live.booking"].search([
+            ("partner_id", "in", self._demo_partners().ids), ("state", "=", "confirmed"),
+        ])
+        self.assertTrue(coming)
+        for booking in coming:
+            expected = togo if booking.partner_id.country_id == togo.country_ids else africa
+            self.assertEqual(booking.account_id, expected, booking.display_name)
+        self.assertFalse(any(coming.mapped("live_url")), "No link of the vendor: the one of the account")
+        remote = coming.filtered(lambda booking: booking.mode == "remote")[:1]
+        self.assertEqual(remote._ocd_watch_url(), remote.account_id.live_url)
+
     def test_uninstall_removes_what_the_demo_created(self):
         partners = self._demo_partners()
         orders = self.env["sale.order"].search([("partner_id", "in", partners.ids)])

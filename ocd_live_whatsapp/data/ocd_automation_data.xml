@@ -116,6 +116,25 @@ WhatsApp to the vendor, template ocd_lien_recu, with the hour of the check.</fie
         <field name="template_ids" eval="[Command.set([ref('template_pass_ending')])]"/>
     </record>
 
+    <record id="ocd_live.automation_remote_join" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_live_join')])]"/>
+    </record>
+
+    <record id="automation_live_host" model="ocd.automation">
+        <field name="code">live_host</field>
+        <field name="name">Host chosen: tell the vendor of the remote live</field>
+        <field name="sequence">42</field>
+        <field name="group">lives</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+        <field name="when">The team chooses the host of a remote live</field>
+        <field name="trigger">When the host of a confirmed remote live to come is chosen or changed.</field>
+        <field name="scope">The vendors who agreed to the messages on WhatsApp.</field>
+        <field name="actions">WhatsApp to the vendor, template ocd_live_animatrice: the day, the hour and the name of the host, who calls before the live for a test.</field>
+        <field name="tools">WhatsApp templates.</field>
+        <field name="template_ids" eval="[Command.set([ref('template_live_host')])]"/>
+    </record>
+
     <record id="automation_asked" model="ocd.automation">
         <field name="code">asked</field>
         <field name="name">Asked by the contact: code, links, ticket</field>

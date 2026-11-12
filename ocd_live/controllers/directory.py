@@ -4,7 +4,6 @@ from odoo.http import request
 
 from . import common, feed
 
-PLATFORMS = {"tiktok": "TikTok", "facebook": "Facebook", "instagram": "Instagram", "youtube": "YouTube"}
 LISTING_STATES = {"queued": "pending", "to_check": "pending", "published": "live"}
 
 
@@ -70,6 +69,32 @@ class OcdLiveDirectory(http.Controller):
             raise request.not_found()
         stream = request.env["ir.binary"]._get_image_stream_from(vendor, "image_512")
         return stream.get_response(max_age=86400)
+
+    def _card_vendor(self, partner_id, field):
+        vendor = request.env["res.partner"].sudo().browse(partner_id).exists()
+        if not vendor or not vendor.ocd_is_vendor or vendor.ocd_vendor_state != "approved" or not vendor[field]:
+            raise request.not_found()
+        return vendor
+
+    @http.route("/lives/carte/<int:partner_id>", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
+    def directory_card_image(self, partner_id, **kwargs):
+        """The image chosen for the card of an approved vendor in the feed."""
+        vendor = self._card_vendor(partner_id, "ocd_card_image")
+        return request.env["ir.binary"]._get_image_stream_from(vendor, "ocd_card_image").get_response(max_age=86400)
+
+    @http.route("/lives/video/<int:partner_id>", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
+    def directory_card_video(self, partner_id, **kwargs):
+        """The short video of the card of an approved vendor (the phones ask it by parts)."""
+        vendor = self._card_vendor(partner_id, "ocd_card_video")
+        stream = request.env["ir.binary"]._get_stream_from(vendor, "ocd_card_video")
+        stream.download_name = vendor.ocd_card_video_name or "video.mp4"
+        return stream.get_response(max_age=86400, content_security_policy=None)
+
+    @http.route("/lives/video/<int:partner_id>/image", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
+    def directory_card_poster(self, partner_id, **kwargs):
+        """The first image of the short video, shown until it plays."""
+        vendor = self._card_vendor(partner_id, "ocd_card_video_poster")
+        return request.env["ir.binary"]._get_image_stream_from(vendor, "ocd_card_video_poster").get_response(max_age=86400)
 
     @http.route("/lives/prevenir", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def directory_alert(self, phone=None, country_id=None, **post):

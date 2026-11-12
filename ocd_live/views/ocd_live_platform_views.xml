@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_live_platform_view_list" model="ir.ui.view">
+        <field name="name">ocd.live.platform.list</field>
+        <field name="model">ocd.live.platform</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="domains"/>
+                <field name="code" groups="base.group_no_one"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_live_platform_action" model="ir.actions.act_window">
+        <field name="name">Live platforms</field>
+        <field name="res_model">ocd.live.platform</field>
+        <field name="view_mode">list</field>
+        <field name="context">{"active_test": False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a platform where the vendors go live</p>
+            <p>A link of a live is recognised from its address: the pages then say « Watch on » and its name.</p>
+        </field>
+    </record>
+
+</odoo>

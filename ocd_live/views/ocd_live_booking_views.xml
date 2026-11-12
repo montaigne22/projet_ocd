@@ -150,9 +150,31 @@
                             <field name="needs_host" invisible="1"/>
                         </group>
                         <group string="Live and replay">
-                            <field name="live_url" widget="url"/>
+                            <field name="account_id" options="{'no_create': True}"/>
+                            <field name="live_url" widget="url" placeholder="Link of the account by default"/>
                             <field name="replay_url" widget="url"/>
                             <field name="replay_published"/>
+                        </group>
+                    </group>
+                    <group string="Remote live: the vendor at the hour" invisible="mode != 'remote' or state not in ('confirmed', 'done')">
+                        <group>
+                            <field name="ocd_join_state" widget="badge"
+                                   decoration-success="ocd_join_state == 'ready'"
+                                   decoration-danger="ocd_join_state == 'problem'"
+                                   decoration-warning="ocd_join_state == 'invited'"/>
+                            <field name="ocd_vendor_problem" invisible="not ocd_vendor_problem"/>
+                            <field name="ocd_vendor_problem_note" invisible="not ocd_vendor_problem_note"/>
+                            <field name="vendor_live_handle" placeholder="@name of the vendor"/>
+                        </group>
+                        <group>
+                            <field name="ocd_join_sent_at" invisible="not ocd_join_sent_at"/>
+                            <field name="ocd_vendor_ready_at" invisible="not ocd_vendor_ready_at"/>
+                            <field name="ocd_host_called_at" invisible="not ocd_host_called_at"/>
+                            <field name="ocd_host_called_by" invisible="not ocd_host_called_by"/>
+                            <button name="action_ocd_host_called" type="object" string="Vendor called" icon="call"
+                                    class="btn-secondary" colspan="2" invisible="ocd_host_called_at or state != 'confirmed'"/>
+                            <button name="action_ocd_open_join_page" type="object" string="Page « Join my live » of the vendor"
+                                    class="btn-link ps-0" colspan="2" invisible="state != 'confirmed'"/>
                         </group>
                     </group>
                     <field name="note" placeholder="Notes for the team..."/>

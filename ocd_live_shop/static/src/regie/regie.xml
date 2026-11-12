@@ -38,8 +38,23 @@
                             <b t-out="data.orders"/>
                         </a>
                     </div>
+                    <div t-if="data.remote" t-attf-class="o_ocd_regie_remote o_ocd_regie_remote_#{data.remote.state}">
+                        <span class="o_ocd_regie_caption">Remote live · the vendor</span>
+                        <b t-out="data.remote.text"/>
+                        <small t-if="data.remote.handle">On the platform: <t t-out="data.remote.handle"/></small>
+                        <small t-else="">Name on the platform unknown: ask it when you call.</small>
+                        <div class="o_ocd_regie_remote_buttons">
+                            <a t-if="data.remote.call_url" t-att-href="data.remote.call_url" class="o_ocd_regie_button">Call</a>
+                            <a t-if="data.remote.whatsapp_url" t-att-href="data.remote.whatsapp_url" target="_blank"
+                               rel="noopener" class="o_ocd_regie_button">WhatsApp</a>
+                            <button t-if="!data.remote.called" type="button" class="o_ocd_regie_button"
+                                    t-on-click="() => this.hostCalled()">Vendor called</button>
+                            <span t-else="" class="o_ocd_regie_published">Vendor called</span>
+                        </div>
+                    </div>
                     <button t-if="data.live_url" type="button" class="o_ocd_regie_button" t-on-click="() => this.openLive()"
                             t-out="this.openLabel"/>
+                    <small t-if="data.account" class="o_ocd_regie_caption">Account of the live: <t t-out="data.account"/></small>
                     <div class="o_ocd_regie_banner">
                         <span class="o_ocd_regie_caption">
                             <t t-if="data.sold_by_ocd">Banner on screen · sold by OCD</t>

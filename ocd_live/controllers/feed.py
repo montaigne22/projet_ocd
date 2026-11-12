@@ -20,7 +20,6 @@ MAX_ITEMS = 240
 NEXT_DAYS = 14
 REPLAY_DAYS = 30
 KIND_ORDER = {"live": 0, "studio": 1, "next": 2, "replay": 3}
-PLATFORMS = {"tiktok": "TikTok", "facebook": "Facebook", "instagram": "Instagram", "youtube": "YouTube"}
 
 
 def first_country(code=None):
@@ -169,21 +168,10 @@ def _card(item, tz_name, now):
     record = item["record"]
     vendor = record.partner_id
     shop_path = vendor._ocd_shop_path()
-    name = (record.title if kind == "live" else False) or vendor.name or ""
-    card.update({
-        "name": name,
-        "initials": common.initials(name),
-        "category": " · ".join(part for part in (vendor.ocd_category_id.name, vendor.ocd_business) if part),
-        "image": vendor._ocd_feed_image(),
-        "shop_url": f"/{shop_path}" if shop_path else False,
-        "share_url": f"{request.httprequest.url_root.rstrip('/')}/{vendor._ocd_public_path()}",
-        "watch_url": False,
-        "watch_label": "",
-        "external": True,
-    })
+    card.update(_vendor_values(vendor, (record.title if kind == "live" else False) or vendor.name or ""))
     if kind == "live":
         minutes = max(1, int((now - item["moment"]).total_seconds() // 60))
-        platform = PLATFORMS.get(record.platform, "")
+        platform = record.platform_id.name or ""
         card.update({
             "badge": env._("Live"),
             "when": env._("Live for %s min", minutes) if minutes < 120 else env._("Live for %s h", minutes // 60),
@@ -191,20 +179,20 @@ def _card(item, tz_name, now):
             "watch_label": env._("Watch on %s", platform) if platform else env._("Watch the live"),
         })
     elif kind == "studio":
+        watch_url = record._ocd_watch_url()
+        platform = env["ocd.live.platform"].sudo()._ocd_for_url(watch_url).name if watch_url else ""
         card.update({
             "badge": env._("Live"),
-            "when": env._("Live at the OCD Live studio"),
-            "watch_url": record.live_url or card["shop_url"],
-            "watch_label": env._("Watch the live"),
-            "external": bool(record.live_url),
+            "when": env._("Live at the OCD Live studio") if record.mode == "studio" else env._("Live from home, with OCD Live"),
+            "watch_url": watch_url or card["shop_url"],
+            "watch_label": env._("Watch on %s", platform) if platform else env._("Watch the live"),
+            "external": bool(watch_url),
         })
     elif kind == "next":
         local = tools.to_tz(record.start_datetime, tz_name)
         card.update({
             "badge": env._("Next live"),
-            "when": env._(
-                "%(day)s at %(hour)s", day=common.day_text(local.date(), "EEE d MMM", capital=True), hour=f"{local:%H:%M}"
-            ),
+            "when": _day_hour(local, tools.to_tz(now, tz_name).date()),
             "zone": tools.zone_text(env, tz_name),
             "where": env._("At the OCD Live studio") if record.mode == "studio" else env._("From home, with OCD Live"),
         })
@@ -217,6 +205,61 @@ def _card(item, tz_name, now):
             "watch_label": env._("Watch again"),
             "external": not shop_path,
         })
+    return card
+
+
+def _day_hour(local, today):
+    """« Today at 10:00 », « Tomorrow at 14:30 », else « Thu 19 Nov at 10:00 »."""
+    env = request.env
+    hour = f"{local:%H:%M}"
+    if local.date() == today:
+        return env._("Today at %s", hour)
+    if local.date() == today + timedelta(days=1):
+        return env._("Tomorrow at %s", hour)
+    return env._("%(day)s at %(hour)s", day=common.day_text(local.date(), "EEE d MMM", capital=True), hour=hour)
+
+
+def _vendor_values(vendor, name):
+    """What every card of a vendor shows: its name, its media, its boutique."""
+    env = request.env
+    shop_path = vendor._ocd_shop_path()
+    values = {
+        "name": name,
+        "initials": common.initials(name),
+        "category": " · ".join(part for part in (vendor.ocd_category_id.name, vendor.ocd_business) if part),
+        "media": vendor._ocd_card_media(),
+        "shop_url": f"/{shop_path}" if shop_path else False,
+        "share_url": f"{request.httprequest.url_root.rstrip('/')}/{vendor._ocd_public_path()}",
+        "watch_url": False,
+        "watch_label": "",
+        "external": True,
+        "where": False,
+    }
+    if values["media"]["kind"] == "products":
+        values["media"]["label"] = env._("The products of %s", vendor.name or name)
+    return values
+
+
+def preview_card(vendor):
+    """The card of `vendor` as the feed shows it before its next live, for the page « My card
+    in the lives » of its space (a card « next live » even when none is booked)."""
+    env = request.env
+    now = common.now()
+    booking = env["ocd.live.booking"].sudo().search([
+        ("partner_id", "=", vendor.id), ("state", "=", "confirmed"), ("start_datetime", ">", now),
+    ], order="start_datetime", limit=1)
+    country = vendor.country_id
+    item = {"key": "preview", "kind": "next", "country": country}
+    if booking:
+        return _card({**item, "record": booking}, common.viewer_tz(), now)
+    card = {
+        **item,
+        "flag": (country.code or "").lower() if country else "",
+        "country_name": country.name if country else "",
+        **_vendor_values(vendor, vendor.name or ""),
+        "badge": env._("Next live"),
+        "when": env._("Your next live"),
+    }
     return card
 
 

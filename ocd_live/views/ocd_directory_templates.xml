@@ -67,9 +67,66 @@
                      t-attf-class="o_ocd_feed_card o_ocd_feed_person o_ocd_feed_#{card['kind']}"
                      t-att-data-key="card['key']" t-att-data-country="card['flag']" tabindex="-1"
                      t-att-aria-label="card['name']">
-                <div class="o_ocd_feed_media" aria-hidden="true">
-                    <img t-if="card['image']" t-att-src="card['image']" alt="" loading="lazy" decoding="async"/>
-                    <span t-else="" class="o_ocd_feed_initials" t-out="card['initials']"/>
+                <!-- The media chosen by the vendor (res.partner._ocd_card_media): a short video,
+                     the carousel of its products, an image, else its initials -->
+                <t t-set="media" t-value="card['media']"/>
+                <div t-attf-class="o_ocd_feed_media o_ocd_feed_media_#{media['kind']}">
+                    <t t-if="media['kind'] == 'video'">
+                        <!-- Played without sound while the card is on screen (feed.js), its poster until then -->
+                        <video t-if="preview_mode" class="o_ocd_feed_video" t-att-src="media['video']"
+                               t-att-poster="media['poster']" muted="" loop="" playsinline="" preload="metadata" controls=""/>
+                        <t t-else="">
+                            <video class="o_ocd_feed_video" t-att-src="media['video']" t-att-poster="media['poster']"
+                                   muted="" loop="" playsinline="" preload="none" disablepictureinpicture=""
+                                   aria-hidden="true" tabindex="-1"/>
+                            <button type="button" class="o_ocd_feed_play" aria-label="Play the video">
+                                <t t-call="ocd_live.icon" icon.f="play"/>
+                            </button>
+                            <button t-if="media['sound']" type="button" class="o_ocd_feed_sound" aria-pressed="false"
+                                    aria-label="Sound of the video" title="Sound of the video">
+                                <t t-call="ocd_live.icon" icon.f="mute"/>
+                                <t t-call="ocd_live.icon" icon.f="speaker"/>
+                            </button>
+                        </t>
+                    </t>
+                    <t t-elif="media['kind'] == 'products'">
+                        <!-- One product per slide: a tap opens it -->
+                        <div class="o_ocd_feed_slides" role="group" aria-roledescription="carousel"
+                             t-att-aria-label="media.get('label')">
+                            <a t-foreach="media['slides']" t-as="slide" t-att-href="slide['url']" class="o_ocd_feed_slide"
+                               t-att-data-index="slide_index">
+                                <span class="o_ocd_feed_tile">
+                                    <img t-att-src="slide['image']" alt="" loading="lazy" decoding="async"/>
+                                    <span class="o_ocd_feed_tile_text">
+                                        <b t-out="slide['name']"/>
+                                        <span t-if="slide['out']" class="o_ocd_feed_tile_out">Sold out</span>
+                                        <span t-else="" class="o_ocd_feed_tile_price" t-out="slide['price']"/>
+                                        <span class="o_ocd_feed_tile_see">
+                                            See the product
+                                            <t t-call="ocd_live.icon" icon.f="next"/>
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                        <t t-if="len(media['slides']) &gt; 1">
+                            <button t-if="not preview_mode" type="button" class="o_ocd_feed_arrow o_ocd_feed_prev" aria-label="Previous product">
+                                <t t-call="ocd_live.icon" icon.f="prev"/>
+                            </button>
+                            <button t-if="not preview_mode" type="button" class="o_ocd_feed_arrow o_ocd_feed_next" aria-label="Next product">
+                                <t t-call="ocd_live.icon" icon.f="next"/>
+                            </button>
+                            <span class="o_ocd_feed_dots" aria-hidden="true">
+                                <i t-foreach="media['slides']" t-as="slide" t-att-class="'o_ocd_on' if slide_first else None"/>
+                            </span>
+                        </t>
+                    </t>
+                    <span t-elif="media['kind'] == 'image'" class="o_ocd_feed_box" aria-hidden="true">
+                        <img class="o_ocd_feed_photo" t-att-src="media['image']" alt="" loading="lazy" decoding="async"/>
+                    </span>
+                    <span t-else="" class="o_ocd_feed_box" aria-hidden="true">
+                        <span class="o_ocd_feed_initials" t-out="card['initials']"/>
+                    </span>
                 </div>
                 <div class="o_ocd_feed_top">
                     <span t-attf-class="o_ocd_feed_badge o_ocd_feed_badge_#{card['kind']}">
@@ -82,27 +139,29 @@
                     </span>
                 </div>
                 <div class="o_ocd_feed_body">
+                    <p t-attf-class="o_ocd_feed_status o_ocd_feed_status_#{card['kind']}">
+                        <i t-if="card['kind'] in ('live', 'studio')" aria-hidden="true"/>
+                        <span t-out="card['when']"/>
+                    </p>
                     <h2 class="o_ocd_feed_name" t-out="card['name']"/>
                     <p t-if="card['category']" class="o_ocd_feed_category" t-out="card['category']"/>
-                    <p class="o_ocd_feed_when">
-                        <b t-out="card['when']"/>
-                        <small t-if="card.get('zone')" t-out="card['zone']"/>
-                        <small t-if="card.get('where')" t-out="card['where']"/>
+                    <p t-if="card['where'] or card.get('zone')" class="o_ocd_feed_where">
+                        <t t-out="' · '.join(part for part in (card['where'], card.get('zone')) if part)"/>
                     </p>
                     <div class="o_ocd_feed_actions">
-                        <a t-if="card['watch_url']" t-att-href="card['watch_url']" class="o_ocd_cta"
+                        <a t-if="card['watch_url']" t-att-href="card['watch_url']" class="o_ocd_cta o_ocd_feed_watch"
                            t-att-target="'_blank' if card['external'] else None"
                            t-att-rel="'noopener' if card['external'] else None">
                             <t t-call="ocd_live.icon" icon.f="live"/>
                             <span t-out="card['watch_label']"/>
                         </a>
                         <a t-if="card['shop_url']" t-att-href="card['shop_url']"
-                           t-attf-class="o_ocd_cta #{'o_ocd_cta_ghost' if card['watch_url'] else ''}">
+                           t-attf-class="o_ocd_cta o_ocd_feed_shop #{'o_ocd_cta_ghost' if card['watch_url'] else ''}">
                             <t t-call="ocd_live.icon" icon.f="bag"/>
                             <span>Their boutique</span>
                         </a>
                         <button type="button" class="o_ocd_feed_share o_ocd_share" t-att-data-url="card['share_url']"
-                                aria-label="Share">
+                                aria-label="Share" title="Share">
                             <t t-call="ocd_live.icon" icon.f="share"/>
                         </button>
                     </div>
@@ -263,7 +322,8 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Send the link of my live</t>
         <t t-call="ocd_live.app">
-            <form action="/lives/envoyer" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_send_link" novalidate="novalidate">
+            <form action="/lives/envoyer" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_send_link" novalidate="novalidate"
+                  t-att-data-platforms="request.env['ocd.live.platform'].sudo()._ocd_domains_json()">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <main class="o_ocd_main">
                     <h1 class="o_ocd_h1 o_ocd_h1_small">Send the link of your live.</h1>

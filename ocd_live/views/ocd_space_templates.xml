@@ -117,6 +117,117 @@
         </t>
     </template>
 
+    <template id="space_card" name="OCD Live: my card in the lives">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My card in the lives</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_space o_ocd_card_page">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">How people see you</h1>
+                    <p class="o_ocd_lead">Your card in the feed of the lives: while you are live, before your next live and in your replays.</p>
+                    <div t-if="saved" class="o_ocd_ok o_ocd_info_icon" role="status">
+                        <t t-call="ocd_live.icon" icon.f="check"/>
+                        <span>Saved: your card is up to date in the feed.</span>
+                    </div>
+                    <div t-if="fallback" class="o_ocd_info" role="status" t-out="fallback"/>
+
+                    <!-- The card as the feed shows it -->
+                    <div class="o_ocd_card_preview" aria-label="Preview of your card">
+                        <t t-set="cards" t-value="[preview]"/>
+                        <t t-set="preview_mode" t-value="True"/>
+                        <t t-call="ocd_live.feed_cards"/>
+                    </div>
+
+                    <form action="/ocd/espace/moi/carte" method="post" enctype="multipart/form-data"
+                          class="o_ocd_form o_ocd_card_form" t-att-data-max-video-mb="max_video_mb">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <fieldset class="o_ocd_fieldset">
+                            <legend class="o_ocd_label">What your card shows</legend>
+                            <div class="o_ocd_card_choices">
+                                <t t-foreach="choices" t-as="row">
+                                    <label class="o_ocd_card_choice">
+                                        <input type="radio" name="choice" t-att-value="row['value']"
+                                               t-att-checked="row['value'] == chosen or None"/>
+                                        <span class="o_ocd_card_choice_box">
+                                            <span class="o_ocd_card_choice_head">
+                                                <b t-out="row['title']"/>
+                                                <t t-if="row['value'] != 'auto'">
+                                                    <span t-if="row['ready']" class="o_ocd_badge_ok">Available</span>
+                                                    <span t-else="" class="o_ocd_badge_wait">To add</span>
+                                                </t>
+                                            </span>
+                                            <small t-out="row['text']"/>
+                                            <small t-if="not row['ready'] and row.get('missing')" class="o_ocd_card_choice_missing">
+                                                <a t-if="row.get('missing_url')" t-att-href="row['missing_url']" t-out="row['missing']"/>
+                                                <t t-else="" t-out="row['missing']"/>
+                                            </small>
+                                        </span>
+                                    </label>
+                                </t>
+                            </div>
+                        </fieldset>
+
+                        <section class="o_ocd_card_upload" aria-labelledby="card-video-title">
+                            <h2 id="card-video-title" class="o_ocd_section">My short video</h2>
+                            <div t-if="video_url" class="o_ocd_card_current">
+                                <img t-if="poster_url" t-att-src="poster_url" alt="Your video"/>
+                                <video t-else="" t-att-src="video_url" playsinline="" muted="" preload="metadata" aria-hidden="true"/>
+                                <label class="o_ocd_check">
+                                    <input type="checkbox" name="remove_video" value="1"/>
+                                    Remove my video
+                                </label>
+                            </div>
+                            <label for="card-video" class="o_ocd_card_pick">
+                                <input id="card-video" type="file" name="video" accept="video/*" class="o_ocd_card_file"
+                                       data-kind="video"/>
+                                <t t-call="ocd_live.icon" icon.f="camera"/>
+                                <span t-if="video_url">Change my video</span>
+                                <span t-else="">Choose a video</span>
+                            </label>
+                            <span class="o_ocd_card_file_name" aria-live="polite"/>
+                            <small class="o_ocd_muted">
+                                Filmed upright, your products in the middle: <t t-out="max_seconds"/> seconds at most (a longer
+                                video is cut), <t t-out="max_video_mb"/> MB at most.
+                            </small>
+                            <span t-if="errors.get('video')" class="o_ocd_error" role="alert" t-out="errors['video']"/>
+                            <span class="o_ocd_error o_ocd_card_too_big" role="alert" hidden="">
+                                The video is too heavy: <t t-out="max_video_mb"/> MB at most.
+                            </span>
+                        </section>
+
+                        <section class="o_ocd_card_upload" aria-labelledby="card-image-title">
+                            <h2 id="card-image-title" class="o_ocd_section">My image</h2>
+                            <div t-if="image_url" class="o_ocd_card_current">
+                                <img t-att-src="image_url" alt="Your image"/>
+                                <label class="o_ocd_check">
+                                    <input type="checkbox" name="remove_image" value="1"/>
+                                    Remove my image
+                                </label>
+                            </div>
+                            <label for="card-image" class="o_ocd_card_pick">
+                                <input id="card-image" type="file" name="image" accept="image/*" class="o_ocd_card_file"
+                                       data-kind="image"/>
+                                <t t-call="ocd_live.icon" icon.f="camera"/>
+                                <span t-if="image_url">Change my image</span>
+                                <span t-else="">Choose an image</span>
+                            </label>
+                            <span class="o_ocd_card_file_name" aria-live="polite"/>
+                            <small class="o_ocd_muted">A photo upright or square, 10 MB at most. Without an image, the card shows your photo.</small>
+                            <span t-if="errors.get('image')" class="o_ocd_error" role="alert" t-out="errors['image']"/>
+                        </section>
+
+                        <div class="o_ocd_actions">
+                            <button type="submit" class="o_ocd_cta">Save my card</button>
+                            <p class="o_ocd_muted o_ocd_card_sending" role="status" hidden="">
+                                Sending… A video takes up to a minute to be prepared.
+                            </p>
+                        </div>
+                    </form>
+                </main>
+            </div>
+        </t>
+    </template>
+
     <template id="space" name="OCD Live: my space">
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My space</t>
@@ -142,6 +253,9 @@
                                 <span t-else="" class="o_ocd_badge_wait">To pay</span>
                             </div>
                             <div class="o_ocd_live_card_buttons">
+                                <a t-if="live.get('join_url')" t-att-href="live['join_url']" class="o_ocd_button o_ocd_button_orange o_ocd_button_wide">
+                                    Join my live
+                                </a>
                                 <t t-if="live['paid']">
                                     <a t-att-href="live['ticket_url']" class="o_ocd_button o_ocd_button_dark">Ticket</a>
                                     <a t-if="live['move_url']" t-att-href="live['move_url']" class="o_ocd_button o_ocd_button_line">Move</a>
@@ -200,6 +314,17 @@
                             </div>
                             <a href="/lives/pass" class="o_ocd_button">Take the pass</a>
                         </t>
+                    </div>
+
+                    <h2 class="o_ocd_section">My card in the lives</h2>
+                    <div class="o_ocd_sand_card">
+                        <div class="o_ocd_live_card_head">
+                            <span>
+                                <b t-out="card_shown"/>
+                                <small>Shown in the feed of the lives while you are live, before your next live and in your replays.</small>
+                            </span>
+                        </div>
+                        <a href="/ocd/espace/moi/carte" class="o_ocd_button o_ocd_button_line">Change my card</a>
                     </div>
 
                     <div class="o_ocd_space_shop"/>

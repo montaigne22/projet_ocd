@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- « Join my live »: the vendor of a remote live joins the        -->
+    <!-- account of OCD Live as a guest (link in the invitation sent    -->
+    <!-- 15 minutes before, and in the space of the vendor).            -->
+    <!-- ============================================================== -->
+
+    <template id="join" name="OCD Live: join my remote live">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Join my live</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_join">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
+                    <p class="o_ocd_lead" t-out="lead"/>
+
+                    <div t-if="saved == 'ready' or (booking.ocd_vendor_ready_at and phase != 'ended')"
+                         class="o_ocd_ok o_ocd_info_icon" role="status">
+                        <t t-call="ocd_live.icon" icon.f="check"/>
+                        <span>Noted: you are ready. <t t-out="host_name"/> invites you in the live at the hour.</span>
+                    </div>
+                    <div t-elif="saved == 'problem' or booking.ocd_vendor_problem" class="o_ocd_info" role="status">
+                        <t t-out="host_name"/> knows it and calls you. Keep your phone close to you.
+                    </div>
+                    <div t-if="saved == 'handle'" class="o_ocd_ok o_ocd_info_icon" role="status">
+                        <t t-call="ocd_live.icon" icon.f="check"/>
+                        <span>Noted: the host invites <t t-out="handle"/>.</span>
+                    </div>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+
+                    <t t-if="phase != 'ended'">
+                        <ol class="o_ocd_howto o_ocd_join_steps">
+                            <li>
+                                <span class="o_ocd_howto_number">1</span>
+                                <span>
+                                    <b t-if="platform">Open the application <t t-out="platform"/></b>
+                                    <b t-else="">Open the application of the live</b>
+                                    <small t-if="handle">Logged in with your account <t t-out="handle"/>.</small>
+                                    <small t-else="">Logged in with your account: give its name below.</small>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="o_ocd_howto_number">2</span>
+                                <span>
+                                    <b>Go to the live of OCD Live</b>
+                                    <small t-if="account">The account <t t-out="account.handle"/> (<t t-out="account.name"/>).</small>
+                                    <small t-else="">The team gives you its link when it calls you.</small>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="o_ocd_howto_number">3</span>
+                                <span>
+                                    <b>Accept the invitation</b>
+                                    <small>At the hour, <t t-out="host_name"/> invites you in the live: tap « Accept » when it shows.</small>
+                                </span>
+                            </li>
+                        </ol>
+
+                        <a t-if="watch_url" t-att-href="watch_url" target="_blank" rel="noopener" class="o_ocd_cta o_ocd_cta_dark">
+                            <t t-call="ocd_live.icon" icon.f="live"/>
+                            <span>Open the live of OCD Live</span>
+                        </a>
+
+                        <form t-if="not handle" t-attf-action="#{action_base}/compte" method="post" class="o_ocd_form o_ocd_join_handle">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <label for="j-handle" class="o_ocd_label">
+                                Your name on <t t-out="platform or 'TikTok'"/>
+                            </label>
+                            <input id="j-handle" name="handle" class="o_ocd_input" placeholder="@awa.gateaux"
+                                   autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="60" required="required"/>
+                            <button type="submit" class="o_ocd_cta o_ocd_cta_small">Save my name</button>
+                        </form>
+
+                        <div t-if="phase != 'ended' and booking.state == 'confirmed'" class="o_ocd_join_answers">
+                            <form t-if="not booking.ocd_vendor_ready_at" t-attf-action="#{action_base}/pret" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_cta">
+                                    <t t-call="ocd_live.icon" icon.f="check"/>
+                                    <span>I am ready</span>
+                                </button>
+                            </form>
+                            <details class="o_ocd_join_problem">
+                                <summary class="o_ocd_cta o_ocd_cta_line">I have a problem</summary>
+                                <form t-attf-action="#{action_base}/probleme" method="post" class="o_ocd_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <fieldset class="o_ocd_fieldset">
+                                        <legend class="o_ocd_label">What happens?</legend>
+                                        <t t-foreach="problems" t-as="row">
+                                            <label class="o_ocd_check">
+                                                <input type="radio" name="problem" t-att-value="row[0]"
+                                                       t-att-checked="row[0] == (booking.ocd_vendor_problem or 'no_invite') or None"/>
+                                                <t t-out="row[1]"/>
+                                            </label>
+                                        </t>
+                                    </fieldset>
+                                    <label for="j-note" class="o_ocd_label">In a few words (if you want)</label>
+                                    <input id="j-note" name="note" class="o_ocd_input" maxlength="300" autocomplete="off"/>
+                                    <button type="submit" class="o_ocd_cta o_ocd_cta_small o_ocd_cta_dark">Tell the host</button>
+                                </form>
+                            </details>
+                        </div>
+                    </t>
+                    <a t-else="" href="/ocd/espace/moi" class="o_ocd_cta">Back to my space</a>
+
+                    <div class="o_ocd_sand_card o_ocd_join_host">
+                        <div class="o_ocd_live_card_head">
+                            <span>
+                                <small t-if="host_is_team">Your contact</small>
+                                <small t-else="">Your host</small>
+                                <b t-out="host_name"/>
+                            </span>
+                        </div>
+                        <div class="o_ocd_join_host_buttons">
+                            <a t-if="call_url" t-att-href="call_url" class="o_ocd_button o_ocd_button_line">Call</a>
+                            <a t-if="whatsapp_url" t-att-href="whatsapp_url" target="_blank" rel="noopener"
+                               class="o_ocd_button o_ocd_button_line">WhatsApp</a>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -186,5 +186,36 @@ See you soon on OCD Live!</field>
             ]"/>
         </record>
 
+        <record id="template_live_host_en" model="whatsapp.template">
+            <field name="name">OCD Live: host of the remote live (English)</field>
+            <field name="template_name">ocd_live_animatrice</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, your host for the remote live of {{2}} will be {{3}}. They call you before the live for a test: keep your phone close to you.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_local_labels()[0] + \' at \' + object._ocd_local_labels()[1] }}', 'sample_value': 'Thursday 19 November at 14:30'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.animatrice_id.name }}', 'sample_value': 'Dzifa'}),
+            ]"/>
+        </record>
+
+        <record id="template_live_join_en" model="whatsapp.template">
+            <field name="name">OCD Live: join the remote live (English)</field>
+            <field name="template_name">ocd_live_rejoindre</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello {{1}}, your remote live starts soon, at {{2}}. Open {{3}}, then accept the invitation of the account {{4}} to join the live.</field>
+            <field name="button_url_value">{{ object._ocd_join_path()[1:] }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Join my live', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/live/42/rejoindre/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_local_labels()[1] }}', 'sample_value': '14:30'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.account_id.platform_id.name or \'TikTok\' }}', 'sample_value': 'TikTok'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.account_id.handle or \'OCD Live\' }}', 'sample_value': '@ocdlive.tg'}),
+            ]"/>
+        </record>
+
     </data>
 </odoo>

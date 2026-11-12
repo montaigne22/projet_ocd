@@ -284,6 +284,28 @@
         <field name="ocd_is_animatrice" eval="True"/>
     </record>
 
+    <!-- === Accounts of OCD Live on TikTok: the lives go on them, the vendor of a remote live
+         joins as a guest (to replace by the real accounts: Configuration > Live accounts) === -->
+    <record id="account_togo" model="ocd.live.account">
+        <field name="name">OCD Live Togo</field>
+        <field name="platform_id" ref="ocd_live.platform_tiktok"/>
+        <field name="handle">@ocdlive.tg</field>
+        <field name="live_url">https://www.tiktok.com/@ocdlive.tg/live</field>
+        <field name="mode">both</field>
+        <field name="country_ids" eval="[Command.set([ref('base.tg')])]"/>
+        <field name="sequence">10</field>
+        <field name="note">Le téléphone du studio de Lomé.</field>
+    </record>
+    <record id="account_africa" model="ocd.live.account">
+        <field name="name">OCD Live Afrique</field>
+        <field name="platform_id" ref="ocd_live.platform_tiktok"/>
+        <field name="handle">@ocdlive.afrique</field>
+        <field name="live_url">https://www.tiktok.com/@ocdlive.afrique/live</field>
+        <field name="mode">both</field>
+        <field name="sequence">20</field>
+        <field name="note">Les lives des autres pays, avec Dzifa et Kafui.</field>
+    </record>
+
     <!-- === Price of the hours === -->
     <record id="price_rule_saturday_evening" model="ocd.live.price.rule">
         <field name="name">Samedi soir</field>

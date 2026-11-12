@@ -12,3 +12,5 @@ from . import test_website_setup
 from . import test_ticket
 from . import test_countries_feed
 from . import test_module_texts
+from . import test_remote_live
+from . import test_card_media

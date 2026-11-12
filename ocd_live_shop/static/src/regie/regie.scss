@@ -113,6 +113,52 @@
         color: #FFFFFF;
     }
 }
+// Remote live: where the vendor stands, the buttons to call them
+.o_ocd_regie_remote {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: $ocd-bo-grey;
+    b {
+        font-size: 14.5px;
+    }
+    small {
+        font-size: 12.5px;
+        color: $ocd-bo-muted;
+    }
+    &.o_ocd_regie_remote_ready {
+        background: $ocd-green-soft;
+        b {
+            color: $ocd-green-text;
+        }
+    }
+    &.o_ocd_regie_remote_problem {
+        background: $ocd-red-soft;
+        b {
+            color: $ocd-red-text;
+        }
+    }
+    &.o_ocd_regie_remote_invited {
+        background: $ocd-yellow-soft;
+        b {
+            color: $ocd-yellow-text;
+        }
+    }
+}
+.o_ocd_regie_remote_buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    a.o_ocd_regie_button {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+    }
+}
 .o_ocd_regie_caption {
     font-size: 13px;
     font-weight: 700;

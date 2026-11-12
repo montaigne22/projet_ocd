@@ -6,16 +6,6 @@ from odoo.tools.misc import format_amount
 
 from odoo.addons.ocd_live.tools import day_text
 
-PLATFORMS = (
-    ("tiktok.com", "TikTok"),
-    ("facebook.com", "Facebook"),
-    ("fb.watch", "Facebook"),
-    ("instagram.com", "Instagram"),
-    ("youtube.com", "YouTube"),
-    ("youtu.be", "YouTube"),
-)
-
-
 class OcdLiveRegie(models.AbstractModel):
     """Live control room of the team, as in the validated design (Regie): the live of now, its
     figures, the product the vendor shows (put on the boutique at once), the moments of the
@@ -106,8 +96,10 @@ class OcdLiveRegie(models.AbstractModel):
                 "domain": [("id", "in", orders.ids)],
                 "target": "current",
             },
-            "live_url": booking.live_url or "",
-            "platform": self._ocd_platform(booking.live_url),
+            "live_url": booking._ocd_watch_url() or "",
+            "platform": self._ocd_platform(booking._ocd_watch_url()),
+            "account": booking.account_id.handle or "",
+            "remote": self._ocd_remote_info(booking),
             "banner_title": " · ".join(part for part in (vendor.name, vendor.ocd_category_id.name, city) if part),
             "banner_sub": self.env._("Order on OCD Live: %s", f"{base_url}/ocd/boutique/{vendor.id}"),
             "sold_by_ocd": vendor.ocd_sale_mode == "ocd",
@@ -122,9 +114,34 @@ class OcdLiveRegie(models.AbstractModel):
         }
 
     @api.model
+    def _ocd_remote_info(self, booking):
+        """Where the vendor of a remote live stands, with the buttons to call them."""
+        if booking.mode != "remote" or booking.state not in ("confirmed", "done"):
+            return False
+        vendor = booking.partner_id
+        digits = "".join(char for char in vendor.phone or "" if char.isdigit())
+        return {
+            "state": booking.ocd_join_state,
+            "text": booking._ocd_join_status_text(),
+            "handle": vendor.ocd_live_handle or "",
+            "phone": vendor.phone or "",
+            "call_url": f"tel:{vendor.phone}" if vendor.phone else "",
+            "whatsapp_url": f"https://wa.me/{digits}" if digits else "",
+            "called": bool(booking.ocd_host_called_at),
+        }
+
+    @api.model
+    def host_called(self, booking_id):
+        """« Vendor called » in the control room."""
+        booking = self.env["ocd.live.booking"].browse(booking_id).exists()
+        if not booking:
+            raise UserError(self.env._("This live no longer exists."))
+        booking.action_ocd_host_called()
+        return self.get_regie_data(booking.id)
+
+    @api.model
     def _ocd_platform(self, url):
-        url = (url or "").lower()
-        return next((name for domain, name in PLATFORMS if domain in url), "")
+        return self.env["ocd.live.platform"].sudo()._ocd_for_url(url).name or ""
 
     @api.model
     def _ocd_live_orders(self, booking):

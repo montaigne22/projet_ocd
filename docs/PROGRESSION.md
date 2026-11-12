@@ -11,6 +11,10 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Heures dans le fuseau horaire de chacun (vendeur, livreur, client) | ✅ fait, testé |
 | 112 pays proposés (Afrique entière, principaux d'Europe, d'Amérique, d'Asie), numéros de tous les pays | ✅ fait, testé |
 | Fil des lives façon TikTok : pays de la personne d'abord, défilement infini, jamais vide | ✅ fait, testé |
+| Cartes du fil claires et épurées ; média au choix du vendeur : vidéo courte, carrousel de ses produits ou image | ✅ fait, testé |
+| Plateformes de live configurables (TikTok, Facebook, Instagram, YouTube, et celles que l'équipe ajoute) | ✅ fait, testé |
+| Comptes de live d'OCD Live (plusieurs : par pays, studio, à distance), choisis pour chaque live | ✅ fait, testé |
+| Live à distance : le vendeur invité sur le compte d'OCD (appel de l'animatrice, WhatsApp « Rejoindre mon live », alerte s'il n'est pas prêt) | ✅ fait, testé (modèles WhatsApp à faire approuver par Meta) |
 | Paiement par carte (Stripe, clés à saisir) ; aide de l'équipe quand aucun moyen ne convient | ✅ fait, testé |
 | Photos des produits : visionneuse, photo par couleur, galerie ; « Préviens-moi » au retour en stock | ✅ fait, testé |
 | Replay lu dans la page (YouTube, TikTok, Facebook), saut au moment d'un produit | ✅ fait, testé |
@@ -39,7 +43,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 Derniers tests lancés (12 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
 `ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **354 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
-ceux des colis). Sur une base neuve avec la démo, 14 tests sans échec : la démo remplit les écrans et se
+ceux des colis). Nouveaux tests des cartes, des plateformes, des comptes et des lives à distance : 24 sans échec. Sur
+une base neuve avec la démo, 17 tests sans échec : la démo remplit les écrans et se
 tient à jour (semaine du studio, annuaire fenêtre par fenêtre, fil de chaque pays, paiement à vérifier,
 journée de la boutique heure par heure, le lendemain, rien ne s'empile), prend la vidéo et le compte des
 paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle sans rien laisser.
@@ -76,6 +81,39 @@ paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 12 novembre 2026 — cartes du fil claires, médias des vendeurs, lives à distance sur les comptes d'OCD
+- **Cartes du fil épurées** : fond blanc et sable, textes à l'encre, la couleur seulement pour l'état du
+  live (rouge en live, orange pour le prochain, violet pour le replay) et le bouton principal. En haut le
+  média, en bas l'état, le nom, la catégorie et les boutons : ils ne se chevauchent plus et restent
+  lisibles quelle que soit la photo (le nom était noir sur la photo à cause d'une règle commune).
+- **Le média de la carte, au choix** (espace du vendeur › « Ma carte dans le fil », ou fiche du vendeur ›
+  « Carte dans le fil ») : une **vidéo courte** (30 s au plus, jouée sans le son quand la carte est à
+  l'écran, le son et la pause au toucher, jamais quand la personne a demandé moins d'animations ou
+  d'économiser ses données), le **carrousel de ses produits** (en vente, vérifiés, avec photo, les épuisés
+  à la fin ; un toucher ouvre le produit ; il défile seul jusqu'à ce qu'on le touche) ou une **image**.
+  « Automatique » : la vidéo, sinon les produits, sinon l'image ; ce qui manque laisse la place au suivant.
+  La page montre la carte telle que le fil la montre.
+- **Vidéo robuste** : avec ffmpeg sur le serveur, toute vidéo de téléphone (MP4, MOV, 3GP, WebM…) est
+  rendue lisible partout (MP4, 720 px, 30 s, démarrage immédiat) avec son affiche ; sans ffmpeg, MP4 et
+  WebM sont gardés tels quels (15 Mo au plus). Le type est reconnu même sans libmagic. Les téléphones la
+  lisent par morceaux (requêtes partielles).
+- **« Regarder sur TikTok » n'est plus imposé** : les plateformes sont une liste de l'équipe (Configuration
+  › Plateformes de live) ; un lien est reconnu par son adresse et la carte dit « Regarder sur » + son nom.
+- **Comptes de live d'OCD Live** (Configuration › Comptes de live) : plusieurs comptes (un par pays, un pour
+  le studio…). Chaque live prend le premier compte de son mode et du pays du vendeur, libre à son heure ;
+  l'équipe peut le changer ; les lives déjà réservés prennent un compte ajouté ensuite.
+- **Live à distance, le vendeur invité sur le compte d'OCD** : 30 min avant, l'animatrice a une activité
+  « Appeler le vendeur » (un essai) ; 15 min avant, le vendeur reçoit sur WhatsApp « Rejoindre mon live »
+  (nouveaux modèles `ocd_live_rejoindre` et `ocd_live_animatrice`, français et anglais) : les trois gestes,
+  « Je suis prêt », « J'ai un problème », son nom sur TikTok, l'animatrice à appeler ; 5 min avant, s'il
+  n'a pas dit être prêt, l'animatrice est alertée. Le choix de l'animatrice est annoncé au vendeur. La
+  fiche du live et la régie montrent où il en est (prêt, invité, problème) avec Appeler, WhatsApp et
+  « Vendeur appelé ». Sans WhatsApp, le lien à donner au vendeur est noté sur le live.
+- Corrigé : la règle du contrôle des tickets donnait un cadre sable à toutes les cases à cocher du site
+  (« Recevoir mon ticket sur WhatsApp »).
+- Démo : Awa a sa vidéo, Ama son image, les autres le carrousel de leurs produits ; les comptes OCD Live
+  Togo et OCD Live Afrique sur TikTok ; les noms TikTok des vendeurs, les téléphones des animatrices.
 
 ### 12 novembre 2026 — la boutique de Douala tenue à jour, textes des modules après une mise à jour
 - **La boutique de Douala avance chaque jour**, comme les lives : six commandes par jour (heure de

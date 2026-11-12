@@ -107,6 +107,13 @@ WEEK = {
 }
 # A remote live of the past always had a host: this one when the week gives none
 PAST_HOST = DZIFA
+# Their phone, for the vendors of the remote lives (« Call » on the page « Join my live »)
+HOST_PHONES = {DZIFA: "+228 90112280", KAFUI: "+228 90112281"}
+
+# The cards of the feed: a short video, an image; the others show the carousel of their
+# products (automatic)
+CARD_VIDEOS = {"vendor_awa": "awa_gateaux.mp4"}
+CARD_IMAGES = {"vendor_ama": "ensemble_pagne.jpg"}
 # Where the products of the vendor are shown in the video of a replay, as shares of its length
 # (a live of 1 h 30: at 4 min 30, 21 min 36 and 43 min 12)
 MOMENT_SHARES = (0.05, 0.24, 0.48)

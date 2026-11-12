@@ -31,6 +31,16 @@
         <field name="interval_type">hours</field>
     </record>
 
+    <record id="ir_cron_remote_join" model="ir.cron">
+        <field name="name">OCD Live: remote lives about to start (call, invitation, vendor ready)</field>
+        <field name="model_id" ref="model_ocd_live_booking"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_remote_join()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+    </record>
+
     <record id="ir_cron_expire_credits" model="ir.cron">
         <field name="name">OCD Live: expire the old live credits</field>
         <field name="model_id" ref="model_ocd_live_credit"/>

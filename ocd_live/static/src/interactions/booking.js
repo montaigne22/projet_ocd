@@ -246,17 +246,18 @@ export class OcdLiveInfos extends Interaction {
     }
 }
 
-// Platforms of the live links accepted by the directory (as checked by the server)
-const LIVE_HOSTS = {
-    "tiktok.com": "TikTok",
-    "facebook.com": "Facebook",
-    "fb.watch": "Facebook",
-    "instagram.com": "Instagram",
-    "youtube.com": "YouTube",
-    "youtu.be": "YouTube",
-};
+// Platforms of the live links accepted by the directory, when the page does not give them (the
+// page gives the live platforms of the configuration, as checked by the server)
+const LIVE_HOSTS = [
+    ["tiktok.com", "TikTok"],
+    ["facebook.com", "Facebook"],
+    ["fb.watch", "Facebook"],
+    ["instagram.com", "Instagram"],
+    ["youtube.com", "YouTube"],
+    ["youtu.be", "YouTube"],
+];
 
-function livePlatform(value) {
+function livePlatform(value, hosts = LIVE_HOSTS) {
     let text = (value || "").trim();
     if (text && !text.includes("://")) {
         text = `https://${text}`;
@@ -267,7 +268,7 @@ function livePlatform(value) {
             return false;
         }
         const host = url.hostname.toLowerCase().replace(/^www\./, "");
-        for (const [domain, platform] of Object.entries(LIVE_HOSTS)) {
+        for (const [domain, platform] of hosts) {
             if (host === domain || host.endsWith(`.${domain}`)) {
                 return platform;
             }
@@ -288,12 +289,17 @@ export class OcdLiveSendLink extends Interaction {
     };
 
     start() {
+        try {
+            this.hosts = JSON.parse(this.el.dataset.platforms || "null") || LIVE_HOSTS;
+        } catch {
+            this.hosts = LIVE_HOSTS;
+        }
         this.checkLink();
     }
 
     checkLink() {
         const value = this.el.querySelector("input[name='url']").value;
-        const platform = livePlatform(value);
+        const platform = livePlatform(value, this.hosts);
         const ok = this.el.querySelector(".o_ocd_link_ok");
         const bad = this.el.querySelector(".o_ocd_link_bad");
         ok.hidden = !platform;

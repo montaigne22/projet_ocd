@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-11 20:09+0000\n"
-"PO-Revision-Date: 2026-11-11 20:09+0000\n"
+"POT-Creation-Date: 2026-11-12 12:31+0000\n"
+"PO-Revision-Date: 2026-11-12 12:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -351,6 +351,11 @@ msgid "Form of the vendor"
 msgstr "Fiche vendeur"
 
 #. module: ocd_live_whatsapp
+#: model:ocd.automation,name:ocd_live_whatsapp.automation_live_host
+msgid "Host chosen: tell the vendor of the remote live"
+msgstr "Animatrice choisie : prévenir le vendeur du live à distance"
+
+#. module: ocd_live_whatsapp
 #: model:ocd.automation,name:ocd_live_whatsapp.automation_free_slot
 msgid "Hour freed: tell the waiting list"
 msgstr "Créneau libéré : prévenir la liste d'attente"
@@ -558,6 +563,26 @@ msgstr "OCD Live : créneau libéré pour la liste d'attente"
 #: model:whatsapp.template,name:ocd_live_whatsapp.template_free_slot_en
 msgid "OCD Live: free hour for the waiting list (English)"
 msgstr "OCD Live : créneau libéré pour la liste d'attente (anglais)"
+
+#. module: ocd_live_whatsapp
+#: model:whatsapp.template,name:ocd_live_whatsapp.template_live_host
+msgid "OCD Live: host of the remote live"
+msgstr "OCD Live : animatrice du live à distance"
+
+#. module: ocd_live_whatsapp
+#: model:whatsapp.template,name:ocd_live_whatsapp.template_live_host_en
+msgid "OCD Live: host of the remote live (English)"
+msgstr "OCD Live : animatrice du live à distance (anglais)"
+
+#. module: ocd_live_whatsapp
+#: model:whatsapp.template,name:ocd_live_whatsapp.template_live_join
+msgid "OCD Live: join the remote live"
+msgstr "OCD Live : rejoindre le live à distance"
+
+#. module: ocd_live_whatsapp
+#: model:whatsapp.template,name:ocd_live_whatsapp.template_live_join_en
+msgid "OCD Live: join the remote live (English)"
+msgstr "OCD Live : rejoindre le live à distance (anglais)"
 
 #. module: ocd_live_whatsapp
 #: model:whatsapp.template,name:ocd_live_whatsapp.template_link_online
@@ -935,6 +960,11 @@ msgid "The payment of a booking arrives"
 msgstr "Le paiement d'une réservation arrive"
 
 #. module: ocd_live_whatsapp
+#: model:ocd.automation,when:ocd_live_whatsapp.automation_live_host
+msgid "The team chooses the host of a remote live"
+msgstr "L'équipe choisit l'animatrice d'un live à distance"
+
+#. module: ocd_live_whatsapp
 #: model:ocd.automation,when:ocd_live_whatsapp.automation_link_online
 msgid "The team publishes a link"
 msgstr "L'équipe publie un lien"
@@ -963,6 +993,7 @@ msgstr "Le vendeur le demande sur le site"
 
 #. module: ocd_live_whatsapp
 #: model:ocd.automation,scope:ocd_live_whatsapp.automation_booking_whatsapp
+#: model:ocd.automation,scope:ocd_live_whatsapp.automation_live_host
 msgid "The vendors who agreed to the messages on WhatsApp."
 msgstr "Les vendeurs qui ont accepté les messages sur WhatsApp."
 
@@ -1093,6 +1124,7 @@ msgstr "WhatsApp tout de suite avec le modèle demandé : code à 6 chiffres val
 #: model:ocd.automation,tools:ocd_live_whatsapp.automation_link_online
 #: model:ocd.automation,tools:ocd_live_whatsapp.automation_link_received
 #: model:ocd.automation,tools:ocd_live_whatsapp.automation_link_refused
+#: model:ocd.automation,tools:ocd_live_whatsapp.automation_live_host
 #: model:ocd.automation,tools:ocd_live_whatsapp.automation_window_alert
 msgid "WhatsApp templates."
 msgstr "Modèles WhatsApp."
@@ -1116,6 +1148,11 @@ msgstr "WhatsApp au vendeur, modèle ocd_lien_en_ligne, avec la fin de la fenêt
 #: model:ocd.automation,actions:ocd_live_whatsapp.automation_link_refused
 msgid "WhatsApp to the vendor, template ocd_lien_refuse, with the reason chosen by the team."
 msgstr "WhatsApp au vendeur, modèle ocd_lien_refuse, avec le motif choisi par l'équipe."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,actions:ocd_live_whatsapp.automation_live_host
+msgid "WhatsApp to the vendor, template ocd_live_animatrice: the day, the hour and the name of the host, who calls before the live for a test."
+msgstr "WhatsApp au vendeur, modèle ocd_live_animatrice : le jour, l'heure et le nom de l'animatrice, qui appelle avant le live pour un essai."
 
 #. module: ocd_live_whatsapp
 #: model:ocd.automation,actions:ocd_live_whatsapp.automation_booking_whatsapp
@@ -1167,6 +1204,11 @@ msgstr "Quand la réservation est payée, ou confirmée par l'équipe."
 #: model:ocd.automation,trigger:ocd_live_whatsapp.automation_asked
 msgid "When the contact asks for a login code, the personal link, the link of the password or the ticket."
 msgstr "Quand le contact demande un code de connexion, le lien personnel, le lien du mot de passe ou le ticket."
+
+#. module: ocd_live_whatsapp
+#: model:ocd.automation,trigger:ocd_live_whatsapp.automation_live_host
+msgid "When the host of a confirmed remote live to come is chosen or changed."
+msgstr "Quand l'animatrice d'un live à distance confirmé à venir est choisie ou changée."
 
 #. module: ocd_live_whatsapp
 #: model:ocd.automation,trigger:ocd_live_whatsapp.automation_link_online

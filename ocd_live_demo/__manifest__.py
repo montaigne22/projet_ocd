@@ -37,7 +37,7 @@ Everything needed to present OCD Live, in one module that can be removed:
 Uninstalling the module cancels and removes all these records, and puts the payment
 methods and the opening date of the bookings back as they were.
 """,
-    "version": "20.0.1.3.0",
+    "version": "20.0.1.4.0",
     "category": "Hidden",
     "author": "RollBackk",
     "license": "LGPL-3",

@@ -1,6 +1,5 @@
 import re
 from urllib.parse import quote as url_quote
-from urllib.parse import urlparse
 
 from odoo import fields, http
 from odoo.exceptions import UserError, ValidationError
@@ -11,24 +10,10 @@ from odoo.addons.ocd_live.controllers import common
 
 from . import shop_common
 
-# Platforms of the lives, recognised from the link of the live
-PLATFORMS = {
-    "tiktok.com": "TikTok",
-    "facebook.com": "Facebook",
-    "fb.watch": "Facebook",
-    "instagram.com": "Instagram",
-    "youtube.com": "YouTube",
-    "youtu.be": "YouTube",
-}
-
-
 def platform(url):
-    """Return the name of the platform of a live link ("TikTok"), or ""."""
-    host = (urlparse(url or "").hostname or "").lower()
-    for domain, name in PLATFORMS.items():
-        if host == domain or host.endswith("." + domain):
-            return name
-    return ""
+    """Return the name of the platform of a live link ("TikTok"), or "" (the live platforms of
+    the configuration)."""
+    return request.env["ocd.live.platform"].sudo()._ocd_for_url(url).name or ""
 
 
 def duration_text(minutes):
@@ -112,7 +97,7 @@ class OcdBoutique(http.Controller):
         return shop_common.card(product, shop_common.prices(product))
 
     def _live_info(self, live):
-        name = platform(live.live_url)
+        name = platform(live._ocd_watch_url())
         minutes = max(1, int((fields.Datetime.now() - live.start_datetime).total_seconds() // 60))
         since = duration_text(minutes)
         return {
@@ -123,13 +108,13 @@ class OcdBoutique(http.Controller):
 
     def _next_info(self, booking):
         local = common.to_viewer(booking.start_datetime)
-        name = platform(booking.live_url)
+        where = request.env._("At the OCD Live studio") if booking.mode == "studio" else request.env._(
+            "From home, with OCD Live"
+        )
+        name = platform(booking._ocd_watch_url())
         if name:
-            where = request.env._("On %s", name)
-        elif booking.mode == "studio":
-            where = request.env._("At the OCD Live studio")
-        else:
-            where = request.env._("From home, with OCD Live")
+            # The live goes on an account of OCD Live: where it is watched too
+            where = f"{where} · {request.env._('On %s', name)}"
         return {
             "title": request.env._(
                 "Next live: %(day)s at %(hour)s",

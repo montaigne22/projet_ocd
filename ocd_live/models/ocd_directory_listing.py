@@ -65,6 +65,13 @@ class OcdDirectoryListing(models.Model):
         compute="_compute_platform",
         store=True,
     )
+    platform_id = fields.Many2one(
+        comodel_name="ocd.live.platform",
+        string="Live Platform",
+        compute="_compute_platform_id",
+        store=True,
+        help="The platform of the link, among the live platforms (Configuration).",
+    )
     country_id = fields.Many2one(comodel_name="res.country", string="Country", index=True)
     category_id = fields.Many2one(comodel_name="ocd.live.category", string="Category", index=True)
     window_id = fields.Many2one(comodel_name="ocd.directory.window", string="Window")
@@ -102,6 +109,12 @@ class OcdDirectoryListing(models.Model):
         for listing in self:
             listing.platform = _platform_of(listing.url) or False
 
+    @api.depends("url")
+    def _compute_platform_id(self):
+        Platform = self.env["ocd.live.platform"]
+        for listing in self:
+            listing.platform_id = Platform._ocd_for_url(listing.url)
+
     @api.depends("partner_id", "platform")
     def _compute_display_name(self):
         for listing in self:
@@ -109,11 +122,15 @@ class OcdDirectoryListing(models.Model):
 
     @api.constrains("url")
     def _check_url(self):
+        Platform = self.env["ocd.live.platform"]
         for listing in self:
-            if len(listing.url or "") > 500 or not _platform_of(listing.url):
-                raise ValidationError(
-                    self.env._("Send the https link of a live on TikTok, Facebook, Instagram or YouTube.")
-                )
+            if len(listing.url or "") > 500 or not Platform._ocd_for_url(listing.url):
+                raise ValidationError(self._ocd_link_error())
+
+    @api.model
+    def _ocd_link_error(self):
+        """The message of a link that is not a live of an active platform."""
+        return self.env._("Send the https link of a live on %s.", self.env["ocd.live.platform"]._ocd_names_text())
 
     # === SUBMISSION === #
 
@@ -127,10 +144,8 @@ class OcdDirectoryListing(models.Model):
         if partner.ocd_vendor_state == "refused":
             raise UserError(self.env._("This vendor cannot send links to the directory."))
         url = (url or "").strip()
-        if not _platform_of(url):
-            raise UserError(
-                self.env._("Send the https link of a live on TikTok, Facebook, Instagram or YouTube.")
-            )
+        if not self.env["ocd.live.platform"]._ocd_for_url(url):
+            raise UserError(self._ocd_link_error())
         found = self.env["ocd.directory.window"]._ocd_find()
         if not found:
             raise UserError(self.env._("The directory is closed for now."))

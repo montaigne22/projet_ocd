@@ -1,12 +1,21 @@
 from datetime import timedelta
 
 from odoo import api, fields, models
+from odoo.http import request
+from odoo.tools.misc import format_amount
 
 from .res_company import DELIVERY_MODES, PAYOUT_FREQUENCIES
+
+CARD_PRODUCTS = 8  # products in the carousel of the card of a vendor in the feed
 
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
+
+    ocd_card_media = fields.Selection(
+        selection_add=[("video",), ("products", "The products, in a carousel")],
+        ondelete={"products": "set default"},
+    )
 
     # === VENDOR: SALE AND DELIVERY === #
 
@@ -198,6 +207,75 @@ class ResPartner(models.Model):
             ("ocd_review_state", "=", "approved"), ("image_128", "!=", False),
         ], limit=1)
         return f"/web/image/product.template/{product.id}/image_512" if product else False
+
+    # === CARD IN THE FEED: THE CAROUSEL OF THE PRODUCTS === #
+
+    def _ocd_card_products(self):
+        """The products of the carousel of the card: the published ones with a photo, in the order
+        of the boutique, the sold out ones last."""
+        self.ensure_one()
+        products = self.env["product.template"].sudo().search([
+            ("ocd_vendor_id", "=", self.id), ("ocd_review_state", "=", "approved"),
+            ("is_published", "=", True), ("sale_ok", "=", True), ("image_128", "!=", False),
+        ], order="website_sequence, id", limit=CARD_PRODUCTS * 3)
+        sold_out = {product.id for product in products if self._ocd_card_sold_out(product)}
+        return products.sorted(lambda product: product.id in sold_out)[:CARD_PRODUCTS], sold_out
+
+    def _ocd_card_sold_out(self, product):
+        if not (product.is_storable and not product.allow_out_of_stock_order):
+            return False
+        website = (request.env.website if request else self.env.website) or self.env["website"].sudo().search(
+            [("company_id", "in", (self.env.company.id, False))], limit=1,
+        )
+        return sum(website._get_product_available_qty(variant) for variant in product.product_variant_ids) <= 0
+
+    def _ocd_card_prices(self, products):
+        """The prices written for the visitor (pricelist and taxes of the website), as the shop."""
+        if request and getattr(request, "website", None):
+            from ..controllers import shop_common  # noqa: PLC0415 (pages of the shop)
+
+            return shop_common.prices(products)
+        return {product.id: format_amount(self.env, product.list_price, product.currency_id) for product in products}
+
+    def _ocd_card_media_of(self, kind):
+        if kind != "products":
+            return super()._ocd_card_media_of(kind)
+        products, sold_out = self._ocd_card_products()
+        if not products:
+            return None
+        prices = self._ocd_card_prices(products)
+        return {
+            "kind": "products",
+            "slides": [
+                {
+                    "url": product.website_url,
+                    "image": f"/web/image/product.template/{product.id}/image_512",
+                    "name": product.name,
+                    "price": prices.get(product.id) or "",
+                    "out": product.id in sold_out,
+                }
+                for product in products
+            ],
+        }
+
+    def _ocd_card_choices(self):
+        """The carousel of the products, after the video."""
+        choices = super()._ocd_card_choices()
+        _ = self.env._
+        products, _sold_out = self._ocd_card_products()
+        for choice in choices:
+            if choice["value"] == "auto":
+                choice["text"] = _("Your video when you have one, else your products, else your image.")
+        index = next((i + 1 for i, choice in enumerate(choices) if choice["value"] == "video"), len(choices))
+        choices.insert(index, {
+            "value": "products",
+            "title": _("My products"),
+            "text": _("Your products on sale, with their photo and their price: a tap opens the product."),
+            "ready": bool(products),
+            "missing": _("Add products with a photo in My products: they show once the team has checked them."),
+            "missing_url": "/ocd/espace/moi/produits",
+        })
+        return choices
 
     def action_ocd_deliveries_to_ocd(self):
         """Give the deliveries of a vendor often late to the OCD couriers."""

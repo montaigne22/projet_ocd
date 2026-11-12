@@ -100,6 +100,19 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   prochain live et un seul replay par vendeur** (le plus proche, le plus récent ; les autres sont dans sa
   boutique) : un pays où les vendeurs réservent beaucoup ne repousse pas les lives des autres pays. Les lives
   restent sur TikTok, Facebook… (ces plateformes ne laissent pas lire un live ailleurs) : la carte y mène.
+- **Cartes du fil claires et épurées**, la couleur seulement pour l'état du live et le bouton principal ;
+  le média en haut, les textes et les boutons en bas, sans chevauchement. **Le média est au choix du
+  vendeur** : vidéo courte (30 s, sans le son à l'écran), carrousel de ses produits (un toucher ouvre le
+  produit) ou image ; « Automatique » prend la vidéo, sinon les produits, sinon l'image.
+- **Aucune plateforme imposée** : les plateformes de live sont une liste de l'équipe ; un lien est reconnu
+  par son adresse, la carte dit « Regarder sur » et son nom.
+- **Les lives réservés passent sur les comptes d'OCD Live**, plusieurs possibles (par pays, studio, à
+  distance) ; **TikTok d'abord**. Le vendeur d'un live à distance **rejoint le compte d'OCD en invité**
+  (sur TikTok, lancer un live demande souvent 1 000 abonnés : le compte d'OCD les a, pas toujours le
+  vendeur).
+- **Avant un live à distance, les deux** : l'animatrice appelle le vendeur (30 min avant, un essai) **et** un
+  message automatique l'invite 15 min avant (« Rejoindre mon live ») ; 5 min avant, s'il n'a pas dit être
+  prêt, l'animatrice est alertée.
 - Annuaire : liens vérifiés pendant les **créneaux de vérification** (8:00–11:00 et 18:00–21:00 par défaut),
   retirés à la fin du créneau. **Pass de 30 jours** pour envoyer ses liens (5 000 F par défaut).
 - Un nouveau vendeur, un nouveau produit et un lien de live sont **vérifiés par l'équipe** ; un refus

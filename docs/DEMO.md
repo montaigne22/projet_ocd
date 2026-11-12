@@ -33,6 +33,15 @@ une animatrice d'OCD (Dzifa Agbeko ou Kafui Amedome).
 « Directe » : le client écrit au vendeur sur WhatsApp, paiement et livraison se voient avec lui.
 « Par OCD » : le client paie sur le site, OCD livre à Douala.
 
+**Leur carte dans le fil** : Awa a sa **vidéo courte** (ses gâteaux et son bissap), Ama son **image** (un
+ensemble en pagne), les autres le **carrousel de leurs produits**. Les vendeurs qui font leurs lives sur
+TikTok y ont leur nom (`@awa.gateaux`…), pour l'animatrice qui les invite.
+
+**Les comptes d'OCD Live sur TikTok** (Configuration › Comptes de live) : **OCD Live Togo**
+(`@ocdlive.tg`) pour les vendeurs du Togo et **OCD Live Afrique** (`@ocdlive.afrique`) pour les autres
+pays. Les lives réservés passent dessus ; le vendeur d'un live à distance le rejoint en invité. Ce sont
+des exemples : les remplacer par les vrais comptes d'OCD Live.
+
 Clients à Douala : Estelle Ngono (Akwa), Hervé Kuete (Bonabéri), Sandrine Fouda (Makepe), Ruth Mbarga
 (Akwa), Bertrand Atangana (Bonamoussadi). Livreurs OCD : Junior Ekwalla, Raoul Nyobe, Christelle Mbarga
 (en repos).
@@ -91,7 +100,12 @@ lendemain matin.
 - Faire défiler comme sur TikTok : les lives en cours du pays, son prochain live et son dernier replay
   par vendeur, puis une carte par pays (« Sénégal · 2 lives en ce moment »).
 - La barre des pays en haut : le nombre de lives en cours par pays ; toucher « Ghana » y mène.
-- Sur une carte : « Regarder sur TikTok » (le live reste sur la plateforme), « Sa boutique », partager.
+- Les cartes sont claires : en haut le média du vendeur, en bas son état (« En live depuis 12 min »,
+  « Aujourd'hui à 14:30 », « Live du mer. 11 nov. »), son nom et les boutons. **Awa** : sa vidéo se lance
+  sans le son (le haut-parleur met le son, un toucher la met en pause) ; **Kossi** : le carrousel de ses
+  produits défile seul, un toucher ouvre le produit ; **Ama** : son image.
+- Sur une carte : « Regarder sur TikTok » ou « sur Facebook » selon le lien du live (le live reste sur la
+  plateforme), « Sa boutique », partager.
 
 ### 2. La boutique d'un vendeur
 - **Ama Pagnes** ou **Kossi Tech** : prochain live et « Me prévenir sur WhatsApp », dernier replay,
@@ -113,6 +127,13 @@ lendemain matin.
   d'attente), le paiement (Mobile Money vérifié par l'équipe, carte), le ticket PDF et l'image à partager.
 - Pour montrer l'espace d'un vendeur de la démo : back-office › Vendeurs › Kossi Tech › **Voir son
   espace** (aucun code WhatsApp ne part vers un numéro de la démo).
+- Dans l'espace : **« Changer ma carte »** › « Ma carte dans le fil » : la carte telle que le fil la
+  montre, le choix (automatique, vidéo courte, mes produits, image) et l'envoi d'une vidéo filmée au
+  téléphone ou d'une image.
+- **Live à distance** : le jour d'un live à distance (Adjoua jeudi 14 h 30, Junior lundi 14 h 30…), son
+  espace montre « Rejoindre mon live » deux heures avant ; ou, sur la fiche du live, « Page « Rejoindre
+  mon live » du vendeur ». La page donne les trois gestes (ouvrir TikTok, aller sur le live d'OCD Live,
+  accepter l'invitation), « Je suis prêt », « J'ai un problème », et l'animatrice à appeler.
 
 ### 6. L'équipe — back-office, application OCD Live
 - **Tableau de bord** : lives du jour, pass actifs, colis, reversements, et « À traiter maintenant » :
@@ -121,6 +142,11 @@ lendemain matin.
 - **Lives › Réservations** (planning) : la semaine pleine, le samedi complet ; le live de Kossi en
   « Paiement à vérifier » → « Paiement reçu : marquer payé ».
 - **Lives › À vérifier** : publier le lien en attente ; il apparaît aussitôt dans le fil.
+- **Live à distance**, sur sa fiche (Lives › Réservations) ou dans la **Régie** : le compte d'OCD du live,
+  l'état du vendeur (« Invité à 14:15, pas encore prêt », « Prêt depuis 14:20 », « Problème : … »), Appeler,
+  WhatsApp et « Vendeur appelé ». Cliquer « Je suis prêt » sur la page du vendeur : la régie passe au vert.
+  30 minutes avant, l'animatrice a l'activité « Appeler le vendeur » ; 5 minutes avant, sans réponse,
+  « Vendeur à appeler tout de suite ».
 - **Livraisons › Dispatch** : les colis de la journée à chaque étape ; le colis de Brenda en retard
   (« donner à un livreur OCD ? »), Bertrand absent (« Nouvelle tentative »).
 - **Livraisons › Livreurs et caisse** : Junior et Raoul avec leurs espèces du jour, Christelle en repos ;
@@ -162,6 +188,8 @@ S'y ajoute le live du studio en cours, d'après la semaine ci-dessus.
 
   Vides, la démo garde ses liens d'exemple : les comptes des vendeurs n'existent pas et la vidéo ne se
   lit pas. Un lien collé à la main sur un live de la démo reste tel quel.
+- **Les comptes de live** : OCD Live › Configuration › Comptes de live : remplacer OCD Live Togo et OCD
+  Live Afrique par les vrais comptes TikTok d'OCD Live (nom sur TikTok, lien de ses lives, pays).
 - **Les numéros sont des exemples** : aucun message WhatsApp ne part vers les contacts de la démo, même
   avec le vrai compte WhatsApp connecté (`ocd_live_demo_whatsapp`). Pour montrer un vrai message,
   inscrire un vendeur avec son propre numéro.

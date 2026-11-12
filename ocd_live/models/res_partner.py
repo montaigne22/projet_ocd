@@ -1,3 +1,4 @@
+import base64
 import re
 import secrets
 from datetime import timedelta
@@ -6,10 +7,10 @@ import pytz
 
 from odoo import Command, api, fields, models
 from odoo.exceptions import AccessError, UserError
-from odoo.tools import consteq
+from odoo.tools import BinaryBytes, BinaryValue, consteq
 from odoo.tools.misc import hmac
 
-from .. import tools
+from .. import media, tools
 
 LOGIN_CODE_MINUTES = 10
 LOGIN_CODE_MAX_ATTEMPTS = 5
@@ -67,6 +68,34 @@ class ResPartner(models.Model):
         string="Messages On WhatsApp",
         default=True,
         help="The vendor receives the ticket, the reminders and the news on WhatsApp.",
+    )
+    ocd_live_handle = fields.Char(
+        string="Name On The Live Platform",
+        help="The name of the vendor on TikTok (or the platform of their lives), e.g. @awa.gateaux: the host "
+        "invites this account in the remote lives.",
+    )
+    # Card of the vendor in the feed of the lives
+    ocd_card_media = fields.Selection(
+        selection=[("auto", "Automatic"), ("video", "A short video"), ("image", "An image")],
+        string="Card In The Feed",
+        default="auto",
+        help="What the card of the vendor shows in the feed of the lives. Automatic: the short video when "
+        "there is one, else the products (with the shop), else the image. When the chosen one is missing, "
+        "the card shows the next one.",
+    )
+    ocd_card_image = fields.Image(string="Image Of The Card", max_width=1080, max_height=1350)
+    ocd_card_video = fields.Binary(
+        string="Short Video",
+        attachment=True,
+        copy=False,
+        help="A video of 30 seconds at most, played without sound when the card is on screen. Made "
+        "readable by every phone when the server has ffmpeg (MP4 or WebM otherwise).",
+    )
+    ocd_card_video_name = fields.Char(string="Name Of The Video", copy=False)
+    ocd_card_video_poster = fields.Image(string="Poster Of The Video", max_width=720, max_height=1280, copy=False)
+    ocd_card_video_sound = fields.Boolean(
+        string="Video With Sound", default=True, copy=False,
+        help="The card offers to turn the sound on only when the video has sound.",
     )
     ocd_login_code_hash = fields.Char(copy=False, groups="base.group_system")
     ocd_login_code_expiry = fields.Datetime(copy=False, groups="base.group_system")
@@ -186,6 +215,151 @@ class ResPartner(models.Model):
         self.ensure_one()
         code = (self.country_id.code or "").lower()
         return self._ocd_shop_path() or (f"lives/{code}" if code else "lives")
+
+    # === CARD IN THE FEED === #
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._ocd_prepare_card_video_vals(vals)
+        return super().create(vals_list)
+
+    def write(self, vals):
+        self._ocd_prepare_card_video_vals(vals)
+        return super().write(vals)
+
+    @api.model
+    def _ocd_prepare_card_video_vals(self, vals):
+        """A video given to the card (back office, space of the vendor) is checked and made
+        readable by every phone, with its poster (media.py)."""
+        if not vals.get("ocd_card_video"):
+            if "ocd_card_video" in vals:
+                vals["ocd_card_video_poster"] = False
+            return
+        value = vals["ocd_card_video"]
+        filename = ""
+        if isinstance(value, dict):  # {filename, content}
+            filename = value.get("filename") or ""
+            value = value.get("content")
+        if isinstance(value, BinaryValue):
+            data = value.content
+            filename = filename or value.filename
+        elif isinstance(value, str):  # base64, from the back office
+            data = base64.b64decode(value)
+        else:
+            return  # refused by the field itself
+        if filename and not vals.get("ocd_card_video_name"):
+            vals["ocd_card_video_name"] = filename
+        try:
+            video, poster, mimetype, sound = media.prepare(data)
+        except media.VideoError as error:
+            raise UserError(self._ocd_video_error(error)) from None
+        vals["ocd_card_video"] = BinaryBytes(video)
+        vals["ocd_card_video_poster"] = BinaryBytes(poster) if poster else False
+        vals["ocd_card_video_sound"] = sound is not False
+        name = (vals.get("ocd_card_video_name") or "video").rsplit(".", 1)[0]
+        vals["ocd_card_video_name"] = f"{name}.{'webm' if mimetype == 'video/webm' else 'mp4'}"
+
+    @api.model
+    def _ocd_video_error(self, error):
+        _ = self.env._
+        messages = {
+            "empty": _("The video is empty."),
+            "not_video": _("This file is not a video."),
+            "too_big": _("The video is too heavy: %s MB at most.", error.values.get("size")),
+            "too_long": _("The video is too long: a short video of %s seconds at most.", error.values.get("seconds")),
+            "format": _("Send a video in MP4: this one would not play on every phone."),
+            "unreadable": _("This video cannot be read: send another one, in MP4."),
+        }
+        return messages.get(error.code, messages["unreadable"])
+
+    def _ocd_card_version(self):
+        """A part of the address of the media of the card that changes with them (the phones
+        keep them a day)."""
+        self.ensure_one()
+        return int(self.write_date.timestamp()) if self.write_date else 0
+
+    def _ocd_card_media(self):
+        """What the card of the vendor shows in the feed of the lives: {"kind": "video" | "products"
+        | "image" | "initials", ...}. The choice of the vendor or of the team first, else what
+        exists, in the order of « automatic »."""
+        self.ensure_one()
+        order = ["video", "products", "image"]
+        choice = self.ocd_card_media or "auto"
+        if choice in order:
+            order.remove(choice)
+            order.insert(0, choice)
+        for kind in order:
+            media = self._ocd_card_media_of(kind)
+            if media:
+                return media
+        return {"kind": "initials"}
+
+    def _ocd_card_media_of(self, kind):
+        """The media `kind` of the card, or None when the vendor has none. Extended by
+        ocd_live_shop (the carousel of the products)."""
+        self.ensure_one()
+        version = self._ocd_card_version()
+        if kind == "video" and self.ocd_card_video:
+            poster = (
+                f"/lives/video/{self.id}/image?v={version}" if self.ocd_card_video_poster
+                else self._ocd_card_image_url()
+            )
+            return {
+                "kind": "video",
+                "video": f"/lives/video/{self.id}?v={version}",
+                "poster": poster or False,
+                "sound": self.ocd_card_video_sound,
+            }
+        if kind == "image":
+            image = self._ocd_card_image_url()
+            return {"kind": "image", "image": image} if image else None
+        return None
+
+    def _ocd_card_choices(self):
+        """The choices of the page « My card in the lives » of the space of the vendor: what the
+        card can show and whether it is ready. Extended by ocd_live_shop (the products)."""
+        self.ensure_one()
+        _ = self.env._
+        return [
+            {
+                "value": "auto",
+                "title": _("Automatic"),
+                "text": _("Your video when you have one, else your image."),
+                "ready": True,
+            },
+            {
+                "value": "video",
+                "title": _("A short video"),
+                "text": _("30 seconds at most, filmed upright: it plays without sound when your card is on screen."),
+                "ready": bool(self.ocd_card_video),
+                "missing": _("Add your video below."),
+            },
+            {
+                "value": "image",
+                "title": _("An image"),
+                "text": _("A beautiful photo of your products or of your shop."),
+                "ready": bool(self._ocd_card_image_url()),
+                "missing": _("Add your image below."),
+            },
+        ]
+
+    def _ocd_card_shown_label(self):
+        """What the card shows now, in a few words, for the space of the vendor."""
+        self.ensure_one()
+        _ = self.env._
+        return {
+            "video": _("Your short video"),
+            "products": _("Your products, in a carousel"),
+            "image": _("Your image"),
+        }.get(self._ocd_card_media()["kind"], _("Your initials: add a video or an image"))
+
+    def _ocd_card_image_url(self):
+        """The image chosen for the card, else the image of the vendor in the lives."""
+        self.ensure_one()
+        if self.ocd_card_image:
+            return f"/lives/carte/{self.id}?v={self._ocd_card_version()}"
+        return self._ocd_feed_image()
 
     def _ocd_feed_image(self):
         """Image of the vendor in the lives of the website: its own picture (logo), or False.

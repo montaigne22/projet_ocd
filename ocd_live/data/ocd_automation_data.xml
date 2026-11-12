@@ -51,6 +51,23 @@ Tell the waiting list of the day that an hour is free.</field>
         <field name="tools">Scheduled task and activities.</field>
     </record>
 
+    <record id="automation_remote_join" model="ocd.automation">
+        <field name="code">remote_join</field>
+        <field name="name">Remote live: the vendor is there at the hour</field>
+        <field name="sequence">41</field>
+        <field name="group">lives</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="model_ocd_live_booking"/>
+        <field name="cron_id" ref="ir_cron_remote_join"/>
+        <field name="when">30, 15 and 5 minutes before a remote live</field>
+        <field name="trigger">Every 5 minutes, for the confirmed remote lives that start within 30 minutes.</field>
+        <field name="scope">The remote lives: the vendor joins the account of OCD Live as a guest.</field>
+        <field name="actions">30 min before: activity « Call the vendor » for the host (a test call).
+15 min before: invitation to join the live, with the page « Join my live » (WhatsApp with the WhatsApp module).
+5 min before, when the vendor did not say they were ready: activity « Vendor to call now » for the host.</field>
+        <field name="tools">Scheduled task, activities and WhatsApp templates.</field>
+    </record>
+
     <record id="automation_lives_done" model="ocd.automation">
         <field name="code">lives_done</field>
         <field name="name">Past lives: mark them done</field>

@@ -8,6 +8,12 @@ Refaites à chaque évolution avec `tools/captures/` (voir `docs/DEVELOPPEMENT.m
 - `site-phone-d-1-fil-pays.png`, `site-phone-d-3-fil-autre-pays.png`, `site-phone-d-4-fil-live-autre-pays.png` :
   le fil des lives avec la démo de présentation (le pays du visiteur d'abord, puis une carte par pays et
   ses lives en cours) ; `backoffice-01` et `backoffice-02` montrent sa journée et sa semaine du studio.
+- `site-phone-c-*`, `site-desktop-c-*` : les cartes claires du fil avec le média du vendeur : sa vidéo
+  courte (`1`, Awa), le carrousel de ses produits (`2`, Kossi), son image (`3`, Ama) ; « Ma carte dans le
+  fil » dans l'espace du vendeur (`4`) ; « Rejoindre mon live » pour un live à distance (`5`).
+  `backoffice-03b-regie-live-a-distance.png` : la régie d'un live à distance (où en est le vendeur, Appeler,
+  WhatsApp, « Vendeur appelé ») ; `backoffice-17-comptes-de-live.png` : les comptes d'OCD Live.
+  Script : `tools/captures/site-cartes.js`.
 - `site-phone-*`, `site-tablet-*`, `site-desktop-*` : pages du site sur téléphone, tablette et ordinateur
   (`-d-` annuaire, `-s-` shop et livraisons ; `-s-8b`, `-s-8c` : un panier de deux vendeuses, un prix par
   colis).

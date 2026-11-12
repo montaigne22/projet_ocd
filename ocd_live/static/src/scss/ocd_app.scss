@@ -2519,7 +2519,8 @@ body.o_ocd_body {
 }
 
 // === CHECK OF A TICKET AT THE ENTRY === //
-.o_ocd_check {
+// (only on its page: .o_ocd_check is also the check box of the forms)
+.o_ocd_check_page .o_ocd_check {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -2813,6 +2814,7 @@ body.o_ocd_body {
     font-size: 13.5px;
 }
 .o_ocd_feed {
+    position: relative;  // the cards measure their place from the feed (feed.js)
     height: calc(100dvh - 260px);
     min-height: 360px;
     margin: 0 8px;
@@ -2820,7 +2822,8 @@ body.o_ocd_body {
     overscroll-behavior: contain;
     scroll-snap-type: y mandatory;
     border-radius: 22px;
-    background: $ocd-ink;
+    box-shadow: 0 0 0 1px $ocd-line;
+    background: #FFFFFF;
     scrollbar-width: none;
     &::-webkit-scrollbar {
         display: none;
@@ -2844,59 +2847,298 @@ body.o_ocd_body {
     overflow: hidden;
     outline: none;
 }
+// A card of a vendor: its media at the top, on a light background, and below the texts and
+// the buttons on white, so that they stay readable whatever the photo or the video
 .o_ocd_feed_person {
-    color: #FFFFFF;
-    background: linear-gradient(160deg, $ocd-orange 0%, $ocd-orange-dark 45%, $ocd-ink 100%);
+    justify-content: flex-start;
+    background: #FFFFFF;
+    color: $ocd-ink;
     .o_ocd_feed_media {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 150px;
+        overflow: hidden;
+        background: $ocd-sand;
+    }
+    // The photo and the initials sit in the free space, under the badges of the top
+    .o_ocd_feed_box {
         position: absolute;
-        inset: 0;
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        &::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba($ocd-ink, 0.55) 0%, rgba($ocd-ink, 0) 28%, rgba($ocd-ink, 0) 45%, rgba($ocd-ink, 0.92) 100%);
-        }
+        inset: 58px 18px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .o_ocd_feed_photo {
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 20px;
+        background: #FFFFFF;
+        box-shadow: 0 10px 28px rgba($ocd-ink, 0.12), 0 1px 3px rgba($ocd-ink, 0.08);
     }
     .o_ocd_feed_initials {
-        position: absolute;
-        inset: 0 0 30%;
         display: grid;
         place-items: center;
+        height: unquote("min(100%, 210px)");
+        max-width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 28px;
+        background: $ocd-orange-pale;
+        color: $ocd-orange-dark;
         font-family: $ocd-display;
         font-weight: 800;
-        font-size: clamp(88px, 30vw, 150px);
-        color: rgba(#FFFFFF, 0.9);
+        font-size: clamp(56px, 18vw, 92px);
+        letter-spacing: -0.02em;
     }
-    .o_ocd_feed_top, .o_ocd_feed_body {
-        position: relative;
-        z-index: 1;
+}
+// The short video fills the top of the card
+.o_ocd_feed_video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: $ocd-sand;
+}
+.o_ocd_feed_play, .o_ocd_feed_sound, .o_ocd_feed_arrow {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    box-shadow: 0 2px 10px rgba($ocd-ink, 0.16);
+    cursor: pointer;
+    &:focus-visible {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 2px;
+    }
+}
+.o_ocd_feed_play {
+    top: 50%;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    transform: translate(-50%, -50%);
+    .o_ocd_icon {
+        width: 26px;
+        height: 26px;
+        margin-left: 3px;
+    }
+}
+.o_ocd_feed_media.o_ocd_playing .o_ocd_feed_play {
+    display: none;
+}
+.o_ocd_feed_sound {
+    right: 12px;
+    bottom: 12px;
+    width: 44px;
+    height: 44px;
+    .o_ocd_icon {
+        width: 21px;
+        height: 21px;
+    }
+    .o_ocd_icon + .o_ocd_icon, &[aria-pressed="true"] .o_ocd_icon:first-child {
+        display: none;
+    }
+    &[aria-pressed="true"] .o_ocd_icon + .o_ocd_icon {
+        display: block;
+    }
+}
+// The carousel of the products: one product per slide, a tap opens it
+.o_ocd_feed_slides {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+.o_ocd_feed_slide {
+    flex: 0 0 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 58px 18px 28px;
+    scroll-snap-align: center;
+    color: $ocd-ink;
+    text-decoration: none;
+    &:hover {
+        color: $ocd-ink;
+    }
+    &:focus-visible {
+        outline: none;
+        .o_ocd_feed_tile {
+            box-shadow: 0 0 0 3px $ocd-orange, 0 10px 28px rgba($ocd-ink, 0.12);
+        }
+    }
+}
+// A product: its photo, and beside it its name and its price (the top of the card is short
+// on a phone: side by side, the photo keeps all its height)
+.o_ocd_feed_tile {
+    display: flex;
+    height: 100%;
+    max-height: 300px;
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #FFFFFF;
+    box-shadow: 0 10px 28px rgba($ocd-ink, 0.12), 0 1px 3px rgba($ocd-ink, 0.08);
+    img {
+        flex: 0 1 auto;
+        min-width: 0;
+        height: 100%;
+        width: auto;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        background: $ocd-sand;
+    }
+}
+.o_ocd_feed_tile_text {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    width: 150px;
+    padding: 12px 14px 12px 16px;
+    b {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        font-size: 16px;
+        line-height: 1.22;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+    .o_ocd_feed_tile_price {
+        font-family: $ocd-display;
+        font-size: 18px;
+        font-weight: 800;
+        color: $ocd-orange-dark;
+    }
+    .o_ocd_feed_tile_out {
+        color: $ocd-muted;
+        font-weight: 700;
+    }
+    .o_ocd_feed_tile_see {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        margin-top: 2px;
+        color: $ocd-muted;
+        font-size: 13.5px;
+        font-weight: 600;
+        .o_ocd_icon {
+            width: 15px;
+            height: 15px;
+        }
+    }
+}
+@media (min-width: 420px) {
+    .o_ocd_feed_tile_text {
+        width: 180px;
+    }
+}
+// With a mouse: an arrow on each side of the dots, under the product
+.o_ocd_feed_arrow {
+    bottom: 4px;
+    width: 34px;
+    height: 34px;
+    &.o_ocd_feed_prev {
+        left: 18px;
+    }
+    &.o_ocd_feed_next {
+        right: 18px;
+    }
+    .o_ocd_icon {
+        width: 18px;
+        height: 18px;
+    }
+    &[disabled] {
+        opacity: 0.35;
+        box-shadow: none;
+        cursor: default;
+    }
+}
+@media (hover: hover) {
+    .o_ocd_feed_media_products .o_ocd_feed_slide {
+        padding-bottom: 44px;
+    }
+    .o_ocd_feed_media_products .o_ocd_feed_dots {
+        bottom: 17px;
+    }
+}
+// Phones: the slides go with the finger, the arrows only help a mouse
+@media (hover: none) {
+    .o_ocd_feed_arrow {
+        display: none;
+    }
+}
+.o_ocd_feed_dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    pointer-events: none;
+    i {
+        width: 7px;
+        height: 7px;
+        border-radius: 4px;
+        background: rgba($ocd-ink, 0.2);
+        transition: width 0.2s ease, background-color 0.2s ease;
+        &.o_ocd_on {
+            width: 18px;
+            background: $ocd-ink;
+        }
     }
 }
 .o_ocd_feed_top {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     padding: 14px;
+    pointer-events: none;
 }
 .o_ocd_feed_badge, .o_ocd_feed_country {
     display: inline-flex;
     align-items: center;
     gap: 7px;
+    min-width: 0;
     height: 32px;
     padding: 0 12px;
     border-radius: 999px;
-    font-weight: 800;
-    font-size: 13px;
-}
-.o_ocd_feed_badge {
     background: #FFFFFF;
     color: $ocd-ink;
+    box-shadow: 0 1px 4px rgba($ocd-ink, 0.12);
+    font-weight: 800;
+    font-size: 13px;
+    white-space: nowrap;
+}
+.o_ocd_feed_badge {
+    flex: none;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     i {
@@ -2906,86 +3148,161 @@ body.o_ocd_body {
         background: $ocd-red-live;
         animation: o_ocd_feed_pulse 1.6s ease-in-out infinite;
     }
+    &.o_ocd_feed_badge_live, &.o_ocd_feed_badge_studio {
+        color: $ocd-red-text;
+    }
     &.o_ocd_feed_badge_next {
-        background: $ocd-orange;
-        color: #FFFFFF;
+        color: $ocd-orange-dark;
     }
     &.o_ocd_feed_badge_replay {
-        background: rgba(#FFFFFF, 0.22);
-        color: #FFFFFF;
+        color: $ocd-violet-text;
     }
 }
 .o_ocd_feed_country {
-    background: rgba($ocd-ink, 0.55);
-    color: #FFFFFF;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .o_ocd_feed_body {
+    flex: none;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 6px;
-    padding: 18px 18px 22px;
+    padding: 16px 18px 18px;
+    border-top: 1px solid $ocd-line;
+    background: #FFFFFF;
     p {
         margin: 0;
     }
 }
-.o_ocd_feed_name {
-    margin: 0;
-    font-size: clamp(28px, 8vw, 38px);
-    line-height: 1.02;
-    letter-spacing: -0.02em;
-    color: #FFFFFF;
+// The state of the live: in red while it is on, orange when it comes, violet for a replay
+.o_ocd_feed_status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 100%;
+    min-height: 30px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14.5px;
+    line-height: 1.25;
+    i {
+        flex: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: $ocd-red-live;
+        animation: o_ocd_feed_pulse 1.6s ease-in-out infinite;
+    }
+    &.o_ocd_feed_status_live, &.o_ocd_feed_status_studio {
+        background: $ocd-red-soft;
+        color: $ocd-red-text;
+    }
+    &.o_ocd_feed_status_next {
+        background: $ocd-orange-pale;
+        color: $ocd-orange-dark;
+    }
+    &.o_ocd_feed_status_replay {
+        background: $ocd-violet-soft;
+        color: $ocd-violet-text;
+    }
 }
-.o_ocd_feed_category {
-    color: rgba(#FFFFFF, 0.82);
+// More precise than the rule of all the titles of the pages
+.o_ocd_feed_person .o_ocd_feed_name {
+    display: -webkit-box;
+    margin: 2px 0 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font-size: clamp(26px, 7.4vw, 34px);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: $ocd-ink;
+    overflow-wrap: anywhere;
+}
+.o_ocd_feed_category, .o_ocd_feed_where {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: $ocd-muted;
+    font-size: 15px;
     font-weight: 600;
 }
-.o_ocd_feed_when {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 4px 10px;
-    b {
-        font-size: 17px;
-    }
-    small {
-        color: rgba(#FFFFFF, 0.78);
-        font-size: 13.5px;
-    }
+.o_ocd_feed_where {
+    font-size: 14px;
+    font-weight: 500;
 }
 .o_ocd_feed_actions {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 52px;
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
-    margin-top: 10px;
-    > .o_ocd_cta:first-child {
-        grid-column: 1 / -1;
-    }
+    width: 100%;
+    margin-top: 8px;
     .o_ocd_cta {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+        flex: 1 1 0;
         min-width: 0;
+        width: auto;
+        min-height: 52px;
         padding: 0 14px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        border-radius: 16px;
+        font-size: 17px;
+        span {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .o_ocd_icon {
+            flex: none;
+        }
+    }
+    .o_ocd_feed_watch {
+        flex-basis: 100%;
     }
     .o_ocd_cta_ghost {
-        background: rgba(#FFFFFF, 0.16);
-        border-color: rgba(#FFFFFF, 0.5);
-        color: #FFFFFF;
+        min-height: 52px;
+        border-width: 1.5px;
+        font-size: 16px;
     }
     .o_ocd_feed_share {
-        grid-column: 2;
+        flex: none;
         width: 52px;
         height: 52px;
         display: grid;
         place-items: center;
-        border: 0;
+        padding: 0;
+        border: 1.5px solid $ocd-line;
         border-radius: 16px;
-        background: rgba(#FFFFFF, 0.16);
-        color: #FFFFFF;
+        background: #FFFFFF;
+        color: $ocd-ink;
+        &:focus-visible {
+            outline: 3px solid $ocd-orange;
+            outline-offset: 2px;
+        }
+    }
+}
+// Short screens: smaller texts, so that the media keeps its place
+@media (max-height: 700px) {
+    .o_ocd_feed_body {
+        gap: 4px;
+        padding: 12px 16px 14px;
+    }
+    .o_ocd_feed_person .o_ocd_feed_name {
+        font-size: 25px;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+    }
+    .o_ocd_feed_actions {
+        margin-top: 6px;
+        .o_ocd_cta, .o_ocd_cta_ghost {
+            min-height: 46px;
+        }
+        .o_ocd_feed_share {
+            width: 46px;
+            height: 46px;
+        }
     }
 }
 .o_ocd_feed_divider {
@@ -3042,6 +3359,202 @@ body.o_ocd_body {
         animation: o_ocd_feed_up 1.4s ease-in-out infinite;
     }
 }
+// === JOIN MY REMOTE LIVE === //
+.o_ocd_join_steps {
+    li {
+        align-items: start;
+        > span:last-child {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-top: 2px;
+        }
+        b {
+            font-size: 17px;
+        }
+        small {
+            color: $ocd-muted;
+            font-size: 14.5px;
+            font-weight: 500;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+    }
+}
+.o_ocd_join_handle {
+    padding: 14px;
+    border-radius: 18px;
+    background: $ocd-orange-pale;
+}
+.o_ocd_join_answers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    form {
+        margin: 0;
+    }
+}
+.o_ocd_join_problem {
+    > summary {
+        list-style: none;
+        &::-webkit-details-marker {
+            display: none;
+        }
+    }
+    > form {
+        margin-top: 10px;
+        padding: 14px;
+        border-radius: 18px;
+        background: $ocd-sand;
+    }
+    .o_ocd_check {
+        min-height: 40px;
+        font-size: 15px;
+    }
+}
+.o_ocd_join_host {
+    .o_ocd_live_card_head span {
+        display: flex;
+        flex-direction: column;
+        small {
+            color: $ocd-muted;
+            font-weight: 600;
+        }
+    }
+}
+.o_ocd_join_host_buttons {
+    display: flex;
+    gap: 8px;
+    .o_ocd_button {
+        flex: 1;
+    }
+}
+
+// === MY CARD IN THE LIVES (space of the vendor) === //
+.o_ocd_card_preview {
+    height: unquote("min(540px, 72vh)");
+    min-height: 420px;
+    overflow: hidden;
+    border-radius: 22px;
+    box-shadow: 0 0 0 1px $ocd-line;
+    .o_ocd_feed_card {
+        scroll-snap-align: none;
+    }
+}
+.o_ocd_card_choices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.o_ocd_card_choice {
+    position: relative;
+    margin: 0;
+    input {
+        position: absolute;
+        opacity: 0;
+        inset: 0;
+        margin: 0;
+    }
+    .o_ocd_card_choice_box {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 12px 14px;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        background: #FFFFFF;
+        cursor: pointer;
+        small {
+            color: $ocd-muted;
+            font-size: 14px;
+            line-height: 1.35;
+        }
+    }
+    .o_ocd_card_choice_head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        b {
+            font-size: 16.5px;
+        }
+    }
+    .o_ocd_card_choice_missing, .o_ocd_card_choice_missing a {
+        color: $ocd-orange-dark !important;
+        font-weight: 600;
+    }
+    input:checked + .o_ocd_card_choice_box {
+        border-color: $ocd-orange;
+        background: $ocd-orange-pale;
+    }
+    input:focus-visible + .o_ocd_card_choice_box {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 2px;
+    }
+}
+.o_ocd_card_upload {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    .o_ocd_section {
+        margin-bottom: 0;
+    }
+}
+.o_ocd_card_current {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    video, img {
+        width: 96px;
+        height: 128px;
+        flex: none;
+        border-radius: 14px;
+        object-fit: cover;
+        background: $ocd-sand;
+    }
+}
+.o_ocd_card_pick {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 50px;
+    margin: 0;
+    padding: 0 18px;
+    border-radius: 15px;
+    background: #FFFFFF;
+    box-shadow: inset 0 0 0 2px $ocd-line;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+    &:focus-within {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 2px;
+    }
+    .o_ocd_icon {
+        width: 20px;
+        height: 20px;
+    }
+}
+.o_ocd_card_file_name:empty {
+    display: none;
+}
+.o_ocd_card_file_name {
+    font-weight: 600;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+.o_ocd_card_form .o_ocd_actions .o_ocd_card_sending {
+    margin: 0;
+    text-align: center;
+}
 @keyframes o_ocd_feed_pulse {
     50% { opacity: 0.35; }
 }
@@ -3049,7 +3562,10 @@ body.o_ocd_body {
     50% { transform: translateY(-6px) rotate(-135deg); }
 }
 @media (prefers-reduced-motion: reduce) {
-    .o_ocd_feed_badge i, .o_ocd_feed_hint::after {
+    .o_ocd_feed_badge i, .o_ocd_feed_status i, .o_ocd_feed_hint::after {
         animation: none;
+    }
+    .o_ocd_feed_dots i {
+        transition: none;
     }
 }

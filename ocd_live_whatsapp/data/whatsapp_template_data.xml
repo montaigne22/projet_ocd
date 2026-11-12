@@ -191,5 +191,37 @@ Vous pouvez envoyer un autre lien depuis votre espace OCD Live.</field>
             ]"/>
         </record>
 
+        <!-- Remote live: the host chosen, then the invitation to join the account of OCD Live -->
+        <record id="template_live_host" model="whatsapp.template">
+            <field name="name">OCD Live: host of the remote live</field>
+            <field name="template_name">ocd_live_animatrice</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre animatrice pour le live à distance du {{2}} sera {{3}}. Elle vous appelle avant le live pour un essai : gardez votre téléphone près de vous.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_local_labels()[0] + \' à \' + object._ocd_local_labels()[1] }}', 'sample_value': 'jeudi 19 novembre à 14:30'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.animatrice_id.name }}', 'sample_value': 'Dzifa'}),
+            ]"/>
+        </record>
+
+        <record id="template_live_join" model="whatsapp.template">
+            <field name="name">OCD Live: join the remote live</field>
+            <field name="template_name">ocd_live_rejoindre</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre live à distance commence bientôt, à {{2}}. Ouvrez {{3}}, puis acceptez l'invitation du compte {{4}} pour rejoindre le live.</field>
+            <field name="button_url_value">{{ object._ocd_join_path()[1:] }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Rejoindre mon live', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/live/42/rejoindre/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_local_labels()[1] }}', 'sample_value': '14:30'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.account_id.platform_id.name or \'TikTok\' }}', 'sample_value': 'TikTok'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.account_id.handle or \'OCD Live\' }}', 'sample_value': '@ocdlive.tg'}),
+            ]"/>
+        </record>
+
     </data>
 </odoo>

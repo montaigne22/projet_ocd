@@ -1,7 +1,5 @@
 from odoo import api, models
 
-from odoo.addons.ocd_live.models.ocd_directory_listing import _platform_of
-
 from .. import hooks, scenario
 
 PLAYED_IN_THE_PAGE = ("youtube", "tiktok", "facebook")
@@ -58,9 +56,9 @@ class OcdLiveSettings(models.AbstractModel):
                     "Paste the link of a video on YouTube, TikTok or Facebook: it plays in the replay page."
                 )
         live = (values.get("ocd_demo_live_url") or "").strip()
-        if live and not _platform_of(live):
+        if live and not self.env["ocd.live.platform"]._ocd_for_url(live):
             errors["ocd_demo_live_url"] = self.env._(
-                "Paste the https link of a live account on TikTok, Facebook, Instagram or YouTube."
+                "Paste the https link of a live account on %s.", self.env["ocd.live.platform"]._ocd_names_text()
             )
         return errors
 

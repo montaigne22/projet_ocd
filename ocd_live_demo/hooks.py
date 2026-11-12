@@ -103,6 +103,7 @@ class OcdLiveDemo:
         self.open_bookings()
         self.step("the WhatsApp account", self.whatsapp_setup)
         self.step("the photos of the colours", self.colour_photos)
+        self.step("the cards of the feed", self.cards)
         self.keep_current()
         self.step("the package of two lives", self.package)
         self.step("the conversation of Awa", self.whatsapp_awa)
@@ -161,7 +162,7 @@ class OcdLiveDemo:
             start = self.start(self.today() + timedelta(days=offset), hour)
             if start and not self.Booking._ocd_taken_starts([start], scenario.REMOTE, self.company):
                 placed = self.Booking._ocd_book_with_credit(credit, start, scenario.REMOTE)
-                placed.write({"animatrice_id": self.ref(host).id, "live_url": self.live_link(self.links[vendor.id])})
+                placed.write({"animatrice_id": self.ref(host).id, "live_url": self.booking_link()})
                 return placed
         return None
 
@@ -182,6 +183,35 @@ class OcdLiveDemo:
         self.step("the shop in Douala", self.keep_shop, now)
         self.step("the old records of the demo", self.prune, now)
         self.remember_channel_messages(last_message)
+
+    # --- The cards of the feed, the names on TikTok, the phones of the hosts --- #
+
+    def cards(self):
+        """The cards of the vendors in the feed: a short video (Awa), an image (Ama), the
+        carousel of their products for the others (automatic); the name on TikTok of the
+        vendors who live there (the host invites it in the remote lives); the phones of the
+        hosts (« Call » on the page « Join my live »). What the team changed stays."""
+        for xmlid, file_name in scenario.CARD_VIDEOS.items():
+            vendor = self.ref(xmlid)
+            if vendor and not vendor.ocd_card_video:
+                with file_open(f"{MODULE}/static/video/{file_name}", "rb") as video:
+                    vendor.write({
+                        "ocd_card_video": BinaryBytes(video.read(), filename=file_name),
+                        "ocd_card_media": "video",
+                    })
+        for xmlid, file_name in scenario.CARD_IMAGES.items():
+            vendor = self.ref(xmlid)
+            if vendor and not vendor.ocd_card_image:
+                with file_open(f"{MODULE}/static/img/{file_name}", "rb") as image:
+                    vendor.write({"ocd_card_image": BinaryBytes(image.read(), filename=file_name), "ocd_card_media": "image"})
+        for xmlid, url, _name, _windows in scenario.DIRECTORY:
+            vendor = self.ref(xmlid)
+            if vendor and not vendor.ocd_live_handle and "tiktok.com/@" in url:
+                vendor.ocd_live_handle = "@" + url.split("tiktok.com/@", 1)[1].split("/", 1)[0]
+        for xmlid, phone in scenario.HOST_PHONES.items():
+            host = self.ref(xmlid)
+            if host and not host.mobile_phone:
+                host.mobile_phone = phone
 
     def keep_passes(self):
         """Every vendor of the directory has its pass. The first ones were bought on different
@@ -364,7 +394,7 @@ class OcdLiveDemo:
                     "studio_need": need if mode == scenario.STUDIO else "none",
                     "price_percent": percent,
                     "animatrice_id": self.ref(host).id if host else False,
-                    "live_url": self.live_link(self.links[vendor.id]) if vendor.id in self.links else False,
+                    "live_url": self.booking_link(),
                     "state": "done" if end <= now else "confirmed",
                 })
                 booked = self.booked_at(vendor, start, now)
@@ -409,6 +439,12 @@ class OcdLiveDemo:
         """The live link of a vendor of the demo: the one of the settings, else its example."""
         return self.setting(PARAM_LIVE_URL) or row[1]
 
+    def booking_link(self):
+        """The link of a live booked at the studio: they go on the accounts of OCD Live (the
+        vendor of a remote live joins it as a guest), so none of its own, except the live link
+        of the settings (a real live to watch during a presentation)."""
+        return self.setting(PARAM_LIVE_URL) or False
+
     def replay_link(self, row, day):
         """The video of a replay of the demo: the one of the settings, else its example."""
         return self.setting(PARAM_REPLAY_URL) or scenario.replay_url(row[1], day, row[0])
@@ -445,10 +481,12 @@ class OcdLiveDemo:
             products = [moment.product_tmpl_id for moment in moments]
             for moment, seconds in zip(moments, self.moment_offsets(booking, products)):
                 moment.offset_seconds = seconds
-        for booking in self.Booking.search([("partner_id", "in", list(self.links)), ("live_url", "!=", False)]):
+        for booking in self.Booking.search([("partner_id", "in", list(self.links))]):
+            # The lives booked go on the accounts of OCD Live: the live link of the settings,
+            # else none (the link of the account); the former link of the vendor is removed
             row = self.links[booking.partner_id.id]
-            if booking.live_url in {row[1], old_live} - {""}:
-                booking.live_url = self.live_link(row)
+            if (booking.live_url or "") in {"", row[1], old_live} and booking.live_url != self.booking_link():
+                booking.live_url = self.booking_link()
         for listing in self.Listing.search([("partner_id", "in", list(self.links)), ("state", "in", OPEN_LINKS)]):
             row = self.links[listing.partner_id.id]
             if listing.url in {row[1], old_live} - {""}:
@@ -487,7 +525,7 @@ class OcdLiveDemo:
             for start in starts:
                 if start not in taken:
                     booking = self.Booking._ocd_book_from_website(vendor, package, start, mode, need)
-                    booking.live_url = self.live_link(self.links[vendor.id]) if vendor.id in self.links else False
+                    booking.live_url = self.booking_link()
                     self.momo_payment(booking.sale_order_id)
                     reference = scenario.PAYMENT_REFERENCE % f"{day:%d%m}{scenario.number(day) % 1000:03d}"
                     booking.sale_order_id._ocd_announce_payment(reference)

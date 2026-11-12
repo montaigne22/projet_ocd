@@ -1,12 +1,16 @@
+from datetime import timedelta
+
 from odoo import http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
-from odoo.tools import consteq
+from odoo.tools import BinaryBytes, consteq
 
-from . import common
+from .. import media
+from . import common, feed
 from .booking import OcdLiveBooking
 
 SESSION_LOGIN = "ocd_login_vendor_id"
+CARD_IMAGE_MAX_BYTES = 10 * 1024 * 1024
 
 
 class OcdVendorSpace(http.Controller):
@@ -249,6 +253,7 @@ class OcdVendorSpace(http.Controller):
             reminder_days=company.ocd_pass_reminder_days,
             listing=listing,
             login=company.ocd_vendor_login,
+            card_shown=vendor._ocd_card_shown_label(),
         ))
 
     def _live_card(self, booking):
@@ -277,6 +282,11 @@ class OcdVendorSpace(http.Controller):
             "announce_url": f"/ocd/ticket/{booking.id}#annonce" if booking.state == "confirmed" else False,
             "receipt_url": order.get_portal_url(report_type="pdf", download=True) if order and booking.state == "confirmed" else False,
             "pay_url": f"/ocd/payer/{order.id}?access_token={token}" if order and booking.state == "draft" else False,
+            # Remote live of the next 2 hours: the page to join it
+            "join_url": booking._ocd_join_path() if (
+                booking.mode == "remote" and booking.state == "confirmed"
+                and booking.start_datetime - common.now() <= timedelta(hours=2)
+            ) else False,
         }
 
     def _credit_card(self, credit):
@@ -297,6 +307,109 @@ class OcdVendorSpace(http.Controller):
             return request.redirect("/ocd/connexion")
         vendor.ocd_whatsapp_optin = not vendor._ocd_whatsapp_consent()
         return request.redirect("/ocd/espace/moi")
+
+    # === MY CARD IN THE LIVES === #
+    # What the card of the vendor shows in the feed of the lives: a short video, its products,
+    # an image (res.partner._ocd_card_media). The page shows the card as the feed does.
+
+    def _render_card(self, vendor, errors=None, saved=False):
+        env = request.env
+        choices = vendor._ocd_card_choices()
+        chosen = vendor.ocd_card_media or "auto"
+        shown = vendor._ocd_card_media()["kind"]
+        fallback = False
+        if chosen != "auto" and shown != chosen:
+            missing = next((choice for choice in choices if choice["value"] == chosen), None)
+            if missing:
+                fallback = " ".join(part for part in (
+                    env._("Until then, your card shows %s.", vendor._ocd_card_shown_label().lower()),
+                    missing.get("missing"),
+                ) if part)
+        return request.render("ocd_live.space_card", common.page_values(
+            False,
+            nav="me",
+            back="/ocd/espace/moi",
+            back_label=env._("Back to my space"),
+            header_title=env._("My card in the lives"),
+            vendor=vendor,
+            choices=choices,
+            chosen=chosen,
+            preview=feed.preview_card(vendor),
+            fallback=fallback,
+            errors=errors or {},
+            saved=saved,
+            video_url=f"/lives/video/{vendor.id}?v={vendor._ocd_card_version()}" if vendor.ocd_card_video else False,
+            poster_url=f"/lives/video/{vendor.id}/image?v={vendor._ocd_card_version()}"
+            if vendor.ocd_card_video and vendor.ocd_card_video_poster else False,
+            image_url=f"/lives/carte/{vendor.id}?v={vendor._ocd_card_version()}" if vendor.ocd_card_image else False,
+            max_video_mb=media.MAX_UPLOAD_MB if media.can_convert() else media.MAX_KEPT_MB,
+            max_seconds=media.MAX_SECONDS,
+        ))
+
+    @http.route("/ocd/espace/moi/carte", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
+    def space_card(self, enregistre=None, **kwargs):
+        vendor = common.current_vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        return self._render_card(vendor, saved=bool(enregistre))
+
+    @http.route("/ocd/espace/moi/carte", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
+    def space_card_save(self, choice=None, video=None, image=None, **post):
+        """Save the choice of the vendor, its video (made readable by every phone) and its image.
+        Each one is saved apart: a refused video does not lose the new image."""
+        vendor = common.current_vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        env = request.env
+        errors = {}
+        changes = []
+        if choice in {row["value"] for row in vendor._ocd_card_choices()} and choice != vendor.ocd_card_media:
+            vendor.ocd_card_media = choice
+            changes.append(env._("the choice"))
+        if post.get("remove_image"):
+            if vendor.ocd_card_image:
+                vendor.ocd_card_image = False
+                changes.append(env._("the image"))
+        elif image and getattr(image, "filename", None):
+            data = image.read(CARD_IMAGE_MAX_BYTES + 1)
+            if len(data) > CARD_IMAGE_MAX_BYTES:
+                errors["image"] = env._("The image is too heavy: 10 MB at most.")
+            elif not (image.mimetype or "").startswith("image/"):
+                errors["image"] = env._("This file is not an image.")
+            else:
+                try:
+                    with env.cr.savepoint():
+                        vendor.ocd_card_image = BinaryBytes(data, filename=image.filename)
+                    changes.append(env._("the image"))
+                except (UserError, ValidationError):
+                    errors["image"] = env._("This image cannot be read: send a photo in JPEG or PNG.")
+        if post.get("remove_video"):
+            if vendor.ocd_card_video:
+                vendor.write({"ocd_card_video": False, "ocd_card_video_name": False})
+                changes.append(env._("the video"))
+        elif video and getattr(video, "filename", None):
+            limit = media.MAX_UPLOAD_MB * 1024 * 1024
+            data = video.read(limit + 1)
+            if len(data) > limit:
+                errors["video"] = vendor._ocd_video_error(media.VideoError("too_big", size=media.MAX_UPLOAD_MB))
+            else:
+                try:
+                    with env.cr.savepoint():
+                        vendor.write({
+                            "ocd_card_video": BinaryBytes(data, filename=video.filename),
+                            "ocd_card_video_name": video.filename,
+                        })
+                    changes.append(env._("the video"))
+                except (UserError, ValidationError) as error:
+                    errors["video"] = error.args[0]
+        if changes:
+            # The team sees it in the history of the vendor
+            vendor.message_post(body=env._(
+                "%(vendor)s changed their card in the lives: %(changes)s.", vendor=vendor.name, changes=", ".join(changes),
+            ))
+        if errors:
+            return self._render_card(vendor, errors=errors)
+        return request.redirect("/ocd/espace/moi/carte?enregistre=1")
 
     # === PLACE A LIVE OF A PACKAGE === #
 

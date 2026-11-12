@@ -105,6 +105,11 @@ export class OcdLiveRegie extends Component {
         await this.load();
     }
 
+    async hostCalled() {
+        await this.orm.call("ocd.live.regie", "host_called", [this.bookingId]);
+        await this.load();
+    }
+
     openOrders() {
         this.actionService.doAction(this.data().orders_action);
     }

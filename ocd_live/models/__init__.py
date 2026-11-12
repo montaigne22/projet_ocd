@@ -3,12 +3,15 @@ from . import res_company
 from . import res_country
 from . import res_config_settings
 from . import ocd_live_category
+from . import ocd_live_platform
+from . import ocd_live_account
 from . import product_template
 from . import res_partner
 from . import hr_employee
 from . import ocd_live_booking_slot
 from . import ocd_live_booking
 from . import ocd_live_ticket
+from . import ocd_live_booking_remote
 from . import ocd_live_credit
 from . import ocd_directory_window
 from . import ocd_listing_refuse_reason

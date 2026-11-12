@@ -7,3 +7,4 @@ from . import test_settings_page
 from . import test_automations
 from . import test_courier_login
 from . import test_product_media
+from . import test_card_products

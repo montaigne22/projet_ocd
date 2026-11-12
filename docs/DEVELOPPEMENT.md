@@ -20,6 +20,10 @@ data_dir = /opt/odoo20/data
 - Moteur PDF d'Odoo (`wkhtmltopdf`, ex. `apt-get install -y wkhtmltopdf`) : la confirmation d'une
   commande du shop envoie un PDF, le ticket du live est un PDF. La version « avec Qt patché » est la
   meilleure ; celle d'Ubuntu (Qt non patché) marche aussi, le ticket corrige son échelle.
+- **ffmpeg** (`apt-get install -y ffmpeg`, avec `ffprobe`) : la vidéo courte d'un vendeur, filmée sur
+  son téléphone (MP4, MOV, 3GP, WebM…), est rendue lisible par tous les téléphones (MP4 720 px, 30 s au
+  plus) et son affiche en est tirée. Sans ffmpeg, seules les vidéos MP4 et WebM de 15 Mo au plus sont
+  acceptées, telles quelles.
 - Bibliothèques Python du dépôt (`requirements.txt`) : `pip install -r requirements.txt` dans
   l'environnement d'Odoo. `phonenumbers` vérifie les numéros de tous les pays (règles de Google) ; sans
   elle, une règle simple garde les formulaires utilisables (indicatif d'Odoo, 6 à 14 chiffres).
@@ -184,6 +188,22 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   colis, refus d'une adresse), `sale_order.py` (`ocd_delivery_line_ids` : la livraison de chaque colis
   telle que payée), `stock_picking.py` (`_ocd_parcel_from_delivery` : qui livre, prix exact du colis).
 
+- Cartes du fil des lives : `ocd_live/controllers/feed.py` (`_card`, `_vendor_values`, `preview_card`),
+  gabarit `ocd_live.feed_cards`, script `static/src/interactions/feed.js` (vidéo de la carte à l'écran,
+  carrousel). Le média d'un vendeur : `res.partner._ocd_card_media()` (`_ocd_card_media_of`, étendu par
+  `ocd_live_shop` pour le carrousel des produits) ; routes `/lives/video/<id>` (lecture par morceaux),
+  `/lives/video/<id>/image` (affiche), `/lives/carte/<id>` (image) ; page `/ocd/espace/moi/carte`.
+- Vidéos : `ocd_live/media.py` (`prepare` : contrôle, conversion MP4 avec ffmpeg et affiche ; `kind` :
+  type reconnu par sa signature). ffmpeg et ffprobe sont conseillés sur le serveur
+  (`apt-get install -y ffmpeg`) ; sans eux, seuls MP4 et WebM de 15 Mo au plus sont acceptés.
+  `tools/demo/card_video.py` fabrique une vidéo de démo à partir de photos.
+- Plateformes et comptes de live : `ocd.live.platform` (`_ocd_for_url`, cache vidé à chaque changement),
+  `ocd.live.account` (`_ocd_pick` : pays du vendeur d'abord, libre à l'heure). Lien d'un live :
+  `booking._ocd_watch_url()` (le sien, sinon celui de son compte).
+- Live à distance : `ocd_live/models/ocd_live_booking_remote.py` (tâche planifiée `_cron_remote_join`
+  toutes les 5 minutes : appel 30 min avant, invitation 15 min avant via `_ocd_send_join_invitation`,
+  surchargé par `ocd_live_whatsapp`, alerte 5 min avant), page `ocd_live/controllers/remote.py`
+  (`/ocd/live/<id>/rejoindre/<secret>`, secret signé qui change si le live est déplacé).
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - Thème du site : `ocd_live/static/src/scss/ocd_app.scss` (pages sous `.o_ocd_app`).
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).
