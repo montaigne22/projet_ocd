@@ -3,15 +3,18 @@ import io
 import json
 import re
 from html import unescape
+from html.parser import HTMLParser
+from types import SimpleNamespace
 from unittest.mock import patch
 
-from html.parser import HTMLParser
-
+import requests
 from PIL import Image
 
 from odoo import Command
 from odoo.tests import HttpCase, tagged
 from odoo.tools import BinaryBytes
+
+from odoo.addons.ocd_live import tools
 
 from .test_website import TestOcdShopWebsite
 
@@ -220,13 +223,28 @@ class TestOcdProductMedia(TestOcdShopWebsite):
             "https://www.tiktok.com/@brenda.wax/video/7400000000000000001": ("tiktok", "7400000000000000001", True),
             "https://www.facebook.com/brendawax/videos/123456789/": ("facebook", "https://www.facebook.com/brendawax/videos/123456789/", True),
             "https://www.instagram.com/reel/Cabc123/": ("instagram", "", False),
-            "https://vm.tiktok.com/ZMabc/": ("", "", False),
+            # A short link (Share › Copy the link): followed to the full address of the video
+            "https://vm.tiktok.com/ZMabc/": ("tiktok", "7400000000000000002", True),
+            "https://vt.tiktok.com/ZSoff/": ("", "", False),  # TikTok does not answer: kept, not played
             "https://example.com/video": ("", "", False),
         }
-        for url, (platform, video, seek) in cases.items():
-            booking.replay_url = url
-            embed = booking._ocd_replay_embed()
-            self.assertEqual((embed["platform"], embed["id"], embed["seek"]), (platform, video, seek), url)
+
+        def head(url, **kwargs):
+            if "ZSoff" in url:
+                raise requests.ConnectionError("no answer")
+            location = "https://www.tiktok.com/@brenda.wax/video/7400000000000000002?_r=1&_t=ZS-8xyz"
+            return SimpleNamespace(status_code=301, headers={"Location": location})
+
+        with patch.object(tools.requests, "head", side_effect=head), patch.dict(tools._expanded, clear=True):
+            for url, (platform, video, seek) in cases.items():
+                booking.replay_url = url
+                embed = booking._ocd_replay_embed()
+                self.assertEqual((embed["platform"], embed["id"], embed["seek"]), (platform, video, seek), url)
+            booking.replay_url = "https://vm.tiktok.com/ZMabc/"
+        self.assertEqual(
+            booking.replay_url, "https://www.tiktok.com/@brenda.wax/video/7400000000000000002",
+            "Kept with its full address, without the tracking",
+        )
         Moment = self.env["ocd.live.moment"]
         self.assertEqual(Moment._ocd_time_label(240), "04:00")
         self.assertEqual(Moment._ocd_time_label(3930), "1:05:30")

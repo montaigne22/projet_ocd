@@ -1,5 +1,7 @@
 from odoo import api, models
 
+from odoo.addons.ocd_live import tools
+
 from .. import hooks, scenario
 
 PLAYED_IN_THE_PAGE = ("youtube", "tiktok", "facebook")
@@ -50,8 +52,14 @@ class OcdLiveSettings(models.AbstractModel):
         errors = super()._ocd_check_values(values)
         replay = (values.get("ocd_demo_replay_url") or "").strip()
         if replay:
-            embed = self.env["ocd.live.booking"].new({"replay_url": replay})._ocd_replay_embed()
-            if embed["platform"] not in PLAYED_IN_THE_PAGE or not embed["id"]:
+            full = tools.expand_video_link(replay)
+            embed = self.env["ocd.live.booking"].new({"replay_url": full})._ocd_replay_embed()
+            if tools.is_short_video_link(full) and embed["platform"] != "facebook":
+                errors["ocd_demo_replay_url"] = self.env._(
+                    "This short link could not be opened from the server: open it, then paste the full address "
+                    "of the video (the one of the page)."
+                )
+            elif embed["platform"] not in PLAYED_IN_THE_PAGE or not embed["id"]:
                 errors["ocd_demo_replay_url"] = self.env._(
                     "Paste the link of a video on YouTube, TikTok or Facebook: it plays in the replay page."
                 )
@@ -75,7 +83,7 @@ class OcdLiveSettings(models.AbstractModel):
 
     @api.model
     def _ocd_set_demo_replay_url(self, key, value):
-        old = self._ocd_set_demo_param(key, value)
+        old = self._ocd_set_demo_param(key, tools.expand_video_link(value))
         if old is not None:
             hooks.OcdLiveDemo(self.env).apply_media(old_replay=old)
 

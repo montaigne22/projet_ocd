@@ -218,10 +218,18 @@ class OcdLiveBooking(models.Model):
 
     # === CRUD === #
 
+    @api.model
+    def _ocd_expand_replay_link(self, vals):
+        """A short link of the replay (vt.tiktok.com/ZS…) is kept with its full address: the
+        page of the replay plays it from there."""
+        if vals.get("replay_url") and tools.is_short_video_link(vals["replay_url"]):
+            vals["replay_url"] = tools.expand_video_link(vals["replay_url"])
+
     @api.model_create_multi
     def create(self, vals_list):
         default_name = self.env._("New")
         for vals in vals_list:
+            self._ocd_expand_replay_link(vals)
             if vals.get("name", default_name) == default_name:
                 vals["name"] = self.env["ir.sequence"].next_by_code("ocd.live.booking") or default_name
         bookings = super().create(vals_list)
@@ -232,6 +240,7 @@ class OcdLiveBooking(models.Model):
         return bookings
 
     def write(self, vals):
+        self._ocd_expand_replay_link(vals)
         moving = any(key in vals for key in ("start_datetime", "slot_count", "company_id", "mode"))
         if moving and self.filtered(lambda b: b.state in ("done", "cancelled")):
             raise UserError(self.env._("A live that took place or was cancelled cannot be moved."))

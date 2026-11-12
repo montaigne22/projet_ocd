@@ -5,12 +5,24 @@ import functools
 import io
 import re
 
+import logging
+from urllib.parse import urljoin, urlsplit, urlunsplit
+
 import pytz
 import qrcode
+import requests
 from babel.dates import get_timezone_location
 
 from odoo.tools import format_date
 from odoo.tools.misc import babel_locale_parse
+
+_logger = logging.getLogger(__name__)
+
+# Short links of the platforms (Share › Copy the link on a phone): the page of a replay plays a
+# video from its full address only, which holds the number of the video
+SHORT_VIDEO_HOSTS = ("vt.tiktok.com", "vm.tiktok.com", "fb.watch")
+REDIRECTS = (301, 302, 303, 307, 308)
+_expanded = {}
 
 
 def day_text(env, day, pattern="EEEE d MMMM", capital=False):
@@ -98,3 +110,46 @@ def whatsapp_url(phone, text):
     if len(digits) < 8:
         return False
     return f"https://wa.me/{digits}?text={quote(text)}"
+
+
+def is_short_video_link(url):
+    """Whether `url` is a short link of a video (vt.tiktok.com/ZS…, tiktok.com/t/…, fb.watch/…)."""
+    parts = urlsplit((url or "").strip())
+    host = (parts.hostname or "").lower()
+    return host in SHORT_VIDEO_HOSTS or (host.endswith("tiktok.com") and parts.path.startswith("/t/"))
+
+
+def expand_video_link(url, timeout=8):
+    """The full address behind a short link of a video, as the platform gives it (its
+    redirections are followed, the page itself is not loaded); the link as it is when it is
+    not a short link, or when the platform does not answer. TikTok: without the tracking
+    parameters (« ?_r=1&_t=… »)."""
+    url = (url or "").strip()
+    if not is_short_video_link(url):
+        return url
+    if url in _expanded:
+        return _expanded[url]
+    current = url
+    for _hop in range(5):
+        try:
+            response = requests.head(current, allow_redirects=False, timeout=timeout, headers={"User-Agent": "Mozilla/5.0"})
+            if response.status_code == 405:  # HEAD refused: the same with GET, without the page
+                response = requests.get(current, allow_redirects=False, timeout=timeout, stream=True,
+                                        headers={"User-Agent": "Mozilla/5.0"})
+                response.close()
+        except requests.RequestException as error:
+            _logger.info("OCD Live: short link %s not opened: %s", url, error)
+            return url
+        location = response.headers.get("Location")
+        if response.status_code not in REDIRECTS or not location:
+            break
+        current = urljoin(current, location)
+        if not is_short_video_link(current):
+            break
+    if current == url or is_short_video_link(current) or not current.startswith("https://"):
+        return url
+    parts = urlsplit(current)
+    if (parts.hostname or "").endswith("tiktok.com"):
+        current = urlunsplit(("https", parts.netloc, parts.path, "", ""))
+    _expanded[url] = current
+    return current

@@ -82,6 +82,14 @@ paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle
 
 ## Journal
 
+### 12 novembre 2026 — liens courts des vidéos acceptés
+- Un lien court de TikTok (« Partager › Copier le lien » : `vt.tiktok.com/ZS…`, `vm.tiktok.com/…`,
+  `tiktok.com/t/…`) ou de Facebook (`fb.watch/…`) était refusé pour la vidéo des replays : il ne contient
+  pas le numéro de la vidéo, que la page du replay doit avoir pour la lire. Il est maintenant suivi
+  jusqu'à l'adresse complète (sans les paramètres de suivi), gardée à sa place : réglages de la démo,
+  régie (« Publier le replay »), fiche du live. Si la plateforme ne répond pas, le message dit de coller
+  l'adresse complète de la vidéo.
+
 ### 12 novembre 2026 — page produit : « Ajouter au panier » et « Écrire sur WhatsApp » réparés ; ffmpeg par pip
 - **Les boutons du bas de la page produit ne faisaient plus rien** dans un navigateur, depuis
   « Préviens-moi quand il revient » : son formulaire était dans celui du produit, le navigateur coupait

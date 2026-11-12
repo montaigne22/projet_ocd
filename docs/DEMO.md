@@ -180,7 +180,9 @@ S'y ajoute le live du studio en cours, d'après la semaine ci-dessus.
   **Démo**.
   - *Vidéo des replays de la démo* : le lien d'une vraie vidéo d'OCD Live sur YouTube, TikTok ou
     Facebook. Chaque replay de la démo la lit dans la page, ceux d'avant comme ceux des jours qui
-    viennent ; un lien qui ne se lirait pas est refusé.
+    viennent ; un lien qui ne se lirait pas est refusé. Le lien court du téléphone (« Partager › Copier
+    le lien » : `https://vt.tiktok.com/ZS…`) est accepté : il est suivi jusqu'à l'adresse complète de la
+    vidéo, gardée à sa place.
   - *Durée de cette vidéo* : les produits montrés sont placés le long de la vidéo (au début, vers le
     quart et vers la moitié), pour que « Robe en wax » saute à un moment qui existe.
   - *Lien des lives de la démo* : le compte d'OCD Live où sont ses lives (par ex.

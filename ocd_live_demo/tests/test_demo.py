@@ -1,14 +1,18 @@
 import re
 from datetime import datetime, time, timedelta
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytz
+import requests
 from freezegun import freeze_time
 
 from odoo import fields
 from odoo.tests import HttpCase, TransactionCase, tagged
 
+from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live_demo import scenario
-from odoo.addons.ocd_live_demo.hooks import PARAM_OPEN_DATE, OcdLiveDemo, uninstall_hook
+from odoo.addons.ocd_live_demo.hooks import PARAM_OPEN_DATE, PARAM_REPLAY_URL, OcdLiveDemo, uninstall_hook
 
 
 class DemoCommon:
@@ -361,6 +365,30 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
         self.assertFalse(any(coming.mapped("live_url")), "No link of the vendor: the one of the account")
         remote = coming.filtered(lambda booking: booking.mode == "remote")[:1]
         self.assertEqual(remote._ocd_watch_url(), remote.account_id.live_url)
+
+    def test_short_link_of_a_video_in_the_settings(self):
+        """A short link of TikTok (Share › Copy the link: vt.tiktok.com/ZS…) is followed to the full
+        address of the video, which the replays play; one that does not open says what to paste."""
+        Settings = self.env["ocd.live.settings"]
+        full = "https://www.tiktok.com/@bovann/video/7706183840514968865"
+
+        def head(url, **kwargs):
+            if "ZSoff" in url:
+                raise requests.ConnectionError("no answer")
+            return SimpleNamespace(status_code=301, headers={"Location": f"{full}?_r=1&_t=ZS-9BLO2PoUM5M"})
+
+        with patch.object(tools.requests, "head", side_effect=head), patch.dict(tools._expanded, clear=True):
+            page = Settings.save_settings_page({"ocd_demo_replay_url": "https://vt.tiktok.com/ZSoff/"})
+            self.assertFalse(page["ok"])
+            self.assertIn("could not be opened", page["errors"]["ocd_demo_replay_url"])
+            page = Settings.save_settings_page({"ocd_demo_replay_url": "https://vt.tiktok.com/ZSpHErvqo"})
+        self.assertTrue(page["ok"], page.get("errors"))
+        self.assertEqual(self.env["ir.config_parameter"].get_str(PARAM_REPLAY_URL), full)
+        replays = self.env["ocd.live.booking"].search([
+            ("partner_id", "in", self._demo_partners().ids), ("replay_published", "=", True),
+        ])
+        self.assertEqual(set(replays.mapped("replay_url")), {full})
+        self.assertEqual(replays[:1]._ocd_replay_embed()["platform"], "tiktok")
 
     def test_uninstall_removes_what_the_demo_created(self):
         partners = self._demo_partners()

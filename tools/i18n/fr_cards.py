@@ -276,4 +276,6 @@ CARDS_WHATSAPP = {
 
 CARDS_DEMO = {
     "Paste the https link of a live account on %s.": "Colle le lien https d'un compte de lives sur %s.",
+    "This short link could not be opened from the server: open it, then paste the full address of the video (the one of the page).":
+        "Ce lien court n'a pas pu être ouvert depuis le serveur : ouvre-le, puis colle l'adresse complète de la vidéo (celle de la page).",
 }
