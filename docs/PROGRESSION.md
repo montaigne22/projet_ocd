@@ -39,10 +39,10 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 Derniers tests lancés (12 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
 `ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **354 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
-ceux des colis). Sur une base neuve avec la démo, 13 tests sans échec : la démo remplit les écrans et se
+ceux des colis). Sur une base neuve avec la démo, 14 tests sans échec : la démo remplit les écrans et se
 tient à jour (semaine du studio, annuaire fenêtre par fenêtre, fil de chaque pays, paiement à vérifier,
-journée de la boutique heure par heure, le lendemain, rien ne s'empile), aucun WhatsApp ne part vers ses
-contacts, puis elle se désinstalle sans rien laisser.
+journée de la boutique heure par heure, le lendemain, rien ne s'empile), prend la vidéo et le compte des
+paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle sans rien laisser.
 
 ## Reste à faire, par priorité
 
@@ -102,6 +102,11 @@ contacts, puis elle se désinstalle sans rien laisser.
   colis à un moment donné (`_ocd_escalate`) ; la tâche planifiée fait la même chose qu'avant.
 - `ocd_live_demo` 20.0.1.2.0 (Brenda et Fatou payées chaque jour, Fatou prépare le lendemain matin les
   commandes du soir).
+- **Une vraie vidéo et un vrai compte pour présenter** (OCD Live › Configuration › Paramètres › Démo) :
+  la vidéo des replays (YouTube, TikTok ou Facebook, refusée si elle ne se lit pas dans la page) et sa
+  durée, le lien des lives de la démo. Tous les replays et lives de la démo les prennent aussitôt, ceux
+  des jours suivants aussi ; les produits montrés sont placés le long de la vidéo ; un lien collé à la
+  main reste ; vides, les liens d'exemple reviennent. `ocd_live_demo` 20.0.1.3.0.
 
 ### 12 novembre 2026 — démo de présentation : 8 pays, tenue à jour
 - **15 vendeurs dans 8 pays**, chacun avec une histoire cohérente (ville, ce qu'il vend, produits avec

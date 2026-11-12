@@ -19,6 +19,10 @@ PARAM_MOMO = "ocd_live_demo.momo_pending_msg"
 PARAM_COD = "ocd_live_demo.cod_published"
 PARAM_WHATSAPP = "ocd_live_demo.whatsapp_account_id"
 PARAM_OPEN_DATE = "ocd_live_demo.booking_open_date"
+# Settings of the demo (OCD Live > Configuration > Settings > Demo)
+PARAM_REPLAY_URL = "ocd_live_demo.replay_url"
+PARAM_REPLAY_MINUTES = "ocd_live_demo.replay_minutes"
+PARAM_LIVE_URL = "ocd_live_demo.live_url"
 MOMO_MESSAGE = (
     "<p>Envoie le montant par Mobile Money au numéro d'OCD : Mixx by Yas 90 00 00 00, "
     "Flooz 99 00 00 00 (numéros d'exemple). Écris la référence ci-dessous dans le message. "
@@ -157,7 +161,7 @@ class OcdLiveDemo:
             start = self.start(self.today() + timedelta(days=offset), hour)
             if start and not self.Booking._ocd_taken_starts([start], scenario.REMOTE, self.company):
                 placed = self.Booking._ocd_book_with_credit(credit, start, scenario.REMOTE)
-                placed.write({"animatrice_id": self.ref(host).id, "live_url": self.links[vendor.id][1]})
+                placed.write({"animatrice_id": self.ref(host).id, "live_url": self.live_link(self.links[vendor.id])})
                 return placed
         return None
 
@@ -247,7 +251,7 @@ class OcdLiveDemo:
         vendor = self.ref(row[0])
         return {
             "partner_id": vendor.id,
-            "url": row[1],
+            "url": self.live_link(row),
             "title": row[2],
             "country_id": vendor.country_id.id,
             "category_id": vendor.ocd_category_id.id,
@@ -283,7 +287,7 @@ class OcdLiveDemo:
             went_live = start + timedelta(
                 minutes=scenario.FIRST_LIVE_MINUTES + scenario.BETWEEN_LIVES_MINUTES * index
             )
-            if listing.state == "to_check" and listing.url == row[1] and vendor != waiting and went_live <= now:
+            if listing.state == "to_check" and listing.url == self.live_link(row) and vendor != waiting and went_live <= now:
                 listing.write({"state": "published", "checked_at": went_live, "checked_by_id": checker.id})
 
     # --- Lives of the studio --- #
@@ -360,7 +364,7 @@ class OcdLiveDemo:
                     "studio_need": need if mode == scenario.STUDIO else "none",
                     "price_percent": percent,
                     "animatrice_id": self.ref(host).id if host else False,
-                    "live_url": self.links.get(vendor.id, (None, False))[1],
+                    "live_url": self.live_link(self.links[vendor.id]) if vendor.id in self.links else False,
                     "state": "done" if end <= now else "confirmed",
                 })
                 booked = self.booked_at(vendor, start, now)
@@ -381,7 +385,7 @@ class OcdLiveDemo:
         if not row:
             return
         day = self.company._ocd_to_local(booking.start_datetime).date()
-        booking.write({"replay_url": scenario.replay_url(row[1], day, row[0]), "replay_published": True})
+        booking.write({"replay_url": self.replay_link(row, day), "replay_published": True})
         products = self.env["product.template"].sudo().search([
             ("ocd_vendor_id", "=", booking.partner_id.id),
             ("is_published", "=", True),
@@ -390,15 +394,65 @@ class OcdLiveDemo:
         if not products:
             return
         first = scenario.number(booking.id) % len(products)
-        shown = (products[first:] + products[:first])[:len(scenario.MOMENTS)]
+        shown = list(products[first:] + products[:first])[:len(scenario.MOMENT_SHARES)]
         self.env["ocd.live.moment"].sudo().create([
-            {
-                "booking_id": booking.id,
-                "product_tmpl_id": product.id,
-                "offset_seconds": seconds + scenario.number(booking.id, product.id) % 45,
-            }
-            for seconds, product in zip(scenario.MOMENTS, shown)
+            {"booking_id": booking.id, "product_tmpl_id": product.id, "offset_seconds": seconds}
+            for seconds, product in zip(self.moment_offsets(booking, shown), shown)
         ])
+
+    # --- The video of the replays and the live link of the settings --- #
+
+    def setting(self, key):
+        return (self.env["ir.config_parameter"].sudo().get_str(key) or "").strip()
+
+    def live_link(self, row):
+        """The live link of a vendor of the demo: the one of the settings, else its example."""
+        return self.setting(PARAM_LIVE_URL) or row[1]
+
+    def replay_link(self, row, day):
+        """The video of a replay of the demo: the one of the settings, else its example."""
+        return self.setting(PARAM_REPLAY_URL) or scenario.replay_url(row[1], day, row[0])
+
+    def replay_seconds(self):
+        """The length of the video of the replays: the one of the settings, else a live."""
+        minutes = self.setting(PARAM_REPLAY_MINUTES)
+        if self.setting(PARAM_REPLAY_URL) and minutes.isdigit() and int(minutes) > 0:
+            return int(minutes) * 60
+        return scenario.REPLAY_MINUTES * 60
+
+    def moment_offsets(self, booking, products):
+        """The seconds of the video where the products are shown: along the video, a little
+        different from one replay to the other."""
+        total = self.replay_seconds()
+        spread = max(1, total // 120)
+        return [
+            int(total * share) + scenario.number(booking.id, product.id) % spread
+            for share, product in zip(scenario.MOMENT_SHARES, products)
+        ]
+
+    def apply_media(self, old_replay="", old_live=""):
+        """The settings changed: the replays and the lives of the demo take the video and the
+        live link of the settings (or their examples again), and the products shown are placed
+        along the video. A link pasted by hand on a live of the demo stays as it is."""
+        for booking in self.Booking.search([("partner_id", "in", list(self.links)), ("replay_url", "!=", False)]):
+            row = self.links[booking.partner_id.id]
+            day = self.company._ocd_to_local(booking.start_datetime).date()
+            managed = {scenario.replay_url(row[1], day, row[0]), old_replay, self.setting(PARAM_REPLAY_URL)} - {""}
+            if booking.replay_url not in managed:
+                continue
+            booking.replay_url = self.replay_link(row, day)
+            moments = booking.moment_ids.sorted(lambda moment: (moment.offset_seconds, moment.id))
+            products = [moment.product_tmpl_id for moment in moments]
+            for moment, seconds in zip(moments, self.moment_offsets(booking, products)):
+                moment.offset_seconds = seconds
+        for booking in self.Booking.search([("partner_id", "in", list(self.links)), ("live_url", "!=", False)]):
+            row = self.links[booking.partner_id.id]
+            if booking.live_url in {row[1], old_live} - {""}:
+                booking.live_url = self.live_link(row)
+        for listing in self.Listing.search([("partner_id", "in", list(self.links)), ("state", "in", OPEN_LINKS)]):
+            row = self.links[listing.partner_id.id]
+            if listing.url in {row[1], old_live} - {""}:
+                listing.url = self.live_link(row)
 
     def keep_replays(self, now):
         """The lives of the demo that are over are done; their replay is published an hour
@@ -433,7 +487,7 @@ class OcdLiveDemo:
             for start in starts:
                 if start not in taken:
                     booking = self.Booking._ocd_book_from_website(vendor, package, start, mode, need)
-                    booking.live_url = self.links.get(vendor.id, (None, False))[1]
+                    booking.live_url = self.live_link(self.links[vendor.id]) if vendor.id in self.links else False
                     self.momo_payment(booking.sale_order_id)
                     reference = scenario.PAYMENT_REFERENCE % f"{day:%d%m}{scenario.number(day) % 1000:03d}"
                     booking.sale_order_id._ocd_announce_payment(reference)
@@ -1003,4 +1057,7 @@ def uninstall_hook(env):
         company = env["res.company"].sudo().browse(saved.get("company") or []).exists()
         if company and saved.get("date"):
             company.ocd_booking_open_date = fields.Date.to_date(saved["date"])
-    params.search([("key", "in", (PARAM_MESSAGES, PARAM_MOMO, PARAM_COD, PARAM_WHATSAPP, PARAM_OPEN_DATE))]).unlink()
+    params.search([("key", "in", (
+        PARAM_MESSAGES, PARAM_MOMO, PARAM_COD, PARAM_WHATSAPP, PARAM_OPEN_DATE,
+        PARAM_REPLAY_URL, PARAM_REPLAY_MINUTES, PARAM_LIVE_URL,
+    ))]).unlink()

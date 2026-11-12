@@ -150,9 +150,18 @@ S'y ajoute le live du studio en cours, d'après la semaine ci-dessus.
 - L'action planifiée **« Démo d'OCD Live : garder les lives de la démo à jour »** tourne toutes les 15
   minutes. Après un arrêt du serveur, son premier passage remet tout à jour (ou « Exécuter » dans
   Paramètres › Technique › Actions planifiées).
-- **Les liens sont des exemples** : les comptes TikTok, Facebook, Instagram et YouTube des vendeurs
-  n'existent pas. Pour un replay qui se lit vraiment, coller le lien d'une vraie vidéo d'OCD Live dans le
-  replay d'un live (Lives › Réservations › le live › Lien du replay) : la démo ne le remplace pas.
+- **Une vraie vidéo et un vrai compte pour la présentation** : OCD Live › Configuration › Paramètres ›
+  **Démo**.
+  - *Vidéo des replays de la démo* : le lien d'une vraie vidéo d'OCD Live sur YouTube, TikTok ou
+    Facebook. Chaque replay de la démo la lit dans la page, ceux d'avant comme ceux des jours qui
+    viennent ; un lien qui ne se lirait pas est refusé.
+  - *Durée de cette vidéo* : les produits montrés sont placés le long de la vidéo (au début, vers le
+    quart et vers la moitié), pour que « Robe en wax » saute à un moment qui existe.
+  - *Lien des lives de la démo* : le compte d'OCD Live où sont ses lives (par ex.
+    `https://www.tiktok.com/@ocdlive/live`) ; « Regarder » sur un live de la démo l'ouvre.
+
+  Vides, la démo garde ses liens d'exemple : les comptes des vendeurs n'existent pas et la vidéo ne se
+  lit pas. Un lien collé à la main sur un live de la démo reste tel quel.
 - **Les numéros sont des exemples** : aucun message WhatsApp ne part vers les contacts de la démo, même
   avec le vrai compte WhatsApp connecté (`ocd_live_demo_whatsapp`). Pour montrer un vrai message,
   inscrire un vendeur avec son propre numéro.

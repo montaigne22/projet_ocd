@@ -297,6 +297,47 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
         self.assertEqual(len(again), 1)
         self.assertNotEqual(again.start_datetime, held.start_datetime)
 
+    def test_real_video_and_live_link_of_the_settings(self):
+        """With a real video and a real live link in the settings (section Demo), every replay of
+        the demo plays the video with its products along it, every live opens the account, and
+        the next replays too; a link pasted by hand stays; empty, the examples come back."""
+        Settings = self.env["ocd.live.settings"]
+        Booking = self.env["ocd.live.booking"]
+        demo = OcdLiveDemo(self.env)
+        partners = self._demo_partners()
+        video, account = "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "https://www.tiktok.com/@ocdlive/live"
+        page = Settings.save_settings_page({
+            "ocd_demo_replay_url": "https://example.com/video", "ocd_demo_live_url": "http://www.tiktok.com/@ocdlive/live",
+        })
+        self.assertFalse(page["ok"])
+        self.assertEqual(set(page["errors"]), {"ocd_demo_replay_url", "ocd_demo_live_url"}, "A video that does not play")
+        replays = Booking.search([("partner_id", "in", partners.ids), ("replay_published", "=", True)])
+        by_hand = replays[:1]
+        by_hand.replay_url = "https://www.youtube.com/watch?v=aaaaaaaaaaa"
+        page = Settings.save_settings_page({
+            "ocd_demo_replay_url": video, "ocd_demo_replay_minutes": 3, "ocd_demo_live_url": account,
+        })
+        self.assertTrue(page["ok"], page.get("errors"))
+        self.assertEqual(set((replays - by_hand).mapped("replay_url")), {video})
+        self.assertEqual(by_hand.replay_url, "https://www.youtube.com/watch?v=aaaaaaaaaaa", "A link pasted by hand stays")
+        moments = (replays - by_hand).moment_ids
+        self.assertTrue(moments)
+        self.assertLess(max(moments.mapped("offset_seconds")), 180, "The products along the video of 3 minutes")
+        coming = Booking.search([("partner_id", "in", partners.ids), ("state", "in", ("draft", "confirmed"))])
+        self.assertEqual(set(coming.mapped("live_url")), {account})
+        links = self.env["ocd.directory.listing"].search([
+            ("partner_id", "in", partners.ids), ("state", "in", ("queued", "to_check", "published")),
+        ])
+        self.assertEqual(set(links.mapped("url")) | {account}, {account})
+        with freeze_time(self._at(demo.today() + timedelta(days=1), 23, 30)):
+            demo.keep_current()
+        new = Booking.search([("partner_id", "in", partners.ids), ("replay_published", "=", True), ("id", "not in", replays.ids)])
+        self.assertTrue(new)
+        self.assertEqual(set(new.mapped("replay_url")), {video}, "The next replays play it too")
+        self.assertTrue(Settings.save_settings_page({"ocd_demo_replay_url": "", "ocd_demo_live_url": ""})["ok"])
+        self.assertNotIn(video, (replays - by_hand).mapped("replay_url"), "The examples again")
+        self.assertNotIn(account, coming.mapped("live_url"))
+
     def test_uninstall_removes_what_the_demo_created(self):
         partners = self._demo_partners()
         orders = self.env["sale.order"].search([("partner_id", "in", partners.ids)])

@@ -137,6 +137,24 @@ DEMO = {
     "Created on": "Créé le",
     "Last Updated by": "Dernière mise à jour par",
     "Last Updated on": "Dernière mise à jour le",
+    # Section « Demo » of the settings page
+    "Demo": "Démo",
+    "Demo for the presentations": "Démo pour les présentations",
+    "Video of the replays of the demo": "Vidéo des replays de la démo",
+    "A real video of OCD Live on YouTube, TikTok or Facebook: every replay of the demo plays it in the page. Empty: the example links, whose video does not play.":
+        "Une vraie vidéo d'OCD Live sur YouTube, TikTok ou Facebook : chaque replay de la démo la lit dans la page. Vide : les liens d'exemple, dont la vidéo ne se lit pas.",
+    "Length of this video": "Durée de cette vidéo",
+    "The products shown in the replays are placed along the video.":
+        "Les produits montrés dans les replays sont placés le long de la vidéo.",
+    "minutes": "minutes",
+    "Live link of the demo": "Lien des lives de la démo",
+    "The account of OCD Live where its lives are, e.g. https://www.tiktok.com/@ocdlive/live: « Watch » on a live of the demo opens it. Empty: the example accounts of the vendors, which do not exist.":
+        "Le compte d'OCD Live où sont ses lives, par ex. https://www.tiktok.com/@ocdlive/live : « Regarder » sur un live de la démo l'ouvre. Vide : les comptes d'exemple des vendeurs, qui n'existent pas.",
+    "Paste the link of a video on YouTube, TikTok or Facebook: it plays in the replay page.":
+        "Colle le lien d'une vidéo sur YouTube, TikTok ou Facebook : elle se lit dans la page du replay.",
+    "Paste the https link of a live account on TikTok, Facebook, Instagram or YouTube.":
+        "Colle le lien https d'un compte de lives sur TikTok, Facebook, Instagram ou YouTube.",
+    "Settings Page Of OCD Live": "Page des paramètres d'OCD Live",
 }
 
 # The module that keeps WhatsApp away from the contacts of the demo

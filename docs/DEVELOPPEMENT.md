@@ -54,8 +54,9 @@ vérifier ; la boutique de Douala heure par heure (six commandes par jour, colis
 en retard, un client absent, espèces remises chaque soir, reversements préparés et payés chaque jour si la
 comptabilité existe, conversations WhatsApp du jour ; robe en 2 couleurs et 4 tailles, « Plus que 3 »,
 tailles épuisées). Une action planifiée (toutes les 15 minutes) la tient sur les jours autour
-d'aujourd'hui : rien à refaire avant une présentation. Le scénario de présentation, vendeur par vendeur et heure par heure, est
-dans [`DEMO.md`](DEMO.md).
+d'aujourd'hui : rien à refaire avant une présentation. Une vraie vidéo pour ses replays et un vrai compte pour ses lives se
+règlent dans OCD Live › Configuration › Paramètres › Démo. Le scénario de présentation, vendeur par
+vendeur et heure par heure, est dans [`DEMO.md`](DEMO.md).
 
 Elle publie le paiement à la livraison, active le Mobile Money vérifié par l'équipe (numéros d'exemple)
 et ouvre les réservations sans date d'ouverture. Aucun message WhatsApp ne part vers ses contacts, dont

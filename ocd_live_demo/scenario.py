@@ -107,8 +107,11 @@ WEEK = {
 }
 # A remote live of the past always had a host: this one when the week gives none
 PAST_HOST = DZIFA
-# Seconds of the video where the products of the vendor are shown (a live of 1 h 30)
-MOMENTS = (250, 1295, 2585)
+# Where the products of the vendor are shown in the video of a replay, as shares of its length
+# (a live of 1 h 30: at 4 min 30, 21 min 36 and 43 min 12)
+MOMENT_SHARES = (0.05, 0.24, 0.48)
+# Length of the example videos (a live), and of a video of the settings by default
+REPLAY_MINUTES = 90
 
 # The full day of the week: who waits for a free hour, and how
 FULL_DAY = 5
