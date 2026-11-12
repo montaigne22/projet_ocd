@@ -64,15 +64,19 @@ class OcdLiveDirectory(http.Controller):
     @http.route("/lives/image/<int:partner_id>", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
     def directory_image(self, partner_id, **kwargs):
         """The picture of an approved vendor, for its cards in the feed."""
-        vendor = request.env["res.partner"].sudo().browse(partner_id).exists()
-        if not vendor or not vendor.ocd_is_vendor or vendor.ocd_vendor_state != "approved" or not vendor.image_1920:
-            raise request.not_found()
+        vendor = self._card_vendor(partner_id, "image_1920")
         stream = request.env["ir.binary"]._get_image_stream_from(vendor, "image_512")
         return stream.get_response(max_age=86400)
 
     def _card_vendor(self, partner_id, field):
+        """The vendor whose media `field` is asked: everyone sees the ones of an approved vendor;
+        before the approval, the vendor and the team only (the page « My card in the lives »)."""
         vendor = request.env["res.partner"].sudo().browse(partner_id).exists()
-        if not vendor or not vendor.ocd_is_vendor or vendor.ocd_vendor_state != "approved" or not vendor[field]:
+        if not vendor or not vendor.ocd_is_vendor or not vendor[field]:
+            raise request.not_found()
+        if vendor.ocd_vendor_state != "approved" and not (
+            common.current_vendor() == vendor or request.env.user._is_internal()
+        ):
             raise request.not_found()
         return vendor
 

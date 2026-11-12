@@ -82,6 +82,19 @@ paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle
 
 ## Journal
 
+### 12 novembre 2026 — « Ma carte dans le fil » : la photo et la vidéo d'un vendeur pas encore validé
+- **La photo cassée** : les médias d'une carte n'étaient servis que pour un vendeur validé ; un vendeur
+  qui vient de s'inscrire voyait des images cassées dans « Ma carte dans le fil ». Avant la validation,
+  le vendeur et l'équipe voient ses médias ; le fil public, seulement après.
+- **La vidéo pas gardée** : en production, chaque requête d'Odoo est limitée (60 s de calcul, mémoire) et
+  ffmpeg, lancé par elle, prenait ces limites : la conversion d'une vraie vidéo de téléphone pouvait être
+  coupée. ffmpeg tourne maintenant sans elles (avec sa propre durée maximale), et la vidéo est préparée
+  **en arrière-plan** : la page répond tout de suite, dit « En préparation » et se met à jour seule ; un
+  refus dit pourquoi, et reste affiché.
+- **Envoi avec sa progression** (pourcentage), jusqu'à 200 Mo (une à deux minutes filmées au téléphone) ;
+  un refus du proxy (« 413 ») ou du réseau dit quoi faire. Les erreurs d'un envoi restent sur la page
+  rouverte (la recharger n'envoie rien deux fois).
+
 ### 12 novembre 2026 — liens courts des vidéos acceptés
 - Un lien court de TikTok (« Partager › Copier le lien » : `vt.tiktok.com/ZS…`, `vm.tiktok.com/…`,
   `tiktok.com/t/…`) ou de Facebook (`fb.watch/…`) était refusé pour la vidéo des replays : il ne contient

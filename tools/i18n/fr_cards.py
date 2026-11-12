@@ -59,6 +59,28 @@ CARDS = {
     "At the hour,": "À l'heure,",
     "At the studio and remote": "Au studio et à distance",
     "Automatic": "Automatique",
+    "<span class=\"o_ocd_card_progress_bar\"><i/></span>\n                                <small><span>Sending</span> <b class=\"o_ocd_card_progress_value\">0 %</b></small>":
+        "<span class=\"o_ocd_card_progress_bar\"><i/></span>\n                                <small><span>Envoi</span> <b class=\"o_ocd_card_progress_value\">0 %</b></small>",
+    "Being prepared": "En préparation",
+    "Name Of The Video Being Prepared": "Nom de la vidéo en préparation",
+    "OCD Live: prepare the videos of the cards (readable by every phone)":
+        "OCD Live : préparer les vidéos des cartes (lisibles par tous les téléphones)",
+    "Sending… Keep this page open until the end.": "Envoi… Garde cette page ouverte jusqu'à la fin.",
+    "Something could not be saved: see below.": "Une partie n'a pas pu être enregistrée : voir plus bas.",
+    "The sending did not go through: check your connection, then try again.":
+        "L'envoi n'a pas abouti : vérifie ta connexion, puis réessaie.",
+    "The server refuses a file this heavy: send a shorter video, or filmed in 1080p rather than 4K.":
+        "Le serveur refuse un fichier aussi lourd : envoie une vidéo plus courte, ou filmée en 1080p plutôt qu'en 4K.",
+    "This video is too heavy to prepare: send a shorter one, or filmed in 1080p rather than 4K.":
+        "Cette vidéo est trop lourde à préparer : envoies-en une plus courte, ou filmée en 1080p plutôt qu'en 4K.",
+    "Video Being Prepared": "Vidéo en préparation",
+    "Video Refused": "Vidéo refusée",
+    "Why the last video sent could not be prepared, as the vendor sees it in their space.":
+        "Pourquoi la dernière vidéo envoyée n'a pas pu être préparée, comme le vendeur le voit dans son espace.",
+    "Your last video could not be prepared:": "Ta dernière vidéo n'a pas pu être préparée :",
+    "Your video is being prepared: it shows in a minute.": "Ta vidéo est en préparation : elle s'affiche dans une minute.",
+    "Your video is being prepared: it shows on your card in a minute. This page updates by itself.":
+        "Ta vidéo est en préparation : elle sera sur ta carte dans une minute. Cette page se met à jour toute seule.",
     "Available": "Disponible",
     "Call %(vendor)s (%(phone)s) for a test before the live of %(hour)s.": "Appeler %(vendor)s (%(phone)s) pour un essai avant le live de %(hour)s.",
     "Call %(vendor)s before the live (%(hour)s)": "Appeler %(vendor)s avant le live (%(hour)s)",

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-12 12:37+0000\n"
-"PO-Revision-Date: 2026-11-12 12:37+0000\n"
+"POT-Creation-Date: 2026-11-12 13:58+0000\n"
+"PO-Revision-Date: 2026-11-12 13:58+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -611,6 +611,13 @@ msgstr ""
 msgid ""
 "<span class=\"o_ocd_card_file_name\" aria-live=\"polite\"/>\n"
 "                            <small class=\"o_ocd_muted\">A photo upright or square, 10 MB at most. Without an image, the card shows your photo.</small>"
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_card
+msgid ""
+"<span class=\"o_ocd_card_progress_bar\"><i/></span>\n"
+"                                <small><span>Sending</span> <b class=\"o_ocd_card_progress_value\">0 %</b></small>"
 msgstr ""
 
 #. module: ocd_live
@@ -1601,6 +1608,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
 msgid "Before this date, the calendar is visible but closed."
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_card
+msgid "Being prepared"
 msgstr ""
 
 #. module: ocd_live
@@ -4033,6 +4045,12 @@ msgid "Name Of The Video"
 msgstr ""
 
 #. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_card_video_upload_name
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_card_video_upload_name
+msgid "Name Of The Video Being Prepared"
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__vendor_live_handle
 #: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_live_handle
 #: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_live_handle
@@ -4472,6 +4490,11 @@ msgstr ""
 #. module: ocd_live
 #: model:ir.actions.server,name:ocd_live.ir_cron_update_listing_windows_ir_actions_server
 msgid "OCD Live: open and close the directory windows"
+msgstr ""
+
+#. module: ocd_live
+#: model:ir.actions.server,name:ocd_live.ir_cron_card_videos_ir_actions_server
+msgid "OCD Live: prepare the videos of the cards (readable by every phone)"
 msgstr ""
 
 #. module: ocd_live
@@ -5868,7 +5891,7 @@ msgstr ""
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_card
-msgid "Sending… A video takes up to a minute to be prepared."
+msgid "Sending… Keep this page open until the end."
 msgstr ""
 
 #. module: ocd_live
@@ -6063,6 +6086,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
 msgid "Some hours cost more or less, e.g. Saturday evening +25 %. Without a rule, the price of the package."
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_card
+msgid "Something could not be saved: see below."
 msgstr ""
 
 #. module: ocd_live
@@ -6660,6 +6688,16 @@ msgid "The remote lives: the vendor joins the account of OCD Live as a guest."
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_card
+msgid "The sending did not go through: check your connection, then try again."
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_card
+msgid "The server refuses a file this heavy: send a shorter video, or filmed in 1080p rather than 4K."
+msgstr ""
+
+#. module: ocd_live
 #. odoo-javascript
 #: code:addons/ocd_live/static/src/planning/planning.js:0
 msgid "The slot is free again: the waiting list is told."
@@ -7034,6 +7072,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live/models/res_partner.py:0
 msgid "This video cannot be read: send another one, in MP4."
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_partner.py:0
+msgid "This video is too heavy to prepare: send a shorter one, or filmed in 1080p rather than 4K."
 msgstr ""
 
 #. module: ocd_live
@@ -7495,6 +7539,20 @@ msgid "Vendors"
 msgstr ""
 
 #. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_card_video_pending
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_card_video_upload
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_card_video_pending
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_card_video_upload
+msgid "Video Being Prepared"
+msgstr ""
+
+#. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_card_video_error
+#: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_card_video_error
+msgid "Video Refused"
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_res_partner__ocd_card_video_sound
 #: model:ir.model.fields,field_description:ocd_live.field_res_users__ocd_card_video_sound
 msgid "Video With Sound"
@@ -7762,6 +7820,12 @@ msgid "Who are you?"
 msgstr ""
 
 #. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_res_partner__ocd_card_video_error
+#: model:ir.model.fields,help:ocd_live.field_res_users__ocd_card_video_error
+msgid "Why the last video sent could not be prepared, as the vendor sees it in their space."
+msgstr ""
+
+#. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__window_id
 #: model_terms:ir.ui.view,arch_db:ocd_live.ocd_directory_listing_view_search
 msgid "Window"
@@ -7970,6 +8034,11 @@ msgid "Your initials: add a video or an image"
 msgstr ""
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_card
+msgid "Your last video could not be prepared:"
+msgstr ""
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
 msgid "Your listing stays until"
 msgstr ""
@@ -8121,6 +8190,17 @@ msgstr ""
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_card
 msgid "Your video"
+msgstr ""
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/res_partner.py:0
+msgid "Your video is being prepared: it shows in a minute."
+msgstr ""
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.space_card
+msgid "Your video is being prepared: it shows on your card in a minute. This page updates by itself."
 msgstr ""
 
 #. module: ocd_live

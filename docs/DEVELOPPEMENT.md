@@ -28,6 +28,15 @@ data_dir = /opt/odoo20/data
   - ou celui du système : `apt-get install -y ffmpeg` (pris en premier quand il est là).
 
   Sans ffmpeg, seules les vidéos MP4 et WebM de 15 Mo au plus sont acceptées, telles quelles.
+
+  La vidéo envoyée (200 Mo au plus) est préparée **en arrière-plan** par l'action planifiée « OCD Live :
+  préparer les vidéos des cartes », lancée aussitôt l'envoi : la page répond tout de suite, dit « en
+  préparation » et se met à jour seule ; une vidéo refusée dit pourquoi dans l'espace du vendeur. ffmpeg
+  tourne sans les limites des workers d'Odoo (`limit_time_cpu`, `limit_memory_hard`, qui le couperaient),
+  avec 2 threads et 100 s au plus.
+- **Le proxy devant Odoo** (nginx…) doit laisser passer les vidéos des téléphones, par ex. pour nginx :
+  `client_max_body_size 220m;`. Sinon il les refuse avant Odoo (« 413 ») ; la page le dit au vendeur
+  (« Le serveur refuse un fichier aussi lourd »).
 - Bibliothèques Python du dépôt (`requirements.txt`) : `pip install -r requirements.txt` dans
   l'environnement d'Odoo. `phonenumbers` vérifie les numéros de tous les pays (règles de Google) ; sans
   elle, une règle simple garde les formulaires utilisables (indicatif d'Odoo, 6 à 14 chiffres).

@@ -1,5 +1,6 @@
 import io
 import re
+import resource
 import subprocess
 import tempfile
 from datetime import timedelta
@@ -35,6 +36,13 @@ def clip(seconds=2, sound=False, size="160x284"):
         return path.read_bytes()
 
 
+def prepare_videos(env):
+    """Run the preparation of the videos as the scheduled action does, without its commits
+    (forbidden in a test, as in the tests of Odoo)."""
+    with patch.object(env.registry["ir.cron"], "_commit_progress", return_value=float("inf")):
+        env["res.partner"]._cron_prepare_card_videos()
+
+
 @tagged("post_install", "-at_install")
 class TestOcdLiveCardMedia(TransactionCase):
     """The card of a vendor in the feed: a short video, an image, else its initials (the shop
@@ -66,7 +74,7 @@ class TestOcdLiveCardMedia(TransactionCase):
     def test_video_made_readable_by_every_phone(self):
         if not media.can_convert():
             self.skipTest("ffmpeg is not installed")
-        vendor = self.vendor
+        vendor = self.vendor.with_context(ocd_card_video_now=True)
         vendor.write({"ocd_card_video": BinaryBytes(clip(sound=True), filename="mon live.mov")})
         self.assertEqual(vendor.ocd_card_video_name, "mon live.mp4")
         self.assertEqual(guess_mimetype(vendor.ocd_card_video.content), "video/mp4")
@@ -95,8 +103,8 @@ class TestOcdLiveCardMedia(TransactionCase):
             self.assertTrue(media.can_convert())
             video, poster, mimetype, sound = media.prepare(clip(seconds=2, sound=True))
             self.assertEqual(media.prepare(clip(seconds=1))[3], False, "Without sound")
-            with self.assertRaises(media.VideoError) as error:
-                media.prepare(clip(seconds=125, size="64x64"))
+            with patch.object(media, "MAX_SOURCE_SECONDS", 60), self.assertRaises(media.VideoError) as error:
+                media.prepare(clip(seconds=65, size="64x64"))
         self.assertEqual(mimetype, "video/mp4")
         self.assertEqual(guess_mimetype(video), "video/mp4")
         self.assertTrue(poster)
@@ -109,9 +117,55 @@ class TestOcdLiveCardMedia(TransactionCase):
         with patch.object(media, "MAX_UPLOAD_MB", 0.0001), self.assertRaisesRegex(UserError, "too heavy"):
             self.vendor.ocd_card_video = BinaryBytes(b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 400)
         if media.can_convert():
-            with self.assertRaisesRegex(UserError, "too long"):
-                self.vendor.ocd_card_video = BinaryBytes(clip(seconds=125, size="64x64"))
+            with patch.object(media, "MAX_SOURCE_SECONDS", 60), self.assertRaisesRegex(UserError, "too long"):
+                self.vendor.with_context(ocd_card_video_now=True).ocd_card_video = BinaryBytes(
+                    clip(seconds=65, size="64x64")
+                )
         self.assertFalse(self.vendor.ocd_card_video)
+
+    def test_video_prepared_in_the_background(self):
+        """A video sent waits for the scheduled action (the page answers at once, a phone video
+        takes up to a minute): the card keeps its former media until then; a video refused there
+        says why in the space of the vendor."""
+        if not media.can_convert():
+            self.skipTest("ffmpeg is not installed")
+        vendor = self.vendor
+        cron = self.env.ref("ocd_live.ir_cron_card_videos")
+        with patch.object(type(cron), "_trigger") as trigger:
+            vendor.write({"ocd_card_video": BinaryBytes(clip(sound=True), filename="phone.mov")})
+        trigger.assert_called_once()
+        self.assertTrue(vendor.ocd_card_video_pending)
+        self.assertFalse(vendor.ocd_card_video, "Not yet: the card keeps its media")
+        choices = {row["value"]: row for row in vendor._ocd_card_choices()}
+        self.assertTrue(choices["video"]["pending"])
+        prepare_videos(self.env)
+        self.assertFalse(vendor.ocd_card_video_pending)
+        self.assertFalse(vendor.ocd_card_video_upload, "The video sent is not kept")
+        self.assertEqual(vendor.ocd_card_video_name, "phone.mp4")
+        self.assertEqual(guess_mimetype(vendor.ocd_card_video.content), "video/mp4")
+        self.assertEqual(vendor._ocd_card_media()["kind"], "video")
+        # A file that says it is a video, but is not one: refused at its preparation
+        with patch.object(type(cron), "_trigger"):
+            vendor.ocd_card_video = BinaryBytes(b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 400)
+        prepare_videos(self.env)
+        self.assertFalse(vendor.ocd_card_video_pending)
+        self.assertIn("cannot be read", vendor.ocd_card_video_error)
+        self.assertEqual(vendor.ocd_card_video_name, "phone.mp4", "The former video stays")
+
+    def test_ffmpeg_without_the_limits_of_the_worker(self):
+        """A worker of Odoo has 60 s of CPU per request: ffmpeg, in its own process, starts
+        without this limit (it would stop a conversion), the worker keeps it."""
+        soft, hard = resource.getrlimit(resource.RLIMIT_CPU)
+        if hard == resource.RLIM_INFINITY and soft == hard:
+            resource.setrlimit(resource.RLIMIT_CPU, (10**6, hard))
+        try:
+            limited = resource.getrlimit(resource.RLIMIT_CPU)
+            code, stdout, _stderr = media.run(["sh", "-c", "ulimit -t"], timeout=10)
+            self.assertEqual(code, 0)
+            self.assertEqual(stdout.decode().strip(), "unlimited" if limited[1] == resource.RLIM_INFINITY else str(limited[1]))
+            self.assertEqual(resource.getrlimit(resource.RLIMIT_CPU), limited, "The worker keeps its limit")
+        finally:
+            resource.setrlimit(resource.RLIMIT_CPU, (soft, hard))
 
     def test_without_ffmpeg_mp4_kept_as_it_is(self):
         video = b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 400
@@ -143,7 +197,7 @@ class TestOcdLiveCardPages(HttpCase):
         self.assertEqual(response.headers["Content-Type"], "image/png")
         self.assertEqual(self.url_open(f"/lives/video/{vendor.id}").status_code, 404, "No video")
         if media.can_convert():
-            vendor.ocd_card_video = BinaryBytes(clip(), filename="clip.mov")
+            vendor.with_context(ocd_card_video_now=True).ocd_card_video = BinaryBytes(clip(), filename="clip.mov")
             whole = self.url_open(f"/lives/video/{vendor.id}")
             self.assertEqual(whole.headers["Content-Type"], "video/mp4")
             part = self.url_open(f"/lives/video/{vendor.id}", headers={"Range": "bytes=0-99"})
@@ -152,6 +206,11 @@ class TestOcdLiveCardPages(HttpCase):
             self.assertEqual(self.url_open(f"/lives/video/{vendor.id}/image").status_code, 200)
         vendor.ocd_vendor_state = "to_check"
         self.assertEqual(self.url_open(f"/lives/carte/{vendor.id}").status_code, 404, "Not approved")
+        # Before the approval, the vendor sees their own card (« My card in the lives »)
+        self.authenticate(None, None)
+        self.url_open(f"/ocd/espace/{vendor._ocd_get_space_token()}")
+        self.assertEqual(self.url_open(f"/lives/carte/{vendor.id}").status_code, 200, "The vendor sees it")
+        self.assertIn(f"/lives/carte/{vendor.id}", self.url_open("/ocd/espace/moi/carte").text)
 
     def test_card_of_the_feed(self):
         product = self.env.ref("ocd_live.product_package_discovery").product_variant_id
@@ -184,4 +243,17 @@ class TestOcdLiveCardPages(HttpCase):
             "csrf_token": self.csrf_token(), "choice": "video",
         }, files={"video": ("clip.mov", b"not a video", "video/quicktime")})
         self.assertIn("This file is not a video.", response.text, "Said next to the field")
+        self.assertNotIn("This file is not a video.", self.url_open("/ocd/espace/moi/carte").text, "Said once")
         self.assertIn("changed their card in the lives", self.vendor.message_ids[0].body, "The team sees it")
+        if media.can_convert():
+            # A phone video: the page answers at once, says it is being prepared and waits for it
+            with patch.object(type(self.env.ref("ocd_live.ir_cron_card_videos")), "_trigger"):
+                response = self.url_open("/ocd/espace/moi/carte", data={"csrf_token": self.csrf_token()},
+                                         files={"video": ("phone.mov", clip(), "video/quicktime")})
+            self.assertIn("enregistre=1", response.url)
+            self.assertIn("Your video is being prepared", response.text)
+            self.assertIn('data-poll-url="/ocd/espace/moi/carte/etat"', response.text)
+            self.assertEqual(self.make_jsonrpc_request("/ocd/espace/moi/carte/etat", {})["state"], "pending")
+            prepare_videos(self.env)
+            self.assertEqual(self.make_jsonrpc_request("/ocd/espace/moi/carte/etat", {})["state"], "ready")
+            self.assertIn(f"/lives/video/{self.vendor.id}", self.url_open("/ocd/espace/moi/carte").text)

@@ -41,6 +41,16 @@
         <field name="interval_type">minutes</field>
     </record>
 
+    <record id="ir_cron_card_videos" model="ir.cron">
+        <field name="name">OCD Live: prepare the videos of the cards (readable by every phone)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_prepare_card_videos()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">10</field>
+        <field name="interval_type">minutes</field>
+    </record>
+
     <record id="ir_cron_expire_credits" model="ir.cron">
         <field name="name">OCD Live: expire the old live credits</field>
         <field name="model_id" ref="model_ocd_live_credit"/>

@@ -10,6 +10,7 @@ from . import common, feed
 from .booking import OcdLiveBooking
 
 SESSION_LOGIN = "ocd_login_vendor_id"
+SESSION_CARD_ERRORS = "ocd_card_errors"
 CARD_IMAGE_MAX_BYTES = 10 * 1024 * 1024
 
 
@@ -314,6 +315,8 @@ class OcdVendorSpace(http.Controller):
 
     def _render_card(self, vendor, errors=None, saved=False):
         env = request.env
+        # The errors of the last sending (kept in the session: the page is opened again after it)
+        errors = errors or request.session.pop(SESSION_CARD_ERRORS, None) or {}
         choices = vendor._ocd_card_choices()
         chosen = vendor.ocd_card_media or "auto"
         shown = vendor._ocd_card_media()["kind"]
@@ -344,6 +347,8 @@ class OcdVendorSpace(http.Controller):
             image_url=f"/lives/carte/{vendor.id}?v={vendor._ocd_card_version()}" if vendor.ocd_card_image else False,
             max_video_mb=media.MAX_UPLOAD_MB if media.can_convert() else media.MAX_KEPT_MB,
             max_seconds=media.MAX_SECONDS,
+            video_pending=vendor.ocd_card_video_pending,
+            video_error=vendor.ocd_card_video_error,
         ))
 
     @http.route("/ocd/espace/moi/carte", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
@@ -353,10 +358,24 @@ class OcdVendorSpace(http.Controller):
             return request.redirect("/ocd/connexion")
         return self._render_card(vendor, saved=bool(enregistre))
 
-    @http.route("/ocd/espace/moi/carte", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
+    @http.route("/ocd/espace/moi/carte/etat", type="jsonrpc", auth="public", website=True, sitemap=False)
+    def space_card_state(self, **kwargs):
+        """Where the video sent stands, for the page that waits for it (poll.js)."""
+        vendor = common.current_vendor()
+        if not vendor:
+            return {"state": "none"}
+        if vendor.ocd_card_video_pending:
+            return {"state": "pending"}
+        return {"state": "error" if vendor.ocd_card_video_error else "ready"}
+
+    @http.route(
+        "/ocd/espace/moi/carte", type="http", auth="public", website=True, methods=["POST"], sitemap=False,
+        max_content_length=(media.MAX_UPLOAD_MB + CARD_IMAGE_MAX_BYTES // (1024 * 1024) + 5) * 1024 * 1024,
+    )
     def space_card_save(self, choice=None, video=None, image=None, **post):
         """Save the choice of the vendor, its video (made readable by every phone) and its image.
-        Each one is saved apart: a refused video does not lose the new image."""
+        Each one is saved apart: a refused video does not lose the new image. The page opens
+        again after (the errors in the session): reloading it sends nothing twice."""
         vendor = common.current_vendor()
         if not vendor:
             return request.redirect("/ocd/connexion")
@@ -402,13 +421,16 @@ class OcdVendorSpace(http.Controller):
                     changes.append(env._("the video"))
                 except (UserError, ValidationError) as error:
                     errors["video"] = error.args[0]
+                except MemoryError:
+                    errors["video"] = vendor._ocd_video_error(media.VideoError("too_big", size=media.MAX_UPLOAD_MB))
         if changes:
             # The team sees it in the history of the vendor
             vendor.message_post(body=env._(
                 "%(vendor)s changed their card in the lives: %(changes)s.", vendor=vendor.name, changes=", ".join(changes),
             ))
         if errors:
-            return self._render_card(vendor, errors=errors)
+            request.session[SESSION_CARD_ERRORS] = errors
+            return request.redirect("/ocd/espace/moi/carte#ma-carte-erreurs")
         return request.redirect("/ocd/espace/moi/carte?enregistre=1")
 
     # === PLACE A LIVE OF A PACKAGE === #

@@ -3551,6 +3551,38 @@ body.o_ocd_body {
     font-size: 14px;
     overflow-wrap: anywhere;
 }
+.o_ocd_card_progress {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    &[hidden] {
+        display: none;
+    }
+    small {
+        text-align: center;
+        font-size: 13.5px;
+        color: $ocd-muted;
+    }
+}
+.o_ocd_card_progress_bar {
+    display: block;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: $ocd-sand;
+    i {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: 4px;
+        background: $ocd-orange;
+        transition: width 0.2s ease;
+    }
+}
+.o_ocd_card_form .o_ocd_actions .o_ocd_card_failed, .o_ocd_card_form .o_ocd_actions .o_ocd_card_refused {
+    margin: 0;
+    text-align: center;
+}
 .o_ocd_card_form .o_ocd_actions .o_ocd_card_sending {
     margin: 0;
     text-align: center;

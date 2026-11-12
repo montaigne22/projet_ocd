@@ -8,9 +8,11 @@ imageio-ffmpeg (pip install imageio-ffmpeg, in requirements.txt). Without any, o
 videos are kept (most phones record MP4), with a smaller size limit since they are kept as they
 are."""
 
+import contextlib
 import json
 import logging
 import re
+import resource
 import shutil
 import subprocess
 import tempfile
@@ -21,11 +23,14 @@ from odoo.tools.mimetypes import guess_mimetype
 _logger = logging.getLogger(__name__)
 
 MAX_SECONDS = 30
-MAX_UPLOAD_MB = 60  # a phone video of 30 to 60 seconds, before it is made smaller
+MAX_UPLOAD_MB = 200  # a phone video of one or two minutes (1080p, even 4K), before it is made smaller
 MAX_KEPT_MB = 15  # kept as it is, without ffmpeg
+MAX_SOURCE_SECONDS = 600  # longer: surely not a video for a card (the first 30 s are kept)
 READABLE = ("video/mp4", "video/webm")
 ACCEPTED = (*READABLE, "video/quicktime", "video/3gpp", "video/x-matroska", "video/x-msvideo")
-TIMEOUT = 180
+# Under the time limit of the scheduled actions of Odoo (limit_time_real_cron, else 120 s)
+TIMEOUT = 100
+THREADS = "2"  # the other requests of the server go on meanwhile
 
 
 class VideoError(ValueError):
@@ -35,6 +40,42 @@ class VideoError(ValueError):
         super().__init__(code)
         self.code = code
         self.values = values
+
+
+@contextlib.contextmanager
+def _own_limits():
+    """ffmpeg runs in its own process, which takes the limits of the process that starts it.
+    The ones of a worker of Odoo (60 s of CPU per request, the memory of a request) would stop
+    the conversion of a video of a phone: ffmpeg starts without them (TIMEOUT keeps it short),
+    the worker keeps its own."""
+    saved = []
+    for limit in (resource.RLIMIT_CPU, resource.RLIMIT_AS):
+        try:
+            soft, hard = resource.getrlimit(limit)
+            if soft != hard:
+                resource.setrlimit(limit, (hard, hard))
+                saved.append((limit, soft, hard))
+        except (ValueError, OSError):
+            continue
+    try:
+        yield
+    finally:
+        for limit, soft, hard in saved:
+            with contextlib.suppress(ValueError, OSError):
+                resource.setrlimit(limit, (soft, hard))
+
+
+def run(command, timeout=TIMEOUT):
+    """Run ffmpeg or ffprobe: (return code, stdout, stderr); raise subprocess.TimeoutExpired."""
+    with _own_limits():
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.communicate()
+        raise
+    return process.returncode, stdout, stderr
 
 
 def ffmpeg():
@@ -79,13 +120,12 @@ def _probe(path):
     what ffmpeg says of the file (imageio-ffmpeg gives ffmpeg only)."""
     ffprobe = shutil.which("ffprobe")
     if ffprobe:
-        result = subprocess.run(
-            [ffprobe, "-v", "error", "-print_format", "json", "-show_format", "-show_streams", str(path)],
-            capture_output=True, timeout=60, check=False,
+        code, stdout, _stderr = run(
+            [ffprobe, "-v", "error", "-print_format", "json", "-show_format", "-show_streams", str(path)], timeout=60,
         )
-        if result.returncode:
+        if code:
             raise VideoError("unreadable")
-        info = json.loads(result.stdout or b"{}")
+        info = json.loads(stdout or b"{}")
         streams = info.get("streams") or []
         images = [
             stream for stream in streams
@@ -95,8 +135,8 @@ def _probe(path):
         has_sound = any(stream.get("codec_type") == "audio" for stream in streams)
     else:
         # « ffmpeg -i » without output describes the file, then stops (with an error code)
-        result = subprocess.run([ffmpeg(), "-hide_banner", "-i", str(path)], capture_output=True, timeout=60, check=False)
-        lines = result.stderr.decode("utf-8", "replace").splitlines()
+        _code, _stdout, stderr = run([ffmpeg(), "-hide_banner", "-i", str(path)], timeout=60)
+        lines = stderr.decode("utf-8", "replace").splitlines()
         streams = [line for line in lines if re.match(r"\s*Stream #\d+:\d+", line)]
         images = [line for line in streams if ": Video:" in line and "attached pic" not in line]
         has_sound = any(": Audio:" in line for line in streams)
@@ -107,9 +147,9 @@ def _probe(path):
     return duration, has_sound
 
 
-def prepare(data):
-    """Return (video, poster, mimetype, sound) for the card, from the bytes sent (sound: whether
-    the video has sound, None when unknown); raise VideoError."""
+def check(data):
+    """The checks made at once on a video sent (a video, not too heavy); return its kind; raise
+    VideoError. Its conversion comes after (prepare)."""
     if not data:
         raise VideoError("empty")
     mimetype = kind(data)
@@ -123,31 +163,41 @@ def prepare(data):
             raise VideoError("format")
         if size_mb > MAX_KEPT_MB:
             raise VideoError("too_big", size=MAX_KEPT_MB)
+    return mimetype
+
+
+def prepare(data):
+    """Return (video, poster, mimetype, sound) for the card, from the bytes sent (sound: whether
+    the video has sound, None when unknown); raise VideoError."""
+    mimetype = check(data)
+    if not can_convert():
         return data, None, mimetype, None
     with tempfile.TemporaryDirectory(prefix="ocd_video_") as folder:
         source = Path(folder) / "source"
         source.write_bytes(data)
-        duration, has_sound = _probe(source)
-        if duration > MAX_SECONDS * 4:
+        try:
+            duration, has_sound = _probe(source)
+        except subprocess.TimeoutExpired:
+            raise VideoError("unreadable") from None
+        if duration > MAX_SOURCE_SECONDS:
             raise VideoError("too_long", seconds=MAX_SECONDS)
         target = Path(folder) / "card.mp4"
         command = [
-            ffmpeg(), "-y", "-v", "error", "-i", str(source), "-t", str(MAX_SECONDS),
-            "-vf", "scale='min(720,iw)':-2,fps=30",
+            ffmpeg(), "-y", "-v", "error", "-threads", THREADS, "-i", str(source), "-t", str(MAX_SECONDS),
+            "-vf", "scale='min(720,iw)':-2:flags=bilinear,fps=30", "-threads", THREADS,
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "27", "-profile:v", "main", "-pix_fmt", "yuv420p",
             "-movflags", "+faststart",
         ]
         command += ["-c:a", "aac", "-b:a", "96k", "-ac", "2"] if has_sound else ["-an"]
         try:
-            result = subprocess.run([*command, str(target)], capture_output=True, timeout=TIMEOUT, check=False)
+            code, _stdout, stderr = run([*command, str(target)])
         except subprocess.TimeoutExpired:
-            raise VideoError("too_long", seconds=MAX_SECONDS) from None
-        if result.returncode or not target.exists():
-            _logger.info("OCD Live: video not converted: %s", result.stderr[-500:])
+            raise VideoError("too_slow") from None
+        if code or not target.exists():
+            _logger.info("OCD Live: video not converted (%s): %s", code, stderr[-500:])
             raise VideoError("unreadable")
         poster = Path(folder) / "poster.jpg"
-        subprocess.run(
-            [ffmpeg(), "-y", "-v", "error", "-ss", "0.3", "-i", str(target), "-frames:v", "1", "-q:v", "3", str(poster)],
-            capture_output=True, timeout=60, check=False,
-        )
+        with contextlib.suppress(subprocess.TimeoutExpired):
+            run([ffmpeg(), "-y", "-v", "error", "-ss", "0.3", "-i", str(target), "-frames:v", "1", "-q:v", "3", str(poster)],
+                timeout=60)
         return target.read_bytes(), (poster.read_bytes() if poster.exists() else None), "video/mp4", has_sound

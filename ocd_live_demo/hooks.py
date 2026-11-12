@@ -195,7 +195,8 @@ class OcdLiveDemo:
             vendor = self.ref(xmlid)
             if vendor and not vendor.ocd_card_video:
                 with file_open(f"{MODULE}/static/video/{file_name}", "rb") as video:
-                    vendor.write({
+                    # Made readable at once: the card of the demo shows it from the installation
+                    vendor.with_context(ocd_card_video_now=True).write({
                         "ocd_card_video": BinaryBytes(video.read(), filename=file_name),
                         "ocd_card_media": "video",
                     })

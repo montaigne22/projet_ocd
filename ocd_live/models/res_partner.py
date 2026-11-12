@@ -97,6 +97,15 @@ class ResPartner(models.Model):
         string="Video With Sound", default=True, copy=False,
         help="The card offers to turn the sound on only when the video has sound.",
     )
+    # A video sent waits here while it is made readable by every phone (scheduled action): the
+    # page answers at once, the card keeps the former video until then
+    ocd_card_video_upload = fields.Binary(string="Video Being Prepared", attachment=True, copy=False)
+    ocd_card_video_upload_name = fields.Char(string="Name Of The Video Being Prepared", copy=False)
+    ocd_card_video_pending = fields.Boolean(string="Video Being Prepared", copy=False, readonly=True)
+    ocd_card_video_error = fields.Char(
+        string="Video Refused", copy=False, readonly=True,
+        help="Why the last video sent could not be prepared, as the vendor sees it in their space.",
+    )
     ocd_login_code_hash = fields.Char(copy=False, groups="base.group_system")
     ocd_login_code_expiry = fields.Datetime(copy=False, groups="base.group_system")
     ocd_login_code_attempts = fields.Integer(copy=False, groups="base.group_system")
@@ -222,19 +231,32 @@ class ResPartner(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             self._ocd_prepare_card_video_vals(vals)
-        return super().create(vals_list)
+        partners = super().create(vals_list)
+        if any(vals.get("ocd_card_video_pending") for vals in vals_list):
+            self._ocd_trigger_card_videos()
+        return partners
 
     def write(self, vals):
         self._ocd_prepare_card_video_vals(vals)
-        return super().write(vals)
+        result = super().write(vals)
+        if vals.get("ocd_card_video_pending"):
+            self._ocd_trigger_card_videos()
+        return result
 
     @api.model
     def _ocd_prepare_card_video_vals(self, vals):
-        """A video given to the card (back office, space of the vendor) is checked and made
-        readable by every phone, with its poster (media.py)."""
-        if not vals.get("ocd_card_video"):
-            if "ocd_card_video" in vals:
-                vals["ocd_card_video_poster"] = False
+        """A video given to the card (back office, space of the vendor) is checked at once (a
+        video, not too heavy), then made readable by every phone, with its poster (media.py):
+        by the scheduled action « card videos » when ffmpeg is there (the page answers at once,
+        a phone video takes up to a minute), at once otherwise (it is kept as it is) or with the
+        context `ocd_card_video_now`."""
+        if "ocd_card_video" not in vals or self.env.context.get("ocd_card_video_ready"):
+            return
+        if not vals["ocd_card_video"]:
+            vals.update({
+                "ocd_card_video_poster": False, "ocd_card_video_upload": False,
+                "ocd_card_video_pending": False, "ocd_card_video_error": False,
+            })
             return
         value = vals["ocd_card_video"]
         filename = ""
@@ -248,17 +270,71 @@ class ResPartner(models.Model):
             data = base64.b64decode(value)
         else:
             return  # refused by the field itself
-        if filename and not vals.get("ocd_card_video_name"):
-            vals["ocd_card_video_name"] = filename
+        filename = vals.get("ocd_card_video_name") or filename or "video"
         try:
-            video, poster, mimetype, sound = media.prepare(data)
+            media.check(data)
+            if media.can_convert() and not self.env.context.get("ocd_card_video_now"):
+                del vals["ocd_card_video"]
+                vals.pop("ocd_card_video_name", None)
+                vals.update({
+                    "ocd_card_video_upload": BinaryBytes(data, filename=filename),
+                    "ocd_card_video_upload_name": filename,
+                    "ocd_card_video_pending": True,
+                    "ocd_card_video_error": False,
+                })
+                return
+            vals.update(self._ocd_card_video_values(data, filename))
         except media.VideoError as error:
             raise UserError(self._ocd_video_error(error)) from None
-        vals["ocd_card_video"] = BinaryBytes(video)
-        vals["ocd_card_video_poster"] = BinaryBytes(poster) if poster else False
-        vals["ocd_card_video_sound"] = sound is not False
-        name = (vals.get("ocd_card_video_name") or "video").rsplit(".", 1)[0]
-        vals["ocd_card_video_name"] = f"{name}.{'webm' if mimetype == 'video/webm' else 'mp4'}"
+
+    @api.model
+    def _ocd_card_video_values(self, data, filename):
+        """The values of a video made readable by every phone (raise media.VideoError)."""
+        video, poster, mimetype, sound = media.prepare(data)
+        name = (filename or "video").rsplit(".", 1)[0]
+        return {
+            "ocd_card_video": BinaryBytes(video),
+            "ocd_card_video_poster": BinaryBytes(poster) if poster else False,
+            "ocd_card_video_sound": sound is not False,
+            "ocd_card_video_name": f"{name}.{'webm' if mimetype == 'video/webm' else 'mp4'}",
+            "ocd_card_video_upload": False,
+            "ocd_card_video_pending": False,
+            "ocd_card_video_error": False,
+        }
+
+    @api.model
+    def _ocd_trigger_card_videos(self):
+        cron = self.env.ref("ocd_live.ir_cron_card_videos", raise_if_not_found=False)
+        if cron:
+            cron.sudo()._trigger()
+
+    @api.model
+    def _cron_prepare_card_videos(self):
+        """The videos sent for the cards, made readable by every phone one after the other; each
+        one is kept as soon as it is ready. A video refused says why in the space of its vendor."""
+        partners = self.sudo().search([("ocd_card_video_pending", "=", True)], order="write_date")
+        cron = self.env["ir.cron"]
+        cron._commit_progress(remaining=len(partners))
+        for partner in partners:
+            partner._ocd_convert_card_video()
+            if not cron._commit_progress(1):
+                break  # no time left: the next run goes on
+
+    def _ocd_convert_card_video(self):
+        self.ensure_one()
+        upload = self.ocd_card_video_upload
+        data = upload.content if upload else b""
+        try:
+            values = self._ocd_card_video_values(data, self.ocd_card_video_upload_name)
+        except media.VideoError as error:
+            self.write({
+                "ocd_card_video_upload": False,
+                "ocd_card_video_pending": False,
+                "ocd_card_video_error": self.with_context(lang=self.lang or self.env.lang)._ocd_video_error(error),
+            })
+            return False
+        self.with_context(ocd_card_video_ready=True).write(values)
+        return True
 
     @api.model
     def _ocd_video_error(self, error):
@@ -268,6 +344,7 @@ class ResPartner(models.Model):
             "not_video": _("This file is not a video."),
             "too_big": _("The video is too heavy: %s MB at most.", error.values.get("size")),
             "too_long": _("The video is too long: a short video of %s seconds at most.", error.values.get("seconds")),
+            "too_slow": _("This video is too heavy to prepare: send a shorter one, or filmed in 1080p rather than 4K."),
             "format": _("Send a video in MP4: this one would not play on every phone."),
             "unreadable": _("This video cannot be read: send another one, in MP4."),
         }
@@ -333,7 +410,9 @@ class ResPartner(models.Model):
                 "title": _("A short video"),
                 "text": _("30 seconds at most, filmed upright: it plays without sound when your card is on screen."),
                 "ready": bool(self.ocd_card_video),
-                "missing": _("Add your video below."),
+                "pending": self.ocd_card_video_pending,
+                "missing": _("Your video is being prepared: it shows in a minute.") if self.ocd_card_video_pending
+                else _("Add your video below."),
             },
             {
                 "value": "image",

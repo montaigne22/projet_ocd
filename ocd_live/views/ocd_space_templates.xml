@@ -129,6 +129,9 @@
                         <t t-call="ocd_live.icon" icon.f="check"/>
                         <span>Saved: your card is up to date in the feed.</span>
                     </div>
+                    <div t-if="errors" id="ma-carte-erreurs" class="o_ocd_alert" role="alert">
+                        Something could not be saved: see below.
+                    </div>
                     <div t-if="fallback" class="o_ocd_info" role="status" t-out="fallback"/>
 
                     <!-- The card as the feed shows it -->
@@ -152,7 +155,8 @@
                                             <span class="o_ocd_card_choice_head">
                                                 <b t-out="row['title']"/>
                                                 <t t-if="row['value'] != 'auto'">
-                                                    <span t-if="row['ready']" class="o_ocd_badge_ok">Available</span>
+                                                    <span t-if="row.get('pending')" class="o_ocd_badge_wait">Being prepared</span>
+                                                    <span t-elif="row['ready']" class="o_ocd_badge_ok">Available</span>
                                                     <span t-else="" class="o_ocd_badge_wait">To add</span>
                                                 </t>
                                             </span>
@@ -169,6 +173,14 @@
 
                         <section class="o_ocd_card_upload" aria-labelledby="card-video-title">
                             <h2 id="card-video-title" class="o_ocd_section">My short video</h2>
+                            <!-- Made readable by every phone in the background: the page updates by itself -->
+                            <div t-if="video_pending" class="o_ocd_info o_ocd_poll" role="status"
+                                 data-poll-url="/ocd/espace/moi/carte/etat" data-state="pending">
+                                Your video is being prepared: it shows on your card in a minute. This page updates by itself.
+                            </div>
+                            <div t-elif="video_error" class="o_ocd_alert" role="alert">
+                                Your last video could not be prepared: <t t-out="video_error"/>
+                            </div>
                             <div t-if="video_url" class="o_ocd_card_current">
                                 <img t-if="poster_url" t-att-src="poster_url" alt="Your video"/>
                                 <video t-else="" t-att-src="video_url" playsinline="" muted="" preload="metadata" aria-hidden="true"/>
@@ -217,9 +229,19 @@
                         </section>
 
                         <div class="o_ocd_actions">
+                            <div class="o_ocd_card_progress" hidden="">
+                                <span class="o_ocd_card_progress_bar"><i/></span>
+                                <small><span>Sending</span> <b class="o_ocd_card_progress_value">0 %</b></small>
+                            </div>
                             <button type="submit" class="o_ocd_cta">Save my card</button>
                             <p class="o_ocd_muted o_ocd_card_sending" role="status" hidden="">
-                                Sending… A video takes up to a minute to be prepared.
+                                Sending… Keep this page open until the end.
+                            </p>
+                            <p class="o_ocd_error o_ocd_card_failed" role="alert" hidden="">
+                                The sending did not go through: check your connection, then try again.
+                            </p>
+                            <p class="o_ocd_error o_ocd_card_refused" role="alert" hidden="">
+                                The server refuses a file this heavy: send a shorter video, or filmed in 1080p rather than 4K.
                             </p>
                         </div>
                     </form>
