@@ -141,6 +141,30 @@ class TestOcdLiveFeed(HttpCase):
         self.assertEqual(keys[0], "closed", "Out of the windows: when the checked lives come back")
         self.assertIn(f"n{coming.id}", keys, "The next lives fill the feed")
 
+    def test_one_next_live_and_one_replay_per_vendor(self):
+        """A vendor who booked many lives shows its next one and its last replay: the other
+        countries come soon in the feed."""
+        Booking = self.env["ocd.live.booking"].sudo()
+        product = self.env.ref("ocd_live.product_package_discovery").product_variant_id
+        coming = self.company._ocd_slot_starts(self.window_day + timedelta(days=1))
+        past = self.company._ocd_slot_starts(self.window_day - timedelta(days=1))
+        common = {"partner_id": self.cameroon.id, "slot_count": 1, "product_id": product.id}
+        first, second = Booking.create([
+            {**common, "start_datetime": coming[0], "state": "confirmed"},
+            {**common, "start_datetime": coming[2], "state": "confirmed"},
+        ])
+        replay = {"state": "done", "replay_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "replay_published": True}
+        older, last = Booking.create([
+            {**common, **replay, "start_datetime": past[0]},
+            {**common, **replay, "start_datetime": past[2]},
+        ])
+        with freeze_time(self.out_of_window):
+            keys = self._keys(self.url_open("/lives?pays=cm").text)
+        self.assertIn(f"n{first.id}", keys)
+        self.assertNotIn(f"n{second.id}", keys, "Its next live only")
+        self.assertIn(f"r{last.id}", keys)
+        self.assertNotIn(f"r{older.id}", keys, "Its last replay only")
+
     def test_picture_of_a_vendor(self):
         self.assertEqual(self.url_open(f"/lives/image/{self.togo.id}").status_code, 404, "No picture")
         self.togo.ocd_vendor_state = "to_check"

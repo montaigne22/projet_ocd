@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Keeps the scenario of the demo on the days around today (scenario.py): lives of the
+         directory in the window of the moment, lives booked at the studio, replays. -->
+    <record id="ir_cron_keep_current" model="ir.cron">
+        <field name="name">OCD Live demo: keep the lives of the demo current</field>
+        <field name="model_id" ref="model_ocd_live_demo"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_keep_current()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+    </record>
+
+</odoo>

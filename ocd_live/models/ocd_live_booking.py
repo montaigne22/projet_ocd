@@ -344,9 +344,12 @@ class OcdLiveBooking(models.Model):
         the pending payment is done, and the held lives are confirmed."""
         if not self.env.user.has_group("ocd_live.group_ocd_live_manager"):
             raise AccessError(self.env._("Only a manager of the lives can confirm a payment."))
-        # sudo: the payments are confirmed by a manager of the lives
+        # sudo: the payments are confirmed by a manager of the lives. The team saw the money
+        # arrive: the transaction is done in this very request (safe: an error rolls it back
+        # with the confirmation of the lives)
         pending = self.sudo().sale_order_id.transaction_ids.filtered(lambda tx: tx.state == "pending")
         if pending:
+            pending = pending.with_context(payment_safe_write=True)
             pending._set_done()
             pending._post_process()
         held = self.filtered(lambda b: b.state == "draft")

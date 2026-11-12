@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-11 07:37+0000\n"
-"PO-Revision-Date: 2026-11-11 07:37+0000\n"
+"POT-Creation-Date: 2026-11-12 03:08+0000\n"
+"PO-Revision-Date: 2026-11-12 03:08+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,29 +21,53 @@ msgid ""
 "OCD Live demo data\n"
 "==================\n"
 "\n"
-"Everything needed to show OCD Live, in one module that can be removed:\n"
+"Everything needed to present OCD Live, in one module that can be removed:\n"
 "\n"
-"- Vendors in Togo, Cameroon, Benin, Ivory Coast and Senegal, with their category,\n"
-"  sale mode and delivery mode; customers; three OCD couriers in Douala, one off duty.\n"
-"- Hosts of the remote lives, prices of the hours (Saturday evening +25 %,\n"
-"  Monday morning -15 %).\n"
-"- Lives: a paid live at the studio, a package with a live placed and one to\n"
-"  place, a slot held during the payment, a past live with its replay and the\n"
-"  products shown, a waiting list.\n"
-"- Directory: passes and live links, online during the checking window.\n"
-"- Shop: products with pictures, a dress in 2 colours and 4 sizes with its\n"
-"  stock, delivery prices (OCD couriers, agencies, prices of a vendor), parcels at\n"
-"  every step (to prepare, ready, on the way, delivered, problem, late), cash\n"
-"  with a courier, bills of the vendors and payouts to check.\n"
-"- WhatsApp: conversations of customers and vendors (waiting for an answer, a\n"
-"  parcel on the way, a conversation older than 24 hours), on an archived account:\n"
-"  nothing is sent to Meta.\n"
+"- 15 vendors in Togo, Cameroon, Ivory Coast, Senegal, Benin, Ghana, Nigeria and in\n"
+"  Paris (the diaspora), each with a coherent story: their city, category, products\n"
+"  with pictures, live link and hours; customers; three OCD couriers in Douala, one\n"
+"  off duty.\n"
+"- Lives kept current by a scheduled action, whatever the day of the presentation:\n"
+"  the lives of the directory in the checking window of the moment (the dishes in the\n"
+"  morning, phones and beauty at midday, home and fabrics in the afternoon, clothes in\n"
+"  the evening; one link waits for the check of the team), the week of the studio in\n"
+"  Lome (the vendors of Lome at the studio, the others from home with a host;\n"
+"  Saturday full with a waiting list; a remote live without host), the replays of the\n"
+"  last week with the products shown, a live held while the team checks a Mobile\n"
+"  Money payment, a package with a live left to place.\n"
+"- Two more checking windows (midday, afternoon): the directory has lives from 8:00 to\n"
+"  21:00. The bookings have no opening date (the lives of the last week took place).\n"
+"- Shop: a dress in 2 colours and 4 sizes with its stock, delivery prices (OCD\n"
+"  couriers, agencies, prices of a vendor), parcels at every step (to prepare, ready,\n"
+"  on the way, delivered, problem, late), cash with a courier, bills of the vendors\n"
+"  and payouts to check.\n"
+"- WhatsApp: conversations of customers and vendors, on an archived account; no\n"
+"  WhatsApp message is ever sent to the contacts of the demo (ocd_live_demo_whatsapp).\n"
 "- Payment: the Mobile Money checked by the team with example numbers, and the\n"
 "  payment at the door.\n"
 "\n"
-"The dates are set from the day of the installation. Uninstalling the module\n"
-"cancels and removes all these records, and puts the payment methods back as\n"
-"they were.\n"
+"Uninstalling the module cancels and removes all these records, and puts the payment\n"
+"methods and the opening date of the bookings back as they were.\n"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:ocd.directory.window,name:ocd_live_demo.window_afternoon
+msgid "Afternoon"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_attieke
+msgid "Attiéké poisson braisé (plat)"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_attieke
+msgid "Attiéké, poisson braisé, tomates et oignons, piment à part."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_boubou
+msgid "Bazin riche, broderie dorée au col, tailles M à XXL."
 msgstr ""
 
 #. module: ocd_live_demo
@@ -57,6 +81,26 @@ msgid "Bleu"
 msgstr ""
 
 #. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_ecouteurs
+msgid "Bluetooth, 24 h d'autonomie avec le boîtier, garantie 6 mois."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_boubou
+msgid "Boubou en bazin brodé"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_powerbank
+msgid "Charge rapide, deux sorties USB et une USB-C, garantie 6 mois."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_chargeur
+msgid "Chargeur rapide 25 W"
+msgstr ""
+
+#. module: ocd_live_demo
 #: model:product.template,description_sale:ocd_live_demo.product_wax_shirt
 msgid "Chemise manches courtes en wax, coton."
 msgstr ""
@@ -64,6 +108,16 @@ msgstr ""
 #. module: ocd_live_demo
 #: model:product.template,name:ocd_live_demo.product_wax_shirt
 msgid "Chemise wax homme"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_perruque
+msgid "Cheveux naturels, lace frontale, couleur naturelle."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:ir.model,name:ocd_live_demo.model_res_partner
+msgid "Contact"
 msgstr ""
 
 #. module: ocd_live_demo
@@ -87,6 +141,27 @@ msgid "Delivered within 24 to 48 hours"
 msgstr ""
 
 #. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo__display_name
+#: model:ir.model.fields,field_description:ocd_live_demo.field_res_partner__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_ensemble_pagne
+msgid "Ensemble pagne sur mesure"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_foulard_pagne
+msgid "Foulard de tête en pagne, ourlé, à nouer ou à porter en turban."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_foulard_pagne
+msgid "Foulard en pagne"
+msgstr ""
+
+#. module: ocd_live_demo
 #: model:product.template,name:ocd_live_demo.product_chocolate_cake
 msgid "Gâteau au chocolat"
 msgstr ""
@@ -94,6 +169,32 @@ msgstr ""
 #. module: ocd_live_demo
 #: model:product.template,name:ocd_live_demo.product_pineapple_cake
 msgid "Gâteau à l'ananas"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_ensemble_pagne
+msgid "Haut et jupe cousus à tes mesures, pagne fourni ou à choisir."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo__id
+#: model:ir.model.fields,field_description:ocd_live_demo.field_res_partner__id
+msgid "ID"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_bissap
+msgid "Jus d'hibiscus fait maison, peu sucré, à boire bien frais."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_bissap
+msgid "Jus de bissap 1 L"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_kente
+msgid "Kente tissé à la main à Bonwire, 2 m, franges aux deux bouts."
 msgstr ""
 
 #. module: ocd_live_demo
@@ -112,8 +213,33 @@ msgid "M"
 msgstr ""
 
 #. module: ocd_live_demo
+#: model:ocd.directory.window,name:ocd_live_demo.window_midday
+msgid "Midday"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_montre
+msgid "Montre connectée"
+msgstr ""
+
+#. module: ocd_live_demo
 #: model:product.template,name:ocd_live_demo.product_ndole
 msgid "Ndolé crevettes (plat)"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_montre
+msgid "Notifications WhatsApp, pas, sommeil et rythme du cœur ; 7 jours d'autonomie."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:ir.model,name:ocd_live_demo.model_ocd_live_demo
+msgid "OCD Live Demo"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:ir.actions.server,name:ocd_live_demo.ir_cron_keep_current_ir_actions_server
+msgid "OCD Live demo: keep the lives of the demo current"
 msgstr ""
 
 #. module: ocd_live_demo
@@ -124,6 +250,46 @@ msgstr ""
 #. module: ocd_live_demo
 #: model:product.template,name:ocd_live_demo.product_wax_pagne
 msgid "Pagne wax 6 yards"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_pagne_hollandais
+msgid "Pagne wax hollandais 6 yards"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_panier
+msgid "Panier en osier tressé"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_perruque
+msgid "Perruque bob 12 pouces"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_poulet_dg
+msgid "Poulet DG (plat)"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_poulet_dg
+msgid "Poulet, plantains mûrs frits, carottes et haricots verts."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_powerbank
+msgid "Power bank 20 000 mAh"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_chargeur
+msgid "Prise USB-C, câble de 1 m inclus."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_smartphone
+msgid "Reconditionné et testé, batterie neuve, garantie 6 mois."
 msgstr ""
 
 #. module: ocd_live_demo
@@ -167,16 +333,51 @@ msgid "Sent through a travel agency within 4 to 7 days"
 msgstr ""
 
 #. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_theiere
+msgid "Service à thé ataya"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_smartphone
+msgid "Smartphone reconditionné 128 Go"
+msgstr ""
+
+#. module: ocd_live_demo
 #: model:product.attribute,name:ocd_live_demo.attribute_size
 msgid "Taille"
 msgstr ""
 
 #. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_theiere
+msgid "Théière, plateau et 6 verres pour le thé à la menthe."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_panier
+msgid "Tressé à la main à Dakar, avec anses."
+msgstr ""
+
+#. module: ocd_live_demo
 #: model:ir.module.module,summary:base.module_ocd_live_demo
-msgid "Vendors, lives, directory links, shop orders and parcels to show OCD Live. Uninstall the module to remove them all."
+msgid "Vendors in 8 countries, lives kept on the days around today, directory links, shop orders and parcels to show OCD Live. Uninstall the module to remove them all."
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,description_sale:ocd_live_demo.product_pagne_hollandais
+msgid "Wax hollandais en coton, 6 yards (5,5 m), motifs du Grand Marché de Lomé."
 msgstr ""
 
 #. module: ocd_live_demo
 #: model:product.attribute.value,name:ocd_live_demo.attribute_size_xl
 msgid "XL"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_kente
+msgid "Écharpe en kente"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:product.template,name:ocd_live_demo.product_ecouteurs
+msgid "Écouteurs sans fil"
 msgstr ""

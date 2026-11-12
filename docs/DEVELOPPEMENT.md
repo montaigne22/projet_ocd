@@ -45,16 +45,24 @@ odoo -c odoo.conf -d ocd_demo -i ocd_live_demo --stop-after-init
 odoo -c odoo.conf -d ocd_demo
 ```
 
-La démo remplit tous les écrans : vendeurs et lives (payé, en attente, replay, liste d'attente),
-annuaire, produits avec photos, robe en 2 couleurs et 4 tailles avec leur stock (« Plus que 3 »,
-taille épuisée, savon épuisé), tarifs de livraison (Douala, agences, prix de Fatou), colis à préparer,
-prêt, en route, livrés, en problème et en retard, espèces chez un livreur, factures des vendeuses et
-reversements à vérifier (si la comptabilité existait avant la démo), trois livreurs dont un en repos.
-Elle publie le paiement à la livraison (une commande du shop peut être payée de bout en bout) et active
-le Mobile Money vérifié par l'équipe, avec des numéros d'exemple.
+La démo montre OCD Live **en service le jour même** : 15 vendeurs dans 8 pays (Togo, Cameroun, Côte
+d'Ivoire, Sénégal, Bénin, Ghana, Nigeria, diaspora à Paris), chacun avec ses produits, son lien de live et
+ses heures ; les lives de l'annuaire dans la fenêtre du moment (la démo ajoute les fenêtres « Midi » et
+« Après-midi » : des lives de 8 h à 21 h), la semaine du studio (samedi complet, liste d'attente, un live
+sans animatrice), les replays de la semaine passée avec les produits montrés, un paiement Mobile Money à
+vérifier ; le shop de Douala (robe en 2 couleurs et 4 tailles, « Plus que 3 », tailles épuisées, colis à
+chaque étape, espèces chez un livreur, reversements à vérifier si la comptabilité existait avant la
+démo). Une action planifiée (toutes les 15 minutes) la tient sur les jours autour d'aujourd'hui : rien à
+refaire avant une présentation. Le scénario de présentation, vendeur par vendeur et heure par heure, est
+dans [`DEMO.md`](DEMO.md).
+
+Elle publie le paiement à la livraison, active le Mobile Money vérifié par l'équipe (numéros d'exemple)
+et ouvre les réservations sans date d'ouverture. Aucun message WhatsApp ne part vers ses contacts, dont
+les numéros sont des exemples : `ocd_live_demo_whatsapp` s'installe avec elle quand WhatsApp est là.
 Le stock est posé sans mouvement de stock et les colis livrés ne valident pas le transfert : la
-désinstallation de `ocd_live_demo` retire tout (contacts, produits, photos, stocks, commandes, factures,
-reversements, tarifs) et remet les moyens de paiement comme avant.
+désinstallation de `ocd_live_demo` retire tout (contacts, produits, photos, stocks, lives, commandes,
+paiements, factures, reversements, tarifs, fenêtres) et remet les moyens de paiement et la date
+d'ouverture comme avant.
 
 Le site : `/ocd` (réserver), `/lives` (annuaire), `/shop`. Le back-office : application **OCD Live**.
 
@@ -71,6 +79,9 @@ odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_l
 n'existent pas encore dans la base, et le site répond « Page introuvable » (404) ; c'est arrivé sur « Moi »
 avec la page de l'équipe. La version d'un module augmente quand ses vues ou ses données changent, pour les
 outils qui ne mettent à jour qu'un module dont la version a changé.
+
+Avec la démo, ajouter `ocd_live_demo` à la liste : sa mise à jour met le nouveau scénario en place et
+installe `ocd_live_demo_whatsapp` (voir [`DEMO.md`](DEMO.md)).
 
 Les changements à faire une seule fois sur une base existante sont dans `migrations/` de chaque module
 (ex. `ocd_live` 20.0.1.1.0 : accueil d'OCD Live sur `/`, site en français, logo, menus traduits).
@@ -91,7 +102,9 @@ odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_l
 Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Avec OCD, un test de
 `whatsapp_cloud_sale` échoue, c'est voulu : « commande expédiée » y est remplacé par les messages des colis.
 
-Puis la démo sur une autre base neuve : les mêmes modules et `ocd_live_demo`, avec `--test-tags /ocd_live_demo`.
+Puis la démo sur une autre base neuve : les mêmes modules et `ocd_live_demo`, avec
+`--test-tags /ocd_live_demo,/ocd_live_demo_whatsapp` (la démo change les fenêtres et remplit le fil : les
+tests d'`ocd_live` se lancent sur une base sans elle).
 Les tests du site (HttpCase) ont besoin d'un port libre (`--http-port=8079` si la démo tourne sur 8069).
 
 ## Modèles WhatsApp

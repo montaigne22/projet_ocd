@@ -1,7 +1,7 @@
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
 
-from .common import OcdLiveCommon
+from .common import OcdLiveCommon, pending_payment
 
 
 @tagged("post_install", "-at_install")
@@ -64,4 +64,14 @@ class TestOcdLivePlanning(OcdLiveCommon):
         with self.assertRaises(AccessError):
             booking.with_user(team).action_ocd_mark_paid()
         booking.action_ocd_mark_paid()
+        self.assertEqual(booking.state, "confirmed")
+
+    def test_mobile_money_checked_by_the_team(self):
+        """The vendor chose the Mobile Money checked by the team: once the money is seen, the team
+        marks it paid from the planning and the live is confirmed."""
+        booking = self.env["ocd.live.booking"]._ocd_book_from_website(self.vendor, self.discovery, self.starts[7], "studio")
+        transaction = pending_payment(self, booking.sale_order_id)
+        booking.action_ocd_mark_paid()
+        self.assertEqual(transaction.state, "done")
+        self.assertEqual(booking.sale_order_id.state, "sale")
         self.assertEqual(booking.state, "confirmed")

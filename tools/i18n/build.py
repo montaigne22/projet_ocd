@@ -25,6 +25,7 @@ MODULES = {
     "ocd_live_recruitment": [ns["RECRUITMENT"], ns["RECRUITMENT3"], ns["RECRUITMENT_FRAME"]],
     "ocd_delivery_togo": [ns["TOGO"]],
     "ocd_live_demo": [ns["DEMO"], ns["RATES_DEMO"]],
+    "ocd_live_demo_whatsapp": [ns["DEMO_WHATSAPP"]],
     "ocd_debranding": [ns["NO_ODOO"]],
     "theme_ocd": [ns["THEME"]],
 }

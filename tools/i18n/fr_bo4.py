@@ -668,30 +668,49 @@ le franc d'Afrique de l'Ouest (XOF, Togo) ont la même valeur.
 Données de démonstration d'OCD Live
 ===================================
 
-Tout ce qu'il faut pour montrer OCD Live, dans un module qui se retire :
+Tout ce qu'il faut pour présenter OCD Live, dans un module qui se retire :
 
-- Des vendeurs au Togo, au Cameroun, au Bénin, en Côte d'Ivoire et au Sénégal, avec
-  leur catégorie, leur mode de vente et leur mode de livraison ; des clients ; trois
-  livreurs OCD à Douala, dont un en repos.
-- Des animatrices des lives à distance, des prix des heures (samedi soir +25 %, lundi
-  matin -15 %).
-- Des lives : un live payé au studio, un paquet avec un live placé et un à placer, un
-  créneau gardé pendant le paiement, un live passé avec son replay et les produits
-  montrés, une liste d'attente.
-- L'annuaire : des pass et des liens de live, en ligne pendant la fenêtre de
-  vérification.
-- Le shop : des produits avec photos, une robe en 2 couleurs et 4 tailles avec son
-  stock, des prix de livraison (livreurs OCD, agences, prix d'une vendeuse), des colis
-  à chaque étape (à préparer, prêt, en route, livré, problème, en retard), des espèces
-  chez un livreur, les factures des vendeuses et des reversements à vérifier.
-- WhatsApp : des conversations de clients et de vendeurs (en attente de réponse, un
-  colis en route, une conversation de plus de 24 heures), sur un compte archivé : rien
-  n'est envoyé à Meta.
+- 15 vendeurs au Togo, au Cameroun, en Côte d'Ivoire, au Sénégal, au Bénin, au Ghana,
+  au Nigeria et à Paris (la diaspora), chacun avec une histoire cohérente : sa ville, sa
+  catégorie, ses produits avec photos, son lien de live et ses heures ; des clients ;
+  trois livreurs OCD à Douala, dont un en repos.
+- Des lives tenus à jour par une action planifiée, quel que soit le jour de la
+  présentation : les lives de l'annuaire dans la fenêtre de vérification du moment (les
+  plats le matin, téléphones et beauté à midi, maison et tissus l'après-midi, vêtements
+  le soir ; un lien attend la vérification de l'équipe), la semaine du studio de Lomé
+  (les vendeurs de Lomé au studio, les autres depuis chez eux avec une animatrice ;
+  samedi complet avec une liste d'attente ; un live à distance sans animatrice), les
+  replays de la semaine passée avec les produits montrés, un live gardé pendant que
+  l'équipe vérifie un paiement Mobile Money, un paquet avec un live à placer.
+- Deux fenêtres de vérification de plus (midi, après-midi) : l'annuaire a des lives de
+  8 h à 21 h. Les réservations n'ont pas de date d'ouverture (les lives de la semaine
+  passée ont eu lieu).
+- Le shop : une robe en 2 couleurs et 4 tailles avec son stock, des prix de livraison
+  (livreurs OCD, agences, prix d'une vendeuse), des colis à chaque étape (à préparer,
+  prêt, en route, livré, problème, en retard), des espèces chez un livreur, les factures
+  des vendeuses et des reversements à vérifier.
+- WhatsApp : des conversations de clients et de vendeurs, sur un compte archivé ; aucun
+  message WhatsApp n'est jamais envoyé aux contacts de la démo (ocd_live_demo_whatsapp).
 - Le paiement : le Mobile Money vérifié par l'équipe avec des numéros d'exemple, et le
   paiement à la livraison.
 
-Les dates partent du jour de l'installation. La désinstallation du module annule et
-retire tous ces enregistrements, et remet les moyens de paiement comme avant.
+La désinstallation du module annule et retire tous ces enregistrements, et remet les
+moyens de paiement et la date d'ouverture des réservations comme avant.
+""",
+    "ocd_live_demo_whatsapp": """
+Aucun message WhatsApp aux contacts de la démo
+==============================================
+
+La démo d'OCD Live réserve des lives, vend des pass et fait avancer des colis chaque
+jour pour ses vendeurs, clients et livreurs, dont les numéros sont des exemples. Quand
+un vrai compte WhatsApp est connecté (par exemple sur un serveur de présentation), les
+tickets, rappels et messages des colis de ces contacts partiraient chez des inconnus.
+
+Ce module, installé avec la démo quand WhatsApp est là, tient tous les modèles WhatsApp
+loin des contacts de la démo : aucun message n'est mis en file pour eux, et la fenêtre
+d'envoi de WhatsApp dit pourquoi. Les autres contacts ne sont pas concernés.
+
+Il se retire avec la démo.
 """,
     "ocd_debranding": """
 Sans la marque Odoo

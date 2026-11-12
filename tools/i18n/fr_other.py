@@ -123,4 +123,20 @@ TOGO = {
 DEMO = {
     "OCD Live: Demo Data": "OCD Live : données de démonstration",
     "Vendors, lives, directory links, shop orders and parcels to show OCD Live. Uninstall the module to remove them all.": "Vendeurs, lives, liens de l'annuaire, commandes et colis pour montrer OCD Live. Désinstalle le module pour tout retirer.",
+    "Vendors in 8 countries, lives kept on the days around today, directory links, shop orders and parcels to show OCD Live. Uninstall the module to remove them all.":
+        "Vendeurs dans 8 pays, lives tenus à jour autour d'aujourd'hui, liens de l'annuaire, commandes et colis pour présenter OCD Live. Désinstalle le module pour tout retirer.",
+    "Midday": "Midi",
+    "Afternoon": "Après-midi",
+    "OCD Live Demo": "Démo d'OCD Live",
+    "OCD Live demo: keep the lives of the demo current": "Démo d'OCD Live : garder les lives de la démo à jour",
+}
+
+# The module that keeps WhatsApp away from the contacts of the demo
+DEMO_WHATSAPP = {
+    "OCD Live: No WhatsApp To The Demo Contacts": "OCD Live : pas de WhatsApp aux contacts de la démo",
+    "The vendors, customers and couriers of the demo have example numbers: no WhatsApp message is sent to them, even when a real WhatsApp account is connected.":
+        "Les vendeurs, clients et livreurs de la démo ont des numéros d'exemple : aucun message WhatsApp ne leur est envoyé, même quand un vrai compte WhatsApp est connecté.",
+    "Contact of the demo of OCD Live: its number is an example, no message is sent to it.":
+        "Contact de la démo d'OCD Live : son numéro est un exemple, aucun message ne lui est envoyé.",
+    "WhatsApp Template": "Modèle WhatsApp",
 }

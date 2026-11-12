@@ -12,6 +12,11 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 - **Deux thèmes** : celui du site (vendeurs, clients) et celui du back-office (équipe). Ils lisent les
   mêmes couleurs et polices, dans un seul fichier : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - **Données de démonstration** dans un module à part, `ocd_live_demo` : le désinstaller retire tout.
+  La démo est **tenue à jour** par une action planifiée : une présentation montre toujours des lives
+  en cours, la semaine du studio et les replays récents, quel que soit le jour. Ses vendeurs ont des
+  histoires cohérentes (ville, produits, heures, plateforme ; studio pour Lomé, à distance ailleurs) et
+  **ne reçoivent jamais de WhatsApp** (numéros d'exemple, `ocd_live_demo_whatsapp`). Elle ajoute deux
+  fenêtres de vérification (midi, après-midi) pour avoir des lives de 8 h à 21 h. Scénario : `DEMO.md`.
 - **Voix des pages** en plusieurs langues (français, éwé, etc.), enregistrées par l'équipe.
 - **L'adresse du site (`/`) ouvre l'accueil d'OCD Live** (`/ocd`), et non la page vide d'Odoo.
 - **Le site est en français par défaut** quand le français est installé ; les autres langues restent
@@ -90,7 +95,9 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   d'un lien, puis le contenu change seul ; les visiteurs, les formulaires et le paiement gardent les pages
   normales.
 - **Fil des lives comme TikTok** : une carte par écran, le pays de la personne d'abord, puis les autres
-  pays (les plus actifs d'abord) ; prochains lives et replays quand aucun live n'est vérifié. Les lives
+  pays (les plus actifs d'abord) ; prochains lives et replays quand aucun live n'est vérifié. **Un seul
+  prochain live et un seul replay par vendeur** (le plus proche, le plus récent ; les autres sont dans sa
+  boutique) : un pays où les vendeurs réservent beaucoup ne repousse pas les lives des autres pays. Les lives
   restent sur TikTok, Facebook… (ces plateformes ne laissent pas lire un live ailleurs) : la carte y mène.
 - Annuaire : liens vérifiés pendant les **créneaux de vérification** (8:00–11:00 et 18:00–21:00 par défaut),
   retirés à la fin du créneau. **Pass de 30 jours** pour envoyer ses liens (5 000 F par défaut).

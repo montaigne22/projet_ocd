@@ -2,7 +2,7 @@
 
 Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 
-## Où en est le projet (11 novembre 2026)
+## Où en est le projet (12 novembre 2026)
 
 | Domaine | État |
 |---|---|
@@ -33,13 +33,16 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
 | Togo (villes, quartiers, livraison) | ✅ fait |
 | Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements) | ✅ fait, testé |
+| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
-Derniers tests lancés (11 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **351 tests, un seul
+Derniers tests lancés (12 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
+`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **353 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
-ceux des colis). Sur une base neuve avec la démo, 5 tests sans échec : la démo remplit les écrans,
-conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
+ceux des colis). Sur une base neuve avec la démo, 11 tests sans échec : la démo remplit les écrans et se
+tient à jour (semaine du studio, annuaire fenêtre par fenêtre, fil de chaque pays, paiement à vérifier,
+le lendemain, rien ne s'empile), aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle sans
+rien laisser.
 
 ## Reste à faire, par priorité
 
@@ -73,6 +76,38 @@ conversations WhatsApp comprises, puis se désinstalle sans rien laisser.
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 12 novembre 2026 — démo de présentation : 8 pays, tenue à jour
+- **15 vendeurs dans 8 pays**, chacun avec une histoire cohérente (ville, ce qu'il vend, produits avec
+  photos, lien de live, heures) : Togo (Awa, Ama Pagnes, Kossi Tech, Yao à vérifier), Cameroun (Brenda,
+  Fatou, Papa Ndolé), Côte d'Ivoire (Junior, Adjoua Attiéké), Sénégal (Aminata, Moussa Bazin), Bénin
+  (Mireille), Ghana (Akua Kente), Nigeria (Chioma Hair), Paris (Kadi Épices, la diaspora). 16 produits
+  de plus, dessinés dans le style des photos de la démo.
+- **Tenue à jour** par une action planifiée (toutes les 15 minutes), quel que soit le jour de la
+  présentation : lives de l'annuaire dans la fenêtre du moment (un lien attend toujours l'équipe), semaine
+  du studio (les vendeurs de Lomé au studio, les autres à distance avec une animatrice ; samedi complet et
+  liste d'attente ; un live sans animatrice), replays de la semaine passée avec les produits montrés, un
+  paiement Mobile Money de Kossi à vérifier, les pass rachetés. Chaque live est payé à sa réservation
+  (prix de l'heure compris) et daté comme en vrai : le tableau de bord et le graphique sont réalistes.
+  Elle n'ajoute que ce qui manque : ce que l'équipe fait pendant une présentation reste.
+- **Deux fenêtres de vérification de plus dans la démo** (Midi 11 h – 14 h 30, Après-midi 14 h 30 – 18 h) :
+  l'annuaire a des lives de 8 h à 21 h, chacun d'environ trois heures. Les réservations n'ont plus de
+  date d'ouverture dans la démo (remise à la désinstallation).
+- **Aucun WhatsApp vers les contacts de la démo** (`ocd_live_demo_whatsapp`, installé avec elle quand
+  WhatsApp est là) : avec le vrai compte connecté, les tickets, rappels et messages des colis de ces
+  numéros d'exemple partaient chez des inconnus. La fenêtre d'envoi de WhatsApp dit pourquoi.
+- **Fil des lives** : un seul prochain live et un seul replay par vendeur (les autres sont dans sa
+  boutique). Avec les données réalistes, un visiteur de Lomé voyait 2 lives puis 14 prochains lives
+  togolais avant le premier live d'un autre pays.
+- **Correction trouvée grâce à la démo** : « Paiement reçu : marquer payé » (planning) échouait sur un
+  Mobile Money choisi par le vendeur (Odoo 20 protège les transactions) ; il confirme maintenant le
+  paiement et le live.
+- **Scénario de présentation** dans [`DEMO.md`](DEMO.md) : les vendeurs, qui est en live à quelle heure,
+  le parcours du visiteur, du vendeur et de l'équipe en 20 minutes, ce qu'il faut savoir avant de
+  présenter (liens et numéros d'exemple).
+- Mise à jour d'une démo installée avant : `-u ocd_live_demo` met le scénario en place, installe
+  `ocd_live_demo_whatsapp` et retire l'ancien live de Brenda au studio (elle est à Douala).
+  `ocd_live_demo` 20.0.1.1.0, `ocd_live_demo_whatsapp` 20.0.1.0.0 (nouveau).
 
 ### 11 novembre 2026 — photos des produits, replay lu dans la page, retour en stock
 - **Photos du produit** : la photo s'ouvre en plein écran (glisser d'une photo à l'autre, pincer ou

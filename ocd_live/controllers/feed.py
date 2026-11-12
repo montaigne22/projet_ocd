@@ -52,19 +52,35 @@ def _raw_items(now):
     ], order="start_datetime")
     for booking in studio.filtered(lambda b: b.partner_id.id not in live_vendors):
         items.append(("s%s" % booking.id, "studio", booking, booking.partner_id.country_id, booking.start_datetime))
+    # One card per vendor for what comes and for what can be watched again: its next live, its
+    # last replay (the others are in its boutique), so that a busy country does not push the
+    # lives of the other countries far down the feed
     coming = Booking.search([
         ("state", "=", "confirmed"), ("start_datetime", ">", now),
         ("start_datetime", "<", now + timedelta(days=NEXT_DAYS)), *vendor_ok,
-    ], order="start_datetime", limit=MAX_ITEMS)
-    for booking in coming:
+    ], order="start_datetime")
+    for booking in _first_per_vendor(coming):
         items.append(("n%s" % booking.id, "next", booking, booking.partner_id.country_id, booking.start_datetime))
     replays = Booking.search([
         ("replay_published", "=", True), ("replay_url", "!=", False), ("end_datetime", "<=", now),
         ("end_datetime", ">", now - timedelta(days=REPLAY_DAYS)), *vendor_ok,
-    ], order="end_datetime desc", limit=MAX_ITEMS)
-    for booking in replays:
+    ], order="end_datetime desc")
+    for booking in _first_per_vendor(replays):
         items.append(("r%s" % booking.id, "replay", booking, booking.partner_id.country_id, booking.end_datetime))
     return items
+
+
+def _first_per_vendor(bookings):
+    """The first live of each vendor among `bookings` (in their order), at most MAX_ITEMS."""
+    seen = set()
+    first = []
+    for booking in bookings:
+        if booking.partner_id.id not in seen:
+            seen.add(booking.partner_id.id)
+            first.append(booking)
+            if len(first) >= MAX_ITEMS:
+                break
+    return first
 
 
 def _sort_moment(kind, moment):
