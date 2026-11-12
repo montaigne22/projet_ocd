@@ -25,6 +25,15 @@ PLACEHOLDER_RE = re.compile(r"{{\s*(\w+)\s*}}")
 # alone are not text for Meta: "... : {{2}}." ends with a variable, "{{1}}, {{2}}" puts two
 # variables next to each other.
 TEXT_RE = re.compile(r"[^\W_]")
+# What Meta reads as an authentication message (a one-time code, a password, a username, a link
+# to keep for yourself): in a Utility template it refuses it as INCORRECT_CATEGORY. A code goes
+# in an Authentication template, whose text Meta writes.
+AUTHENTICATION_RE = re.compile(
+    r"\b(?:codes?|otp|pin|passcodes?|mots? de passe|passwords?|identifiants?|usernames?|login|log in"
+    r"|se connecter|connectez-vous|lien personnel|personal link|gardez-le pour vous|keep it to yourself"
+    r"|ne le (?:partagez|communiquez)|do not share it)\b",
+    re.IGNORECASE,
+)
 # Characters kept as they are in the end of the URL of a link button; the others (spaces,
 # accents, ":", "|"...) are percent-encoded, as Meta asks.
 URL_SAFE_CHARS = "/?=&%#-._~!$'()*+,;@"
@@ -462,6 +471,38 @@ class WhatsappTemplate(models.Model):
             _("Template submitted to Meta: its review can take up to 24 hours."), "success"
         )
 
+    def action_submit_selected_to_meta(self):
+        """Submit the selected templates to Meta at once: the new ones, and the changes of the
+        refused or paused ones (e.g. after an update of the module gave them new texts). The
+        approved ones and the ones waiting for Meta are left as they are; a template that
+        cannot be submitted says why, the others go."""
+        submitted, errors = self.browse(), []
+        for template in self:
+            if template.wa_template_id and template.status not in ("rejected", "paused"):
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    template.action_submit_to_meta()
+                submitted |= template
+            except UserError as error:
+                errors.append(f"{template.template_name} ({template.lang_code}): {error.args[0]}")
+        if not submitted and not errors:
+            message, kind = _("Nothing to submit: the selected templates are approved or waiting for Meta."), "info"
+        else:
+            message = (
+                _("1 template submitted to Meta: its review can take up to 24 hours.") if len(submitted) == 1
+                else _("%s templates submitted to Meta: its review can take up to 24 hours.", len(submitted))
+            )
+            kind = "success"
+            if errors:
+                message = _("%(message)s Not submitted: %(errors)s", message=message, errors=" · ".join(errors))
+                kind = "warning"
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {"message": message, "type": kind, "sticky": bool(errors)},
+        }
+
     def _check_for_meta(self):
         """The rules of Meta for a template, checked before submitting it."""
         self.ensure_one()
@@ -485,6 +526,16 @@ class WhatsappTemplate(models.Model):
                 "The text cannot start or end with a variable: write words before the first "
                 "variable and after the last one (a punctuation mark is not enough for Meta)."
             ))
+        if self.category == "utility":
+            found = AUTHENTICATION_RE.search(" ".join(
+                (self.header_text or "", body, self.footer_text or "", *self.button_ids.mapped("name"))
+            ))
+            if found:
+                raise UserError(_(
+                    "Meta takes this text for a login message (« %s ») and refuses it as a Utility "
+                    "template (INCORRECT_CATEGORY). Write what happened without this word: a code "
+                    "goes in an Authentication template.", found.group(0),
+                ))
         if self.header_type == "text" and len(self.header_text or "") > 60:
             raise UserError(_("The header is too long: 60 characters at most."))
         if len(self.footer_text or "") > 60:

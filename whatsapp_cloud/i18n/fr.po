@@ -1,19 +1,17 @@
 # Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* whatsapp_cloud
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 08:44+0000\n"
-"PO-Revision-Date: 2026-11-03 08:44+0000\n"
+"POT-Creation-Date: 2026-11-12 19:37+0000\n"
+"PO-Revision-Date: 2026-11-12 19:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: whatsapp_cloud
@@ -77,6 +75,12 @@ msgstr ""
 
 #. module: whatsapp_cloud
 #. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "%(message)s Not submitted: %(errors)s"
+msgstr "%(message)s Pas soumis : %(errors)s"
+
+#. module: whatsapp_cloud
+#. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
 msgid "%(quantity)s x %(product)s (%(price)s %(currency)s)"
 msgstr "%(quantity)s x %(product)s (%(price)s %(currency)s)"
@@ -95,6 +99,12 @@ msgstr "%s documents"
 
 #. module: whatsapp_cloud
 #. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "%s templates submitted to Meta: its review can take up to 24 hours."
+msgstr "%s modèles soumis à Meta : leur examen peut prendre jusqu’à 24 heures."
+
+#. module: whatsapp_cloud
+#. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
 msgid "(Message not supported by WhatsApp Cloud API: %s)"
 msgstr "(Message non pris en charge par l’API Cloud de WhatsApp : %s)"
@@ -103,9 +113,7 @@ msgstr "(Message non pris en charge par l’API Cloud de WhatsApp : %s)"
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
 msgid "(The %(type)s sent by the customer could not be downloaded: %(error)s)"
-msgstr ""
-"(Le fichier (%(type)s) envoyé par le client n’a pas pu être téléchargé : "
-"%(error)s)"
+msgstr "(Le fichier (%(type)s) envoyé par le client n’a pas pu être téléchargé : %(error)s)"
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -120,6 +128,12 @@ msgid "(reaction removed)"
 msgstr "(réaction retirée)"
 
 #. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "1 template submitted to Meta: its review can take up to 24 hours."
+msgstr "1 modèle soumis à Meta : son examen peut prendre jusqu’à 24 heures."
+
+#. module: whatsapp_cloud
 #. odoo-javascript
 #: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
 msgid "24-hour window closed: send a template"
@@ -130,10 +144,7 @@ msgstr "Fenêtre de 24 h fermée : envoyez un modèle"
 msgid ""
 "<span class=\"o_form_label\" invisible=\"whatsapp_account_count &gt; 1\">Account</span>\n"
 "                                <span class=\"o_form_label\" invisible=\"whatsapp_account_count &lt;= 1\">Accounts</span>"
-msgstr ""
-"<span class=\"o_form_label\" invisible=\"whatsapp_account_count &gt; "
-"1\">Compte</span> <span class=\"o_form_label\" "
-"invisible=\"whatsapp_account_count &lt;= 1\">Comptes</span>"
+msgstr "<span class=\"o_form_label\" invisible=\"whatsapp_account_count &gt; 1\">Compte</span> <span class=\"o_form_label\" invisible=\"whatsapp_account_count &lt;= 1\">Comptes</span>"
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_form
@@ -151,56 +162,29 @@ msgid ""
 "                        <span invisible=\"action not in ('stop', 'start')\">The customer stops, or receives again,\n"
 "                            the WhatsApp notifications (as with STOP and START): only the useful option is offered.</span>\n"
 "                        <span invisible=\"action != 'handover'\">The conversation goes to the team.</span>"
-msgstr ""
-"<span invisible=\"action != 'text'\">Envoie la réponse ci-dessous.</span> "
-"<span invisible=\"action != 'submenu'\">Envoie le texte ci-dessous avec les "
-"options du sous-menu et un choix « Menu principal » (9 options au "
-"plus).</span> <span invisible=\"action != 'lang'\">Le client reçoit ensuite "
-"les réponses, les menus et les notifications dans cette langue. Non proposée"
-" aux clients qui l’utilisent déjà.</span> <span invisible=\"action not in "
-"('stop', 'start')\">Le client arrête, ou reçoit à nouveau, les notifications"
-" WhatsApp (comme avec STOP et START) : seule l’option utile est "
-"proposée.</span> <span invisible=\"action != 'handover'\">La conversation "
-"passe à l’équipe.</span>"
+msgstr "<span invisible=\"action != 'text'\">Envoie la réponse ci-dessous.</span> <span invisible=\"action != 'submenu'\">Envoie le texte ci-dessous avec les options du sous-menu et un choix « Menu principal » (9 options au plus).</span> <span invisible=\"action != 'lang'\">Le client reçoit ensuite les réponses, les menus et les notifications dans cette langue. Non proposée aux clients qui l’utilisent déjà.</span> <span invisible=\"action not in ('stop', 'start')\">Le client arrête, ou reçoit à nouveau, les notifications WhatsApp (comme avec STOP et START) : seule l’option utile est proposée.</span> <span invisible=\"action != 'handover'\">La conversation passe à l’équipe.</span>"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__bot_enabled
-msgid ""
-"A new conversation starts with the welcome message and the menu of the "
-"options; the conversation goes to an agent when the customer asks for it or "
-"writes something the menu does not handle."
-msgstr ""
-"Une nouvelle conversation commence par le message d’accueil et le menu des "
-"options ; elle passe à un agent quand le client le demande ou écrit quelque "
-"chose que le menu ne traite pas."
+msgid "A new conversation starts with the welcome message and the menu of the options; the conversation goes to an agent when the customer asks for it or writes something the menu does not handle."
+msgstr "Une nouvelle conversation commence par le message d’accueil et le menu des options ; elle passe à un agent quand le client le demande ou écrit quelque chose que le menu ne traite pas."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
-msgid ""
-"A new conversation starts with the welcome message and the options of the "
-"menu (texts and options on the account)."
-msgstr ""
-"Une nouvelle conversation commence par le message d’accueil et les options "
-"du menu (textes et options sur le compte)."
+msgid "A new conversation starts with the welcome message and the options of the menu (texts and options on the account)."
+msgstr "Une nouvelle conversation commence par le message d’accueil et les options du menu (textes et options sur le compte)."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"A parameter of the message is invalid (variables of the template, number, "
-"media...): check the template and its variables."
-msgstr ""
-"Un paramètre du message est invalide (variables du modèle, numéro, média…) :"
-" vérifiez le modèle et ses variables."
+msgid "A parameter of the message is invalid (variables of the template, number, media...): check the template and its variables."
+msgstr "Un paramètre du message est invalide (variables du modèle, numéro, média…) : vérifiez le modèle et ses variables."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"A parameter value is invalid: check the variables of the template and the "
-"number."
-msgstr ""
-"Une valeur est invalide : vérifiez les variables du modèle et le numéro."
+msgid "A parameter value is invalid: check the variables of the template and the number."
+msgstr "Une valeur est invalide : vérifiez les variables du modèle et le numéro."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -241,10 +225,8 @@ msgstr "Un modèle a 2 boutons lien au plus."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"A variable of the template is invalid: check the variables of the template."
-msgstr ""
-"Une variable du modèle est invalide : vérifiez les variables du modèle."
+msgid "A variable of the template is invalid: check the variables of the template."
+msgstr "Une variable du modèle est invalide : vérifiez les variables du modèle."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -273,10 +255,8 @@ msgstr "Compte"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__account_id
-msgid ""
-"Account that sends the messages; the first account of the company if empty."
-msgstr ""
-"Compte qui envoie les messages ; le premier compte de la société si vide."
+msgid "Account that sends the messages; the first account of the company if empty."
+msgstr "Compte qui envoie les messages ; le premier compte de la société si vide."
 
 #. module: whatsapp_cloud
 #: model:ir.ui.menu,name:whatsapp_cloud.whatsapp_menu_accounts
@@ -302,12 +282,8 @@ msgstr "Actif"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__escalation_user_ids
-msgid ""
-"Added to the conversations that wait too long for an answer. When empty: the"
-" WhatsApp managers."
-msgstr ""
-"Ajoutés aux conversations qui attendent trop longtemps une réponse. Si vide "
-": les responsables WhatsApp."
+msgid "Added to the conversations that wait too long for an answer. When empty: the WhatsApp managers."
+msgstr "Ajoutés aux conversations qui attendent trop longtemps une réponse. Si vide : les responsables WhatsApp."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__user_id
@@ -331,6 +307,18 @@ msgstr "Alerter les responsables après (minutes)"
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
 msgid "All the WhatsApp agents"
 msgstr "Tous les agents WhatsApp"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "An authentication template has one variable, the code ({{1}}): Meta writes the rest of the text."
+msgstr "Un modèle d'authentification a une seule variable, le code ({{1}}) : Meta écrit le reste du texte."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "An authentication template uses numbered variables ({{1}}), not named ones."
+msgstr "Un modèle d'authentification utilise des variables numérotées ({{1}}), pas des variables nommées."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__answer
@@ -365,11 +353,8 @@ msgstr "Réponses permises jusqu’au"
 
 #. module: whatsapp_cloud
 #: model:res.groups,comment:whatsapp_cloud.group_whatsapp_user
-msgid ""
-"Answers the WhatsApp conversations assigned to them or not assigned yet."
-msgstr ""
-"Répond aux conversations WhatsApp qui lui sont attribuées ou pas encore "
-"attribuées."
+msgid "Answers the WhatsApp conversations assigned to them or not assigned yet."
+msgstr "Répond aux conversations WhatsApp qui lui sont attribuées ou pas encore attribuées."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -447,6 +432,11 @@ msgstr "Audio"
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__category__authentication
 msgid "Authentication"
 msgstr "Authentification"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__code_expiration_minutes
+msgid "Authentication templates: Meta writes the text itself in the language of the template (the code, then a security advice) and adds this time in the footer, with a button that copies the code."
+msgstr "Modèles d'authentification : Meta écrit lui-même le texte dans la langue du modèle (le code, puis un conseil de sécurité) et ajoute cette durée en pied de message, avec un bouton qui copie le code."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_bot_state
@@ -540,13 +530,8 @@ msgstr "Membre du canal"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__channel_type
-msgid ""
-"Chat is private and unique between 2 persons. Group is private among invited"
-" persons. Channel can be freely joined (depending on its configuration)."
-msgstr ""
-"Le chat est privé et unique entre 2 personnes. Le groupe est privé entre les"
-" personnes invitées. Le canal peut être rejoint librement (selon sa "
-"configuration). La conversation WhatsApp relie un client et l’équipe."
+msgid "Chat is private and unique between 2 persons. Group is private among invited persons. Channel can be freely joined (depending on its configuration)."
+msgstr "Le chat est privé et unique entre 2 personnes. Le groupe est privé entre les personnes invitées. Le canal peut être rejoint librement (selon sa configuration). La conversation WhatsApp relie un client et l’équipe."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
@@ -563,6 +548,11 @@ msgstr "Choisir un modèle..."
 #: code:addons/whatsapp_cloud/models/whatsapp_bot_option.py:0
 msgid "Choose the language of the option %s."
 msgstr "Choisissez la langue de l’option %s."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__code_expiration_minutes
+msgid "Code Valid For (Minutes)"
+msgstr "Code valable (minutes)"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__color
@@ -613,20 +603,14 @@ msgstr "Contact créé"
 msgid ""
 "Contact created for a number unknown to Odoo that wrote on WhatsApp (name of their\n"
 "                    WhatsApp profile)."
-msgstr ""
-"Contact créé pour un numéro inconnu d’Odoo qui a écrit sur WhatsApp (nom de "
-"son profil WhatsApp)."
+msgstr "Contact créé pour un numéro inconnu d’Odoo qui a écrit sur WhatsApp (nom de son profil WhatsApp)."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_to_identify
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_partner__whatsapp_to_identify
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_users__whatsapp_to_identify
-msgid ""
-"Contact created for an unknown number that wrote on WhatsApp: associate it "
-"with the right contact, or confirm it."
-msgstr ""
-"Contact créé pour un numéro inconnu qui a écrit sur WhatsApp : associez-le "
-"au bon contact, ou confirmez-le."
+msgid "Contact created for an unknown number that wrote on WhatsApp: associate it with the right contact, or confirm it."
+msgstr "Contact créé pour un numéro inconnu qui a écrit sur WhatsApp : associez-le au bon contact, ou confirmez-le."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__contacts
@@ -868,38 +852,23 @@ msgstr "Chaque agent à tour de rôle"
 msgid ""
 "Each call of Meta to the webhook (messages, receipts, decisions on the templates) is kept\n"
 "               here for a month."
-msgstr ""
-"Chaque appel de Meta au webhook (messages, accusés, décisions sur les "
-"modèles) est conservé ici un mois."
+msgstr "Chaque appel de Meta au webhook (messages, accusés, décisions sur les modèles) est conservé ici un mois."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__button_url_value
-msgid ""
-"End of the URL of the link button of the template, when its URL ends with a "
-"variable, e.g. {{ object.get_portal_url() }} for a button "
-"https://shop.example.com/{{1}}."
-msgstr ""
-"Fin de l’URL du bouton lien du modèle, quand son URL se termine par une "
-"variable, par exemple {{ object.get_portal_url() }} pour un bouton "
-"https://shop.example.com/{{1}}."
+msgid "End of the URL of the link button of the template, when its URL ends with a variable, e.g. {{ object.get_portal_url() }} for a button https://shop.example.com/{{1}}."
+msgstr "Fin de l’URL du bouton lien du modèle, quand son URL se termine par une variable, par exemple {{ object.get_portal_url() }} pour un bouton https://shop.example.com/{{1}}."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"Enter the App ID of the Meta app on the WhatsApp account to submit a "
-"template with a document."
-msgstr ""
-"Saisissez l’ID de l’app Meta sur le compte WhatsApp pour soumettre un modèle"
-" avec un document."
+msgid "Enter the App ID of the Meta app on the WhatsApp account to submit a template with a document."
+msgstr "Saisissez l’ID de l’app Meta sur le compte WhatsApp pour soumettre un modèle avec un document."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_account_action
-msgid ""
-"Enter the IDs and the access token of your Meta app (WhatsApp Cloud API)."
-msgstr ""
-"Saisissez les identifiants et le jeton d’accès de votre app Meta (API Cloud "
-"WhatsApp)."
+msgid "Enter the IDs and the access token of your Meta app (WhatsApp Cloud API)."
+msgstr "Saisissez les identifiants et le jeton d’accès de votre app Meta (API Cloud WhatsApp)."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -922,8 +891,7 @@ msgstr "Code d’erreur"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/discuss_channel.py:0
-msgid ""
-"Escalation: the customer has been waiting for an answer for %s minutes."
+msgid "Escalation: the customer has been waiting for an answer for %s minutes."
 msgstr "Escalade : le client attend une réponse depuis %s minutes."
 
 #. module: whatsapp_cloud
@@ -935,10 +903,8 @@ msgstr "Exemple"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_button__url_example
-msgid ""
-"Example of the end of the URL (or of the whole URL), for the review by Meta."
-msgstr ""
-"Exemple de la fin de l’URL (ou de l’URL entière), pour l’examen par Meta."
+msgid "Example of the end of the URL (or of the whole URL), for the review by Meta."
+msgstr "Exemple de la fin de l’URL (ou de l’URL entière), pour l’examen par Meta."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_sample
@@ -947,12 +913,8 @@ msgstr "Exemple de la variable de l’en-tête, pour la vérification par Meta."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_variable__sample_value
-msgid ""
-"Example of the value, for the review of the template by Meta; when empty, "
-"the value for the latest document is used."
-msgstr ""
-"Exemple de valeur, pour la vérification du modèle par Meta ; si vide, la "
-"valeur pour le dernier document est utilisée."
+msgid "Example of the value, for the review of the template by Meta; when empty, the value for the latest document is used."
+msgstr "Exemple de valeur, pour la vérification du modèle par Meta ; si vide, la valeur pour le dernier document est utilisée."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__partner_id
@@ -985,12 +947,8 @@ msgstr "Champ du webhook WhatsApp : messages…"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__partner_field
-msgid ""
-"Field of the document that gives the contact who receives the message, e.g. "
-"partner_id (customer of an order). Ignored on the contacts themselves."
-msgstr ""
-"Champ du document qui donne le contact destinataire, ex. partner_id (client "
-"d’une commande). Ignoré sur les contacts eux-mêmes."
+msgid "Field of the document that gives the contact who receives the message, e.g. partner_id (customer of an order). Ignored on the contacts themselves."
+msgstr "Champ du document qui donne le contact destinataire, ex. partner_id (client d’une commande). Ignoré sur les contacts eux-mêmes."
 
 #. module: whatsapp_cloud
 #: model:whatsapp.template,name:whatsapp_cloud.template_conversation_follow_up
@@ -1024,12 +982,8 @@ msgstr "Pour un sous-menu : le texte au-dessus de ses options"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_channel_valid_until
-msgid ""
-"Free-form answers are allowed for 24 hours after the last message of the "
-"customer; a template is required after."
-msgstr ""
-"Les réponses libres sont permises 24 heures après le dernier message du "
-"client ; un modèle est nécessaire ensuite."
+msgid "Free-form answers are allowed for 24 hours after the last message of the customer; a template is required after."
+msgstr "Les réponses libres sont permises 24 heures après le dernier message du client ; un modèle est nécessaire ensuite."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -1115,12 +1069,8 @@ msgstr "Détails de la santé"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"Hello and welcome! How can we help you? Choose an option below, or write "
-"your question."
-msgstr ""
-"Bonjour et bienvenue ! Comment pouvons-nous vous aider ? Choisissez une "
-"option ci-dessous, ou écrivez votre question."
+msgid "Hello and welcome! How can we help you? Choose an option below, or write your question."
+msgstr "Bonjour et bienvenue ! Comment pouvons-nous vous aider ? Choisissez une option ci-dessous, ou écrivez votre question."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
@@ -1135,14 +1085,8 @@ msgstr "Élevée"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__resource_calendar_id
-msgid ""
-"Hours when the team answers, with the public holidays (Time off of the "
-"working schedule): the answer delays count only these hours, and the away "
-"message is sent outside of them."
-msgstr ""
-"Heures où l’équipe répond, avec les jours fériés (congés de l’horaire de "
-"travail) : les délais de réponse ne comptent que ces heures, et le message "
-"d’absence part en dehors."
+msgid "Hours when the team answers, with the public holidays (Time off of the working schedule): the answer delays count only these hours, and the away message is sent outside of them."
+msgstr "Heures où l’équipe répond, avec les jours fériés (congés de l’horaire de travail) : les délais de réponse ne comptent que ces heures, et le message d’absence part en dehors."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -1182,23 +1126,13 @@ msgstr "ID chez Meta"
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_partner__whatsapp_user_ref
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_users__whatsapp_user_ref
-msgid ""
-"ID of the contact for the company at WhatsApp (BSUID), given by Meta: it "
-"identifies the contacts who hide their number behind a WhatsApp username."
-msgstr ""
-"ID du contact pour la société chez WhatsApp (BSUID), donné par Meta : il "
-"identifie les contacts qui cachent leur numéro derrière un nom d’utilisateur"
-" WhatsApp."
+msgid "ID of the contact for the company at WhatsApp (BSUID), given by Meta: it identifies the contacts who hide their number behind a WhatsApp username."
+msgstr "ID du contact pour la société chez WhatsApp (BSUID), donné par Meta : il identifie les contacts qui cachent leur numéro derrière un nom d’utilisateur WhatsApp."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_message__user_ref
-msgid ""
-"ID of the customer for the company at WhatsApp (BSUID), given by Meta also "
-"when the customer hides their number behind a WhatsApp username."
-msgstr ""
-"ID du client pour la société chez WhatsApp (BSUID), donné par Meta, y "
-"compris quand le client cache son numéro derrière un nom d’utilisateur "
-"WhatsApp."
+msgid "ID of the customer for the company at WhatsApp (BSUID), given by Meta also when the customer hides their number behind a WhatsApp username."
+msgstr "ID du client pour la société chez WhatsApp (BSUID), donné par Meta, y compris quand le client cache son numéro derrière un nom d’utilisateur WhatsApp."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_user_ref
@@ -1247,41 +1181,23 @@ msgstr "En cours"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__app_id
-msgid ""
-"In the Meta app, App settings > Basic: needed only to submit templates with "
-"a document, an image or a video in their header (sample uploaded to Meta)."
-msgstr ""
-"Dans l’app Meta, Paramètres de l’app > Général : nécessaire seulement pour "
-"soumettre des modèles avec un document, une image ou une vidéo en en-tête "
-"(exemple envoyé à Meta)."
+msgid "In the Meta app, App settings > Basic: needed only to submit templates with a document, an image or a video in their header (sample uploaded to Meta)."
+msgstr "Dans l’app Meta, Paramètres de l’app > Général : nécessaire seulement pour soumettre des modèles avec un document, une image ou une vidéo en en-tête (exemple envoyé à Meta)."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__app_secret
-msgid ""
-"In the Meta app, App settings > Basic: used to check that the webhook calls "
-"come from Meta. Without it, the receipts and replies are refused."
-msgstr ""
-"Dans l’app Meta, Paramètres de l’app > Général : sert à vérifier que les "
-"appels du webhook viennent de Meta. Sans elle, les accusés et les réponses "
-"sont refusés."
+msgid "In the Meta app, App settings > Basic: used to check that the webhook calls come from Meta. Without it, the receipts and replies are refused."
+msgstr "Dans l’app Meta, Paramètres de l’app > Général : sert à vérifier que les appels du webhook viennent de Meta. Sans elle, les accusés et les réponses sont refusés."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__waba_id
-msgid ""
-"In the Meta app, WhatsApp > API Setup: the ID of the WhatsApp Business "
-"account."
-msgstr ""
-"Dans l’app Meta, WhatsApp > Configuration de l’API : l’ID du compte WhatsApp"
-" Business."
+msgid "In the Meta app, WhatsApp > API Setup: the ID of the WhatsApp Business account."
+msgstr "Dans l’app Meta, WhatsApp > Configuration de l’API : l’ID du compte WhatsApp Business."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__phone_number_id
-msgid ""
-"In the Meta app, WhatsApp > API Setup: the ID of the phone number that sends"
-" the messages."
-msgstr ""
-"Dans l’app Meta, WhatsApp > Configuration de l’API : l’ID du numéro de "
-"téléphone qui envoie les messages."
+msgid "In the Meta app, WhatsApp > API Setup: the ID of the phone number that sends the messages."
+msgstr "Dans l’app Meta, WhatsApp > Configuration de l’API : l’ID du numéro de téléphone qui envoie les messages."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
@@ -1289,11 +1205,7 @@ msgid ""
 "In the URL of a link button, {base_url} is replaced by the address of the site when\n"
 "                                the template is submitted to Meta; end it with /{{1}} to add the Link Button Variable\n"
 "                                of each document (e.g. the link of the order in the customer account)."
-msgstr ""
-"Dans l’URL d’un bouton lien, {base_url} est remplacé par l’adresse du site "
-"lors de la soumission du modèle à Meta ; terminez-la par /{{1}} pour ajouter"
-" la Variable du bouton lien de chaque document (par exemple le lien de la "
-"commande dans l’espace client)."
+msgstr "Dans l’URL d’un bouton lien, {base_url} est remplacé par l’adresse du site lors de la soumission du modèle à Meta ; terminez-la par /{{1}} pour ajouter la Variable du bouton lien de chaque document (par exemple le lien de la commande dans l’espace client)."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
@@ -1303,13 +1215,7 @@ msgid ""
 "                                message_template_quality_update, template_category_update,\n"
 "                                phone_number_quality_update and account_update: the receipts, the messages of the\n"
 "                                customers and the decisions of Meta then come back to Odoo."
-msgstr ""
-"Dans les paramètres du webhook de l’app Meta, saisissez l’URL de rappel et "
-"le jeton de vérification ci-dessus, puis abonnez-vous aux champs messages, "
-"message_template_status_update, message_template_quality_update, "
-"template_category_update, phone_number_quality_update et account_update : "
-"les accusés, les messages des clients et les décisions de Meta reviennent "
-"alors dans Odoo."
+msgstr "Dans les paramètres du webhook de l’app Meta, saisissez l’URL de rappel et le jeton de vérification ci-dessus, puis abonnez-vous aux champs messages, message_template_status_update, message_template_quality_update, template_category_update, phone_number_quality_update et account_update : les accusés, les messages des clients et les décisions de Meta reviennent alors dans Odoo."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__interactive
@@ -1357,12 +1263,8 @@ msgstr "Code de langue du modèle chez Meta : fr, en_US, en..."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_bot_option__lang
-msgid ""
-"Language of the answers, menus and notifications of the customer who chooses"
-" the option. The option is not offered to the customers who already use it."
-msgstr ""
-"Langue des réponses, menus et notifications du client qui choisit l’option. "
-"L’option n’est pas proposée aux clients qui l’utilisent déjà."
+msgid "Language of the answers, menus and notifications of the customer who chooses the option. The option is not offered to the customers who already use it."
+msgstr "Langue des réponses, menus et notifications du client qui choisit l’option. L’option n’est pas proposée aux clients qui l’utilisent déjà."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_list_whatsapp
@@ -1538,12 +1440,8 @@ msgstr "Limite d’envoi"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"Messaging limit reached because of templates in the wrong category: it is "
-"lifted automatically after a while."
-msgstr ""
-"Limite d’envoi atteinte à cause de modèles dans une mauvaise catégorie : "
-"elle est levée automatiquement après un moment."
+msgid "Messaging limit reached because of templates in the wrong category: it is lifted automatically after a while."
+msgstr "Limite d’envoi atteinte à cause de modèles dans une mauvaise catégorie : elle est levée automatiquement après un moment."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -1554,11 +1452,8 @@ msgstr "Meta (%(field)s) : %(details)s"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"Meta accepts changes only on the approved, rejected or paused templates."
-msgstr ""
-"Meta n’accepte de modifications que sur les modèles approuvés, refusés ou en"
-" pause."
+msgid "Meta accepts changes only on the approved, rejected or paused templates."
+msgstr "Meta n’accepte de modifications que sur les modèles approuvés, refusés ou en pause."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
@@ -1574,34 +1469,20 @@ msgstr "Meta bloque l’envoi des messages."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"Meta could not authenticate the request: check the access token of the "
-"account."
-msgstr ""
-"Meta n’a pas pu authentifier la requête : vérifiez le jeton d’accès du "
-"compte."
+msgid "Meta could not authenticate the request: check the access token of the account."
+msgstr "Meta n’a pas pu authentifier la requête : vérifiez le jeton d’accès du compte."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"Meta did not deliver this marketing message to keep a good experience for "
-"the customer (limit of marketing messages per person). Try again later, not "
-"as soon as possible."
-msgstr ""
-"Meta n’a pas distribué ce message marketing pour préserver l’expérience du "
-"client (limite de messages marketing par personne). Réessayez plus tard, pas"
-" tout de suite."
+msgid "Meta did not deliver this marketing message to keep a good experience for the customer (limit of marketing messages per person). Try again later, not as soon as possible."
+msgstr "Meta n’a pas distribué ce message marketing pour préserver l’expérience du client (limite de messages marketing par personne). Réessayez plus tard, pas tout de suite."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"Meta limits the messages of the number because of their quality (spam "
-"reports): send fewer messages, only to customers who agreed."
-msgstr ""
-"Meta limite les messages du numéro à cause de leur qualité (signalements) : "
-"envoyez moins de messages, seulement aux clients qui ont accepté."
+msgid "Meta limits the messages of the number because of their quality (spam reports): send fewer messages, only to customers who agreed."
+msgstr "Meta limite les messages du numéro à cause de leur qualité (signalements) : envoyez moins de messages, seulement aux clients qui ont accepté."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -1617,30 +1498,25 @@ msgstr "Meta a refusé le modèle : %s"
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
-msgid ""
-"Meta reviews the changes again. An approved template can be edited 10 times "
-"in 30 days, once a day at most."
-msgstr ""
-"Meta vérifie à nouveau les modifications. Un modèle approuvé peut être "
-"modifié 10 fois en 30 jours, une fois par jour au plus."
+msgid "Meta reviews the changes again. An approved template can be edited 10 times in 30 days, once a day at most."
+msgstr "Meta vérifie à nouveau les modifications. Un modèle approuvé peut être modifié 10 fois en 30 jours, une fois par jour au plus."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
-msgid ""
-"Meta reviews the template (up to 24 hours): it can be used once approved."
-msgstr ""
-"Meta vérifie le modèle (jusqu’à 24 heures) : il peut être utilisé une fois "
-"approuvé."
+msgid "Meta reviews the template (up to 24 hours): it can be used once approved."
+msgstr "Meta vérifie le modèle (jusqu’à 24 heures) : il peut être utilisé une fois approuvé."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Meta takes this text for a login message (« %s ») and refuses it as a Utility template (INCORRECT_CATEGORY). Write what happened without this word: a code goes in an Authentication template."
+msgstr "Meta prend ce texte pour un message de connexion (« %s ») et le refuse comme modèle Utilitaire (INCORRECT_CATEGORY). Écrivez ce qui s’est passé sans ce mot : un code va dans un modèle Authentification."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"Meta temporarily blocked the number for a policy violation: see the Meta "
-"Business Support Home."
-msgstr ""
-"Meta a bloqué temporairement le numéro pour non-respect des règles : voir "
-"l’Espace d’assistance Meta Business."
+msgid "Meta temporarily blocked the number for a policy violation: see the Meta Business Support Home."
+msgstr "Meta a bloqué temporairement le numéro pour non-respect des règles : voir l’Espace d’assistance Meta Business."
 
 #. module: whatsapp_cloud
 #. odoo-javascript
@@ -1656,32 +1532,20 @@ msgstr "Modèle"
 #. module: whatsapp_cloud
 #. odoo-javascript
 #: code:addons/whatsapp_cloud/static/src/discuss_channel_model_patch.js:0
-msgid ""
-"More than 24 hours since the last message of the customer: WhatsApp allows "
-"only a template now (Send a template)."
-msgstr ""
-"Plus de 24 heures depuis le dernier message du client : WhatsApp ne permet "
-"plus qu’un modèle (Envoyer un modèle)."
+msgid "More than 24 hours since the last message of the customer: WhatsApp allows only a template now (Send a template)."
+msgstr "Plus de 24 heures depuis le dernier message du client : WhatsApp ne permet plus qu’un modèle (Envoyer un modèle)."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/discuss_channel.py:0
-msgid ""
-"More than 24 hours since the last message of the customer: WhatsApp allows "
-"only an approved template now (Send a template)."
-msgstr ""
-"Plus de 24 heures depuis le dernier message du client : WhatsApp ne permet "
-"plus qu’un modèle approuvé (Envoyer un modèle)."
+msgid "More than 24 hours since the last message of the customer: WhatsApp allows only an approved template now (Send a template)."
+msgstr "Plus de 24 heures depuis le dernier message du client : WhatsApp ne permet plus qu’un modèle approuvé (Envoyer un modèle)."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"More than 24 hours since the last message of the customer: only an approved "
-"template can be sent (Send a template)."
-msgstr ""
-"Plus de 24 heures depuis le dernier message du client : seul un modèle "
-"approuvé peut être envoyé (Envoyer un modèle)."
+msgid "More than 24 hours since the last message of the customer: only an approved template can be sent (Send a template)."
+msgstr "Plus de 24 heures depuis le dernier message du client : seul un modèle approuvé peut être envoyé (Envoyer un modèle)."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
@@ -1703,8 +1567,7 @@ msgstr "Nom chez Meta"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__template_name
-msgid ""
-"Name of the template approved by Meta (lowercase letters, digits and _)."
+msgid "Name of the template approved by Meta (lowercase letters, digits and _)."
 msgstr "Nom du modèle approuvé par Meta (lettres minuscules, chiffres et _)."
 
 #. module: whatsapp_cloud
@@ -1767,11 +1630,8 @@ msgstr "Pas de réponse de WhatsApp (Meta) : %s"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"No app secret: the replies of the customers and the receipts are refused."
-msgstr ""
-"Pas de clé secrète de l’app : les réponses des clients et les accusés sont "
-"refusés."
+msgid "No app secret: the replies of the customers and the receipts are refused."
+msgstr "Pas de clé secrète de l’app : les réponses des clients et les accusés sont refusés."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -1848,6 +1708,12 @@ msgid "Note"
 msgstr "Note"
 
 #. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Nothing to submit: the selected templates are approved or waiting for Meta."
+msgstr "Rien à soumettre : les modèles choisis sont approuvés ou en attente chez Meta."
+
+#. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
 msgid "Notifications Subscription"
 msgstr "Abonnement aux notifications"
@@ -1885,12 +1751,8 @@ msgstr "Nombre d’actions"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__messaging_limit
-msgid ""
-"Number of customers who can receive a template outside of the 24-hour "
-"window, in 24 hours, for the whole Meta Business portfolio."
-msgstr ""
-"Nombre de clients qui peuvent recevoir un modèle hors de la fenêtre de 24 "
-"heures, en 24 heures, pour tout le portefeuille Meta Business."
+msgid "Number of customers who can receive a template outside of the 24-hour window, in 24 hours, for the whole Meta Business portfolio."
+msgstr "Nombre de clients qui peuvent recevoir un modèle hors de la fenêtre de 24 heures, en 24 heures, pour tout le portefeuille Meta Business."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__message_has_error_counter
@@ -1967,21 +1829,13 @@ msgstr "Horaires d’ouverture"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__response_delay
-msgid ""
-"Opening hours after which the agent is reminded of a message without answer "
-"(0: never)."
-msgstr ""
-"Heures d’ouverture après lesquelles l’agent est relancé pour un message sans"
-" réponse (0 : jamais)."
+msgid "Opening hours after which the agent is reminded of a message without answer (0: never)."
+msgstr "Heures d’ouverture après lesquelles l’agent est relancé pour un message sans réponse (0 : jamais)."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__escalation_delay
-msgid ""
-"Opening hours after which the managers are alerted of a message without "
-"answer (0: never)."
-msgstr ""
-"Heures d’ouverture après lesquelles les responsables sont alertés d’un "
-"message sans réponse (0 : jamais)."
+msgid "Opening hours after which the managers are alerted of a message without answer (0: never)."
+msgstr "Heures d’ouverture après lesquelles les responsables sont alertés d’un message sans réponse (0 : jamais)."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__name
@@ -2016,9 +1870,7 @@ msgstr "Document PDF"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_report_id
-msgid ""
-"PDF of the document sent in the header of the message (quotation, "
-"invoice...)."
+msgid "PDF of the document sent in the header of the message (quotation, invoice...)."
 msgstr "PDF du document envoyé en en-tête du message (devis, facture...)."
 
 #. module: whatsapp_cloud
@@ -2040,12 +1892,8 @@ msgstr "Contenu de la requête"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"Payment issue of the WhatsApp Business account: add a valid payment method "
-"in the Meta Business portfolio."
-msgstr ""
-"Problème de paiement du compte WhatsApp Business : ajoutez un moyen de "
-"paiement valide dans le portefeuille Meta Business."
+msgid "Payment issue of the WhatsApp Business account: add a valid payment method in the Meta Business portfolio."
+msgstr "Problème de paiement du compte WhatsApp Business : ajoutez un moyen de paiement valide dans le portefeuille Meta Business."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_search
@@ -2059,13 +1907,8 @@ msgstr "En attente d’approbation"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__access_token
-msgid ""
-"Permanent token of a system user of the Meta Business portfolio, with the "
-"whatsapp_business_messaging and whatsapp_business_management permissions."
-msgstr ""
-"Jeton permanent d’un utilisateur système du portefeuille Meta Business, avec"
-" les autorisations whatsapp_business_messaging et "
-"whatsapp_business_management."
+msgid "Permanent token of a system user of the Meta Business portfolio, with the whatsapp_business_messaging and whatsapp_business_management permissions."
+msgstr "Jeton permanent d’un utilisateur système du portefeuille Meta Business, avec les autorisations whatsapp_business_messaging et whatsapp_business_management."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__display_phone_number
@@ -2092,10 +1935,8 @@ msgstr "Catégorie tarifaire"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_message__pricing_category
-msgid ""
-"Pricing category of the message at Meta (utility, marketing, service...)."
-msgstr ""
-"Catégorie tarifaire du message chez Meta (utilitaire, marketing, service…)."
+msgid "Pricing category of the message at Meta (utility, marketing, service...)."
+msgstr "Catégorie tarifaire du message chez Meta (utilitaire, marketing, service…)."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_webhook_event_view_form
@@ -2115,21 +1956,13 @@ msgstr "Qualité"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__quality_score
-msgid ""
-"Quality of the template at Meta, from how the customers receive it: a "
-"template of low quality is paused, then disabled."
-msgstr ""
-"Qualité du modèle chez Meta, selon l’accueil des clients : un modèle de "
-"faible qualité est mis en pause, puis désactivé."
+msgid "Quality of the template at Meta, from how the customers receive it: a template of low quality is paused, then disabled."
+msgstr "Qualité du modèle chez Meta, selon l’accueil des clients : un modèle de faible qualité est mis en pause, puis désactivé."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__quality_rating
-msgid ""
-"Quality rating of the number at Meta, based on how the customers received "
-"the recent messages (blocks, reports)."
-msgstr ""
-"Note de qualité du numéro chez Meta, selon l’accueil des derniers messages "
-"par les clients (blocages, signalements)."
+msgid "Quality rating of the number at Meta, based on how the customers received the recent messages (blocks, reports)."
+msgstr "Note de qualité du numéro chez Meta, selon l’accueil des derniers messages par les clients (blocages, signalements)."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_bot_step_date
@@ -2170,11 +2003,8 @@ msgstr "Accusé de lecture"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_message__read_receipt
-msgid ""
-"Read receipt of a received message, sent to the customer when an agent reads"
-" it."
-msgstr ""
-"Accusé de lecture d’un message reçu, envoyé au client quand un agent le lit."
+msgid "Read receipt of a received message, sent to the customer when an agent reads it."
+msgstr "Accusé de lecture d’un message reçu, envoyé au client quand un agent le lit."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__rejected_reason
@@ -2277,12 +2107,8 @@ msgstr "Document d’exemple"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_sample_file
-msgid ""
-"Sample PDF for the review by Meta; when empty, the document of the latest "
-"record is used."
-msgstr ""
-"PDF d’exemple pour la vérification par Meta ; si vide, le document du "
-"dernier enregistrement est utilisé."
+msgid "Sample PDF for the review by Meta; when empty, the document of the latest record is used."
+msgstr "PDF d’exemple pour la vérification par Meta ; si vide, le document du dernier enregistrement est utilisé."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2295,9 +2121,7 @@ msgstr "Voir les options"
 msgid ""
 "Sees all the WhatsApp conversations, assigns them, and configures the accounts,\n"
 "            the templates and the automatic answers."
-msgstr ""
-"Voit toutes les conversations WhatsApp, les attribue, et configure les "
-"comptes, les modèles et les réponses automatiques."
+msgstr "Voit toutes les conversations WhatsApp, les attribue, et configure les comptes, les modèles et les réponses automatiques."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_composer_view_form
@@ -2352,16 +2176,8 @@ msgstr "Envoyer un message d’absence"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__require_opt_in
-msgid ""
-"Send the notifications only to the contacts who agreed to receive WhatsApp "
-"messages (box ticked at checkout or on the contact), as required by the "
-"WhatsApp Business policy. The answers to the customers who write are always "
-"allowed."
-msgstr ""
-"N’envoyer les notifications qu’aux contacts qui ont accepté de recevoir des "
-"messages WhatsApp (case cochée lors de la commande ou sur le contact), comme"
-" l’exige la politique de WhatsApp Business. Les réponses aux clients qui "
-"écrivent sont toujours permises."
+msgid "Send the notifications only to the contacts who agreed to receive WhatsApp messages (box ticked at checkout or on the contact), as required by the WhatsApp Business policy. The answers to the customers who write are always allowed."
+msgstr "N’envoyer les notifications qu’aux contacts qui ont accepté de recevoir des messages WhatsApp (case cochée lors de la commande ou sur le contact), comme l’exige la politique de WhatsApp Business. Les réponses aux clients qui écrivent sont toujours permises."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
@@ -2385,21 +2201,13 @@ msgstr "Envoyé le"
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
-msgid ""
-"Sent outside of the opening hours of the account, at most once every 12 "
-"hours to a customer."
-msgstr ""
-"Envoyé en dehors des horaires d’ouverture du compte, au plus une fois toutes"
-" les 12 heures à un client."
+msgid "Sent outside of the opening hours of the account, at most once every 12 hours to a customer."
+msgstr "Envoyé en dehors des horaires d’ouverture du compte, au plus une fois toutes les 12 heures à un client."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__away_message
-msgid ""
-"Sent outside of the opening hours, at most once every 12 hours to a "
-"customer."
-msgstr ""
-"Envoyé en dehors des horaires d’ouverture, au plus une fois toutes les 12 "
-"heures à un client."
+msgid "Sent outside of the opening hours, at most once every 12 hours to a customer."
+msgstr "Envoyé en dehors des horaires d’ouverture, au plus une fois toutes les 12 heures à un client."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__start_message
@@ -2413,23 +2221,13 @@ msgstr "Envoyé quand un client répond STOP pour arrêter les notifications."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__handover_message
-msgid ""
-"Sent when a message of the customer that the menu does not handle goes to "
-"the team (the customer already wrote what they need)."
-msgstr ""
-"Envoyé quand un message du client que le menu ne traite pas passe à l’équipe"
-" (le client a déjà écrit ce dont il a besoin)."
+msgid "Sent when a message of the customer that the menu does not handle goes to the team (the customer already wrote what they need)."
+msgstr "Envoyé quand un message du client que le menu ne traite pas passe à l’équipe (le client a déjà écrit ce dont il a besoin)."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__handover_invite_message
-msgid ""
-"Sent when the customer asks for a person (option of the menu, "
-"\"advisor\"...): invites them to write what they need, so that the agent can"
-" answer at once."
-msgstr ""
-"Envoyé quand le client demande une personne (option du menu, « conseiller "
-"»…) : l’invite à écrire ce dont il a besoin, pour que l’agent puisse "
-"répondre aussitôt."
+msgid "Sent when the customer asks for a person (option of the menu, \"advisor\"...): invites them to write what they need, so that the agent can answer at once."
+msgstr "Envoyé quand le client demande une personne (option du menu, « conseiller »…) : l’invite à écrire ce dont il a besoin, pour que l’agent puisse répondre aussitôt."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__sequence
@@ -2457,22 +2255,15 @@ msgstr "Affichée dans la conversation, pour l’agent qui la reprend."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_bot_option__description
-msgid ""
-"Shown under the option when the menu has more than 3 options (72 characters "
-"at most)."
-msgstr ""
-"Affichée sous l’option quand le menu a plus de 3 options (72 caractères au "
-"plus)."
+msgid "Shown under the option when the menu has more than 3 options (72 characters at most)."
+msgstr "Affichée sous l’option quand le menu a plus de 3 options (72 caractères au plus)."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
 msgid ""
 "Since October 1, 2026, Meta charges the answers that are not templates (welcome menu,\n"
 "                                away message, answers of the agents) beyond 1,000 per month and per number."
-msgstr ""
-"Depuis le 1er octobre 2026, Meta facture les réponses qui ne sont pas des "
-"modèles (menu d’accueil, message d’absence, réponses des agents) au-delà de "
-"1 000 par mois et par numéro."
+msgstr "Depuis le 1er octobre 2026, Meta facture les réponses qui ne sont pas des modèles (menu d’accueil, message d’absence, réponses des agents) au-delà de 1 000 par mois et par numéro."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__start_message
@@ -2495,12 +2286,8 @@ msgstr "Statut"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__status
-msgid ""
-"Status of the template at Meta, read by the synchronisation. The messages "
-"are sent only with the approved and not synchronised templates."
-msgstr ""
-"Statut du modèle chez Meta, lu par la synchronisation. Les messages ne "
-"partent qu’avec les modèles approuvés ou non synchronisés."
+msgid "Status of the template at Meta, read by the synchronisation. The messages are sent only with the approved and not synchronised templates."
+msgstr "Statut du modèle chez Meta, lu par la synchronisation. Les messages ne partent qu’avec les modèles approuvés ou non synchronisés."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__sticker
@@ -2539,6 +2326,7 @@ msgid "Submit the Changes to Meta"
 msgstr "Soumettre les modifications à Meta"
 
 #. module: whatsapp_cloud
+#: model:ir.actions.server,name:whatsapp_cloud.action_submit_selected_to_meta
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
 msgid "Submit to Meta"
 msgstr "Soumettre à Meta"
@@ -2586,18 +2374,8 @@ msgstr "Prise en charge par un agent"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__assignment_mode
-msgid ""
-"Taken by an agent: all the agents see the new conversation, the first one "
-"who answers (or takes it) handles it. Each agent in turn: the conversation "
-"goes to the agent with the fewest open conversations, online agents first. "
-"Salesperson of the customer: the salesperson of their latest order when they"
-" are an agent, else each agent in turn."
-msgstr ""
-"Prise en charge par un agent : tous les agents voient la nouvelle "
-"conversation, le premier qui répond (ou la prend) la traite. Chaque agent à "
-"tour de rôle : la conversation va à l’agent qui a le moins de conversations "
-"ouvertes, les agents en ligne d’abord. Vendeur du client : le vendeur de sa "
-"dernière commande s’il est agent, sinon chaque agent à tour de rôle."
+msgid "Taken by an agent: all the agents see the new conversation, the first one who answers (or takes it) handles it. Each agent in turn: the conversation goes to the agent with the fewest open conversations, online agents first. Salesperson of the customer: the salesperson of their latest order when they are an agent, else each agent in turn."
+msgstr "Prise en charge par un agent : tous les agents voient la nouvelle conversation, le premier qui répond (ou la prend) la traite. Chaque agent à tour de rôle : la conversation va à l’agent qui a le moins de conversations ouvertes, les agents en ligne d’abord. Vendeur du client : le vendeur de sa dernière commande s’il est agent, sinon chaque agent à tour de rôle."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2614,13 +2392,8 @@ msgstr "Équipe"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"Tell us here what you need (order number, item, question), you can also send"
-" a photo: an advisor will answer you as soon as possible."
-msgstr ""
-"Dites-nous ici ce dont vous avez besoin (numéro de commande, article, "
-"question), vous pouvez aussi envoyer une photo : un conseiller vous répondra"
-" dès que possible."
+msgid "Tell us here what you need (order number, item, question), you can also send a photo: an advisor will answer you as soon as possible."
+msgstr "Dites-nous ici ce dont vous avez besoin (numéro de commande, article, question), vous pouvez aussi envoyer une photo : un conseiller vous répondra dès que possible."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__template_id
@@ -2642,8 +2415,7 @@ msgstr "Nombre de modèles"
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
 msgid "Template submitted to Meta: its review can take up to 24 hours."
-msgstr ""
-"Modèle soumis à Meta : sa vérification peut prendre jusqu’à 24 heures."
+msgstr "Modèle soumis à Meta : sa vérification peut prendre jusqu’à 24 heures."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2690,29 +2462,18 @@ msgstr "Texte du bouton (20 caractères au plus)."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_text
-msgid ""
-"Text of the header at Meta (60 characters), with at most one variable {{1}}."
-msgstr ""
-"Texte de l’en-tête chez Meta (60 caractères), avec au plus une variable "
-"{{1}}."
+msgid "Text of the header at Meta (60 characters), with at most one variable {{1}}."
+msgstr "Texte de l’en-tête chez Meta (60 caractères), avec au plus une variable {{1}}."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__body
-msgid ""
-"Text of the template at Meta, with its variables {{1}}, {{2}}... (filled by "
-"the synchronisation); used for the preview and the message log."
-msgstr ""
-"Texte du modèle chez Meta, avec ses variables {{1}}, {{2}}... (rempli par la"
-" synchronisation) ; sert à l’aperçu et au journal des messages."
+msgid "Text of the template at Meta, with its variables {{1}}, {{2}}... (filled by the synchronisation); used for the preview and the message log."
+msgstr "Texte du modèle chez Meta, avec ses variables {{1}}, {{2}}... (rempli par la synchronisation) ; sert à l’aperçu et au journal des messages."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_bot_option__answer
-msgid ""
-"Text sent when the customer chooses the option; for a sub-menu, the text "
-"above its options."
-msgstr ""
-"Texte envoyé quand le client choisit l’option ; pour un sous-menu, le texte "
-"au-dessus de ses options."
+msgid "Text sent when the customer chooses the option; for a sub-menu, the text above its options."
+msgstr "Texte envoyé quand le client choisit l’option ; pour un sous-menu, le texte au-dessus de ses options."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__footer_text
@@ -2722,28 +2483,26 @@ msgstr "Texte sous le message (60 caractères)."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"Thank you for your message! We are closed right now: an advisor will answer "
-"you as soon as we open."
-msgstr ""
-"Merci pour votre message ! Nous sommes fermés pour le moment : un conseiller"
-" vous répondra dès l’ouverture."
+msgid "Thank you for your message! We are closed right now: an advisor will answer you as soon as we open."
+msgstr "Merci pour votre message ! Nous sommes fermés pour le moment : un conseiller vous répondra dès l’ouverture."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"Thank you! You will receive our WhatsApp notifications again. Send STOP to "
-"stop them."
-msgstr ""
-"Merci ! Vous recevrez à nouveau nos notifications WhatsApp. Envoyez STOP "
-"pour les arrêter."
+msgid "Thank you! You will receive our WhatsApp notifications again. Send STOP to stop them."
+msgstr "Merci ! Vous recevrez à nouveau nos notifications WhatsApp. Envoyez STOP pour les arrêter."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
 msgid "Thank you, an advisor will answer you here as soon as possible."
 msgstr "Merci, un conseiller vous répond ici dès que possible."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "The PDF of the message could not be made: %s"
+msgstr "Le PDF du message n'a pas pu être créé : %s"
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2754,30 +2513,20 @@ msgstr "Le code PIN a été saisi trop vite : réessayez plus tard."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The WhatsApp Business account cannot write to customers of this country."
-msgstr ""
-"Le compte WhatsApp Business ne peut pas écrire aux clients de ce pays."
+msgid "The WhatsApp Business account cannot write to customers of this country."
+msgstr "Le compte WhatsApp Business ne peut pas écrire aux clients de ce pays."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The WhatsApp Business account is locked or restricted by Meta: see the Meta "
-"Business Support Home."
-msgstr ""
-"Le compte WhatsApp Business est bloqué ou restreint par Meta : voir l’Espace"
-" d’assistance Meta Business."
+msgid "The WhatsApp Business account is locked or restricted by Meta: see the Meta Business Support Home."
+msgstr "Le compte WhatsApp Business est bloqué ou restreint par Meta : voir l’Espace d’assistance Meta Business."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The WhatsApp Business account is under maintenance: Odoo sends the message "
-"again later."
-msgstr ""
-"Le compte WhatsApp Business est en maintenance : Odoo renvoie le message "
-"plus tard."
+msgid "The WhatsApp Business account is under maintenance: Odoo sends the message again later."
+msgstr "Le compte WhatsApp Business est en maintenance : Odoo renvoie le message plus tard."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
@@ -2787,34 +2536,20 @@ msgstr "Les responsables WhatsApp"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The WhatsApp server is temporarily unavailable: Odoo sends the message again"
-" later."
-msgstr ""
-"Le serveur WhatsApp est momentanément indisponible : Odoo renvoie le message"
-" plus tard."
+msgid "The WhatsApp server is temporarily unavailable: Odoo sends the message again later."
+msgstr "Le serveur WhatsApp est momentanément indisponible : Odoo renvoie le message plus tard."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The access token lacks a permission: give it whatsapp_business_messaging and"
-" whatsapp_business_management."
-msgstr ""
-"Il manque une autorisation au jeton d’accès : donnez-lui "
-"whatsapp_business_messaging et whatsapp_business_management."
+msgid "The access token lacks a permission: give it whatsapp_business_messaging and whatsapp_business_management."
+msgstr "Il manque une autorisation au jeton d’accès : donnez-lui whatsapp_business_messaging et whatsapp_business_management."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The access token of the account expired or was revoked: generate a permanent"
-" token of a system user in the Meta Business portfolio and enter it on the "
-"account."
-msgstr ""
-"Le jeton d’accès du compte a expiré ou a été révoqué : générez un jeton "
-"permanent d’un utilisateur système dans le portefeuille Meta Business et "
-"saisissez-le sur le compte."
+msgid "The access token of the account expired or was revoked: generate a permanent token of a system user in the Meta Business portfolio and enter it on the account."
+msgstr "Le jeton d’accès du compte a expiré ou a été révoqué : générez un jeton permanent d’un utilisateur système dans le portefeuille Meta Business et saisissez-le sur le compte."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2826,22 +2561,14 @@ msgstr "Le compte fonctionne."
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_company__whatsapp_answer_reminders
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_config_settings__whatsapp_answer_reminders
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
-msgid ""
-"The agents are reminded of the messages waiting for an answer, then the "
-"managers are alerted (delays of the WhatsApp account)."
-msgstr ""
-"Les agents sont relancés pour les messages en attente de réponse, puis les "
-"responsables sont alertés (délais du compte WhatsApp)."
+msgid "The agents are reminded of the messages waiting for an answer, then the managers are alerted (delays of the WhatsApp account)."
+msgstr "Les agents sont relancés pour les messages en attente de réponse, puis les responsables sont alertés (délais du compte WhatsApp)."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The app lacks a capability or a permission: check the permissions of the "
-"token."
-msgstr ""
-"Il manque une capacité ou une autorisation à l’app : vérifiez les "
-"autorisations du jeton."
+msgid "The app lacks a capability or a permission: check the permissions of the token."
+msgstr "Il manque une capacité ou une autorisation à l’app : vérifiez les autorisations du jeton."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2851,12 +2578,15 @@ msgstr "Le bouton %s ne se modifie que chez Meta."
 
 #. module: whatsapp_cloud
 #. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The code of an authentication template is valid from 1 to 90 minutes."
+msgstr "Le code d'un modèle d'authentification est valable de 1 à 90 minutes."
+
+#. module: whatsapp_cloud
+#. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The company blocked this customer on WhatsApp: unblock them to write to "
-"them."
-msgstr ""
-"La société a bloqué ce client sur WhatsApp : débloquez-le pour lui écrire."
+msgid "The company blocked this customer on WhatsApp: unblock them to write to them."
+msgstr "La société a bloqué ce client sur WhatsApp : débloquez-le pour lui écrire."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2867,12 +2597,8 @@ msgstr "Le contact %s est un utilisateur : il ne peut pas être fusionné."
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_partner__whatsapp_opt_in
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_users__whatsapp_opt_in
-msgid ""
-"The contact agreed to receive notifications (orders, deliveries...) on "
-"WhatsApp."
-msgstr ""
-"Le contact a accepté de recevoir des notifications (commandes, "
-"livraisons...) sur WhatsApp."
+msgid "The contact agreed to receive notifications (orders, deliveries...) on WhatsApp."
+msgstr "Le contact a accepté de recevoir des notifications (commandes, livraisons...) sur WhatsApp."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2901,22 +2627,13 @@ msgstr "Le contact reçoit à nouveau les notifications WhatsApp (START)."
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_partner__whatsapp_opt_out
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_users__whatsapp_opt_out
-msgid ""
-"The contact refused the WhatsApp notifications (box unticked, or STOP "
-"answered): the consent box is no longer ticked by default for them."
-msgstr ""
-"Le contact a refusé les notifications WhatsApp (case décochée, ou réponse "
-"STOP) : la case de consentement n’est plus cochée par défaut pour lui."
+msgid "The contact refused the WhatsApp notifications (box unticked, or STOP answered): the consent box is no longer ticked by default for them."
+msgstr "Le contact a refusé les notifications WhatsApp (case décochée, ou réponse STOP) : la case de consentement n’est plus cochée par défaut pour lui."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_link_partner__partner_id
-msgid ""
-"The contact who writes: the conversation, the messages and the WhatsApp "
-"number go to this contact, and the contact created for the unknown number is"
-" merged into it."
-msgstr ""
-"Le contact qui écrit : la conversation, les messages et le numéro WhatsApp "
-"vont à ce contact, et le contact créé pour le numéro inconnu y est fusionné."
+msgid "The contact who writes: the conversation, the messages and the WhatsApp number go to this contact, and the contact created for the unknown number is merged into it."
+msgstr "Le contact qui écrit : la conversation, les messages et le numéro WhatsApp vont à ce contact, et le contact créé pour le numéro inconnu y est fusionné."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2929,28 +2646,20 @@ msgstr "La conversation n’a pas de client."
 msgid ""
 "The conversation, its messages and the WhatsApp number go to the existing contact; the\n"
 "                   contact created for the unknown number is merged into it."
-msgstr ""
-"La conversation, ses messages et le numéro WhatsApp vont au contact existant"
-" ; le contact créé pour le numéro inconnu y est fusionné."
+msgstr "La conversation, ses messages et le numéro WhatsApp vont au contact existant ; le contact créé pour le numéro inconnu y est fusionné."
 
 #. module: whatsapp_cloud
 #. odoo-javascript
 #: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
-msgid ""
-"The conversations start when a customer writes to the WhatsApp number of the"
-" company."
-msgstr ""
-"Les conversations commencent quand un client écrit au numéro WhatsApp de la "
-"société."
+msgid "The conversations start when a customer writes to the WhatsApp number of the company."
+msgstr "Les conversations commencent quand un client écrit au numéro WhatsApp de la société."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.actions.act_window,help:whatsapp_cloud.discuss_channel_action_whatsapp
 msgid ""
 "The conversations start when a customer writes to the WhatsApp number of the company.\n"
 "               Answer them from Discuss (WhatsApp tab)."
-msgstr ""
-"Les conversations commencent quand un client écrit au numéro WhatsApp de la "
-"société. Répondez-y depuis Discussion (onglet WhatsApp)."
+msgstr "Les conversations commencent quand un client écrit au numéro WhatsApp de la société. Répondez-y depuis Discussion (onglet WhatsApp)."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2979,12 +2688,8 @@ msgstr "Le client attend une réponse depuis %s minutes."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The customer is part of an experiment of Meta and does not receive marketing"
-" messages for now."
-msgstr ""
-"Le client fait partie d’une expérience de Meta et ne reçoit pas de messages "
-"marketing pour l’instant."
+msgid "The customer is part of an experiment of Meta and does not receive marketing messages for now."
+msgstr "Le client fait partie d’une expérience de Meta et ne reçoit pas de messages marketing pour l’instant."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3001,8 +2706,7 @@ msgstr "Le client reçoit à nouveau les notifications WhatsApp (START)."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The customer stopped the marketing messages of the company on WhatsApp."
+msgid "The customer stopped the marketing messages of the company on WhatsApp."
 msgstr "Le client a arrêté les messages marketing de la société sur WhatsApp."
 
 #. module: whatsapp_cloud
@@ -3015,33 +2719,32 @@ msgstr "Le client attend une réponse de l’équipe depuis cette date."
 msgid ""
 "The customer wrote from a number unknown to Odoo: a contact was created with their\n"
 "                        WhatsApp name."
-msgstr ""
-"Le client a écrit depuis un numéro inconnu d’Odoo : un contact a été créé "
-"avec son nom WhatsApp."
+msgstr "Le client a écrit depuis un numéro inconnu d’Odoo : un contact a été créé avec son nom WhatsApp."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_company__whatsapp_read_receipts
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_config_settings__whatsapp_read_receipts
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
-msgid ""
-"The customers see the blue ticks when an agent reads their message, and "
-"\"typing...\" while the agent writes."
-msgstr ""
-"Les clients voient les coches bleues quand un agent lit leur message, et « "
-"en train d’écrire… » pendant que l’agent écrit."
+msgid "The customers see the blue ticks when an agent reads their message, and \"typing...\" while the agent writes."
+msgstr "Les clients voient les coches bleues quand un agent lit leur message, et « en train d’écrire… » pendant que l’agent écrit."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_bot_option.py:0
 msgid "The description of the option %s is too long: 72 characters at most."
-msgstr ""
-"La description de l’option %s est trop longue : 72 caractères au plus."
+msgstr "La description de l’option %s est trop longue : 72 caractères au plus."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
 msgid "The display name is %s at Meta."
 msgstr "Le nom affiché est %s chez Meta."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "The document of the message no longer exists."
+msgstr "Le document du message n'existe plus."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3082,10 +2785,8 @@ msgstr "Le pied de message est trop long : 60 caractères au plus."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The format of a variable is invalid (text expected, image, document...)."
-msgstr ""
-"Le format d’une variable est invalide (texte attendu, image, document…)."
+msgid "The format of a variable is invalid (text expected, image, document...)."
+msgstr "Le format d’une variable est invalide (texte attendu, image, document…)."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3096,24 +2797,14 @@ msgstr "L’en-tête est trop long : 60 caractères au plus."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"The link button of the template expects the end of its URL, but none is "
-"given (Link Button Variable)."
-msgstr ""
-"Le bouton lien du modèle attend la fin de son URL, mais aucune n’est "
-"indiquée (Variable du bouton lien)."
+msgid "The link button of the template expects the end of its URL, but none is given (Link Button Variable)."
+msgstr "Le bouton lien du modèle attend la fin de son URL, mais aucune n’est indiquée (Variable du bouton lien)."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"The link of the button %(button)s must be a public address in https, but the"
-" address of the site is %(url)s: set it in the system parameter web.base.url"
-" (Settings > Technical > System Parameters)."
-msgstr ""
-"Le lien du bouton %(button)s doit être une adresse publique en https, mais "
-"l’adresse du site est %(url)s : réglez-la dans le paramètre système "
-"web.base.url (Paramètres > Technique > Paramètres système)."
+msgid "The link of the button %(button)s must be a public address in https, but the address of the site is %(url)s: set it in the system parameter web.base.url (Settings > Technical > System Parameters)."
+msgstr "Le lien du bouton %(button)s doit être une adresse publique en https, mais l’adresse du site est %(url)s : réglez-la dans le paramètre système web.base.url (Paramètres > Technique > Paramètres système)."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3130,16 +2821,14 @@ msgstr "La liste des modèles n’a pas pu être lue : synchronisez à nouveau."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The marketing templates are disabled on the Cloud API for this account."
+msgid "The marketing templates are disabled on the Cloud API for this account."
 msgstr "Les modèles marketing sont désactivés sur l’API Cloud pour ce compte."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
 msgid "The media could not be uploaded to Meta: check its format and size."
-msgstr ""
-"Le média n’a pas pu être envoyé à Meta : vérifiez son format et sa taille."
+msgstr "Le média n’a pas pu être envoyé à Meta : vérifiez son format et sa taille."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3150,27 +2839,15 @@ msgstr "Le média du message n’a pas pu être téléchargé depuis Meta."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The message could not be delivered: the number may not use WhatsApp, or have"
-" an outdated WhatsApp version, or not have accepted the latest terms. "
-"Contact the customer another way."
-msgstr ""
-"Le message n’a pas pu être distribué : le numéro n’utilise peut-être pas "
-"WhatsApp, a une version trop ancienne ou n’a pas accepté les dernières "
-"conditions. Contactez le client autrement."
+msgid "The message could not be delivered: the number may not use WhatsApp, or have an outdated WhatsApp version, or not have accepted the latest terms. Contact the customer another way."
+msgstr "Le message n’a pas pu être distribué : le numéro n’utilise peut-être pas WhatsApp, a une version trop ancienne ou n’a pas accepté les dernières conditions. Contactez le client autrement."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_company__whatsapp_conversations
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_config_settings__whatsapp_conversations
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
-msgid ""
-"The messages of the customers arrive in Discuss (WhatsApp tab), where the "
-"team answers them. Disabled: they are only noted on the contacts, without "
-"answer."
-msgstr ""
-"Les messages des clients arrivent dans Discussion (onglet WhatsApp), où "
-"l’équipe y répond. Désactivé : ils sont seulement notés sur les contacts, "
-"sans réponse."
+msgid "The messages of the customers arrive in Discuss (WhatsApp tab), where the team answers them. Disabled: they are only noted on the contacts, without answer."
+msgstr "Les messages des clients arrivent dans Discussion (onglet WhatsApp), où l’équipe y répond. Désactivé : ils sont seulement notés sur les contacts, sans réponse."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_message_action
@@ -3184,22 +2861,14 @@ msgstr ""
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"The name at Meta can only contain lowercase letters, digits and underscores:"
-" %s"
-msgstr ""
-"Le nom chez Meta ne peut contenir que des lettres minuscules, des chiffres "
-"et des tirets bas : %s"
+msgid "The name at Meta can only contain lowercase letters, digits and underscores: %s"
+msgstr "Le nom chez Meta ne peut contenir que des lettres minuscules, des chiffres et des tirets bas : %s"
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The number has no approved display name yet: check it in the WhatsApp "
-"Manager."
-msgstr ""
-"Le numéro n’a pas encore de nom affiché approuvé : vérifiez-le dans le "
-"Gestionnaire WhatsApp."
+msgid "The number has no approved display name yet: check it in the WhatsApp Manager."
+msgstr "Le numéro n’a pas encore de nom affiché approuvé : vérifiez-le dans le Gestionnaire WhatsApp."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3210,21 +2879,14 @@ msgstr "Le numéro est %s chez Meta."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The number is not registered on the Cloud API: register it again in the Meta"
-" app."
-msgstr ""
-"Le numéro n’est pas enregistré sur l’API Cloud : enregistrez-le à nouveau "
-"dans l’app Meta."
+msgid "The number is not registered on the Cloud API: register it again in the Meta app."
+msgstr "Le numéro n’est pas enregistré sur l’API Cloud : enregistrez-le à nouveau dans l’app Meta."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The number is not registered on the Cloud API: register it in the Meta app."
-msgstr ""
-"Le numéro n’est pas enregistré sur l’API Cloud : enregistrez-le dans l’app "
-"Meta."
+msgid "The number is not registered on the Cloud API: register it in the Meta app."
+msgstr "Le numéro n’est pas enregistré sur l’API Cloud : enregistrez-le dans l’app Meta."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3235,28 +2897,20 @@ msgstr "Le numéro doit être vérifié à nouveau avant son enregistrement."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The number of variables differs from the template at Meta: synchronise the "
-"templates and check their variables."
-msgstr ""
-"Le nombre de variables diffère du modèle chez Meta : synchronisez les "
-"modèles et vérifiez leurs variables."
+msgid "The number of variables differs from the template at Meta: synchronise the templates and check their variables."
+msgstr "Le nombre de variables diffère du modèle chez Meta : synchronisez les modèles et vérifiez leurs variables."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
 msgid "The number was not fully deleted before its new registration."
-msgstr ""
-"Le numéro n’a pas été entièrement supprimé avant son nouvel enregistrement."
+msgstr "Le numéro n’a pas été entièrement supprimé avant son nouvel enregistrement."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The number was recently deleted: wait a few minutes before registering it."
-msgstr ""
-"Le numéro a été supprimé récemment : attendez quelques minutes avant de "
-"l’enregistrer."
+msgid "The number was recently deleted: wait a few minutes before registering it."
+msgstr "Le numéro a été supprimé récemment : attendez quelques minutes avant de l’enregistrer."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3273,31 +2927,20 @@ msgstr "Le numéro du compte a été supprimé chez Meta."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"The quality of the number is low: many customers blocked or reported the "
-"recent messages. Send fewer messages, only to customers who agreed."
-msgstr ""
-"La qualité du numéro est faible : beaucoup de clients ont bloqué ou signalé "
-"les derniers messages. Envoyez moins de messages, seulement aux clients qui "
-"ont accepté."
+msgid "The quality of the number is low: many customers blocked or reported the recent messages. Send fewer messages, only to customers who agreed."
+msgstr "La qualité du numéro est faible : beaucoup de clients ont bloqué ou signalé les derniers messages. Envoyez moins de messages, seulement aux clients qui ont accepté."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"The quality of the number is medium: some customers blocked or reported the "
-"recent messages."
-msgstr ""
-"La qualité du numéro est moyenne : des clients ont bloqué ou signalé les "
-"derniers messages."
+msgid "The quality of the number is medium: some customers blocked or reported the recent messages."
+msgstr "La qualité du numéro est moyenne : des clients ont bloqué ou signalé les derniers messages."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"The quick replies must follow each other, before or after the other buttons."
-msgstr ""
-"Les réponses rapides doivent se suivre, avant ou après les autres boutons."
+msgid "The quick replies must follow each other, before or after the other buttons."
+msgstr "Les réponses rapides doivent se suivre, avant ou après les autres boutons."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3314,23 +2957,13 @@ msgstr "Le document d’exemple n’a pas pu être envoyé à Meta : %s"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The template does not exist at Meta in this language, or is not approved "
-"yet: synchronise the templates."
-msgstr ""
-"Le modèle n’existe pas chez Meta dans cette langue, ou n’est pas encore "
-"approuvé : synchronisez les modèles."
+msgid "The template does not exist at Meta in this language, or is not approved yet: synchronise the templates."
+msgstr "Le modèle n’existe pas chez Meta dans cette langue, ou n’est pas encore approuvé : synchronisez les modèles."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__button_url_dynamic
-msgid ""
-"The template has, at Meta, a link button whose URL ends with a variable "
-"(read by the synchronisation): Odoo sends the end of the URL given in Link "
-"Button Variable."
-msgstr ""
-"Le modèle a, chez Meta, un bouton lien dont l’URL se termine par une "
-"variable (lu par la synchronisation) : Odoo envoie la fin d’URL indiquée "
-"dans Variable du bouton lien."
+msgid "The template has, at Meta, a link button whose URL ends with a variable (read by the synchronisation): Odoo sends the end of the URL given in Link Button Variable."
+msgstr "Le modèle a, chez Meta, un bouton lien dont l’URL se termine par une variable (lu par la synchronisation) : Odoo envoie la fin d’URL indiquée dans Variable du bouton lien."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3347,11 +2980,8 @@ msgstr "Le modèle est désactivé par Meta à cause de sa faible qualité."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"The template is paused by Meta because of its low quality: edit it at Meta."
-msgstr ""
-"Le modèle est mis en pause par Meta à cause de sa faible qualité : modifiez-"
-"le chez Meta."
+msgid "The template is paused by Meta because of its low quality: edit it at Meta."
+msgstr "Le modèle est mis en pause par Meta à cause de sa faible qualité : modifiez-le chez Meta."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3374,13 +3004,8 @@ msgstr "Le message de test n’a pas été envoyé : %s"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"The text cannot start or end with a variable: write words before the first "
-"variable and after the last one (a punctuation mark is not enough for Meta)."
-msgstr ""
-"Le texte ne peut ni commencer ni finir par une variable : écrivez des mots "
-"avant la première variable et après la dernière (un signe de ponctuation ne "
-"suffit pas pour Meta)."
+msgid "The text cannot start or end with a variable: write words before the first variable and after the last one (a punctuation mark is not enough for Meta)."
+msgstr "Le texte ne peut ni commencer ni finir par une variable : écrivez des mots avant la première variable et après la dernière (un signe de ponctuation ne suffit pas pour Meta)."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3436,12 +3061,8 @@ msgstr "Ce n’est pas une conversation WhatsApp."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"This message cannot be sent to a customer known only by their WhatsApp "
-"username (no number): ask for their number."
-msgstr ""
-"Ce message ne peut pas être envoyé à un client connu seulement par son nom "
-"d’utilisateur WhatsApp (sans numéro) : demandez-lui son numéro."
+msgid "This message cannot be sent to a customer known only by their WhatsApp username (no number): ask for their number."
+msgstr "Ce message ne peut pas être envoyé à un client connu seulement par son nom d’utilisateur WhatsApp (sans numéro) : demandez-lui son numéro."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3482,10 +3103,8 @@ msgstr "À traiter"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__verify_token
-msgid ""
-"To enter in the webhook settings of the Meta app, with the callback URL."
-msgstr ""
-"À saisir dans les paramètres du webhook de l’app Meta, avec l’URL de rappel."
+msgid "To enter in the webhook settings of the Meta app, with the callback URL."
+msgstr "À saisir dans les paramètres du webhook de l’app Meta, avec l’URL de rappel."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_webhook_event__state__pending
@@ -3518,8 +3137,7 @@ msgstr "Trop d’appels de l’app à Meta : Odoo réessaie plus tard."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"Too many calls to the WhatsApp Business account: Odoo tries again later."
+msgid "Too many calls to the WhatsApp Business account: Odoo tries again later."
 msgstr "Trop d’appels au compte WhatsApp Business : Odoo réessaie plus tard."
 
 #. module: whatsapp_cloud
@@ -3531,12 +3149,8 @@ msgstr "Trop de messages par seconde : Odoo renvoie le message plus tard."
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"Too many messages to the same customer in a short time: Odoo sends the "
-"message again later."
-msgstr ""
-"Trop de messages au même client en peu de temps : Odoo renvoie le message "
-"plus tard."
+msgid "Too many messages to the same customer in a short time: Odoo sends the message again later."
+msgstr "Trop de messages au même client en peu de temps : Odoo renvoie le message plus tard."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3566,12 +3180,8 @@ msgstr "Transférer la conversation"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"Two variables must be separated by words: a space or a punctuation mark "
-"between them is not enough for Meta."
-msgstr ""
-"Deux variables doivent être séparées par des mots : un espace ou un signe de"
-" ponctuation entre elles ne suffit pas pour Meta."
+msgid "Two variables must be separated by words: a space or a punctuation mark between them is not enough for Meta."
+msgstr "Deux variables doivent être séparées par des mots : un espace ou un signe de ponctuation entre elles ne suffit pas pour Meta."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_ir_actions_server__state
@@ -3590,11 +3200,7 @@ msgid ""
 "Type :: followed by the shortcut in a conversation to insert the answer. In a WhatsApp\n"
 "               conversation, {first_name}, {name}, {agent} and {company} are replaced by the first name\n"
 "               and the name of the customer, your name and the name of the company."
-msgstr ""
-"Tapez :: suivi du raccourci dans une conversation pour insérer la réponse. "
-"Dans une conversation WhatsApp, {prenom}, {nom}, {conseiller} et {societe} "
-"(ou {first_name}, {name}, {agent}, {company}) sont remplacés par le prénom "
-"et le nom du client, votre nom et le nom de la société."
+msgstr "Tapez :: suivi du raccourci dans une conversation pour insérer la réponse. Dans une conversation WhatsApp, {prenom}, {nom}, {conseiller} et {societe} (ou {first_name}, {name}, {agent}, {company}) sont remplacés par le prénom et le nom du client, votre nom et le nom de la société."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_ir_actions_server__state
@@ -3642,11 +3248,8 @@ msgstr "Erreur inconnue d’un paramètre : vérifiez le message et le modèle."
 #. module: whatsapp_cloud
 #. odoo-javascript
 #: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
-msgid ""
-"Unknown number: a contact was created with the WhatsApp name of the "
-"customer."
-msgstr ""
-"Numéro inconnu : un contact a été créé avec le nom WhatsApp du client."
+msgid "Unknown number: a contact was created with the WhatsApp name of the customer."
+msgstr "Numéro inconnu : un contact a été créé avec le nom WhatsApp du client."
 
 #. module: whatsapp_cloud
 #. odoo-javascript
@@ -3682,12 +3285,8 @@ msgstr "Utilisateur"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__agent_user_ids
-msgid ""
-"Users who answer the conversations of this number. When empty: all the "
-"WhatsApp agents."
-msgstr ""
-"Utilisateurs qui répondent aux conversations de ce numéro. Si vide : tous "
-"les agents WhatsApp."
+msgid "Users who answer the conversations of this number. When empty: all the WhatsApp agents."
+msgstr "Utilisateurs qui répondent aux conversations de ce numéro. Si vide : tous les agents WhatsApp."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__category__utility
@@ -3706,14 +3305,8 @@ msgstr "Valeur du changement, telle qu’envoyée par Meta (JSON)."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_variable__value
-msgid ""
-"Value of the variable for each document, e.g. {{ object.partner_id.name }}, "
-"{{ object.name }}, {{ format_amount(object.amount_total, object.currency_id)"
-" }}."
-msgstr ""
-"Valeur de la variable pour chaque document, ex. {{ object.partner_id.name "
-"}}, {{ object.name }}, {{ format_amount(object.amount_total, "
-"object.currency_id) }}."
+msgid "Value of the variable for each document, e.g. {{ object.partner_id.name }}, {{ object.name }}, {{ format_amount(object.amount_total, object.currency_id) }}."
+msgstr "Valeur de la variable pour chaque document, ex. {{ object.partner_id.name }}, {{ object.name }}, {{ format_amount(object.amount_total, object.currency_id) }}."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_value
@@ -3863,22 +3456,13 @@ msgstr "ID du compte WhatsApp Business"
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
-msgid ""
-"WhatsApp Business numbers connected with the Cloud API of Meta: identifiers,"
-" access token, team, opening hours and texts of the automatic answers."
-msgstr ""
-"Numéros WhatsApp Business connectés à l’API Cloud de Meta : identifiants, "
-"jeton d’accès, équipe, horaires d’ouverture et textes des réponses "
-"automatiques."
+msgid "WhatsApp Business numbers connected with the Cloud API of Meta: identifiers, access token, team, opening hours and texts of the automatic answers."
+msgstr "Numéros WhatsApp Business connectés à l’API Cloud de Meta : identifiants, jeton d’accès, équipe, horaires d’ouverture et textes des réponses automatiques."
 
 #. module: whatsapp_cloud
 #: model:ir.module.module,summary:base.module_whatsapp_cloud
-msgid ""
-"WhatsApp Business with the Cloud API of Meta: notifications, conversations "
-"in Discuss, automatic answers, templates submitted from Odoo"
-msgstr ""
-"WhatsApp Business avec l’API Cloud de Meta : notifications, conversations "
-"dans Discussion, réponses automatiques, modèles soumis depuis Odoo"
+msgid "WhatsApp Business with the Cloud API of Meta: notifications, conversations in Discuss, automatic answers, templates submitted from Odoo"
+msgstr "WhatsApp Business avec l’API Cloud de Meta : notifications, conversations dans Discussion, réponses automatiques, modèles soumis depuis Odoo"
 
 #. module: whatsapp_cloud
 #: model:ir.module.module,shortdesc:base.module_whatsapp_cloud
@@ -4006,22 +3590,14 @@ msgstr "Compte WhatsApp %(name)s : %(details)s"
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"WhatsApp account %(name)s: no receipt from Meta for %(hours)s hours although"
-" messages were sent. Check the webhook of the Meta app (callback URL, "
-"subscription to the messages field) and the app secret."
-msgstr ""
-"Compte WhatsApp %(name)s : aucun accusé de Meta depuis %(hours)s heures "
-"alors que des messages ont été envoyés. Vérifiez le webhook de l’app Meta "
-"(URL de rappel, abonnement au champ messages) et la clé secrète de l’app."
+msgid "WhatsApp account %(name)s: no receipt from Meta for %(hours)s hours although messages were sent. Check the webhook of the Meta app (callback URL, subscription to the messages field) and the app secret."
+msgstr "Compte WhatsApp %(name)s : aucun accusé de Meta depuis %(hours)s heures alors que des messages ont été envoyés. Vérifiez le webhook de l’app Meta (URL de rappel, abonnement au champ messages) et la clé secrète de l’app."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid ""
-"WhatsApp is temporarily unavailable: Odoo sends the message again later."
-msgstr ""
-"WhatsApp est momentanément indisponible : Odoo renvoie le message plus tard."
+msgid "WhatsApp is temporarily unavailable: Odoo sends the message again later."
+msgstr "WhatsApp est momentanément indisponible : Odoo renvoie le message plus tard."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -4051,9 +3627,7 @@ msgstr "Messages WhatsApp sur vos commandes"
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/ir_actions_server.py:0
 msgid "WhatsApp messages can only be sent from documents, not wizards."
-msgstr ""
-"Les messages WhatsApp ne peuvent être envoyés que depuis des documents, pas "
-"des assistants."
+msgstr "Les messages WhatsApp ne peuvent être envoyés que depuis des documents, pas des assistants."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -4071,25 +3645,19 @@ msgstr "Réponse WhatsApp de %(name)s (+%(number)s) :"
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
 msgid "WhatsApp template %(name)s (%(lang)s): %(event)s at Meta. %(details)s"
-msgstr ""
-"Modèle WhatsApp %(name)s (%(lang)s) : %(event)s chez Meta. %(details)s"
+msgstr "Modèle WhatsApp %(name)s (%(lang)s) : %(event)s chez Meta. %(details)s"
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid ""
-"WhatsApp template %(name)s: Meta changes its category to %(category)s in 24 "
-"hours (prices of the category)."
-msgstr ""
-"Modèle WhatsApp %(name)s : Meta change sa catégorie en %(category)s dans 24 "
-"heures (tarifs de la catégorie)."
+msgid "WhatsApp template %(name)s: Meta changes its category to %(category)s in 24 hours (prices of the category)."
+msgstr "Modèle WhatsApp %(name)s : Meta change sa catégorie en %(category)s dans 24 heures (tarifs de la catégorie)."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
 msgid "WhatsApp template %s: low quality at Meta, it may be paused."
-msgstr ""
-"Modèle WhatsApp %s : qualité faible chez Meta, il peut être mis en pause."
+msgstr "Modèle WhatsApp %s : qualité faible chez Meta, il peut être mis en pause."
 
 #. module: whatsapp_cloud
 #: model:ir.actions.server,name:whatsapp_cloud.ir_cron_check_health_ir_actions_server
@@ -4149,20 +3717,13 @@ msgid ""
 "Write them here and submit them to Meta, or create them at Meta and synchronise them\n"
 "               from the WhatsApp account; then choose the document they apply to and fill their\n"
 "               variables."
-msgstr ""
-"Écrivez-les ici et soumettez-les à Meta, ou créez-les chez Meta et "
-"synchronisez-les depuis le compte WhatsApp ; puis choisissez le document "
-"auquel ils s’appliquent et remplissez leurs variables."
+msgstr "Écrivez-les ici et soumettez-les à Meta, ou créez-les chez Meta et synchronisez-les depuis le compte WhatsApp ; puis choisissez le document auquel ils s’appliquent et remplissez leurs variables."
 
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
-msgid ""
-"You will no longer receive our WhatsApp notifications. Send START to receive"
-" them again."
-msgstr ""
-"Vous ne recevrez plus nos notifications WhatsApp. Envoyez START pour les "
-"recevoir à nouveau."
+msgid "You will no longer receive our WhatsApp notifications. Send START to receive them again."
+msgstr "Vous ne recevrez plus nos notifications WhatsApp. Envoyez START pour les recevoir à nouveau."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -4207,14 +3768,8 @@ msgstr "ex. Le client demande un échange de taille."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_button__url
-msgid ""
-"https://... ; for a link per document, end it with {{1}} after a slash (e.g."
-" {base_url}/{{1}}): Odoo adds the value of the Link Button Variable of the "
-"template."
-msgstr ""
-"https://... ; pour un lien propre à chaque document, terminez-la par {{1}} "
-"après une barre oblique (par exemple {base_url}/{{1}}) : Odoo ajoute la "
-"valeur de la Variable du bouton lien du modèle."
+msgid "https://... ; for a link per document, end it with {{1}} after a slash (e.g. {base_url}/{{1}}): Odoo adds the value of the Link Button Variable of the template."
+msgstr "https://... ; pour un lien propre à chaque document, terminez-la par {{1}} après une barre oblique (par exemple {base_url}/{{1}}) : Odoo ajoute la valeur de la Variable du bouton lien du modèle."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -4265,43 +3820,3 @@ msgstr "📍 Position"
 #: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
 msgid "🛒 Order from the catalogue"
 msgstr "🛒 Commande depuis le catalogue"
-
-#. module: whatsapp_cloud
-#. odoo-python
-#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid "An authentication template has one variable, the code ({{1}}): Meta writes the rest of the text."
-msgstr "Un modèle d'authentification a une seule variable, le code ({{1}}) : Meta écrit le reste du texte."
-
-#. module: whatsapp_cloud
-#. odoo-python
-#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid "An authentication template uses numbered variables ({{1}}), not named ones."
-msgstr "Un modèle d'authentification utilise des variables numérotées ({{1}}), pas des variables nommées."
-
-#. module: whatsapp_cloud
-#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__code_expiration_minutes
-msgid "Authentication templates: Meta writes the text itself in the language of the template (the code, then a security advice) and adds this time in the footer, with a button that copies the code."
-msgstr "Modèles d'authentification : Meta écrit lui-même le texte dans la langue du modèle (le code, puis un conseil de sécurité) et ajoute cette durée en pied de message, avec un bouton qui copie le code."
-
-#. module: whatsapp_cloud
-#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__code_expiration_minutes
-msgid "Code Valid For (Minutes)"
-msgstr "Code valable (minutes)"
-
-#. module: whatsapp_cloud
-#. odoo-python
-#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid "The code of an authentication template is valid from 1 to 90 minutes."
-msgstr "Le code d'un modèle d'authentification est valable de 1 à 90 minutes."
-
-#. module: whatsapp_cloud
-#. odoo-python
-#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
-msgid "The PDF of the message could not be made: %s"
-msgstr "Le PDF du message n'a pas pu être créé : %s"
-
-#. module: whatsapp_cloud
-#. odoo-python
-#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
-msgid "The document of the message no longer exists."
-msgstr "Le document du message n'existe plus."

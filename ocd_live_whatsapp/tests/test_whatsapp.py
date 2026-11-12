@@ -6,11 +6,11 @@ from freezegun import freeze_time
 
 from odoo import fields
 from odoo.modules.module import load_script
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import HttpCase, TransactionCase, tagged
 
 from odoo.addons.ocd_live.tests.common import OcdLiveCommon
 from odoo.addons.ocd_live_whatsapp.hooks import restore_english_templates
-from odoo.addons.whatsapp_cloud.models.whatsapp_template import PLACEHOLDER_RE, WhatsappTemplate
+from odoo.addons.whatsapp_cloud.models.whatsapp_template import AUTHENTICATION_RE, PLACEHOLDER_RE, WhatsappTemplate
 
 
 @tagged("post_install", "-at_install")
@@ -380,6 +380,56 @@ class TestOcdTemplatesForMeta(TransactionCase):
         self.assertEqual(access.body, texts["access"])
         self.assertEqual(access.button_ids.name, "Activer mon compte")
 
+    def test_texts_refused_as_incorrect_category(self):
+        """Refused by Meta as INCORRECT_CATEGORY, taken for authentication messages: the
+        personal link (« keep it to yourself »), the access (an account to activate, a
+        username), the ticket (a number the team will ask for). The migration gives the new
+        texts, French and English, and the access its new button; an approved template keeps
+        its text, the one Meta sends."""
+        migration = load_script(
+            "ocd_live_whatsapp/migrations/20.0.1.8.0/post-migration.py", "ocd_live_whatsapp_texts_20_0_1_8_0"
+        )
+        templates = {xmlid: self.env.ref(xmlid) for xmlid in migration.OLD_TEXTS}
+        texts = {xmlid: template.body for xmlid, template in templates.items()}
+        for xmlid, template in templates.items():
+            self.assertIsNone(AUTHENTICATION_RE.search(texts[xmlid]), xmlid)
+            template.write({"body": migration.OLD_TEXTS[xmlid][0], "status": "rejected"})
+        approved = templates["ocd_live_whatsapp.template_ticket_en"]
+        approved.status = "approved"
+        access = templates["ocd_live_whatsapp.template_access_link"]
+        access.button_ids.name = "Activer mon compte"
+        templates["ocd_live_whatsapp.template_access_link_en"].button_ids.name = "Activate my account"
+        migration.migrate(self.env.cr, "20.0.1.7.0")
+        self.env.invalidate_all()
+        for xmlid, template in templates.items():
+            with self.subTest(template=xmlid):
+                expected = migration.OLD_TEXTS[xmlid][0] if template == approved else texts[xmlid]
+                self.assertEqual(template.body, expected)
+        self.assertEqual(access.button_ids.name, "Terminer mon inscription")
+        self.assertEqual(templates["ocd_live_whatsapp.template_access_link_en"].button_ids.name, "Complete my registration")
+        ticket = templates["ocd_live_whatsapp.template_ticket"]
+        self.assertEqual(sorted(ticket.variable_ids.mapped("sequence")), [1, 2, 3, 4, 5, 6])
+
+    def test_login_asks_a_code_while_the_link_is_refused(self):
+        """Link mode: while Meta refuses the template of the personal link (or reviews it, or
+        the team paused it), the login asks for a code: its template is an authentication one,
+        the only kind Meta accepts for a login. When the code cannot leave either, the link."""
+        Partner = self.env["res.partner"]
+        link = self.env.ref("ocd_live_whatsapp.template_space_link")
+        code = self.env.ref("ocd_live_whatsapp.template_login_code")
+        code.status = "approved"
+        self.assertTrue(Partner._ocd_link_login_ready("space"))
+        for status in ("rejected", "pending", "paused"):
+            link.status = status
+            self.assertFalse(Partner._ocd_link_login_ready("space"), status)
+        code.status = "rejected"
+        self.assertTrue(Partner._ocd_link_login_ready("space"), "Neither can leave: the page keeps the link")
+        automations = self.env["ocd.automation"].search([("template_ids", "in", link.ids)])
+        code.status = link.status = "approved"
+        if automations and not any(automations.mapped("locked")):
+            automations.write({"enabled": False})
+            self.assertFalse(Partner._ocd_link_login_ready("space"), "Paused by the team")
+
     def test_migrations_give_the_new_texts(self):
         """The databases installed before keep the previous texts (data loaded once): the
         migrations give them the new ones, except to a template approved by Meta."""
@@ -408,3 +458,39 @@ class TestOcdTemplatesForMeta(TransactionCase):
                 with self.subTest(template=xmlid):
                     expected = migration.OLD_TEXTS[xmlid][-1] if template == approved else texts[xmlid]
                     self.assertEqual(template.body, expected)
+
+
+@tagged("post_install", "-at_install")
+class TestOcdLiveWhatsappLoginPage(OcdLiveCommon, HttpCase):
+
+    def test_login_page_asks_a_code_while_the_link_is_refused(self):
+        """The template of the personal link refused by Meta: the login page offers the code and
+        sends it, whatever the number (the same answer for an unknown one)."""
+        self.company.ocd_vendor_login = "link"
+        self.env.ref("ocd_live_whatsapp.template_login_code").status = "approved"
+        self.env.ref("ocd_live_whatsapp.template_space_link").status = "rejected"
+        calls = []
+
+        def fake_send(template, records):
+            calls.append(template.template_name)
+            return template.env["whatsapp.message"].new({"state": "queued"})
+
+        self.authenticate(None, None)
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            page = self.url_open("/ocd/connexion")
+            self.assertIn("Receive my code", page.text)
+            country = self.env.ref("base.cm").id
+            response = self.url_open("/ocd/connexion", data={
+                "csrf_token": self.csrf_token(), "phone": "6 70 00 00 02", "country_id": country,
+            })
+            self.assertIn('action="/ocd/connexion/code"', response.text)
+            unknown = self.url_open("/ocd/connexion", data={
+                "csrf_token": self.csrf_token(), "phone": "6 99 99 99 99", "country_id": country,
+            })
+            self.assertIn('action="/ocd/connexion/code"', unknown.text)
+        self.assertEqual(calls, ["ocd_code_connexion"], "The code, to the known number only")
+        # Approved again: the link
+        self.env.ref("ocd_live_whatsapp.template_space_link").status = "approved"
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            page = self.url_open("/ocd/connexion")
+        self.assertNotIn("Receive my code", page.text)

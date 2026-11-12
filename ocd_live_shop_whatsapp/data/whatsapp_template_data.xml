@@ -9,7 +9,7 @@
             <field name="template_name">ocd_lien_livraison</field>
             <field name="lang_code">fr</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="body">Bonjour {{1}}, voici votre lien pour préparer et livrer les colis OCD Live. Gardez-le pour vous.</field>
+            <field name="body">Bonjour {{1}}, voici vos colis OCD Live à préparer et à livrer. Touchez « Mes colis » pour les voir.</field>
             <field name="button_url_value">{{ 'ocd/livrer/' + object._ocd_get_space_token() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
             <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Junior'})]"/>
@@ -53,9 +53,10 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">partner_id</field>
-            <!-- The code of the parcel is not in the message (Meta refuses a code in a Utility
-                 template): the button opens the page that follows the order, where it is -->
-            <field name="body">Bonjour {{1}}, votre colis {{2}} est en route avec {{3}}. Touchez « Suivre mon colis » pour voir le code à donner au livreur, seulement quand vous avez le colis en main.</field>
+            <!-- The code of the parcel is neither in the message nor named in it (Meta takes a
+                 code in a Utility template for an authentication): the button opens the page that
+                 follows the order, where the code is -->
+            <field name="body">Bonjour {{1}}, votre colis {{2}} est en route avec {{3}}. Le livreur vous appellera avant de passer. Touchez « Suivre mon colis » pour suivre la livraison.</field>
             <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Suivre mon colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
             <field name="variable_ids" eval="[
@@ -71,7 +72,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, votre colis n'a pas pu vous être livré par {{2}}. Répondez à ce message pour choisir un autre moment. Votre code de livraison reste le même.</field>
+            <field name="body">Bonjour {{1}}, votre colis n'a pas pu vous être livré par {{2}}. Répondez à ce message pour choisir un autre moment de livraison.</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Arnaud'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object.ocd_courier_id.name or \'Le livreur\' }}', 'sample_value': 'Raoul'}),

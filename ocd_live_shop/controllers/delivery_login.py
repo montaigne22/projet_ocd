@@ -60,9 +60,11 @@ common.FAST_NAVIGATION_CHECKS.append(_is_known_courier)
 
 
 def courier_login_mode():
-    """The couriers log in like the vendors: the personal link in the link mode, otherwise a
-    code (they have no password)."""
-    return "link" if common.company().ocd_vendor_login == "link" else "whatsapp_code"
+    """The couriers log in like the vendors: the personal link in the link mode (a code while
+    the links cannot leave), otherwise a code (they have no password)."""
+    if common.company().ocd_vendor_login != "link":
+        return "whatsapp_code"
+    return "link" if request.env["res.partner"].sudo()._ocd_link_login_ready("livrer") else "whatsapp_code"
 
 
 class OcdDeliveryLogin(OcdVendorSpace):

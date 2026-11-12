@@ -184,8 +184,17 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   « Préviens-moi ») : la demande vaut accord pour ce message.
 - Les colis d'OCD ont leurs propres messages : le « commande expédiée » du shop n'est pas envoyé pour eux,
   et la demande de note part une fois par commande, après son dernier colis.
-- **Pas de code ni de mot de passe dans un modèle Utilitaire** (refusés par Meta) : le code du colis est
-  sur la page de suivi, ouverte par le bouton du message ; le ticket donne son numéro.
+- **Rien qui ressemble à une connexion dans un modèle Utilitaire** : Meta le refuse comme
+  `INCORRECT_CATEGORY` (il y voit un message d'*Authentification*, dont le seul format est un code à usage
+  unique). Ni « code » (même nommé sans le donner), ni « mot de passe », ni « identifiant », ni « lien
+  personnel », ni « gardez-le pour vous », ni numéro « que l'équipe vous demandera ». Les messages disent ce
+  qui s'est passé, comme ceux des réservations : le colis est en route (le code est sur la page de suivi,
+  ouverte par le bouton), le ticket est joint avec sa référence, l'espace vendeur demandé, l'inscription à
+  terminer. Odoo refuse de soumettre un texte Utilitaire qui contient ces mots.
+- **Connexion jamais bloquée par Meta** : tant que le modèle du lien personnel est refusé, en attente ou en
+  pause, la page de connexion (vendeurs et livreurs) demande un code, envoyé par le modèle
+  d'*Authentification* (le seul que Meta accepte pour une connexion) ; le lien revient dès que Meta
+  l'approuve. La page répond pareil pour tous les numéros.
 - **Messages en français et en anglais** : chaque modèle existe dans les deux langues (même nom chez Meta).
   Un contact dont la langue est l'anglais reçoit la version anglaise une fois approuvée par Meta, la
   version française en attendant.

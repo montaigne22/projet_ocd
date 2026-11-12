@@ -31,8 +31,12 @@ class OcdVendorSpace(http.Controller):
     def _login_page_mode(self, target):
         """What the login page asks after the number: "link" (a link arrives), "whatsapp_code"
         (a code to type) or "password" (the login of Odoo). The same for every number, known
-        or not."""
-        return common.company().ocd_vendor_login
+        or not. In the link mode, a code while the links cannot leave (their message not
+        approved by WhatsApp yet): nobody is left without a way to log in."""
+        mode = common.company().ocd_vendor_login
+        if mode == "link" and not request.env["res.partner"].sudo()._ocd_link_login_ready(target):
+            return "whatsapp_code"
+        return mode
 
     def _ocd_login_partner(self, number, target):
         """Contact who logs in with `number` on the page `target` (empty when unknown)."""

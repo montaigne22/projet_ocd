@@ -145,6 +145,17 @@
         </field>
     </record>
 
+    <!-- Several templates at once: after an update of a module gave new texts to the refused ones -->
+    <record id="action_submit_selected_to_meta" model="ir.actions.server">
+        <field name="name">Submit to Meta</field>
+        <field name="model_id" ref="model_whatsapp_template"/>
+        <field name="binding_model_id" ref="model_whatsapp_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="group_ids" eval="[(4, ref('whatsapp_cloud.group_whatsapp_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_submit_selected_to_meta()</field>
+    </record>
+
     <record id="whatsapp_template_action" model="ir.actions.act_window">
         <field name="name">WhatsApp Templates</field>
         <field name="res_model">whatsapp.template</field>

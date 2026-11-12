@@ -790,6 +790,67 @@ class TestWhatsAppConversation(WhatsAppCommon):
                 self.template.body = body
                 self.template._check_for_meta()
 
+    def test_login_words_refused_in_a_utility_template(self):
+        """Meta takes a code, a password, a username or a link to keep for yourself for an
+        authentication message, and refuses the Utility template (INCORRECT_CATEGORY): Odoo
+        says it before submitting."""
+        for body in (
+            "Bonjour {{1}}, votre code de livraison est {{2}} pour ce colis.",
+            "Bonjour {{1}}, choisissez votre mot de passe avec ce lien.",
+            "Bonjour {{1}}, votre identifiant est votre numéro WhatsApp.",
+            "Hello {{1}}, here is your personal link to your space.",
+            "Hello {{1}}, your space is ready. Keep it to yourself.",
+        ):
+            with self.subTest(body=body), self.assertRaisesRegex(UserError, "INCORRECT_CATEGORY"):
+                self.template.body = body
+                self.template._check_for_meta()
+        # A word of the button counts too
+        self.template.write({
+            "body": "Bonjour {{1}}, votre commande {{2}} est prête.",
+            "button_ids": [(0, 0, {"button_type": "quick_reply", "name": "Voir mon code"})],
+        })
+        with self.assertRaisesRegex(UserError, "INCORRECT_CATEGORY"):
+            self.template._check_for_meta()
+        self.template.button_ids.name = "Merci"
+        self.template._check_for_meta()
+        # A promotion code is free in a marketing template
+        self.template.write({"category": "marketing", "body": "Bonjour {{1}}, votre code promo {{2}} vaut cette semaine."})
+        self.template._check_for_meta()
+
+    def test_submit_selected_templates_to_meta(self):
+        """Several templates at once, after an update gave new texts to the refused ones: the
+        refused one goes, the approved one stays as it is, a text that Odoo refuses says why."""
+        Template = self.env["whatsapp.template"]
+        common = {
+            "lang_code": "fr", "model_id": self.env["ir.model"]._get_id("res.partner"),
+            "account_id": self.account.id,
+        }
+        refused = Template.create({**common, "name": "Refused", "template_name": "refused_one",
+                                   "body": "Bonjour {{1}}, votre commande est prête.", "wa_template_id": "777"})
+        approved = Template.create({**common, "name": "Approved", "template_name": "approved_one",
+                                    "body": "Bonjour {{1}}, votre commande est en route.", "wa_template_id": "778"})
+        wrong = Template.create({**common, "name": "Wrong", "template_name": "wrong_one",
+                                 "body": "Bonjour {{1}}, votre code est prêt."})
+        refused.status = "rejected"
+        approved.status = "approved"
+        templates = refused | approved | wrong
+        templates.variable_ids.sample_value = "Awa"
+        with patch(REQUEST, return_value=mock_response({"success": True})) as request:
+            action = templates.action_submit_selected_to_meta()
+        self.assertEqual(request.call_count, 1, "The refused one only")
+        self.assertTrue(request.call_args.args[1].endswith("/777"))
+        self.assertEqual(request.call_args.kwargs["json"]["category"], "UTILITY")
+        self.assertEqual(refused.status, "pending")
+        self.assertEqual(approved.status, "approved")
+        self.assertEqual(wrong.status, "unknown")
+        self.assertEqual(action["params"]["type"], "warning")
+        self.assertIn("1 template submitted", action["params"]["message"])
+        self.assertIn("wrong_one", action["params"]["message"])
+        with patch(REQUEST) as request:
+            action = approved.action_submit_selected_to_meta()
+        request.assert_not_called()
+        self.assertEqual(action["params"]["type"], "info")
+
     def test_module_texts_reach_existing_databases(self):
         """A text corrected in a module replaces its previous text, kept in the database by
         the noupdate data, unless the user wrote another text or Meta approved it."""

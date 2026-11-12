@@ -87,6 +87,36 @@ class ResPartner(models.Model):
         """Override of `ocd_live` to send the personal link on WhatsApp."""
         return self._ocd_whatsapp_send("ocd_live_whatsapp.template_space_link", self, requested=True)
 
+    @api.model
+    def _ocd_link_templates(self):
+        """The template of the personal link of each login page."""
+        return {"space": "ocd_live_whatsapp.template_space_link"}
+
+    @api.model
+    def _ocd_link_login_ready(self, target):
+        """Override of `ocd_live`: the links leave when their template is not waiting for Meta,
+        refused or paused. Otherwise the login asks for a code, whose template is an
+        authentication one, the only kind Meta accepts for a login; when the code cannot leave
+        either, the page keeps the link."""
+        if not super()._ocd_link_login_ready(target):
+            return False
+        xmlid = self._ocd_link_templates().get(target)
+        if not xmlid or self._ocd_template_usable(xmlid):
+            return True
+        return not self._ocd_template_usable("ocd_live_whatsapp.template_login_code")
+
+    @api.model
+    def _ocd_template_usable(self, xmlid):
+        """Whether the messages of the template `xmlid` can leave: not waiting for Meta, not
+        refused or paused at Meta, not paused by the team (Automations)."""
+        template = self.env.ref(xmlid, raise_if_not_found=False)
+        if not template:
+            return False
+        template = template.sudo()
+        if template.status in ("pending", "rejected", "paused", "disabled"):
+            return False
+        return self.env["ocd.automation"]._ocd_template_enabled(template)
+
     def _ocd_send_access_link(self, url):
         """Override of `ocd_live` to send the link to choose a password on WhatsApp."""
         return self._ocd_whatsapp_send(

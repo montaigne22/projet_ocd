@@ -10,7 +10,7 @@
             <field name="template_name">ocd_lien_livraison</field>
             <field name="lang_code">en</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="body">Hello {{1}}, here is your link to prepare and deliver the OCD Live parcels. Keep it to yourself.</field>
+            <field name="body">Hello {{1}}, here are your OCD Live parcels to prepare and deliver. Tap "My parcels" to see them.</field>
             <field name="button_url_value">{{ 'ocd/livrer/' + object._ocd_get_space_token() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My parcels', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
             <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Junior'})]"/>
@@ -56,7 +56,7 @@
             <field name="partner_field">partner_id</field>
             <!-- No code in the message (Meta refuses it in a Utility template): the button opens the
                  page that follows the order, where it is -->
-            <field name="body">Hello {{1}}, your parcel {{2}} is on its way with {{3}}. Tap "Track my parcel" to see the code to give to the courier, only when you have the parcel in your hands.</field>
+            <field name="body">Hello {{1}}, your parcel {{2}} is on its way with {{3}}. The courier will call you before coming. Tap "Track my parcel" to follow the delivery.</field>
             <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Track my parcel', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
             <field name="variable_ids" eval="[
@@ -72,7 +72,7 @@
             <field name="lang_code">en</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Hello {{1}}, your parcel could not be delivered to you by {{2}}. Reply to this message to choose another time. Your delivery code stays the same.</field>
+            <field name="body">Hello {{1}}, your parcel could not be delivered to you by {{2}}. Reply to this message to choose another delivery time.</field>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Arnaud'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object.ocd_courier_id.name or \'the courier\' }}', 'sample_value': 'Raoul'}),

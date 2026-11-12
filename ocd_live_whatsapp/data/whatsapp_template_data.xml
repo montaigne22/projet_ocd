@@ -11,7 +11,7 @@
             <field name="template_name">ocd_lien_espace</field>
             <field name="lang_code">fr</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="body">Bonjour {{1}}, voici votre lien personnel OCD Live. Gardez-le pour vous : il ouvre votre espace (vos lives, vos paquets, votre pass).</field>
+            <field name="body">Bonjour {{1}}, vous avez demandé votre espace vendeur OCD Live : vos lives, vos paquets et votre pass. Touchez « Mon espace » pour l'ouvrir.</field>
             <field name="button_url_value">{{ 'ocd/espace/' + object._ocd_get_space_token() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon espace', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123'})]"/>
             <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Awa'})]"/>
@@ -38,9 +38,9 @@
             <field name="model_id" ref="base.model_res_partner"/>
             <!-- No « password » with a link: Meta reads it as a trap (phishing). The link opens the
                  page where the vendor completes the account (its password) -->
-            <field name="body">Bonjour {{1}}, votre compte vendeur OCD Live est créé. Touchez le bouton pour l'activer. Pour vous connecter ensuite, votre identifiant est votre numéro WhatsApp.</field>
+            <field name="body">Bonjour {{1}}, l'équipe d'OCD Live a créé votre espace vendeur. Touchez « Terminer mon inscription » pour le finaliser.</field>
             <field name="button_url_value">{{ (ctx.get('ocd_access_url') or '').split('/', 3)[-1] }}</field>
-            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Activer mon compte', 'url': '{base_url}/{{1}}', 'url_example': 'web/reset_password?token=abc'})]"/>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Terminer mon inscription', 'url': '{base_url}/{{1}}', 'url_example': 'web/reset_password?token=abc'})]"/>
             <field name="variable_ids" eval="[(0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Awa'})]"/>
         </record>
 
@@ -130,11 +130,10 @@ Vous pouvez envoyer un autre lien depuis votre espace OCD Live.</field>
             <!-- The PDF of the ticket comes with the message -->
             <field name="header_type">document</field>
             <field name="header_report_id" ref="ocd_live.action_report_ticket"/>
-            <!-- No « code » in a Utility template (Meta sees a one-time code), no sentence in a
-                 variable: the number of the ticket, then the same text for the studio and remote -->
-            <field name="body">Bonjour {{1}}, voici votre ticket OCD Live pour votre live du {{2}}, de {{3}} à {{4}}. Il a lieu {{5}}. Numéro du ticket : {{6}}. Gardez ce message, l'équipe d'OCD Live vous le demandera le jour du live.
-
-À bientôt sur OCD Live !</field>
+            <!-- Nothing Meta takes for an authentication in a Utility template (a code, a number
+                 to keep that the team will ask for): the reference of the ticket, like the one of
+                 the booking; no sentence in a variable, no greeting at the end -->
+            <field name="body">Bonjour {{1}}, votre ticket pour le live du {{2}}, de {{3}} à {{4}}, est joint à ce message. Le live a lieu {{5}}. Référence du ticket : {{6}}. Touchez « Mon ticket » pour l'ouvrir à nouveau.</field>
             <field name="button_url_value">{{ object._ocd_ticket_path() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon ticket', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/ticket/42?access_token=abc'})]"/>
             <field name="variable_ids" eval="[

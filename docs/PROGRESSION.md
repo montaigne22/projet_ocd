@@ -65,7 +65,9 @@ démo, 15 tests sans échec (devises de Brenda, Kadi et Awa comprises).
 2. **WhatsApp chez Meta** (équipe) : connecter le numéro d'OCD Live (WhatsApp › Comptes), puis soumettre
    (le code de connexion est un modèle *Authentification* : Meta en écrit le texte, Odoo envoie le code)
    les modèles depuis Odoo (WhatsApp › Messages automatiques) : tant qu'un modèle n'est pas approuvé, son
-   message ne part pas (les Paramètres, section WhatsApp, et les Automatisations le signalent). Les
+   message ne part pas (les Paramètres, section WhatsApp, et les Automatisations le signalent). **Après la
+   mise à jour du 12 novembre** : WhatsApp › Modèles, filtre « Refusés ou en pause », tout cocher, Action ›
+   « Soumettre à Meta » (les textes refusés pour `INCORRECT_CATEGORY` ont été réécrits). Les
    réponses rapides de l'équipe se créent dans les conversations (`::livreur`, `::retard`…).
 3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
@@ -86,6 +88,29 @@ démo, 15 tests sans échec (devises de Brenda, Kadi et Awa comprises).
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 12 novembre 2026 — modèles WhatsApp refusés par Meta (INCORRECT_CATEGORY)
+- **Le motif** : Meta prenait quatre modèles *Utilitaires* pour des messages d'*Authentification* (réservés
+  au code à usage unique) : « colis en route » (le code à donner au livreur, même sans le donner), « ticket
+  du live » (un numéro « que l'équipe vous demandera »), « lien personnel » (« gardez-le pour vous ») et
+  « choisir un mot de passe » (un compte à activer, un identifiant). En français et en anglais.
+- **Nouveaux textes**, qui disent ce qui s'est passé : « votre colis … est en route avec … Le livreur vous
+  appellera avant de passer » (le code reste sur la page de suivi) ; « votre ticket … est joint à ce
+  message … Référence du ticket » ; « vous avez demandé votre espace vendeur » ; « l'équipe d'OCD Live a créé
+  votre espace vendeur », bouton « Terminer mon inscription ». Par prudence, même chose pour le lien de
+  l'appli de livraison et « livraison pas possible » (ils avaient les mêmes mots).
+- **Mise à jour des bases** (`ocd_live_whatsapp` 20.0.1.8.0, `ocd_live_shop_whatsapp` 20.0.1.7.0) : les
+  modèles refusés (ou en attente, ou pas encore synchronisés) prennent les nouveaux textes ; un modèle
+  approuvé garde le sien.
+- **Odoo prévient avant Meta** (`whatsapp_cloud` 20.0.2.8.0) : un texte Utilitaire avec « code », « mot de
+  passe », « identifiant », « lien personnel »… n'est pas soumis, le message dit pourquoi. **Soumission
+  groupée** : WhatsApp › Modèles, cocher les modèles, Action › « Soumettre à Meta ».
+- **La connexion ne dépend plus de la décision de Meta** : tant que le modèle du lien personnel est refusé
+  ou en attente, la page de connexion des vendeurs (et celle des livreurs) envoie un code, par le modèle
+  d'authentification ; le lien revient quand Meta l'approuve.
+- Tests : WhatsApp (`whatsapp_cloud`, `whatsapp_cloud_sale`, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp`) et
+  pages du site, 178 tests, un seul échec, connu (« commande confirmée puis expédiée ») ; boutique, 108 sans
+  échec. Base de démo mise à jour : les 12 modèles ont leurs nouveaux textes.
 
 ### 12 novembre 2026 — devises par pays et paiements de démo CamPay
 - **Devises par pays** (Paramètres › Devises par pays, bouton « Mettre en place les devises par pays ») :

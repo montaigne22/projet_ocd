@@ -6,7 +6,7 @@ from odoo.modules.module import load_script
 from odoo.tests import tagged
 
 from odoo.addons.ocd_live_shop.tests.common import OcdShopCommon
-from odoo.addons.whatsapp_cloud.models.whatsapp_template import WhatsappTemplate
+from odoo.addons.whatsapp_cloud.models.whatsapp_template import AUTHENTICATION_RE, WhatsappTemplate
 
 
 @tagged("post_install", "-at_install")
@@ -75,6 +75,42 @@ class TestOcdParcelMessages(OcdShopCommon):
         self.assertEqual(template.button_ids.mapped("name"), ["Suivre mon colis"])
         self.assertEqual(template.button_url_value, "{{ object._ocd_tracking_path() }}")
         self.assertEqual(sorted(template.variable_ids.mapped("sequence")), [1, 2, 3])
+
+    def test_texts_refused_as_incorrect_category(self):
+        """Meta refused « colis en route » as INCORRECT_CATEGORY: a code named in a Utility
+        template is taken for an authentication message, like a link « to keep for yourself ».
+        The migration gives the new texts (French and English) to the refused templates; an
+        approved one keeps its text, the one Meta sends."""
+        migration = load_script(
+            "ocd_live_shop_whatsapp/migrations/20.0.1.7.0/post-migration.py", "ocd_shop_whatsapp_texts_20_0_1_7_0"
+        )
+        self.env["ir.config_parameter"].sudo().set_str("web.base.url", "https://ocd.example.com")
+        templates = {xmlid: self.env.ref(xmlid) for xmlid in migration.OLD_TEXTS}
+        texts = {xmlid: template.body for xmlid, template in templates.items()}
+        for xmlid, template in templates.items():
+            self.assertIsNone(AUTHENTICATION_RE.search(texts[xmlid]), xmlid)
+            template._check_for_meta()
+            template.write({"body": migration.OLD_TEXTS[xmlid][0], "status": "rejected"})
+        approved = templates["ocd_live_shop_whatsapp.template_parcel_failed_en"]
+        approved.status = "approved"
+        migration.migrate(self.env.cr, "20.0.1.6.0")
+        self.env.invalidate_all()
+        for xmlid, template in templates.items():
+            with self.subTest(template=xmlid):
+                expected = migration.OLD_TEXTS[xmlid][0] if template == approved else texts[xmlid]
+                self.assertEqual(template.body, expected)
+        on_the_way = templates["ocd_live_shop_whatsapp.template_parcel_on_the_way"]
+        self.assertEqual(on_the_way.button_ids.name, "Suivre mon colis", "The code stays behind the button")
+
+    def test_delivery_login_asks_a_code_while_the_link_is_refused(self):
+        Partner = self.env["res.partner"]
+        link = self.env.ref("ocd_live_shop_whatsapp.template_delivery_link")
+        code = self.env.ref("ocd_live_whatsapp.template_login_code")
+        code.status = "approved"
+        self.assertTrue(Partner._ocd_link_login_ready("livrer"))
+        link.status = "rejected"
+        self.assertFalse(Partner._ocd_link_login_ready("livrer"))
+        self.assertTrue(Partner._ocd_link_login_ready("space"), "The page of the vendors has its own link")
 
     def test_message_when_the_vendor_goes_live(self):
         alert = self.env["ocd.boutique.alert"]._ocd_register(self.brenda, phone="+228 90112233")

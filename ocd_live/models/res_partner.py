@@ -605,6 +605,13 @@ class ResPartner(models.Model):
         """Send the personal link of the space to the vendor. Extended by ocd_live_whatsapp."""
         return False
 
+    @api.model
+    def _ocd_link_login_ready(self, target):
+        """Whether the personal links of the login page `target` ("space", or "livrer" with the
+        shop) can leave now. When they cannot and a code can, the page asks for a code.
+        Extended by ocd_live_whatsapp."""
+        return True
+
     def _ocd_send_access_link(self, url):
         """Send the link to choose a password. Extended by ocd_live_whatsapp."""
         return False
