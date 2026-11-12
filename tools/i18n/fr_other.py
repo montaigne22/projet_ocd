@@ -129,6 +129,14 @@ DEMO = {
     "Afternoon": "Après-midi",
     "OCD Live Demo": "Démo d'OCD Live",
     "OCD Live demo: keep the lives of the demo current": "Démo d'OCD Live : garder les lives de la démo à jour",
+    "Step Of The OCD Live Demo": "Étape de la démo d'OCD Live",
+    "A step of the demo takes place once.": "Une étape de la démo n'a lieu qu'une fois.",
+    "Key": "Clé",
+    "Sale Order": "Bon de commande",
+    "Created by": "Créé par",
+    "Created on": "Créé le",
+    "Last Updated by": "Dernière mise à jour par",
+    "Last Updated on": "Dernière mise à jour le",
 }
 
 # The module that keeps WhatsApp away from the contacts of the demo

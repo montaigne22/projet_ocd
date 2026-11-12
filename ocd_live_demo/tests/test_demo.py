@@ -1,6 +1,7 @@
 import re
 from datetime import datetime, time, timedelta
 
+import pytz
 from freezegun import freeze_time
 
 from odoo import fields
@@ -29,6 +30,23 @@ class DemoCommon:
 
     def _end_open_links(self):
         self.env["ocd.directory.listing"].search([("partner_id", "in", self._demo_partners().ids)]).action_end()
+
+    def _douala(self, day, hour, minute):
+        """A moment of `day` at `hour` in Douala, as stored (naive UTC)."""
+        return pytz.timezone("Africa/Douala").localize(datetime.combine(day, time(hour, minute))).astimezone(pytz.utc).replace(tzinfo=None)
+
+    def _parcels(self):
+        return self.env["stock.picking"].search([
+            ("partner_id", "in", self._demo_partners().ids), ("ocd_is_parcel", "=", True),
+        ])
+
+    def _free_stock(self):
+        """Free stock of the dress shown on the website, by (colour, size)."""
+        website = self.env["website"].search([], limit=1)
+        return {
+            tuple(sorted(v.product_template_attribute_value_ids.mapped("name"))): website._get_product_available_qty(v)
+            for v in self.env.ref("ocd_live_demo.product_wax_dress").product_variant_ids
+        }
 
 
 @tagged("post_install", "-at_install")
@@ -67,39 +85,96 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
         self.assertTrue(all(templates.mapped("image_128")), "Every demo product has a picture")
         dress = self.env.ref("ocd_live_demo.product_wax_dress")
         self.assertEqual(len(dress.product_variant_ids), 8, "Two colours, four sizes")
-        website = self.env["website"].search([], limit=1)
-        free = {
-            tuple(sorted(v.product_template_attribute_value_ids.mapped("name"))): website._get_product_available_qty(v)
-            for v in dress.product_variant_ids
-        }
-        self.assertLessEqual(free[("Bleu", "L")], 0, "A sold-out size")
-        self.assertEqual(free[("Bleu", "M")], 3, "Only 3 left")
+        self.assertEqual(self._free_stock()[("Bleu", "M")], 3, "Only 3 left")
+        self.assertLessEqual(self._free_stock()[("Bleu", "L")], 0, "A sold-out size")
         self.assertTrue(self.env.ref("ocd_live_demo.product_black_soap")._is_sold_out())
         partners = self._demo_partners()
         couriers = partners.filtered("ocd_is_courier")
         self.assertGreaterEqual(len(couriers), 3)
         self.assertTrue(couriers.filtered(lambda c: not c.ocd_courier_available), "One courier off duty")
-        parcels = self.env["stock.picking"].search([("partner_id", "in", partners.ids), ("ocd_is_parcel", "=", True)])
-        stages = parcels.mapped("ocd_stage")
-        for stage in ("to_prepare", "ready", "on_the_way", "delivered", "problem"):
-            self.assertIn(stage, stages, stage)
-        self.assertTrue(parcels.filtered("ocd_is_late"), "A late parcel for the dispatch")
-        self.assertTrue(couriers.filtered(lambda c: c.ocd_cash_on_hand > 0), "Cash to hand over this evening")
-        orders = parcels.sale_id
-        self.assertTrue(orders.ocd_delivery_line_ids, "Orders priced with one price per parcel")
+        parcels = self._parcels()
+        self.assertGreaterEqual(len(parcels), 6 * (scenario.SHOP_PAST_DAYS + 1) - 6, "The orders of the last week")
+        self.assertTrue(parcels.sale_id.ocd_delivery_line_ids, "Orders priced with one price per parcel")
+        self.assertEqual(
+            set(parcels.filtered(lambda p: p.sale_id.date_order < fields.Datetime.now() - timedelta(days=2)).mapped("ocd_stage")),
+            {"delivered"}, "The parcels of the days before are delivered",
+        )
+        remittances = self.env["ocd.cash.remittance"].search([("courier_id", "in", couriers.ids)])
+        self.assertTrue(remittances and set(remittances.mapped("state")) == {"done"}, "Cash handed over every evening")
         if "whatsapp.account" in self.env:
             channels = self.env["discuss.channel"].search(
                 [("channel_type", "=", "whatsapp"), ("whatsapp_partner_id", "in", partners.ids)]
             )
-            self.assertGreaterEqual(len(channels), 4, "Conversations for the WhatsApp screen")
-            self.assertTrue(channels.filtered("whatsapp_waiting_since"), "Customers waiting for an answer")
+            self.assertGreaterEqual(len(channels), 6, "Conversations for the WhatsApp screen")
             self.assertFalse(channels.whatsapp_account_id.active, "Nothing goes to Meta from the demo")
         cod = self.env.ref("delivery.payment_provider_cod")
         self.assertTrue(cod.active and cod.is_published, "An order of the shop can be paid in cash at the door")
-        bills = self.env["account.move"].search([("partner_id", "in", partners.ids), ("move_type", "=", "in_invoice")])
-        if bills:
-            # With the accounting set up when the demo was installed: the payouts to check
-            self.assertTrue(self.env["ocd.payout"].search([("vendor_id", "in", partners.ids)]), "Payouts to check")
+
+    def test_a_day_of_the_shop(self):
+        """The next day, hour by hour in Douala: new orders, parcels at every step, a late parcel
+        and a customer absent the day before, cash with the couriers, then handed over."""
+        demo = OcdLiveDemo(self.env)
+        tomorrow = demo.shop_today(fields.Datetime.now()) + timedelta(days=1)
+        couriers = self._demo_partners().filtered("ocd_is_courier")
+        with freeze_time(self._douala(tomorrow, 11, 30)):
+            demo.keep_shop(fields.Datetime.now())
+            stages = set(self._parcels().filtered(lambda p: p.ocd_stage != "delivered" or p.ocd_delivered_at
+                                                  >= self._douala(tomorrow, 0, 0)).mapped("ocd_stage"))
+            for stage in ("to_prepare", "ready", "on_the_way", "delivered", "problem"):
+                self.assertIn(stage, stages, stage)
+            late = self._parcels().filtered("ocd_is_late")
+            self.assertTrue(late, "The parcel Brenda has not prepared since yesterday")
+            self.assertTrue(late.ocd_reminded_at and late.ocd_escalated_at < late.ocd_reminded_at + timedelta(hours=3))
+            self.assertEqual(self._free_stock()[("Bleu", "M")], 3, "The stock stays at its level")
+        with freeze_time(self._douala(tomorrow, 13, 45)):
+            demo.keep_shop(fields.Datetime.now())
+            if "whatsapp.account" in self.env:
+                waiting = self.env["discuss.channel"].search([
+                    ("channel_type", "=", "whatsapp"), ("whatsapp_waiting_since", "!=", False),
+                    ("whatsapp_partner_id", "in", self._demo_partners().ids),
+                ])
+                self.assertEqual(waiting.whatsapp_partner_id, self.env.ref("ocd_live_demo.customer_ruth"),
+                                 "Ruth asks if she can pay by Mobile Money")
+                self.assertGreater(waiting.whatsapp_waiting_since, fields.Datetime.now() - timedelta(hours=1))
+        with freeze_time(self._douala(tomorrow, 14, 0)):
+            demo.keep_shop(fields.Datetime.now())
+            couriers.invalidate_recordset(["ocd_cash_on_hand"])
+            self.assertTrue(couriers.filtered(lambda c: c.ocd_cash_on_hand > 0), "Cash to hand over this evening")
+        with freeze_time(self._douala(tomorrow, 20, 0)):
+            demo.keep_shop(fields.Datetime.now())
+            couriers.invalidate_recordset(["ocd_cash_on_hand"])
+            self.assertFalse(couriers.filtered(lambda c: c.ocd_cash_on_hand > 0), "Handed over at 19:30")
+            of_yesterday = self._parcels().filtered(lambda p: p.sale_id.date_order < self._douala(tomorrow, 0, 0))
+            self.assertEqual(set(of_yesterday.mapped("ocd_stage")), {"delivered"},
+                             "The late parcel and the parcel of the absent customer delivered in the afternoon")
+            bills = self.env["account.move"].search([
+                ("partner_id", "in", self._demo_partners().ids), ("move_type", "=", "in_invoice"),
+            ])
+            if bills:
+                # With the accounting: a payout of the day to check, the ones before paid
+                payouts = self.env["ocd.payout"].search([("vendor_id", "in", self._demo_partners().ids)])
+                self.assertFalse(payouts.filtered(lambda p: p.date < tomorrow and p.state != "paid"),
+                                 "The payouts of the days before are paid")
+                self.assertTrue(payouts.filtered(lambda p: p.date == tomorrow and p.state == "draft"))
+
+    def test_shop_without_piling_up(self):
+        demo = OcdLiveDemo(self.env)
+        tomorrow = demo.shop_today(fields.Datetime.now()) + timedelta(days=1)
+
+        def counts():
+            partners = self._demo_partners()
+            return (
+                self.env["sale.order"].search_count([("partner_id", "in", partners.ids)]),
+                self.env["mail.message"].search_count([("model", "=", "discuss.channel")]),
+                self.env["ocd.cash.remittance"].search_count([]),
+                self.env["ocd.payout"].search_count([]),
+            )
+
+        with freeze_time(self._douala(tomorrow, 16, 0)):
+            demo.keep_shop(fields.Datetime.now())
+            before = counts()
+            demo.keep_shop(fields.Datetime.now())
+            self.assertEqual(counts(), before, "Each step takes place once")
 
     def test_week_of_the_studio(self):
         """Every live of the week on the days around today, paid when it was booked: the vendors
@@ -242,6 +317,7 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
                 [("channel_type", "=", "whatsapp"), ("whatsapp_partner_id", "in", partners.ids)]
             ), "The conversations of the demo are removed")
         self.assertFalse(self.env["ocd.payout"].search([("vendor_id", "in", partners.ids)]))
+        self.assertFalse(self.env["ocd.cash.remittance"].search([("courier_id", "in", partners.ids)]))
         self.assertFalse(self.env["account.move"].search(domain + [("move_type", "in", ("in_invoice", "in_refund"))]))
         templates = self.env["ir.model.data"].search(
             [("module", "=", "ocd_live_demo"), ("model", "=", "product.template")]

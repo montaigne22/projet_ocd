@@ -18,6 +18,7 @@ The hours are those of the studio (Lomé, the hours of its slots and windows).
 """
 
 import zlib
+from datetime import timedelta
 
 # Days kept around today: the replays of the last week, the lives of the next two weeks
 PAST_DAYS = 7
@@ -141,3 +142,109 @@ def replay_url(live_url, day, xmlid):
         return f"https://www.youtube.com/watch?v={code}"
     account = live_url.rstrip("/").rsplit("/", 2)[-2]
     return f"https://www.instagram.com/{account}/reel/C{seed:010d}/"
+
+
+# === THE SHOP IN DOUALA ===
+# One day of orders (hours of Douala), played on the last week and today, then every day: the
+# customers order in the morning and the afternoon, Brenda's parcels go with an OCD courier
+# (Junior Ekwalla in Akwa, Makepe and Bonabéri, Raoul Nyobe in Bonabéri and Bonamoussadi), Fatou
+# delivers hers. Each parcel follows its story; the couriers hand over their cash at 19:30; the
+# payouts of the vendors are prepared at 7:00 and paid by the team at 10:00 the next day.
+SHOP_TZ = "Africa/Douala"
+SHOP_PAST_DAYS = 6
+# (hour, customer, lines, story of the parcel of Brenda): a line is (product, its variants, one
+# per day in turn, quantity)
+SHOP_DAY = [
+    ("08:45", "customer_estelle", (("product_wax_dress", (("Bleu", "S"), ("Rouge", "S")), 1),
+                                   ("product_shea_butter", None, 2)), "cash"),
+    ("09:10", "customer_sandrine", (("product_wax_shirt", None, 1),), "late"),
+    ("10:30", "customer_herve", (("product_wax_shirt", None, 1),), "cash"),
+    ("12:15", "customer_ruth", (("product_wax_dress", (("Rouge", "M"), ("Bleu", "XL")), 1),), "online"),
+    ("13:20", "customer_bertrand", (("product_wax_pagne", None, 1),), "absent"),
+    ("16:50", "customer_sandrine", (("product_shea_butter", None, 2),), "cash"),
+]
+# The steps of a parcel: minutes after the order, or "+1 HH:MM" the next day
+STORIES = {
+    # An OCD courier picks the parcel up at the vendor, the customer pays cash at the door
+    "cash": (("ready", 60), ("pick_up", 120), ("leave", 130), ("deliver_cash", 190)),
+    # The same, paid on the phone of the customer (QR code shown by the courier)
+    "online": (("ready", 60), ("pick_up", 120), ("leave", 130), ("deliver_online", 190)),
+    # The vendor does not prepare in time: reminded, then the dispatch is alerted; ready the
+    # next afternoon
+    "late": (("remind", 240), ("escalate", 360), ("ready", "+1 15:30"), ("pick_up", "+1 16:00"),
+             ("leave", "+1 16:10"), ("deliver_cash", "+1 17:10")),
+    # Nobody at home: the courier comes back the next day after 17:00, as asked
+    "absent": (("ready", 60), ("pick_up", 120), ("leave", 130), ("absent", 190), ("retry", "+1 17:15"),
+               ("leave", "+1 17:20"), ("deliver_cash", "+1 17:50")),
+    # The vendor delivers herself; the customer pays on the phone
+    "vendor": (("ready", 60), ("leave", 90), ("deliver_online", 150)),
+    # Ordered in the evening from a vendor who delivers herself: the next morning
+    "vendor_evening": (("ready", "+1 08:30"), ("leave", "+1 09:30"), ("deliver_online", "+1 10:30")),
+}
+VENDOR_EVENING_FROM = "16:00"
+# The WhatsApp conversations of each order: (when, with whom, kind, text or template). Kinds:
+# "template" (a message of OCD Live), "in" (written by the contact), "wait" (written by the
+# contact, waiting for an answer), "out" (answer of the team), "note" (note of the team). In the
+# texts: {first} the first name of the customer, {courier} the first name of the courier,
+# {vendor} the name of the vendor, {delivered} the hour of the delivery (Douala).
+SHOP_TALKS = [
+    (  # Estelle: when does the courier come?
+        (2, "customer", "template", "whatsapp_cloud_sale.template_order_confirmed"),
+        (45, "customer", "wait", "Bonjour, le livreur arrive à quelle heure ? Je dois sortir à 13 h."),
+        (95, "customer", "out", "Bonjour {first}, {courier} passe vers {delivered} et vous appelle avant."),
+    ),
+    (  # Sandrine: Brenda is late
+        (2, "vendor", "template", "ocd_live_shop_whatsapp.template_parcel_to_prepare"),
+        (240, "vendor", "template", "ocd_live_shop_whatsapp.template_parcel_reminder"),
+        ("+1 10:05", "customer", "wait", "Bonjour, ma chemise d'hier arrive quand ?"),
+        ("+1 10:35", "customer", "out", "Bonjour {first}, {vendor} la prépare : le livreur passe cet après-midi, vers {delivered}."),
+    ),
+    (  # Hervé: where is the courier?
+        (2, "customer", "template", "whatsapp_cloud_sale.template_order_confirmed"),
+        (130, "customer", "template", "ocd_live_shop_whatsapp.template_parcel_on_the_way"),
+        (160, "customer", "in", "Bonjour, il est où le livreur ? Je suis à la maison."),
+        (164, "customer", "out", "{courier} arrive dans 20 minutes, il vous appelle avant. Gardez bien votre code."),
+        (166, "customer", "in", "D'accord, merci !"),
+    ),
+    (  # Ruth: paying by Mobile Money at the door
+        (2, "customer", "template", "whatsapp_cloud_sale.template_order_confirmed"),
+        (75, "customer", "wait", "Bonjour, je peux payer par Mobile Money à la livraison ?"),
+        (110, "customer", "out", "Oui {first} : {courier} vous montre un QR code et vous payez sur votre téléphone."),
+    ),
+    (  # Bertrand: absent, the courier comes back the next day
+        (2, "customer", "template", "whatsapp_cloud_sale.template_order_confirmed"),
+        (130, "customer", "template", "ocd_live_shop_whatsapp.template_parcel_on_the_way"),
+        (190, "customer", "template", "ocd_live_shop_whatsapp.template_parcel_failed"),
+        (210, "customer", "wait", "Pardon, j'étais en réunion. Vous pouvez repasser demain après 17 h ?"),
+        (213, "customer", "note", "{courier} peut repasser demain à 17 h 15 : à confirmer avec le dispatch."),
+        ("+1 08:40", "customer", "out", "Bonjour {first}, c'est noté : {courier} repasse aujourd'hui vers 17 h 15."),
+    ),
+    (  # Sandrine, in the evening: Fatou delivers the next morning
+        (2, "vendor", "template", "ocd_live_shop_whatsapp.template_parcel_to_prepare"),
+        ("+1 08:35", "vendor", "in", "C'est prêt, je pars à 9 h 30."),
+        ("+1 08:40", "vendor", "out", "Merci Fatou ! {first} attend son colis ce matin."),
+    ),
+]
+CASH_HANDOVER = "19:30"
+PAYOUTS_PREPARED = "07:00"
+PAYOUTS_PAID = "10:00"
+PAYOUT_REFERENCE = "MoMo %s"
+# The ended steps of the demo are forgotten after two weeks
+KEEP_STEPS_DAYS = 14
+
+
+def when(moment, step_time):
+    """The moment of a step: `moment` (the order, a datetime of Douala) plus minutes, or
+    "+1 HH:MM" the next day."""
+    if isinstance(step_time, int):
+        return moment + timedelta(minutes=step_time)
+    days, hour = step_time.split(" ")
+    hours, minutes = (int(part) for part in hour.split(":"))
+    return (moment + timedelta(days=int(days))).replace(hour=hours, minute=minutes)
+
+
+def hour_text(moment):
+    """« 12 h », « 13 h 45 »: the hour to the quarter, as said in Douala."""
+    minutes = round((moment.hour * 60 + moment.minute) / 15) * 15
+    hours, minutes = divmod(minutes, 60)
+    return f"{hours} h" if not minutes else f"{hours} h {minutes:02d}"

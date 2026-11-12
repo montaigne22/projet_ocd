@@ -731,14 +731,17 @@ class StockPicking(models.Model):
     @api.model
     def _cron_ocd_escalate(self):
         """Remind the vendors whose parcel is not ready in time, then alert the dispatch."""
-        now = fields.Datetime.now()
-        parcels = self.search([
+        self.search([
             ("ocd_is_parcel", "=", True),
             ("ocd_stage", "=", "to_prepare"),
             ("ocd_delivery_mode", "in", ("vendor", "pickup")),
             ("ocd_escalated_at", "=", False),
-        ])
-        for picking in parcels:
+        ])._ocd_escalate(fields.Datetime.now())
+
+    def _ocd_escalate(self, now):
+        """For each parcel still to prepare at `now`: remind its vendor once the time to prepare
+        is over, then alert the dispatch after the time given to the reminder."""
+        for picking in self.filtered(lambda p: p.ocd_stage == "to_prepare" and not p.ocd_escalated_at):
             company = picking.company_id
             if not picking.ocd_reminded_at:
                 prep_hours = picking.ocd_vendor_id._ocd_prep_hours() if picking.ocd_vendor_id else company.ocd_prep_hours

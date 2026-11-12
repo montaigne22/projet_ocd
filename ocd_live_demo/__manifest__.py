@@ -22,24 +22,28 @@ Everything needed to present OCD Live, in one module that can be removed:
   Money payment, a package with a live left to place.
 - Two more checking windows (midday, afternoon): the directory has lives from 8:00 to
   21:00. The bookings have no opening date (the lives of the last week took place).
-- Shop: a dress in 2 colours and 4 sizes with its stock, delivery prices (OCD
-  couriers, agencies, prices of a vendor), parcels at every step (to prepare, ready,
-  on the way, delivered, problem, late), cash with a courier, bills of the vendors
-  and payouts to check.
-- WhatsApp: conversations of customers and vendors, on an archived account; no
-  WhatsApp message is ever sent to the contacts of the demo (ocd_live_demo_whatsapp).
+- The shop of Douala, kept current too: the orders of each day, each parcel along
+  its story (paid cash or on the phone, a customer absent, a vendor late, a vendor
+  who delivers herself), parcels at every step, the cash handed over by the couriers
+  each evening, the payouts of the vendors prepared and paid every day; a dress in 2
+  colours and 4 sizes whose stock stays at its level, delivery prices (OCD couriers,
+  agencies, prices of a vendor).
+- WhatsApp: the conversations of the day about the orders and the parcels, on an
+  archived account; no WhatsApp message is ever sent to the contacts of the demo
+  (ocd_live_demo_whatsapp).
 - Payment: the Mobile Money checked by the team with example numbers, and the
   payment at the door.
 
 Uninstalling the module cancels and removes all these records, and puts the payment
 methods and the opening date of the bookings back as they were.
 """,
-    "version": "20.0.1.1.0",
+    "version": "20.0.1.2.0",
     "category": "Hidden",
     "author": "RollBackk",
     "license": "LGPL-3",
     "depends": ["ocd_live", "ocd_live_shop"],
     "data": [
+        "security/ir.access.csv",
         "data/ocd_live_demo_data.xml",
         "data/ir_cron_data.xml",
     ],

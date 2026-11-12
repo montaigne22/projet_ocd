@@ -13,7 +13,8 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   mêmes couleurs et polices, dans un seul fichier : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - **Données de démonstration** dans un module à part, `ocd_live_demo` : le désinstaller retire tout.
   La démo est **tenue à jour** par une action planifiée : une présentation montre toujours des lives
-  en cours, la semaine du studio et les replays récents, quel que soit le jour. Ses vendeurs ont des
+  en cours, la semaine du studio, les replays récents et la journée de la boutique de Douala (colis,
+  caisse des livreurs, reversements, conversations WhatsApp), quel que soit le jour. Ses vendeurs ont des
   histoires cohérentes (ville, produits, heures, plateforme ; studio pour Lomé, à distance ailleurs) et
   **ne reçoivent jamais de WhatsApp** (numéros d'exemple, `ocd_live_demo_whatsapp`). Elle ajoute deux
   fenêtres de vérification (midi, après-midi) pour avoir des lives de 8 h à 21 h. Scénario : `DEMO.md`.

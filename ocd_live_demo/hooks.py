@@ -2,6 +2,8 @@ import json
 import logging
 from datetime import datetime, time, timedelta
 
+import pytz
+
 from odoo import Command, fields
 from odoo.exceptions import ValidationError
 from odoo.tools import SQL, BinaryBytes
@@ -30,7 +32,13 @@ class OcdLiveDemo:
     by the scheduled action of the demo (keep_current)."""
 
     def __init__(self, env):
-        self.env = env(context=dict(env.context, tracking_disable=True, mail_notrack=True, mail_create_nolog=True))
+        # The messages of the demo (announcements in the channels of the team, alerts of the
+        # parcels) are written in the language of the team, also from the scheduled action
+        admin = env.ref("base.user_admin", raise_if_not_found=False)
+        lang = (admin.lang if admin else False) or env.context.get("lang") or "en_US"
+        self.env = env(context=dict(
+            env.context, lang=lang, tracking_disable=True, mail_notrack=True, mail_create_nolog=True,
+        ))
         self.company = self.env.company
         self.SaleOrder = self.env["sale.order"].sudo().with_company(self.company)
         self.Booking = self.env["ocd.live.booking"].sudo().with_company(self.company)
@@ -89,24 +97,26 @@ class OcdLiveDemo:
         last_message = self.last_message()
         self.payment()
         self.open_bookings()
+        self.step("the WhatsApp account", self.whatsapp_setup)
+        self.step("the photos of the colours", self.colour_photos)
         self.keep_current()
         self.step("the package of two lives", self.package)
-        self.step("the photos of the colours", self.colour_photos)
-        self.stock()
-        self.shop()
-        self.step("the WhatsApp conversations", self.whatsapp)
+        self.step("the conversation of Awa", self.whatsapp_awa)
         self.remember_channel_messages(last_message)
 
     def last_message(self):
         return self.env["mail.message"].sudo().search([], order="id desc", limit=1).id
 
     def remember_channel_messages(self, since):
-        """The messages of the demo in the channel of the lives of the team, removed with it."""
-        channel = self.company.ocd_lives_channel_id
-        if not channel:
+        """The messages of the demo in the channels of the team (lives, deliveries), removed with
+        it."""
+        channels = self.company.ocd_lives_channel_id
+        if "ocd_deliveries_channel_id" in self.company._fields:
+            channels |= self.company.ocd_deliveries_channel_id
+        if not channels:
             return
         messages = self.env["mail.message"].sudo().search([
-            ("model", "=", "discuss.channel"), ("res_id", "=", channel.id), ("id", ">", since),
+            ("model", "=", "discuss.channel"), ("res_id", "in", channels.ids), ("id", ">", since),
         ])
         if messages:
             params = self.env["ir.config_parameter"].sudo()
@@ -158,13 +168,16 @@ class OcdLiveDemo:
         of the demo). Each part only adds what is missing: what the team does during a
         presentation (a link refused, a live cancelled or moved) stays as it is."""
         now = fields.Datetime.now()
+        last_message = self.last_message()
         self.step("the directory passes", self.keep_passes)
         self.step("the lives of the directory", self.keep_listings, now)
         self.step("the lives of the studio", self.keep_bookings, now)
         self.step("the replays", self.keep_replays, now)
         self.step("the payment to check", self.keep_payment_to_check, now)
         self.step("the waiting list", self.keep_waitlist)
+        self.step("the shop in Douala", self.keep_shop, now)
         self.step("the old records of the demo", self.prune, now)
+        self.remember_channel_messages(last_message)
 
     def keep_passes(self):
         """Every vendor of the directory has its pass. The first ones were bought on different
@@ -419,13 +432,11 @@ class OcdLiveDemo:
             taken = self.Booking._ocd_taken_starts(starts, mode, self.company)
             for start in starts:
                 if start not in taken:
-                    last_message = self.last_message()
                     booking = self.Booking._ocd_book_from_website(vendor, package, start, mode, need)
                     booking.live_url = self.links.get(vendor.id, (None, False))[1]
                     self.momo_payment(booking.sale_order_id)
                     reference = scenario.PAYMENT_REFERENCE % f"{day:%d%m}{scenario.number(day) % 1000:03d}"
                     booking.sale_order_id._ocd_announce_payment(reference)
-                    self.remember_channel_messages(last_message)
                     return booking
         return None
 
@@ -481,6 +492,9 @@ class OcdLiveDemo:
         orders = released.sale_order_id.filtered(lambda order: order.state == "cancel")
         released.unlink()
         orders.unlink()
+        self.env["ocd.live.demo.event"].sudo().search([
+            ("create_date", "<", now - timedelta(days=scenario.KEEP_STEPS_DAYS)),
+        ]).unlink()
 
     # Stock of the products followed in stock: set on the quants without stock moves, so that
     # the uninstallation removes it all ("Only 3 left", "Sold out" on the pages)
@@ -503,21 +517,27 @@ class OcdLiveDemo:
                     with file_open(f"ocd_live_demo/static/img/{file_name}", "rb") as photo:
                         value.ocd_image = BinaryBytes(photo.read(), filename=file_name)
 
-    def stock(self):
+    def keep_stock(self):
+        """The stock of the products followed in stock stays at its level of the scenario
+        (« Only 3 left », sizes sold out): the parcels of the demo move no stock (so that it can
+        be removed), the vendors restock what the orders of the demo hold."""
         warehouse = self.env["stock.warehouse"].sudo().search([("company_id", "=", self.company.id)], limit=1)
         if not warehouse:
             return
+        location = warehouse.lot_stock_id
         Quant = self.env["stock.quant"].sudo()
         for xmlid, quantities in self.STOCK.items():
             for variant in self.ref(xmlid).product_variant_ids:
                 if isinstance(quantities, dict):
                     names = variant.product_template_attribute_value_ids.mapped("name")
-                    color = next((n for n in names if n in quantities), None)
-                    qty = quantities.get(color, {}).get(next((n for n in names if n in quantities.get(color, {})), ""), 0)
+                    sizes = quantities.get(next((name for name in names if name in quantities), None), {})
+                    target = sizes.get(next((name for name in names if name in sizes), ""), 0)
                 else:
-                    qty = quantities
-                if qty:
-                    Quant._update_available_quantity(variant, warehouse.lot_stock_id, qty)
+                    target = quantities
+                quants = Quant.search([("product_id", "=", variant.id), ("location_id", "=", location.id)])
+                free = sum(quants.mapped("quantity")) - sum(quants.mapped("reserved_quantity"))
+                if target > free:
+                    Quant._update_available_quantity(variant, location, target - free)
 
     def order(self, partner, lines):
         """A shop order priced with the delivery of OCD Live (one price per parcel), confirmed."""
@@ -539,84 +559,252 @@ class OcdLiveDemo:
         found = variants.filtered(lambda v: set(values) <= set(v.product_template_attribute_value_ids.mapped("name")))
         return found[:1] or variants[:1]
 
-    def deliver(self, parcel, method, days_ago=0, courier=None):
-        """Bring a parcel to "delivered" as the apps do, without validating the stock transfer:
-        the demo moves no stock, so that it can be uninstalled."""
-        if courier and parcel.ocd_delivery_mode != "vendor":
-            parcel._ocd_assign_courier(courier)
+    # === THE SHOP IN DOUALA, KEPT ON THE DAYS AROUND TODAY === #
+
+    def shop_utc(self, local):
+        """A moment of Douala (naive) as stored (naive UTC)."""
+        return pytz.timezone(scenario.SHOP_TZ).localize(local).astimezone(pytz.utc).replace(tzinfo=None)
+
+    def shop_today(self, now):
+        return pytz.utc.localize(now).astimezone(pytz.timezone(scenario.SHOP_TZ)).date()
+
+    def shop_vendors(self):
+        """The vendors whose products OCD sells and delivers."""
+        return self.partners().filtered(lambda partner: partner.ocd_is_vendor and partner.ocd_sale_mode == "ocd")
+
+    def shop_stories(self, index):
+        """The vendors of an order of the day, each with the story of its parcel: the vendors
+        who deliver themselves do it the same day, or the next morning for an evening order."""
+        hour, _customer, lines, story = scenario.SHOP_DAY[index]
+        stories = []
+        for product_xmlid, _variants, _quantity in lines:
+            vendor = self.ref(product_xmlid).ocd_vendor_id
+            if vendor and vendor not in [row[0] for row in stories]:
+                if vendor.ocd_delivery_mode == "vendor":
+                    stories.append((vendor, "vendor_evening" if hour >= scenario.VENDOR_EVENING_FROM else "vendor"))
+                else:
+                    stories.append((vendor, story))
+        return stories
+
+    def shop_plan(self, now):
+        """The steps of the shop on the days kept, in the order of time: (moment, key, function,
+        arguments). A step of the next day of an order of today comes when its time comes."""
+        today = self.shop_today(now)
+        steps = []
+        for offset in range(-scenario.SHOP_PAST_DAYS, 1):
+            day = today + timedelta(days=offset)
+
+            def at(hour, day=day):
+                hours, minutes = (int(part) for part in hour.split(":"))
+                return datetime.combine(day, time(hours, minutes))
+
+            for index, (hour, _customer, _lines, _story) in enumerate(scenario.SHOP_DAY):
+                ordered = at(hour)
+                key = f"shop:{day}:{index}"
+                steps.append((ordered, f"{key}:order", self.shop_order, (key, day, index, ordered)))
+                stories = self.shop_stories(index)
+                for vendor, story in stories:
+                    for number, (name, step_time) in enumerate(scenario.STORIES[story]):
+                        moment = scenario.when(ordered, step_time)
+                        steps.append((moment, f"{key}:{vendor.id}:{number}:{name}", self.shop_parcel_step,
+                                      (key, vendor, name, self.shop_utc(moment))))
+                delivered = next(
+                    (scenario.when(ordered, step_time) for name, step_time in scenario.STORIES[stories[0][1]]
+                     if name.startswith("deliver")),
+                    ordered,
+                ) if stories else ordered
+                for number, talk in enumerate(scenario.SHOP_TALKS[index]):
+                    moment = scenario.when(ordered, talk[0])
+                    steps.append((moment, f"{key}:talk:{number}", self.shop_talk,
+                                  (key, talk, self.shop_utc(moment), delivered)))
+            steps.append((at(scenario.PAYOUTS_PREPARED), f"shop:{day}:payouts", self.shop_payouts, (day,)))
+            steps.append((at(scenario.PAYOUTS_PAID), f"shop:{day}:paid", self.shop_pay, (day,)))
+            moment = at(scenario.CASH_HANDOVER)
+            steps.append((moment, f"shop:{day}:cash", self.shop_cash, (self.shop_utc(moment),)))
+        return sorted(steps, key=lambda step: step[0])
+
+    def keep_shop(self, now):
+        """The shop of Douala on the last week and today: the orders of each day, each parcel
+        along its story, the conversations on WhatsApp, the cash handed over in the evening, the
+        payouts of the vendors. Each step takes place once (ocd.live.demo.event), in the order
+        of time, as soon as its time comes."""
+        self.keep_stock()
+        # First the parcels left open the days before: delivered in the evening of their order,
+        # their cash is handed over with the cash of that day
+        self.step("the parcels of the former scenario", self.shop_tidy, now)
+        Event = self.env["ocd.live.demo.event"].sudo()
+        local_now = pytz.utc.localize(now).astimezone(pytz.timezone(scenario.SHOP_TZ)).replace(tzinfo=None)
+        steps = [step for step in self.shop_plan(now) if step[0] <= local_now]
+        done = set(Event.search([("key", "in", [step[1] for step in steps])]).mapped("key"))
+        for _moment, key, function, args in steps:
+            if key in done:
+                continue
+            result = self.step(key, function, *args)
+            order = result if getattr(result, "_name", None) == "sale.order" else self.env["sale.order"]
+            Event.create({"key": key, "sale_order_id": order.id})
+        self.keep_stock()
+
+    def shop_order(self, key, day, index, ordered):
+        """An order of the day, placed at its hour (one parcel per vendor)."""
+        _hour, customer, lines, _story = scenario.SHOP_DAY[index]
+        order_lines = []
+        for product_xmlid, variants, quantity in lines:
+            if variants:
+                product = self.variant(product_xmlid, *variants[scenario.number(day, index) % len(variants)])
+            else:
+                product = self.product(f"{MODULE}.{product_xmlid}")
+            order_lines.append((product, quantity))
+        order = self.order(self.ref(customer), order_lines)
+        moment = self.shop_utc(ordered)
+        order.date_order = moment
+        if order.picking_ids:
+            # The time to prepare counts from the order (reminders of the vendors)
+            self.env.cr.execute(SQL(
+                "UPDATE stock_picking SET create_date = %s WHERE id IN %s", moment, tuple(order.picking_ids.ids)
+            ))
+            order.picking_ids.invalidate_recordset(["create_date"])
+        return order
+
+    def shop_order_of(self, key):
+        return self.env["ocd.live.demo.event"].sudo().search([("key", "=", f"{key}:order")], limit=1).sale_order_id
+
+    def shop_parcel(self, order, vendor):
+        return order.picking_ids.filtered(lambda picking: picking.ocd_is_parcel and picking.ocd_vendor_id == vendor)[:1]
+
+    def shop_parcel_step(self, key, vendor, name, moment):
+        parcel = self.shop_parcel(self.shop_order_of(key), vendor)
+        if parcel:
+            getattr(self, f"parcel_{name}")(parcel, moment)
+
+    # Each step checks where the parcel is: a parcel handled by the team during a presentation
+    # (delivered with the code, problem, returned) is left as it is
+
+    def parcel_ready(self, parcel, moment):
         if parcel.ocd_stage == "to_prepare":
             parcel.action_ocd_ready()
-        if parcel.ocd_delivery_mode != "vendor" and parcel.ocd_stage == "ready":
+            parcel.ocd_ready_at = moment
+            parcel.activity_feedback(["ocd_live_shop.mail_activity_type_parcel_late"])
+
+    def parcel_pick_up(self, parcel, moment):
+        if parcel.ocd_stage in ("to_prepare", "ready") and parcel.ocd_delivery_mode != "vendor":
             parcel.action_ocd_pick_up()
-        parcel.action_ocd_leave()
+            parcel.ocd_picked_at = moment
+
+    def parcel_leave(self, parcel, moment):
+        if parcel.ocd_stage in ("ready", "picked") and parcel.ocd_courier_id:
+            parcel.action_ocd_leave()
+            parcel.write({"ocd_left_at": moment, "ocd_code_sent_at": moment})
+
+    def parcel_deliver_cash(self, parcel, moment):
+        self.parcel_deliver(parcel, moment, "cash")
+
+    def parcel_deliver_online(self, parcel, moment):
+        self.parcel_deliver(parcel, moment, "online")
+
+    def parcel_deliver(self, parcel, moment, method):
+        """Delivered with the code of the customer, as the app of the courier does, without
+        validating the stock transfer (the demo moves no stock, so that it can be removed)."""
+        if parcel.ocd_stage != "on_the_way":
+            return
         if parcel.ocd_cod_state == "to_collect":
-            parcel._ocd_collect(method, parcel.ocd_courier_id)
-        parcel.write({
-            "ocd_stage": "delivered",
-            "ocd_delivered_at": fields.Datetime.now() - timedelta(days=days_ago, hours=2),
-        })
+            collector = parcel.ocd_courier_id
+            if method == "cash" and "cash" not in parcel._ocd_allowed_cod_methods(collector):
+                method = "online"  # a vendor who does not collect: the customer pays on the phone
+            parcel._ocd_collect(method, collector)
+            parcel.ocd_cod_collected_at = moment
+        parcel.write({"ocd_stage": "delivered", "ocd_delivered_at": moment})
         # The bill of the vendor needs the accounting (a purchase journal): without it, the
         # parcel stays delivered and the payouts are empty
-        self.step("the bill of the vendor", parcel._ocd_create_vendor_bills)
+        if self.env["account.journal"].sudo().search_count(
+            [("type", "=", "purchase"), ("company_id", "=", parcel.company_id.id)], limit=1
+        ):
+            self.step("the bill of the vendor", parcel._ocd_create_vendor_bills)
 
-    def shop(self):
-        brenda, fatou = self.ref("vendor_brenda"), self.ref("vendor_fatou")
-        junior, raoul = self.ref("courier_ekwalla"), self.ref("courier_nyobe")
-        dress = self.variant("product_wax_dress", "Bleu", "S")
-        shirt = self.product(f"{MODULE}.product_wax_shirt")
-        pagne = self.product(f"{MODULE}.product_wax_pagne")
-        butter = self.product(f"{MODULE}.product_shea_butter")
+    def parcel_remind(self, parcel, moment):
+        parcel._ocd_escalate(moment)
 
-        def parcel_of(order, vendor):
-            return order.picking_ids.filtered(lambda p: p.ocd_vendor_id == vendor)[:1]
+    def parcel_escalate(self, parcel, moment):
+        parcel._ocd_escalate(moment)
 
-        # Estelle (Akwa): Brenda's parcel is ready to be picked up, Fatou prepares hers
-        estelle = self.order(self.ref("customer_estelle"), [(dress, 1), (butter, 2)])
-        self.step("the parcel of Estelle", lambda: parcel_of(estelle, brenda).action_ocd_ready())
-        # Hervé (Bonabéri): on the way with Raoul, the code sent
-        herve = self.order(self.ref("customer_herve"), [(shirt, 1)])
-
-        def on_the_way():
-            parcel = herve.picking_ids[:1]
-            parcel._ocd_assign_courier(raoul)
-            parcel.action_ocd_ready()
-            parcel.action_ocd_pick_up()
-            parcel.action_ocd_leave()
-        self.step("the parcel of Hervé", on_the_way)
-        # Sandrine (Makepe): delivered yesterday by Fatou, paid on her phone
-        sandrine = self.order(self.ref("customer_sandrine"), [(butter, 2)])
-        self.step("the delivered parcel of Sandrine", self.deliver, parcel_of(sandrine, fatou), "online", days_ago=1)
-        # Ruth (Akwa): delivered today by Junior, who has the cash for the evening
-        ruth = self.order(self.ref("customer_ruth"), [(self.variant("product_wax_dress", "Rouge", "M"), 1)])
-        self.step("the delivered parcel of Ruth", self.deliver, parcel_of(ruth, brenda), "cash", courier=junior)
-        # Bertrand (Bonamoussadi): nobody at home, the dispatch offers a new time
-        bertrand = self.order(self.ref("customer_bertrand"), [(pagne, 1)])
-
-        def problem():
-            parcel = parcel_of(bertrand, brenda)
-            parcel._ocd_assign_courier(raoul)
-            parcel.action_ocd_ready()
-            parcel.action_ocd_pick_up()
-            parcel.action_ocd_leave()
+    def parcel_absent(self, parcel, moment):
+        if parcel.ocd_stage in ("ready", "picked", "on_the_way"):
             parcel._ocd_report_problem("absent")
-        self.step("the parcel of Bertrand", problem)
-        # Sandrine again: Brenda is late, reminded then the dispatch alerted
-        late = self.order(self.ref("customer_sandrine"), [(shirt, 1)])
-        now = fields.Datetime.now()
-        self.step("the late parcel", lambda: parcel_of(late, brenda).write({
-            "ocd_reminded_at": now - timedelta(hours=3), "ocd_escalated_at": now - timedelta(hours=1),
-        }))
-        # Payouts of the vendors, to check by the team
-        self.step("the payouts", lambda: self.env["ocd.payout"].sudo()._ocd_prepare(vendors=brenda | fatou, force=True))
 
+    def parcel_retry(self, parcel, moment):
+        if parcel.ocd_stage == "problem":
+            parcel.action_ocd_retry()
+
+    def shop_cash(self, moment):
+        """The couriers hand over the cash collected until `moment`; the team counts it."""
+        Remittance = self.env["ocd.cash.remittance"].sudo()
+        Picking = self.env["stock.picking"].sudo()
+        for courier in self.partners().filtered("ocd_is_courier"):
+            if Picking.search_count([
+                ("ocd_cod_collected_by_id", "=", courier.id), ("ocd_cod_state", "=", "collected"),
+                ("ocd_cod_method", "=", "cash"), ("ocd_remittance_id", "=", False),
+                ("ocd_cod_collected_at", "<=", moment),
+            ]):
+                remittance = Remittance._ocd_open_for(courier)
+                # The cash collected after this evening goes with the next one
+                remittance.picking_ids.filtered(
+                    lambda parcel: parcel.ocd_cod_collected_at and parcel.ocd_cod_collected_at > moment
+                ).write({"ocd_remittance_id": False})
+                remittance.write({"amount_received": remittance.amount_expected, "date": moment})
+                remittance.action_done()
+
+    def shop_payouts(self, day):
+        """The payouts of the day (the vendors of the shop are paid every day)."""
+        self.env["ocd.payout"].sudo()._ocd_prepare(vendors=self.shop_vendors(), day=day)
+
+    def shop_pay(self, day):
+        """The team paid the payouts of the days before by Mobile Money (the demo records no
+        payment in the accounting, so that it can be removed)."""
+        payouts = self.env["ocd.payout"].sudo().search([
+            ("vendor_id", "in", self.shop_vendors().ids), ("state", "in", ("draft", "validated")), ("date", "<", day),
+        ])
+        for payout in payouts:
+            payout.write({"state": "paid", "payment_reference": scenario.PAYOUT_REFERENCE % f"{payout.date:%d%m}-{payout.id}"})
+
+    def shop_tidy(self, now):
+        """The parcels of the demo left open by its former scenario, or by a presentation the
+        days before, are delivered in the evening of their order: the dispatch screens show
+        the parcels of the days of now."""
+        known = self.env["ocd.live.demo.event"].sudo().search([("sale_order_id", "!=", False)]).sale_order_id
+        customers = self.partners().filtered(lambda partner: not partner.ocd_is_vendor and not partner.ocd_is_courier)
+        parcels = self.env["stock.picking"].sudo().search([
+            ("ocd_is_parcel", "=", True), ("partner_id", "in", customers.ids),
+            ("ocd_stage", "in", ("to_prepare", "ready", "picked", "on_the_way", "problem")),
+            ("sale_id", "not in", known.ids),
+            ("create_date", "<", self.shop_utc(datetime.combine(self.shop_today(now), time()))),
+        ])
+        tz = pytz.timezone(scenario.SHOP_TZ)
+        for parcel in parcels:
+            ordered = parcel.sale_id.date_order or parcel.create_date
+            day = pytz.utc.localize(ordered).astimezone(tz).date()
+            moment = max(min(self.shop_utc(datetime.combine(day, time(18, 0))), now), ordered)
+            self.parcel_retry(parcel, moment)
+            self.parcel_ready(parcel, moment)
+            self.parcel_pick_up(parcel, moment)
+            if parcel.ocd_stage in ("ready", "picked") and not parcel.ocd_courier_id:
+                parcel._ocd_assign_courier(self.env["res.partner"]._ocd_find_courier(parcel.ocd_district_id))
+            self.parcel_leave(parcel, moment)
+            self.parcel_deliver(parcel, moment, "cash")
 
     # === WHATSAPP === #
 
-    def whatsapp(self):
-        """Conversations of the WhatsApp screen: customers who wait for an answer, a parcel on
-        the way (its code hidden from the team), a vendor, a conversation of more than 24
-        hours (only a template). On an archived account: nothing is sent to Meta."""
+    def whatsapp_account(self):
+        """The archived WhatsApp account of the demo (nothing is sent to Meta), or None."""
         if "whatsapp.account" not in self.env:
+            return None
+        account_id = self.env["ir.config_parameter"].sudo().get_str(PARAM_WHATSAPP)
+        if not account_id or not account_id.isdigit():
+            return None
+        return self.env["whatsapp.account"].sudo().with_context(active_test=False).browse(int(account_id)).exists() or None
+
+    def whatsapp_setup(self):
+        """The WhatsApp account of the demo, archived: the conversations of the WhatsApp screen
+        are on it, and nothing is sent to Meta."""
+        if "whatsapp.account" not in self.env or self.whatsapp_account():
             return
         account = self.env["whatsapp.account"].sudo().create({
             "name": "OCD Live (démo)",
@@ -630,88 +818,94 @@ class OcdLiveDemo:
             "active": False,
         })
         self.env["ir.config_parameter"].sudo().set_str(PARAM_WHATSAPP, str(account.id))
-        self.wa_account = account
-        brenda, fatou, awa = self.ref("vendor_brenda"), self.ref("vendor_fatou"), self.ref("vendor_awa")
-        estelle, herve, bertrand = self.ref("customer_estelle"), self.ref("customer_herve"), self.ref("customer_bertrand")
-        (brenda | fatou | awa | estelle | herve | bertrand).write({"ocd_whatsapp_optin": True})
+        talking = self.partners().filtered(lambda partner: not partner.ocd_is_courier and partner.phone)
+        talking.write({"ocd_whatsapp_optin": True})
 
-        def parcel(customer, vendor=None):
-            orders = self.SaleOrder.search([("partner_id", "=", customer.id)], order="id")
-            parcels = orders.picking_ids.filtered(lambda p: p.ocd_is_parcel and (not vendor or p.ocd_vendor_id == vendor))
-            return parcels[:1]
+    def whatsapp_awa(self):
+        """Awa (Lomé): her live confirmed three days ago, more than 24 hours: only a template
+        can be sent to her now."""
+        account = self.whatsapp_account()
+        if not account:
+            return
+        awa = self.ref("vendor_awa")
+        booking = self.Booking.search([("partner_id", "=", awa.id), ("state", "=", "confirmed")], order="start_datetime", limit=1)
+        channel = self.wa_channel(account, awa)
+        now = fields.Datetime.now()
+        self.wa_template(account, channel, now - timedelta(hours=72), "ocd_live_whatsapp.template_live_confirmed", booking)
+        self.wa_in(account, channel, awa, now - timedelta(hours=71), "Merci, je viens avec ma table.")
 
-        # Estelle (Akwa): her order of two parcels, a question about the courier
-        channel = self.wa_channel(estelle)
-        order = self.SaleOrder.search([("partner_id", "=", estelle.id)], order="id", limit=1)
-        self.wa_template(channel, 95, "whatsapp_cloud_sale.template_order_confirmed", order)
-        self.wa_in(channel, estelle, 12, "Bonjour, le livreur arrive à quelle heure ? Je dois sortir à 16 h.", waiting=True)
-        # Hervé (Bonabéri): on the way with Raoul, the code sent
-        channel = self.wa_channel(herve)
-        self.wa_template(channel, 48, "ocd_live_shop_whatsapp.template_parcel_on_the_way", parcel(herve))
-        self.wa_in(channel, herve, 31, "Bonjour, il est où le livreur ? Je suis à la maison.")
-        self.wa_out(channel, 27, "Raoul arrive vers 15 h, il vous appelle 10 minutes avant. Gardez bien votre code.")
-        self.wa_in(channel, herve, 25, "D'accord, merci !")
-        # Bertrand (Bonamoussadi): nobody at home, asks for another time
-        channel = self.wa_channel(bertrand)
-        self.wa_template(channel, 70, "ocd_live_shop_whatsapp.template_parcel_failed", parcel(bertrand))
-        self.wa_in(channel, bertrand, 52, "Pardon, j'étais en réunion. Vous pouvez repasser après 17 h ?", waiting=True)
-        self.wa_note(channel, 50, "Raoul peut repasser à 17 h 30 : à confirmer avec le dispatch.")
-        # Fatou: her parcel for Estelle
-        channel = self.wa_channel(fatou)
-        self.wa_template(channel, 130, "ocd_live_shop_whatsapp.template_parcel_to_prepare", parcel(estelle, fatou))
-        self.wa_in(channel, fatou, 64, "C'est prêt, je pars à 15 h 30.")
-        self.wa_out(channel, 60, "Merci Fatou ! Estelle attend son colis cet après-midi.")
-        # Awa (Lomé): her live confirmed three days ago, more than 24 hours: only a template
-        channel = self.wa_channel(awa)
-        booking = self.env["ocd.live.booking"].sudo().search(
-            [("partner_id", "=", awa.id), ("state", "=", "confirmed")], order="start_datetime", limit=1
+    def shop_talk(self, key, talk, moment, delivered):
+        """A message of the conversation of an order, on the WhatsApp screen of the team."""
+        account = self.whatsapp_account()
+        order = self.shop_order_of(key)
+        if not account or not order:
+            return
+        _when, who, kind, text = talk
+        index = int(key.rsplit(":", 1)[1])
+        parcel = self.shop_parcel(order, self.shop_stories(index)[0][0])
+        partner = order.partner_id if who == "customer" else parcel.ocd_vendor_id
+        if not partner:
+            return
+        channel = self.wa_channel(account, partner)
+        if kind == "template":
+            self.wa_template(account, channel, moment, text, order if text.startswith("whatsapp_cloud_sale.") else parcel)
+            return
+        courier = parcel.ocd_courier_id
+        body = text.format(
+            first=(order.partner_id.name or "").split(" ")[0],
+            courier=(courier.name or "").split(" ")[0] if courier and courier != parcel.ocd_vendor_id else "Le livreur",
+            vendor=parcel.ocd_vendor_id.name or "",
+            delivered=scenario.hour_text(delivered),
         )
-        self.wa_template(channel, 60 * 72, "ocd_live_whatsapp.template_live_confirmed", booking)
-        self.wa_in(channel, awa, 60 * 71, "Merci, je viens avec ma table.")
+        if kind in ("in", "wait"):
+            self.wa_in(account, channel, partner, moment, body, waiting=kind == "wait")
+        elif kind == "out":
+            self.wa_out(account, channel, moment, body)
+        else:
+            self.wa_note(channel, moment, body)
 
-    def wa_channel(self, partner):
+    def wa_channel(self, account, partner):
         number = partner._whatsapp_number()
-        return self.env["discuss.channel"].sudo()._whatsapp_get_or_create(self.wa_account, number, None, partner)
+        return self.env["discuss.channel"].sudo()._whatsapp_get_or_create(account, number, None, partner)
 
-    def wa_dated(self, channel, message, minutes):
-        date = fields.Datetime.now() - timedelta(minutes=minutes)
+    def wa_dated(self, channel, message, date):
         message.sudo().write({"date": date})
         channel.sudo().write({"last_interest_dt": max(channel.last_interest_dt or date, date)})
         return date
 
-    def wa_in(self, channel, partner, minutes, text, waiting=False):
+    def wa_in(self, account, channel, partner, date, text, waiting=False):
         message = channel.with_context(whatsapp_skip_send=True).message_post(
             author_id=partner.id, body=text, message_type="whatsapp_message", subtype_xmlid="mail.mt_comment",
         )
-        date = self.wa_dated(channel, message, minutes)
+        self.wa_dated(channel, message, date)
         self.env["whatsapp.message"].sudo().create({
-            "account_id": self.wa_account.id, "direction": "incoming", "state": "received", "message_type": "text",
+            "account_id": account.id, "direction": "incoming", "state": "received", "message_type": "text",
             "body": text, "channel_id": channel.id, "mail_message_id": message.id, "partner_id": partner.id,
             "phone": channel.whatsapp_number, "model": "discuss.channel", "res_id": channel.id,
         })
         values = {"whatsapp_last_inbound_date": date, "whatsapp_waiting_since": date if waiting else False}
         channel.sudo().write(values)
 
-    def wa_out(self, channel, minutes, text):
+    def wa_out(self, account, channel, date, text):
         team = self.env.ref("base.user_admin")
         message = channel.with_user(team).with_context(whatsapp_skip_send=True).message_post(
             body=text, message_type="whatsapp_message", subtype_xmlid="mail.mt_comment",
         )
-        self.wa_dated(channel, message, minutes)
+        self.wa_dated(channel, message, date)
         self.env["whatsapp.message"].sudo().create({
-            "account_id": self.wa_account.id, "direction": "outgoing", "state": "read", "message_type": "text",
+            "account_id": account.id, "direction": "outgoing", "state": "read", "message_type": "text",
             "body": text, "channel_id": channel.id, "mail_message_id": message.id,
             "partner_id": channel.whatsapp_partner_id.id, "phone": channel.whatsapp_number,
             "model": "discuss.channel", "res_id": channel.id,
         })
         channel.sudo().write({"whatsapp_waiting_since": False, "whatsapp_state": "open"})
 
-    def wa_note(self, channel, minutes, text):
+    def wa_note(self, channel, date, text):
         team = self.env.ref("base.user_admin")
         channel.with_user(team).execute_command_note(body=text)
-        self.wa_dated(channel, channel.message_ids[:1], minutes)
+        self.wa_dated(channel, channel.message_ids[:1], date)
 
-    def wa_template(self, channel, minutes, xmlid, record):
+    def wa_template(self, account, channel, date, xmlid, record):
         template = self.env.ref(xmlid, raise_if_not_found=False)
         if not template or not record:
             return
@@ -722,12 +916,12 @@ class OcdLiveDemo:
         }
         partner = channel.whatsapp_partner_id
         wa_message = self.env["whatsapp.message"].sudo().create({
-            "account_id": self.wa_account.id, "template_id": template.id, "direction": "outgoing", "state": "read",
+            "account_id": account.id, "template_id": template.id, "direction": "outgoing", "state": "read",
             "message_type": "template", "body": template._fill_body(values), "partner_id": partner.id,
             "phone": channel.whatsapp_number, "model": record._name, "res_id": record.id,
         })
         message = channel._whatsapp_post_outgoing(wa_message)
-        self.wa_dated(channel, message, minutes)
+        self.wa_dated(channel, message, date)
 
 
 def post_init_hook(env):
@@ -760,6 +954,9 @@ def uninstall_hook(env):
         bookings.unlink()
         for model in ("ocd.live.credit", "ocd.directory.pass", "ocd.directory.listing", "ocd.live.waitlist", "ocd.directory.alert"):
             env[model].sudo().with_context(active_test=False).search(domain).unlink()
+        if "ocd.cash.remittance" in env:
+            # The cash handed over each evening by the couriers of the demo
+            env["ocd.cash.remittance"].sudo().search([("courier_id", "in", partner_ids)]).unlink()
         # The payments of the demo (a Mobile Money confirmed by the team during a presentation)
         transactions = env["payment.transaction"].sudo().search(domain)
         if "payment_id" in transactions._fields:

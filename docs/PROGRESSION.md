@@ -33,16 +33,16 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
 | Togo (villes, quartiers, livraison) | ✅ fait |
 | Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements) | ✅ fait, testé |
-| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
+| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 
 Derniers tests lancés (12 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
-`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **353 tests, un seul
+`ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **354 tests, un seul
 échec, connu** (« commande confirmée puis expédiée » de `whatsapp_cloud_sale` : OCD remplace ce message par
-ceux des colis). Sur une base neuve avec la démo, 11 tests sans échec : la démo remplit les écrans et se
+ceux des colis). Sur une base neuve avec la démo, 13 tests sans échec : la démo remplit les écrans et se
 tient à jour (semaine du studio, annuaire fenêtre par fenêtre, fil de chaque pays, paiement à vérifier,
-le lendemain, rien ne s'empile), aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle sans
-rien laisser.
+journée de la boutique heure par heure, le lendemain, rien ne s'empile), aucun WhatsApp ne part vers ses
+contacts, puis elle se désinstalle sans rien laisser.
 
 ## Reste à faire, par priorité
 
@@ -76,6 +76,32 @@ rien laisser.
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 12 novembre 2026 — la boutique de Douala tenue à jour, textes des modules après une mise à jour
+- **La boutique de Douala avance chaque jour**, comme les lives : six commandes par jour (heure de
+  Douala), chaque colis selon son histoire : livré en espèces ou payé sur le téléphone, une vendeuse en
+  retard (Brenda rappelée à 13 h 10, dispatch alerté à 15 h 10, livré le lendemain), un client absent
+  (Bertrand, livré le lendemain après 17 h), Fatou qui livre elle-même (le lendemain matin pour une
+  commande du soir). Les livreurs remettent leurs espèces à 19 h 30 ; les reversements de Brenda et Fatou
+  (chaque jour, par Mobile Money) sont prêts à 7 h et payés par l'équipe le lendemain à 10 h.
+- **Les conversations WhatsApp suivent les colis** : commande confirmée, colis en route avec le code,
+  livraison manquée, colis à préparer et rappel à la vendeuse, et les questions des clients avec les
+  réponses de l'équipe, à leur heure. Le tableau de bord ne montre plus un client « qui attend depuis
+  1 250 minutes ».
+- Chaque étape n'a lieu qu'une fois (`ocd.live.demo.event`), à son heure, même si l'action planifiée
+  passe en retard ou après un arrêt du serveur ; ce que l'équipe fait pendant une présentation (livrer
+  avec le code, signaler un problème) reste tel quel. Le stock reste à son niveau (« Plus que 3 »),
+  sans mouvement de stock : la démo se retire toujours entièrement (remises de caisse comprises).
+- Une démo installée avant : la mise à jour livre les colis restés figés de l'ancien scénario le soir de
+  leur commande (leurs espèces partent avec la caisse de ce soir-là).
+- **Textes des modules dans Applications** : le nom, le résumé et la description suivent leurs
+  traductions à chaque mise à jour d'un module. Odoo gardait ceux de la première installation (les fiches
+  des modules sont « à ne pas mettre à jour »), même avec `--i18n-overwrite` : un résumé changé restait
+  ancien en français.
+- `ocd_live_shop` : la règle « vendeur en retard » (rappel, puis alerte du dispatch) se lance aussi sur un
+  colis à un moment donné (`_ocd_escalate`) ; la tâche planifiée fait la même chose qu'avant.
+- `ocd_live_demo` 20.0.1.2.0 (Brenda et Fatou payées chaque jour, Fatou prépare le lendemain matin les
+  commandes du soir).
 
 ### 12 novembre 2026 — démo de présentation : 8 pays, tenue à jour
 - **15 vendeurs dans 8 pays**, chacun avec une histoire cohérente (ville, ce qu'il vend, produits avec

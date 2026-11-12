@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-12 03:08+0000\n"
-"PO-Revision-Date: 2026-11-12 03:08+0000\n"
+"POT-Creation-Date: 2026-11-12 05:23+0000\n"
+"PO-Revision-Date: 2026-11-12 05:23+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -37,12 +37,15 @@ msgid ""
 "  Money payment, a package with a live left to place.\n"
 "- Two more checking windows (midday, afternoon): the directory has lives from 8:00 to\n"
 "  21:00. The bookings have no opening date (the lives of the last week took place).\n"
-"- Shop: a dress in 2 colours and 4 sizes with its stock, delivery prices (OCD\n"
-"  couriers, agencies, prices of a vendor), parcels at every step (to prepare, ready,\n"
-"  on the way, delivered, problem, late), cash with a courier, bills of the vendors\n"
-"  and payouts to check.\n"
-"- WhatsApp: conversations of customers and vendors, on an archived account; no\n"
-"  WhatsApp message is ever sent to the contacts of the demo (ocd_live_demo_whatsapp).\n"
+"- The shop of Douala, kept current too: the orders of each day, each parcel along\n"
+"  its story (paid cash or on the phone, a customer absent, a vendor late, a vendor\n"
+"  who delivers herself), parcels at every step, the cash handed over by the couriers\n"
+"  each evening, the payouts of the vendors prepared and paid every day; a dress in 2\n"
+"  colours and 4 sizes whose stock stays at its level, delivery prices (OCD couriers,\n"
+"  agencies, prices of a vendor).\n"
+"- WhatsApp: the conversations of the day about the orders and the parcels, on an\n"
+"  archived account; no WhatsApp message is ever sent to the contacts of the demo\n"
+"  (ocd_live_demo_whatsapp).\n"
 "- Payment: the Mobile Money checked by the team with example numbers, and the\n"
 "  payment at the door.\n"
 "\n"
@@ -70,17 +73,25 @@ msgstr ""
 "- Deux fenêtres de vérification de plus (midi, après-midi) : l'annuaire a des lives de\n"
 "  8 h à 21 h. Les réservations n'ont pas de date d'ouverture (les lives de la semaine\n"
 "  passée ont eu lieu).\n"
-"- Le shop : une robe en 2 couleurs et 4 tailles avec son stock, des prix de livraison\n"
-"  (livreurs OCD, agences, prix d'une vendeuse), des colis à chaque étape (à préparer,\n"
-"  prêt, en route, livré, problème, en retard), des espèces chez un livreur, les factures\n"
-"  des vendeuses et des reversements à vérifier.\n"
-"- WhatsApp : des conversations de clients et de vendeurs, sur un compte archivé ; aucun\n"
-"  message WhatsApp n'est jamais envoyé aux contacts de la démo (ocd_live_demo_whatsapp).\n"
+"- Le shop de Douala, tenu à jour lui aussi : les commandes de chaque jour, chaque colis\n"
+"  selon son histoire (payé en espèces ou sur le téléphone, un client absent, une vendeuse\n"
+"  en retard, une vendeuse qui livre elle-même), des colis à chaque étape, les espèces\n"
+"  remises par les livreurs chaque soir, les reversements des vendeuses préparés et payés\n"
+"  chaque jour ; une robe en 2 couleurs et 4 tailles dont le stock reste à son niveau, des\n"
+"  prix de livraison (livreurs OCD, agences, prix d'une vendeuse).\n"
+"- WhatsApp : les conversations du jour sur les commandes et les colis, sur un compte\n"
+"  archivé ; aucun message WhatsApp n'est jamais envoyé aux contacts de la démo\n"
+"  (ocd_live_demo_whatsapp).\n"
 "- Le paiement : le Mobile Money vérifié par l'équipe avec des numéros d'exemple, et le\n"
 "  paiement à la livraison.\n"
 "\n"
 "La désinstallation du module annule et retire tous ces enregistrements, et remet les\n"
 "moyens de paiement et la date d'ouverture des réservations comme avant.\n"
+
+#. module: ocd_live_demo
+#: model:ir.model.constraint,message:ocd_live_demo.constraint_ocd_live_demo_event_unique_key
+msgid "A step of the demo takes place once."
+msgstr "Une étape de la démo n'a lieu qu'une fois."
 
 #. module: ocd_live_demo
 #: model:ocd.directory.window,name:ocd_live_demo.window_afternoon
@@ -158,6 +169,16 @@ msgid "Couleur"
 msgstr "Couleur"
 
 #. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: ocd_live_demo
 #: model:ocd.delivery.rate,description:ocd_live_demo.rate_fatou_makepe
 msgid "Delivered the same day"
 msgstr "Livré le jour même"
@@ -174,6 +195,7 @@ msgstr "Livré sous 24 à 48 h"
 
 #. module: ocd_live_demo
 #: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo__display_name
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__display_name
 #: model:ir.model.fields,field_description:ocd_live_demo.field_res_partner__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
@@ -210,6 +232,7 @@ msgstr "Haut et jupe cousus à tes mesures, pagne fourni ou à choisir."
 
 #. module: ocd_live_demo
 #: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo__id
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__id
 #: model:ir.model.fields,field_description:ocd_live_demo.field_res_partner__id
 msgid "ID"
 msgstr "ID"
@@ -230,9 +253,24 @@ msgid "Kente tissé à la main à Bonwire, 2 m, franges aux deux bouts."
 msgstr "Kente tissé à la main à Bonwire, 2 m, franges aux deux bouts."
 
 #. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__key
+msgid "Key"
+msgstr "Clé"
+
+#. module: ocd_live_demo
 #: model:product.attribute.value,name:ocd_live_demo.attribute_size_l
 msgid "L"
 msgstr "L"
+
+#. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
 
 #. module: ocd_live_demo
 #: model:ocd.live.price.rule,name:ocd_live_demo.price_rule_monday_morning
@@ -345,6 +383,11 @@ msgid "S"
 msgstr "S"
 
 #. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__sale_order_id
+msgid "Sale Order"
+msgstr "Bon de commande"
+
+#. module: ocd_live_demo
 #: model:ocd.live.price.rule,name:ocd_live_demo.price_rule_saturday_evening
 msgid "Samedi soir"
 msgstr "Samedi soir"
@@ -373,6 +416,11 @@ msgstr "Service à thé ataya"
 #: model:product.template,name:ocd_live_demo.product_smartphone
 msgid "Smartphone reconditionné 128 Go"
 msgstr "Smartphone reconditionné 128 Go"
+
+#. module: ocd_live_demo
+#: model:ir.model,name:ocd_live_demo.model_ocd_live_demo_event
+msgid "Step Of The OCD Live Demo"
+msgstr "Étape de la démo d'OCD Live"
 
 #. module: ocd_live_demo
 #: model:product.attribute,name:ocd_live_demo.attribute_size

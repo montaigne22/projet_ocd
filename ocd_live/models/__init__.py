@@ -1,3 +1,4 @@
+from . import ir_module_module
 from . import res_company
 from . import res_country
 from . import res_config_settings

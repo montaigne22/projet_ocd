@@ -47,6 +47,8 @@
         <field name="ocd_sale_mode">ocd</field>
         <field name="ocd_delivery_mode">pickup</field>
         <field name="ocd_commission_rate">15</field>
+        <field name="ocd_payout_frequency">daily</field>
+        <field name="ocd_payout_momo">+237 670112202</field>
     </record>
     <record id="vendor_fatou" model="res.partner">
         <field name="name">Fatou Karité</field>
@@ -64,6 +66,10 @@
         <field name="ocd_zone_ids" eval="[Command.set([ref('delivery_cameroon.district_douala_akwa'), ref('delivery_cameroon.district_douala_makepe')])]"/>
         <field name="ocd_zone_fallback" eval="True"/>
         <field name="ocd_commission_rate">15</field>
+        <field name="ocd_payout_frequency">daily</field>
+        <field name="ocd_payout_momo">+237 690112203</field>
+        <!-- She prepares the orders of the evening the next morning -->
+        <field name="ocd_prep_hours">16</field>
     </record>
     <record id="vendor_papa" model="res.partner">
         <field name="name">Papa Ndolé</field>

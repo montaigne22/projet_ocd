@@ -685,12 +685,15 @@ Tout ce qu'il faut pour présenter OCD Live, dans un module qui se retire :
 - Deux fenêtres de vérification de plus (midi, après-midi) : l'annuaire a des lives de
   8 h à 21 h. Les réservations n'ont pas de date d'ouverture (les lives de la semaine
   passée ont eu lieu).
-- Le shop : une robe en 2 couleurs et 4 tailles avec son stock, des prix de livraison
-  (livreurs OCD, agences, prix d'une vendeuse), des colis à chaque étape (à préparer,
-  prêt, en route, livré, problème, en retard), des espèces chez un livreur, les factures
-  des vendeuses et des reversements à vérifier.
-- WhatsApp : des conversations de clients et de vendeurs, sur un compte archivé ; aucun
-  message WhatsApp n'est jamais envoyé aux contacts de la démo (ocd_live_demo_whatsapp).
+- Le shop de Douala, tenu à jour lui aussi : les commandes de chaque jour, chaque colis
+  selon son histoire (payé en espèces ou sur le téléphone, un client absent, une vendeuse
+  en retard, une vendeuse qui livre elle-même), des colis à chaque étape, les espèces
+  remises par les livreurs chaque soir, les reversements des vendeuses préparés et payés
+  chaque jour ; une robe en 2 couleurs et 4 tailles dont le stock reste à son niveau, des
+  prix de livraison (livreurs OCD, agences, prix d'une vendeuse).
+- WhatsApp : les conversations du jour sur les commandes et les colis, sur un compte
+  archivé ; aucun message WhatsApp n'est jamais envoyé aux contacts de la démo
+  (ocd_live_demo_whatsapp).
 - Le paiement : le Mobile Money vérifié par l'équipe avec des numéros d'exemple, et le
   paiement à la livraison.
 

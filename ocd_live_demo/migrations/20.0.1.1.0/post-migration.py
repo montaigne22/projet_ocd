@@ -24,4 +24,4 @@ def migrate(cr, version):
     past.unlink()
     env["ocd.live.waitlist"].search([("partner_id", "=", mireille.id), ("mode", "=", "studio")]).unlink()
     demo.open_bookings()
-    demo.keep_current()
+    # The scenario is put on the days around today by the migration of 20.0.1.2.0

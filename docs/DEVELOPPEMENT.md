@@ -50,10 +50,11 @@ d'Ivoire, Sénégal, Bénin, Ghana, Nigeria, diaspora à Paris), chacun avec ses
 ses heures ; les lives de l'annuaire dans la fenêtre du moment (la démo ajoute les fenêtres « Midi » et
 « Après-midi » : des lives de 8 h à 21 h), la semaine du studio (samedi complet, liste d'attente, un live
 sans animatrice), les replays de la semaine passée avec les produits montrés, un paiement Mobile Money à
-vérifier ; le shop de Douala (robe en 2 couleurs et 4 tailles, « Plus que 3 », tailles épuisées, colis à
-chaque étape, espèces chez un livreur, reversements à vérifier si la comptabilité existait avant la
-démo). Une action planifiée (toutes les 15 minutes) la tient sur les jours autour d'aujourd'hui : rien à
-refaire avant une présentation. Le scénario de présentation, vendeur par vendeur et heure par heure, est
+vérifier ; la boutique de Douala heure par heure (six commandes par jour, colis à chaque étape, un colis
+en retard, un client absent, espèces remises chaque soir, reversements préparés et payés chaque jour si la
+comptabilité existe, conversations WhatsApp du jour ; robe en 2 couleurs et 4 tailles, « Plus que 3 »,
+tailles épuisées). Une action planifiée (toutes les 15 minutes) la tient sur les jours autour
+d'aujourd'hui : rien à refaire avant une présentation. Le scénario de présentation, vendeur par vendeur et heure par heure, est
 dans [`DEMO.md`](DEMO.md).
 
 Elle publie le paiement à la livraison, active le Mobile Money vérifié par l'équipe (numéros d'exemple)
@@ -158,6 +159,9 @@ Les outils sont dans `tools/i18n/` :
 
 Un même mot anglais peut avoir deux sens : utiliser alors un texte anglais différent (ex. « Table
 view » pour le bouton « Tableau », « Table » restant le meuble du studio).
+
+Le nom, le résumé et la description d'un module (écran Applications) suivent son `fr.po` à chaque mise à
+jour du module (`ocd_live`, `ir_module_module.py`) : Odoo, lui, garde ceux de la première installation.
 
 ## Captures d'écran
 
