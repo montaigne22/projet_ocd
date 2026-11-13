@@ -104,14 +104,15 @@ patch(PaymentForm.prototype, {
     },
 
     /**
-     * Check the payment status until it is final, then show the status page.
+     * Check the payment status until it is final, then show the status page, which processes
+     * it (the result of Campay is received: paid or failed).
      *
      * @private
      */
     async _pollCampayStatus(params, deadline) {
         try {
-            const { state } = await this.waitFor(rpc("/payment/campay/status", params));
-            if (FINAL_STATES.has(state)) {
+            const { state, received } = await this.waitFor(rpc("/payment/campay/status", params));
+            if (received || FINAL_STATES.has(state)) {
                 window.location = "/payment/status";
                 return;
             }

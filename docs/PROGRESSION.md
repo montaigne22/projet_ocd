@@ -89,6 +89,25 @@ démo, 15 tests sans échec (devises de Brenda, Kadi et Awa comprises).
 
 ## Journal
 
+### 13 novembre 2026 — page d'erreur juste après un paiement, ticket pas reçu sur WhatsApp
+- **Page 500 après le paiement** (`/payment/status`, vu sur le staging après un paiement CamPay de démo) :
+  la page d'attente du paiement (réservation, pass, boutique) est une page d'Odoo dans le cadre d'OCD Live.
+  Depuis le bouton de langue (9 novembre), le cadre lisait la liste des langues des pages d'OCD, absente de
+  cette page : erreur juste après chaque paiement en ligne, alors que le paiement était bien enregistré.
+  La page reçoit maintenant les valeurs des pages d'OCD, et le cadre tolère leur absence.
+- **CamPay : la vérification du paiement ne peut plus se bloquer** : la page qui attend la confirmation
+  sur le téléphone faisait traiter le paiement dans sa propre requête, dont le traitement attendait les
+  verrous (la requête pouvait rester bloquée jusqu'à être coupée). Le résultat de CamPay est mis en file,
+  et la page d'attente d'Odoo le traite dans une autre requête, comme pour les autres fournisseurs.
+- **Ticket pas reçu sur WhatsApp, modèle pourtant approuvé** : pour un modèle soumis par Odoo puis approuvé
+  (seule la décision est relue chez Meta), Odoo ne savait pas que le bouton attend la fin de son adresse
+  et ne l'envoyait pas : Meta refusait le message. Tous les messages à bouton soumis depuis Odoo étaient
+  concernés (ticket, « Mon espace », « Suivre mon colis »…). La fin de l'adresse part dès que le bouton du
+  modèle se termine par une variable.
+- Reproduit de bout en bout sur une copie de la démo, avec un faux CamPay et un faux Meta : paiement de
+  démo à 25 F CFA, page d'attente, retour sur la réservation payée, ticket avec son bouton. Tests : CamPay,
+  WhatsApp et pages du site, 174 sans échec ; boutique, 108 sans échec.
+
 ### 12 novembre 2026 — modèles WhatsApp refusés par Meta (INCORRECT_CATEGORY)
 - **Le motif** : Meta prenait quatre modèles *Utilitaires* pour des messages d'*Authentification* (réservés
   au code à usage unique) : « colis en route » (le code à donner au livreur, même sans le donner), « ticket

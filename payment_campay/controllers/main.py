@@ -9,6 +9,7 @@ from odoo.http import request
 
 from odoo.addons.payment import utils as payment_utils
 from odoo.addons.payment.logging import get_payment_logger
+from odoo.addons.payment_campay import const
 
 _logger = get_payment_logger(__name__, {"signature", "token", "password"})
 
@@ -38,16 +39,29 @@ class CampayController(http.Controller):
     def campay_status(self, reference, access_token):
         """Check the payment status with Campay while the customer confirms on the phone.
 
+        A final status (paid, failed) is queued for processing, as with the webhook; the payment
+        form then sends the customer to the status page of Odoo, which processes it in another
+        request (/payment/process). It is never processed in this request: the processing runs
+        with its own cursor, which waits for the locks that this request holds on the
+        transaction until the request ends, and the request would never end.
+
         :param str reference: The reference of the transaction.
         :param str access_token: The access token given to the payment form for this transaction.
-        :return: The state of the transaction.
+        :return: The state of the transaction, and whether its final status was received.
         :rtype: dict
         """
         tx_sudo = self._get_transaction(reference, access_token)
-        if tx_sudo.state in ("draft", "pending") and tx_sudo._campay_fetch_status():
-            request.env["payment.transaction"]._run_processing()
-            tx_sudo.invalidate_recordset(["state", "state_message"])
-        return {"state": tx_sudo.state, "state_message": tx_sudo.state_message or ""}
+        received = bool(tx_sudo.payment_data_ids)
+        if not received and tx_sudo.state in ("draft", "pending"):
+            payment_data = tx_sudo._campay_fetch_status()
+            received = bool(payment_data) and (
+                payment_data.get("status") not in const.PAYMENT_STATUS_MAPPING["pending"]
+            )
+        return {
+            "state": tx_sudo.state,
+            "received": received,
+            "state_message": tx_sudo.state_message or "",
+        }
 
     @http.route(_return_url, type="http", methods=["GET"], auth="public")
     def campay_return_from_checkout(self, **data):

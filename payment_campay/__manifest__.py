@@ -15,7 +15,7 @@ Campay payment provider
   demo numbers only, until a last day. The pages show the real prices, the order is paid
   as usual and the accounts record the money received.
 """,
-    "version": "20.0.1.1.0",
+    "version": "20.0.1.2.0",
     "category": "Accounting/Payment Providers",
     "sequence": 360,
     "author": "RollBackk",

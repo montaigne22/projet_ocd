@@ -339,3 +339,11 @@ class OcdLivePaymentStatus(PaymentStatus):
         if orders.filtered(lambda order: order.ocd_booking_ids or order.ocd_pass_ids):
             return "ocd_live.payment_status"
         return super().get_payment_status_template_xmlid(tx)
+
+    def _get_payment_status_values(self, tx):
+        """The waiting page in the frame of OCD Live (also the one of the shop, see
+        ocd_live_shop) has the values of the pages of OCD Live: languages, voice, menu."""
+        values = super()._get_payment_status_values(tx)
+        if self.get_payment_status_template_xmlid(tx) == "ocd_live.payment_status":
+            values = common.page_values(False, header_brand=True, **values)
+        return values

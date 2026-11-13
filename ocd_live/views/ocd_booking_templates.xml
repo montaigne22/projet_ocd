@@ -182,6 +182,8 @@
                         <!-- Language button: the language of the page (French, English…) and of the voice.
                              A language of the pages shows the page again in that language; a language
                              only spoken (Ewe…) changes the voice. -->
+                        <!-- Empty on a page of Odoo in the frame of OCD Live (the waiting page of a payment) -->
+                        <t t-set="page_languages" t-value="page_languages or []"/>
                         <t t-set="page_code" t-value="([row['short'] for row in page_languages if row['current']] or [''])[0]"/>
                         <t t-set="page_codes" t-value="[row['short'] for row in page_languages]"/>
                         <t t-set="page_urls" t-value="dict((row['short'], row['url']) for row in page_languages if not row['current'])"/>

@@ -466,7 +466,12 @@ class WhatsappTemplate(models.Model):
             raise UserError(_(
                 "Meta refused the template: %s", account._get_error_text(error)
             )) from error
-        self.write({"status": "pending", "rejected_reason": False})
+        self.write({
+            "status": "pending",
+            "rejected_reason": False,
+            # As submitted: Meta expects the end of the URL when the button ends with a variable
+            "button_url_dynamic": bool(self._get_url_button()),
+        })
         return account._notify(
             _("Template submitted to Meta: its review can take up to 24 hours."), "success"
         )
@@ -892,7 +897,7 @@ class WhatsappTemplate(models.Model):
             vals["user_ref"] = user_ref
             button = (button_values.get(record.id) or "").strip()
             skip_reason = self._get_skip_reason(account, partner, number or user_ref)
-            if not skip_reason and self.button_url_dynamic and not button:
+            if not skip_reason and self._expects_url_button_value(known_only=True) and not button:
                 skip_reason = _(
                     "The link button of the template expects the end of its URL, but none is "
                     "given (Link Button Variable)."
@@ -980,8 +985,7 @@ class WhatsappTemplate(models.Model):
                 ],
             })
         # the URL variable of the button, when Meta expects one (or when not synchronised yet)
-        expects_button = self.status == "unknown" or self.button_url_dynamic
-        if self.button_url_value and button and expects_button:
+        if self.button_url_value and button and self._expects_url_button_value():
             url_button = self._get_url_button()
             components.append({
                 "type": "button",
@@ -1003,6 +1007,17 @@ class WhatsappTemplate(models.Model):
             "type": "template",
             "template": template,
         }
+
+    def _expects_url_button_value(self, known_only=False):
+        """Whether Meta expects the end of the URL of the link button with each message: the
+        button ends with a variable at Meta (read by the synchronisation), or in Odoo, which
+        submitted it so (a template submitted by Odoo, then approved, is read back from Meta for
+        its status only). Without it, Meta refuses the message. A template not synchronised
+        gets it too when it is given, unless `known_only`."""
+        self.ensure_one()
+        if self.button_url_dynamic or self._get_url_button():
+            return True
+        return not known_only and self.status == "unknown"
 
     def _get_url_button(self):
         """The link button whose URL ends with a variable, if any."""

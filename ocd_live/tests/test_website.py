@@ -5,6 +5,7 @@ from unittest.mock import patch
 from odoo import fields
 from odoo.exceptions import AccessError
 from odoo.fields import Command
+from odoo.http.session import session_store
 from odoo.tests import HttpCase, tagged
 
 from .common import pending_payment
@@ -278,6 +279,24 @@ class TestOcdLiveWebsite(HttpCase):
         self.url_open(f"/ocd/espace/{token}")
         response = self.url_open(f"/reserver/studio/{self.day.isoformat()}/0830")
         self.assertIn("FCFA", response.text)
+
+    def test_payment_status_page_in_the_frame_of_ocd(self):
+        """After the payment, Odoo shows its waiting page (/payment/status) in the frame of OCD
+        Live: it gets the values of the pages of OCD (languages of the page...) and opens, then
+        sends the vendor back to the payment page of the order."""
+        start = self.company._ocd_slot_starts(self.day)[0]
+        booking = self.env["ocd.live.booking"]._ocd_book_from_website(self.vendor, self.discovery, start, "studio")
+        order = booking.sale_line_id.order_id
+        tx = pending_payment(self, order)
+        tx.landing_route = f"/ocd/payer/{order.id}?access_token={order._portal_ensure_token()}"
+        self.authenticate(None, None)
+        self.session["__payment_monitored_tx_id__"] = tx.id
+        session_store().save(self.session)
+        response = self.url_open("/payment/status")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('name="o_payment_status"', response.text)
+        self.assertIn(f'data-landing-route="/ocd/payer/{order.id}', response.text)
+        self.assertIn("o_ocd_body", response.text, "The frame of OCD Live")
 
     def test_honeypot_stops_the_robots(self):
         self.authenticate(None, None)

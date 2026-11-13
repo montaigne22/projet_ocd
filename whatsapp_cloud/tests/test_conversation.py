@@ -817,6 +817,32 @@ class TestWhatsAppConversation(WhatsAppCommon):
         self.template.write({"category": "marketing", "body": "Bonjour {{1}}, votre code promo {{2}} vaut cette semaine."})
         self.template._check_for_meta()
 
+    def test_approved_template_sends_the_end_of_its_url(self):
+        """A template submitted by Odoo, then approved (only its status is read back from Meta),
+        still sends the end of the URL of its link button: Meta refuses the message without it
+        (the ticket of a live did not arrive)."""
+        self.env["ir.config_parameter"].sudo().set_str("web.base.url", "https://shop.example.com")
+        self.template.write({
+            "button_ids": [(0, 0, {"button_type": "url", "name": "Voir et payer",
+                                   "url": "https://shop.example.com/{{1}}", "url_example": "my/orders/1"})],
+            "button_url_value": "{{ 'my/orders/' + str(object.id) }}",
+        })
+        self.template.variable_ids.sample_value = "Awa"
+        with patch(REQUEST, return_value=mock_response({"id": "5462", "status": "PENDING", "category": "UTILITY"})):
+            self.template.action_submit_to_meta()
+        self.assertTrue(self.template.button_url_dynamic, "As submitted")
+        # Approved, read back for its status only (an old database: the flag was never set)
+        self.template.write({"status": "approved", "button_url_dynamic": False})
+        message = self.template._send(self.partner)
+        components = json.loads(message.payload)["template"]["components"]
+        button = next(component for component in components if component["type"] == "button")
+        self.assertEqual(button["sub_type"], "url")
+        self.assertIn(f"my/orders/{self.partner.id}", button["parameters"][0]["text"])
+        # Without the end of the URL, the message is not sent (Meta would refuse it)
+        self.template.button_url_value = "{{ '' }}"
+        message = self.template._send(self.partner)
+        self.assertEqual(message.state, "skipped")
+
     def test_submit_selected_templates_to_meta(self):
         """Several templates at once, after an update gave new texts to the refused ones: the
         refused one goes, the approved one stays as it is, a text that Odoo refuses says why."""

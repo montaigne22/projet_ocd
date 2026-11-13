@@ -236,6 +236,13 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   montant, `_create_payment` enregistre l'argent reçu). Réglages : `ocd_live_shop/models/ocd_live_settings.py`
   (`_ocd_campay_demo_items`), ligne du tableau de bord : `ocd.live.dashboard._ocd_demo_payment_todos`.
   Les tests de `payment_campay` se lancent sur une base où il est installé (`--test-tags /payment_campay`).
+- Une page d'Odoo affichée dans le cadre d'OCD Live (`ocd_live.app`), comme la page d'attente d'un
+  paiement (`/payment/status`), reçoit les valeurs des pages d'OCD (`common.page_values`, voir
+  `OcdLivePaymentStatus._get_payment_status_values`) : sans elles, le cadre n'a ni langues ni voix.
+- Fournisseur de paiement : une route qui reçoit le résultat d'un paiement appelle seulement `_record()`
+  (mise en file). Le traitement se fait dans une autre requête (`/payment/process`, appelée par la page
+  d'attente) ou par la tâche planifiée, jamais par `_run_processing()` dans la même requête : il tourne
+  avec son propre curseur et attendrait les verrous de la requête qui l'a lancé.
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - Thème du site : `ocd_live/static/src/scss/ocd_app.scss` (pages sous `.o_ocd_app`).
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).
