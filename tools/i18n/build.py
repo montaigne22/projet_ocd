@@ -18,7 +18,7 @@ SKIP_PREFIX = ("Envoie le montant par Mobile Money",)
 SCREENS = [ns["SETTINGS"], ns["SHOP_SETTINGS"], ns["AUTOMATIONS"], ns["WHATSAPP_SCREENS"], ns["SHOP_WHATSAPP_SCREENS"],
            ns["NO_ODOO"], ns["PAGES_AND_ENGLISH"]]
 MODULES = {
-    "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], ns["SITE_FRAME"], ns["TICKET"], ns["COUNTRIES"], ns["CARDS"], ns["CURRENCIES"], *SCREENS],
+    "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], ns["SITE_FRAME"], ns["TICKET"], ns["COUNTRIES"], ns["CARDS"], ns["CURRENCIES"], ns["LIVE_PAGE"], *SCREENS],
     "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], ns["SHOP_COURIER_LOGIN"], ns["SHOP_COUNTRIES"], ns["MEDIA_SHOP"], ns["CARDS"], ns["CARDS_SHOP"], ns["CURRENCIES_SHOP"], *SCREENS],
     "ocd_live_whatsapp": [ns["WHATSAPP"], ns["CARDS_WHATSAPP"], *SCREENS],
     "ocd_live_shop_whatsapp": [ns["SHOP_WHATSAPP"], ns["MEDIA_SHOP_WHATSAPP"], *SCREENS],
@@ -35,13 +35,27 @@ ns["DESCRIPTIONS"]["payment_campay"] = ns["CAMPAY_DESCRIPTION"]
 # Names of places and products: the same in French
 IDENTITY = {"ocd_delivery_togo", "ocd_live_demo"}
 
+# Records made by a button of the settings (currencies by country), not by the data of the
+# module: their names depend on the database the texts were exported from
+RUNTIME_REFS = (
+    "model:product.pricelist,name:ocd_live.pricelist_",
+    "model:res.country.group,name:ocd_live.country_group_",
+)
+
+
+def runtime_only(entry):
+    refs = [comment[3:] for comment in entry["comments"] if comment.startswith("#: ")]
+    return bool(refs) and all(ref.startswith(RUNTIME_REFS) for ref in refs)
+
+
 for module, dicts in MODULES.items():
     exported = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pot", f"{module}.pot")
     if not os.path.exists(exported):
         # Not exported again: keep the template of the module
         exported = os.path.join(ROOT, module, "i18n", f"{module}.pot")
     header, entries = potlib.read(exported)
-    entries = [e for e in entries if e["msgid"] not in SKIP and not e["msgid"].startswith(SKIP_PREFIX)]
+    entries = [e for e in entries if e["msgid"] not in SKIP and not e["msgid"].startswith(SKIP_PREFIX)
+               and not runtime_only(e)]
     translations = {}
     po_path = os.path.join(ROOT, module, "i18n", "fr.po")
     if os.path.exists(po_path):

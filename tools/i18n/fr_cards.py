@@ -344,6 +344,18 @@ CURRENCIES = {
     "Demo": "Démo",
 }
 
+# === The page of one live, the link of its announcement (ocd_live, site: « tu ») ===
+LIVE_PAGE = {
+    "Live of %s": "Live de %s",
+    "%s is live": "%s est en live",
+    "Replay of %s": "Replay de %s",
+    "Live ended": "Live terminé",
+    "Come back at the hour of the live: the button « Watch » opens it.":
+        "Reviens à l'heure du live : le bouton « Regarder » l'ouvrira.",
+    "See the other lives": "Voir les autres lives",
+    "See the other lives ·": "Voir les autres lives ·",
+}
+
 # === Demo payments of CamPay on the settings page (ocd_live_shop) ===
 CURRENCIES_SHOP = {
     "Choose today or a later day.": "Choisissez aujourd'hui ou un jour suivant.",

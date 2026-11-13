@@ -2,6 +2,8 @@ import re
 from datetime import timedelta
 from unittest.mock import patch
 
+from freezegun import freeze_time
+
 from odoo import fields
 from odoo.exceptions import AccessError
 from odoo.fields import Command
@@ -297,6 +299,47 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertIn('name="o_payment_status"', response.text)
         self.assertIn(f'data-landing-route="/ocd/payer/{order.id}', response.text)
         self.assertIn("o_ocd_body", response.text, "The frame of OCD Live")
+
+    def test_shared_link_opens_the_live(self):
+        """The announcement of a live gives the page of this live (/lives/tg/<id>), not the
+        lives of the whole country: its day and hour before it, « Watch » during it. Also for a
+        vendor not approved yet (its initials, no boutique)."""
+        start = self.company._ocd_slot_starts(self.day)[0]
+        booking = self.env["ocd.live.booking"].create({
+            "partner_id": self.vendor.id, "start_datetime": start, "slot_count": self.discovery.ocd_slot_count,
+            "product_id": self.discovery.id, "mode": "studio", "state": "confirmed",
+        })
+        path = f"/lives/tg/{booking.id}"
+        values = booking._ocd_announce_values()
+        self.assertTrue(values["url"].endswith(path))
+        self.assertIn(path, values["share_text"])
+        response = self.url_open(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Awa Mensah", response.text)
+        self.assertIn("o_ocd_feed_next", response.text, "Before the live: its day and its hour")
+        self.assertIn(f'data-url="http', response.text)
+        self.assertIn(path, response.text, "Its share button gives this page again")
+        # Another country in the address: the right one
+        response = self.url_open(f"/lives/cm/{booking.id}", allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertTrue(response.headers["Location"].endswith(path))
+        # A vendor not approved yet: the page too, with its initials
+        self.vendor.ocd_vendor_state = "to_check"
+        response = self.url_open(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("o_ocd_feed_initials", response.text)
+        self.vendor.ocd_vendor_state = "approved"
+        # During the live: « Watch » opens it
+        booking.live_url = "https://www.tiktok.com/@ocdlive/live"
+        with freeze_time(booking.start_datetime + timedelta(minutes=10)):
+            response = self.url_open(path)
+        self.assertIn("o_ocd_feed_watch", response.text)
+        self.assertIn("https://www.tiktok.com/@ocdlive/live", response.text)
+        # A live that does not take place any more: the lives of the country
+        booking.state = "cancelled"
+        response = self.url_open(path, allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertTrue(response.headers["Location"].endswith("/lives/tg"))
 
     def test_honeypot_stops_the_robots(self):
         self.authenticate(None, None)

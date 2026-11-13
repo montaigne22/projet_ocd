@@ -89,6 +89,16 @@ démo, 15 tests sans échec (devises de Brenda, Kadi et Awa comprises).
 
 ## Journal
 
+### 13 novembre 2026 — le lien partagé d'un live ouvre ce live
+- **Avant** : l'image et le message « Je passe en live » donnaient `domaine/lives/cm` (la boutique du vendeur
+  une fois validé, sinon les lives de tout son pays) : un ami tombait sur les lives du pays entier.
+- **Maintenant** : `domaine/lives/cm/<numéro du live>`, la page de ce live : avant, « Prochain live », le
+  jour et l'heure dans le fuseau du visiteur et « Reviens à l'heure du live » ; pendant, « Regarder » (le
+  compte d'OCD Live ou le lien du live) ; après, son replay, sinon « Live terminé ». Aussi pour un vendeur
+  pas encore validé (ses initiales, pas de boutique). Un live annulé renvoie aux lives du pays ; sans le
+  numéro, l'adresse donne les lives du pays. Le bouton de partage des cartes du fil donne aussi la page
+  du live. Capture : `site-phone-d-5-page-d-un-live.png`.
+
 ### 13 novembre 2026 — page d'erreur juste après un paiement, ticket pas reçu sur WhatsApp
 - **Page 500 après le paiement** (`/payment/status`, vu sur le staging après un paiement CamPay de démo) :
   la page d'attente du paiement (réservation, pass, boutique) est une page d'Odoo dans le cadre d'OCD Live.

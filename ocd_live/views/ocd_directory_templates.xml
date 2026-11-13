@@ -61,6 +61,31 @@
     </template>
 
     <!-- The cards of the feed: the page gives the first ones, the next ones come from /lives/flux -->
+    <!-- The page of one live: the link of the announcement shared by the vendor -->
+    <template id="live_page" name="OCD Live: one live">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title" t-value="title"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame">
+                <main class="o_ocd_main o_ocd_live_page">
+                    <h1 class="visually-hidden" t-out="title"/>
+                    <div class="o_ocd_card_preview o_ocd_live_page_card">
+                        <t t-set="cards" t-value="[card]"/>
+                        <t t-set="preview_mode" t-value="True"/>
+                        <t t-call="ocd_live.feed_cards"/>
+                    </div>
+                    <p t-if="moment == 'next'" class="o_ocd_help o_ocd_live_page_note">
+                        Come back at the hour of the live: the button « Watch » opens it.
+                    </p>
+                    <a t-att-href="lives_url" class="o_ocd_cta o_ocd_cta_line">
+                        <span t-if="country">See the other lives · <t t-out="country.name"/></span>
+                        <span t-else="">See the other lives</span>
+                    </a>
+                </main>
+            </div>
+        </t>
+    </template>
+
     <template id="feed_cards" name="OCD Live: cards of the feed">
         <t t-foreach="cards" t-as="card">
             <article t-if="card['kind'] in ('live', 'studio', 'next', 'replay')"

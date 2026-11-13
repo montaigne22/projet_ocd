@@ -125,6 +125,8 @@ lendemain matin.
 ### 5. Le vendeur — `/ocd`
 - Réserver un live : au studio ou chez soi, les heures dans le fuseau du vendeur, le samedi complet (liste
   d'attente), le paiement (Mobile Money vérifié par l'équipe, carte), le ticket PDF et l'image à partager.
+  Le lien de l'image ouvre la page de ce live (par ex. `/lives/cm/<numéro>` pour Brenda) : son jour et
+  son heure avant, « Regarder » pendant, le replay après.
 - **Les devises par pays** : l'espace de Brenda (Douala) montre ses prix en FCFA (XAF), celui de Kadi
   (Paris) en euros arrondis (Découverte 23 €), celui de Kossi (Lomé) en CFA (XOF). Au Cameroun, le
   paiement propose CamPay (s'il est installé et configuré).

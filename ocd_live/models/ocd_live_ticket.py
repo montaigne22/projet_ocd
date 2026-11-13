@@ -228,6 +228,14 @@ class OcdLiveBooking(models.Model):
 
     # === ANNOUNCEMENT === #
 
+    def _ocd_public_path(self):
+        """Public page of this live (without the first "/"), the link of its announcement:
+        before the live its day and its hour, during it « Watch », after it its replay. The
+        country of the vendor is in the path: without the number, the lives of the country."""
+        self.ensure_one()
+        code = (self.partner_id.country_id.code or "").lower()
+        return f"lives/{code}/{self.id}" if len(code) == 2 else self.partner_id._ocd_public_path()
+
     def _ocd_announce_values(self, tz_name=None):
         """What the image of the announcement says: the public name of the vendor, its
         category, the day and the hour of the live in the time zone of the vendor, the page
@@ -237,7 +245,7 @@ class OcdLiveBooking(models.Model):
         vendor = self.partner_id
         tz_name = self._ocd_tz_for(tz_name)
         local = tools.to_tz(self.start_datetime, tz_name)
-        url = f"{self.get_base_url()}/{vendor._ocd_public_path()}"
+        url = f"{self.get_base_url()}/{self._ocd_public_path()}"
         day = tools.day_text(env, local.date(), "EEEE d MMMM", capital=True)
         return {
             "headline": env._("I go live on OCD Live"),

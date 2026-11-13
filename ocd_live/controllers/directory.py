@@ -162,6 +162,47 @@ class OcdLiveDirectory(http.Controller):
             windows=common.windows_info(),
         ))
 
+    @http.route(
+        "/lives/<string:code>/<int:booking_id>", type="http", auth="public", website=True, sitemap=False,
+        methods=["GET"],
+    )
+    def live_page(self, code, booking_id, **kwargs):
+        """The page of one live, the link of the announcement shared by the vendor: before the
+        live its day and its hour in the time of the visitor, during it « Watch », after it its
+        replay. Also for a vendor that the team has not approved yet (its initials then, and no
+        boutique). A live that does not take place any more: the lives of the vendor's
+        country."""
+        env = request.env
+        booking = env["ocd.live.booking"].sudo().browse(booking_id).exists()
+        vendor = booking.partner_id
+        country_code = (vendor.country_id.code or "").lower()
+        if (
+            not booking
+            or booking.state not in ("confirmed", "done")
+            or not vendor.ocd_is_vendor
+            or vendor.ocd_vendor_state == "refused"
+        ):
+            return request.redirect(f"/lives/{code.lower()}" if len(code) == 2 else "/lives")
+        if country_code and code.lower() != country_code:
+            return request.redirect(f"/{booking._ocd_public_path()}")
+        card, moment = feed.live_card(booking)
+        titles = {
+            "next": env._("Live of %s", vendor.name),
+            "live": env._("%s is live", vendor.name),
+            "replay": env._("Replay of %s", vendor.name),
+            "ended": env._("Live of %s", vendor.name),
+        }
+        return request.render("ocd_live.live_page", common.page_values(
+            False,
+            nav="lives",
+            back=f"/lives?pays={country_code}" if country_code else "/lives",
+            card=card,
+            moment=moment,
+            title=titles[moment],
+            country=vendor.country_id,
+            lives_url=f"/lives?pays={country_code}" if country_code else "/lives",
+        ))
+
     def _live_cta(self):
         return {"href": "/lives/pass", "label": request.env._("I am live"), "dot": True}
 

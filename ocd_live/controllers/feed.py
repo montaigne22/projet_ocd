@@ -169,6 +169,9 @@ def _card(item, tz_name, now):
     vendor = record.partner_id
     shop_path = vendor._ocd_shop_path()
     card.update(_vendor_values(vendor, (record.title if kind == "live" else False) or vendor.name or ""))
+    if kind in ("studio", "next", "replay"):
+        # A live booked at OCD Live: the share button gives the page of this very live
+        card["share_url"] = f"{request.httprequest.url_root.rstrip('/')}/{record._ocd_public_path()}"
     if kind == "live":
         minutes = max(1, int((now - item["moment"]).total_seconds() // 60))
         platform = record.platform_id.name or ""
@@ -238,6 +241,42 @@ def _vendor_values(vendor, name):
     if values["media"]["kind"] == "products":
         values["media"]["label"] = env._("The products of %s", vendor.name or name)
     return values
+
+
+def live_card(booking, now=None):
+    """The card of one live, for its own page (the link of its announcement): « Next live »
+    before it, « Watch » during it, its replay after it, else « Live ended ». Return the card
+    and its moment: next, live, replay or ended."""
+    env = request.env
+    now = now or common.now()
+    tz_name = common.viewer_tz()
+    if booking.state == "confirmed" and booking.start_datetime <= now < booking.end_datetime:
+        moment = "live"
+    elif booking.start_datetime > now:
+        moment = "next"
+    elif booking.replay_published and booking.replay_url:
+        moment = "replay"
+    else:
+        moment = "ended"
+    kind = {"live": "studio", "next": "next", "replay": "replay", "ended": "next"}[moment]
+    item = {
+        "key": f"b{booking.id}", "kind": kind, "record": booking,
+        "country": booking.partner_id.country_id, "moment": booking.start_datetime,
+    }
+    card = _card(item, tz_name, now)
+    if moment == "ended":
+        local = tools.to_tz(booking.start_datetime, tz_name)
+        card.update({
+            "badge": env._("Live ended"),
+            "when": env._("Live on %s", common.day_text(local.date(), "EEE d MMM")),
+            "where": False,
+            "zone": False,
+        })
+    if booking.partner_id.ocd_vendor_state != "approved":
+        # Its photo and its video are public once the team approved the vendor: its initials
+        card["media"] = {"kind": "none"}
+    card["share_url"] = f"{request.httprequest.url_root.rstrip('/')}/{booking._ocd_public_path()}"
+    return card, moment
 
 
 def preview_card(vendor):
