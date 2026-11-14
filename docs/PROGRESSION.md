@@ -56,6 +56,9 @@ démo, 15 tests sans échec (devises de Brenda, Kadi et Awa comprises).
 
 ## Reste à faire, par priorité
 
+Les nouveaux chantiers retenus le 14 novembre 2026 (OCD Express, OCD Business, OCD Tickets, OCD Vote et
+les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
+
 1. **Tarifs à saisir par l'équipe avant l'ouverture**, pas à pas dans [`LIVRAISONS.md`](LIVRAISONS.md)
    (OCD Live › Livraisons › Tarifs de livraison) :
    livreurs OCD par ville, agences vers les autres villes et pays, bornes des prix des vendeurs, part

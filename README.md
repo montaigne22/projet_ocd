@@ -28,6 +28,8 @@ Le dépôt contient tous les modules nécessaires. `disable_odoo_online` (OCA, n
 
 - [`docs/PROGRESSION.md`](docs/PROGRESSION.md) : où en est le projet, ce qui reste à faire. **À lire en premier.**
 - [`docs/DECISIONS.md`](docs/DECISIONS.md) : les choix validés avec l'équipe OCD.
+- [`docs/FEUILLE_DE_ROUTE.md`](docs/FEUILLE_DE_ROUTE.md) : les chantiers retenus (OCD Express, OCD Business,
+  OCD Tickets, OCD Vote, améliorations), dans leur ordre.
 - [`docs/ECRANS.md`](docs/ECRANS.md) : chaque écran du design validé et où il est fait dans le code.
 - [`docs/DEVELOPPEMENT.md`](docs/DEVELOPPEMENT.md) : installer, lancer, tester, traduire, faire des captures.
 - [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md) : les outils d'Odoo et ce qu'ils font pour OCD Live.
