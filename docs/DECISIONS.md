@@ -215,7 +215,7 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   (routeur du navigateur, liens des menus et des fiches, routes du serveur, liens des e-mails) ; le
   changer demanderait de remplacer des fichiers du cœur à chaque mise à jour. Les vendeurs et les clients
   ne le voient jamais (le site utilise `/ocd`, `/lives`, `/shop`). Pour une adresse à la marque : un
-  sous-domaine pour l'équipe (ex. `equipe.ocdlive.com`).
+  sous-domaine pour l'équipe (ex. `equipe.example.com`).
 
 
 ## Grand public

@@ -105,6 +105,9 @@ class OcdLiveDirectory(http.Controller):
         vendor = self._card_vendor(partner_id, "ocd_card_video")
         stream = request.env["ir.binary"]._get_stream_from(vendor, "ocd_card_video")
         stream.download_name = vendor.ocd_card_video_name or "video.mp4"
+        # Its type from its name (MP4 or WebM, media.prepare): without libmagic, Odoo keeps
+        # application/octet-stream, and Safari plays a video by its type
+        stream.mimetype = "video/webm" if stream.download_name.lower().endswith(".webm") else "video/mp4"
         return self._card_media_response(vendor, stream, content_security_policy=None)
 
     @http.route("/lives/video/<int:partner_id>/image", type="http", auth="public", website=True, sitemap=False, methods=["GET"])

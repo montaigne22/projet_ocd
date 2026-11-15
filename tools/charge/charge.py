@@ -8,7 +8,7 @@ X-OCD-Cache: hit).
 
 Exemples :
     python3 tools/charge/charge.py 32 60
-    python3 tools/charge/charge.py 200 300 --processes 8 --base https://preprod.ocdlive.com
+    python3 tools/charge/charge.py 200 300 --processes 8 --base https://preprod.example.com
     python3 tools/charge/charge.py 32 60 --nouveaux    # chaque page par un nouveau visiteur
 
 La machine qui lance le test ne doit pas être le serveur testé : elle lui prendrait ses cœurs.

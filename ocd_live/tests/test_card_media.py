@@ -212,6 +212,25 @@ class TestOcdLiveCardPages(HttpCase):
         self.assertEqual(self.url_open(f"/lives/carte/{vendor.id}").status_code, 200, "The vendor sees it")
         self.assertIn(f"/lives/carte/{vendor.id}", self.url_open("/ocd/espace/moi/carte").text)
 
+    def test_type_of_the_card_videos(self):
+        """The video of a card goes with its type, also when the server could not guess it from
+        its bytes (Odoo without libmagic keeps application/octet-stream): Safari plays a video
+        by its type. The CDN keeps it with this type."""
+        vendor = self.vendor
+        with patch.object(media, "can_convert", return_value=False):
+            vendor.ocd_card_video = BinaryBytes(b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 400, filename="clip.mp4")
+        attachment = self.env["ir.attachment"].search([
+            ("res_model", "=", "res.partner"), ("res_field", "=", "ocd_card_video"), ("res_id", "=", vendor.id),
+        ])
+        attachment.mimetype = "application/octet-stream"  # as on a server without libmagic
+        response = self.url_open(f"/lives/video/{vendor.id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["Content-Type"], "video/mp4")
+        part = self.url_open(f"/lives/video/{vendor.id}", headers={"Range": "bytes=0-99"})
+        self.assertEqual((part.status_code, part.headers["Content-Type"]), (206, "video/mp4"), "Also by parts")
+        vendor.ocd_card_video_name = "clip.webm"  # a WebM kept as it is (media.READABLE)
+        self.assertEqual(self.url_open(f"/lives/video/{vendor.id}").headers["Content-Type"], "video/webm")
+
     def test_card_of_the_feed(self):
         product = self.env.ref("ocd_live.product_package_discovery").product_variant_id
         day = fields.Date.today() + timedelta(days=5)

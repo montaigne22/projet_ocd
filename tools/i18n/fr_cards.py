@@ -429,8 +429,8 @@ SPEED = {
     "Every page is built for each visitor: the website holds far fewer visitors.":
         "Chaque page est construite pour chaque visiteur : le site tient beaucoup moins de visiteurs.",
     "Address of the CDN": "Adresse du CDN",
-    "The files of the website, the photos and the videos leave from the CDN, e.g. https://cdn.ocdlive.com: the server only builds the pages. Empty: everything leaves from the server.":
-        "Les fichiers du site, les photos et les vidéos partent du CDN, par exemple https://cdn.ocdlive.com : le serveur ne fait plus que les pages. Vide : tout part du serveur.",
+    "The files of the website, the photos and the videos leave from the CDN, e.g. https://cdn.example.com: the server only builds the pages. Empty: everything leaves from the server.":
+        "Les fichiers du site, les photos et les vidéos partent du CDN, par exemple https://cdn.example.com : le serveur ne fait plus que les pages. Vide : tout part du serveur.",
     "Type the address of the CDN only, beginning with https://.":
         "Tapez seulement l'adresse du CDN, qui commence par https://.",
     "Pages Kept In Memory": "Pages gardées en mémoire",

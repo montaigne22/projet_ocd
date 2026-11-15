@@ -297,7 +297,7 @@ class OcdLiveSettings(models.AbstractModel):
                      warn_off=_("Every page is built for each visitor: the website holds far fewer visitors.")),
                 item("text", "ocd_cdn_url", _("Address of the CDN"),
                      _("The files of the website, the photos and the videos leave from the CDN, e.g. "
-                       "https://cdn.ocdlive.com: the server only builds the pages. Empty: everything leaves from "
+                       "https://cdn.example.com: the server only builds the pages. Empty: everything leaves from "
                        "the server."),
                      get="_ocd_get_cdn_url", set="_ocd_set_cdn_url", size=200, width=460, span=2),
             ],

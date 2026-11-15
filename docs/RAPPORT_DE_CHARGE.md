@@ -163,11 +163,11 @@ achats (panier, paiement), qui ne viennent jamais de la mémoire : c'est l'objet
 
 ```bash
 # Un palier : 200 visiteurs pendant 5 minutes, 8 processus (machine de 8 cœurs)
-python3 tools/charge/charge.py 200 300 --processes 8 --base https://preprod.ocdlive.com
+python3 tools/charge/charge.py 200 300 --processes 8 --base https://preprod.example.com
 
 # La pointe d'un live : chaque page par un nouveau téléphone
-python3 tools/charge/charge.py 200 300 --processes 8 --nouveaux --base https://preprod.ocdlive.com
+python3 tools/charge/charge.py 200 300 --processes 8 --nouveaux --base https://preprod.example.com
 
 # Une seule page, avec ApacheBench (apt-get install apache2-utils)
-ab -n 5000 -c 50 https://preprod.ocdlive.com/lives
+ab -n 5000 -c 50 https://preprod.example.com/lives
 ```

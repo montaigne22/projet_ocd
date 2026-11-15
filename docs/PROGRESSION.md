@@ -96,6 +96,18 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
 
 ## Journal
 
+### 15 novembre 2026 — CDN en place : le type des vidéos des cartes, des exemples qui ne visent personne
+- Le CDN tourne (Cloudflare devant `ocd.my.rollbackk.app`, sur une adresse à part) : vérifié avec un
+  navigateur de téléphone, les fichiers, les polices, les photos et la vidéo d'une carte viennent du CDN,
+  gardés un an (`MISS` puis `HIT`, aussi par morceaux), les pages restent sur le serveur.
+- Les vidéos des cartes partaient en `application/octet-stream` (Odoo sans libmagic ne reconnaît pas un
+  MP4) : elles partent en `video/mp4` ou `video/webm`, selon leur nom. Chrome les jouait, Safari joue une
+  vidéo selon son type. Cloudflare garde les en-têtes avec la vidéo : vider son cache une fois après la
+  mise à jour (Caching › Configuration › Purge Cache).
+- Les exemples d'adresses (`ocdlive.com`, un domaine qui n'est pas à OCD Live) deviennent `example.com` :
+  l'aide de l'adresse du CDN, les tests, les commandes du test de charge (copiées telles quelles, elles
+  auraient chargé le serveur de quelqu'un d'autre).
+
 ### 15 novembre 2026 — CDN : les polices des icônes, la marche à suivre avec Cloudflare
 - Servies depuis l'adresse du CDN pour une page du site, les polices des icônes auraient été refusées par
   les navigateurs (une police ne se prend sur une autre adresse qu'avec `Access-Control-Allow-Origin`, qu'Odoo
