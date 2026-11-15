@@ -158,10 +158,17 @@ Disallow: /*/reserver/
                             <a t-else="" t-att-href="back" class="o_ocd_round" aria-label="Back">
                                 <t t-call="ocd_live.icon" icon.f="back"/>
                             </a>
-                            <div t-if="step" class="o_ocd_steps" role="img" t-att-aria-label="step_label">
-                                <t t-foreach="range(1, (step_total or 5) + 1)" t-as="index">
-                                    <span t-att-class="'o_ocd_done' if index &lt;= step else None"/>
-                                </t>
+                            <div t-if="step" class="o_ocd_stepbox">
+                                <div class="o_ocd_steps" role="img"
+                                     t-att-aria-label="step_label + (' · ' + step_name if step_name else '')">
+                                    <t t-foreach="range(1, (step_total or 5) + 1)" t-as="index">
+                                        <span t-att-class="'o_ocd_done' if index &lt;= step else None"/>
+                                    </t>
+                                </div>
+                                <!-- Where the vendor is: "2/5 · Hour" (read by the bar above for the
+                                     screen readers) -->
+                                <span t-if="step_name" class="o_ocd_step_text" aria-hidden="true"
+                                      t-out="'%s/%s · %s' % (step, step_total or 5, step_name)"/>
                             </div>
                             <a t-if="header_brand" href="/ocd" class="o_ocd_flow_brand">
                                 <img src="/ocd_live/static/img/ocd_logo.webp" alt="Logo OCD" class="o_ocd_logo" width="38" height="38"/>
@@ -228,9 +235,23 @@ Disallow: /*/reserver/
                         <div t-elif="len(page_languages) &gt; 1" class="o_ocd_voice">
                             <t t-call="ocd_live.page_language_menu"/>
                         </div>
+                        <!-- The way out of a booking on the phone, where the menu gives way to the
+                             steps (the logo and the menu are there on the larger screens). A form
+                             already filled in asks before leaving (flow_close.js). -->
+                        <a t-if="close_url" t-att-href="close_url" class="o_ocd_round o_ocd_flow_close"
+                           aria-label="Leave the booking" title="Leave the booking">
+                            <t t-call="ocd_live.icon" icon.f="close"/>
+                        </a>
                     </div>
                 </header>
                 <t t-out="0"/>
+                <!-- The help of the team during a booking: WhatsApp, with the page in the message -->
+                <div t-if="flow_help" class="o_ocd_frame o_ocd_flow_help">
+                    <a t-att-href="flow_help" target="_blank" rel="noopener" class="o_ocd_flow_help_link">
+                        <t t-call="ocd_live.icon" icon.f="chat"/>
+                        <span>A question? Write to us on WhatsApp</span>
+                    </a>
+                </div>
                 <div t-if="voice_caption" class="o_ocd_caption" role="status" hidden="hidden" t-out="voice_caption"/>
                 <div t-if="header_share" class="o_ocd_share_done o_ocd_ok" role="status" hidden="hidden">Link copied. Paste it in a message.</div>
                 <div t-if="summary or nav or bottom_cta" class="o_ocd_bottom">

@@ -383,6 +383,12 @@ class OcdLiveBooking(http.Controller):
     def _render(self, template, voice_key, page_url=None, **values):
         # A step of a booking: neither shown nor followed by the search engines (ocd_live.app)
         values.setdefault("no_robots", True)
+        # On the phone the menu gives way to the steps: their name beside their number, a way out
+        # of the booking (the cross, to the home page) and the help of the team on WhatsApp
+        step = values.get("step")
+        values.setdefault("step_name", common.step_name(self._flow(), step))
+        values.setdefault("close_url", "/ocd" if step else False)
+        values.setdefault("flow_help", common.booking_help())
         values.setdefault("step_label", request.env._("Step %(step)s of %(total)s", step=values.get("step"), total=5))
         if page_url and request.httprequest.method == "POST":
             # Shown again after a form sent with an error (/reserver/confirmer, /reserver/attente):

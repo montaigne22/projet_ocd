@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-15 09:40+0000\n"
-"PO-Revision-Date: 2026-11-15 09:40+0000\n"
+"POT-Creation-Date: 2026-11-15 21:18+0000\n"
+"PO-Revision-Date: 2026-11-15 21:18+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -842,6 +842,11 @@ msgstr ""
 "<span><i class=\"o_ocd_legend_free\"/>Libre</span>\n"
 "                        <span><i class=\"o_ocd_legend_almost\"><b/></i>Presque plein</span>\n"
 "                        <span><s>12</s>Complet</span>"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid "<span>A question? Write to us on WhatsApp</span>"
+msgstr "<span>Une question ? Écris-nous sur WhatsApp</span>"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_account
@@ -2436,6 +2441,7 @@ msgstr "Date"
 #. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/common.py:0
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_waitlist__day
 #: model:ocd.voice.prompt,name:ocd_live.voice_prompt_day
 #: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_search
@@ -3103,6 +3109,12 @@ msgstr "Créneau gardé"
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+msgid "Hello OCD Live, I need help to book a live."
+msgstr "Bonjour OCD Live, j'ai besoin d'aide pour réserver un live."
+
+#. module: ocd_live
+#. odoo-python
 #: code:addons/ocd_live/controllers/payment.py:0
 msgid "Hello, I want to pay my order %(order)s (%(total)s) from %(country)s."
 msgstr "Bonjour, je veux payer ma commande %(order)s (%(total)s) depuis le pays : %(country)s."
@@ -3181,6 +3193,7 @@ msgstr "Animatrices"
 #. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/common.py:0
 #: model:ocd.voice.prompt,name:ocd_live.voice_prompt_hour
 msgid "Hour"
 msgstr "Heure"
@@ -3575,6 +3588,17 @@ msgstr "Dernière exécution"
 #: model_terms:ir.ui.view,arch_db:ocd_live.app
 msgid "Leave"
 msgstr "Quitter"
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.app
+msgid "Leave the booking"
+msgstr "Quitter la réservation"
+
+#. module: ocd_live
+#. odoo-javascript
+#: code:addons/ocd_live/static/src/interactions/flow_close.js:0
+msgid "Leave the booking? What you typed will be lost."
+msgstr "Quitter la réservation ? Ce que tu as écrit sera perdu."
 
 #. module: ocd_live
 #. odoo-python
@@ -5069,6 +5093,7 @@ msgstr "Pack 4"
 #. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/controllers/booking.py:0
+#: code:addons/ocd_live/controllers/common.py:0
 #: code:addons/ocd_live/controllers/vendor_space.py:0
 #: code:addons/ocd_live/models/ocd_live_planning.py:0
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__product_id
@@ -5236,6 +5261,7 @@ msgstr "Le paiement en ligne n'est pas encore ouvert dans ton pays : %s."
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
 #: code:addons/ocd_live/models/ocd_live_planning.py:0
 #: model:ocd.voice.prompt,name:ocd_live.voice_prompt_pay
 msgid "Payment"
@@ -8371,6 +8397,12 @@ msgstr "Ton contact"
 #: model_terms:ir.ui.view,arch_db:ocd_live.send_link
 msgid "Your country"
 msgstr "Ton pays"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/common.py:0
+msgid "Your details"
+msgstr "Tes infos"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.join

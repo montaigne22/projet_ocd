@@ -15,6 +15,13 @@ class IrHttp(models.AbstractModel):
     _inherit = "ir.http"
 
     @classmethod
+    def _get_translation_frontend_modules_name(cls):
+        """The texts of the scripts of the pages of OCD Live (« Pause the video », « Leave the
+        booking? »...) in the language of the visitor: the website sends only the translations
+        of the modules of this list to its pages."""
+        return [*super()._get_translation_frontend_modules_name(), "ocd_live"]
+
+    @classmethod
     def _dispatch(cls, endpoint):
         """The public pages whose route asks for it are kept in memory a few seconds (see
         ocd_live.page_cache)."""

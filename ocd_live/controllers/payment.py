@@ -87,6 +87,11 @@ class OcdLivePayment(http.Controller):
             back=self._back(order, booking),
             step=5 if booking else False,
             step_label=env._("Step %(step)s of %(total)s", step=5, total=5),
+            # The last step of a booking: its name, the way out and the help of the team (unless
+            # the page already offers to write to the team to pay)
+            step_name=common.step_name(None, 5) if booking else False,
+            close_url="/ocd" if booking else False,
+            flow_help=bool(booking) and not values.get("help_whatsapp") and common.booking_help(),
             summary=False,
             **values,
         ))

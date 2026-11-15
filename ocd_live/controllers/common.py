@@ -443,12 +443,39 @@ def local_digits(country, phone):
     return countries.local_digits(country, phone)
 
 
+def _step_order(flow):
+    """The pages of the booking flow in their order (5 steps)."""
+    if flow == "package_first":
+        return ["package", "day", "hour", "infos", "pay"]
+    return ["day", "hour", "package", "infos", "pay"]
+
+
 def steps(flow, page):
     """Return the number of the step of `page` in the booking flow (5 steps)."""
-    order = ["day", "hour", "package", "infos", "pay"]
-    if flow == "package_first":
-        order = ["package", "day", "hour", "infos", "pay"]
-    return order.index(page) + 1
+    return _step_order(flow).index(page) + 1
+
+
+def step_name(flow, step):
+    """The name of the step number `step` of the booking flow, shown beside the bar of the steps
+    ("2/5 · Hour"), or False."""
+    order = _step_order(flow)
+    if not step or not 1 <= step <= len(order):
+        return False
+    env = request.env
+    return {
+        "day": env._("Day"),
+        "hour": env._("Hour"),
+        "package": env._("Package"),
+        "infos": env._("Your details"),
+        "pay": env._("Payment"),
+    }[order[step - 1]]
+
+
+def booking_help():
+    """Link to write to the team on WhatsApp from a step of a booking, the page in the message
+    (the team sees where the vendor is), or False when the company has no phone."""
+    text = request.env._("Hello OCD Live, I need help to book a live.")
+    return tools.whatsapp_url(company().phone, f"{text}\n{request.httprequest.url}")
 
 
 def day_text(day, pattern="EEEE d MMMM", capital=False):

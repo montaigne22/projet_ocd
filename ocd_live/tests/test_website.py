@@ -1,6 +1,7 @@
 import re
 from datetime import timedelta
 from unittest.mock import patch
+from urllib.parse import unquote
 
 from freezegun import freeze_time
 
@@ -75,6 +76,46 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertNofollow(packages, f"/reserver/studio/{self.day.isoformat()}/0830/{self.discovery.id}")
         infos = self.url_open(f"/reserver/studio/{self.day.isoformat()}/0830/{self.discovery.id}").text
         self.assertIn('<meta name="robots" content="noindex, nofollow"/>', infos)
+
+    def test_booking_steps_on_the_phone(self):
+        """On the phone the menu gives way to the steps of a booking: each step says its number
+        and its name, offers a way out (the cross, to the home page) and the help of the team on
+        WhatsApp, the page in the message. The home page keeps its menu."""
+        self.company.phone = "+228 90 00 00 00"
+
+        def flow_close(html):
+            tags = re.findall(r'<a\b[^>]*\bo_ocd_flow_close\b[^>]*>', html)
+            return tags[0] if tags else ""
+
+        def help_text(html):
+            links = re.findall(r'href="https://wa\.me/22890000000\?text=([^"]+)"', html)
+            return [unquote(link) for link in links]
+
+        hours_url = f"/reserver/studio/{self.day.isoformat()}"
+        hours = self.url_open(hours_url).text
+        self.assertIn(">2/5 · Hour<", hours)
+        self.assertIn('aria-label="Step 2 of 5 · Hour"', hours)
+        self.assertIn('href="/ocd"', flow_close(hours))
+        [message] = help_text(hours)
+        self.assertIn("I need help to book a live.", message)
+        self.assertIn(hours_url, message, "The team sees where the vendor is")
+        infos = self.url_open(f"{hours_url}/0830/{self.discovery.id}").text
+        self.assertIn(">4/5 · Your details<", infos)
+        self.assertTrue(flow_close(infos))
+        # The page « Book » keeps its menu: no cross, no help of a step
+        home = self.url_open("/reserver").text
+        self.assertFalse(flow_close(home))
+        self.assertNotIn("o_ocd_flow_help", home)
+        # The last step: the payment, one way to write to the team
+        self.authenticate(None, None)
+        response = self.url_open("/reserver/confirmer", data=self._confirm_form(), allow_redirects=False)
+        pay = self.url_open(response.headers["Location"]).text
+        self.assertIn(">5/5 · Payment<", pay)
+        self.assertIn('href="/ocd"', flow_close(pay))
+        self.assertEqual(len(help_text(pay)), 1)
+        # Without the phone of the team, no help link
+        self.company.phone = False
+        self.assertNotIn("o_ocd_flow_help", self.url_open(hours_url).text)
 
     def test_booking_pages_package_first(self):
         self.company.ocd_booking_flow = "package_first"

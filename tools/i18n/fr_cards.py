@@ -437,3 +437,12 @@ SPEED = {
     "The public pages (feed of the lives, page of a live, boutiques, products) are built once, then given to the next visitors for a few seconds.":
         "Les pages publiques (fil des lives, page d'un live, boutiques, produits) sont construites une fois, puis données aux visiteurs suivants pendant quelques secondes.",
 }
+
+# === Steps of a booking on the phone: where the vendor is, the way out, the help (ocd_live) === #
+SPEED.update({
+    "Your details": "Tes infos",
+    "Leave the booking": "Quitter la réservation",
+    "Leave the booking? What you typed will be lost.": "Quitter la réservation ? Ce que tu as écrit sera perdu.",
+    "<span>A question? Write to us on WhatsApp</span>": "<span>Une question ? Écris-nous sur WhatsApp</span>",
+    "Hello OCD Live, I need help to book a live.": "Bonjour OCD Live, j'ai besoin d'aide pour réserver un live.",
+})

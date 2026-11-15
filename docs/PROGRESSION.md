@@ -96,6 +96,21 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
 
 ## Journal
 
+### 15 novembre 2026 — Les étapes d'une réservation sur le téléphone : où l'on est, la sortie, l'aide
+- Sur le téléphone, le menu laisse la place aux étapes de la réservation (parcours fermé : moins de
+  distractions, la place pour le résumé et le bouton). Trois manques comblés :
+  - **où l'on est** : le nom de l'étape sous la barre, « 2/5 · Heure » (Jour, Heure, Paquet, Tes infos,
+    Paiement), aussi lu par les lecteurs d'écran ;
+  - **une sortie** : une croix en haut à droite ramène à l'accueil ; un formulaire déjà rempli demande
+    « Quitter la réservation ? Ce que tu as écrit sera perdu. » avant de partir (sur tablette et
+    ordinateur, le logo et le menu restent, sans croix) ;
+  - **l'aide** : « Une question ? Écris-nous sur WhatsApp » à chaque étape, paiement compris (sauf quand
+    la page propose déjà d'écrire à l'équipe), avec un message prêt et l'adresse de la page, pour que
+    l'équipe voie où en est le vendeur. Pas de lien sans le téléphone de l'entreprise.
+- Les textes des scripts d'`ocd_live` sur le site (« Pause the video »…) restaient en anglais : le site
+  n'envoyait pas leurs traductions à ses pages. Corrigé (`ir.http`). Vérifié avec un navigateur de
+  téléphone, en français.
+
 ### 15 novembre 2026 — Les robots hors du calendrier des réservations
 - Un robot parcourait une à une les étapes de réservation de la préproduction (chaque mois, jour, heure
   et formule, en chaque langue : des milliers de formulaires, 32 requêtes et ~0,2 s chacun, jamais gardés

@@ -162,6 +162,49 @@ body.o_ocd_body {
         }
     }
 }
+// The bar of the steps and, under it, where the vendor is: "2/5 · Hour"
+.o_ocd_stepbox {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    .o_ocd_steps {
+        flex: none;
+    }
+}
+.o_ocd_step_text {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: $ocd-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+// The way out of a booking, on the phone (the logo and the menu take its place on larger screens)
+.o_ocd_flow_close {
+    flex: none;
+}
+// The help of the team during a booking, under the content of the step
+.o_ocd_flow_help {
+    padding: 0 18px 24px;
+}
+.o_ocd_flow_help_link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 700;
+    color: $ocd-ink !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    .o_ocd_icon {
+        width: 20px;
+        height: 20px;
+        color: $ocd-green;
+    }
+}
 .o_ocd_voice {
     margin-left: auto;
     display: flex;
@@ -2112,6 +2155,12 @@ body.o_ocd_body {
     }
     .o_ocd_top_flow .o_ocd_brandbox {
         display: flex;
+    }
+    .o_ocd_flow_close {
+        display: none;
+    }
+    .o_ocd_flow_help {
+        padding: 0 28px 32px;
     }
     .o_ocd_flowbar {
         order: 10;
