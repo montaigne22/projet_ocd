@@ -96,6 +96,17 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
 
 ## Journal
 
+### 15 novembre 2026 — Les robots hors du calendrier des réservations
+- Un robot parcourait une à une les étapes de réservation de la préproduction (chaque mois, jour, heure
+  et formule, en chaque langue : des milliers de formulaires, 32 requêtes et ~0,2 s chacun, jamais gardés
+  en mémoire), malgré le `noindex` de la plateforme : `noindex` empêche d'apparaître dans les résultats,
+  pas d'être visité.
+- `robots.txt` interdit `/reserver/` et `/*/reserver/` (la page « Réserver » reste ouverte) ; les étapes
+  portent `noindex, nofollow`, les liens du calendrier (mois, jours, heures, formules) `rel="nofollow"`.
+- À demander à la plateforme : `proxy_mode = True` et l'adresse réelle des visiteurs (`X-Forwarded-For`).
+  Odoo voit aujourd'hui tout le monde arriver de l'entrée de la plateforme (10.42.2.1) : impossible de
+  savoir qui est un robot, et le pays du visiteur ne peut pas venir de son adresse.
+
 ### 15 novembre 2026 — Test de charge refait pour 3 millions de visiteurs par jour
 - Coût de chaque page mesuré en processeur (Odoo et PostgreSQL), gardée en mémoire et construite, et le
   parcours refait : ~570 pages/s sur la machine de test, 95 % depuis la mémoire, aucune erreur jusqu'à 32

@@ -48,6 +48,34 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('name="phone"', response.text)
 
+    def assertNofollow(self, html, href):
+        """The link to `href` in `html` asks the robots not to follow it."""
+        links = re.findall(rf'<a\b[^>]*\bhref="{re.escape(href)}"[^>]*>', html)
+        self.assertTrue(links, f"No link to {href}")
+        for link in links:
+            self.assertIn('rel="nofollow"', link)
+
+    def test_booking_steps_out_of_reach_of_the_robots(self):
+        """The calendar of a booking (days, hours, packages, in each language) is thousands of
+        forms a robot would visit one by one: robots.txt keeps the robots out, the steps are
+        neither shown nor followed by the search engines; the page « Book » stays open."""
+        robots = self.url_open("/robots.txt").text
+        self.assertIn("Disallow: /reserver/\n", robots)
+        self.assertIn("Disallow: /*/reserver/\n", robots)
+        self.assertNotIn("Disallow: /reserver\n", robots)
+        home = self.url_open("/reserver").text
+        self.assertNotIn('content="noindex, nofollow"', home)
+        self.assertNofollow(home, "/reserver/studio")
+        month = self.url_open("/reserver/studio").text
+        self.assertIn('<meta name="robots" content="noindex, nofollow"/>', month)
+        self.assertNofollow(month, f"/reserver/studio/{self.day.isoformat()}")
+        hours = self.url_open(f"/reserver/studio/{self.day.isoformat()}").text
+        self.assertNofollow(hours, f"/reserver/studio/{self.day.isoformat()}/0830")
+        packages = self.url_open(f"/reserver/studio/{self.day.isoformat()}/0830").text
+        self.assertNofollow(packages, f"/reserver/studio/{self.day.isoformat()}/0830/{self.discovery.id}")
+        infos = self.url_open(f"/reserver/studio/{self.day.isoformat()}/0830/{self.discovery.id}").text
+        self.assertIn('<meta name="robots" content="noindex, nofollow"/>', infos)
+
     def test_booking_pages_package_first(self):
         self.company.ocd_booking_flow = "package_first"
         response = self.url_open("/reserver/remote")

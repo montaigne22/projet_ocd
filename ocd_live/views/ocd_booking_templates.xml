@@ -102,6 +102,18 @@
         </details>
     </template>
 
+    <template id="robots" inherit_id="website.robots" name="OCD Live: robots.txt">
+        <!-- The steps of a booking (a calendar of days, hours and packages, in each language):
+             forms of one visitor, thousands of addresses a robot would visit one by one. The
+             page « Book » itself (/reserver) stays open to the search engines. -->
+        <xpath expr="//t[@id='robots_module_rules']" position="inside">
+<t t-translation="off">
+Disallow: /reserver/
+Disallow: /*/reserver/
+</t>
+        </xpath>
+    </template>
+
     <template id="app" name="OCD Live: frame of the pages">
         <!-- Parameters: back (url of the back button) and back_label, header_share (url shared
              by the Share button), header_name (name of the page beside the logo), header_pill (button of
@@ -109,6 +121,9 @@
              booking steps), nav (item of the menu of the page), voice_key, voice_languages
              and voice_caption (voice of the page), summary (line at the bottom) -->
         <t t-set="head">
+            <!-- no_robots: the steps of a booking, forms that search engines must neither show
+                 nor follow (robots.txt keeps the robots out of /reserver/ besides) -->
+            <meta t-if="no_robots" name="robots" content="noindex, nofollow"/>
             <link rel="preconnect" href="https://fonts.googleapis.com"/>
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
             <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700;800&amp;display=swap"/>
@@ -333,7 +348,7 @@
                 <main class="o_ocd_main o_ocd_home">
                     <h1 class="o_ocd_h1">Sell live in front of all of Africa.</h1>
                     <div class="o_ocd_choices">
-                        <a href="/reserver/studio" class="o_ocd_choice">
+                        <a href="/reserver/studio" class="o_ocd_choice" rel="nofollow">
                             <t t-call="ocd_live.icon" icon.f="studio"/>
                             <span>
                                 <span class="o_ocd_choice_title">At the studio</span>
@@ -341,7 +356,7 @@
                             </span>
                             <span class="o_ocd_arrow"><t t-call="ocd_live.icon" icon.f="arrow"/></span>
                         </a>
-                        <a href="/reserver/remote" class="o_ocd_choice o_ocd_choice_dark">
+                        <a href="/reserver/remote" class="o_ocd_choice o_ocd_choice_dark" rel="nofollow">
                             <t t-call="ocd_live.icon" icon.f="remote"/>
                             <span>
                                 <span class="o_ocd_choice_title">From home</span>
@@ -386,14 +401,14 @@
                         <span>Your live can be moved until <t t-out="move_limit"/> hours before it starts.</span>
                     </div>
                     <div class="o_ocd_month">
-                        <a t-if="month['prev']" t-att-href="month['prev']" class="o_ocd_round" aria-label="Previous month">
+                        <a t-if="month['prev']" t-att-href="month['prev']" class="o_ocd_round" rel="nofollow" aria-label="Previous month">
                             <t t-call="ocd_live.icon" icon.f="prev"/>
                         </a>
                         <span t-else="" class="o_ocd_round o_ocd_round_off" aria-hidden="true">
                             <t t-call="ocd_live.icon" icon.f="prev"/>
                         </span>
                         <span class="o_ocd_month_title" t-out="month['title']"/>
-                        <a t-if="month['next']" t-att-href="month['next']" class="o_ocd_round" aria-label="Next month">
+                        <a t-if="month['next']" t-att-href="month['next']" class="o_ocd_round" rel="nofollow" aria-label="Next month">
                             <t t-call="ocd_live.icon" icon.f="next"/>
                         </a>
                         <span t-else="" class="o_ocd_round o_ocd_round_off" aria-hidden="true">
@@ -408,7 +423,7 @@
                     <div class="o_ocd_cal">
                         <t t-foreach="month['offset']" t-as="blank"><span/></t>
                         <t t-foreach="month['cells']" t-as="cell">
-                            <a t-if="cell['href']" t-att-href="cell['href']" class="o_ocd_day o_ocd_free" t-att-aria-label="cell['label']">
+                            <a t-if="cell['href']" t-att-href="cell['href']" class="o_ocd_day o_ocd_free" rel="nofollow" t-att-aria-label="cell['label']">
                                 <t t-out="cell['number']"/>
                                 <span t-if="cell['state'] == 'almost'" class="o_ocd_dot"/>
                             </a>
@@ -456,7 +471,7 @@
                                           t-out="slot['percent_text']"/>
                                 </button>
                             </form>
-                            <a t-elif="slot['href']" t-att-href="slot['href']" class="o_ocd_slot" t-att-aria-label="slot['aria']">
+                            <a t-elif="slot['href']" t-att-href="slot['href']" class="o_ocd_slot" rel="nofollow" t-att-aria-label="slot['aria']">
                                 <b t-out="slot['label']"/>
                                 <small t-if="slot.get('day_note')" t-out="slot['day_note']"/>
                                 <small>end <t t-out="slot['end_label']"/></small>
@@ -535,7 +550,7 @@
                     <p class="o_ocd_lead" t-out="lead"/>
                     <div class="o_ocd_packs">
                         <t t-foreach="cards" t-as="card">
-                            <a t-if="card['href']" t-att-href="card['href']" class="o_ocd_pack">
+                            <a t-if="card['href']" t-att-href="card['href']" class="o_ocd_pack" rel="nofollow">
                                 <t t-call="ocd_live.pack_body"/>
                             </a>
                             <div t-else="" class="o_ocd_pack o_ocd_disabled" aria-disabled="true">

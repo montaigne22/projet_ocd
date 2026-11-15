@@ -381,6 +381,8 @@ class OcdLiveBooking(http.Controller):
         return common.company().ocd_booking_flow
 
     def _render(self, template, voice_key, page_url=None, **values):
+        # A step of a booking: neither shown nor followed by the search engines (ocd_live.app)
+        values.setdefault("no_robots", True)
         values.setdefault("step_label", request.env._("Step %(step)s of %(total)s", step=values.get("step"), total=5))
         if page_url and request.httprequest.method == "POST":
             # Shown again after a form sent with an error (/reserver/confirmer, /reserver/attente):
