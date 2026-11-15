@@ -105,12 +105,12 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
   portent `noindex, nofollow`, les liens du calendrier (mois, jours, heures, formules) `rel="nofollow"`.
 - Le visiteur continue ensuite par rafales (jusqu'à ~9 pages/s, les deux workers de la préproduction
   occupés), en rejouant une liste d'adresses de la dernière étape, une nouvelle session à chaque vague :
-  il ne lit pas `robots.txt`. Pour un temps, chaque étape demandée écrit une ligne dans le journal
-  d'Odoo (`Booking step …, session …, address …, browser …`) : l'adresse transmise par l'entrée de la
-  plateforme et le navigateur (User-Agent), pour savoir qui c'est ; à enlever ensuite.
-- À demander à la plateforme : `proxy_mode = True` et l'adresse réelle des visiteurs (`X-Forwarded-For`).
-  Odoo voit aujourd'hui tout le monde arriver de l'entrée de la plateforme (10.42.2.1) : impossible de
-  savoir qui est un robot, et le pays du visiteur ne peut pas venir de son adresse.
+  il ne lit pas `robots.txt`. Une ligne de journal (adresse et navigateur de chaque étape demandée) a
+  servi le temps que la plateforme transmette l'adresse réelle des visiteurs, puis a été retirée.
+- La plateforme a corrigé `proxy_mode` : le journal d'Odoo montre l'adresse réelle des visiteurs (et non
+  plus celle de son entrée, 10.42.2.1). Reste à installer la base GeoIP (GeoLite2) sur le serveur : sans
+  elle, le pays du visiteur ne vient pas de son adresse (`geoip_country_code` vide), seulement du fuseau
+  horaire du téléphone à partir de la deuxième page.
 
 ### 15 novembre 2026 — Test de charge refait pour 3 millions de visiteurs par jour
 - Coût de chaque page mesuré en processeur (Odoo et PostgreSQL), gardée en mémoire et construite, et le
