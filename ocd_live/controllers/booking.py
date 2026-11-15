@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import date, timedelta
 
@@ -9,6 +10,8 @@ from odoo.tools import consteq, format_date
 from odoo.addons.ocd_live.models.ocd_live_price_rule import percent_text
 
 from . import common
+
+_logger = logging.getLogger(__name__)
 
 STUDIO_NEEDS = ("shelf", "rack", "table")
 MAX_HELD = 3
@@ -383,6 +386,16 @@ class OcdLiveBooking(http.Controller):
     def _render(self, template, voice_key, page_url=None, **values):
         # A step of a booking: neither shown nor followed by the search engines (ocd_live.app)
         values.setdefault("no_robots", True)
+        # For a while (15 November 2026): who asks the steps of the bookings, to recognise the
+        # robot that walks through them on the staging site (Odoo only sees the entrance of the
+        # platform as the address of the visitors)
+        httprequest = request.httprequest
+        _logger.info(
+            "Booking step %s, session %s, address %s, browser %s",
+            httprequest.path, (request.session.sid or "")[:8],
+            httprequest.headers.get("X-Forwarded-For") or httprequest.headers.get("X-Real-Ip") or httprequest.remote_addr,
+            httprequest.headers.get("User-Agent") or "-",
+        )
         values.setdefault("step_label", request.env._("Step %(step)s of %(total)s", step=values.get("step"), total=5))
         if page_url and request.httprequest.method == "POST":
             # Shown again after a form sent with an error (/reserver/confirmer, /reserver/attente):

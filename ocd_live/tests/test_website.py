@@ -73,8 +73,14 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertNofollow(hours, f"/reserver/studio/{self.day.isoformat()}/0830")
         packages = self.url_open(f"/reserver/studio/{self.day.isoformat()}/0830").text
         self.assertNofollow(packages, f"/reserver/studio/{self.day.isoformat()}/0830/{self.discovery.id}")
-        infos = self.url_open(f"/reserver/studio/{self.day.isoformat()}/0830/{self.discovery.id}").text
+        with self.assertLogs("odoo.addons.ocd_live.controllers.booking", "INFO") as logs:
+            infos = self.url_open(
+                f"/reserver/studio/{self.day.isoformat()}/0830/{self.discovery.id}",
+                headers={"User-Agent": "TestBot/1.0", "X-Forwarded-For": "203.0.113.7"},
+            ).text
         self.assertIn('<meta name="robots" content="noindex, nofollow"/>', infos)
+        # Who asks the steps: the address given by the entrance of the platform, the browser
+        self.assertIn("address 203.0.113.7, browser TestBot/1.0", logs.output[0])
 
     def test_booking_pages_package_first(self):
         self.company.ocd_booking_flow = "package_first"

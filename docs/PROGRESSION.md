@@ -103,6 +103,11 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
   pas d'être visité.
 - `robots.txt` interdit `/reserver/` et `/*/reserver/` (la page « Réserver » reste ouverte) ; les étapes
   portent `noindex, nofollow`, les liens du calendrier (mois, jours, heures, formules) `rel="nofollow"`.
+- Le visiteur continue ensuite par rafales (jusqu'à ~9 pages/s, les deux workers de la préproduction
+  occupés), en rejouant une liste d'adresses de la dernière étape, une nouvelle session à chaque vague :
+  il ne lit pas `robots.txt`. Pour un temps, chaque étape demandée écrit une ligne dans le journal
+  d'Odoo (`Booking step …, session …, address …, browser …`) : l'adresse transmise par l'entrée de la
+  plateforme et le navigateur (User-Agent), pour savoir qui c'est ; à enlever ensuite.
 - À demander à la plateforme : `proxy_mode = True` et l'adresse réelle des visiteurs (`X-Forwarded-For`).
   Odoo voit aujourd'hui tout le monde arriver de l'entrée de la plateforme (10.42.2.1) : impossible de
   savoir qui est un robot, et le pays du visiteur ne peut pas venir de son adresse.
