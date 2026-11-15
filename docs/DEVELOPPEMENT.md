@@ -173,6 +173,8 @@ sans session (par le CDN), ils sont `public`. Avec une adresse de CDN (Paramètr
 Odoo écrit vers le CDN les liens des fichiers du site (`/web/assets`), des images et des médias des
 cartes (filtres du site, ceux des cartes ajoutés) ; les sources et les affiches des vidéos des cartes
 passent par `website._ocd_cdn_url`. Les médias d'un vendeur pas encore validé restent privés.
+Demandés sans session, ils portent aussi `Access-Control-Allow-Origin: *` : les navigateurs ne prennent
+les polices des icônes sur l'adresse du CDN, pour une page du site, qu'avec cet en-tête.
 
 **Visites des boutiques pendant un live** (régie) : chaque worker les compte et les écrit ensemble toutes
 les 5 secondes, dans une transaction à part qui attend les autres au lieu d'échouer (READ COMMITTED).
@@ -199,10 +201,27 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
 - **Plusieurs serveurs d'Odoo** derrière un répartiteur : ils partagent la base et le dossier `data_dir`
   (pièces jointes et sessions, sur un disque partagé). La mémoire des pages est propre à chaque worker :
   rien à partager.
-- **CDN** (Cloudflare, Bunny, CloudFront…) : une zone `https://cdn.<domaine>` qui va chercher les fichiers
-  sur `https://<domaine>` et **respecte les en-têtes** du site (`Cache-Control`), puis son adresse dans
+- **CDN** (Cloudflare, Bunny, CloudFront…) : une adresse à part, `https://cdn.<domaine>`, qui va chercher
+  les fichiers sur le site et **respecte ses en-têtes** (`Cache-Control`), puis cette adresse dans
   Paramètres › Vitesse du site. Seuls les fichiers, les photos et les vidéos passent par le CDN, jamais
-  les pages.
+  les pages. Une adresse à part, parce que les téléphones n'y envoient pas leurs cookies : le CDN
+  reçoit les photos telles que tout le monde les voit. Avec **Cloudflare** (domaine géré par
+  Cloudflare) :
+  1. DNS : `cdn` en CNAME vers `<domaine>`, proxy activé (nuage orange) ; le site lui-même reste comme
+     il est ;
+  2. SSL/TLS : mode « Full (strict) », et le certificat du serveur couvre aussi `cdn.<domaine>`
+     (ex. `certbot --nginx -d <domaine> -d cdn.<domaine>`) ;
+  3. Caching › Cache Rules : « Hostname equals cdn.<domaine> » → *Eligible for cache*, Edge TTL
+     *Use cache-control header if present, bypass cache if not*, Browser TTL *Respect origin TTL*
+     (sans cette règle, Cloudflare ne garde pas les adresses sans extension : `/lives/video/6?v=…`,
+     `/web/image/…`) ;
+  4. nginx : `server_name <domaine> cdn.<domaine>;` ;
+  5. OCD Live › Paramètres › Vitesse du site › Adresse du CDN : `https://cdn.<domaine>`.
+
+  Vérifier : les fichiers des pages commencent par `https://cdn.<domaine>/`, et un fichier de
+  `/web/assets/` (adresse copiée du code source d'une page) passe de `MISS` à `HIT` au second appel
+  (`curl -sI <adresse> | grep -i cf-cache-status`). Les conditions de Cloudflare réservent la diffusion
+  de beaucoup de vidéos à ses offres payantes : à vérifier pour les vidéos des cartes.
 - **nginx** devant Odoo : `gzip on;` avec `gzip_types text/css application/javascript application/json
   image/svg+xml; gzip_proxied any;`, et `client_max_body_size 220m;` (vidéos des téléphones).
 - Mesurer avant d'ouvrir : [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md), outil

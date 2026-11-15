@@ -25,7 +25,9 @@ class IrHttp(models.AbstractModel):
         """A file, a photo or a video goes without cookies: a CDN keeps only the answers without
         cookies, and a visitor who opens one first needs no session for it. Asked without a
         session (by the CDN, or a first visit), it is what every visitor gets: the CDN may keep
-        it too (Odoo lets only the browser keep the photos)."""
+        it too (Odoo lets only the browser keep the photos), and the pages of the site may use
+        it from the address of the CDN (the browsers take the fonts of the icons from another
+        address only with Access-Control-Allow-Origin)."""
         if MEDIA_PATH.match(request.httprequest.path):
             if not request.session.is_dirty:
                 request.session.can_save = False
@@ -34,14 +36,10 @@ class IrHttp(models.AbstractModel):
             headers.remove("Set-Cookie")
             for cookie in kept:
                 headers.add("Set-Cookie", cookie)
-            cache_control = getattr(response, "cache_control", None)
-            if (
-                not request.httprequest.cookies.get("session_id")
-                and response.status_code == 200
-                and cache_control is not None
-                and cache_control.private
-                and (cache_control.max_age or 0) > 0
-            ):
-                cache_control.pop("private", None)
-                cache_control.public = True
+            if not request.httprequest.cookies.get("session_id") and hasattr(response, "cache_control"):
+                response.headers["Access-Control-Allow-Origin"] = "*"
+                cache_control = response.cache_control
+                if response.status_code == 200 and cache_control.private and (cache_control.max_age or 0) > 0:
+                    cache_control.pop("private", None)
+                    cache_control.public = True
         super()._post_dispatch(response)

@@ -96,6 +96,15 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
 
 ## Journal
 
+### 15 novembre 2026 — CDN : les polices des icônes, la marche à suivre avec Cloudflare
+- Servies depuis l'adresse du CDN pour une page du site, les polices des icônes auraient été refusées par
+  les navigateurs (une police ne se prend sur une autre adresse qu'avec `Access-Control-Allow-Origin`, qu'Odoo
+  n'envoie pas). Les fichiers, les photos et les vidéos demandés sans session portent maintenant cet
+  en-tête : aucune règle à ajouter chez le CDN. Vérifié avec un navigateur, le site pointant vers une
+  autre adresse : fichiers, photos, vidéos et polices chargés, aucune erreur.
+- La marche à suivre avec Cloudflare (DNS, certificat, règle de cache, nginx, Paramètres) est dans
+  [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md#mise-en-production-pour-le-grand-public).
+
 ### 15 novembre 2026 — tenir les foules d'un live : pages en mémoire, médias à part, rapport de charge
 - **Pages publiques gardées en mémoire** : le fil des lives, la page d'un live, les boutiques, le shop et
   les produits sont construits une fois, puis redonnés pendant 10 à 60 secondes aux visiteurs qui n'ont

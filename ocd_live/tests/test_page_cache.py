@@ -146,3 +146,13 @@ class TestPageCache(HttpCase):
         response = self.url_open(f"/lives/image/{self.vendor.id}")
         self.assertEqual(response.headers["Cache-Control"], "public, max-age=86400")
         self.assertEqual(self.vendor._ocd_card_media()["image"], f"/lives/image/{self.vendor.id}?v={version}")
+        self.assertNotIn("Access-Control-Allow-Origin", response.headers, "Same address: nothing to allow")
+        # Asked by the CDN (no session): the pages of the site may use it from the address of the
+        # CDN (the browsers ask it for the fonts of the icons)
+        self.opener.cookies.clear()
+        response = self.url_open(
+            f"/lives/image/{self.vendor.id}?v={version}", headers={"X-Odoo-Database": self.env.cr.dbname}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers.get("Access-Control-Allow-Origin"), "*")
+        self.assertNotIn("Set-Cookie", response.headers)
