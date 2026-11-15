@@ -3,7 +3,7 @@
 Modèle à remplir à chaque campagne de mesure : sur le serveur de préproduction, puis sur celui de
 production avant l'ouverture au grand public. Les parties 1 à 5 sont à remplir (les `…`) ; la partie 6
 donne les mesures de référence de la machine de test du 15 novembre 2026, faites avec le même outil
-(`tools/charge/charge.py`). Le fonctionnement et les réglages du serveur sont dans
+(`tools/charge/charge.py`) ; la partie 7, ce qu'il faut pour 3 millions de visiteurs par jour. Le fonctionnement et les réglages du serveur sont dans
 [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md#grand-public--tenir-les-foules-dun-live).
 
 ## 1. Ce qu'on veut prouver
@@ -159,7 +159,105 @@ Les vrais serveurs (cœurs, réseau), la distance jusqu'aux téléphones en Afri
 que les pages posent seules (nouveaux lives chaque minute, produit à l'écran toutes les 20 s) et les
 achats (panier, paiement), qui ne viennent jamais de la mémoire : c'est l'objet des parties 1 à 5.
 
-## 7. Commandes
+## 7. 3 millions de visiteurs par jour (15 novembre 2026, après le CDN)
+
+### Ce qu'il faut tenir
+
+3 millions de visiteurs × 5 pages = 15 millions de pages par jour ; à la pointe d'un live (10 fois la
+moyenne), **~1 740 pages/s**. S'y ajoutent les questions que les pages à l'écran posent seules, que la
+partie 1 ne comptait pas : ~2 600/s si le fil reste une minute à l'écran (une question « nouveaux lives »,
+une demande des cartes suivantes) et une boutique trois minutes pendant un live (une question « produit à
+l'écran » toutes les 20 s). Elles sont plus nombreuses que les pages, mais légères.
+
+### Ce que coûte chaque page
+
+Machine de test (4 cœurs, 16 Go, Odoo 20 avec 4 workers, PostgreSQL 16, base de démo), ApacheBench
+16 à la fois, un nouveau visiteur à chaque page ; processeur d'Odoo et de PostgreSQL par page, relevé dans
+`/proc` (Odoo + PostgreSQL). Ce coût sert au calcul : il dépend moins que les pages par seconde de ce qui
+tourne à côté.
+
+| Page | Depuis la mémoire | Construite pour le visiteur |
+|---|---|---|
+| Fil des lives | 1 280 pages/s, 3,0 ms (2,4 + 0,6) | 76 pages/s, 51 ms (42 + 9) |
+| Page d'un live | 1 283 pages/s, 2,9 ms | 250 pages/s, 16 ms (13 + 3) |
+| Shop | 1 235 pages/s, 3,1 ms | 63 pages/s, 62 ms (49 + 13) |
+| **Page d'un produit** | 541 pages/s, 7,2 ms | **31 pages/s, 124 ms (97 + 27)** |
+| Boutique d'un vendeur | 777 pages/s, 5,0 ms | 84 pages/s, 46 ms (38 + 8) |
+| Réservation (`/reserver/studio`, jamais gardée) | — | 146 pages/s, 27 ms |
+| Question « nouveaux lives » (jamais gardée) | — | 1 427/s, 2,7 ms |
+| Question « cartes suivantes » | 1 397/s, 2,7 ms | 58/s, 67 ms (51 + 16) |
+| Question « produit à l'écran » | 1 348/s, 2,8 ms | 671/s, 5,8 ms |
+
+Les pages gardées en mémoire vont plus vite que dans le tableau du matin (partie 6) sur la même machine :
+la base de démo a été refaite, la cause n'a pas été cherchée plus loin.
+
+### Le parcours (`charge.py`)
+
+| | Pages/s | Médiane | p95 | p99 | Erreurs | Depuis la mémoire | Processeur par page |
+|---|---|---|---|---|---|---|---|
+| 8 visiteurs à la fois | 544 | 12 ms | 33 ms | 43 ms | 0 % | 95 % | 7,3 ms |
+| 32 visiteurs à la fois | 561 à 589 | 48 ms | 96 ms | 112 ms | 0 % | 95 % | 6,6 ms |
+| 64 visiteurs à la fois | 565 | 53 ms | 180 ms | 1 132 ms | 0,01 % | 95 % | 6,7 ms |
+| 32 nouveaux visiteurs à la fois | 282 | 77 ms | 184 ms | 372 ms | 0 % | 95 % | 7,4 ms |
+| 32 à la fois, toute la démo (40 adresses), 4 workers | 563 | 53 ms | 89 ms | 116 ms | 0 % | 93 % | 6,6 ms |
+| La même chose avec 16 workers | 372 | 63 ms | 241 ms | 413 ms | 0 % | **88 %** | **10,3 ms** |
+
+La machine plafonne vers 570 pages/s (l'outil lui prend des cœurs) ; à 64 visiteurs, les premières
+erreurs. Pour les nouveaux visiteurs, c'est l'outil qui limite : le serveur dépense autant par page.
+**Les deux dernières lignes montrent la limite de la mémoire des pages** : chaque worker garde sa propre
+copie, donc plus il y a de workers, plus chaque page est construite souvent (une page demandée r fois par
+seconde, gardée T secondes, sur W workers, est construite r / (1 + r·T/W) fois par seconde).
+
+### Le calcul (`tools/charge/dimensionnement.py`)
+
+Il part des coûts ci-dessus, d'une audience (part des pages, adresses différentes, 10 couples langue ×
+pays) et cherche l'équilibre entre workers et cœurs (deux workers par cœur, processeurs à 70 %). Il
+retrouve la part des pages données depuis la mémoire du parcours (95, 94 et 88 % pour 95, 93 et 88 %
+mesurés) et compte les cœurs avec 15 % de plus, l'écart avec le processeur mesuré.
+
+| Pointe d'un live (1 740 pages/s et 2 600 questions/s) | Depuis la mémoire | Cœurs d'Odoo | Cœurs de PostgreSQL |
+|---|---|---|---|
+| Code d'aujourd'hui, catalogue de la démo (le meilleur cas) | 58 % | 44 | 12 |
+| **Code d'aujourd'hui, vrai catalogue** (20 lives à la fois, 300 boutiques, 6 000 produits) | 29 % | **129** (~260 workers) | **35** |
+| Mémoire des pages commune à tous les workers, vrai catalogue | 77 % | 50 | 13 |
+| Et page d'un produit 3 fois moins chère, gardée 5 minutes | 79 % | 28 | 7 |
+| Pour comparer : 1 million par jour, code d'aujourd'hui, vrai catalogue | 29 % | 43 | 12 |
+
+Avec un vrai catalogue, **la page d'un produit fait 43 % du processeur** : ses adresses sont nombreuses
+(chaque produit, en chaque langue et pays) et chacun des ~260 workers la construit pour lui-même.
+
+### Ce qu'on en tire
+
+1. **Le code d'aujourd'hui tient 3 millions de visiteurs par jour avec ~130 cœurs pour Odoo** (par exemple
+   8 serveurs de 16 cœurs, ~260 workers, ~45 Go de mémoire à 173 Mo par worker) et **un PostgreSQL de 32 à
+   40 cœurs**. C'est possible, mais cher, et la base devient la pièce la plus difficile à agrandir.
+2. **Le levier le plus fort : une mémoire des pages commune à tous les workers** (par exemple Redis),
+   au lieu d'une par worker : 50 cœurs au lieu de 129. Cela revient sur la décision « aucun logiciel de
+   plus » ([`DECISIONS.md`](DECISIONS.md#grand-public)) : à décider avant d'aller au-delà d'un million de
+   visiteurs par jour.
+3. **La page d'un produit** : 124 ms de processeur à construire, la page la plus chère. La rendre moins
+   chère, et la garder plus longtemps (un produit change rarement), descend à 28 cœurs avec le point 2.
+4. **Compresser les pages** : la plateforme envoie les pages sans compression (`/lives` : 50 Ko, 5 Ko
+   compressée). À la pointe, ~700 Mbit/s sortent du serveur au lieu de ~90. À activer sur la plateforme,
+   ou en passant le site lui-même par Cloudflare (sans garder les pages).
+5. **PostgreSQL** : chaque worker ouvre ses connexions : `max_connections` au moins deux fois le nombre de
+   workers, ou PgBouncer devant la base.
+6. **Le CDN** : un nouveau téléphone télécharge ~1,5 Mo (mesuré sur le site : 950 Ko pour le fil, 570 Ko
+   pour le shop), un téléphone qui revient presque rien. 3 millions de visiteurs, c'est **~4,5 To par jour
+   (~135 To par mois, ~4 Gbit/s à la pointe)**, sans les vidéos des cartes (720 px, 30 s : 2 à 3 Mo
+   chacune, estimé). Bien au-delà de ce que l'offre gratuite de Cloudflare accepte pour des vidéos : un
+   CDN payé au volume, à chiffrer.
+
+### Ce que ce calcul ne dit pas
+
+L'audience est supposée (catalogue, temps passé sur les pages, pointe de 10 fois la moyenne) : refaire le
+calcul avec les chiffres d'un vrai soir (`python3 tools/charge/dimensionnement.py --help`). Ne sont pas
+mesurés : les achats (panier, paiement), le back-office de l'équipe, les actions planifiées, le réseau
+jusqu'en Afrique, et la plateforme qui héberge le site (son entrée est partagée avec d'autres sites).
+**La preuve reste à faire sur les vrais serveurs** (parties 1 à 5), avec des machines de test près des
+visiteurs, et en prévenant la plateforme avant.
+
+## 8. Commandes
 
 ```bash
 # Un palier : 200 visiteurs pendant 5 minutes, 8 processus (machine de 8 cœurs)
@@ -170,4 +268,8 @@ python3 tools/charge/charge.py 200 300 --processes 8 --nouveaux --base https://p
 
 # Une seule page, avec ApacheBench (apt-get install apache2-utils)
 ab -n 5000 -c 50 https://preprod.example.com/lives
+
+# Les cœurs pour 3 millions de visiteurs par jour, puis avec une mémoire des pages commune aux workers
+python3 tools/charge/dimensionnement.py 3000000
+python3 tools/charge/dimensionnement.py 3000000 --partagee
 ```

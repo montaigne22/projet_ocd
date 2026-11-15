@@ -96,6 +96,17 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
 
 ## Journal
 
+### 15 novembre 2026 — Test de charge refait pour 3 millions de visiteurs par jour
+- Coût de chaque page mesuré en processeur (Odoo et PostgreSQL), gardée en mémoire et construite, et le
+  parcours refait : ~570 pages/s sur la machine de test, 95 % depuis la mémoire, aucune erreur jusqu'à 32
+  visiteurs à la fois. Détail dans [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md#7-3-millions-de-visiteurs-par-jour-15-novembre-2026-après-le-cdn).
+- Ce que ça dit : chaque worker garde sa propre copie des pages ; avec un vrai catalogue et ~260 workers,
+  29 % des pages viennent de la mémoire et la pointe d'un live demande ~130 cœurs pour Odoo et ~35 pour
+  PostgreSQL. Une mémoire commune aux workers descend à ~50 cœurs ; la page d'un produit (124 ms à
+  construire) est la plus chère. La plateforme envoie les pages sans compression.
+- Nouvel outil `tools/charge/dimensionnement.py` : les cœurs pour N visiteurs par jour, à refaire avec
+  les chiffres d'un vrai soir.
+
 ### 15 novembre 2026 — CDN en place : le type des vidéos des cartes, des exemples qui ne visent personne
 - Le CDN tourne (Cloudflare devant `ocd.my.rollbackk.app`, sur une adresse à part) : vérifié avec un
   navigateur de téléphone, les fichiers, les polices, les photos et la vidéo d'une carte viennent du CDN,
