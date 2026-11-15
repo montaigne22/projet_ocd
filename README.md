@@ -35,6 +35,8 @@ Le dépôt contient tous les modules nécessaires. `disable_odoo_online` (OCA, n
 - [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md) : les outils d'Odoo et ce qu'ils font pour OCD Live.
 - [`docs/LIVRAISONS.md`](docs/LIVRAISONS.md) : les frais de livraison (un prix par colis), la mise en
   route des tarifs avant l'ouverture, les questions fréquentes.
+- [`docs/RAPPORT_DE_CHARGE.md`](docs/RAPPORT_DE_CHARGE.md) : prouver que le site tient le grand public
+  (objectifs, méthode, rapport à remplir, mesures de référence).
 - [`prototype/`](prototype/) : le design validé (tous les écrans) et le prototype interactif.
 - [`docs/captures/`](docs/captures/) : captures des écrans tels qu'ils sont aujourd'hui.
 

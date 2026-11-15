@@ -28,7 +28,9 @@ class OcdLiveBooking(http.Controller):
 
     # === HOME === #
 
-    @http.route(["/ocd", "/reserver"], type="http", auth="public", website=True, sitemap=True, methods=["GET"])
+    @http.route(
+        ["/ocd", "/reserver"], type="http", auth="public", website=True, sitemap=True, methods=["GET"], ocd_cache=30,
+    )
     def home(self, **kwargs):
         listings, counts = common.live_counts()
         return request.render("ocd_live.home", common.page_values(

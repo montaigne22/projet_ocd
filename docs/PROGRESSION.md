@@ -2,7 +2,7 @@
 
 Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 
-## Où en est le projet (12 novembre 2026)
+## Où en est le projet (15 novembre 2026)
 
 | Domaine | État |
 |---|---|
@@ -41,6 +41,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements) | ✅ fait, testé |
 | Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
+| Grand public : pages publiques gardées en mémoire quelques secondes, photos et vidéos par un CDN, questions répétées des pages réduites ; modèle de rapport de charge ([`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md)) | ✅ fait, testé (à mesurer sur les vrais serveurs) |
 
 Derniers tests lancés (12 novembre 2026, base neuve, tous les modules OCD sauf la démo, avec
 `ocd_debranding`, plus les tests de `whatsapp_cloud` et `whatsapp_cloud_sale`) : **354 tests, un seul
@@ -53,6 +54,9 @@ paramètres, aucun WhatsApp ne part vers ses contacts, puis elle se désinstalle
 Devises par pays et paiements de démo CamPay (12 novembre) : tests d'OCD sur la base de test, 286 sans
 échec ; sur une base avec CamPay, 63 tests (CamPay, devises, paramètres, frais de livraison) sans échec ;
 démo, 15 tests sans échec (devises de Brenda, Kadi et Awa comprises).
+Pages en mémoire, médias à part (15 novembre) : tous les tests d'OCD sauf la démo, avec WhatsApp et
+CamPay, **391 sans échec** (dont 9 nouveaux pour la mémoire des pages, 3 pour la boutique, le shop et
+les paramètres) ; démo, 17 sans échec.
 
 ## Reste à faire, par priorité
 
@@ -91,6 +95,29 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 15 novembre 2026 — tenir les foules d'un live : pages en mémoire, médias à part, rapport de charge
+- **Pages publiques gardées en mémoire** : le fil des lives, la page d'un live, les boutiques, le shop et
+  les produits sont construits une fois, puis redonnés pendant 10 à 60 secondes aux visiteurs qui n'ont
+  encore rien à eux sur le site (pas connectés, sans vendeur ni livreur sur leur téléphone, sans panier).
+  Le jeton des formulaires est remis pour chaque visiteur ; les liens venus de Facebook ou TikTok
+  (`fbclid`, `utm_…`) reçoivent la même page. Réglable : Paramètres › Vitesse du site. Mesuré sur la
+  machine de test : de 23 à 76 pages par seconde selon la page à 250 à 500, réponse médiane de 200 à
+  700 ms à 30 à 60 ms ; le parcours complet passe de ~45 à ~300 pages par seconde.
+- **Questions répétées** : une page cachée (autre appli, autre onglet) ne demande plus les nouveaux
+  lives, le produit à l'écran ou l'état d'un paiement : elle le fait dès qu'on revient. Les nouveaux lives
+  et le produit à l'écran sont lus une fois pour tous les visiteurs.
+- **Médias servis à part** : photos et vidéos des cartes, photos des produits avec leur version dans
+  l'adresse, gardées un an par les téléphones et par le CDN, sans cookie ; adresse du CDN dans
+  Paramètres › Vitesse du site (Odoo y envoie aussi ses propres fichiers). Capture :
+  `backoffice-12d-parametres-vitesse.png`.
+- **Visites d'une boutique pendant un live** : écrites toutes les 5 secondes par chaque serveur. Avant, en
+  pointe, chaque visite attendait les autres (60 conflits pour 2 000 visites, 10 pages en erreur) ;
+  maintenant aucun, et 172 pages par seconde au lieu de 45.
+- **Modèle de rapport de charge** ([`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md)) : objectifs (600 pages
+  par seconde en pointe pour 1 million de visiteurs par jour, 1 800 pour 3 millions), méthode, tableaux à
+  remplir sur la préproduction et la production, mesures de référence ; outil `tools/charge/charge.py`.
+  Réglages des serveurs pour le grand public dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md).
 
 ### 13 novembre 2026 — le lien partagé d'un live ouvre ce live
 - **Avant** : l'image et le message « Je passe en live » donnaient `domaine/lives/cm` (la boutique du vendeur

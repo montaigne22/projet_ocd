@@ -1,3 +1,5 @@
+import re
+
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import format_amount, formatLang
@@ -104,7 +106,10 @@ class OcdLiveSettings(models.AbstractModel):
     def _ocd_sections(self):
         """Sections of the page: [{"key", "sequence", "icon", "label", "title", "items"}].
         Extended by the other modules of OCD Live."""
-        return [self._ocd_section_lives(), self._ocd_section_directory(), self._ocd_section_currencies()]
+        return [
+            self._ocd_section_lives(), self._ocd_section_directory(), self._ocd_section_currencies(),
+            self._ocd_section_speed(),
+        ]
 
     @api.model
     def _ocd_item(self, kind, key, title, help="", **extra):  # noqa: A002
@@ -270,6 +275,50 @@ class OcdLiveSettings(models.AbstractModel):
             "items": items,
         }
 
+    @api.model
+    def _ocd_section_speed(self):
+        """What lets the website hold the crowds of a live: the public pages kept in memory a few
+        seconds (ocd_live.page_cache), the files, the photos and the videos sent by a CDN."""
+        _ = self.env._
+        item = self._ocd_item
+        return {
+            "key": "speed",
+            "sequence": 90,
+            "icon": "VS",
+            "label": _("Speed of the website"),
+            "title": _("Speed of the website"),
+            "items": [
+                item("check", "ocd_page_cache", _("Public pages kept in memory"),
+                     _("The feed of the lives, the page of a live, the boutiques and the products are built once, "
+                       "then given to the next visitors for 10 to 60 seconds: the website holds the crowds of a live. "
+                       "The vendors, the couriers, the team and the customers with a cart always get their pages "
+                       "up to date."),
+                     get="_ocd_get_page_cache", set="_ocd_set_page_cache",
+                     warn_off=_("Every page is built for each visitor: the website holds far fewer visitors.")),
+                item("text", "ocd_cdn_url", _("Address of the CDN"),
+                     _("The files of the website, the photos and the videos leave from the CDN, e.g. "
+                       "https://cdn.ocdlive.com: the server only builds the pages. Empty: everything leaves from "
+                       "the server."),
+                     get="_ocd_get_cdn_url", set="_ocd_set_cdn_url", size=200, width=460, span=2),
+            ],
+        }
+
+    def _ocd_websites(self):
+        return self.env["website"].sudo().search([("company_id", "=", self.env.company.id)])
+
+    def _ocd_get_page_cache(self):
+        return all(self._ocd_websites().mapped("ocd_page_cache"))
+
+    def _ocd_set_page_cache(self, value):
+        self._ocd_websites().write({"ocd_page_cache": value})
+
+    def _ocd_get_cdn_url(self):
+        website = self._ocd_websites()[:1]
+        return (website.cdn_url or "") if website.cdn_activated else ""
+
+    def _ocd_set_cdn_url(self, url):
+        self._ocd_websites()._ocd_set_cdn(url.rstrip("/"))
+
     def _ocd_currencies_setup_button(self):
         self.env["ocd.live.currencies"]._ocd_setup()
         return {
@@ -434,6 +483,9 @@ class OcdLiveSettings(models.AbstractModel):
             errors["ocd_slots_per_day"] = self.env._("The last live would end after midnight.")
         if not any(values[fname] for fname in OPEN_DAY_FIELDS):
             errors["ocd_open_mon"] = self.env._("Open the studio at least one day.")
+        cdn = values.get("ocd_cdn_url") or ""
+        if cdn and not re.fullmatch(r"https://[\w.-]+(:\d+)?/?", cdn):
+            errors["ocd_cdn_url"] = self.env._("Type the address of the CDN only, beginning with https://.")
         return errors
 
     @api.model

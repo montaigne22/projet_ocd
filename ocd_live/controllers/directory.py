@@ -13,7 +13,10 @@ class OcdLiveDirectory(http.Controller):
 
     # === LIVES OF THE MOMENT === #
 
-    @http.route("/lives", type="http", auth="public", website=True, sitemap=True, methods=["GET"])
+    @http.route(
+        "/lives", type="http", auth="public", website=True, sitemap=True, methods=["GET"],
+        ocd_cache=20, ocd_cache_params=("pays", "page"),
+    )
     def directory(self, note=None, error=None, pays=None, page=None, **kwargs):
         """The feed of the lives: the country of the person first, then the other countries.
         `pays` puts another country first; `page` gives the next cards without JavaScript."""
@@ -46,7 +49,9 @@ class OcdLiveDirectory(http.Controller):
             "dial_rows": common.dial_rows(vendor.country_id if vendor else common.default_country()),
         }
 
-    @http.route("/lives/flux", type="jsonrpc", auth="public", website=True)
+    @http.route(
+        "/lives/flux", type="jsonrpc", auth="public", website=True, ocd_cache=20, ocd_cache_params=("offset", "pays"),
+    )
     def directory_feed(self, offset=0, pays=None):
         """The next cards of the feed, while the person scrolls."""
         first = feed.first_country(pays)
@@ -66,7 +71,7 @@ class OcdLiveDirectory(http.Controller):
         """The picture of an approved vendor, for its cards in the feed."""
         vendor = self._card_vendor(partner_id, "image_1920")
         stream = request.env["ir.binary"]._get_image_stream_from(vendor, "image_512")
-        return stream.get_response(max_age=86400)
+        return self._card_media_response(vendor, stream)
 
     def _card_vendor(self, partner_id, field):
         """The vendor whose media `field` is asked: everyone sees the ones of an approved vendor;
@@ -80,11 +85,19 @@ class OcdLiveDirectory(http.Controller):
             raise request.not_found()
         return vendor
 
+    def _card_media_response(self, vendor, stream, **kwargs):
+        """The media of a card: kept by the browsers and by the CDN in front of the site once the
+        team approved the vendor (a year with the version of its address), by the browser of
+        the vendor and of the team only before."""
+        return common.media_response(
+            stream, public=vendor.ocd_vendor_state == "approved", version=vendor._ocd_card_version(), **kwargs
+        )
+
     @http.route("/lives/carte/<int:partner_id>", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
     def directory_card_image(self, partner_id, **kwargs):
         """The image chosen for the card of an approved vendor in the feed."""
         vendor = self._card_vendor(partner_id, "ocd_card_image")
-        return request.env["ir.binary"]._get_image_stream_from(vendor, "ocd_card_image").get_response(max_age=86400)
+        return self._card_media_response(vendor, request.env["ir.binary"]._get_image_stream_from(vendor, "ocd_card_image"))
 
     @http.route("/lives/video/<int:partner_id>", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
     def directory_card_video(self, partner_id, **kwargs):
@@ -92,13 +105,14 @@ class OcdLiveDirectory(http.Controller):
         vendor = self._card_vendor(partner_id, "ocd_card_video")
         stream = request.env["ir.binary"]._get_stream_from(vendor, "ocd_card_video")
         stream.download_name = vendor.ocd_card_video_name or "video.mp4"
-        return stream.get_response(max_age=86400, content_security_policy=None)
+        return self._card_media_response(vendor, stream, content_security_policy=None)
 
     @http.route("/lives/video/<int:partner_id>/image", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
     def directory_card_poster(self, partner_id, **kwargs):
         """The first image of the short video, shown until it plays."""
         vendor = self._card_vendor(partner_id, "ocd_card_video_poster")
-        return request.env["ir.binary"]._get_image_stream_from(vendor, "ocd_card_video_poster").get_response(max_age=86400)
+        stream = request.env["ir.binary"]._get_image_stream_from(vendor, "ocd_card_video_poster")
+        return self._card_media_response(vendor, stream)
 
     @http.route("/lives/prevenir", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def directory_alert(self, phone=None, country_id=None, **post):
@@ -120,7 +134,10 @@ class OcdLiveDirectory(http.Controller):
             return self.directory(error=error.args[0])
         return request.redirect("/lives?note=1")
 
-    @http.route("/lives/<string:code>", type="http", auth="public", website=True, sitemap=False, methods=["GET"])
+    @http.route(
+        "/lives/<string:code>", type="http", auth="public", website=True, sitemap=False, methods=["GET"],
+        ocd_cache=20, ocd_cache_params=("categorie",),
+    )
     def directory_country(self, code, categorie=None, **kwargs):
         country = request.env["res.country"].sudo().search([("code", "=", (code or "").upper())], limit=1)
         if not country or len(code) != 2:
@@ -164,7 +181,7 @@ class OcdLiveDirectory(http.Controller):
 
     @http.route(
         "/lives/<string:code>/<int:booking_id>", type="http", auth="public", website=True, sitemap=False,
-        methods=["GET"],
+        methods=["GET"], ocd_cache=15,
     )
     def live_page(self, code, booking_id, **kwargs):
         """The page of one live, the link of the announcement shared by the vendor: before the

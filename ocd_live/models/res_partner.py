@@ -351,8 +351,8 @@ class ResPartner(models.Model):
         return messages.get(error.code, messages["unreadable"])
 
     def _ocd_card_version(self):
-        """A part of the address of the media of the card that changes with them (the phones
-        keep them a day)."""
+        """A part of the address of the media of the card that changes with them: the phones and
+        the CDN keep an address with its version a year (common.media_response)."""
         self.ensure_one()
         return int(self.write_date.timestamp()) if self.write_date else 0
 
@@ -444,7 +444,7 @@ class ResPartner(models.Model):
         """Image of the vendor in the lives of the website: its own picture (logo), or False.
         Extended by ocd_live_shop (a picture of its products)."""
         self.ensure_one()
-        return f"/lives/image/{self.id}" if self.image_1920 else False
+        return f"/lives/image/{self.id}?v={self._ocd_card_version()}" if self.image_1920 else False
 
     @api.model
     def _ocd_find_by_space_token(self, token):

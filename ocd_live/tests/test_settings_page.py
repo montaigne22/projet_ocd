@@ -99,6 +99,32 @@ class TestOcdLiveSettingsPage(OcdLiveCommon):
         self.assertIn("name", result["errors"])
         self.assertNotEqual(self.company.name, "Another company")
 
+    def test_speed_of_the_website(self):
+        """The section « Speed of the website »: the public pages kept in memory (on by default)
+        and the address of the CDN, which sends the files, the photos and the videos."""
+        page = self._page().get_settings_page()
+        self.assertIn("speed", [section["key"] for section in page["sections"]])
+        self.assertTrue(page["values"]["ocd_page_cache"])
+        self.assertEqual(page["values"]["ocd_cdn_url"], "")
+        result = self._page().save_settings_page({"ocd_cdn_url": "cdn.ocdlive.com"})
+        self.assertFalse(result["ok"])
+        self.assertIn("ocd_cdn_url", result["errors"])
+        result = self._page().save_settings_page({"ocd_cdn_url": "https://cdn.ocdlive.com/", "ocd_page_cache": False})
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["values"]["ocd_cdn_url"], "https://cdn.ocdlive.com")
+        website = self.env["website"].search([("company_id", "=", self.env.company.id)], limit=1)
+        self.assertTrue(website.cdn_activated)
+        self.assertFalse(website.ocd_page_cache)
+        filters = website.cdn_filters.splitlines()
+        self.assertIn("^/lives/video/", filters)
+        self.assertIn("^/web/image", filters, "The filters of Odoo are kept")
+        self.assertEqual(website._ocd_cdn_url("/lives/video/7?v=1"), "https://cdn.ocdlive.com/lives/video/7?v=1")
+        self.assertEqual(website._ocd_cdn_url("/lives"), "/lives", "The pages stay on the server")
+        # Emptied: everything leaves from the server again
+        self._page().save_settings_page({"ocd_cdn_url": "", "ocd_page_cache": True})
+        self.assertFalse(website.cdn_activated)
+        self.assertTrue(website.ocd_page_cache)
+
     def test_currencies_by_country(self):
         """The section of the currencies: one button puts them in place, then the zones, the
         rates and what a customer pays show."""

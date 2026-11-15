@@ -418,3 +418,22 @@ Fournisseur de paiement Campay
   jour. Les pages affichent les vrais prix, la commande est payée comme d'habitude
   et la comptabilité enregistre l'argent reçu.
 """
+
+# === Speed of the website: public pages kept in memory, CDN (ocd_live) ===
+SPEED = {
+    "HTTP Routing": "Routage HTTP",
+    "Speed of the website": "Vitesse du site",
+    "Public pages kept in memory": "Pages publiques gardées en mémoire",
+    "The feed of the lives, the page of a live, the boutiques and the products are built once, then given to the next visitors for 10 to 60 seconds: the website holds the crowds of a live. The vendors, the couriers, the team and the customers with a cart always get their pages up to date.":
+        "Le fil des lives, la page d'un live, les boutiques et les produits sont construits une fois, puis donnés aux visiteurs suivants pendant 10 à 60 secondes : le site tient les foules d'un live. Les vendeurs, les livreurs, l'équipe et les clients qui ont un panier ont toujours leurs pages à jour.",
+    "Every page is built for each visitor: the website holds far fewer visitors.":
+        "Chaque page est construite pour chaque visiteur : le site tient beaucoup moins de visiteurs.",
+    "Address of the CDN": "Adresse du CDN",
+    "The files of the website, the photos and the videos leave from the CDN, e.g. https://cdn.ocdlive.com: the server only builds the pages. Empty: everything leaves from the server.":
+        "Les fichiers du site, les photos et les vidéos partent du CDN, par exemple https://cdn.ocdlive.com : le serveur ne fait plus que les pages. Vide : tout part du serveur.",
+    "Type the address of the CDN only, beginning with https://.":
+        "Tapez seulement l'adresse du CDN, qui commence par https://.",
+    "Pages Kept In Memory": "Pages gardées en mémoire",
+    "The public pages (feed of the lives, page of a live, boutiques, products) are built once, then given to the next visitors for a few seconds.":
+        "Les pages publiques (fil des lives, page d'un live, boutiques, produits) sont construites une fois, puis données aux visiteurs suivants pendant quelques secondes.",
+}

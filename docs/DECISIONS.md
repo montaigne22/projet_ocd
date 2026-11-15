@@ -217,3 +217,25 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   ne le voient jamais (le site utilise `/ocd`, `/lives`, `/shop`). Pour une adresse à la marque : un
   sous-domaine pour l'équipe (ex. `equipe.ocdlive.com`).
 
+
+## Grand public
+
+- **Pages publiques gardées en mémoire quelques secondes** (réglable : Paramètres › Vitesse du site) :
+  le fil des lives, la page d'un live, les boutiques, le shop et les produits sont construits une fois,
+  puis redonnés aux visiteurs suivants (de 10 à 60 secondes selon la page). Chaque serveur les garde
+  lui-même : aucun logiciel de plus à installer et à surveiller. Un cache devant Odoo (nginx, CDN) ne
+  saurait pas remettre le jeton des formulaires de chaque visiteur ni reconnaître un vendeur ou un client
+  avec un panier : les pages restent construites par Odoo, et seulement pour les visiteurs qui n'ont
+  encore rien à eux sur le site. Un changement (produit, prix, live vérifié) se voit au plus après ces
+  secondes ; les vendeurs, les livreurs et l'équipe voient toujours leurs pages à jour.
+- **Les photos, les vidéos et les fichiers du site partent d'un CDN** (réglable : son adresse), sur son
+  propre domaine : ils sont gardés un an par les téléphones et par le CDN grâce à leur version dans
+  l'adresse, et le serveur ne fait plus que les pages.
+- **Une page cachée ne pose plus de questions** (nouveaux lives, produit à l'écran, attente d'un
+  paiement) : elle les reprend dès qu'on revient dessus.
+- **Visites des boutiques pendant un live écrites toutes les 5 secondes** par chaque serveur : en pointe,
+  les visiteurs ne s'attendent plus les uns les autres ; le compteur de la régie a quelques secondes de
+  retard.
+- **La preuve se fait par la mesure** : un modèle de rapport ([`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md))
+  et un outil (`tools/charge/charge.py`), à refaire sur les vrais serveurs avant l'ouverture au grand
+  public.

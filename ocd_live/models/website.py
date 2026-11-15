@@ -1,4 +1,4 @@
-from odoo import api, models
+from odoo import api, fields, models
 from odoo.fields import Command
 from odoo.tools import file_open
 from odoo.tools.binary import BinaryBytes
@@ -6,10 +6,35 @@ from odoo.tools.binary import BinaryBytes
 ODOO_LOGO = "website/static/src/img/website_logo.svg"
 OCD_LOGO = "ocd_live/static/img/ocd_logo_round.png"
 ODOO_WEBSITE_NAMES = ("My Website", "Website")
+# Photos and videos of the cards of the lives, sent by the CDN with the files of Odoo
+OCD_CDN_FILTERS = ("^/lives/image/", "^/lives/carte/", "^/lives/video/")
 
 
 class Website(models.Model):
     _inherit = "website"
+
+    ocd_page_cache = fields.Boolean(
+        "Pages Kept In Memory",
+        default=True,
+        help="The public pages (feed of the lives, page of a live, boutiques, products) are built once, "
+        "then given to the next visitors for a few seconds.",
+    )
+
+    def _ocd_set_cdn(self, url):
+        """Send the files, the photos and the videos of the site by the CDN at `url` (empty:
+        by the server): the filters of Odoo get the ones of the cards of the lives."""
+        for website in self:
+            values = {"cdn_url": url or "", "cdn_activated": bool(url)}
+            if url:
+                filters = [line for line in (website.cdn_filters or "").splitlines() if line.strip()]
+                values["cdn_filters"] = "\n".join(filters + [f for f in OCD_CDN_FILTERS if f not in filters])
+            website.write(values)
+
+    def _ocd_cdn_url(self, url):
+        """`url` sent by the CDN when the site has one and it is a file of its filters (the
+        sources and the posters of the videos, which Odoo does not change by itself)."""
+        self.ensure_one()
+        return self.get_cdn_url(url) if url and self.cdn_activated else url
 
     @api.model
     def _ocd_setup_site(self):

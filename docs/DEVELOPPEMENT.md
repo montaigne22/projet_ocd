@@ -109,6 +109,105 @@ Un nouveau module (ex. `theme_ocd`) n'apparaît qu'après **Applications › Met
 applications** (mode développeur). Le thème se choisit ensuite dans Site Web › Configuration ›
 Paramètres › Choisir un thème › « OCD Live » : Odoo l'installe et l'applique au site.
 
+## Grand public : tenir les foules d'un live
+
+Un live partagé sur TikTok envoie des milliers de personnes sur les mêmes pages en quelques minutes. Le
+code les tient de trois façons ; les mesures et le modèle de rapport pour les vrais serveurs sont dans
+[`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md).
+
+**Pages publiques gardées en mémoire** (`ocd_live/page_cache.py`, appelé par `ir.http._dispatch`). Pour
+un visiteur qui n'a encore rien à lui sur le site, une page publique est la même pour tous ceux de même
+langue, même pays et même fuseau : chaque worker garde la page qu'il a construite quelques secondes et la
+redonne aux visiteurs suivants. Une route le demande avec des options de `@http.route` :
+
+- `ocd_cache=20` : combien de secondes ;
+- `ocd_cache_params=("pays", "page")` : les paramètres de l'adresse (de l'appel, pour une route jsonrpc)
+  qui font une autre page. Une adresse avec un autre paramètre est construite pour son visiteur
+  (`?noted=1` après un formulaire) ; ceux des réseaux et des publicités (`fbclid`, `utm_…`) ne changent
+  pas la page ;
+- `ocd_cache_hit="_count_live_visit"` : une méthode du contrôleur appelée quand la page vient de la
+  mémoire, pour ce qui doit se faire à chaque visite (compter la visite du live).
+
+| Route | Gardée |
+|---|---|
+| `/ocd`, `/reserver` | 30 s |
+| `/lives` (`pays`, `page`), `/lives/<pays>` (`categorie`), `/lives/flux` (`offset`, `pays`) | 20 s |
+| `/lives/<pays>/<live>` | 15 s |
+| `/shop` (`categorie`) | 60 s |
+| page d'un produit (`v`) | 30 s |
+| `/ocd/boutique/<vendeur>` (la visite du live est comptée) | 15 s |
+| `/ocd/boutique/<vendeur>/live` (produit à l'écran) | 10 s |
+| `/ocd/boutique/<vendeur>/replay` (`live`, `t`) | 60 s |
+
+Ce qui est à un seul visiteur n'est jamais donné à un autre :
+
+- seulement pour un visiteur pas connecté, sans vendeur ni livreur sur ce navigateur (cookies de
+  `page_cache.PERSONAL_COOKIES`), dont la session n'a que les clés de `page_cache.SESSION_KEYS` : un
+  panier, une commande, un vendeur ouvert… et ses pages sont construites pour lui. **Une nouvelle clé de
+  session qui change une page publique reste hors de `SESSION_KEYS`** ;
+- la page est rangée selon l'adresse, la langue, le pays (GeoIP : devise, taxes, pays d'abord), le fuseau
+  du téléphone (cookie `tz`) et la liste de prix choisie dans le shop ;
+- le jeton des formulaires (CSRF) est remis pour chaque visiteur ;
+- une page pendant laquelle le visiteur reçoit un cookie ou une clé de session à lui n'est pas gardée,
+  ni une page qui montre un paramètre des réseaux (les boutons de langue gardent les paramètres).
+
+Chaque worker a sa mémoire (500 pages au plus, les plus anciennes partent). L'en-tête `X-OCD-Cache` dit
+d'où vient une page : `hit` (mémoire), `miss` (construite et gardée), `pass` (construite pour ce
+visiteur). Un changement (nouveau produit, prix, live vérifié) se voit au plus après la durée de la page ;
+les vendeurs, les livreurs et l'équipe voient toujours leurs pages à jour. La case « Pages publiques
+gardées en mémoire » (Paramètres › Vitesse du site, champ `ocd_page_cache` du site) coupe tout, aussitôt.
+Pendant les tests des modules, la mémoire est coupée : un test verrait les pages du précédent
+(`page_cache.IN_TESTS` pour la tester, voir `test_page_cache.py`).
+
+**Appels répétés.** Les questions que les pages posent seules s'arrêtent quand la page est cachée (autre
+appli, autre onglet) et repartent à son retour : nouveaux lives du fil (chaque minute), produit à l'écran
+de la boutique (toutes les 20 s), attente d'un paiement ou d'un lien vérifié (toutes les 5 s).
+`/lives/nouveaux` relit l'heure des lives du moment au plus toutes les 10 s par worker ; le produit à
+l'écran et les cartes suivantes du fil viennent de la mémoire.
+
+**Médias servis à part.** Les photos et les vidéos des cartes (`/lives/image|carte|video`, avec `?v=`) et
+les photos des produits des cartes (`/web/image/…?unique=`) portent leur version dans l'adresse : les
+téléphones et le CDN les gardent un an (`Cache-Control: public, max-age=31536000, immutable`), un jour sans
+version. Les fichiers, les photos et les vidéos partent sans cookie (`ir.http._post_dispatch`) ; demandés
+sans session (par le CDN), ils sont `public`. Avec une adresse de CDN (Paramètres › Vitesse du site),
+Odoo écrit vers le CDN les liens des fichiers du site (`/web/assets`), des images et des médias des
+cartes (filtres du site, ceux des cartes ajoutés) ; les sources et les affiches des vidéos des cartes
+passent par `website._ocd_cdn_url`. Les médias d'un vendeur pas encore validé restent privés.
+
+**Visites des boutiques pendant un live** (régie) : chaque worker les compte et les écrit ensemble toutes
+les 5 secondes, dans une transaction à part qui attend les autres au lieu d'échouer (READ COMMITTED).
+Avant, chaque nouvelle visite écrivait la ligne du live : en pointe, les visiteurs s'attendaient et des
+pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont perdues (une indication).
+
+### Mise en production pour le grand public
+
+- `odoo.conf` des serveurs des pages :
+
+  ```ini
+  db_name = ocd
+  list_db = False
+  proxy_mode = True
+  workers = 9
+  max_cron_threads = 0
+  limit_time_real = 120
+  ```
+
+  `db_name` sans `dbfilter` : Odoo ne demande plus la liste des bases pour chaque nouveau visiteur
+  (deux fois plus de nouveaux visiteurs par seconde, voir le rapport). `workers` : deux par cœur plus un
+  (ici 4 cœurs). Les actions planifiées tournent sur un serveur (ou un processus) à part, avec
+  `max_cron_threads = 2`.
+- **Plusieurs serveurs d'Odoo** derrière un répartiteur : ils partagent la base et le dossier `data_dir`
+  (pièces jointes et sessions, sur un disque partagé). La mémoire des pages est propre à chaque worker :
+  rien à partager.
+- **CDN** (Cloudflare, Bunny, CloudFront…) : une zone `https://cdn.<domaine>` qui va chercher les fichiers
+  sur `https://<domaine>` et **respecte les en-têtes** du site (`Cache-Control`), puis son adresse dans
+  Paramètres › Vitesse du site. Seuls les fichiers, les photos et les vidéos passent par le CDN, jamais
+  les pages.
+- **nginx** devant Odoo : `gzip on;` avec `gzip_types text/css application/javascript application/json
+  image/svg+xml; gzip_proxied any;`, et `client_max_body_size 220m;` (vidéos des téléphones).
+- Mesurer avant d'ouvrir : [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md), outil
+  `tools/charge/charge.py`.
+
 ## Tests
 
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :

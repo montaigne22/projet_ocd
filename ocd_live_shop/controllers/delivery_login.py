@@ -4,6 +4,7 @@ from odoo import http
 from odoo.http import request
 from odoo.tools import consteq
 
+from odoo.addons.ocd_live import page_cache
 from odoo.addons.ocd_live.controllers import common
 from odoo.addons.ocd_live.controllers.vendor_space import SESSION_LOGIN, OcdVendorSpace
 
@@ -57,6 +58,8 @@ def _is_known_courier():
 
 # The couriers known on this browser change page without reloading it, as the vendors
 common.FAST_NAVIGATION_CHECKS.append(_is_known_courier)
+# A courier known on this browser gets the pages built for them (ocd_live.page_cache)
+page_cache.PERSONAL_COOKIES.add(COURIER_COOKIE)
 
 
 def courier_login_mode():

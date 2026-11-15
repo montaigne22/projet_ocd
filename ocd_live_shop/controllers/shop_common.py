@@ -58,7 +58,7 @@ def stock_info(template):
 
 
 def image_url(template, size="image_512"):
-    return f"/web/image/product.template/{template.id}/{size}" if template.sudo().image_128 else False
+    return template.sudo()._ocd_image_url(size)
 
 
 def sold_by_ocd(template):

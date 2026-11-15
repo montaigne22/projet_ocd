@@ -73,10 +73,24 @@ class ProductTemplate(models.Model):
     # === PHOTOS OF THE PAGE === #
 
     @api.model
+    def _ocd_photo_stamp(self, record):
+        """A part of the address of the photos of `record` that changes with them: the browsers
+        and the CDN keep an address with its version (?unique=) a year."""
+        return record.write_date.strftime("%Y%m%d%H%M%S") if record.write_date else "0"
+
+    def _ocd_image_url(self, size="image_512"):
+        """The address of the photo of the product for the cards, with its version; empty when
+        the product has no photo."""
+        self.ensure_one()
+        if not self.sudo().image_128:
+            return False
+        return f"/web/image/product.template/{self.id}/{size}?unique={self._ocd_photo_stamp(self)}"
+
+    @api.model
     def _ocd_photo(self, record, field=None):
         """A photo for the page: shown (1024 px) and opened full screen (1920 px). The address
         changes with the photo, so that a new photo is never hidden by the cache."""
-        stamp = record.write_date.strftime("%Y%m%d%H%M%S") if record.write_date else "0"
+        stamp = self._ocd_photo_stamp(record)
         base = f"/web/image/{record._name}/{record.id}"
         if field:
             return {"src": f"{base}/{field}/1024x1024?unique={stamp}", "full": f"{base}/{field}?unique={stamp}"}

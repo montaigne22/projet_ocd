@@ -1,8 +1,33 @@
+import logging
 import re
+import threading
+import time
+from collections import Counter
 from urllib.parse import parse_qs, urlparse
+
+import psycopg2
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.modules import module as odoo_module
+
+_logger = logging.getLogger(__name__)
+
+# The visits of the boutiques during the lives, counted by each worker and written together every
+# few seconds: thousands of visitors at once would otherwise all wait on the row of the live, and
+# the control room with them when it changes the product on screen
+VISITS_SECONDS = 5
+_visits = Counter()  # (database, live) -> visits not written yet
+_visits_lock = threading.Lock()
+_visits_written = [0.0]
+
+
+def _add_visits(cr, counts):
+    for live, count in counts.items():
+        cr.execute(
+            "UPDATE ocd_live_booking SET ocd_visit_count = COALESCE(ocd_visit_count, 0) + %s WHERE id = %s",
+            [count, live],
+        )
 
 
 class OcdLiveBooking(models.Model):
@@ -53,13 +78,38 @@ class OcdLiveBooking(models.Model):
         })
 
     def _ocd_count_visit(self):
-        """Count a visit of the boutique during the live, in one query (many visitors at once)."""
+        """Count a visit of the boutique during the live (one per browser)."""
         self.ensure_one()
-        self.env.cr.execute(
-            "UPDATE ocd_live_booking SET ocd_visit_count = COALESCE(ocd_visit_count, 0) + 1 WHERE id = %s",
-            [self.id],
-        )
-        self.invalidate_recordset(["ocd_visit_count"])
+        with _visits_lock:
+            _visits[self.env.cr.dbname, self.id] += 1
+            due = time.monotonic() - _visits_written[0] >= VISITS_SECONDS
+        if due or odoo_module.current_test:
+            self._ocd_write_visits()
+
+    @api.model
+    def _ocd_write_visits(self):
+        """Write the visits counted by this worker, in a transaction of their own that waits for
+        the other workers a moment instead of failing (READ COMMITTED), never with the page."""
+        dbname = self.env.cr.dbname
+        with _visits_lock:
+            counts = {live: count for (db, live), count in _visits.items() if db == dbname}
+            for live in counts:
+                del _visits[dbname, live]
+            _visits_written[0] = time.monotonic()
+        if not counts:
+            return
+        try:
+            if odoo_module.current_test:
+                _add_visits(self.env.cr, counts)  # the tests run in one transaction
+            else:
+                with self.env.registry.cursor() as cr:
+                    cr.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED")
+                    _add_visits(cr, counts)
+        except psycopg2.Error:
+            # An indication for the control room: it never breaks the boutique
+            _logger.warning("OCD Live: visits of the lives %s not written", counts, exc_info=True)
+            return
+        self.browse(list(counts)).invalidate_recordset(["ocd_visit_count"])
 
     def _ocd_replay_embed(self):
         """How the page plays the replay: {platform, id, seek}. YouTube and TikTok (a published

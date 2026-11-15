@@ -1,7 +1,12 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from odoo import fields
 from odoo.tests import HttpCase, tagged
+from odoo.tools import BinaryBytes
+
+from odoo.addons.ocd_live import page_cache
+from odoo.addons.ocd_live.tests.test_card_media import png
 
 from .common import OcdShopCommon
 
@@ -272,3 +277,51 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
         self.assertIn("Reported: customer absent.", response.text)
         self.url_open(f"/ocd/livrer/{token}/colis/{parcel.id}/retry", data={"csrf_token": self.csrf_token()})
         self.assertEqual(parcel.ocd_stage, "picked")
+
+    # === PUBLIC PAGES KEPT IN MEMORY (ocd_live.page_cache) === #
+
+    def _keep_pages(self):
+        """Keep the public pages in memory during this test (off during the other tests)."""
+        patcher = patch.object(page_cache, "IN_TESTS", True)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        page_cache.clear()
+        self.addCleanup(page_cache.clear)
+
+    def _origin(self, path, **session):
+        """Where the page `path` comes from for a new visitor (hit: from memory, miss: built and
+        kept, pass: built for this visitor)."""
+        self.authenticate(None, None, session_extra=session)
+        response = self.url_open(path)
+        self.assertEqual(response.status_code, 200)
+        return response.headers.get(page_cache.HEADER)
+
+    def test_visits_of_a_live_counted_from_memory(self):
+        """During the live, the boutique comes from memory for the next visitors: each new
+        browser is still counted once, for the control room."""
+        self._keep_pages()
+        booking = self._live_now(self.brenda, live_url="https://www.tiktok.com/@brenda.wax/live")
+        path = f"/ocd/boutique/{self.brenda.id}"
+        self.assertEqual(self._origin(path), "miss")
+        self.assertEqual(self._origin(path), "hit")
+        self.assertEqual(self.url_open(path).headers.get(page_cache.HEADER), "hit")  # the same browser again
+        booking.invalidate_recordset(["ocd_visit_count"])
+        self.assertEqual(booking.ocd_visit_count, 2, "Two browsers")
+        # The product on screen: one question of the boutique for all its visitors
+        self.authenticate(None, None)
+        for origin in ("miss", "hit"):
+            response = self.url_open(path + "/live", json={"jsonrpc": "2.0", "method": "call", "params": {}})
+            self.assertEqual(response.headers.get(page_cache.HEADER), origin)
+
+    def test_shop_pages_kept_except_for_a_customer_with_a_cart(self):
+        self._keep_pages()
+        self.dress.product_tmpl_id.image_1920 = BinaryBytes(png())
+        product_url = self.dress.product_tmpl_id.website_url
+        for path in ("/shop", product_url):
+            self.assertEqual(self._origin(path), "miss", path)
+            self.assertEqual(self._origin(path), "hit", path)
+        self.assertEqual(self._origin("/shop", sale_order_id=10**9), "pass", "The cart is in the header")
+        self.assertEqual(self._origin(f"{product_url}?search=robe"), "pass")
+        # The photos of the cards: with their version, kept a year
+        response = self.url_open("/shop")
+        self.assertIn(self.dress.product_tmpl_id._ocd_image_url("image_512"), response.text)

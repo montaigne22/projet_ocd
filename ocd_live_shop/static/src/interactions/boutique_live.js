@@ -6,7 +6,8 @@ const REFRESH_MS = 20000;
 
 /**
  * During the live, shows the product the control room puts on screen. A light request every
- * 20 seconds keeps working on a weak network.
+ * 20 seconds keeps working on a weak network; none while the page is hidden (another app on the
+ * phone, another tab), one at once when it is shown again.
  */
 export class OcdBoutiqueLive extends Interaction {
     static selector = ".o_ocd_live_shop_live";
@@ -17,7 +18,8 @@ export class OcdBoutiqueLive extends Interaction {
     }
 
     start() {
-        this.timer = setInterval(() => this.refresh(), REFRESH_MS);
+        this.timer = setInterval(() => !document.hidden && this.refresh(), REFRESH_MS);
+        this.addListener(document, "visibilitychange.noUpdate", () => !document.hidden && this.refresh());
     }
 
     async refresh() {

@@ -60,7 +60,7 @@ class TestOcdLiveCardMedia(TransactionCase):
         vendor = self.vendor
         self.assertEqual(vendor._ocd_card_media(), {"kind": "initials"}, "Nothing yet: its initials")
         vendor.image_1920 = BinaryBytes(png())
-        self.assertEqual(vendor._ocd_card_media(), {"kind": "image", "image": f"/lives/image/{vendor.id}"})
+        self.assertEqual(vendor._ocd_card_media(), {"kind": "image", "image": f"/lives/image/{vendor.id}?v={vendor._ocd_card_version()}"})
         vendor.ocd_card_image = BinaryBytes(png("green"))
         image = vendor._ocd_card_media()["image"]
         self.assertTrue(image.startswith(f"/lives/carte/{vendor.id}?v="), "The image chosen for the card")

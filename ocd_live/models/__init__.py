@@ -33,3 +33,4 @@ from . import ocd_live_currencies
 from . import ocd_live_settings
 from . import ocd_automation
 from . import website
+from . import ir_http

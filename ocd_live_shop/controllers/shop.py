@@ -64,7 +64,7 @@ class OcdShop(WebsiteSale):
             options["extra_domain"] = Domain.AND([options["extra_domain"], extra]) if options.get("extra_domain") else extra
         return options
 
-    @http.route()
+    @http.route(ocd_cache=60, ocd_cache_params=("categorie",))
     def shop(self, *args, **kwargs):
         response = super().shop(*args, **kwargs)
         if getattr(response, "template", None) == "website_sale.products":
@@ -140,7 +140,7 @@ class OcdShop(WebsiteSale):
 
     # === PRODUCT === #
 
-    @http.route()
+    @http.route(ocd_cache=30, ocd_cache_params=("v",))
     def product(self, product, *args, **kwargs):
         response = super().product(product, *args, **kwargs)
         if getattr(response, "template", None) == "website_sale.product":

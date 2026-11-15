@@ -6,13 +6,14 @@ The whole order is computed for each page (a few hundred items at most) and cut 
 the first one comes with the page (it works without JavaScript), the next ones are loaded while
 the person scrolls (feed.js)."""
 
+import time
 from collections import defaultdict
 from datetime import timedelta
 
 from odoo import fields
 from odoo.http import request
 
-from .. import tools
+from .. import page_cache, tools
 from . import common
 
 PAGE_SIZE = 8
@@ -20,6 +21,10 @@ MAX_ITEMS = 240
 NEXT_DAYS = 14
 REPLAY_DAYS = 30
 KIND_ORDER = {"live": 0, "studio": 1, "next": 2, "replay": 3}
+# Every open feed asks every minute whether new lives were checked: each worker reads when the
+# lives of the moment were checked again after this many seconds only
+MOMENTS_SECONDS = 10
+_moments = {}
 
 
 def first_country(code=None):
@@ -226,11 +231,15 @@ def _vendor_values(vendor, name):
     """What every card of a vendor shows: its name, its media, its boutique."""
     env = request.env
     shop_path = vendor._ocd_shop_path()
+    media = vendor._ocd_card_media()
+    if media["kind"] == "video":
+        # Odoo sends the images by the CDN by itself, not the sources and the posters of the videos
+        media = dict(media, video=common.cdn_url(media["video"]), poster=common.cdn_url(media["poster"]))
     values = {
         "name": name,
         "initials": common.initials(name),
         "category": " · ".join(part for part in (vendor.ocd_category_id.name, vendor.ocd_business) if part),
-        "media": vendor._ocd_card_media(),
+        "media": media,
         "shop_url": f"/{shop_path}" if shop_path else False,
         "share_url": f"{request.httprequest.url_root.rstrip('/')}/{vendor._ocd_public_path()}",
         "watch_url": False,
@@ -319,5 +328,23 @@ def new_lives_count(since):
     since = fields.Datetime.to_datetime(since) if since else None
     if not since:
         return 0
-    listings, _counts = common.live_counts()
-    return len(listings.filtered(lambda listing: listing.checked_at and listing.checked_at > since))
+    now = common.now()
+    return sum(1 for checked_at, end in _checked_moments() if checked_at and checked_at > since and end > now)
+
+
+def _checked_moments():
+    """When each live of the moment was checked and when it ends, read again by this worker after
+    MOMENTS_SECONDS when the public pages are kept in memory."""
+    if not page_cache.active():
+        return _read_moments()
+    found = _moments.get(request.db)
+    if not found or found[0] <= time.monotonic():
+        found = _moments[request.db] = (time.monotonic() + MOMENTS_SECONDS, _read_moments())
+    return found[1]
+
+
+def _read_moments():
+    listings = request.env["ocd.directory.listing"].sudo().search_read(
+        [("state", "=", "published"), ("window_end", ">", common.now())], ["checked_at", "window_end"]
+    )
+    return [(row["checked_at"], row["window_end"]) for row in listings]

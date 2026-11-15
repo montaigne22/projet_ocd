@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 02:08+0000\n"
-"PO-Revision-Date: 2026-11-13 02:08+0000\n"
+"POT-Creation-Date: 2026-11-15 09:40+0000\n"
+"PO-Revision-Date: 2026-11-15 09:40+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1349,6 +1349,12 @@ msgid "Address and map sent on WhatsApp"
 msgstr "Adresse et plan envoyés sur WhatsApp"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Address of the CDN"
+msgstr "Adresse du CDN"
+
+#. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_platform__domains
 msgid "Addresses Of Its Links"
 msgstr "Adresses de ses liens"
@@ -2582,6 +2588,7 @@ msgstr "Découverte"
 
 #. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:ocd_live.field_ir_http__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_ir_module_module__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_automation__display_name
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__display_name
@@ -2832,6 +2839,12 @@ msgstr "Chaque heure."
 #. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Every page is built for each visitor: the website holds far fewer visitors."
+msgstr "Chaque page est construite pour chaque visiteur : le site tient beaucoup moins de visiteurs."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
 msgid "Every price is shown and paid in %(currency)s, whatever the country: CamPay (XAF only) is not offered."
 msgstr "Tous les prix s'affichent et se paient en %(currency)s, quel que soit le pays : CamPay (XAF seulement) n'est pas proposé."
 
@@ -3045,6 +3058,11 @@ msgstr "Groupe"
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_automation__group_sequence
 msgid "Group Sequence"
 msgstr "Ordre du groupe"
+
+#. module: ocd_live
+#: model:ir.model,name:ocd_live.model_ir_http
+msgid "HTTP Routing"
+msgstr "Routage HTTP"
 
 #. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_listing__has_message
@@ -3268,6 +3286,7 @@ msgstr "Je serai en retard"
 
 #. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_hr_employee__id
+#: model:ir.model.fields,field_description:ocd_live.field_ir_http__id
 #: model:ir.model.fields,field_description:ocd_live.field_ir_module_module__id
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_automation__id
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_directory_alert__id
@@ -5089,6 +5108,11 @@ msgid "Page « Join my live » of the vendor"
 msgstr "Page « Rejoindre mon live » du vendeur"
 
 #. module: ocd_live
+#: model:ir.model.fields,field_description:ocd_live.field_website__ocd_page_cache
+msgid "Pages Kept In Memory"
+msgstr "Pages gardées en mémoire"
+
+#. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_planning.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live.space
@@ -5502,6 +5526,12 @@ msgstr "Produit"
 #: model:ir.model.fields.selection,name:ocd_live.selection__ocd_listing_refuse_reason__applies_to__product
 msgid "Products"
 msgstr "Produits"
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Public pages kept in memory"
+msgstr "Pages publiques gardées en mémoire"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_booking_view_form
@@ -6368,6 +6398,12 @@ msgid "Space of the vendors"
 msgstr "Espace des vendeurs"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Speed of the website"
+msgstr "Vitesse du site"
+
+#. module: ocd_live
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking__start_datetime
 #: model:ir.model.fields,field_description:ocd_live.field_ocd_live_booking_slot__start_datetime
 msgid "Start"
@@ -6709,6 +6745,18 @@ msgid "The directory passes."
 msgstr "Les pass annuaire."
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "The feed of the lives, the page of a live, the boutiques and the products are built once, then given to the next visitors for 10 to 60 seconds: the website holds the crowds of a live. The vendors, the couriers, the team and the customers with a cart always get their pages up to date."
+msgstr "Le fil des lives, la page d'un live, les boutiques et les produits sont construits une fois, puis donnés aux visiteurs suivants pendant 10 à 60 secondes : le site tient les foules d'un live. Les vendeurs, les livreurs, l'équipe et les clients qui ont un panier ont toujours leurs pages à jour."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "The files of the website, the photos and the videos leave from the CDN, e.g. https://cdn.ocdlive.com: the server only builds the pages. Empty: everything leaves from the server."
+msgstr "Les fichiers du site, les photos et les vidéos partent du CDN, par exemple https://cdn.ocdlive.com : le serveur ne fait plus que les pages. Vide : tout part du serveur."
+
+#. module: ocd_live
 #: model:ir.model.constraint,message:ocd_live.constraint_ocd_live_price_rule_check_hours
 msgid "The hours of a rule start and end on the same day, and end after they start."
 msgstr "Les heures d'une règle commencent et finissent le même jour, et finissent après leur début."
@@ -6956,6 +7004,11 @@ msgstr "Les prix s'écrivent en %(currency)s. Chaque pays les voit, réserve et 
 #: code:addons/ocd_live/controllers/feed.py:0
 msgid "The products of %s"
 msgstr "Les produits de %s"
+
+#. module: ocd_live
+#: model:ir.model.fields,help:ocd_live.field_website__ocd_page_cache
+msgid "The public pages (feed of the lives, page of a live, boutiques, products) are built once, then given to the next visitors for a few seconds."
+msgstr "Les pages publiques (fil des lives, page d'un live, boutiques, produits) sont construites une fois, puis données aux visiteurs suivants pendant quelques secondes."
 
 #. module: ocd_live
 #: model:ocd.automation,scope:ocd_live.automation_remote_host
@@ -7640,6 +7693,12 @@ msgstr "Tape un nombre entier."
 #: model:ir.model.fields,help:ocd_live.field_ocd_live_booking__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "Type de l'activité en exception."
+
+#. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/models/ocd_live_settings.py:0
+msgid "Type the address of the CDN only, beginning with https://."
+msgstr "Tapez seulement l'adresse du CDN, qui commence par https://."
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space_login_code
@@ -8911,8 +8970,3 @@ msgstr "· prochains lives et replays"
 #: code:addons/ocd_live/static/src/planning/planning.xml:0
 msgid "· today"
 msgstr "· aujourd'hui"
-
-#. module: ocd_live
-#: model_terms:payment.provider,pending_msg:ocd_live.payment_provider_momo_team
-msgid "Send the amount by Mobile Money to the number of OCD: Mixx by Yas [number], Flooz [number]. Write the reference below in the message. The team confirms once the money is received."
-msgstr "Envoie le montant par Mobile Money au numéro d'OCD : Mixx by Yas [numéro], Flooz [numéro]. Écris la référence ci-dessous dans le message. L'équipe confirme dès réception."

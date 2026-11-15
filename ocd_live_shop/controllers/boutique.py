@@ -56,6 +56,17 @@ class OcdBoutique(http.Controller):
             ("end_datetime", ">", now),
         ], limit=1)
 
+    def _count_live_visit(self, vendor_id, **kwargs):
+        """One visit per browser and per live, shown in the control room: also for a boutique
+        given from memory (ocd_cache_hit). Return the live of the vendor now."""
+        live = self._current_live(self._vendor(vendor_id))
+        if live:
+            seen = request.session.get("ocd_live_visits", [])
+            if live.id not in seen:
+                live._ocd_count_visit()
+                request.session["ocd_live_visits"] = (seen + [live.id])[-20:]
+        return live
+
     def _next_live(self, vendor):
         return request.env["ocd.live.booking"].sudo().search([
             ("partner_id", "=", vendor.id),
@@ -160,16 +171,13 @@ class OcdBoutique(http.Controller):
             place = " · ".join(part for part in (place, vendor.delivery_landmark) if part)
         return place
 
-    @http.route("/ocd/boutique/<int:vendor_id>", type="http", auth="public", website=True, sitemap=False)
+    @http.route(
+        "/ocd/boutique/<int:vendor_id>", type="http", auth="public", website=True, sitemap=False,
+        ocd_cache=15, ocd_cache_hit="_count_live_visit",
+    )
     def boutique(self, vendor_id, noted=None, error=None, **kwargs):
         vendor = self._vendor(vendor_id)
-        live = self._current_live(vendor)
-        if live:
-            # One visit per browser and per live, shown in the control room
-            seen = request.session.get("ocd_live_visits", [])
-            if live.id not in seen:
-                live._ocd_count_visit()
-                request.session["ocd_live_visits"] = (seen + [live.id])[-20:]
+        live = self._count_live_visit(vendor.id)
         next_live = self._next_live(vendor) if not live else False
         replay = self._last_replay(vendor) if not live else False
         on_screen = live.current_product_tmpl_id if live else False
@@ -245,7 +253,7 @@ class OcdBoutique(http.Controller):
             raise request.not_found()
         return request.redirect(url, local=False)
 
-    @http.route("/ocd/boutique/<int:vendor_id>/live", type="jsonrpc", auth="public", website=True)
+    @http.route("/ocd/boutique/<int:vendor_id>/live", type="jsonrpc", auth="public", website=True, ocd_cache=10)
     def boutique_live(self, vendor_id):
         """Product shown now during the live, read by the boutique every 20 seconds."""
         vendor = self._vendor(vendor_id)
@@ -258,10 +266,13 @@ class OcdBoutique(http.Controller):
             "name": product.name,
             "url": card["url"],
             "price": card["price"],
-            "image": f"/web/image/product.template/{product.id}/image_128" if product.image_128 else False,
+            "image": product._ocd_image_url("image_128"),
         }
 
-    @http.route("/ocd/boutique/<int:vendor_id>/replay", type="http", auth="public", website=True, sitemap=False)
+    @http.route(
+        "/ocd/boutique/<int:vendor_id>/replay", type="http", auth="public", website=True, sitemap=False,
+        ocd_cache=60, ocd_cache_params=("live", "t"),
+    )
     def boutique_replay(self, vendor_id, live=None, t=None, noted=None, error=None, **kwargs):
         """A live again (the last one, or `live`), with the moments where each product is shown.
         The video plays in the page when its platform allows it, and a product touched goes to
@@ -295,7 +306,7 @@ class OcdBoutique(http.Controller):
                 "url": replay._ocd_replay_url_at(moment.offset_seconds),
                 "seconds": moment.offset_seconds,
                 "on": bool(start) and moment.offset_seconds <= start,
-                "image": f"/web/image/product.template/{product.id}/image_128" if product.image_128 else False,
+                "image": product._ocd_image_url("image_128"),
                 "order_label": request.env._("Order “%s”", product.name)
                 if vendor.ocd_sale_mode == "ocd" else
                 request.env._("Write to %(name)s about “%(product)s”", name=(vendor.name or "").split()[0], product=product.name),

@@ -8,7 +8,7 @@ from odoo.http import request
 from odoo.tools import consteq, format_date
 from odoo.tools.misc import hmac
 
-from .. import countries, tools
+from .. import countries, page_cache, tools
 
 _logger = logging.getLogger(__name__)
 
@@ -25,6 +25,10 @@ SESSION_TEAM_VIEW = "ocd_team_view_vendor_id"
 # or a new personal link, as promised on the pages
 VENDOR_COOKIE = "ocd_vendor"
 BROWSER_COOKIE_DAYS = 180
+# A vendor known on this browser gets the pages built for them
+page_cache.PERSONAL_COOKIES.add(VENDOR_COOKIE)
+# How long the browsers and the CDN keep a media whose address carries no version (a day)
+MEDIA_MAX_AGE = 24 * 60 * 60
 
 
 def parse_day(value):
@@ -129,6 +133,23 @@ def remember_browser(cookie, partner, kind):
         samesite="Lax",
         secure=request.httprequest.scheme == "https",
     )
+
+
+def media_response(stream, public, version=None, **kwargs):
+    """The answer of a photo or a video of the site. When everyone may see it (`public`), the
+    browsers and the CDN in front of the site keep it: a year when its address carries its
+    version (?v=, which changes with the media), else a day. Otherwise the browser only keeps it,
+    a day (a vendor not approved yet sees its card)."""
+    stream.public = public
+    stream.max_age = MEDIA_MAX_AGE
+    immutable = public and version is not None and request.httprequest.args.get("v") == str(version)
+    return stream.get_response(immutable=immutable, **kwargs)
+
+
+def cdn_url(url):
+    """`url` sent by the CDN of the site, when it has one (website._ocd_cdn_url)."""
+    website = request.env.website
+    return website._ocd_cdn_url(url) if website else url
 
 
 def forget_browser(cookie):

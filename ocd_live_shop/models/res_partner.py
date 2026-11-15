@@ -206,7 +206,7 @@ class ResPartner(models.Model):
             ("ocd_vendor_id", "=", self.id), ("is_published", "=", True),
             ("ocd_review_state", "=", "approved"), ("image_128", "!=", False),
         ], limit=1)
-        return f"/web/image/product.template/{product.id}/image_512" if product else False
+        return product._ocd_image_url("image_512") if product else False
 
     # === CARD IN THE FEED: THE CAROUSEL OF THE PRODUCTS === #
 
@@ -249,7 +249,7 @@ class ResPartner(models.Model):
             "slides": [
                 {
                     "url": product.website_url,
-                    "image": f"/web/image/product.template/{product.id}/image_512",
+                    "image": product._ocd_image_url("image_512"),
                     "name": product.name,
                     "price": prices.get(product.id) or "",
                     "out": product.id in sold_out,

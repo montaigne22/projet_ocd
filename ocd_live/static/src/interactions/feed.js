@@ -263,6 +263,11 @@ export class OcdLiveFeed extends Interaction {
     }
 
     onVisibility() {
+        if (!document.hidden && this.newWaiting) {
+            // Back on the page: the question skipped while it was hidden
+            this.newWaiting = false;
+            this.checkNew();
+        }
         const card = this.activeKey && this.scrollerEl.querySelector(`[data-key="${CSS.escape(this.activeKey)}"]`);
         const video = card?.querySelector(".o_ocd_feed_video");
         if (!video) {
@@ -377,6 +382,11 @@ export class OcdLiveFeed extends Interaction {
     }
 
     async checkNew() {
+        if (document.hidden) {
+            // A page in the background asks nothing: once shown again (onVisibility)
+            this.newWaiting = true;
+            return;
+        }
         try {
             const { count } = await this.waitFor(rpc("/lives/nouveaux", { since: this.since }));
             const pill = this.el.querySelector(".o_ocd_feed_new");
