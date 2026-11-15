@@ -108,9 +108,8 @@ les améliorations choisies), dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_
   il ne lit pas `robots.txt`. Une ligne de journal (adresse et navigateur de chaque étape demandée) a
   servi le temps que la plateforme transmette l'adresse réelle des visiteurs, puis a été retirée.
 - La plateforme a corrigé `proxy_mode` : le journal d'Odoo montre l'adresse réelle des visiteurs (et non
-  plus celle de son entrée, 10.42.2.1). Reste à installer la base GeoIP (GeoLite2) sur le serveur : sans
-  elle, le pays du visiteur ne vient pas de son adresse (`geoip_country_code` vide), seulement du fuseau
-  horaire du téléphone à partir de la deuxième page.
+  plus celle de son entrée, 10.42.2.1), et la base GeoIP (GeoLite2) est installée : le pays du visiteur
+  vient de nouveau de son adresse dès la première page (`geoip_country_code` vérifié de l'extérieur).
 
 ### 15 novembre 2026 — Test de charge refait pour 3 millions de visiteurs par jour
 - Coût de chaque page mesuré en processeur (Odoo et PostgreSQL), gardée en mémoire et construite, et le
