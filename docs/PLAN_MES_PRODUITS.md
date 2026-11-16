@@ -103,7 +103,7 @@ de nouveau. Les vendeurs dont les produits sont dans le stock d'OCD ne sont pas 
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
-| A.1 | **Retrait en magasin** | Le client choisit « Je passe le récupérer » : pas de frais de livraison. Il paie comme à la porte : en ligne, sur son téléphone au comptoir (Mobile Money, chez tous les vendeurs), ou en espèces seulement chez les vendeurs qui encaissent déjà à la porte (commission retenue sur le reversement suivant). Pas de remise sans paiement : le code n'est accepté qu'une fois l'argent encaissé. Pas de retrait chez un vendeur qui vend depuis chez lui | Paiement à la porte et réglage `ocd_vendor_collects` (`DECISIONS.md:150-152`), code de livraison, reversements, magasins (M.1) | 1 à 2 semaines |
+| A.1 | **Retrait en magasin** | Le client choisit « Je passe le récupérer » : pas de frais de livraison. Il paie comme à la porte : en ligne, sur son téléphone au comptoir (Mobile Money, chez tous les vendeurs), ou en espèces seulement chez les vendeurs qui encaissent déjà à la porte (commission retenue sur le reversement suivant). Pas de remise sans paiement : le code n'est accepté qu'une fois l'argent encaissé. Pas de retrait chez un vendeur qui vend depuis chez lui. Client qui ne vient pas : rappel WhatsApp la veille de la fin du délai, puis colis annulé et pièces rendues au stock du magasin, avec un avoir s'il a payé en ligne, comme un colis retourné après des échecs de livraison | Paiement à la porte et réglage `ocd_vendor_collects` (`DECISIONS.md:150-152`), code de livraison, reversements, magasins (M.1) | 1 à 2 semaines |
 | A.2 | **Le bot WhatsApp donne les magasins** | Sur le numéro d'OCD, « Où êtes-vous ? » reçoit les magasins du vendeur de la commande ou du produit en question : adresse, horaires, position à ouvrir dans les cartes. Le bouton WhatsApp de la boutique, lui, mène au numéro du vendeur : le bot ne voit pas ces conversations | Envoi des magasins et des positions du bot (`whatsapp_cloud_sale`, `_whatsapp_send_location`), aujourd'hui pour les entrepôts d'OCD | 2 à 3 jours |
 | A.3 | **Vendeurs près de chez moi** | Filtre par ville et quartier dans le shop et l'annuaire ; du plus proche au plus loin si le client partage sa position | Magasins (M.1), villes et quartiers | ~1 semaine |
 | A.4 | **Point de départ des colis** | Le vendeur choisit le magasin d'où partent ses colis : le livreur vient l'y chercher, le prix de la livraison part de là | Départ des colis (`_ocd_origin`, aujourd'hui la ville du vendeur), tournées des livreurs | ~2 jours |
@@ -148,11 +148,16 @@ chantier 1 de la feuille de route. En tout, 5 à 6 mois de travail.
   d'information (produit ou magasin accepté ou refusé, stock bas, colis prêt au retrait) en
   *Utility*, sans promotion ni invitation à acheter, sinon Meta les refuse (`INCORRECT_CATEGORY`,
   voir `PROGRESSION.md`) ; les nouveautés (A.8) en *Marketing*, plus strict et plus cher.
+- **Client qui ne vient pas chercher son colis** : la règle d'une livraison échouée. Rappel WhatsApp
+  la veille de la fin du délai (3 jours par défaut), puis colis annulé, pièces rendues au stock du
+  magasin, et un avoir s'il a payé en ligne (A.1).
+- **Réglages des administrateurs** : la liste ci-dessous et ses valeurs par défaut.
 
 ## Réglages des administrateurs
 
-Ce que l'équipe pourra changer dans Odoo sans toucher au code. Chaque réglage est fait avec son
-chantier, dans les écrans qui existent déjà.
+Ce que l'équipe pourra changer dans Odoo sans toucher au code, validé le 16 novembre 2026 avec
+les valeurs par défaut ci-dessous. Chaque réglage est fait avec son chantier, dans les écrans qui
+existent déjà.
 
 ### Paramètres d'OCD Live (OCD Live › Configuration › Paramètres)
 
@@ -167,7 +172,7 @@ Une nouvelle section « Produits et magasins des vendeurs », comme « Shop et l
 | Écart de prix à confirmer par le vendeur | 2.1 | 50 % |
 | « Plus que N » sur les cartes et par magasin | S.3 | 3 (aujourd'hui écrit dans le code : `LOW_STOCK`) |
 | Seuil de l'alerte de stock bas | 3.4 | 2 pièces |
-| Prix promo : durée et remise au plus | 3.1 | 30 jours, 50 % (à confirmer) |
+| Prix promo : durée et remise au plus | 3.1 | 30 jours, 50 % |
 | Tailles et couleurs proposées aux vendeurs | 3.5 | Les attributs choisis par l'équipe (taille, couleur, pointure…) |
 | Lieux par vendeur, au plus | M.1 | 5 |
 | Horaires proposés à un nouveau magasin | M.1 | Lun.–sam., 8 h–19 h |
@@ -180,7 +185,7 @@ Une nouvelle section « Produits et magasins des vendeurs », comme « Shop et l
 | Magasin qui sert une livraison | S.4 | Ville du client d'abord, puis le magasin de départ |
 | Retrait en magasin | A.1 | Activé |
 | Paiements au retrait | A.1 | Les mêmes que le paiement à la porte |
-| Délai pour venir chercher un colis | A.1 | 3 jours (à décider : ce qui se passe après) |
+| Délai pour venir chercher un colis | A.1 | 3 jours, rappel la veille de la fin |
 | Mise de côté : durée, réservations actives par client, absences avant blocage | A.7 | 24 h, 1, 2 |
 | Mode vacances : durée au plus | A.5 | 60 jours |
 | Nouveautés aux abonnés : jour d'envoi | A.8 | Un message par semaine, le vendredi |
@@ -218,11 +223,6 @@ Ce qui protège l'argent, les preuves ou les personnes, comme les automatisation
 actives » : pas de remise sans paiement, un code par colis, un produit retiré jamais supprimé (les
 commandes passées le gardent), l'adresse d'un vendeur qui vend depuis chez lui jamais montrée aux
 clients, le stock jamais vérifié.
-
-## Encore ouvert
-
-- **Retrait en magasin** : ce qui se passe quand le client ne vient pas dans le délai (annulé et
-  remboursé, ou rappel puis annulé).
 
 ## Liens avec la feuille de route
 
