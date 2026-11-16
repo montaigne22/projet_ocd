@@ -66,6 +66,22 @@ déjà la boutique et les quartiers.
 | M.4 | **Back-office** | Onglet « Magasins » sur la fiche du vendeur ; menu avec tous les magasins (filtres par ville, vendeur, état) ; l'équipe peut les saisir pour un vendeur ; lien vers la carte | Fiche vendeur | ~1 jour |
 | M.5 | **Vérification** | Nouveau magasin ou nouvelle adresse vérifiés par l'équipe (photo de la devanture, position) avant d'être montrés aux clients | Écran « À vérifier », raisons de refus | 1 à 2 jours |
 
+## Autour des magasins et de la boutique (~4 semaines, validé le 16 novembre 2026)
+
+| # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
+|---|---|---|---|---|
+| A.1 | **Retrait en magasin** | Le client choisit « Je passe le récupérer » : pas de frais de livraison ; il donne son code au vendeur, qui le saisit ; l'argent est versé comme pour une livraison | Code de livraison, reversements, magasins (M.1) | 1 à 2 semaines |
+| A.2 | **Le bot WhatsApp donne les magasins** | Sur le numéro d'OCD, « Où êtes-vous ? » reçoit les magasins du vendeur de la commande ou du produit en question : adresse, horaires, position à ouvrir dans les cartes. Le bouton WhatsApp de la boutique, lui, mène au numéro du vendeur : le bot ne voit pas ces conversations | Envoi des magasins et des positions du bot (`whatsapp_cloud_sale`, `_whatsapp_send_location`), aujourd'hui pour les entrepôts d'OCD | 2 à 3 jours |
+| A.3 | **Vendeurs près de chez moi** | Filtre par ville et quartier dans le shop et l'annuaire ; du plus proche au plus loin si le client partage sa position | Magasins (M.1), villes et quartiers | ~1 semaine |
+| A.4 | **Point de départ des colis** | Le vendeur choisit le magasin d'où partent ses colis : le livreur vient l'y chercher, le prix de la livraison part de là | Départ des colis (`_ocd_origin`, aujourd'hui la ville du vendeur), tournées des livreurs | ~2 jours |
+| A.5 | **Mode vacances** | « De retour le 2 janvier » sur la boutique : produits visibles, commandes en pause, « Préviens-moi à son retour » | « Préviens-moi » de la boutique (`ocd.boutique.alert`) | ~2 jours ; ne dépend pas des magasins, peut se faire tôt |
+| A.6 | **Magasins points relais** | Les vendeurs qui le veulent gardent les colis d'autres vendeurs, contre une part de la livraison | Magasins (M.1) | Avec le chantier 10 (Points relais) de la feuille de route |
+
+## Ordre proposé
+
+Étape 0 → étape 1 → magasins (M) → étape 2 → autour des magasins (A) → étape 3. Le mode vacances
+(A.5) peut remonter à tout moment. En tout, 3 à 4 mois de travail.
+
 ## Décisions à prendre
 
 - **Revérification après une modification** (proposition) : un nouveau nom ou une nouvelle photo
@@ -82,6 +98,9 @@ déjà la boutique et les quartiers.
   déplace : une fausse adresse lui coûte un trajet.
 - **Vendeur qui vend depuis chez lui** (proposition) : un réglage « montrer seulement le quartier,
   sur rendez-vous », sans position ni repère, pour ne pas publier l'adresse de son domicile.
+- **Retrait en magasin : où le client paie** (proposition : d'abord seulement payé en ligne). Payé
+  en espèces au vendeur, OCD ne touche rien au passage : sa commission serait retenue sur les
+  reversements suivants du vendeur.
 - **Modèles WhatsApp** à faire approuver par Meta : produit accepté, produit refusé, stock bas.
 - **Liens avec la feuille de route** : « Ventes par produit » rejoint le chantier 3 (Statistiques
   du vendeur) ; « Partager un produit » prépare le chantier 11 (Ambassadeurs, lien personnel).
