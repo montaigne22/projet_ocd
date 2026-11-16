@@ -110,12 +110,41 @@ de nouveau. Les vendeurs dont les produits sont dans le stock d'OCD ne sont pas 
 | A.5 | **Mode vacances** | « De retour le 2 janvier » sur la boutique : produits visibles, commandes en pause, « Préviens-moi à son retour » | « Préviens-moi » de la boutique (`ocd.boutique.alert`) | ~2 jours ; ne dépend pas des magasins, peut se faire tôt |
 | A.6 | **Magasins points relais** | Les vendeurs qui le veulent gardent les colis d'autres vendeurs | Magasins (M.1) | Avec le chantier 10 (Points relais) de la feuille de route |
 | A.7 | **Mettre de côté pour essayer** | Le client réserve une pièce dans un magasin pour venir l'essayer ; le vendeur est prévenu et peut refuser ; la pièce est libérée seule après le délai. Garde-fous : 24 h, une réservation active par client chez un vendeur, plus de réservation après deux absences | Stock par magasin (S), magasins (M.1) | ~1 semaine, après S et A.1 |
-| A.8 | **Nouveautés aux abonnés** | Un message groupé par semaine : « Cette semaine chez Awa : 3 nouveautés », seulement à ceux qui suivent le vendeur | « Suivre un vendeur » (chantier 1 de la feuille de route), modèle WhatsApp *Marketing* | 2 à 3 jours, après le chantier 1 |
+| A.8 | **Nouveautés aux abonnés** | Un message groupé : « Cette semaine chez Awa : 3 nouveautés », seulement à ceux qui suivent le vendeur ; une fois par mois, chaque semaine avec OCD Business | « Suivre un vendeur » (chantier 1 de la feuille de route), modèle WhatsApp *Marketing* | 2 à 3 jours, après le chantier 1 |
 | A.9 | **Équipe du vendeur** | La vendeuse d'un magasin a son propre accès, limité au stock et aux commandes de son magasin, sans les prix ni les reversements | Connexion par lien ou code WhatsApp, magasins, stock par magasin | 1 à 2 semaines, en dernier |
+
+## OCD Business : ce qui est réservé à la formule (~2 jours dans ce plan)
+
+OCD touche une commission sur chaque vente : ce qui fait vendre reste pour tous. La formule
+mensuelle OCD Business (chantier 12 de la feuille de route) réunit ce qui sert les vendeurs
+organisés (plusieurs lieux, une équipe, piloter) et ce qui coûte à OCD à chaque usage (messages
+WhatsApp *Marketing*). C'est aussi le cœur de l'offre pour les commerçants qui ne font pas de lives.
+
+| Pour tous les vendeurs | Réservé à OCD Business |
+|---|---|
+| Toutes les corrections (étape 0) | Plusieurs lieux, donc le stock par magasin (S) : un vendeur à un seul lieu ne voit aucune différence |
+| Ajouter, modifier, retirer, partager ses produits ; catalogue pour le statut | L'équipe du vendeur (A.9) |
+| Un lieu (magasin ou domicile), sa vérification, l'affiche QR | Les statistiques détaillées (chantier 3) ; les chiffres sous chaque produit et magasin (1.1, M.6) restent pour tous |
+| Retrait en magasin, mise de côté, mode vacances, prix promo, alertes | Les nouveautés aux abonnés chaque semaine (pour tous : une fois par mois) |
+
+| # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
+|---|---|---|---|---|
+| B.1 | **Interrupteur « Formule Business »** | Sur la fiche du vendeur, jusqu'à une date ; un réglage général « Fonctions Business offertes à tous », allumé jusqu'au lancement d'OCD Business. Les fonctions de la formule le lisent dès qu'elles sont faites : le chantier 12 n'a plus qu'à vendre la formule | Pass de l'annuaire (30 jours prépayés, rappel, renouvellement) | ~2 jours, avec les magasins |
+
+- **Avant le lancement** : ces fonctions sont annoncées dès le premier jour « offertes pendant le
+  lancement ».
+- **Au lancement** : les vendeurs qui les utilisent déjà reçoivent 2 mois de formule, plutôt
+  qu'une coupure.
+- **Fin de la formule, rien n'est supprimé** : les lieux en plus sont masqués aux clients (les
+  commandes partent toujours de tous les magasins), l'équipe est mise en pause, les statistiques
+  détaillées sont cachées ; tout revient avec la formule.
+- **Le prix** est fixé par l'équipe, après un essai avec 5 à 10 vendeurs. Repère : le pass de
+  l'annuaire coûte 5 000 F pour 30 jours, et OCD Business comprend OCD Express. Piste à étudier :
+  une commission plus basse pour les vendeurs de la formule.
 
 ## Ordre de travail
 
-Étape 0 (et les modèles WhatsApp soumis à Meta) → étape 1 → magasins (M) → stock par magasin (S,
+Étape 0 (et les modèles WhatsApp soumis à Meta) → étape 1 → magasins (M, avec B.1) → stock par magasin (S,
 avec 2.5) → reste de l'étape 2 → autour des magasins (A.1 à A.7) → étape 3 → équipe du vendeur
 (A.9). Le mode vacances (A.5) peut remonter à tout moment ; les nouveautés (A.8) viennent après le
 chantier 1 de la feuille de route. En tout, 5 à 6 mois de travail.
@@ -152,6 +181,10 @@ chantier 1 de la feuille de route. En tout, 5 à 6 mois de travail.
   la veille de la fin du délai (3 jours par défaut), puis colis annulé, pièces rendues au stock du
   magasin, et un avoir s'il a payé en ligne (A.1).
 - **Réglages des administrateurs** : la liste ci-dessous et ses valeurs par défaut.
+- **OCD Business** : ce qui fait vendre reste pour tous ; plusieurs lieux et le stock par magasin,
+  l'équipe du vendeur, les statistiques détaillées et les nouveautés chaque semaine sont réservés à
+  la formule ; offerts pendant le lancement, 2 mois offerts à leurs utilisateurs au lancement, rien
+  de supprimé à la fin de la formule (B.1).
 
 ## Réglages des administrateurs
 
@@ -189,8 +222,9 @@ Une nouvelle section « Produits et magasins des vendeurs », comme « Shop et l
 | Délai pour venir chercher un colis | A.1 | 3 jours, rappel la veille de la fin |
 | Mise de côté : durée, réservations actives par client, absences avant blocage | A.7 | 24 h, 1, 2 |
 | Mode vacances : durée au plus | A.5 | 60 jours |
-| Nouveautés aux abonnés : jour d'envoi | A.8 | Un message par semaine, le vendredi |
+| Nouveautés aux abonnés : rythme et jour d'envoi | A.8 | Une fois par mois pour tous, chaque semaine avec OCD Business ; le vendredi |
 | Personnes dans l'équipe d'un vendeur, au plus | A.9 | 5 |
+| Fonctions Business offertes à tous | B.1 | Oui, jusqu'au lancement d'OCD Business |
 
 ### Sur la fiche du vendeur (back-office)
 
@@ -207,6 +241,7 @@ s'applique.
 | Mode vacances (dates), mis par l'équipe pour le vendeur au besoin | A.5 |
 | Mise de côté permise | A.7 |
 | Personnes de son équipe : ajouter, retirer | A.9 |
+| Formule Business, jusqu'au… (comme le pass de l'annuaire) | B.1 |
 
 ### Listes et automatisations (écrans qui existent déjà)
 
@@ -241,22 +276,13 @@ plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
 | 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur reprend la fiche « lieu » |
 | 10. Points relais | Les lieux (M), A.6 | Un point relais est un lieu ; A.6 se fait avec le chantier 10 |
 | 11. Ambassadeurs | Partager un produit (1.3) | Le lien de partage reçoit ensuite le lien personnel de l'ambassadeur |
-| 12. OCD Business | Plusieurs lieux, stock par magasin, équipe du vendeur, statistiques | À décider : ce qui est réservé à la formule (voir « Encore ouvert ») |
+| 12. OCD Business | Plusieurs lieux, stock par magasin, équipe du vendeur, statistiques | Ce qui est réservé à la formule est décidé (section OCD Business) ; l'interrupteur (B.1) est déjà fait quand le chantier 12 commence |
 | 13. Diaspora | Retrait en magasin (A.1) | Un proche retire en magasin ce qu'on lui a acheté : le code part sur son WhatsApp |
 | 14. Live sur la plateforme | Préparer son prochain live (3.2) | Les produits préparés s'affichent dans le lecteur du live |
 
 Écarté le 14 novembre et à ne pas réintroduire : « Préparer son prochain live » (3.2) reste le choix
 des produits pour la régie, sans numéros de produits ni page « Je prends » ; aucune intelligence
 artificielle.
-
-## Encore ouvert
-
-- **OCD Business (chantier 12) : ce qui est réservé à la formule.** Proposition : ce qui aide un
-  petit vendeur à vendre reste pour tous (corrections, étapes 1 à 3, un magasin, retrait, mise de
-  côté) ; plusieurs lieux avec le stock par magasin, l'équipe du vendeur et les statistiques
-  détaillées vont dans la formule. Ces ajouts arrivent bien avant le chantier 12 : à décider
-  maintenant, ou les annoncer « offerts pendant le lancement », pour ne pas retirer plus tard ce
-  que des vendeurs utilisent déjà.
 
 ## Écarté le 16 novembre 2026
 
