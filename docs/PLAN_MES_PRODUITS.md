@@ -3,7 +3,8 @@
 Page du vendeur `/ocd/espace/moi/produits` (design `MesProduits`) et ce qui s'y rattache. Plan
 retenu le 16 novembre 2026, après une relecture du code : d'abord les corrections, puis les ajouts,
 du plus rapide au plus long. Les durées sont des estimations, tests compris. Les décisions prises
-sont en bas ; chacune rejoindra `DECISIONS.md` quand ce qu'elle règle sera fait.
+et les réglages des administrateurs sont en bas ; chaque décision rejoindra `DECISIONS.md` quand ce
+qu'elle règle sera fait.
 
 ## Étape 0 : corrections, avant tout le reste (~1,5 semaine)
 
@@ -17,7 +18,10 @@ sont en bas ; chacune rejoindra `DECISIONS.md` quand ce qu'elle règle sera fait
 | 0.6 | **Appareil photo ou galerie** | La plupart des téléphones Android ouvrent seulement l'appareil photo (`capture="environment"`) | Les deux : « Ajouter une photo », le téléphone propose l'appareil photo ou la galerie ; nouvelle raison de refus « Photo qui n'est pas la tienne » | ~½ jour |
 | 0.7 | **Motif du refus, corriger et renvoyer** | La décision de l'équipe dit qu'un refus envoie un motif au vendeur (`DECISIONS.md:140`), mais pour un produit le motif reste en note interne (`product_template.py:61`) : le vendeur voit « Refusé » sans savoir pourquoi, et ne peut rien corriger | Le message du motif s'affiche sous le produit ; le vendeur corrige et le renvoie à la vérification | ~2 jours |
 
-## Étape 1 : rapide, avec ce qui existe déjà (~1 semaine)
+Dès le début de l'étape 0 : écrire et soumettre à Meta les modèles WhatsApp du plan (voir les
+décisions), car leur approbation ne dépend pas de nous.
+
+## Étape 1 : rapide, avec ce qui existe déjà (~2 semaines)
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
@@ -27,12 +31,13 @@ sont en bas ; chacune rejoindra `DECISIONS.md` quand ce qu'elle règle sera fait
 | 1.4 | **Filtrer par état** | « À vérifier », « Refusé », « Épuisé », « En vente », quand le catalogue grandit | États déjà calculés par la page | ~½ jour |
 | 1.5 | **Dupliquer un produit** | Le même modèle dans un autre tissu : la copie part à la vérification | Ajout d'un produit | ~1 jour |
 | 1.6 | **Ordre de la boutique** | Monter un produit, en mettre un en avant | Ordre des produits de la boutique (`website_sequence`) | ~1 jour |
+| 1.7 | **Catalogue pour le statut WhatsApp** | Des images prêtes à poster (produits, prix, QR de la boutique), téléchargées d'un geste ; fait avec 1.3 | Image d'annonce du live (`ocd_live/announce_image.py`), QR code (`ocd_live/tools.py`) | 3 à 4 jours |
 
 ## Étape 2 : gérer ses produits (~2 semaines)
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
-| 2.1 | **Modifier** | Nouveau nom ou nouvelle photo : vérifiés par l'équipe, l'ancienne version reste en vente en attendant. Prix : sans vérification, mais un grand écart se confirme (« Tu passes de 15 000 F à 1 500 F, c'est bien ça ? ») et l'équipe voit l'historique des prix. Stock : jamais vérifié | Formulaire d'ajout, écran « À vérifier » | 4 à 5 jours |
+| 2.1 | **Modifier** | Nouveau nom ou nouvelle photo : vérifiés par l'équipe, l'ancienne version reste en vente en attendant. Prix : sans vérification, mais un grand écart se confirme (« Tu passes de 15 000 F à 1 500 F, c'est bien ça ? ») et l'équipe voit l'historique des prix. Stock : jamais vérifié. Les photos de couleur suivent la même règle (aujourd'hui publiées sans vérification) | Formulaire d'ajout, écran « À vérifier » | 4 à 5 jours, plus ~½ jour pour les photos de couleur |
 | 2.2 | **Retirer** | Ne plus montrer un produit, et pouvoir le remettre ; jamais supprimé, les commandes passées le gardent | Produits masqués (`is_published`) | ~½ jour |
 | 2.4 | **WhatsApp accepté ou refusé** | « Ton produit Robe wax est en vente » ou « … est refusé : photo floue », avec le lien de la page | Messages WhatsApp aux vendeurs | 1 à 2 jours, plus l'approbation des modèles par Meta |
 | 2.5 | **Stock par taille et par couleur** | Les − / + pour chaque variante (aujourd'hui seulement les produits sans variantes) ; fait avec S.2, en un seul écran de stock | Réglage du stock (`_ocd_set_stock`), photos des couleurs | Compté dans S.2 |
@@ -48,7 +53,7 @@ sont en bas ; chacune rejoindra `DECISIONS.md` quand ce qu'elle règle sera fait
 | 3.4 | **Alerte de stock bas** | WhatsApp au vendeur quand il reste peu de pièces (2 par défaut) | Messages WhatsApp aux vendeurs, stock | 1 à 2 jours, plus l'approbation du modèle par Meta |
 | 3.5 | **Tailles et couleurs dès la création** | Le vendeur choisit les tailles et les couleurs en ajoutant le produit, au lieu de l'équipe | Attributs et variantes d'Odoo, photos des couleurs | 1 à 2 semaines |
 
-## Magasins du vendeur (~2 semaines)
+## Magasins du vendeur (~2,5 semaines)
 
 Le client sait où se trouvent les magasins du vendeur ; le vendeur les enregistre et les règle dans
 son espace ; l'équipe les voit dans le back-office.
@@ -70,6 +75,8 @@ toujours l'adresse complète (le livreur vient y chercher les colis).
 | M.3 | **Fiche produit** | « Aussi en magasin : Akwa, Bonapriso », vers les magasins de la boutique ; devient la disponibilité par magasin avec S.3 | Fiche produit | ~½ jour |
 | M.4 | **Back-office** | Onglet « Magasins » sur la fiche du vendeur ; menu avec tous les magasins (filtres par ville, vendeur, état) ; l'équipe peut les saisir pour un vendeur ; lien vers la carte | Fiche vendeur | ~1 jour |
 | M.5 | **Vérification** | Un magasin est vérifié avant d'être montré : photo de la devanture (enseigne visible) et position prise sur place. Seuls un changement d'adresse, de position ou de photo repassent à la vérification ; horaires, téléphone et « fermé jusqu'au… » changent tout de suite. Un refus envoie son motif | Écran « À vérifier », raisons de refus | 1 à 2 jours |
+| M.6 | **Visites grâce à OCD** | « 18 personnes ont demandé l'itinéraire de ton magasin cette semaine » : appuis sur Itinéraire, Appeler et WhatsApp comptés par magasin ; fait avec M.2 | Même principe que les clics WhatsApp (1.1) | ~1 jour |
+| M.7 | **Affiche QR du magasin** | Affiche ou autocollant à imprimer (« Commandez aussi en ligne, livré chez vous ») avec le QR de la boutique ; étiquettes de prix avec le QR de chaque produit | Image d'annonce du live, QR code | ~2 jours |
 
 ## Stock par magasin (3 à 4 semaines)
 
@@ -92,7 +99,7 @@ de nouveau. Les vendeurs dont les produits sont dans le stock d'OCD ne sont pas 
 | S.5 | **Retrait dans un magasin** | Le client ne choisit qu'un magasin qui a le produit | Retrait en magasin (A.1) | ~1 jour de plus sur A.1 |
 | S.6 | **Back-office** | Stock par magasin sur la fiche produit et la fiche vendeur | Stock par emplacement d'Odoo | ~1 jour |
 
-## Autour des magasins et de la boutique (~4 semaines)
+## Autour des magasins et de la boutique (7 à 8 semaines)
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
@@ -102,12 +109,16 @@ de nouveau. Les vendeurs dont les produits sont dans le stock d'OCD ne sont pas 
 | A.4 | **Point de départ des colis** | Le vendeur choisit le magasin d'où partent ses colis : le livreur vient l'y chercher, le prix de la livraison part de là | Départ des colis (`_ocd_origin`, aujourd'hui la ville du vendeur), tournées des livreurs | ~2 jours |
 | A.5 | **Mode vacances** | « De retour le 2 janvier » sur la boutique : produits visibles, commandes en pause, « Préviens-moi à son retour » | « Préviens-moi » de la boutique (`ocd.boutique.alert`) | ~2 jours ; ne dépend pas des magasins, peut se faire tôt |
 | A.6 | **Magasins points relais** | Les vendeurs qui le veulent gardent les colis d'autres vendeurs | Magasins (M.1) | Avec le chantier 10 (Points relais) de la feuille de route |
+| A.7 | **Mettre de côté pour essayer** | Le client réserve une pièce dans un magasin pour venir l'essayer ; le vendeur est prévenu et peut refuser ; la pièce est libérée seule après le délai. Garde-fous : 24 h, une réservation active par client chez un vendeur, plus de réservation après deux absences | Stock par magasin (S), magasins (M.1) | ~1 semaine, après S et A.1 |
+| A.8 | **Nouveautés aux abonnés** | Un message groupé par semaine : « Cette semaine chez Awa : 3 nouveautés », seulement à ceux qui suivent le vendeur | « Suivre un vendeur » (chantier 1 de la feuille de route), modèle WhatsApp *Marketing* | 2 à 3 jours, après le chantier 1 |
+| A.9 | **Équipe du vendeur** | La vendeuse d'un magasin a son propre accès, limité au stock et aux commandes de son magasin, sans les prix ni les reversements | Connexion par lien ou code WhatsApp, magasins, stock par magasin | 1 à 2 semaines, en dernier |
 
 ## Ordre de travail
 
-Étape 0 → étape 1 → magasins (M) → stock par magasin (S, avec 2.5) → reste de l'étape 2 → autour
-des magasins (A) → étape 3. Le mode vacances (A.5) peut remonter à tout moment. En tout, 4 à 5 mois
-de travail.
+Étape 0 (et les modèles WhatsApp soumis à Meta) → étape 1 → magasins (M) → stock par magasin (S,
+avec 2.5) → reste de l'étape 2 → autour des magasins (A.1 à A.7) → étape 3 → équipe du vendeur
+(A.9). Le mode vacances (A.5) peut remonter à tout moment ; les nouveautés (A.8) viennent après le
+chantier 1 de la feuille de route. En tout, 5 à 6 mois de travail.
 
 ## Décisions prises le 16 novembre 2026
 
@@ -117,6 +128,8 @@ de travail.
   vérification de l'équipe (0.6).
 - **Modification d'un produit** : nouveau nom ou nouvelle photo vérifiés, l'ancienne version restant
   en vente en attendant ; prix sans vérification, grand écart à confirmer ; stock jamais vérifié (2.1).
+- **Photos de couleur** : vérifiées comme les autres photos ; une photo ajoutée par l'équipe ne l'est
+  pas (2.1).
 - **Magasins vérifiés avant d'être montrés** : photo de la devanture et position prise sur place ;
   seuls l'adresse, la position et la photo repassent à la vérification (M.5).
 - **Vendeur qui vend depuis chez lui** : le quartier, « Sur rendez-vous » et WhatsApp, rien de plus ;
@@ -127,24 +140,100 @@ de travail.
   le magasin de départ, sinon un colis par magasin (S.4).
 - **Ce que voit le client** : « Disponible » ou « Épuisé » par magasin et « Plus que N », sans le
   nombre exact de chaque magasin (S.3).
+- **Design** : les petits ajouts dans un écran existant sont faits avec les composants existants et
+  validés sur une capture du téléphone ; les nouveaux écrans et parcours (Mes magasins, Nos
+  magasins, écran du stock, choix du retrait, vérification des magasins) sont d'abord dessinés dans
+  `prototype/design-valide/`, validés, puis faits.
+- **Modèles WhatsApp** : écrits et soumis à Meta dès le début de l'étape 0. Les messages
+  d'information (produit ou magasin accepté ou refusé, stock bas, colis prêt au retrait) en
+  *Utility*, sans promotion ni invitation à acheter, sinon Meta les refuse (`INCORRECT_CATEGORY`,
+  voir `PROGRESSION.md`) ; les nouveautés (A.8) en *Marketing*, plus strict et plus cher.
+
+## Réglages des administrateurs
+
+Ce que l'équipe pourra changer dans Odoo sans toucher au code. Chaque réglage est fait avec son
+chantier, dans les écrans qui existent déjà.
+
+### Paramètres d'OCD Live (OCD Live › Configuration › Paramètres)
+
+Une nouvelle section « Produits et magasins des vendeurs », comme « Shop et livraisons ».
+
+| Réglage | Chantier | Par défaut |
+|---|---|---|
+| Photos de la galerie acceptées | 0.6 | Oui |
+| Taille maximale d'une photo envoyée | 0.4 | 10 Mo (aujourd'hui écrit dans le code : `MAX_PHOTO_BYTES`) |
+| Taille des photos réduites dans le téléphone | 0.4 | 1600 px de côté |
+| Changements vérifiés par l'équipe | 2.1, 2.6 | Nom, photos, photos de couleur ; pas le prix |
+| Écart de prix à confirmer par le vendeur | 2.1 | 50 % |
+| « Plus que N » sur les cartes et par magasin | S.3 | 3 (aujourd'hui écrit dans le code : `LOW_STOCK`) |
+| Seuil de l'alerte de stock bas | 3.4 | 2 pièces |
+| Prix promo : durée et remise au plus | 3.1 | 30 jours, 50 % (à confirmer) |
+| Tailles et couleurs proposées aux vendeurs | 3.5 | Les attributs choisis par l'équipe (taille, couleur, pointure…) |
+| Lieux par vendeur, au plus | M.1 | 5 |
+| Horaires proposés à un nouveau magasin | M.1 | Lun.–sam., 8 h–19 h |
+| Vente depuis chez soi permise | M | Oui |
+| Magasins vérifiés avant d'être montrés ; photo de la devanture et position obligatoires | M.5 | Oui |
+| Cartes de l'itinéraire | M.2 | Google Maps (ou OpenStreetMap) |
+| Texte de l'affiche QR | M.7 | « Commandez aussi en ligne, livré chez vous » |
+| Produits par image du catalogue | 1.7 | 4 |
+| Stock par magasin | S | Activé, à partir de 2 lieux |
+| Magasin qui sert une livraison | S.4 | Ville du client d'abord, puis le magasin de départ |
+| Retrait en magasin | A.1 | Activé |
+| Paiements au retrait | A.1 | Les mêmes que le paiement à la porte |
+| Délai pour venir chercher un colis | A.1 | 3 jours (à décider : ce qui se passe après) |
+| Mise de côté : durée, réservations actives par client, absences avant blocage | A.7 | 24 h, 1, 2 |
+| Mode vacances : durée au plus | A.5 | 60 jours |
+| Nouveautés aux abonnés : jour d'envoi | A.8 | Un message par semaine, le vendredi |
+| Personnes dans l'équipe d'un vendeur, au plus | A.9 | 5 |
+
+### Sur la fiche du vendeur (back-office)
+
+Comme pour le temps de préparation d'un colis aujourd'hui : laissé vide, le réglage général
+s'applique.
+
+| Réglage | Chantier |
+|---|---|
+| Seuil de l'alerte de stock bas | 3.4 |
+| Lieux au plus | M.1 |
+| Retrait en magasin permis | A.1 |
+| Encaisse les espèces (existe déjà : `ocd_vendor_collects`), aussi au retrait | A.1 |
+| Magasin de départ des colis (choisi par le vendeur, changé par l'équipe au besoin) | A.4 |
+| Mode vacances (dates), mis par l'équipe pour le vendeur au besoin | A.5 |
+| Mise de côté permise | A.7 |
+| Personnes de son équipe : ajouter, retirer | A.9 |
+
+### Listes et automatisations (écrans qui existent déjà)
+
+| Écran | Ce que l'équipe y règle | Chantiers |
+|---|---|---|
+| Raisons de refus (lien depuis les Paramètres) | Les motifs et leur message au vendeur ; nouveaux : « Photo qui n'est pas la tienne », motifs des magasins (« Devanture absente », « Position loin de l'adresse ») | 0.6, 0.7, M.5 |
+| Automatisations (`ocd.automation`, un interrupteur par règle) | Allumer ou éteindre : WhatsApp produit accepté ou refusé, magasin accepté ou refusé, stock bas, colis prêt au retrait, colis pas venu chercher, mise de côté libérée, nouveautés aux abonnés, « Préviens-moi » au retour de vacances | 2.4, 3.4, M.5, A.1, A.5, A.7, A.8 |
+| WhatsApp › Modèles | Les textes des messages, soumis à Meta | Tous les messages |
+| Attributs et valeurs d'Odoo | Tailles, couleurs et leur teinte | 2.5, 3.5 |
+| Villes et quartiers | Les listes des lieux | M.1, A.3 |
+
+### Ce qui reste fixe dans le code
+
+Ce qui protège l'argent, les preuves ou les personnes, comme les automatisations « toujours
+actives » : pas de remise sans paiement, un code par colis, un produit retiré jamais supprimé (les
+commandes passées le gardent), l'adresse d'un vendeur qui vend depuis chez lui jamais montrée aux
+clients, le stock jamais vérifié.
 
 ## Encore ouvert
 
-- **Design** : le site suit le design validé. Les nouveaux éléments (filtres, chiffres, modifier,
-  magasins, promo…) sont à ajouter au design et à valider, ou à faire avec les composants existants
-  puis à valider sur l'écran.
-- **Photos des couleurs** : publiées aujourd'hui sans vérification ; à aligner sur la règle de 2.1 ?
-- **Modèles WhatsApp** à faire approuver par Meta : produit accepté, produit refusé, stock bas.
-- **Idées proposées, sans réponse** : affiche QR du magasin, mettre de côté pour essayer, catalogue
-  pour le statut WhatsApp, code promo du vendeur, nouveautés aux abonnés, équipe du vendeur, visites
-  grâce à OCD.
+- **Retrait en magasin** : ce qui se passe quand le client ne vient pas dans le délai (annulé et
+  remboursé, ou rappel puis annulé).
 
 ## Liens avec la feuille de route
 
 « Ventes par produit » (3.3) rejoint le chantier 3 (Statistiques du vendeur) ; « Partager un
 produit » (1.3) prépare le chantier 11 (Ambassadeurs) ; les magasins points relais (A.6) se font
-avec le chantier 10 (Points relais).
+avec le chantier 10 (Points relais) ; les nouveautés aux abonnés (A.8) suivent le chantier 1 (Suivre
+un vendeur).
 
 ## Écarté le 16 novembre 2026
 
-Ajouter un produit par WhatsApp (envoyer une photo et un prix au numéro d'OCD).
+- Ajouter un produit par WhatsApp (envoyer une photo et un prix au numéro d'OCD).
+- Code promo du vendeur, pour l'instant : deux façons de baisser un prix avec le prix promo (3.1) ;
+  dans un panier de plusieurs vendeurs, le code ne doit toucher que les produits de son vendeur et
+  la commission se calcule sur le prix réduit. À revoir après 3.1 si les vendeurs le demandent.
