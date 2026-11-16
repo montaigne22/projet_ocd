@@ -2495,3 +2495,95 @@
         display: none !important;
     }
 }
+
+// The stores of a vendor in their boutique (VitrineMagasins, chantier 17)
+.o_ocd_vendor_stores {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14.5px;
+    font-weight: 700;
+    text-decoration: underline;
+    .o_ocd_icon {
+        width: 18px;
+        height: 18px;
+    }
+}
+.o_ocd_product_stores {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    .o_ocd_icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+.o_ocd_stores {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-margin-top: 90px;
+    .o_ocd_store {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 12px;
+    }
+    .o_ocd_store_photo {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 12px;
+        background: $ocd-sand;
+    }
+    .o_ocd_store_text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 14px;
+        b:first-child {
+            font-size: 16px;
+        }
+    }
+    .o_ocd_place_is_open {
+        color: $ocd-green-text;
+    }
+    .o_ocd_place_is_closed {
+        color: $ocd-muted;
+    }
+    .o_ocd_store_hours {
+        font-size: 14px;
+        summary {
+            cursor: pointer;
+            font-weight: 700;
+        }
+        span {
+            display: block;
+            color: $ocd-muted;
+            margin-top: 4px;
+        }
+    }
+    .o_ocd_store_actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: 8px;
+    }
+    .o_ocd_store_action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        border-radius: 12px;
+        box-shadow: inset 0 0 0 2px $ocd-line;
+        font-weight: 700;
+        font-size: 14.5px;
+        color: $ocd-ink;
+    }
+    .o_ocd_store_main {
+        background: $ocd-orange;
+        box-shadow: none;
+    }
+}

@@ -875,6 +875,21 @@ export class OcdPlaceForm extends Interaction {
 }
 
 /**
+ * The boutique: the itinerary, the call or the message of a store counted for its vendor
+ * (« 18 itineraries this week »), by a beacon; the link opens as usual.
+ */
+export class OcdPlaceTap extends Interaction {
+    static selector = "[data-tap]";
+    dynamicContent = {
+        _root: { "t-on-click": this.tap },
+    };
+
+    tap() {
+        navigator.sendBeacon?.(this.el.dataset.tap);
+    }
+}
+
+/**
  * My delivery prices: the districts of the city chosen.
  */
 export class OcdVendorRatesForm extends Interaction {
@@ -928,4 +943,5 @@ registry
     .add("ocd_live_shop.product_form", OcdProductForm)
     .add("ocd_live_shop.product_filters", OcdProductFilters)
     .add("ocd_live_shop.place_form", OcdPlaceForm)
+    .add("ocd_live_shop.place_tap", OcdPlaceTap)
     .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm);

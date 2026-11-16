@@ -9,6 +9,7 @@ from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
 from . import shop_common
+from .vendor_places import place_photo_url
 
 def platform(url):
     """Return the name of the platform of a live link ("TikTok"), or "" (the live platforms of
@@ -166,10 +167,47 @@ class OcdBoutique(http.Controller):
         }
 
     def _location(self, vendor):
-        place = ", ".join(part for part in (vendor.city, vendor.district_id.name) if part)
-        if vendor.delivery_landmark:
-            place = " · ".join(part for part in (place, vendor.delivery_landmark) if part)
-        return place
+        """The city and the district of the vendor: never their landmark, which is the address
+        where they receive the couriers (their home, when they sell from home). The stores show
+        their own landmark."""
+        return ", ".join(part for part in (vendor.city, vendor.district_id.name) if part)
+
+    def _stores(self, vendor):
+        """The places of the vendor the customers see (VitrineMagasins): a store with its front,
+        open or closed at its hour, its hours, the itinerary, call, WhatsApp; a home with its
+        district and WhatsApp only. And the line under the name: « 2 stores in Douala »."""
+        env = request.env
+        places = env["ocd.vendor.place"]._ocd_shown_places(vendor)
+        vendor_digits = re.sub(r"\D", "", vendor.phone or "")
+        rows = []
+        for place in places:
+            store = place.kind == "store"
+            digits = re.sub(r"\D", "", place.phone or "") if store else ""
+            chat = digits or vendor_digits
+            text = (env._("Hello, I saw your store %s on OCD Live.", place.name) if store
+                    else env._("Hello, I saw your boutique on OCD Live: when can I come by?"))
+            rows.append({
+                "place": place,
+                "store": store,
+                "title": place.name if store else place._ocd_area(),
+                "address": place._ocd_address_line() if store else env._("By appointment: write before you come."),
+                "photo": place_photo_url(place, 512) if store else False,
+                "open": place._ocd_open_state() if store else False,
+                "hours": place._ocd_hours_lines() if store else [],
+                "directions": place._ocd_directions_url() if store else False,
+                "call": f"tel:+{digits or vendor_digits}" if store and len(digits or vendor_digits) >= 8 else False,
+                "whatsapp": f"https://wa.me/{chat}?text={url_quote(text)}" if len(chat) >= 8 else False,
+            })
+        stores = [row for row in rows if row["store"]]
+        cities = {row["place"].city_id.name for row in stores if row["place"].city_id}
+        if not stores:
+            line = False
+        elif len(cities) == 1:
+            city = cities.pop()
+            line = env._("1 store in %s", city) if len(stores) == 1 else env._("%(count)s stores in %(city)s", count=len(stores), city=city)
+        else:
+            line = env._("%s stores", len(stores))
+        return rows, line
 
     @http.route(
         "/ocd/boutique/<int:vendor_id>", type="http", auth="public", website=True, sitemap=False,
@@ -182,6 +220,7 @@ class OcdBoutique(http.Controller):
         replay = self._last_replay(vendor) if not live else False
         on_screen = live.current_product_tmpl_id if live else False
         visitor = common.current_vendor()
+        stores, stores_line = self._stores(vendor)
         products = self._products(vendor)
         price_by_id = shop_common.prices(products)
         country = vendor.country_id
@@ -198,6 +237,8 @@ class OcdBoutique(http.Controller):
             sold_by_ocd=vendor.ocd_sale_mode == "ocd",
             flag=country.code.lower() if country else False,
             location=self._location(vendor),
+            stores=stores,
+            stores_line=stores_line,
             live=self._live_info(live) if live else False,
             on_screen=self._product_card(on_screen) if on_screen else False,
             next_live=self._next_info(next_live) if next_live else False,

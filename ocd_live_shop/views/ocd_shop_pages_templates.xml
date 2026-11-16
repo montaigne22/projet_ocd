@@ -156,6 +156,9 @@
                         </span>
                         <span class="o_ocd_link">Their boutique</span>
                     </a>
+                    <a t-if="also_in_stores" t-attf-href="/ocd/boutique/#{vendor.id}#magasins" class="o_ocd_link o_ocd_product_stores">
+                        <t t-call="ocd_live.icon" icon.f="pin"/>Also in store: <t t-out="also_in_stores"/>
+                    </a>
                     <t t-foreach="lines" t-as="row">
                         <fieldset class="o_ocd_product_choice" t-att-data-line="row['line'].id">
                             <legend>

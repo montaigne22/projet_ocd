@@ -198,3 +198,41 @@ class TestOcdVendorPlacesPages(HttpCase, OcdShopCommon):
         self.url_open(f"/ocd/espace/moi/magasins/{store.id}/retirer", data={"csrf_token": self.csrf_token()})
         self.assertFalse(store.active)
         self.assertFalse(self.brenda.ocd_departure_place_id, "No longer the place of the parcels")
+
+    def test_the_customers_see_the_stores(self):
+        self.brenda.write({"delivery_landmark": "Maison bleue derrière l'école", "ocd_sale_mode": "direct"})
+        Place = self.env["ocd.vendor.place"]
+        store = Place._ocd_vendor_create(self.brenda, {
+            "name": "Brenda Wax Akwa", "district_id": self.akwa.id, "city_id": self.akwa.city_id.id,
+            "landmark": "En face de la pharmacie du Port", "latitude": 4.0511, "longitude": 9.6942,
+            "phone": "+237 670000009", "photo": BinaryBytes(PNG, filename="devanture.png"),
+        })
+        store._ocd_set_hours(self.company._ocd_place_default_intervals())
+        home = Place._ocd_vendor_create(self.brenda, {"name": "Chez moi", "kind": "home", "district_id": self.akwa.id,
+                                                      "city_id": self.akwa.city_id.id, "landmark": "Porte verte"})
+        self.authenticate(None, None)
+        page = self.url_open(f"/ocd/boutique/{self.brenda.id}").text
+        self.assertNotIn("Brenda Wax Akwa", page, "Not checked yet")
+        self.assertNotIn("Maison bleue", page, "Never the landmark of the vendor")
+        self.assertNotIn("Porte verte", page, "Never the landmark of a home")
+        self.assertIn("By appointment: write before you come.", page)
+        store.action_ocd_approve()
+        self.dress.product_tmpl_id.is_published = True
+        page = self.url_open(f"/ocd/boutique/{self.brenda.id}").text
+        self.assertIn("1 store in Douala", page)
+        self.assertIn("En face de la pharmacie du Port", page)
+        self.assertIn("https://www.google.com/maps/dir/?api=1&amp;destination=4.051100,9.694200", page)
+        self.assertIn('href="tel:+237670000009"', page)
+        self.assertIn(f'data-tap="/ocd/magasin/{store.id}/visite/itinerary"', page)
+        self.assertIn(f"/ocd/magasin/{store.id}/photo", page)
+        self.assertIn("Also in store: Akwa", self.url_open(self.dress.product_tmpl_id.website_url).text)
+        # The visits: once per visitor every 10 minutes, never for a place not shown
+        visit = f"/ocd/magasin/{store.id}/visite/itinerary"
+        self.assertEqual(self.url_open(visit, data={"t": "1"}).status_code, 204)
+        self.url_open(visit, data={"t": "1"})
+        self.url_open(f"/ocd/magasin/{store.id}/visite/call", data={"t": "1"})
+        self.url_open(f"/ocd/magasin/{store.id}/visite/hack", data={"t": "1"})
+        self.assertEqual(store._ocd_week_taps()[store.id], {"itinerary": 1, "call": 1, "whatsapp": 0})
+        store.action_ocd_refuse(self.env.ref("ocd_live_shop.refuse_reason_store_front"))
+        self.url_open(f"/ocd/magasin/{store.id}/visite/whatsapp", data={"t": "1"})
+        self.assertEqual(store._ocd_week_taps()[store.id]["whatsapp"], 0)

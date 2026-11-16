@@ -41,6 +41,10 @@
                         <span t-if="flag" t-attf-class="o_ocd_flag o_ocd_flag_#{flag}"/>
                         <span t-out="location"/>
                     </span>
+                    <a t-if="stores_line" href="#magasins" class="o_ocd_vendor_stores">
+                        <t t-call="ocd_live.icon" icon.f="pin"/>
+                        <span t-out="stores_line"/>
+                    </a>
 
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
 
@@ -145,6 +149,35 @@
                         </t>
                     </div>
                     <div t-else="" class="o_ocd_info">The products of this boutique are coming soon.</div>
+
+                    <!-- Their stores (VitrineMagasins, chantier 17): the visits are counted -->
+                    <section t-if="stores" id="magasins" class="o_ocd_stores">
+                        <h2 class="o_ocd_section">Their stores</h2>
+                        <t t-foreach="stores" t-as="row">
+                            <div class="o_ocd_store">
+                                <img t-if="row['photo']" t-att-src="row['photo']" alt="" class="o_ocd_store_photo" loading="lazy" width="512" height="512"/>
+                                <span class="o_ocd_store_text">
+                                    <b t-out="row['title']"/>
+                                    <span t-out="row['address']"/>
+                                    <span t-if="row['open']">
+                                        <b t-attf-class="#{'o_ocd_place_is_open' if row['open']['open'] else 'o_ocd_place_is_closed'}" t-out="row['open']['label']"/>
+                                    </span>
+                                </span>
+                                <details t-if="row['hours']" class="o_ocd_store_hours">
+                                    <summary>See the hours</summary>
+                                    <span t-foreach="row['hours']" t-as="line" t-out="line"/>
+                                </details>
+                                <div class="o_ocd_store_actions">
+                                    <a t-if="row['directions']" t-att-href="row['directions']" target="_blank" rel="noopener"
+                                       class="o_ocd_store_action o_ocd_store_main" t-attf-data-tap="/ocd/magasin/#{row['place'].id}/visite/itinerary">Itinerary</a>
+                                    <a t-if="row['call']" t-att-href="row['call']" class="o_ocd_store_action"
+                                       t-attf-data-tap="/ocd/magasin/#{row['place'].id}/visite/call">Call</a>
+                                    <a t-if="row['whatsapp']" t-att-href="row['whatsapp']" target="_blank" rel="noopener nofollow" class="o_ocd_store_action"
+                                       t-attf-data-tap="/ocd/magasin/#{row['place'].id}/visite/whatsapp">WhatsApp</a>
+                                </div>
+                            </div>
+                        </t>
+                    </section>
                 </main>
             </div>
         </t>

@@ -280,6 +280,11 @@ class OcdShop(WebsiteSale):
                 env._("live now") if live_now else "",
             ) if part) if vendor else "",
             live_now=live_now,
+            # « Also in store: Akwa, Central market » (M.3 of the plan of « My products »)
+            also_in_stores=", ".join(dict.fromkeys(
+                place.district_id.name or place.name
+                for place in env["ocd.vendor.place"]._ocd_shown_places(vendor) if place.kind == "store"
+            )) if vendor else False,
             delivery_lines=delivery_lines,
             direct_line=env._(
                 "Payment and delivery are agreed directly with %s. OCD Live does not take the money for this product.",

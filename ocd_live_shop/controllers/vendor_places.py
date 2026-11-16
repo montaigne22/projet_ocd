@@ -1,4 +1,5 @@
 import re
+import time
 import uuid
 
 from odoo import fields, http
@@ -16,6 +17,9 @@ from .vendor_products import FORM_TOKEN, keep_photo, kept_photo, kept_values, pe
 HOUR = re.compile(r"(\d{1,2}):(\d{2})")
 # The sizes of the photo of a front
 PHOTO_SIZES = (128, 256, 512, 1024)
+# What a customer does with a store, counted for its vendor; once per visitor every 10 minutes
+TAP_KINDS = ("itinerary", "call", "whatsapp")
+TAP_EVERY = 600
 
 
 def parse_hour(text):
@@ -382,3 +386,22 @@ class OcdVendorPlaces(http.Controller):
         if not shown:
             response.headers["Cache-Control"] = response.headers.get("Cache-Control", "").replace("public", "private")
         return response
+
+    # === THE VISITS OF A STORE === #
+
+    @http.route("/ocd/magasin/<int:place_id>/visite/<string:kind>", type="http", auth="public", website=True,
+                methods=["POST"], csrf=False, sitemap=False)
+    def place_tap(self, place_id, kind, **kwargs):
+        """A customer asked for the itinerary of a store, called or wrote to it (a beacon of the
+        boutique: no form, so no token; it only counts). Once per place, kind and visitor every
+        10 minutes."""
+        Place = request.env["ocd.vendor.place"].sudo()
+        place = Place.browse(place_id).exists()
+        if place and kind in TAP_KINDS and place in Place._ocd_shown_places(place.vendor_id):
+            key, now = f"{place.id}:{kind}", time.time()
+            seen = {k: at for k, at in (request.session.get("ocd_place_taps") or {}).items() if now - at < TAP_EVERY}
+            if key not in seen:
+                seen[key] = now
+                request.env["ocd.vendor.place.tap"].sudo().create({"place_id": place.id, "kind": kind})
+            request.session["ocd_place_taps"] = seen
+        return request.make_response("", status=204)
