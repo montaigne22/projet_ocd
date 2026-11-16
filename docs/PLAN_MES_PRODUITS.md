@@ -46,6 +46,26 @@ Les durées sont des estimations, tests compris.
 | 3.4 | **Alerte de stock bas** | WhatsApp au vendeur quand il reste peu de pièces (2 par défaut) | Messages WhatsApp aux vendeurs, stock | 1 à 2 jours, plus l'approbation du modèle par Meta |
 | 3.5 | **Tailles et couleurs dès la création** | Le vendeur choisit les tailles et les couleurs en ajoutant le produit, au lieu de l'équipe | Attributs et variantes d'Odoo, photos des couleurs | 1 à 2 semaines |
 
+## Magasins du vendeur (~2 semaines, proposé juste après l'étape 1)
+
+Demandé le 16 novembre 2026 : le client sait où se trouvent les magasins du vendeur ; le vendeur
+les enregistre et les règle dans son espace ; l'équipe les voit dans le back-office.
+
+Un magasin est une fiche légère du vendeur : nom, ville et quartier (les listes déjà utilisées pour
+la livraison), repère (« en face de la pharmacie »), position, photo de la devanture, téléphone,
+horaires par jour, « fermé jusqu'au… ». Ce ne sont pas des entrepôts d'Odoo : les magasins du
+retrait d'Odoo (Click & Collect) sont des entrepôts de la société, et un entrepôt par magasin de
+vendeur créerait des emplacements et des routes de stock inutiles. Module : `ocd_live_shop`, qui a
+déjà la boutique et les quartiers.
+
+| # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
+|---|---|---|---|---|
+| M.1 | **Mes magasins** (espace vendeur) | Ajouter, modifier, retirer un magasin ; position prise par le bouton « Je suis dans mon magasin » (position du téléphone) ; horaires par jour ; fermé pour un temps | Espace vendeur, villes et quartiers (`res.city`, `res.city.district`), repère (`delivery_landmark`) | 3 à 4 jours |
+| M.2 | **Nos magasins** (boutique) | Pour chaque magasin : quartier et repère, photo, horaires, « Ouvert · ferme à 19 h » ou « Fermé · ouvre demain à 8 h » (à l'heure du magasin, même pour un client à l'étranger), boutons « Itinéraire », « Appeler », « WhatsApp ». Sous le nom du vendeur : « 2 magasins à Douala » | Boutique, fuseau horaire du vendeur, lien Google Maps déjà utilisé par WhatsApp | ~2 jours |
+| M.3 | **Fiche produit** | « Aussi en magasin : Akwa, Bonapriso », vers les magasins de la boutique | Fiche produit | ~½ jour |
+| M.4 | **Back-office** | Onglet « Magasins » sur la fiche du vendeur ; menu avec tous les magasins (filtres par ville, vendeur, état) ; l'équipe peut les saisir pour un vendeur ; lien vers la carte | Fiche vendeur | ~1 jour |
+| M.5 | **Vérification** | Nouveau magasin ou nouvelle adresse vérifiés par l'équipe (photo de la devanture, position) avant d'être montrés aux clients | Écran « À vérifier », raisons de refus | 1 à 2 jours |
+
 ## Décisions à prendre
 
 - **Revérification après une modification** (proposition) : un nouveau nom ou une nouvelle photo
@@ -58,6 +78,10 @@ Les durées sont des estimations, tests compris.
 - **Design** : le site suit le design validé. Les nouveaux éléments (filtres, chiffres, modifier,
   promo…) sont à ajouter au design `MesProduits` et à valider, ou à faire avec les composants
   existants puis à valider sur l'écran.
+- **Magasins vérifiés avant d'être montrés** (proposition : oui, comme les produits). Le client se
+  déplace : une fausse adresse lui coûte un trajet.
+- **Vendeur qui vend depuis chez lui** (proposition) : un réglage « montrer seulement le quartier,
+  sur rendez-vous », sans position ni repère, pour ne pas publier l'adresse de son domicile.
 - **Modèles WhatsApp** à faire approuver par Meta : produit accepté, produit refusé, stock bas.
 - **Liens avec la feuille de route** : « Ventes par produit » rejoint le chantier 3 (Statistiques
   du vendeur) ; « Partager un produit » prépare le chantier 11 (Ambassadeurs, lien personnel).
