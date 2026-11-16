@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>À vérifier : les magasins</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+.card{display:flex;flex-direction:column;gap:6px;background:#FFFFFF;border:1px solid #D3D7DB;border-radius:10px;padding:11px 12px}
+.sub{font-size:12.5px;color:#5A6068;line-height:1.35}
+.b{display:inline-flex;align-items:center;min-height:32px;border:1px solid #AEB4BA;border-radius:7px;padding:0 9px;font-size:12.5px;font-weight:700;background:#FFFFFF}
+.ok{min-height:32px;border:0;border-radius:7px;padding:0 10px;background:#0F7A43;color:#FFFFFF;font-family:inherit;font-size:12.5px;font-weight:700}
+.no{min-height:32px;border:1px solid #AEB4BA;border-radius:7px;padding:0 9px;background:#FFFFFF;color:#8E1220;font-family:inherit;font-size:12.5px;font-weight:700}
+.head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 2px 0;font-weight:700;font-size:14px}
+.count{min-width:22px;box-sizing:border-box;padding:0 7px;border-radius:11px;background:#FFE7D1;color:#8A3B00;font-size:12px;font-weight:700;line-height:22px;text-align:center}
+</style>
+</helmet>
+<!-- Le tableau « À vérifier » (BoVerification) reçoit une colonne « Nouveaux magasins » (chantier 17,
+     M.5) : la photo de la devanture, l'adresse et le repère, la position prise sur place à ouvrir
+     sur la carte ; Mettre en ligne, ou Refuser avec un motif envoyé au vendeur. Un changement
+     d'adresse, de position ou de photo revient ici ; les horaires et le téléphone, non. -->
+<div style="width: 1280px; height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F5F6; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 14px; line-height: 1.45; overflow: hidden">
+  <div style="height: 64px; display: flex; align-items: center; gap: 14px; padding: 0 22px; background: #FFFFFF; border-bottom: 1px solid #D3D7DB">
+    <b style="font-family: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif; font-size: 20px">À vérifier</b>
+    <span class="sub">(en-tête du back-office : BoShell)</span>
+  </div>
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 12px 22px 14px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div class="head"><span>Nouveaux vendeurs</span><span class="count">1</span></div>
+      <div class="card" style="opacity: .55"><b>(colonne existante)</b></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div class="head"><span>Nouveaux produits</span><span class="count">3</span></div>
+      <div class="card" style="opacity: .55"><b>(colonne existante)</b></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div class="head"><span>Nouveaux magasins</span><span class="count">2</span></div>
+      <div class="card">
+        <span style="height: 110px; border-radius: 8px; background: #F4F5F6; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #5A6068">Photo de la devanture</span>
+        <b style="font-size: 14px; line-height: 1.25">Awa Couture Marché central</b>
+        <span class="sub">Awa Couture · Cameroun · vendu par OCD</span>
+        <span style="font-size: 12.5px; line-height: 1.35">Centre, Douala · allée des tissus, stand 42 · lun.–sam. 8 h–19 h · +237 6 70 00 00 01</span>
+        <span style="font-size: 12.5px; line-height: 1.35; color: #0A5A31; font-weight: 700">Position prise sur place, à 15 m près</span>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap">
+          <a class="b">Voir la photo</a>
+          <a class="b">Voir sur la carte</a>
+          <button class="ok">Mettre en ligne</button>
+          <button class="no">Refuser</button>
+        </div>
+      </div>
+      <div class="card">
+        <b style="font-size: 14px; line-height: 1.25">Kossi Bijoux · nouvelle adresse</b>
+        <span class="sub">Kossi Bijoux · Togo · contact direct</span>
+        <span style="font-size: 12.5px; line-height: 1.35">Avant : Bè, Lomé. Maintenant : Tokoin, Lomé · près du marché de Tokoin</span>
+        <span style="font-size: 12.5px; line-height: 1.35; color: #8A3B00; font-weight: 700">Pas de photo de la devanture</span>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap">
+          <a class="b">Voir sur la carte</a>
+          <button class="ok">Mettre en ligne</button>
+          <button class="no">Refuser</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #EEF0F2; padding-top: 8px">
+          <label style="font-size: 12px; font-weight: 700; color: #3F454C">Motif envoyé au vendeur</label>
+          <select style="height: 32px; border: 1px solid #AEB4BA; border-radius: 7px; padding: 0 6px; font-family: inherit; font-size: 12.5px"><option>Devanture absente</option><option>Position loin de l'adresse</option><option>Adresse introuvable</option></select>
+          <button style="min-height: 32px; border: 0; border-radius: 7px; padding: 0 10px; background: #B01522; color: #FFFFFF; font-family: inherit; font-size: 12.5px; font-weight: 700">Confirmer le refus</button>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div class="head"><span>Liens de live</span><span class="count">4</span></div>
+      <div class="card" style="opacity: .55"><b>(colonne existante)</b></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mon magasin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+.d{font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-weight:800}
+.f{display:flex;flex-direction:column;gap:5px}
+.l{font-weight:700;font-size:14.5px}
+.i{height:50px;box-sizing:border-box;border-radius:14px;padding:0 14px;font-family:inherit;font-size:16.5px;color:#15130F;background:#FFFFFF;width:100%;border:2px solid #E7E2DC}
+.h{font-size:13px;color:#665F58;line-height:1.35}
+.day{display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:center;font-size:14.5px}
+.t{height:40px;border-radius:10px;border:2px solid #E7E2DC;padding:0 8px;font-family:inherit;font-size:15px;width:84px;box-sizing:border-box}
+</style>
+</helmet>
+<!-- Ajouter ou modifier un lieu (chantier 17, M.1) : un magasin ouvert au public, ou « je vends
+     depuis chez moi » (seulement le quartier et « Sur rendez-vous » pour les clients). -->
+<div style="width: 390px; height: 1640px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="MesMagasins.dc.html" aria-label="Retour à mes magasins" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span class="d" style="font-size: 19px">Mes magasins</span>
+  </div>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 6px 18px 14px">
+    <h1 class="d" style="margin: 0; font-size: 30px; line-height: 1.05; letter-spacing: -0.025em">Ajoute un lieu</h1>
+
+    <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px">
+      <legend class="l" style="padding: 0; margin-bottom: 6px">Où tes clients te trouvent</legend>
+      <label style="display: flex; gap: 10px; align-items: flex-start; border: 2px solid #15130F; border-radius: 14px; padding: 12px"><input type="radio" name="kind" checked style="width: 20px; height: 20px; margin: 2px 0 0; accent-color: #F46A00"><span><b>Un magasin ouvert au public</b><br><span class="h">Adresse, photo et itinéraire montrés aux clients.</span></span></label>
+      <label style="display: flex; gap: 10px; align-items: flex-start; border: 2px solid #E7E2DC; border-radius: 14px; padding: 12px"><input type="radio" name="kind" style="width: 20px; height: 20px; margin: 2px 0 0; accent-color: #F46A00"><span><b>Je vends depuis chez moi</b><br><span class="h">Les clients voient seulement ton quartier et « Sur rendez-vous ».</span></span></label>
+    </fieldset>
+
+    <div class="f"><label class="l" for="m-name">Nom du magasin</label><input id="m-name" class="i" value="Awa Couture Akwa"></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+      <div class="f"><label class="l" for="m-city">Ville</label><select id="m-city" class="i"><option>Douala</option></select></div>
+      <div class="f"><label class="l" for="m-district">Quartier</label><select id="m-district" class="i"><option>Akwa</option></select></div>
+    </div>
+    <div class="f"><label class="l" for="m-mark">Repère</label><input id="m-mark" class="i" value="En face de la pharmacie du Port"><span class="h">Un endroit connu tout près : le client et le livreur le trouvent.</span></div>
+
+    <div class="f">
+      <span class="l">Position du magasin</span>
+      <button style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border: 0; border-radius: 14px; background: #15130F; color: #FFFFFF; font-family: inherit; font-weight: 700; font-size: 15.5px"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 20px; height: 20px"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>Je suis dans mon magasin</button>
+      <span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: #0A5A31"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" style="width: 16px; height: 16px"><path d="M20 6L9 17l-5-5"></path></svg>Position prise, à 15 m près</span>
+      <span class="h">Prends-la dans ton magasin : l'itinéraire des clients part de là.</span>
+    </div>
+
+    <div class="f">
+      <span class="l">Photo de la devanture</span>
+      <span style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; height: 110px; border-radius: 18px; border: 2px dashed #E7E2DC; background: #F5F2EE; font-weight: 700"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 26px; height: 26px"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>Ajouter une photo</span>
+      <span class="h">Avec l'enseigne visible : les clients reconnaissent le magasin.</span>
+    </div>
+
+    <div class="f"><label class="l" for="m-phone">Téléphone du magasin</label><input id="m-phone" class="i" value="+237 6 70 00 00 01" inputmode="tel"></div>
+
+    <div class="f">
+      <span class="l">Horaires</span>
+      <div style="display: flex; flex-direction: column; gap: 6px; background: #F5F2EE; border-radius: 16px; padding: 12px">
+        <div class="day"><span>Lun.</span><span style="display: flex; gap: 6px; align-items: center"><input class="t" value="08:00"> à <input class="t" value="19:00"></span></div>
+        <div class="day"><span>Mar.</span><span style="display: flex; gap: 6px; align-items: center"><input class="t" value="08:00"> à <input class="t" value="19:00"></span></div>
+        <div class="day"><span>Mer.</span><span style="display: flex; gap: 6px; align-items: center"><input class="t" value="08:00"> à <input class="t" value="19:00"></span></div>
+        <div class="day"><span>Jeu.</span><span style="display: flex; gap: 6px; align-items: center"><input class="t" value="08:00"> à <input class="t" value="19:00"></span></div>
+        <div class="day"><span>Ven.</span><span style="display: flex; gap: 6px; align-items: center"><input class="t" value="08:00"> à <input class="t" value="19:00"></span></div>
+        <div class="day"><span>Sam.</span><span style="display: flex; gap: 6px; align-items: center"><input class="t" value="08:00"> à <input class="t" value="19:00"></span></div>
+        <div class="day"><span>Dim.</span><span style="font-weight: 700; color: #665F58">Fermé</span></div>
+        <span class="h">Touche un jour pour le fermer ou l'ouvrir.</span>
+      </div>
+    </div>
+
+    <div class="f">
+      <span class="l">Fermé pour un temps</span>
+      <span style="display: flex; align-items: center; gap: 8px; font-size: 14.5px"><input type="checkbox" style="width: 20px; height: 20px; accent-color: #F46A00"> Fermé jusqu'au <input class="t" style="width: 130px" value="02/01/2027"></span>
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid #E7E2DC; padding: 10px 14px 14px">
+    <button class="d" style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-size: 18.5px">Envoyer pour vérification</button>
+    <span class="h" style="display: block; text-align: center; margin-top: 6px">Les horaires, le téléphone et « fermé » changent tout de suite.</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

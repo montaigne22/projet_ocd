@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Boutique : ses magasins</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+.d{font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-weight:800}
+.act{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border:0;border-radius:12px;font-family:inherit;font-weight:700;font-size:14.5px}
+</style>
+</helmet>
+<!-- La boutique d'un vendeur, côté client, avec « Ses magasins » (chantier 17, M.2, M.3) : sous le
+     nom « 2 magasins à Douala » ; chaque magasin : devanture, quartier et repère, ouvert ou fermé à
+     l'heure du magasin, itinéraire, appeler, WhatsApp. Un vendeur chez lui : le quartier seulement. -->
+<div style="width: 390px; height: 1180px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="LivesPays.dc.html" aria-label="Retour" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span class="d" style="font-size: 19px">Boutique</span>
+  </div>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 6px 18px 14px">
+    <div style="display: grid; grid-template-columns: 68px 1fr; gap: 14px; align-items: center">
+      <span aria-hidden="true" class="d" style="width: 68px; height: 68px; border-radius: 50%; background: #FFE7D1; display: grid; place-items: center; font-size: 23px">AC</span>
+      <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+        <h1 class="d" style="margin: 0; font-size: 30px; line-height: 1.05; letter-spacing: -0.02em">Awa Couture</h1>
+        <span style="font-size: 14.5px; font-weight: 600">Habits · robes et boubous</span>
+      </div>
+    </div>
+    <a href="#magasins" style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 18px; height: 18px"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg><span style="text-decoration: underline">2 magasins à Douala</span></a>
+
+    <span style="border-radius: 14px; background: #F5F2EE; padding: 12px 14px; font-size: 14px; color: #665F58">(… le live, les produits : comme la Vitrine …)</span>
+
+    <h2 id="magasins" class="d" style="margin: 4px 0 0; font-size: 21px; line-height: 1.1">Ses magasins</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; border: 2px solid #E7E2DC; border-radius: 18px; padding: 12px">
+      <span style="height: 150px; border-radius: 12px; background: #F5F2EE; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #665F58">Photo de la devanture</span>
+      <span style="display: flex; flex-direction: column; gap: 2px">
+        <b style="font-size: 16px">Awa Couture Akwa</b>
+        <span style="font-size: 14px">Akwa · en face de la pharmacie du Port</span>
+        <span style="font-size: 14px"><b style="color: #0A5A31">Ouvert</b> · ferme à 19 h</span>
+      </span>
+      <details style="font-size: 14px"><summary style="cursor: pointer; font-weight: 700">Voir les horaires</summary><span style="display: block; margin-top: 6px; color: #665F58">Lun.–sam. : 8 h–19 h<br>Dim. : fermé</span></details>
+      <div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 8px">
+        <a class="act" style="background: #F46A00">Itinéraire</a>
+        <a class="act" style="box-shadow: inset 0 0 0 2px #E7E2DC">Appeler</a>
+        <a class="act" style="box-shadow: inset 0 0 0 2px #E7E2DC">WhatsApp</a>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; border: 2px solid #E7E2DC; border-radius: 18px; padding: 12px">
+      <span style="display: flex; flex-direction: column; gap: 2px">
+        <b style="font-size: 16px">Awa Couture Marché central</b>
+        <span style="font-size: 14px">Centre · allée des tissus, stand 42</span>
+        <span style="font-size: 14px"><b style="color: #665F58">Fermé</b> · ouvre demain à 8 h</span>
+      </span>
+      <div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 8px">
+        <a class="act" style="background: #F46A00">Itinéraire</a>
+        <a class="act" style="box-shadow: inset 0 0 0 2px #E7E2DC">Appeler</a>
+        <a class="act" style="box-shadow: inset 0 0 0 2px #E7E2DC">WhatsApp</a>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px; border: 2px solid #E7E2DC; border-radius: 18px; padding: 12px">
+      <span style="display: flex; flex-direction: column; gap: 2px">
+        <b style="font-size: 16px">Bonapriso</b>
+        <span style="font-size: 14px">Sur rendez-vous : écris avant de passer.</span>
+      </span>
+      <a class="act" style="box-shadow: inset 0 0 0 2px #E7E2DC">WhatsApp</a>
+    </div>
+
+    <span style="font-size: 13px; color: #665F58">Sur la fiche d'un produit : « Aussi en magasin : Akwa, Marché central ».</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
