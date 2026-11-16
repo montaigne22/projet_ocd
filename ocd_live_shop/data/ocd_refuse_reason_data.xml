@@ -8,6 +8,13 @@
         <field name="applies_to">product</field>
         <field name="sequence">210</field>
     </record>
+    <!-- The photos of the gallery are allowed: the team refuses one taken from the internet -->
+    <record id="refuse_reason_product_not_yours" model="ocd.listing.refuse.reason">
+        <field name="name">Photo not yours</field>
+        <field name="message">This photo is not one of yours (taken from the internet or another shop). Take a photo of your own product and send it again.</field>
+        <field name="applies_to">product</field>
+        <field name="sequence">215</field>
+    </record>
     <record id="refuse_reason_product_price" model="ocd.listing.refuse.reason">
         <field name="name">Missing or wrong price</field>
         <field name="message">The price of your product is missing or wrong. Correct it and add the product again.</field>

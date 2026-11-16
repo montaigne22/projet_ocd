@@ -10,7 +10,33 @@ class OcdLiveSettings(models.AbstractModel):
 
     @api.model
     def _ocd_sections(self):
-        return [*super()._ocd_sections(), self._ocd_section_shop(), self._ocd_section_payments()]
+        return [
+            *super()._ocd_sections(), self._ocd_section_shop(), self._ocd_section_vendor_products(),
+            self._ocd_section_payments(),
+        ]
+
+    @api.model
+    def _ocd_section_vendor_products(self):
+        """What the vendors do from « My products » (and later from « My stores »)."""
+        _ = self.env._
+        item = self._ocd_item
+        return {
+            "key": "vendor_products",
+            "sequence": 35,
+            "icon": "PR",
+            "label": _("Products and stores of the vendors"),
+            "title": _("Products and stores of the vendors"),
+            "items": [
+                item("check", "ocd_vendor_photo_gallery", _("Photos from the gallery"),
+                     _("The vendor takes a photo or chooses one of the phone; the team checks it. "
+                       "Off: the camera only.")),
+                item("number", "ocd_vendor_photo_max_mb", _("Largest photo sent"),
+                     _("A heavier photo is refused."), suffix=_("MB"), min=1, max=50, width=70),
+                item("number", "ocd_vendor_photo_px", _("Photos reduced on the phone"),
+                     _("Longest side, before the photo is sent: faster, less data. 0: sent as taken."),
+                     suffix=_("pixels"), min=0, max=4000, width=80),
+            ],
+        }
 
     @api.model
     def _ocd_section_shop(self):
@@ -211,6 +237,9 @@ class OcdLiveSettings(models.AbstractModel):
         low, high = values.get("ocd_vendor_rate_min") or 0, values.get("ocd_vendor_rate_max") or 0
         if low and high and low > high:
             errors["ocd_vendor_rate_max"] = self.env._("At least the lowest price.")
+        pixels = values.get("ocd_vendor_photo_px") or 0
+        if 0 < pixels < 400:
+            errors["ocd_vendor_photo_px"] = self.env._("At least 400 pixels, or 0.")
         provider = self._ocd_campay_provider()
         if provider and "ocd_campay_demo_active" in values:
             end = fields.Date.to_date(values.get("ocd_campay_demo_end") or False)

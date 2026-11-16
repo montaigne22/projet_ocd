@@ -110,6 +110,29 @@ class ResCompany(models.Model):
         string="Team Channel For Deliveries",
     )
 
+    # === PRODUCTS AND STORES OF THE VENDORS === #
+
+    ocd_vendor_photo_gallery = fields.Boolean(
+        string="Photos From The Gallery",
+        default=True,
+        help="The vendors take a photo or choose one of their phone. Off: the camera only.",
+    )
+    ocd_vendor_photo_max_mb = fields.Integer(
+        string="Largest Photo Of A Vendor (MB)",
+        default=10,
+        help="A heavier photo is refused, after its reduction on the phone.",
+    )
+    ocd_vendor_photo_px = fields.Integer(
+        string="Photos Reduced On The Phone (px)",
+        default=1600,
+        help="Longest side of a photo of a vendor, reduced on the phone before it is sent: faster, "
+        "less data. 0: sent as taken.",
+    )
+
+    def _ocd_vendor_photo_max_bytes(self):
+        self.ensure_one()
+        return max(self.ocd_vendor_photo_max_mb or 10, 1) * 1024 * 1024
+
     def _ocd_vendor_rate_bounds(self):
         """(lowest, highest) price of a delivery of a vendor; 0 means no limit."""
         self.ensure_one()

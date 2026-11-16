@@ -32,6 +32,18 @@ class ProductTemplate(models.Model):
         "before they appear on the website.",
     )
     ocd_review_date = fields.Datetime(string="Checked At", copy=False, readonly=True)
+    ocd_form_token = fields.Char(
+        string="Form Of The Vendor",
+        copy=False,
+        readonly=True,
+        help="The form of « My products » that added the product: sent twice (a second tap on a "
+        "slow network), it adds one product only.",
+    )
+
+    _ocd_form_token_uniq = models.Constraint(
+        "unique(ocd_vendor_id, ocd_form_token)",
+        "This product was already added from this form.",
+    )
     ocd_moment_ids = fields.One2many(
         comodel_name="ocd.live.moment", inverse_name="product_tmpl_id", string="Live Moments"
     )

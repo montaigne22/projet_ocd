@@ -1,4 +1,5 @@
 import base64
+import re
 from urllib.parse import parse_qs, urlparse
 
 from odoo.tests import HttpCase, tagged
@@ -257,6 +258,57 @@ class TestOcdShopPages(HttpCase, OcdShopCommon):
             "csrf_token": self.csrf_token(), "quantity": 5,
         })
         self.assertEqual(response.status_code, 404)
+
+    def test_the_form_of_my_products_keeps_the_photo_and_adds_once(self):
+        self.authenticate(None, None)
+        self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
+        page = self.url_open("/ocd/espace/moi/produits").text
+        token = re.search(r'name="form_token" value="([0-9a-f]{32})"', page).group(1)
+        self.assertNotIn('capture="environment"', page, "The gallery is allowed by default")
+        self.assertIn("Add a photo", page)
+        # Refused for its name: the photo received is kept, shown, and sent back by the form
+        page = self.url_open("/ocd/espace/moi/produits", data={
+            "csrf_token": self.csrf_token(), "form_token": token, "price": "8000", "quantity": "1",
+        }, files={"photo": ("pagne.png", PNG, "image/png")}).text
+        self.assertIn("Write the name of the product.", page)
+        kept = re.search(r'name="photo_kept"[^>]*value="(\d+:[^"]+)"', page).group(1)
+        attachment_id, access_token = kept.split(":")
+        self.assertIn(f"/web/image/{attachment_id}?access_token={access_token}", page)
+        self.assertIn(f'value="{token}"', page, "The same form, the same token")
+        # Another vendor cannot use it
+        self.url_open(f"/ocd/espace/{self.fatou._ocd_get_space_token()}")
+        page = self.url_open("/ocd/espace/moi/produits", data={
+            "csrf_token": self.csrf_token(), "name": "Pagne", "price": "8000", "photo_kept": kept,
+        }).text
+        self.assertIn("Add a photo of your product.", page)
+        # The vendor writes the name: the product gets the kept photo, which is then deleted
+        self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
+        form = {"csrf_token": self.csrf_token(), "form_token": token, "name": "Pagne", "price": "8000",
+                "quantity": "1", "photo_kept": kept}
+        response = self.url_open("/ocd/espace/moi/produits", data=form, allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        product = self.env["product.template"].search([("ocd_vendor_id", "=", self.brenda.id), ("name", "=", "Pagne")])
+        self.assertEqual(len(product), 1)
+        self.assertTrue(product.image_128)
+        self.assertFalse(self.env["ir.attachment"].browse(int(attachment_id)).exists())
+        # The same form sent again (a second tap): no second product
+        response = self.url_open("/ocd/espace/moi/produits", data={**form, "photo_kept": ""},
+                                 files={"photo": ("pagne.png", PNG, "image/png")}, allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertEqual(self.env["product.template"].search_count([("ocd_vendor_id", "=", self.brenda.id), ("name", "=", "Pagne")]), 1)
+
+    def test_the_photo_settings_of_my_products(self):
+        self.company.write({"ocd_vendor_photo_gallery": False, "ocd_vendor_photo_max_mb": 1, "ocd_vendor_photo_px": 1200})
+        self.authenticate(None, None)
+        self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
+        page = self.url_open("/ocd/espace/moi/produits").text
+        self.assertIn('capture="environment"', page, "The camera only")
+        self.assertIn("Take a photo", page)
+        self.assertIn('data-max-px="1200"', page)
+        page = self.url_open("/ocd/espace/moi/produits", data={
+            "csrf_token": self.csrf_token(), "name": "Pagne", "price": "8000",
+        }, files={"photo": ("pagne.png", PNG + b"0" * (1024 * 1024), "image/png")}).text
+        self.assertIn("The photo is too big (1 MB at most).", page)
 
     # === DELIVERY APP: THE MONEY IS NEVER LEFT BEHIND === #
 

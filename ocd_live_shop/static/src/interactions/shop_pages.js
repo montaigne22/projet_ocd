@@ -407,32 +407,227 @@ export class OcdDeliveryForm extends Interaction {
     }
 }
 
+// An amount typed on a phone, read like `tools.parse_amount` on the server (which decides): the
+// currency and the spaces of the thousands go, then one amount, with cents only when the currency
+// has some. No look-behind: the phones of 2020 must read this file.
+const AMOUNT_CURRENCY = /(^|[^a-z])(f\s?cfa|cfa|xaf|xof|francs?|frs?|eur|euros?|usd|dollars?|f)(?![a-z])\.?/gi;
+const AMOUNT = /^(\d{1,3}(?:([.,])\d{3})(?:\2\d{3})*|\d+)(?:([.,])(\d+))?$/;
+
+export function readAmount(text, decimals = 0) {
+    const value = String(text || "")
+        .replace(AMOUNT_CURRENCY, "$1 ")
+        .replace(/[€$\s  ']/g, "");
+    const match = value.match(AMOUNT);
+    if (!match || (match[3] && match[3] === match[2]) || (match[4] && match[4].length > decimals)) {
+        return null;
+    }
+    const whole = parseInt(match[1].replace(/[.,]/g, ""), 10);
+    return match[4] ? whole + parseInt(match[4], 10) / 10 ** match[4].length : whole;
+}
+
+// A light photo already small enough goes as taken
+const KEEP_AS_TAKEN = 300 * 1024;
+
 /**
- * My products: the photo taken shows before it is sent.
+ * My products, the form to add a product, made for a phone on a slow network:
+ * - the photo shows at once, then is reduced (longest side `data-max-px`, JPEG): a 6 MB photo
+ *   goes in about 300 KB; if the phone cannot, it goes as taken;
+ * - the name, the price and the photo are checked before sending, with the messages of the
+ *   server (`data-messages`): a mistake no longer costs a sending, nor the photo;
+ * - a second tap while the form is on its way does nothing (the server also adds one product per
+ *   form, with its token).
+ * Without JavaScript the form still works: the server checks everything again.
  */
-export class OcdPhotoPick extends Interaction {
-    static selector = ".o_ocd_photo_pick";
+export class OcdProductForm extends Interaction {
+    static selector = ".o_ocd_my_products_form";
     dynamicContent = {
-        ".o_ocd_photo_input": { "t-on-change": this.show },
+        _root: { "t-on-submit": this.onSubmit },
+        ".o_ocd_photo_input": { "t-on-change": this.onPhoto },
+        "#mp-name": { "t-on-input": () => this.showError("name", "") },
+        "#mp-price": { "t-on-input": () => this.showError("price", "") },
     };
 
-    show(ev) {
-        const file = ev.currentTarget.files[0];
-        this.el.classList.toggle("o_ocd_has_photo", !!file);
-        if (file) {
-            const preview = this.el.querySelector(".o_ocd_photo_preview");
-            if (this.url) {
-                URL.revokeObjectURL(this.url);
-            }
-            this.url = URL.createObjectURL(file);
-            preview.src = this.url;
-        }
+    setup() {
+        this.messages = JSON.parse(this.el.dataset.messages || "{}");
+        this.maxBytes = parseInt(this.el.dataset.maxBytes) || 0;
+        this.maxPx = parseInt(this.el.dataset.maxPx) || 0;
+        this.decimals = parseInt(this.el.dataset.decimals) || 0;
+        this.input = this.el.querySelector(".o_ocd_photo_input");
+        this.pick = this.el.querySelector(".o_ocd_photo_pick");
+        this.button = this.el.querySelector(".o_ocd_my_products_send");
+        this.shrinking = null;
+        this.photoCount = 0;
+        this.sending = false;
+    }
+
+    start() {
+        // Back on this page from the next one: the phone may show it as it was left
+        this.addListener(window, "pageshow", (ev) => ev.persisted && this.unlock());
     }
 
     destroy() {
         if (this.url) {
             URL.revokeObjectURL(this.url);
         }
+    }
+
+    kept() {
+        return this.el.querySelector(".o_ocd_photo_kept");
+    }
+
+    async onPhoto() {
+        const file = this.input.files[0];
+        this.pick.classList.toggle("o_ocd_has_photo", !!file || !!this.kept());
+        if (!file) {
+            return;
+        }
+        this.kept()?.remove(); // the new photo replaces the one kept after an error
+        this.showError("photo", "");
+        this.showPreview(file);
+        const count = ++this.photoCount;
+        this.shrinking = this.shrink(file).catch(() => file);
+        const sent = await this.waitFor(this.shrinking);
+        if (count !== this.photoCount) {
+            return; // another photo was chosen meanwhile
+        }
+        this.shrinking = null;
+        if (sent !== file) {
+            this.replaceFile(sent);
+        }
+        if (this.maxBytes && sent.size > this.maxBytes) {
+            this.showError("photo", this.messages.photo_big);
+        }
+    }
+
+    showPreview(file) {
+        if (this.url) {
+            URL.revokeObjectURL(this.url);
+        }
+        this.url = URL.createObjectURL(file);
+        this.el.querySelector(".o_ocd_photo_preview").src = this.url;
+    }
+
+    async shrink(file) {
+        if (!this.maxPx || !file.type.startsWith("image/") || !window.createImageBitmap) {
+            return file;
+        }
+        const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+        const scale = Math.min(1, this.maxPx / Math.max(bitmap.width, bitmap.height));
+        if (scale === 1 && file.size <= KEEP_AS_TAKEN) {
+            bitmap.close?.();
+            return file;
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+        canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#fff"; // a transparent image gets a white background, not a black one
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        bitmap.close?.();
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+        if (!blob || blob.size >= file.size) {
+            return file;
+        }
+        const name = file.name.replace(/\.[^.]*$/, "") || "photo";
+        return new File([blob], `${name}.jpg`, { type: "image/jpeg", lastModified: Date.now() });
+    }
+
+    replaceFile(file) {
+        try {
+            const transfer = new DataTransfer();
+            transfer.items.add(file);
+            this.input.files = transfer.files;
+        } catch {
+            // An old phone: the photo goes as taken (the server still checks its size)
+        }
+    }
+
+    async onSubmit(ev) {
+        if (this.sending) {
+            ev.preventDefault(); // a second tap: the form is already on its way
+            return;
+        }
+        if (this.shrinking) {
+            ev.preventDefault();
+            await this.waitFor(this.shrinking);
+            this.protectSyncAfterAsync(() => this.send())();
+            return;
+        }
+        if (!this.check()) {
+            ev.preventDefault();
+            return;
+        }
+        this.lock();
+    }
+
+    send() {
+        if (!this.sending && this.check()) {
+            this.lock();
+            this.el.submit();
+        }
+    }
+
+    check() {
+        const name = this.el.querySelector("#mp-name");
+        const price = this.el.querySelector("#mp-price");
+        const file = this.input.files[0];
+        let photo = "";
+        if (!file && !this.kept()) {
+            photo = this.messages.photo;
+        } else if (file && this.maxBytes && file.size > this.maxBytes) {
+            photo = this.messages.photo_big;
+        }
+        const errors = {
+            photo,
+            name: name.value.trim() ? "" : this.messages.name,
+            price: !price.value.trim()
+                ? this.messages.price_empty
+                : readAmount(price.value, this.decimals) > 0
+                ? ""
+                : this.messages.price,
+        };
+        for (const [key, message] of Object.entries(errors)) {
+            this.showError(key, message);
+        }
+        const first = Object.keys(errors).find((key) => errors[key]);
+        if (first === "photo") {
+            this.pick.scrollIntoView({ block: "center" });
+        } else if (first) {
+            this.el.querySelector(`#mp-${first}`).focus();
+        }
+        return !first;
+    }
+
+    showError(key, message) {
+        const span = this.el.querySelector(`#mp-${key}-error`);
+        const field = key === "photo" ? this.input : this.el.querySelector(`#mp-${key}`);
+        if (span) {
+            span.textContent = message || "";
+            span.hidden = !message;
+        }
+        if (message) {
+            field?.setAttribute("aria-invalid", "true");
+        } else {
+            field?.removeAttribute("aria-invalid");
+        }
+    }
+
+    lock() {
+        this.sending = true;
+        this.label = this.button.textContent;
+        this.button.textContent = this.messages.sending;
+        this.button.setAttribute("aria-disabled", "true");
+        this.el.setAttribute("aria-busy", "true");
+    }
+
+    unlock() {
+        this.sending = false;
+        if (this.label) {
+            this.button.textContent = this.label;
+        }
+        this.button.removeAttribute("aria-disabled");
+        this.el.removeAttribute("aria-busy");
     }
 }
 
@@ -487,5 +682,5 @@ registry
     .add("ocd_live_shop.stepper", OcdStepper)
     .add("ocd_live_shop.product_page", OcdProductPage)
     .add("ocd_live_shop.delivery_form", OcdDeliveryForm)
-    .add("ocd_live_shop.photo_pick", OcdPhotoPick)
+    .add("ocd_live_shop.product_form", OcdProductForm)
     .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm);
