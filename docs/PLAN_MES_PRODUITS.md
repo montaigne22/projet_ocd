@@ -1,6 +1,7 @@
 # Plan de la page « Mes produits », des magasins et du stock par magasin
 
-Page du vendeur `/ocd/espace/moi/produits` (design `MesProduits`) et ce qui s'y rattache. Plan
+Page du vendeur `/ocd/espace/moi/produits` (design `MesProduits`) et ce qui s'y rattache ; ce plan
+forme les chantiers 15 à 22 de [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Plan
 retenu le 16 novembre 2026, après une relecture du code : d'abord les corrections, puis les ajouts,
 du plus rapide au plus long. Les durées sont des estimations, tests compris. Les décisions prises
 et les réglages des administrateurs sont en bas ; chaque décision rejoindra `DECISIONS.md` quand ce
@@ -17,11 +18,12 @@ qu'elle règle sera fait.
 | 0.5 | **Prix mal lu** | Tout ce qui n'est pas un chiffre est retiré : « 2500,50 » devient 250 050, « 3000-5000 » devient 30 005 000 | Ces saisies sont refusées avec un message clair | ~½ jour |
 | 0.6 | **Appareil photo ou galerie** | La plupart des téléphones Android ouvrent seulement l'appareil photo (`capture="environment"`) | Les deux : « Ajouter une photo », le téléphone propose l'appareil photo ou la galerie ; nouvelle raison de refus « Photo qui n'est pas la tienne » | ~½ jour |
 | 0.7 | **Motif du refus, corriger et renvoyer** | La décision de l'équipe dit qu'un refus envoie un motif au vendeur (`DECISIONS.md:140`), mais pour un produit le motif reste en note interne (`product_template.py:61`) : le vendeur voit « Refusé » sans savoir pourquoi, et ne peut rien corriger | Le message du motif s'affiche sous le produit ; le vendeur corrige et le renvoie à la vérification | ~2 jours |
+| 0.8 | **Voix et aide de la page** | Le design validé prévoit « Prends une photo, écris le nom et le prix, puis touche le bouton orange. », absent de la page ; la page n'a pas de voix, alors que 12 pages en ont (accueil, boutique, livrer…) | La phrase d'aide, et la voix de la page dans les langues des voix, enregistrée par l'équipe | ~1 jour, plus l'enregistrement |
 
 Dès le début de l'étape 0 : écrire et soumettre à Meta les modèles WhatsApp du plan (voir les
 décisions), car leur approbation ne dépend pas de nous.
 
-## Étape 1 : rapide, avec ce qui existe déjà (~2 semaines)
+## Étape 1 : rapide, avec ce qui existe déjà (~2,5 semaines)
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
@@ -32,8 +34,9 @@ décisions), car leur approbation ne dépend pas de nous.
 | 1.5 | **Dupliquer un produit** | Le même modèle dans un autre tissu : la copie part à la vérification | Ajout d'un produit | ~1 jour |
 | 1.6 | **Ordre de la boutique** | Monter un produit, en mettre un en avant | Ordre des produits de la boutique (`website_sequence`) | ~1 jour |
 | 1.7 | **Catalogue pour le statut WhatsApp** | Des images prêtes à poster (produits, prix, QR de la boutique), téléchargées d'un geste ; fait avec 1.3 | Image d'annonce du live (`ocd_live/announce_image.py`), QR code (`ocd_live/tools.py`) | 3 à 4 jours |
+| 1.8 | **Démarrage du vendeur** | « Ta boutique est prête à 60 % : ajoute 5 produits, un magasin, partage ta boutique » : guide un nouveau vendeur jusqu'à sa première vente | Espace vendeur | 2 à 3 jours |
 
-## Étape 2 : gérer ses produits (~2 semaines)
+## Étape 2 : gérer ses produits (~2,5 semaines)
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
@@ -42,6 +45,7 @@ décisions), car leur approbation ne dépend pas de nous.
 | 2.4 | **WhatsApp accepté ou refusé** | « Ton produit Robe wax est en vente » ou « … est refusé : photo floue », avec le lien de la page | Messages WhatsApp aux vendeurs | 1 à 2 jours, plus l'approbation des modèles par Meta |
 | 2.5 | **Stock par taille et par couleur** | Les − / + pour chaque variante (aujourd'hui seulement les produits sans variantes) ; fait avec S.2, en un seul écran de stock | Réglage du stock (`_ocd_set_stock`), photos des couleurs | Compté dans S.2 |
 | 2.6 | **Plusieurs photos** | Ajouter, retirer et ordonner les photos d'un produit ; une nouvelle photo est vérifiée comme en 2.1 | Galerie de la fiche produit (`product_template_image_ids`) | 2 à 3 jours |
+| 2.7 | **Brouillon hors connexion** | Un produit commencé sans réseau reste dans le téléphone (photo comprise) et part quand le réseau revient | Application installable sur le téléphone, photo réduite (0.4) | 3 à 4 jours |
 
 ## Étape 3 : vendre plus et suivre (4 à 5 semaines)
 
@@ -144,10 +148,22 @@ WhatsApp *Marketing*). C'est aussi le cœur de l'offre pour les commerçants qui
 
 ## Ordre de travail
 
-Étape 0 (et les modèles WhatsApp soumis à Meta) → étape 1 → magasins (M, avec B.1) → stock par magasin (S,
-avec 2.5) → reste de l'étape 2 → autour des magasins (A.1 à A.7) → étape 3 → équipe du vendeur
-(A.9). Le mode vacances (A.5) peut remonter à tout moment ; les nouveautés (A.8) viennent après le
-chantier 1 de la feuille de route. En tout, 5 à 6 mois de travail.
+L'ordre est celui de la feuille de route (`FEUILLE_DE_ROUTE.md`), où ce plan forme les chantiers 15
+à 22, depuis le 16 novembre 2026 :
+
+| Chantier de la feuille de route | Phase | Ce plan |
+|---|---|---|
+| 15. Espace vendeur fiable | 1, en tête | Étape 0, et les modèles WhatsApp soumis à Meta |
+| 16. Mes produits : gagner vite | 1 | Étape 1, avec les chantiers 1 et 3 ; 3.3 dans le chantier 3 |
+| 17. Magasins des vendeurs | 2 | M, A.4 (le stock par magasin en a besoin), B.1 |
+| 18. Stock par magasin | 2 | S, avec 2.5 |
+| 19. Gérer ses produits | 2 | Reste de l'étape 2 |
+| 20. Autour des magasins | 2 | A.1 à A.3, A.5, A.7, A.8 ; 3.1 avec le chantier 7 ; A.6 avec le chantier 10 |
+| 21. Vendre plus | 3 | 3.2, 3.4, 3.5 |
+| 22. Équipe du vendeur | 3 | A.9, avec le chantier 12 |
+
+Le mode vacances (A.5) peut remonter à tout moment ; les nouveautés (A.8) viennent après le
+chantier 1. En tout, environ 6 mois de développement pour ce plan.
 
 ## Décisions prises le 16 novembre 2026
 
@@ -268,7 +284,7 @@ plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
 | Chantier | Ce qu'il partage avec ce plan | Ce qu'on fait |
 |---|---|---|
 | 1. Suivre un vendeur | Les nouveautés aux abonnés (A.8) en dépendent | Fait avant A.8 ; le bouton « Suivre » est aussi sur les magasins (M.2) |
-| 2. Garantie OCD et avis | Le badge « Vendeur vérifié » ; les avis des acheteurs | Un magasin vérifié (M.5) a le même badge ; les avis de chaque produit s'affichent dans « Mes produits » une fois le chantier 2 fait |
+| 2. Garantie OCD et avis | Le badge « Vendeur vérifié » ; les avis des acheteurs | Un magasin vérifié (M.5) a le même badge ; les avis de chaque produit s'affichent dans « Mes produits » une fois le chantier 2 fait ; le bouton « Signaler » un produit ou un vendeur (validé le 16 novembre) se fait dans ce chantier |
 | 3. Statistiques du vendeur | Les chiffres des produits et des magasins (1.1, 3.3, M.6) | 3.3 se fait dans le chantier 3 ; 1.1 et M.6 restent sous chaque produit et magasin, et l'écran des statistiques les reprend : un seul calcul |
 | 5. Paiement automatique dans l'UEMOA | Le paiement sur le téléphone au comptoir (A.1) | Automatique au Cameroun (CamPay) ; ailleurs, Mobile Money vérifié par l'équipe jusqu'au chantier 5, donc plus lent au comptoir |
 | 7. Programme et événements | Le prix promo (3.1) | Une grande soirée (Vendredi noir, Tabaski…) invite ses vendeurs à mettre une promo pour la soirée |
