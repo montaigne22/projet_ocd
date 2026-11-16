@@ -5,6 +5,18 @@ Le design validé est dans [`prototype/design-valide/`](../prototype/design-vali
 
 État : ✅ fait et fidèle au design · 🟡 fait avec les écrans standard d'Odoo, à rapprocher du design · ⬜ pas encore fait
 
+## Grand écran : tablette et ordinateur (16 novembre 2026)
+
+Toutes les pages du site, organisées par type pour la tablette (820 px) et l'ordinateur (1440 px) ; le
+téléphone garde son design. Captures dans `docs/captures/maquette-responsive-*.png`.
+
+| Maquette | Pages concernées | État |
+|---|---|---|
+| `RespListes` Les listes | Shop (catégories à gauche, 5 produits par ligne), accueil, lives, boutique d'un vendeur, annuaire | maquette à valider |
+| `RespFiche` Les fiches | Fiche produit (photos à gauche, choix, magasins et panier à droite), replay, page d'un live, ticket, suivi de commande | maquette à valider |
+| `RespParcours` Les parcours | Livraison (formulaire à gauche, récapitulatif fixe à droite), réservation d'un live, panier, paiement, connexion, pass | maquette à valider |
+| `RespEspace` Les espaces | Espace vendeur avec son menu à gauche (onglets sur tablette), Mon stock du chantier 18 en tableau, appli du livreur | maquette à valider |
+
 ## Site des vendeurs : réserver un live
 
 | Écran du design | Où | État |

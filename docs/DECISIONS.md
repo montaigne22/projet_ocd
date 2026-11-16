@@ -8,7 +8,13 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 - **Odoo 20 Community**, sans application payante. `ocd_live` fonctionne seul ; le shop, WhatsApp, le
   recrutement et le Togo sont des modules à part.
 - **Fidèle au design validé**, pour le site comme pour le back-office.
-- **Mobile d'abord**, mais très à l'aise aussi sur tablette et ordinateur.
+- **Mobile d'abord**, mais très à l'aise aussi sur tablette et ordinateur. **Depuis le 16 novembre 2026** :
+  chaque nouvel écran est dessiné et vérifié en trois tailles (téléphone 390 px, tablette 820 px,
+  ordinateur 1440 px) ; sur grand écran, la page occupe la largeur (pas de colonne étroite entre deux
+  bandes vides). Quatre organisations, une par type de page (maquettes `RespListes`, `RespFiche`,
+  `RespParcours`, `RespEspace`) : les listes en grilles larges, les fiches photo à gauche et
+  informations à droite, les parcours formulaire à gauche et récapitulatif à droite, les espaces avec
+  leur menu à gauche (des onglets sur tablette). Le téléphone garde le design validé.
 - **Deux thèmes** : celui du site (vendeurs, clients) et celui du back-office (équipe). Ils lisent les
   mêmes couleurs et polices, dans un seul fichier : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - **Données de démonstration** dans un module à part, `ocd_live_demo` : le désinstaller retire tout.
