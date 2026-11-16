@@ -10,7 +10,9 @@ from odoo.tools import BinaryBytes
 from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
+from .. import share_image
 from ..models.ocd_vendor_place import POSITION_MAX_METERS
+from .vendor_share import drawn, short_link
 from .vendor_products import FORM_TOKEN, keep_photo, kept_photo, kept_values, pending_photos, read_photo
 
 # An hour typed in a form: "08:00", "8:00", "19:30"
@@ -366,6 +368,47 @@ class OcdVendorPlaces(http.Controller):
         if place:
             vendor.sudo().ocd_departure_place_id = place
         return request.redirect("/ocd/espace/moi/magasins?enregistre=1")
+
+    @http.route("/ocd/espace/<string:token>/magasins", type="http", auth="public", website=True, methods=["GET"],
+                sitemap=False)
+    def places_link(self, token, **kwargs):
+        """The button of a WhatsApp message to the vendor: their personal link opens their
+        space on the phone, then « My stores ». (« moi » takes the route of the list.)"""
+        if not common.current_vendor(token):
+            return request.redirect("/ocd/connexion")
+        return request.redirect("/ocd/espace/moi/magasins")
+
+    # === THE QR POSTER OF A STORE (M.7 of the plan) === #
+
+    @http.route("/ocd/espace/moi/magasins/<int:place_id>/affiche.jpg", type="http", auth="public", website=True,
+                methods=["GET"], sitemap=False)
+    def place_poster(self, place_id, **kwargs):
+        """The poster to print for a store: the text set by the team, the vendor, the store and
+        the QR code of the boutique. For its vendor only: drawn when asked, kept a while."""
+        vendor = self._vendor()
+        if not vendor:
+            raise request.not_found()
+        place = self._own_place(vendor, place_id)
+        if place.kind != "store":
+            raise request.not_found()
+        env = request.env
+        company = common.company()
+        url = request.httprequest.url_root.rstrip("/") + f"/ocd/boutique/{vendor.id}"
+        name = place.name if place.name and place.name.strip().casefold() != (vendor.name or "").strip().casefold() else ""
+        values = {
+            "headline": company.ocd_place_poster_text or env._("Order online too, delivered to your door"),
+            "vendor": vendor.name,
+            "place": " · ".join(part for part in (name, place._ocd_area()) if part),
+            "scan": env._("Scan with the camera of your phone"),
+            "link": short_link(url),
+            "url": url,
+        }
+        data = drawn(("poster", tuple(sorted(values.items())), env.lang or ""), lambda: share_image.poster(values))
+        return request.make_response(data, headers=[
+            ("Content-Type", "image/jpeg"),
+            ("Content-Disposition", 'inline; filename="affiche-qr.jpg"'),
+            ("Cache-Control", "private, max-age=600"),
+        ])
 
     # === THE PHOTO OF A FRONT === #
 

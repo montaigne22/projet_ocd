@@ -164,6 +164,37 @@
             ]"/>
         </record>
 
+        <record id="template_store_accepted_en" model="whatsapp.template">
+            <field name="name">OCD Live: store accepted (English)</field>
+            <field name="template_name">ocd_magasin_accepte</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_vendor_place"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="body">Hello {{1}}, your store {{2}} is checked: your customers now see it in your OCD Live boutique, with the itinerary. Tap "My stores" to see it.</field>
+            <field name="button_url_value">{{ object._ocd_vendor_places_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My stores', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/magasins'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.vendor_id.name }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'Grace Fashion Bastos'}),
+            ]"/>
+        </record>
+
+        <record id="template_store_refused_en" model="whatsapp.template">
+            <field name="name">OCD Live: store refused (English)</field>
+            <field name="template_name">ocd_magasin_refuse</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_vendor_place"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="body">Hello {{1}}, your store {{2}} is not shown yet, for this reason: {{3}}. Tap "My stores" to correct it and send it again to the team.</field>
+            <field name="button_url_value">{{ object._ocd_vendor_places_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My stores', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/magasins'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.vendor_id.name }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'Grace Fashion Bastos'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.refuse_reason_id.name }}', 'sample_value': 'Sign not visible'}),
+            ]"/>
+        </record>
+
         <record id="template_stock_low_en" model="whatsapp.template">
             <field name="name">OCD Live: stock low (English)</field>
             <field name="template_name">ocd_stock_bas</field>

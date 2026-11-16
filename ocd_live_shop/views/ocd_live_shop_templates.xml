@@ -503,6 +503,8 @@
                             </div>
                             <t t-if="step['kind'] == 'pickup'">
                                 <span t-if="card['pickup_place']" class="o_ocd_parcel_place" t-out="card['pickup_place']"/>
+                                <a t-if="card['pickup_directions']" t-att-href="card['pickup_directions']" target="_blank" rel="noopener"
+                                   class="o_ocd_parcel_button o_ocd_parcel_wide">Itinerary to the pick-up</a>
                                 <span class="o_ocd_parcel_items" t-out="card['items']"/>
                                 <span class="o_ocd_parcel_when" t-out="card['when']"/>
                                 <form t-attf-action="#{base}/colis/#{parcel.id}/pickup" method="post">

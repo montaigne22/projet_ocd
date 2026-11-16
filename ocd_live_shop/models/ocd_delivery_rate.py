@@ -166,10 +166,15 @@ class OcdDeliveryRate(models.Model):
 
     @api.model
     def _ocd_origin(self, vendor, company):
-        """Where a parcel leaves from: (country, city) of the vendor, or of the OCD stock for the
-        products of OCD Live and the vendors whose products are in the OCD stock."""
+        """Where a parcel leaves from: (country, city) of the place the parcels of the vendor
+        leave from (their store or home, A.4 of the plan), else of the vendor; of the OCD stock
+        for the products of OCD Live and the vendors whose products are in the OCD stock."""
         City = self.env["res.city"].sudo()
         if vendor and (vendor.ocd_delivery_mode or company.ocd_default_delivery_mode) != "stock":
+            place = vendor.sudo()._ocd_departure_place()
+            city = place.city_id or place.district_id.city_id
+            if city:
+                return (city.country_id or vendor.country_id), city
             city = vendor.city_id
             if not city and vendor.city:
                 city = City.search([

@@ -287,6 +287,7 @@ class OcdVendorPlace(models.Model):
                 "refuse_reason_id": False, "previous_refusal": False,
             })
             place.message_post(body=self.env._("Put online."))
+        self._ocd_tell_vendor_review()
         return True
 
     def action_ocd_refuse(self, reason=None):
@@ -298,7 +299,19 @@ class OcdVendorPlace(models.Model):
                 raise UserError(self.env._("Choose the reason sent to the vendor."))
             place.write({"state": "refused", "review_date": fields.Datetime.now(), "refuse_reason_id": why.id})
             place.message_post(body=self.env._("Refused: %s", why.name))
+        self._ocd_tell_vendor_review()
         return True
+
+    def _ocd_tell_vendor_review(self):
+        """Tell the vendors the answer of the team on their stores (shown, or refused with its
+        reason): sent on WhatsApp by `ocd_live_shop_whatsapp`."""
+        return False
+
+    def _ocd_vendor_places_path(self):
+        """« My stores » of the vendor, opened by their personal link (the button of a WhatsApp
+        message): without the domain, Meta adds it."""
+        self.ensure_one()
+        return f"ocd/espace/{self.vendor_id._ocd_get_space_token()}/magasins"
 
     def _ocd_refusal_text(self):
         self.ensure_one()

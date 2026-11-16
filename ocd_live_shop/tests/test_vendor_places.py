@@ -1,5 +1,8 @@
+import io
 import re
 from datetime import date, datetime
+
+from PIL import Image
 
 from odoo.exceptions import UserError
 from odoo.tests import HttpCase, tagged
@@ -103,6 +106,28 @@ class TestOcdVendorPlaces(OcdShopCommon):
         Tap = self.env["ocd.vendor.place.tap"]
         Tap.create([{"place_id": store.id, "kind": kind} for kind in ("itinerary", "itinerary", "call")])
         self.assertEqual(store._ocd_week_taps()[store.id], {"itinerary": 2, "call": 1, "whatsapp": 0})
+
+    def test_the_parcels_leave_from_the_departure_place(self):
+        bastos = self.env.ref("delivery_cameroon.district_yaounde_bastos")
+        self.brenda.write({"city_id": self.akwa.city_id.id, "district_id": self.akwa.id})
+        Rate = self.env["ocd.delivery.rate"]
+        self.assertEqual(Rate._ocd_origin(self.brenda, self.company)[1], self.akwa.city_id, "No place: the city of the vendor")
+        store = self._store(name="Brenda Wax Bastos", city_id=bastos.city_id.id, district_id=bastos.id)
+        self.assertEqual(Rate._ocd_origin(self.brenda, self.company), (self.env.ref("base.cm"), bastos.city_id),
+                         "Her only place: the prices of the delivery are counted from Yaoundé")
+        self._store(name="Brenda Wax Akwa")
+        self.assertEqual(Rate._ocd_origin(self.brenda, self.company)[1], self.akwa.city_id, "Two places, none chosen")
+        self.brenda.ocd_departure_place_id = store
+        self.assertEqual(Rate._ocd_origin(self.brenda, self.company)[1], bastos.city_id)
+        # The parcel keeps the place where the courier picks it up, even if the vendor changes it later
+        order = self._order(self.estelle, [(self.dress, 1)])
+        parcel = order.picking_ids
+        self.assertEqual((parcel.ocd_delivery_mode, parcel.ocd_pickup_place_id), ("pickup", store))
+        self.brenda.ocd_departure_place_id = False
+        self.assertEqual(parcel.ocd_pickup_place_id, store)
+        # A vendor whose products are in the OCD stock: no place of the vendor
+        self.brenda.ocd_delivery_mode = "stock"
+        self.assertFalse(self._order(self.estelle, [(self.dress, 1)]).picking_ids.ocd_pickup_place_id)
 
 
 @tagged("post_install", "-at_install")
@@ -236,3 +261,55 @@ class TestOcdVendorPlacesPages(HttpCase, OcdShopCommon):
         store.action_ocd_refuse(self.env.ref("ocd_live_shop.refuse_reason_store_front"))
         self.url_open(f"/ocd/magasin/{store.id}/visite/whatsapp", data={"t": "1"})
         self.assertEqual(store._ocd_week_taps()[store.id]["whatsapp"], 0)
+
+    def test_the_courier_picks_the_parcel_up_at_the_store(self):
+        store = self.env["ocd.vendor.place"]._ocd_vendor_create(self.brenda, {
+            "name": "Brenda Wax Akwa", "district_id": self.akwa.id, "city_id": self.akwa.city_id.id,
+            "landmark": "En face de la pharmacie du Port", "latitude": 4.0511, "longitude": 9.6942,
+            "photo": BinaryBytes(PNG, filename="devanture.png"),
+        })
+        self.brenda.ocd_departure_place_id = store
+        parcel = self._order(self.estelle, [(self.dress, 1)]).picking_ids
+        self.assertEqual(parcel.ocd_pickup_place_id, store, "Even before the check: the team sees the full address")
+        self.authenticate(None, None)
+        page = self.url_open(f"/ocd/livrer/{self.courier._ocd_get_space_token()}").text
+        self.assertIn("Pick up at Brenda Wax", page)
+        self.assertIn("Brenda Wax Akwa · Akwa, Douala · En face de la pharmacie du Port", page)
+        self.assertIn("https://www.google.com/maps/dir/?api=1&amp;destination=4.051100,9.694200", page)
+
+    def test_the_poster_and_the_price_labels(self):
+        Place = self.env["ocd.vendor.place"]
+        store = Place._ocd_vendor_create(self.brenda, {
+            "name": "Brenda Wax Akwa", "district_id": self.akwa.id, "city_id": self.akwa.city_id.id,
+            "landmark": "En face de la pharmacie du Port", "photo": BinaryBytes(PNG, filename="devanture.png"),
+        })
+        home = Place._ocd_vendor_create(self.brenda, {"name": "Chez moi", "kind": "home", "district_id": self.akwa.id})
+        self._login(self.brenda)
+        self.assertNotIn("affiche.jpg", self.url_open("/ocd/espace/moi/magasins").text, "Not checked yet")
+        store.action_ocd_approve()
+        page = self.url_open("/ocd/espace/moi/magasins").text
+        self.assertIn(f'href="/ocd/espace/moi/magasins/{store.id}/affiche.jpg"', page)
+        self.assertIn('href="/ocd/espace/moi/etiquettes"', page)
+        response = self.url_open(f"/ocd/espace/moi/magasins/{store.id}/affiche.jpg")
+        self.assertEqual(response.headers["Content-Type"], "image/jpeg")
+        self.assertIn("private", response.headers["Cache-Control"])
+        with Image.open(io.BytesIO(response.content)) as image:
+            self.assertEqual(image.size, (2480, 3508), "A4 at 300 points per inch")
+        self.assertEqual(self.url_open(f"/ocd/espace/moi/magasins/{home.id}/affiche.jpg").status_code, 404, "A home has no poster")
+        # The price labels: the products on sale, with the QR code of their page in the page
+        self.dress.product_tmpl_id.write({"is_published": True, "ocd_review_state": "approved"})
+        hidden = self.env["product.template"].create({"name": "Pagne pas en ligne", "ocd_vendor_id": self.brenda.id})
+        page = self.url_open("/ocd/espace/moi/etiquettes").text
+        self.assertIn("Robe en wax", page)
+        self.assertNotIn(hidden.name, page)
+        self.assertEqual(page.count('class="o_ocd_label_qr"'), 1)
+        self.assertIn('src="data:image/png;base64,', page)
+        self.assertIn("data-print", page)
+        page = self.url_open(f"/ocd/espace/moi/etiquettes?produit={self.dress.product_tmpl_id.id}&copies=3").text
+        self.assertEqual(page.count('class="o_ocd_label_qr"'), 3)
+        page = self.url_open(f"/ocd/espace/moi/etiquettes?produit={self.dress.product_tmpl_id.id}&copies=500").text
+        self.assertEqual(page.count('class="o_ocd_label_qr"'), 24, "A sheet at most")
+        # Another vendor: not the poster of Brenda
+        self._login(self.fatou)
+        self.assertEqual(self.url_open(f"/ocd/espace/moi/magasins/{store.id}/affiche.jpg").status_code, 404)
+        self.assertNotIn("Robe en wax", self.url_open("/ocd/espace/moi/etiquettes").text)

@@ -5,3 +5,4 @@ from . import ocd_stock_alert
 from . import whatsapp_template
 from . import ocd_live_settings
 from . import ocd_whatsapp_inbox
+from . import vendor_review

@@ -697,6 +697,8 @@
                                         <button t-if="row['share']" type="button" class="o_ocd_button o_ocd_share o_ocd_my_product_share" data-track="/ocd/espace/moi/partage"
                                                 t-att-data-url="row['share']['url']" t-att-data-text="row['share']['text']"
                                                 t-att-data-image="row['share'].get('image')">Share</button>
+                                        <a t-if="row['public_url']" t-attf-href="/ocd/espace/moi/etiquettes?produit=#{row['product'].id}"
+                                           class="o_ocd_button">Price label</a>
                                         <form t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/dupliquer" method="post">
                                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                             <button class="o_ocd_button">Make a copy</button>
@@ -724,6 +726,7 @@
                         </button>
                         <div class="o_ocd_share_done o_ocd_ok" role="status" hidden="hidden">Link copied. Paste it in your WhatsApp status.</div>
                         <a href="/ocd/espace/moi/catalogue" class="o_ocd_button o_ocd_my_products_catalogue">Catalogue for my status</a>
+                        <a href="/ocd/espace/moi/etiquettes" class="o_ocd_button o_ocd_my_products_catalogue">Price labels for my store</a>
                     </t>
                 </main>
             </div>
@@ -769,6 +772,47 @@
                         </div>
                     </t>
                     <div t-else="" class="o_ocd_info">No product on sale yet: the catalogue shows your products put online by the team, with stock.</div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The price labels of the store, with the QR code of each product (M.7 of the plan): printed
+         from the phone or the computer, cut along the dotted lines -->
+    <template id="vendor_labels" name="OCD Live: price labels to print">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Price labels</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_my_labels">
+                    <div class="o_ocd_noprint">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">Price labels</h1>
+                        <p class="o_ocd_parcel_hint">For your store: the price of each product, with its QR code. Your customers scan it to order online and be delivered.</p>
+                        <t t-if="labels">
+                            <form method="get" class="o_ocd_labels_copies">
+                                <input t-if="chosen" type="hidden" name="produit" t-att-value="chosen"/>
+                                <label for="et-copies" class="o_ocd_label">Copies of each label</label>
+                                <input id="et-copies" type="number" name="copies" min="1" t-att-max="max_copies" inputmode="numeric"
+                                       class="o_ocd_input" t-att-value="copies"/>
+                                <button class="o_ocd_button">Change</button>
+                            </form>
+                            <button type="button" class="o_ocd_cta" data-print="1">Print</button>
+                            <small class="o_ocd_parcel_hint">On a phone: Print, then choose a printer or “Save as PDF” to send it to a print shop.</small>
+                        </t>
+                    </div>
+                    <div t-if="labels" class="o_ocd_labels">
+                        <t t-foreach="labels" t-as="label">
+                            <div class="o_ocd_label_card">
+                                <span class="o_ocd_label_text">
+                                    <b class="o_ocd_label_name" t-out="label['name']"/>
+                                    <span class="o_ocd_label_price" t-out="label['price']"/>
+                                    <small>Scan to order online</small>
+                                </span>
+                                <img t-att-src="label['qr']" alt="" class="o_ocd_label_qr" width="96" height="96"/>
+                            </div>
+                        </t>
+                    </div>
+                    <div t-else="" class="o_ocd_info">No product on sale yet: the labels show your products put online by the team.</div>
                 </main>
             </div>
         </t>

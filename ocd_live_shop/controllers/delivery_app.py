@@ -192,7 +192,8 @@ class OcdDeliveryApp(http.Controller):
             "pay_question": request.env._("How does %s pay?", customer),
             "pickup_title": request.env._("Pick up at %s", parcel.ocd_vendor_id.name) if parcel.ocd_vendor_id
             else request.env._("Pick up at the OCD stock"),
-            "pickup_place": self._place_of(parcel.ocd_vendor_id) if parcel.ocd_vendor_id else "",
+            "pickup_place": self._pickup_place(parcel),
+            "pickup_directions": self._pickup_directions(parcel),
             "pickup_note": request.env._(
                 "%s receives a WhatsApp: if it is not you, they report it.", self._first_name(parcel.ocd_vendor_id)
             ) if parcel.ocd_vendor_id else "",
@@ -216,6 +217,20 @@ class OcdDeliveryApp(http.Controller):
         if not methods and parcel.company_id.ocd_cod_online:
             methods = ["online"]
         return methods
+
+    def _pickup_place(self, parcel):
+        """Where the courier picks the parcel up: the store or the home the parcels of the vendor
+        leave from (A.4 of the plan), with its landmark; else the address of the vendor."""
+        place = parcel.sudo().ocd_pickup_place_id
+        if place:
+            area = place._ocd_area()
+            line = " · ".join(part for part in (area, place.landmark) if part)
+            return f"{place.name} · {line}" if line and place.name != parcel.ocd_vendor_id.name else (line or place.name)
+        return self._place_of(parcel.ocd_vendor_id) if parcel.ocd_vendor_id else ""
+
+    def _pickup_directions(self, parcel):
+        place = parcel.sudo().ocd_pickup_place_id
+        return place._ocd_directions_url() if place and place._ocd_has_position() else False
 
     def _place_of(self, partner):
         return " · ".join(part for part in (partner.district_id.name or partner.city, partner.delivery_landmark) if part)

@@ -68,6 +68,13 @@
                         <button class="o_ocd_button">Save</button>
                     </form>
 
+                    <!-- To print for the store (M.7 of the plan): the poster is on each store above -->
+                    <div t-if="any(row['poster'] for row in rows)" class="o_ocd_place_print">
+                        <b>To print for your store</b>
+                        <small class="o_ocd_parcel_hint">The QR poster for the door, and the price labels with the QR code of each product.</small>
+                        <a href="/ocd/espace/moi/etiquettes" class="o_ocd_button">Price labels</a>
+                    </div>
+
                     <a t-if="can_add" href="/ocd/espace/moi/magasins/nouveau" class="o_ocd_cta">Add a place</a>
                     <small t-else="" class="o_ocd_parcel_hint">You have all the places you can have. Write to OCD Live for more.</small>
                 </main>

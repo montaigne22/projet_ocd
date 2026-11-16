@@ -84,6 +84,7 @@ class ProductTemplate(models.Model):
             "ocd_refuse_reason_id": False,
             "ocd_previous_refusal": False,
         })
+        self._ocd_tell_vendor_review()
         return True
 
     def action_ocd_refuse(self, reason=None):
@@ -102,7 +103,13 @@ class ProductTemplate(models.Model):
                 "ocd_previous_refusal": False,
             })
             product.message_post(body=self.env._("Product refused: %s", why.name))
+        self._ocd_tell_vendor_review()
         return True
+
+    def _ocd_tell_vendor_review(self):
+        """Tell the vendors the answer of the team on their products (accepted, or refused with
+        its reason): sent on WhatsApp by `ocd_live_shop_whatsapp`."""
+        return False
 
     def _ocd_refusal_text(self):
         """What the vendor reads about the refusal of the product, or False."""

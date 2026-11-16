@@ -153,6 +153,15 @@ class StockPicking(models.Model):
     ocd_vendor_bill_ids = fields.One2many(
         comodel_name="account.move", inverse_name="ocd_picking_id", string="Vendor Bills"
     )
+    ocd_pickup_place_id = fields.Many2one(
+        comodel_name="ocd.vendor.place",
+        string="Picked Up At",
+        copy=False,
+        index="btree_not_null",
+        domain="[('vendor_id', '=', ocd_vendor_id)]",
+        help="The store or the home of the vendor where the courier picks the parcel up: the place the "
+        "parcels of the vendor leave from when the parcel is made (A.4 of the plan).",
+    )
     ocd_customer_phone = fields.Char(related="partner_id.phone", string="Customer Phone")
     ocd_district_id = fields.Many2one(related="partner_id.district_id", string="District")
     ocd_landmark = fields.Char(related="partner_id.delivery_landmark", string="Landmark")
@@ -256,6 +265,7 @@ class StockPicking(models.Model):
                 "ocd_is_parcel": True,
                 "ocd_delivery_mode": mode,
                 "ocd_courier_id": courier.id,
+                "ocd_pickup_place_id": vendor.sudo()._ocd_departure_place().id if vendor and mode != "stock" else False,
                 "ocd_stage": "to_prepare",
                 "ocd_goods_amount": picking._ocd_compute_goods_amount(),
                 "ocd_cod_state": "none" if picking.sale_id._ocd_is_paid_online() else "to_collect",
@@ -275,8 +285,10 @@ class StockPicking(models.Model):
             return "vendor", vendor, False
         mode = "stock" if not vendor or vendor.ocd_delivery_mode == "stock" else "pickup"
         if line.operator == "agency":
-            # An OCD courier of the city of departure takes the parcel to the travel agency
-            origin_district = vendor.district_id if vendor and mode == "pickup" else self.env["res.city.district"]
+            # An OCD courier of the district of departure takes the parcel to the travel agency
+            origin_district = self.env["res.city.district"]
+            if vendor and mode == "pickup":
+                origin_district = vendor.sudo()._ocd_departure_place().district_id or vendor.district_id
             courier = Partner._ocd_find_courier(origin_district)
             note = self.env._(
                 "Sent through a travel agency from %(origin)s to %(city)s: the team validates the "
@@ -523,6 +535,8 @@ class StockPicking(models.Model):
                 vals["ocd_delivery_mode"] = "vendor"
             elif picking.ocd_delivery_mode == "vendor":
                 vals["ocd_delivery_mode"] = "pickup"
+            if vals.get("ocd_delivery_mode") and not picking.ocd_pickup_place_id and picking.ocd_vendor_id:
+                vals["ocd_pickup_place_id"] = picking.ocd_vendor_id.sudo()._ocd_departure_place().id
             picking.write(vals)
         return True
 
@@ -532,7 +546,13 @@ class StockPicking(models.Model):
         Partner = self.env["res.partner"]
         for picking in self:
             courier = Partner._ocd_find_courier(picking.ocd_district_id)
-            picking.write({"ocd_delivery_mode": "pickup", "ocd_courier_id": courier.id})
+            picking.write({
+                "ocd_delivery_mode": "pickup",
+                "ocd_courier_id": courier.id,
+                "ocd_pickup_place_id": (
+                    picking.ocd_pickup_place_id or picking.ocd_vendor_id.sudo()._ocd_departure_place()
+                ).id if picking.ocd_vendor_id else False,
+            })
             picking.message_post(
                 body=self.env._("The parcel goes to an OCD courier: %s.", courier.name or self.env._("to choose"))
             )

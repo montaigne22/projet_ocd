@@ -890,6 +890,16 @@ export class OcdPlaceTap extends Interaction {
 }
 
 /**
+ * The price labels of a store: the button prints the page (the print styles keep the labels only).
+ */
+export class OcdPrint extends Interaction {
+    static selector = "[data-print]";
+    dynamicContent = {
+        _root: { "t-on-click": () => window.print() },
+    };
+}
+
+/**
  * My delivery prices: the districts of the city chosen.
  */
 export class OcdVendorRatesForm extends Interaction {
@@ -944,4 +954,5 @@ registry
     .add("ocd_live_shop.product_filters", OcdProductFilters)
     .add("ocd_live_shop.place_form", OcdPlaceForm)
     .add("ocd_live_shop.place_tap", OcdPlaceTap)
+    .add("ocd_live_shop.print", OcdPrint)
     .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm);

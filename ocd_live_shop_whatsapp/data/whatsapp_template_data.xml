@@ -166,6 +166,39 @@
             ]"/>
         </record>
 
+        <!-- The check of a store by the team (M.5 of the plan), told to the vendor. The button
+             opens « My stores » on the phone of the vendor. -->
+        <record id="template_store_accepted" model="whatsapp.template">
+            <field name="name">OCD Live: store accepted</field>
+            <field name="template_name">ocd_magasin_accepte</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_vendor_place"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="body">Bonjour {{1}}, votre magasin {{2}} est vérifié : vos clients le voient maintenant dans votre boutique OCD Live, avec l'itinéraire. Touchez « Mes magasins » pour le voir.</field>
+            <field name="button_url_value">{{ object._ocd_vendor_places_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes magasins', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/magasins'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.vendor_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'Awa Couture Akwa'}),
+            ]"/>
+        </record>
+
+        <record id="template_store_refused" model="whatsapp.template">
+            <field name="name">OCD Live: store refused</field>
+            <field name="template_name">ocd_magasin_refuse</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_vendor_place"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="body">Bonjour {{1}}, votre magasin {{2}} n'est pas encore visible, pour ce motif : {{3}}. Touchez « Mes magasins » pour le corriger et le renvoyer à l'équipe.</field>
+            <field name="button_url_value">{{ object._ocd_vendor_places_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes magasins', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/magasins'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.vendor_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'Awa Couture Akwa'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.refuse_reason_id.name }}', 'sample_value': 'Enseigne pas visible'}),
+            ]"/>
+        </record>
+
         <record id="template_stock_low" model="whatsapp.template">
             <field name="name">OCD Live: stock low</field>
             <field name="template_name">ocd_stock_bas</field>

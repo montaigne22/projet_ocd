@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 from odoo import fields, http
 from odoo.http import request
 
+from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
 from .. import share_image
@@ -17,6 +18,8 @@ _DRAWN_MAX = 48
 _DRAWN_LOCK = threading.Lock()
 # A year, for an address that changes with what the image shows
 IMMUTABLE = "public, max-age=31536000, immutable"
+# Copies of each price label: a sheet of A4 holds 24
+LABELS_MAX_COPIES = 24
 
 
 def drawn(key, draw):
@@ -54,7 +57,8 @@ def jpeg_response(data, unique, stamp):
 
 class OcdVendorShare(http.Controller):
     """What a vendor shares on their WhatsApp status: the image of a product (1.3 of the plan of
-    « My products ») and the catalogue of their boutique (1.7)."""
+    « My products ») and the catalogue of their boutique (1.7). And what they print for their
+    store: the price labels with the QR code of each product (M.7)."""
 
     # === ONE PRODUCT === #
 
@@ -162,3 +166,45 @@ class OcdVendorShare(http.Controller):
         response = jpeg_response(data, unique, stamp)
         response.headers["Cache-Control"] = response.headers["Cache-Control"].replace("public", "private")
         return response
+
+    # === THE PRICE LABELS TO PRINT (M.7 of the plan) === #
+
+    @http.route("/ocd/espace/moi/etiquettes", type="http", auth="public", website=True, methods=["GET"],
+                sitemap=False)
+    def labels(self, produit=None, copies=None, **kwargs):
+        """A sheet of price labels for the store: the name, the price as on the site and the QR
+        code of each product on sale (all, or the ones of `produit`: "12" or "12,15"). The QR
+        codes are in the page: nothing left to load when the phone prints it."""
+        vendor = common.current_vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        env = request.env
+        products = env["product.template"]._ocd_vendor_products(vendor).filtered(
+            lambda p: p.is_published and p.ocd_review_state == "approved"
+        )
+        chosen = {int(part) for part in (produit or "").split(",") if part.strip().isdigit()}
+        if chosen:
+            products = products.filtered(lambda p: p.id in chosen)
+        copies = min(max(int(copies), 1), LABELS_MAX_COPIES) if str(copies or "").isdigit() else 1
+        root = request.httprequest.url_root.rstrip("/")
+        price_by_id = shop_common.prices(products)
+        labels = [
+            {
+                "name": product.name,
+                "price": price_by_id.get(product.id) or common.money(product.list_price, product.currency_id),
+                "qr": tools.qr_data_uri(root + product.website_url, box_size=4),
+            }
+            for product in products
+        ]
+        labels = [label for label in labels for _copy in range(copies)]
+        return request.render("ocd_live_shop.vendor_labels", common.page_values(
+            False,
+            back="/ocd/espace/moi/produits",
+            back_label=env._("Back to my products"),
+            header_title=env._("My products"),
+            vendor=vendor,
+            labels=labels,
+            chosen=",".join(str(product.id) for product in products) if chosen else "",
+            copies=copies,
+            max_copies=LABELS_MAX_COPIES,
+        ))
