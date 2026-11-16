@@ -2534,6 +2534,81 @@
         height: 16px;
     }
 }
+// In their stores, on the page of the product (DispoMagasins, chantier 18)
+.o_ocd_product_store_stock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.o_ocd_store_stock_box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: $ocd-sand;
+    border-radius: 16px;
+    padding: 10px 14px;
+    .o_ocd_store_stock_title {
+        font-size: 15px;
+    }
+}
+.o_ocd_store_stock_row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid $ocd-line;
+    &:last-of-type {
+        border-bottom: 0;
+    }
+}
+.o_ocd_store_stock_text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    b {
+        font-size: 14.5px;
+    }
+    small {
+        font-size: 13px;
+        color: $ocd-muted;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+    .o_ocd_place_is_open {
+        color: $ocd-green-text;
+        font-weight: 700;
+    }
+}
+.o_ocd_store_stock_pill {
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: right;
+    &.o_ocd_store_stock_in {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+    &.o_ocd_store_stock_out {
+        background: #EEF0F2;
+        color: $ocd-muted;
+    }
+}
+.o_ocd_store_stock_link {
+    align-self: flex-start;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: underline;
+    color: $ocd-ink;
+}
+.o_ocd_store_stock_or {
+    font-size: 13px;
+    color: $ocd-muted;
+}
 .o_ocd_stores {
     display: flex;
     flex-direction: column;

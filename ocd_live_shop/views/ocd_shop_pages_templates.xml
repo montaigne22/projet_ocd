@@ -200,6 +200,27 @@
                             <button type="button" class="o_ocd_stepper_more" aria-label="One more">+</button>
                         </div>
                     </div>
+                    <!-- In their stores (DispoMagasins, chantier 18): the colour and the size chosen,
+                         store by store, without the exact count of each store; hidden when the
+                         choice is sold out everywhere (« Tell me when it is back » says it) -->
+                    <div t-if="store_rows" t-attf-class="o_ocd_product_store_stock #{'d-none' if first.get('qty') == 0 else ''}">
+                        <div class="o_ocd_store_stock_box" aria-live="polite">
+                            <b class="o_ocd_store_stock_title">
+                                <t t-if="len(store_rows) == 1">In their store</t><t t-else="">In their stores</t><t t-if="has_choices"> · <span class="o_ocd_store_stock_variant" t-out="first.get('label') or ''"/></t>
+                            </b>
+                            <div t-foreach="store_rows" t-as="row" class="o_ocd_store_stock_row">
+                                <span class="o_ocd_store_stock_text">
+                                    <b t-out="row['place'].name"/>
+                                    <small>
+                                        <t t-if="row['address']"><t t-out="row['address']"/> · </t><span t-attf-class="#{'o_ocd_place_is_open' if row['open']['open'] else 'o_ocd_place_is_closed'}" t-out="row['open']['label']"/>
+                                    </small>
+                                </span>
+                                <span t-attf-class="o_ocd_store_stock_pill #{row['status'][0]}" t-out="row['status'][1]"/>
+                            </div>
+                            <a t-attf-href="/ocd/boutique/#{vendor.id}#magasins" class="o_ocd_store_stock_link">Directions and hours</a>
+                        </div>
+                        <small t-if="ocd" class="o_ocd_store_stock_or">Or have it delivered to you.</small>
+                    </div>
                     <div id="prevenir" t-attf-class="o_ocd_stock_alert #{'' if alerted or (first.get('qty') == 0) else 'd-none'}">
                         <div t-if="alerted" class="o_ocd_ok o_ocd_info_icon" role="status">
                             <t t-call="ocd_live.icon" icon.f="check"/>

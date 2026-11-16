@@ -14,3 +14,4 @@ from . import test_vendor_boutique
 from . import test_vendor_places
 from . import test_place_stock
 from . import test_vendor_stock_page
+from . import test_store_availability

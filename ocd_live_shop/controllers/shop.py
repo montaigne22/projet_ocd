@@ -148,12 +148,14 @@ class OcdShop(WebsiteSale):
             response.qcontext.update(self._ocd_product_values(response.qcontext.get("product") or product))
         return response
 
-    def _ocd_variants(self, template):
+    def _ocd_variants(self, template, store_levels=None):
         """Each variant of the product: its values, its price, its stock and its photo (its own,
         else the one of its colour), read by the page to update the price, the stock, the photo
-        and the values that are sold out."""
+        and the values that are sold out; with the stock of each store of the vendor
+        (`store_levels`, see `_ocd_store_stock`)."""
         rows = []
         template = template.sudo()
+        store_levels = store_levels or {}
         for variant in template.product_variant_ids:
             amount, money_currency = shop_common.variant_price(variant)
             qty = shop_common.free_qty(variant) if shop_common.tracked(variant) else None
@@ -165,8 +167,53 @@ class OcdShop(WebsiteSale):
                 "qty": qty,
                 "photo": template._ocd_variant_photo(variant),
                 "label": ", ".join(variant.product_template_attribute_value_ids.mapped("name")) or template.name,
+                "stores": store_levels.get(variant.id),
             })
         return rows
+
+    def _ocd_store_stock(self, template, vendor):
+        """The stores of the vendor that show the stock of the product (S.3 of the plan of « My
+        products »): [store rows], {variant id: [level in each store]}. Shown once the vendor
+        counts their pieces per place (two places), for a product whose stock limits the sales.
+        A level is the pieces free in the store, cut at LOW_STOCK + 1: the customer reads
+        « Available », « Available · only 2 left » or « Sold out », never the exact count of a
+        store."""
+        if not vendor or not shop_common.tracked(template) or not vendor._ocd_stock_per_place():
+            return [], {}
+        stores = request.env["ocd.vendor.place"]._ocd_shown_places(vendor).filtered(
+            lambda place: place.kind == "store" and place.location_id
+        )
+        if not stores:
+            return [], {}
+        variants = template.product_variant_ids
+        free = variants._ocd_free_by_location(stores.location_id)
+        top = shop_common.LOW_STOCK + 1
+        levels = {
+            variant.id: [min(free.get((store.location_id.id, variant.id), 0), top) for store in stores]
+            for variant in variants
+        }
+        rows = [{
+            "place": store,
+            "address": store._ocd_address_line(),
+            "open": store._ocd_open_state(),
+        } for store in stores]
+        return rows, levels
+
+    def _ocd_store_texts(self):
+        env = request.env
+        return {
+            "store_in": env._("Available"),
+            "store_low": env._("Available · only %s left"),
+            "store_out": env._("Sold out"),
+        }
+
+    def _ocd_store_status(self, level, texts):
+        """(class, text) of the stock of a variant in a store."""
+        if level <= 0:
+            return "o_ocd_store_stock_out", texts["store_out"]
+        if level <= shop_common.LOW_STOCK:
+            return "o_ocd_store_stock_in", texts["store_low"].replace("%s", str(level))
+        return "o_ocd_store_stock_in", texts["store_in"]
 
     def _ocd_chosen_variant(self, variants):
         """The variant asked by the address (?v=12,15: its colour and its size), else the first
@@ -198,7 +245,8 @@ class OcdShop(WebsiteSale):
         template_sudo = template.sudo()
         vendor = template_sudo.ocd_vendor_id
         ocd = shop_common.sold_by_ocd(template_sudo)
-        variants = self._ocd_variants(template_sudo)
+        store_rows, store_levels = self._ocd_store_stock(template_sudo, vendor)
+        variants = self._ocd_variants(template_sudo, store_levels)
         first = self._ocd_chosen_variant(variants) or {
             "price": template_sudo.list_price, "qty": None, "values": [], "id": False, "photo": None,
         }
@@ -206,6 +254,9 @@ class OcdShop(WebsiteSale):
         shown_photo = first.get("photo") or main_photo
         photos = [photo for photo in [shown_photo, main_photo if shown_photo != main_photo else None, *extra_photos] if photo]
         money_currency = shop_common.currency()
+        store_texts = self._ocd_store_texts()
+        for index, row in enumerate(store_rows):
+            row["status"] = self._ocd_store_status((first.get("stores") or [0] * len(store_rows))[index], store_texts)
         lines = []
         for line in template_sudo.valid_product_template_attribute_line_ids:
             if line.attribute_id.create_variant == "no_variant":
@@ -254,12 +305,14 @@ class OcdShop(WebsiteSale):
                 "extras": extra_photos,
                 "currency": {"symbol": money_currency.symbol, "position": money_currency.position,
                              "digits": money_currency.decimal_places},
+                "low_stock": shop_common.LOW_STOCK,
                 "texts": {
                     "in_stock": env._("In stock"),
                     "low": env._("Only %s left"),
                     "out": env._("Sold out"),
                     "add": env._("Add to the cart · %s"),
                     "gone": env._("%s: sold out for now."),
+                    **store_texts,
                 },
             }),
             lines=lines,
@@ -280,11 +333,14 @@ class OcdShop(WebsiteSale):
                 env._("live now") if live_now else "",
             ) if part) if vendor else "",
             live_now=live_now,
-            # « Also in store: Akwa, Central market » (M.3 of the plan of « My products »)
+            # « Also in store: Akwa, Central market » (M.3 of the plan of « My products »), until
+            # the stores show the stock of the product (S.3)
             also_in_stores=", ".join(dict.fromkeys(
                 place.district_id.name or place.name
                 for place in env["ocd.vendor.place"]._ocd_shown_places(vendor) if place.kind == "store"
-            )) if vendor else False,
+            )) if vendor and not store_rows else False,
+            store_rows=store_rows,
+            has_choices=bool(lines),
             delivery_lines=delivery_lines,
             direct_line=env._(
                 "Payment and delivery are agreed directly with %s. OCD Live does not take the money for this product.",

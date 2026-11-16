@@ -21,7 +21,7 @@
         <field name="template_ids" eval="[Command.set([ref('template_vendor_live')])]"/>
     </record>
     <record id="ocd_live_shop.automation_stock_alert" model="ocd.automation">
-        <field name="template_ids" eval="[Command.set([ref('template_product_back')])]"/>
+        <field name="template_ids" eval="[Command.set([ref('template_product_back'), ref('template_product_back_in_store')])]"/>
     </record>
     <record id="ocd_live_shop.automation_vendor_review" model="ocd.automation">
         <field name="template_ids" eval="[Command.set([ref('template_product_accepted'), ref('template_product_refused'),

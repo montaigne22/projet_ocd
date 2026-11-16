@@ -96,3 +96,46 @@ class TestOcdVendorProductMessages(HttpCase, OcdShopCommon):
         with patch.object(WhatsappTemplate, "_send", fake_send):
             store.action_ocd_refuse(self.env.ref("ocd_live_shop.refuse_reason_store_front"))
         self.assertFalse(calls)
+
+    def test_the_product_back_names_its_stores(self):
+        """« Tell me when it is back » (chantier 18): the stores of the vendor where the product
+        came back, once Meta approved this message; the message without the stores until then."""
+        self.company.write({"ocd_business_offered_all": True, "ocd_vendor_places_max": 5, "ocd_place_check": False})
+        Place = self.env["ocd.vendor.place"]
+        akwa, bonapriso = (self.env.ref(f"delivery_cameroon.district_douala_{name}") for name in ("akwa", "bonapriso"))
+        stores = Place.browse([Place._ocd_vendor_create(self.brenda, {
+            "name": name, "kind": "store", "district_id": district.id, "city_id": district.city_id.id,
+        }).id for name, district in (("Brenda Wax Akwa", akwa), ("Brenda Wax Bonapriso", bonapriso))])
+        self.dress.write({"is_storable": True, "allow_out_of_stock_order": False})
+        self.dress.product_tmpl_id.write({"is_published": True, "ocd_review_state": "approved"})
+        Alert = self.env["ocd.stock.alert"]
+        calls = []
+
+        def fake_send(template, records):
+            calls.append(template.template_name)
+            return template.env["whatsapp.message"]
+
+        in_store = self.env.ref("ocd_live_shop_whatsapp.template_product_back_in_store")
+        for template in (in_store, self.env.ref("ocd_live_shop_whatsapp.template_product_back_in_store_en")):
+            with self.subTest(template=template.name):
+                alert = Alert._ocd_register(self.dress, phone="+237 670000009")
+                self.dress._ocd_change_stock(1, stores[1].location_id)
+                values = [template._render(variable.value, alert)[alert.id] for variable in template.variable_ids]
+                self.assertEqual(values, ["Robe en wax", "Robe en wax", "Brenda Wax Bonapriso"])
+                self.dress._ocd_change_stock(-1, stores[1].location_id)
+                alert.unlink()
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            for status, expected in (("unknown", "ocd_produit_de_retour"), ("pending", "ocd_produit_de_retour"),
+                                     ("approved", "ocd_produit_de_retour_magasin")):
+                in_store.status = status
+                Alert._ocd_register(self.dress, phone="+237 670000009")
+                self.dress._ocd_change_stock(1, stores[0].location_id)
+                Alert._ocd_send_back()
+                self.assertEqual(calls[-1], expected, f"Message in store {status}")
+                self.dress._ocd_change_stock(-1, stores[0].location_id)
+            # Back at no store of the vendor: the message without the stores
+            home = Place._ocd_vendor_create(self.brenda, {"name": "Chez moi", "kind": "home", "district_id": akwa.id})
+            Alert._ocd_register(self.dress, phone="+237 670000009")
+            self.dress._ocd_change_stock(1, home.location_id)
+            Alert._ocd_send_back()
+            self.assertEqual(calls[-1], "ocd_produit_de_retour")

@@ -117,6 +117,14 @@ class ResPartner(models.Model):
             return False
         return self.env["ocd.automation"]._ocd_template_enabled(template)
 
+    @api.model
+    def _ocd_template_approved(self, xmlid):
+        """Whether the template `xmlid` is approved by Meta and not paused by the team: for a
+        new message that replaces an older one only once Meta accepted it (the older one leaves
+        until then)."""
+        template = self.env.ref(xmlid, raise_if_not_found=False)
+        return bool(template) and template.sudo().status == "approved" and self._ocd_template_usable(xmlid)
+
     def _ocd_send_access_link(self, url):
         """Override of `ocd_live` to send the link to choose a password on WhatsApp."""
         return self._ocd_whatsapp_send(

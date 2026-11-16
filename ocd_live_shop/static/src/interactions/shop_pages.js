@@ -115,6 +115,7 @@ export class OcdProductPage extends Interaction {
         const qtyInput = this.el.querySelector("input[name=quantity]");
         this.showPhotos(variant);
         this.showAlert(variant);
+        this.showStores(variant);
         if (!initial) {
             this.keepInAddress(values);
         }
@@ -136,8 +137,9 @@ export class OcdProductPage extends Interaction {
                 qtyInput.value = qty;
             }
             if (stock) {
-                stock.textContent = variant.qty <= 0 ? texts.out : variant.qty <= 3 ? texts.low.replace("%s", variant.qty) : texts.in_stock;
-                stock.classList.toggle("o_ocd_variant_low", variant.qty <= 3);
+                const low = variant.qty <= this.data.low_stock;
+                stock.textContent = variant.qty <= 0 ? texts.out : low ? texts.low.replace("%s", variant.qty) : texts.in_stock;
+                stock.classList.toggle("o_ocd_variant_low", low);
             }
         } else if (stock) {
             stock.textContent = texts.in_stock;
@@ -165,6 +167,33 @@ export class OcdProductPage extends Interaction {
                 title.textContent = this.data.texts.gone.replace("%s", variant.label);
             }
         }
+    }
+
+    /** In their stores: the choice store by store (« Available · only 2 left », « Sold out »),
+     * hidden when it is sold out everywhere. */
+    showStores(variant) {
+        const box = this.el.querySelector(".o_ocd_product_store_stock");
+        if (!box) {
+            return;
+        }
+        const out = !variant || !variant.stores || (variant.qty !== null && variant.qty <= 0);
+        box.classList.toggle("d-none", out);
+        if (out) {
+            return;
+        }
+        const texts = this.data.texts;
+        const label = box.querySelector(".o_ocd_store_stock_variant");
+        if (label) {
+            label.textContent = variant.label;
+        }
+        box.querySelectorAll(".o_ocd_store_stock_pill").forEach((pill, index) => {
+            const level = variant.stores[index] || 0;
+            pill.textContent = level <= 0
+                ? texts.store_out
+                : level <= this.data.low_stock ? texts.store_low.replace("%s", level) : texts.store_in;
+            pill.classList.toggle("o_ocd_store_stock_in", level > 0);
+            pill.classList.toggle("o_ocd_store_stock_out", level <= 0);
+        });
     }
 
     keepInAddress(values) {

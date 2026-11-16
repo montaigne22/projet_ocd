@@ -96,6 +96,21 @@ class OcdStockAlert(models.Model):
         self.ensure_one()
         return ", ".join(self.product_id.product_template_attribute_value_ids.mapped("name")) or self.product_id.name
 
+    def _ocd_back_in_stores(self):
+        """The stores of the vendor where the product came back, « Akwa, Central market » (S.3
+        of the plan of « My products »): the stores the customers see, once the vendor counts
+        their pieces per place. Empty otherwise: the message does not name a store."""
+        self.ensure_one()
+        product = self.product_id.sudo()
+        vendor = product.product_tmpl_id.ocd_vendor_id
+        if not vendor or not vendor._ocd_stock_per_place():
+            return ""
+        stores = self.env["ocd.vendor.place"]._ocd_shown_places(vendor).filtered(
+            lambda place: place.kind == "store" and place.location_id
+        )
+        free = product._ocd_free_by_location(stores.location_id)
+        return ", ".join(store.name for store in stores if free.get((store.location_id.id, product.id), 0) > 0)
+
     def _ocd_send_product_back(self):
         """Send the news that the product is back. Extended by ocd_live_shop_whatsapp."""
         return False
