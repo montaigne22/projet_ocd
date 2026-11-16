@@ -1,5 +1,6 @@
 import re
 import uuid
+from collections import defaultdict
 
 from odoo import http
 from odoo.exceptions import UserError, ValidationError
@@ -18,6 +19,10 @@ MAX_PRICE = 1_000_000_000
 PENDING_PHOTO = "ocd_pending_product_photo"
 # The token of a form of « My products » (uuid4().hex)
 FORM_TOKEN = re.compile(r"[0-9a-f]{32}")
+# The filters by state show from this number of products
+FILTER_FROM = 5
+# The ways to move a product in the boutique
+MOVES = ("first", "up", "down")
 # The sizes of the photos of the products a vendor sees in their space
 PHOTO_SIZES = ("image_128", "image_256", "image_512", "image_1024")
 
@@ -66,16 +71,32 @@ class OcdVendorProducts(http.Controller):
             return "out", env._("Sold out")
         return "on", env._("On sale")
 
-    def _rows(self, vendor):
-        products = request.env["product.template"].sudo().search(
-            [("ocd_vendor_id", "=", vendor.id)], order="create_date desc, id desc"
+    def _waiting_counts(self, variants):
+        """{template id: customers waiting for it to be back} for `variants`, in one query."""
+        counts = defaultdict(int)
+        groups = request.env["ocd.stock.alert"].sudo()._read_group(
+            [("product_id", "in", variants.ids), ("state", "=", "waiting")], ["product_id"], ["__count"]
         )
-        # The free stock of all the products in one query
-        free = products.product_variant_ids._ocd_free_qties()
+        for variant, count in groups:
+            counts[variant.product_tmpl_id.id] += count
+        return counts
+
+    def _rows(self, vendor):
+        """The products of the vendor in the order of their boutique, with what they tell: the
+        stock free to sell, the customers who wrote on WhatsApp or wait for it to be back."""
+        env = request.env
+        products = env["product.template"]._ocd_vendor_products(vendor)
+        variants = products.product_variant_ids
+        # The free stock and the waiting customers of all the products: one query each
+        free = variants._ocd_free_qties()
+        waiting = self._waiting_counts(variants)
+        root = request.httprequest.url_root.rstrip("/")
         rows = []
-        for product in products:
+        for index, product in enumerate(products):
             qty = sum(free[v.id] for v in product.product_variant_ids) if shop_common.tracked(product) else None
             status, status_label = self._status(product, qty)
+            online = status in ("on", "out")
+            clicks, waits = product.ocd_wa_clicks, waiting[product.id]
             colours = product.attribute_line_ids.filtered(
                 lambda line: line.attribute_id.display_type == "color"
             ).product_template_value_ids._only_active()
@@ -98,10 +119,39 @@ class OcdVendorProducts(http.Controller):
                 "status_label": status_label,
                 "refusal": product._ocd_refusal_text(),
                 "can_correct": product._ocd_vendor_can_correct(),
-                "less_aria": request.env._("One %s less", product.name),
-                "more_aria": request.env._("One %s more", product.name),
+                "less_aria": env._("One %s less", product.name),
+                "more_aria": env._("One %s more", product.name),
+                "more_label": env._("More for %s", product.name),
+                # What the product already brought, counted by OCD (1.1 of the plan)
+                "contacts_line": (env._("1 person wrote to you on WhatsApp") if clicks == 1
+                                  else env._("%s people wrote to you on WhatsApp", clicks)) if clicks else False,
+                "waiting_line": (env._("1 customer waits for it to be back") if waits == 1
+                                 else env._("%s customers wait for it to be back", waits)) if waits else False,
+                # Seen by the customers (1.2), shared (1.3), placed in the boutique (1.6)
+                "public_url": product.website_url if online else False,
+                "share": {
+                    "url": root + product.website_url,
+                    "text": f"{product.name} · {common.money(product.list_price, product.currency_id)}",
+                } if online else False,
+                "first": index == 0,
+                "last": index == len(products) - 1,
             })
         return rows
+
+    def _filters(self, rows, current):
+        """The filters by state (1.4 of the plan), when the catalogue grows: [(key, label,
+        count)], or [] for a short list or a list in one state."""
+        env = request.env
+        counts = defaultdict(int)
+        for row in rows:
+            counts[row["status"]] += 1
+        if len(rows) < FILTER_FROM or len(counts) < 2:
+            return []
+        labels = [("on", env._("On sale")), ("out", env._("Sold out")), ("check", env._("To check")),
+                  ("refused", env._("Refused")), ("hidden", env._("Not shown"))]
+        return [("all", env._("All"), len(rows))] + [
+            (key, label, counts[key]) for key, label in labels if counts[key] or key == current
+        ]
 
     def _form_values(self, values=None, errors=None, kept=None, form_token=None, product=None):
         """What the form of a product needs (vendor_product_form): its token (a second sending
@@ -133,10 +183,12 @@ class OcdVendorProducts(http.Controller):
             },
         }
 
-    def _render(self, vendor, values=None, errors=None, sent=False, kept=None, form_token=None):
+    def _render(self, vendor, values=None, errors=None, sent=False, kept=None, form_token=None, state=None):
         env = request.env
         rows = self._rows(vendor)
         on_sale = [row for row in rows if row["status"] in ("on", "out")]
+        filters = self._filters(rows, state)
+        state = state if filters and state in {key for key, _label, _count in filters} else "all"
         return request.render("ocd_live_shop.vendor_products", common.page_values(
             "mes_produits",
             back="/ocd/espace/moi",
@@ -145,6 +197,10 @@ class OcdVendorProducts(http.Controller):
             vendor=vendor,
             rows=rows,
             count_line=env._("%s on sale", len(on_sale)),
+            filters=filters,
+            state=state,
+            # The menu « More » of a product stays open after a move
+            opened=int(request.params["ouvert"]) if str(request.params.get("ouvert", "")).isdigit() else False,
             sent=sent,
             photo_error=request.params.get("photo_erreur"),
             boutique_url=request.httprequest.url_root.rstrip("/") + f"/ocd/boutique/{vendor.id}"
@@ -211,11 +267,11 @@ class OcdVendorProducts(http.Controller):
         return request.redirect("/ocd/espace/moi/produits")
 
     @http.route("/ocd/espace/moi/produits", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
-    def products(self, envoye=None, **kwargs):
+    def products(self, envoye=None, etat=None, **kwargs):
         vendor = self._vendor()
         if not vendor:
             return request.redirect("/ocd/connexion")
-        return self._render(vendor, sent=bool(envoye))
+        return self._render(vendor, sent=bool(envoye), state=etat)
 
     # === PHOTO KEPT AFTER AN ERROR === #
     # A form refused for its name or its price must not ask for the photo again (taken again on a
@@ -308,6 +364,8 @@ class OcdVendorProducts(http.Controller):
             if data is not None and not kept:
                 kept = self._keep_photo(vendor, data, filename)
             return self._render(vendor, values=values, errors=errors, kept=kept, form_token=token)
+        # A new product goes first in the boutique (and in « My products »)
+        first = Product._ocd_first_sequence(vendor)
         try:
             # sudo: the vendor has no account; the product waits for the check of the team.
             # A refused product leaves nothing behind (savepoint).
@@ -325,6 +383,7 @@ class OcdVendorProducts(http.Controller):
                     "is_published": False,
                     "image_1920": BinaryBytes(data, filename=filename),
                     "ocd_form_token": token,
+                    **({"website_sequence": first} if first is not None else {}),
                 })
                 product._ocd_set_stock(qty)
         except (UserError, ValidationError) as exc:
@@ -376,6 +435,37 @@ class OcdVendorProducts(http.Controller):
             return self._render_correct(vendor, product, values, {"photo": exc.args[0]})
         self._pending_photos(vendor).unlink()
         return request.redirect(f"/ocd/espace/moi/produits?envoye=1#produit-{product.id}" if resent else back)
+
+    # === ORDER OF THE BOUTIQUE, COPY === #
+
+    def _own_product(self, vendor, product_id):
+        product = request.env["product.template"].sudo().browse(product_id).exists()
+        if not product or product.ocd_vendor_id != vendor:
+            raise request.not_found()
+        return product
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/ordre", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def product_move(self, product_id, ou=None, **post):
+        """Put a product first, or one place up or down, in the boutique (1.6 of the plan)."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        product = self._own_product(vendor, product_id)
+        if ou in MOVES:
+            product._ocd_move_in_boutique(ou)
+        return request.redirect(f"/ocd/espace/moi/produits?ouvert={product.id}#produit-{product.id}")
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/dupliquer", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def product_duplicate(self, product_id, **post):
+        """A copy of a product (the same model in another fabric), then its form to change the
+        name or the photo; the team checks it like a new product (1.5 of the plan)."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        copy = self._own_product(vendor, product_id)._ocd_vendor_duplicate()
+        return request.redirect(f"/ocd/espace/moi/produits/{copy.id}/modifier")
 
     @http.route("/ocd/espace/moi/produits/<int:product_id>/couleur/<int:value_id>", type="http", auth="public",
                 website=True, methods=["POST"], sitemap=False)

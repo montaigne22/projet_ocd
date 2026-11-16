@@ -230,6 +230,67 @@ class ProductTemplate(models.Model):
             text = f"{text} {link}"
         return f"https://wa.me/{digits}?text={url_quote(text)}"
 
+    # === THE BOUTIQUE OF THE VENDOR: ORDER AND COPIES === #
+
+    @api.model
+    def _ocd_vendor_products(self, vendor):
+        """The products of `vendor` in the order of their boutique."""
+        return self.sudo().search([("ocd_vendor_id", "=", vendor.id)], order="website_sequence, id")
+
+    @api.model
+    def _ocd_first_sequence(self, vendor):
+        """The place of a product put first in the boutique of `vendor` (a new one, a copy), or
+        None when the vendor has no product yet (the default place of Odoo)."""
+        [[lowest]] = self.sudo()._read_group([("ocd_vendor_id", "=", vendor.id)], [], ["website_sequence:min"])
+        return lowest - 1 if lowest is not None else None
+
+    def _ocd_move_in_boutique(self, where):
+        """Move a product in the boutique of its vendor: "first", "up" or "down" one place. The
+        products of the other vendors keep their places, and one or two products only are
+        written. Return whether it moved."""
+        self.ensure_one()
+        products = self._ocd_vendor_products(self.ocd_vendor_id)
+        index = products.ids.index(self.id)
+        if where == "first":
+            if index == 0:
+                return False
+            self.sudo().website_sequence = products[0].website_sequence - 1
+            return True
+        other_index = {"up": index - 1, "down": index + 1}.get(where)
+        if other_index is None or not 0 <= other_index < len(products):
+            return False
+        other = products[other_index]
+        if other.website_sequence == self.website_sequence:
+            # The same place number (products made elsewhere): make them distinct first
+            last = None
+            for product in products:
+                if last is not None and product.website_sequence <= last:
+                    product.website_sequence = last + 1
+                last = product.website_sequence
+        mine, theirs = self.website_sequence, other.website_sequence
+        self.sudo().website_sequence = theirs
+        other.website_sequence = mine
+        return True
+
+    def _ocd_vendor_duplicate(self):
+        """A copy made by the vendor (the same model in another fabric): checked by the team like
+        a new product, first in the boutique, without stock and without the history of the
+        original (contacts, refusals)."""
+        self.ensure_one()
+        values = {
+            "name": self.env._("%s (copy)", self.name),
+            "ocd_review_state": "to_check",
+            "is_published": False,
+            "ocd_refuse_reason_id": False,
+            "ocd_previous_refusal": False,
+        }
+        first = self._ocd_first_sequence(self.ocd_vendor_id)
+        if first is not None:
+            values["website_sequence"] = first
+        copy = self.sudo().copy(values)
+        copy.message_post(body=self.env._("Copy of %s, made by the vendor.", self.name))
+        return copy
+
     def _ocd_free_total(self):
         """Pieces of the product free to sell, all its variants together (messages to the vendor)."""
         self.ensure_one()

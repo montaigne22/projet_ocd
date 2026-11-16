@@ -634,6 +634,42 @@ export class OcdProductForm extends Interaction {
 }
 
 /**
+ * My products: the filters by state show the products at once, without a new page on a slow
+ * network. The links still give the same page without JavaScript; the address keeps the filter.
+ */
+export class OcdProductFilters extends Interaction {
+    static selector = ".o_ocd_my_products_filters";
+    dynamicContent = {
+        "a[data-state]": { "t-on-click": this.choose },
+    };
+
+    choose(ev) {
+        ev.preventDefault();
+        const chosen = ev.currentTarget;
+        const state = chosen.dataset.state;
+        for (const chip of this.el.querySelectorAll("a[data-state]")) {
+            if (chip === chosen) {
+                chip.setAttribute("aria-current", "true");
+            } else {
+                chip.removeAttribute("aria-current");
+            }
+        }
+        const list = document.querySelector(".o_ocd_my_products_list");
+        let shown = 0;
+        for (const row of list.querySelectorAll(".o_ocd_my_product[data-status]")) {
+            const visible = state === "all" || row.dataset.status === state;
+            row.hidden = !visible;
+            shown += visible ? 1 : 0;
+        }
+        const none = list.querySelector(".o_ocd_my_products_none");
+        if (none) {
+            none.hidden = shown > 0;
+        }
+        history.replaceState(history.state, "", chosen.href);
+    }
+}
+
+/**
  * My delivery prices: the districts of the city chosen.
  */
 export class OcdVendorRatesForm extends Interaction {
@@ -685,4 +721,5 @@ registry
     .add("ocd_live_shop.product_page", OcdProductPage)
     .add("ocd_live_shop.delivery_form", OcdDeliveryForm)
     .add("ocd_live_shop.product_form", OcdProductForm)
+    .add("ocd_live_shop.product_filters", OcdProductFilters)
     .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm);

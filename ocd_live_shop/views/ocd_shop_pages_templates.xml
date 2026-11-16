@@ -618,9 +618,19 @@
                         <h2>My boutique</h2>
                         <span t-out="count_line"/>
                     </div>
+                    <!-- Filters by state when the catalogue grows: links (the page without
+                         JavaScript), shown at once by OcdProductFilters -->
+                    <nav t-if="filters" class="o_ocd_chips o_ocd_my_products_filters" aria-label="Filter my products">
+                        <t t-foreach="filters" t-as="chip">
+                            <a t-att-href="'/ocd/espace/moi/produits' + ('' if chip[0] == 'all' else '?etat=' + chip[0])"
+                               class="o_ocd_chip" t-att-data-state="chip[0]"
+                               t-att-aria-current="'true' if state == chip[0] else None"><t t-out="chip[1]"/> · <t t-out="chip[2]"/></a>
+                        </t>
+                    </nav>
                     <div class="o_ocd_my_products_list">
                         <t t-foreach="rows" t-as="row">
-                            <div class="o_ocd_my_product" t-attf-id="produit-#{row['product'].id}">
+                            <div class="o_ocd_my_product" t-attf-id="produit-#{row['product'].id}" t-att-data-status="row['status']"
+                                 t-att-hidden="'hidden' if state not in ('all', row['status']) else None">
                                 <span class="o_ocd_photo o_ocd_cart_photo">
                                     <t t-call="ocd_live_shop.product_photo" image="row['image']"/>
                                 </span>
@@ -636,6 +646,8 @@
                                         <t t-if="row['status'] == 'refused'">Correct and send again</t>
                                         <t t-else="">Change</t>
                                     </a>
+                                    <small t-if="row['contacts_line']" class="o_ocd_my_product_fact" t-out="row['contacts_line']"/>
+                                    <small t-if="row['waiting_line']" class="o_ocd_my_product_fact o_ocd_my_product_waiting" t-out="row['waiting_line']"/>
                                 </span>
                                 <details t-if="row['colours']" class="o_ocd_colour_photos"
                                          t-att-open="'open' if photo_error == str(row['product'].id) else None">
@@ -673,9 +685,33 @@
                                     <span class="o_ocd_stepper_value" aria-live="polite" t-out="row['qty'] if row['qty'] is not None else '–'"/>
                                     <button name="delta" value="1" t-att-aria-label="row['more_aria']">+</button>
                                 </form>
+                                <!-- What else the vendor does with the product, folded on the phone -->
+                                <details class="o_ocd_my_product_more" t-att-open="'open' if opened == row['product'].id else None">
+                                    <summary class="o_ocd_link" t-att-aria-label="row['more_label']">More</summary>
+                                    <div class="o_ocd_my_product_actions">
+                                        <a t-if="row['public_url']" t-att-href="row['public_url']" target="_blank" rel="noopener"
+                                           class="o_ocd_button">See it in my boutique</a>
+                                        <button t-if="row['share']" type="button" class="o_ocd_button o_ocd_share o_ocd_my_product_share"
+                                                t-att-data-url="row['share']['url']" t-att-data-text="row['share']['text']"
+                                                t-att-data-image="row['share'].get('image')">Share</button>
+                                        <form t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/dupliquer" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button class="o_ocd_button">Duplicate</button>
+                                        </form>
+                                        <form t-if="len(rows) &gt; 1" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/ordre"
+                                              method="post" class="o_ocd_my_product_order">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button t-if="not row['first']" name="ou" value="first" class="o_ocd_button">Put first</button>
+                                            <button t-if="not row['first']" name="ou" value="up" class="o_ocd_button">Move up</button>
+                                            <button t-if="not row['last']" name="ou" value="down" class="o_ocd_button">Move down</button>
+                                        </form>
+                                    </div>
+                                </details>
                             </div>
                         </t>
                         <div t-if="not rows" class="o_ocd_info">No product yet: add your first one above.</div>
+                        <div t-if="rows" class="o_ocd_info o_ocd_my_products_none"
+                             t-att-hidden="None if state != 'all' and not any(row['status'] == state for row in rows) else 'hidden'">No product in this state.</div>
                     </div>
                     <small class="o_ocd_parcel_hint">At 0, the product stays visible with “Sold out”. Put a quantity back when you have some.</small>
                     <t t-if="boutique_url">

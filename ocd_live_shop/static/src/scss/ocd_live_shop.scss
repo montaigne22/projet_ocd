@@ -1695,6 +1695,45 @@
             width: 34px;
         }
     }
+    // A product hidden by a filter (the grid would show it anyway)
+    .o_ocd_my_product[hidden] {
+        display: none;
+    }
+    .o_ocd_my_product_fact {
+        font-size: 13px;
+        color: $ocd-muted;
+    }
+    .o_ocd_my_product_waiting {
+        color: $ocd-orange-text;
+        font-weight: 700;
+    }
+    // « More »: what else the vendor does with the product, under the whole line
+    .o_ocd_my_product_more {
+        grid-column: 1 / -1;
+        summary {
+            cursor: pointer;
+            font-size: 14px;
+            width: max-content;
+        }
+        .o_ocd_my_product_actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+            form {
+                display: contents;
+            }
+            .o_ocd_button {
+                min-height: 40px;
+                font-size: 14px;
+            }
+        }
+    }
+    .o_ocd_my_products_filters .o_ocd_chip[aria-current="true"] {
+        border-color: $ocd-ink;
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
     .o_ocd_my_product_text {
         display: flex;
         flex-direction: column;

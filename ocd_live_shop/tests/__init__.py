@@ -10,3 +10,4 @@ from . import test_product_media
 from . import test_card_products
 from . import test_vendor_stock
 from . import test_product_review
+from . import test_vendor_boutique
