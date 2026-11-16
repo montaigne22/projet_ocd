@@ -12,6 +12,12 @@ CARD_PRODUCTS = 8  # products in the carousel of the card of a vendor in the fee
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    ocd_shared_at = fields.Datetime(
+        string="Boutique First Shared",
+        copy=False,
+        readonly=True,
+        help="When the vendor first shared their boutique, a product or their catalogue from their space.",
+    )
     ocd_card_media = fields.Selection(
         selection_add=[("video",), ("products", "The products, in a carousel")],
         ondelete={"products": "set default"},
@@ -209,6 +215,37 @@ class ResPartner(models.Model):
         return product._ocd_image_url("image_512") if product else False
 
     # === CARD IN THE FEED: THE CAROUSEL OF THE PRODUCTS === #
+
+    # === FIRST STEPS OF A VENDOR === #
+
+    def _ocd_start_steps(self):
+        """The first steps of a vendor in their boutique, shown in their space until all are done
+        (1.8 of the plan of « My products »): {"percent", "title", "steps": [{"key", "label",
+        "done", "url"}]}. A vendor sold by OCD counts their first sale; a vendor in direct
+        contact, their first customer on WhatsApp. Extended by the next chantiers (a store)."""
+        self.ensure_one()
+        _ = self.env._
+        products = self.env["product.template"].sudo().search([("ocd_vendor_id", "=", self.id)])
+        on_sale = products.filtered(lambda p: p.is_published and p.ocd_review_state == "approved")
+        steps = [
+            {"key": "product", "label": _("Add your first product"), "done": bool(products),
+             "url": "/ocd/espace/moi/produits"},
+            {"key": "on_sale", "label": _("Have 5 products on sale (%s now)", len(on_sale)), "done": len(on_sale) >= 5,
+             "url": "/ocd/espace/moi/produits"},
+            {"key": "share", "label": _("Share your boutique in your WhatsApp status"), "done": bool(self.ocd_shared_at),
+             "url": "/ocd/espace/moi/catalogue"},
+        ]
+        if self.ocd_sale_mode == "direct":
+            steps.append({"key": "contact", "label": _("A first customer writes to you on WhatsApp"),
+                          "done": any(products.mapped("ocd_wa_clicks")), "url": "/ocd/espace/moi/catalogue"})
+        else:
+            sold = self.env["sale.order.line"].sudo().search_count(
+                [("ocd_vendor_id", "=", self.id), ("state", "=", "sale")], limit=1
+            )
+            steps.append({"key": "sale", "label": _("Your first sale"), "done": bool(sold),
+                          "url": "/ocd/espace/moi/catalogue"})
+        percent = round(100 * sum(step["done"] for step in steps) / len(steps))
+        return {"percent": percent, "title": _("Your boutique is %s%% ready", percent), "steps": steps}
 
     def _ocd_card_products(self):
         """The products of the carousel of the card: the published ones with a photo, in the order

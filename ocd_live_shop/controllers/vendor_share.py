@@ -2,7 +2,7 @@ import threading
 from collections import OrderedDict
 from urllib.parse import urlsplit
 
-from odoo import http
+from odoo import fields, http
 from odoo.http import request
 
 from odoo.addons.ocd_live.controllers import common
@@ -80,6 +80,16 @@ class OcdVendorShare(http.Controller):
             "url": url,
         }))
         return jpeg_response(data, unique, stamp)
+
+    @http.route("/ocd/espace/moi/partage", type="http", auth="public", website=True, methods=["POST"], csrf=False,
+                sitemap=False)
+    def shared(self, **kwargs):
+        """Told by the phone when the vendor shared their boutique, a product or their catalogue
+        (a beacon: no form, so no token; it only marks a first step done in their space)."""
+        vendor = common.current_vendor()
+        if vendor and not vendor.ocd_shared_at:
+            vendor.sudo().ocd_shared_at = fields.Datetime.now()
+        return request.make_response("", status=204)
 
     # === THE CATALOGUE OF THE BOUTIQUE === #
 

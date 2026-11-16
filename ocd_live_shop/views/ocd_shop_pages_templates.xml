@@ -691,7 +691,7 @@
                                     <div class="o_ocd_my_product_actions">
                                         <a t-if="row['public_url']" t-att-href="row['public_url']" target="_blank" rel="noopener"
                                            class="o_ocd_button">See it in my boutique</a>
-                                        <button t-if="row['share']" type="button" class="o_ocd_button o_ocd_share o_ocd_my_product_share"
+                                        <button t-if="row['share']" type="button" class="o_ocd_button o_ocd_share o_ocd_my_product_share" data-track="/ocd/espace/moi/partage"
                                                 t-att-data-url="row['share']['url']" t-att-data-text="row['share']['text']"
                                                 t-att-data-image="row['share'].get('image')">Share</button>
                                         <form t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/dupliquer" method="post">
@@ -715,7 +715,7 @@
                     </div>
                     <small class="o_ocd_parcel_hint">At 0, the product stays visible with “Sold out”. Put a quantity back when you have some.</small>
                     <t t-if="boutique_url">
-                        <button type="button" class="o_ocd_share o_ocd_share_wide" t-att-data-url="boutique_url">
+                        <button type="button" class="o_ocd_share o_ocd_share_wide" t-att-data-url="boutique_url" data-track="/ocd/espace/moi/partage">
                             <t t-call="ocd_live.icon" icon.f="share"/>
                             <span>Share my boutique</span>
                         </button>
@@ -750,7 +750,7 @@
                     <p class="o_ocd_parcel_hint">Your products on sale, with their price and the QR code of your boutique. Share the images in your WhatsApp status.</p>
                     <t t-if="images">
                         <button type="button" class="o_ocd_cta o_ocd_share o_ocd_catalogue_share" t-att-data-url="boutique_url"
-                                t-att-data-images="json.dumps(images)" t-att-data-text="vendor.name">Share the catalogue</button>
+                                t-att-data-images="json.dumps(images)" t-att-data-text="vendor.name" data-track="/ocd/espace/moi/partage">Share the catalogue</button>
                         <div class="o_ocd_share_done o_ocd_ok" role="status" hidden="hidden">Link copied. Paste it in your WhatsApp status.</div>
                         <div class="o_ocd_catalogue_pages">
                             <t t-foreach="images" t-as="image">
@@ -759,7 +759,7 @@
                                     <figcaption>
                                         <a t-att-href="image" t-attf-download="catalogue-#{image_index + 1}.jpg" class="o_ocd_button">Download</a>
                                         <button type="button" class="o_ocd_button o_ocd_share" t-att-data-url="boutique_url"
-                                                t-att-data-image="image" t-att-data-text="vendor.name">Share</button>
+                                                t-att-data-image="image" t-att-data-text="vendor.name" data-track="/ocd/espace/moi/partage">Share</button>
                                     </figcaption>
                                 </figure>
                             </t>
@@ -859,6 +859,23 @@
 
     <template id="space" inherit_id="ocd_live.space" name="OCD Live: products and parcels in the space">
         <xpath expr="//div[hasclass('o_ocd_space_shop')]" position="inside">
+            <!-- The first steps of the vendor, until all are done (1.8 of the plan) -->
+            <t t-set="start" t-value="vendor._ocd_start_steps()"/>
+            <div t-if="start['percent'] &lt; 100" class="o_ocd_start">
+                <div class="o_ocd_start_head">
+                    <b t-out="start['title']"/>
+                    <span class="o_ocd_start_bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                          t-att-aria-valuenow="start['percent']" t-att-aria-label="start['title']">
+                        <i t-attf-style="width: #{start['percent']}%"/>
+                    </span>
+                </div>
+                <ol class="o_ocd_start_steps">
+                    <t t-foreach="start['steps']" t-as="step">
+                        <li t-if="step['done']" class="o_ocd_done"><t t-call="ocd_live.icon" icon.f="check"/><t t-out="step['label']"/></li>
+                        <li t-else=""><a t-att-href="step['url']" t-out="step['label']"/></li>
+                    </t>
+                </ol>
+            </div>
             <h2 class="o_ocd_section">My shop</h2>
             <div class="o_ocd_space_links">
                 <a href="/ocd/espace/moi/produits" class="o_ocd_button o_ocd_button_dark">My products</a>

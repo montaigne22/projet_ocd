@@ -11,7 +11,8 @@ const WAIT_IMAGES_MS = 2500;
  * none and says so.
  * - data-url: the page to share; data-text: a line with it (the name and the price);
  * - data-image / data-images (JSON list): images shared as files when the phone can (the
- *   WhatsApp status takes an image), else the link alone.
+ *   WhatsApp status takes an image), else the link alone;
+ * - data-track: an address told once the sharing is done (the first steps of a vendor).
  */
 export class OcdLiveShare extends Interaction {
     static selector = ".o_ocd_share[data-url]";
@@ -66,6 +67,12 @@ export class OcdLiveShare extends Interaction {
         return this.preparing;
     }
 
+    track() {
+        if (this.el.dataset.track && navigator.sendBeacon) {
+            navigator.sendBeacon(this.el.dataset.track);
+        }
+    }
+
     async share() {
         const url = this.el.dataset.url;
         const text = this.el.dataset.text || "";
@@ -79,6 +86,7 @@ export class OcdLiveShare extends Interaction {
                 if (files?.length && navigator.canShare({ files })) {
                     // With images, some apps keep only the text: the link goes in it
                     await this.waitFor(navigator.share({ files, text: [text, url].filter(Boolean).join("\n") }));
+                    this.track();
                     return;
                 }
                 const data = { url, title: document.title };
@@ -86,6 +94,7 @@ export class OcdLiveShare extends Interaction {
                     data.text = text;
                 }
                 await this.waitFor(navigator.share(data));
+                this.track();
                 return;
             } catch (error) {
                 if (error?.name === "AbortError") {
@@ -99,6 +108,7 @@ export class OcdLiveShare extends Interaction {
             window.prompt("", url);
             return;
         }
+        this.track();
         const done = document.querySelector(".o_ocd_share_done");
         if (done) {
             done.hidden = false;

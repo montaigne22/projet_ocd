@@ -31,22 +31,22 @@ class TestOcdVendorBoutique(HttpCase, OcdShopCommon):
         cls.pagne, cls.bag, cls.boubou = cls.products
         cls.other = Product.create({"name": "Karite", "ocd_vendor_id": cls.fatou.id, "website_sequence": 15})
 
-    def _order(self, vendor):
+    def _boutique_order(self, vendor):
         return self.env["product.template"]._ocd_vendor_products(vendor).filtered(lambda p: p in self.products)
 
     def test_the_order_of_the_boutique(self):
         self.boubou._ocd_move_in_boutique("first")
-        self.assertEqual(self._order(self.brenda), self.boubou | self.pagne | self.bag)
+        self.assertEqual(self._boutique_order(self.brenda), self.boubou | self.pagne | self.bag)
         self.assertFalse(self.boubou._ocd_move_in_boutique("up"), "Already first")
         self.bag._ocd_move_in_boutique("up")
-        self.assertEqual(self._order(self.brenda), self.boubou | self.bag | self.pagne)
+        self.assertEqual(self._boutique_order(self.brenda), self.boubou | self.bag | self.pagne)
         self.boubou._ocd_move_in_boutique("down")
-        self.assertEqual(self._order(self.brenda), self.bag | self.boubou | self.pagne)
+        self.assertEqual(self._boutique_order(self.brenda), self.bag | self.boubou | self.pagne)
         self.assertEqual(self.other.website_sequence, 15, "The products of the other vendors keep their place")
         # The same place number (products made elsewhere): still moved one place
         self.products.website_sequence = 50
         self.pagne._ocd_move_in_boutique("down")
-        self.assertEqual(self._order(self.brenda)[1], self.pagne)
+        self.assertEqual(self._boutique_order(self.brenda)[1], self.pagne)
         self.assertEqual(len(set(self.products.mapped("website_sequence"))), 3)
 
     def test_a_copy_is_checked_like_a_new_product(self):
@@ -83,7 +83,7 @@ class TestOcdVendorBoutique(HttpCase, OcdShopCommon):
         response = self.url_open(f"/ocd/espace/moi/produits/{self.boubou.id}/ordre", data={"csrf_token": csrf, "ou": "first"},
                                  allow_redirects=False)
         self.assertIn(f"ouvert={self.boubou.id}", response.headers["Location"], "Its menu stays open")
-        self.assertEqual(self._order(self.brenda)[0], self.boubou)
+        self.assertEqual(self._boutique_order(self.brenda)[0], self.boubou)
         response = self.url_open(f"/ocd/espace/moi/produits/{self.pagne.id}/dupliquer", data={"csrf_token": csrf},
                                  allow_redirects=False)
         copy = self.env["product.template"].search([("name", "=", "Pagne (copy)")])
@@ -144,3 +144,34 @@ class TestOcdVendorBoutique(HttpCase, OcdShopCommon):
         self.url_open(f"/ocd/espace/{self.fatou._ocd_get_space_token()}")
         self.assertIn("No product on sale yet", self.url_open("/ocd/espace/moi/catalogue").text)
         self.assertEqual(self.url_open(images[0].split("?")[0]).status_code, 404)
+
+    def test_the_first_steps_of_a_vendor(self):
+        newcomer = self.env["res.partner"].create({
+            "name": "Kossi Bijoux", "ocd_is_vendor": True, "ocd_vendor_state": "approved", "ocd_sale_mode": "ocd",
+        })
+        start = newcomer._ocd_start_steps()
+        self.assertEqual((start["percent"], [step["key"] for step in start["steps"]]), (0, ["product", "on_sale", "share", "sale"]))
+        self.env["product.template"].create({"name": "Collier", "ocd_vendor_id": newcomer.id})
+        self.assertEqual(newcomer._ocd_start_steps()["percent"], 25)
+        # A vendor in direct contact counts a first customer on WhatsApp instead of a sale
+        newcomer.ocd_sale_mode = "direct"
+        self.assertEqual(newcomer._ocd_start_steps()["steps"][-1]["key"], "contact")
+        # Brenda: 3 products on sale, nothing shared, nothing sold
+        self.assertEqual(self.brenda._ocd_start_steps()["percent"], 25)
+        # The phone tells when the vendor shared (a beacon, no form)
+        self.authenticate(None, None)
+        self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
+        page = self.url_open("/ocd/espace/moi").text
+        self.assertIn("Your boutique is 25% ready", page)
+        self.assertIn('href="/ocd/espace/moi/catalogue"', page)
+        response = self.url_open("/ocd/espace/moi/partage", data={"shared": "1"})
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(self.brenda.ocd_shared_at)
+        self.assertIn("Your boutique is 50% ready", self.url_open("/ocd/espace/moi").text)
+        # All done: the block goes away
+        self.env["product.template"].create([
+            {"name": f"Pagne {n}", "ocd_vendor_id": self.brenda.id, "is_published": True} for n in range(2)
+        ])
+        order = self._order(self.estelle, [(self.dress, 1)])
+        self.assertEqual(order.state, "sale")
+        self.assertNotIn("o_ocd_start", self.url_open("/ocd/espace/moi").text)

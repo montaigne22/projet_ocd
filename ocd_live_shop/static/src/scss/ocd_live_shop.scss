@@ -2231,3 +2231,61 @@
         }
     }
 }
+
+// The first steps of a vendor, in their space (1.8 of the plan of « My products »)
+.o_ocd_start {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 4px 0 8px;
+    padding: 16px;
+    border: 2px solid $ocd-orange-soft;
+    border-radius: 18px;
+    background: $ocd-orange-pale;
+    .o_ocd_start_head {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        b {
+            font-size: 16px;
+        }
+    }
+    .o_ocd_start_bar {
+        display: block;
+        height: 10px;
+        border-radius: 5px;
+        background: #FFFFFF;
+        overflow: hidden;
+        i {
+            display: block;
+            height: 100%;
+            border-radius: 5px;
+            background: $ocd-orange;
+        }
+    }
+    .o_ocd_start_steps {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 0;
+        padding-left: 20px;
+        font-size: 14.5px;
+        li.o_ocd_done {
+            list-style: none;
+            margin-left: -20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: $ocd-green-text;
+            text-decoration: line-through;
+            .o_ocd_icon {
+                width: 16px;
+                height: 16px;
+                flex: none;
+            }
+        }
+        a {
+            font-weight: 700;
+        }
+    }
+}
