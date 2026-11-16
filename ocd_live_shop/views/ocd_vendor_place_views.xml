@@ -15,6 +15,7 @@
                 <field name="city_id"/>
                 <field name="phone" optional="hide"/>
                 <field name="closed_until" optional="hide"/>
+                <field name="ocd_stock_count" optional="show"/>
                 <field name="state" widget="badge" decoration-success="state == 'approved'"
                        decoration-warning="state == 'to_check'" decoration-danger="state == 'refused'"/>
             </list>
@@ -55,6 +56,8 @@
                         <group string="Contact and check">
                             <field name="phone"/>
                             <field name="closed_until"/>
+                            <field name="ocd_stock_count"/>
+                            <field name="location_id" groups="stock.group_stock_manager"/>
                             <field name="refuse_reason_id" options="{'no_create': True}"
                                    invisible="state not in ('to_check', 'refused')" readonly="state != 'to_check'"
                                    placeholder="Reason sent to the vendor, to refuse"/>
@@ -129,6 +132,7 @@
                             <field name="kind"/>
                             <field name="district_id"/>
                             <field name="city_id"/>
+                            <field name="ocd_stock_count"/>
                             <field name="state" widget="badge" decoration-success="state == 'approved'"
                                    decoration-warning="state == 'to_check'" decoration-danger="state == 'refused'"/>
                             <field name="active" column_invisible="True"/>

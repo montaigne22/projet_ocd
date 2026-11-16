@@ -1,4 +1,4 @@
-from odoo import models
+from odoo import api, models
 
 # Most pieces of one product a vendor can have in one place (a typo of the stepper or of the
 # field stays readable)
@@ -10,20 +10,30 @@ class ProductProduct(models.Model):
 
     # === STOCK CHANGED BY THE VENDOR === #
 
-    def _ocd_stock_location(self):
-        """The place where the vendor of the product counts and changes its stock: the stock of
-        the main warehouse of its company."""
-        self.ensure_one()
-        company = self.company_id or self.env.company
+    @api.model
+    def _ocd_stock_root(self, company=None):
+        """The stock of the main warehouse of the company: every piece of the shop, the places
+        of the vendors included (their locations are inside it)."""
+        company = company or self.env.company
         warehouse = self.env["stock.warehouse"].sudo().search([("company_id", "=", company.id)], limit=1)
         return warehouse.lot_stock_id
 
+    def _ocd_stock_location(self):
+        """Where a piece of the product goes when no place is said: the main place of its vendor
+        (the place the parcels leave from), else the stock of the shop."""
+        self.ensure_one()
+        vendor = self.sudo().product_tmpl_id.ocd_vendor_id
+        place = vendor._ocd_main_stock_place() if vendor else None
+        if place:
+            return place._ocd_location()
+        return self._ocd_stock_root(self.company_id or self.env.company)
+
     def _ocd_free_qties(self, location=None):
-        """{variant id: pieces free to sell} for the variants of `self` at `location` (the place
-        of the vendor by default, its sub-places included), in one query: the stock minus what
-        is reserved for the orders not delivered yet. What the vendor sees and changes."""
+        """{variant id: pieces free to sell} for the variants of `self` at `location` (all the
+        stock of the shop by default, the places of the vendors included), in one query: the
+        stock minus what is reserved for the orders not delivered yet."""
         free = dict.fromkeys(self.ids, 0)
-        location = location or (self[:1]._ocd_stock_location() if self else None)
+        location = location or (self._ocd_stock_root(self[:1].company_id or self.env.company) if self else None)
         if not self or not location:
             return free
         groups = self.env["stock.quant"].sudo()._read_group(
@@ -67,9 +77,23 @@ class ProductProduct(models.Model):
         return free + delta
 
     def _ocd_set_free_stock(self, quantity, location=None):
-        """Make the free stock of the variant `quantity` (see `_ocd_change_stock`)."""
+        """Make the free stock of the variant `quantity` at `location` (the main place of its
+        vendor by default, see `_ocd_change_stock`)."""
         self.ensure_one()
+        location = location or self._ocd_stock_location()
         return self._ocd_change_stock(int(quantity) - self._ocd_free_qty(location), location)
+
+    def _ocd_free_by_location(self, locations):
+        """{(location id, variant id): pieces free to sell} for the variants of `self` in each of
+        `locations` (the places of a vendor), in one query."""
+        if not self or not locations:
+            return {}
+        groups = self.env["stock.quant"].sudo()._read_group(
+            [("product_id", "in", self.ids), ("location_id", "in", locations.ids)],
+            ["location_id", "product_id"], ["quantity:sum", "reserved_quantity:sum"],
+        )
+        return {(location.id, product.id): max(int(quantity - reserved), 0)
+                for location, product, quantity, reserved in groups}
 
     def _is_add_to_cart_allowed(self):
         """Override of `website_sale`: the products of a vendor in direct contact are not sold
