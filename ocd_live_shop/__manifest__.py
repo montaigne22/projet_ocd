@@ -56,6 +56,7 @@ OCD Live shop and deliveries
         "views/stock_picking_views.xml",
         "views/res_partner_views.xml",
         "views/product_template_views.xml",
+        "views/ocd_vendor_place_views.xml",
         "views/ocd_payout_views.xml",
         "views/ocd_delivery_rate_views.xml",
         "views/ocd_cash_remittance_views.xml",

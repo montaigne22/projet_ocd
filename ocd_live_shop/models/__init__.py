@@ -15,6 +15,8 @@ from . import ocd_cash_remittance
 from . import ocd_live_moment
 from . import ocd_boutique_alert
 from . import ocd_stock_alert
+from . import ocd_listing_refuse_reason
+from . import ocd_vendor_place
 from . import ocd_delivery_rate
 from . import ocd_order_delivery
 from . import delivery_carrier

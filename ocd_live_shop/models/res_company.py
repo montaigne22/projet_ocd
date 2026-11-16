@@ -135,6 +135,61 @@ class ResCompany(models.Model):
         help="The catalogue a vendor shares on their WhatsApp status: products on each image (1 to 4).",
     )
 
+    # The places of the vendors (chantier 17)
+    ocd_vendor_places_max = fields.Integer(
+        string="Places Per Vendor At Most",
+        default=5,
+        help="With OCD Business; without it, one place. Changed on the form of a vendor.",
+    )
+    ocd_place_home_allowed = fields.Boolean(
+        string="Selling From Home Allowed",
+        default=True,
+        help="A vendor may say they sell from home: the customers see their district only.",
+    )
+    ocd_place_check = fields.Boolean(
+        string="Stores Checked Before They Show",
+        default=True,
+        help="A new store, or a new address, position or front, is checked by the team first.",
+    )
+    ocd_place_proof_required = fields.Boolean(
+        string="Front And Position Required",
+        default=True,
+        help="A store is sent to the check with the photo of its front and the position taken in it.",
+    )
+    ocd_place_maps = fields.Selection(
+        selection=[("google", "Google Maps"), ("osm", "OpenStreetMap")],
+        string="Maps Of The Itinerary",
+        default="google",
+        required=True,
+    )
+    ocd_place_poster_text = fields.Char(
+        string="Text Of The QR Poster",
+        translate=True,
+        default="Order online too, delivered to your door",
+        help="On the poster a vendor prints for their store, above the QR code of their boutique.",
+    )
+    ocd_place_hours_from = fields.Float(string="Opening Hours Proposed: From", default=8.0)
+    ocd_place_hours_to = fields.Float(string="Opening Hours Proposed: To", default=19.0)
+    ocd_place_day_0 = fields.Boolean(string="Proposed Open On Monday", default=True)
+    ocd_place_day_1 = fields.Boolean(string="Proposed Open On Tuesday", default=True)
+    ocd_place_day_2 = fields.Boolean(string="Proposed Open On Wednesday", default=True)
+    ocd_place_day_3 = fields.Boolean(string="Proposed Open On Thursday", default=True)
+    ocd_place_day_4 = fields.Boolean(string="Proposed Open On Friday", default=True)
+    ocd_place_day_5 = fields.Boolean(string="Proposed Open On Saturday", default=True)
+    ocd_place_day_6 = fields.Boolean(string="Proposed Open On Sunday", default=False)
+    # OCD Business (chantier 12 of the roadmap): its features are offered to all until its launch
+    ocd_business_offered_all = fields.Boolean(
+        string="OCD Business Features Offered To All",
+        default=True,
+        help="Until OCD Business is launched: several places, the stock per store... for every vendor.",
+    )
+
+    def _ocd_place_default_intervals(self):
+        """The opening hours proposed to a new store: {weekday: [(from, to)]}."""
+        self.ensure_one()
+        start, end = self.ocd_place_hours_from, self.ocd_place_hours_to
+        return {day: [(start, end)] if self[f"ocd_place_day_{day}"] and start < end else [] for day in range(7)}
+
     def _ocd_vendor_photo_max_bytes(self):
         self.ensure_one()
         return max(self.ocd_vendor_photo_max_mb or 10, 1) * 1024 * 1024

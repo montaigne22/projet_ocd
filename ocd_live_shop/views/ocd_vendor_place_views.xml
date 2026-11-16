@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The places of the vendors (chantier 17): stores checked by the team, homes -->
+    <record id="ocd_vendor_place_view_list" model="ir.ui.view">
+        <field name="name">ocd.vendor.place.list</field>
+        <field name="model">ocd.vendor.place</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'to_check'" decoration-muted="state == 'refused'">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="vendor_id"/>
+                <field name="kind"/>
+                <field name="district_id"/>
+                <field name="city_id"/>
+                <field name="phone" optional="hide"/>
+                <field name="closed_until" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'approved'"
+                       decoration-warning="state == 'to_check'" decoration-danger="state == 'refused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_vendor_place_view_form" model="ir.ui.view">
+        <field name="name">ocd.vendor.place.form</field>
+        <field name="model">ocd.vendor.place</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_ocd_approve" type="object" string="Put online" class="btn-primary"
+                            invisible="state == 'approved'" groups="ocd_live.group_ocd_live_user"/>
+                    <button name="action_ocd_refuse" type="object" string="Refuse"
+                            invisible="state != 'to_check'" groups="ocd_live.group_ocd_live_user"/>
+                    <button name="action_ocd_open_map" type="object" string="See on the map"
+                            invisible="not latitude and not longitude"/>
+                    <field name="state" widget="statusbar" statusbar_visible="to_check,approved"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="photo" widget="image" class="oe_avatar" options="{'preview_image': 'photo'}"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Name of the store"/></h1>
+                        <field name="vendor_id" options="{'no_create': True}"/>
+                    </div>
+                    <group>
+                        <group string="Where">
+                            <field name="kind" widget="radio"/>
+                            <field name="city_id" options="{'no_create': True}"/>
+                            <field name="district_id" options="{'no_create': True}"/>
+                            <field name="landmark"/>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                            <field name="position_accuracy"/>
+                        </group>
+                        <group string="Contact and check">
+                            <field name="phone"/>
+                            <field name="closed_until"/>
+                            <field name="refuse_reason_id" options="{'no_create': True}"
+                                   invisible="state not in ('to_check', 'refused')" readonly="state != 'to_check'"
+                                   placeholder="Reason sent to the vendor, to refuse"/>
+                            <field name="previous_refusal" invisible="not previous_refusal"/>
+                            <field name="review_date"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="hour_ids">
+                        <list editable="bottom">
+                            <field name="weekday"/>
+                            <field name="hour_from" widget="float_time"/>
+                            <field name="hour_to" widget="float_time"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_vendor_place_view_search" model="ir.ui.view">
+        <field name="name">ocd.vendor.place.search</field>
+        <field name="model">ocd.vendor.place</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="vendor_id"/>
+                <field name="city_id"/>
+                <field name="district_id"/>
+                <filter name="to_check" string="To check" domain="[('state', '=', 'to_check')]"/>
+                <filter name="online" string="Online" domain="[('state', '=', 'approved')]"/>
+                <filter name="refused" string="Refused" domain="[('state', '=', 'refused')]"/>
+                <separator/>
+                <filter name="stores" string="Stores" domain="[('kind', '=', 'store')]"/>
+                <filter name="homes" string="Homes" domain="[('kind', '=', 'home')]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="by_city" string="City" context="{'group_by': 'city_id'}"/>
+                    <filter name="by_vendor" string="Vendor" context="{'group_by': 'vendor_id'}"/>
+                    <filter name="by_state" string="State" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_vendor_place_action" model="ir.actions.act_window">
+        <field name="name">Stores of the vendors</field>
+        <field name="res_model">ocd.vendor.place</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_check': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No store yet</p>
+            <p>The vendors add their stores from their space; the team checks them here or on the board « To check ».</p>
+        </field>
+    </record>
+
+    <!-- The vendor: their places, the place their parcels leave from, OCD Business -->
+    <record id="res_partner_view_form_ocd_vendor_places" model="ir.ui.view">
+        <field name="name">res.partner.view.form.ocd.vendor.places</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.res_partner_view_form_ocd_vendor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="ocd_places" string="Stores">
+                    <field name="ocd_place_ids" context="{'default_vendor_id': id, 'active_test': False}">
+                        <list decoration-warning="state == 'to_check'" decoration-muted="not active">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="kind"/>
+                            <field name="district_id"/>
+                            <field name="city_id"/>
+                            <field name="state" widget="badge" decoration-success="state == 'approved'"
+                                   decoration-warning="state == 'to_check'" decoration-danger="state == 'refused'"/>
+                            <field name="active" column_invisible="True"/>
+                        </list>
+                    </field>
+                    <group>
+                        <group>
+                            <field name="ocd_departure_place_id" options="{'no_create': True}"/>
+                            <field name="ocd_places_max"/>
+                        </group>
+                        <group>
+                            <field name="ocd_business_until"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

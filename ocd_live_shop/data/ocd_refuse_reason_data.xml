@@ -34,4 +34,24 @@
         <field name="sequence">240</field>
     </record>
 
+    <!-- Reasons sent to the vendor when a store is refused (chantier 17) -->
+    <record id="refuse_reason_store_front" model="ocd.listing.refuse.reason">
+        <field name="name">Front missing</field>
+        <field name="message">The photo of the front of your store is missing or does not show it. Take a photo of the front with its sign, then send the store again.</field>
+        <field name="applies_to">store</field>
+        <field name="sequence">310</field>
+    </record>
+    <record id="refuse_reason_store_position" model="ocd.listing.refuse.reason">
+        <field name="name">Position far from the address</field>
+        <field name="message">The position taken is far from the address of your store. Take it again inside your store, then send it again.</field>
+        <field name="applies_to">store</field>
+        <field name="sequence">320</field>
+    </record>
+    <record id="refuse_reason_store_address" model="ocd.listing.refuse.reason">
+        <field name="name">Address not found</field>
+        <field name="message">We did not find your store with this address. Add a landmark everybody knows nearby, then send it again.</field>
+        <field name="applies_to">store</field>
+        <field name="sequence">330</field>
+    </record>
+
 </odoo>

@@ -38,6 +38,32 @@ class OcdLiveSettings(models.AbstractModel):
                 item("number", "ocd_vendor_catalogue_items", _("Catalogue for the status"),
                      _("The products on each image the vendor shares on their WhatsApp status."),
                      suffix=_("products per image"), min=1, max=4, width=70),
+                item("number", "ocd_vendor_places_max", _("Places per vendor, at most"),
+                     _("Stores and home together, with OCD Business (without it: one). Changed on the form of a vendor."),
+                     suffix=_("places"), min=1, max=50, width=70),
+                item("group", "ocd_place_hours", _("Opening hours proposed to a new store"),
+                     _("The vendor changes them for their store."), fields=[
+                         item("time", "ocd_place_hours_from", _("from"), before=True),
+                         item("time", "ocd_place_hours_to", _("to"), before=True),
+                     ]),
+                item("checks", "ocd_place_days", _("Days proposed open"), "", fields=[
+                    item("check", f"ocd_place_day_{day}", label) for day, label in enumerate(
+                        [_("Mon."), _("Tue."), _("Wed."), _("Thu."), _("Fri."), _("Sat."), _("Sun.")]
+                    )
+                ]),
+                item("check", "ocd_place_home_allowed", _("Selling from home allowed"),
+                     _("The customers see the district and « By appointment » only, never the address.")),
+                item("check", "ocd_place_check", _("Stores checked before they show"),
+                     _("A new store, or a new address, position or front: checked by the team first.")),
+                item("check", "ocd_place_proof_required", _("Front and position required"),
+                     _("A store is sent with the photo of its front and the position taken in it.")),
+                item("select", "ocd_place_maps", _("Maps of the itinerary"),
+                     _("Opened by the button « Itinerary » of a store."),
+                     options=self._ocd_selection_options("ocd_place_maps")),
+                item("text", "ocd_place_poster_text", _("Text of the QR poster"),
+                     _("Above the QR code of the boutique, on the poster a vendor prints for their store."), size=80),
+                item("check", "ocd_business_offered_all", _("OCD Business features offered to all"),
+                     _("Until the launch of OCD Business: several places, the stock per store… for every vendor.")),
             ],
         }
 
@@ -240,6 +266,8 @@ class OcdLiveSettings(models.AbstractModel):
         low, high = values.get("ocd_vendor_rate_min") or 0, values.get("ocd_vendor_rate_max") or 0
         if low and high and low > high:
             errors["ocd_vendor_rate_max"] = self.env._("At least the lowest price.")
+        if (values.get("ocd_place_hours_from") or 0) >= (values.get("ocd_place_hours_to") or 24):
+            errors["ocd_place_hours_to"] = self.env._("After the opening hour.")
         pixels = values.get("ocd_vendor_photo_px") or 0
         if 0 < pixels < 400:
             errors["ocd_vendor_photo_px"] = self.env._("At least 400 pixels, or 0.")

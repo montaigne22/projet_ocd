@@ -12,6 +12,28 @@ CARD_PRODUCTS = 8  # products in the carousel of the card of a vendor in the fee
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    # === PLACES (stores, home) AND THE OCD BUSINESS FORMULA === #
+    ocd_place_ids = fields.One2many(
+        comodel_name="ocd.vendor.place", inverse_name="vendor_id", string="Places",
+    )
+    ocd_departure_place_id = fields.Many2one(
+        comodel_name="ocd.vendor.place",
+        string="Parcels Leave From",
+        domain="[('vendor_id', '=', id)]",
+        help="The place where the courier picks up the parcels of the vendor; the delivery is counted "
+        "from its city. Empty: the address of the vendor.",
+    )
+    ocd_places_max = fields.Integer(
+        string="Places At Most",
+        help="How many places the vendor may show. 0: the setting of OCD Live.",
+    )
+    ocd_business_until = fields.Date(
+        string="OCD Business Until",
+        tracking=True,
+        help="The monthly formula: several places and the stock per store, the team of the vendor, "
+        "the detailed statistics. Nothing is deleted when it ends: the places beyond the first one "
+        "are no longer shown to the customers.",
+    )
     ocd_shared_at = fields.Datetime(
         string="Boutique First Shared",
         copy=False,
@@ -216,6 +238,38 @@ class ResPartner(models.Model):
 
     # === CARD IN THE FEED: THE CAROUSEL OF THE PRODUCTS === #
 
+    def _ocd_business(self):
+        """Whether the vendor has the features of OCD Business: their formula, or the features
+        offered to all until its launch (setting)."""
+        self.ensure_one()
+        company = self.company_id or self.env.company
+        if company.ocd_business_offered_all:
+            return True
+        return bool(self.ocd_business_until and self.ocd_business_until >= fields.Date.context_today(self))
+
+    def _ocd_places_allowed(self):
+        """How many places the vendor may show: one without OCD Business, else their own number or
+        the one of the settings."""
+        self.ensure_one()
+        if not self._ocd_business():
+            return 1
+        company = self.company_id or self.env.company
+        return max(self.ocd_places_max or company.ocd_vendor_places_max or 1, 1)
+
+    def _ocd_places_left(self):
+        """How many places the vendor may still add (all their places count, refused or not)."""
+        self.ensure_one()
+        count = self.env["ocd.vendor.place"].sudo().search_count([("vendor_id", "=", self.id)])
+        return self._ocd_places_allowed() - count
+
+    def _ocd_departure_place(self):
+        """The place the parcels leave from: the one chosen, else the only place of the vendor."""
+        self.ensure_one()
+        if self.ocd_departure_place_id.active:
+            return self.ocd_departure_place_id
+        places = self.env["ocd.vendor.place"].sudo().search([("vendor_id", "=", self.id)], limit=2)
+        return places if len(places) == 1 else places.browse()
+
     # === FIRST STEPS OF A VENDOR === #
 
     def _ocd_start_steps(self):
@@ -232,6 +286,9 @@ class ResPartner(models.Model):
              "url": "/ocd/espace/moi/produits"},
             {"key": "on_sale", "label": _("Have 5 products on sale (%s now)", len(on_sale)), "done": len(on_sale) >= 5,
              "url": "/ocd/espace/moi/produits"},
+            {"key": "place", "label": _("Say where to find you: your store or your district"),
+             "done": bool(self.env["ocd.vendor.place"].sudo().search_count([("vendor_id", "=", self.id)], limit=1)),
+             "url": "/ocd/espace/moi/magasins"},
             {"key": "share", "label": _("Share your boutique in your WhatsApp status"), "done": bool(self.ocd_shared_at),
              "url": "/ocd/espace/moi/catalogue"},
         ]

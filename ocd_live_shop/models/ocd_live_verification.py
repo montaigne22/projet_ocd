@@ -17,7 +17,53 @@ class OcdLiveVerification(models.AbstractModel):
             "empty": self.env._("No product waiting."),
             "items": self._ocd_product_items(),
         })
+        columns.insert(2, {
+            "key": "store",
+            "label": self.env._("New stores"),
+            "empty": self.env._("No store waiting."),
+            "items": self._ocd_store_items(),
+        })
         return columns
+
+    @api.model
+    def _ocd_store_items(self):
+        """The stores the vendors added or moved (BoVerificationMagasins): the front, where, the
+        hours, the position taken on the spot to open on the map."""
+        _ = self.env._
+        places = self.env["ocd.vendor.place"].search([("state", "=", "to_check")], order="create_date")
+        reasons = self._ocd_reasons("store")
+        modes = {"ocd": _("sold by OCD"), "direct": _("direct contact")}
+        items = []
+        for place in places:
+            vendor = place.vendor_id
+            facts = [place._ocd_address_line(), "; ".join(place._ocd_hours_lines()), place._ocd_phone()]
+            detail = " · ".join(fact for fact in facts if fact)
+            if place.previous_refusal:
+                detail = _("Sent again after a refusal: %(reason)s. %(detail)s", reason=place.previous_refusal, detail=detail)
+            if place._ocd_has_position():
+                proof = _("Position taken on the spot, within %s m", place.position_accuracy or "?")
+                open_label = _("See on the map")
+                open_url = f"https://www.google.com/maps/search/?api=1&query={place.latitude:.6f},{place.longitude:.6f}"
+            else:
+                proof = _("No position")
+                open_label = _("See it big") if place.photo else False
+                open_url = f"/web/image/ocd.vendor.place/{place.id}/photo" if place.photo else False
+            if not place.photo:
+                proof = f"{proof} · {_('No photo of the front')}"
+            items.append({
+                "key": f"store_{place.id}",
+                "kind": "store",
+                "id": place.id,
+                "title": place.name,
+                "sub": " · ".join(part for part in (vendor.name, vendor.country_id.name, modes.get(vendor.ocd_sale_mode)) if part),
+                "detail": f"{detail} · {proof}" if detail else proof,
+                "photo": f"/web/image/ocd.vendor.place/{place.id}/photo/256x256" if place.photo else "",
+                "open_label": open_label,
+                "open_url": open_url,
+                "ok_label": _("Put online"),
+                "reasons": reasons,
+            })
+        return items
 
     @api.model
     def _ocd_product_items(self):
@@ -81,14 +127,24 @@ class OcdLiveVerification(models.AbstractModel):
                 self.env._("Product put online") if approved else self.env._("Product refused"),
                 approved,
             ))
+        for place in self.env["ocd.vendor.place"].search([("kind", "=", "store"), ("review_date", ">=", since)]):
+            approved = place.state == "approved"
+            rows.append(self._ocd_history_row(
+                place.review_date,
+                place.name,
+                self.env._("Store put online") if approved else self.env._("Store refused"),
+                approved,
+            ))
         return rows
 
     @api.model
     def _ocd_models(self):
-        return {**super()._ocd_models(), "product": "product.template"}
+        return {**super()._ocd_models(), "product": "product.template", "store": "ocd.vendor.place"}
 
     @api.model
     def ocd_approve(self, kind, record_id, values=None):
+        if kind == "store":
+            return self._ocd_record(kind, record_id).action_ocd_approve()
         if kind != "product":
             return super().ocd_approve(kind, record_id, values)
         product = self._ocd_record(kind, record_id)
@@ -98,6 +154,11 @@ class OcdLiveVerification(models.AbstractModel):
 
     @api.model
     def ocd_refuse(self, kind, record_id, reason_id):
+        if kind == "store":
+            reason = self.env["ocd.listing.refuse.reason"].browse(reason_id).exists()
+            if not reason:
+                raise UserError(self.env._("Choose the reason sent to the vendor."))
+            return self._ocd_record(kind, record_id).action_ocd_refuse(reason)
         if kind != "product":
             return super().ocd_refuse(kind, record_id, reason_id)
         product = self._ocd_record(kind, record_id)

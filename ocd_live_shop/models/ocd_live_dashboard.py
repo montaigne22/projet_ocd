@@ -170,6 +170,12 @@ class OcdLiveDashboard(models.AbstractModel):
             self.env._("%s products", products) if products > 1 else self.env._("1 product"),
             self._ocd_action("ocd_live_shop.ocd_live_shop_verification_action"),
         ))
+        stores = self.env["ocd.vendor.place"].search_count([("state", "=", "to_check")])
+        parts.insert(2, (
+            stores,
+            self.env._("%s stores", stores) if stores > 1 else self.env._("1 store"),
+            self._ocd_action("ocd_live_shop.ocd_live_shop_verification_action"),
+        ))
         return parts
 
     # === MONEY RECEIVED === #

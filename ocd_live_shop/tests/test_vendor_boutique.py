@@ -150,28 +150,29 @@ class TestOcdVendorBoutique(HttpCase, OcdShopCommon):
             "name": "Kossi Bijoux", "ocd_is_vendor": True, "ocd_vendor_state": "approved", "ocd_sale_mode": "ocd",
         })
         start = newcomer._ocd_start_steps()
-        self.assertEqual((start["percent"], [step["key"] for step in start["steps"]]), (0, ["product", "on_sale", "share", "sale"]))
+        self.assertEqual((start["percent"], [step["key"] for step in start["steps"]]), (0, ["product", "on_sale", "place", "share", "sale"]))
         self.env["product.template"].create({"name": "Collier", "ocd_vendor_id": newcomer.id})
-        self.assertEqual(newcomer._ocd_start_steps()["percent"], 25)
+        self.assertEqual(newcomer._ocd_start_steps()["percent"], 20)
         # A vendor in direct contact counts a first customer on WhatsApp instead of a sale
         newcomer.ocd_sale_mode = "direct"
         self.assertEqual(newcomer._ocd_start_steps()["steps"][-1]["key"], "contact")
-        # Brenda: 3 products on sale, nothing shared, nothing sold
-        self.assertEqual(self.brenda._ocd_start_steps()["percent"], 25)
+        # Brenda: 3 products on sale, no place, nothing shared, nothing sold
+        self.assertEqual(self.brenda._ocd_start_steps()["percent"], 20)
         # The phone tells when the vendor shared (a beacon, no form)
         self.authenticate(None, None)
         self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
         page = self.url_open("/ocd/espace/moi").text
-        self.assertIn("Your boutique is 25% ready", page)
+        self.assertIn("Your boutique is 20% ready", page)
         self.assertIn('href="/ocd/espace/moi/catalogue"', page)
         response = self.url_open("/ocd/espace/moi/partage", data={"shared": "1"})
         self.assertEqual(response.status_code, 204)
         self.assertTrue(self.brenda.ocd_shared_at)
-        self.assertIn("Your boutique is 50% ready", self.url_open("/ocd/espace/moi").text)
+        self.assertIn("Your boutique is 40% ready", self.url_open("/ocd/espace/moi").text)
         # All done: the block goes away
         self.env["product.template"].create([
             {"name": f"Pagne {n}", "ocd_vendor_id": self.brenda.id, "is_published": True} for n in range(2)
         ])
+        self.env["ocd.vendor.place"].create({"name": "Chez moi", "kind": "home", "vendor_id": self.brenda.id})
         order = self._order(self.estelle, [(self.dress, 1)])
         self.assertEqual(order.state, "sale")
         self.assertNotIn("o_ocd_start", self.url_open("/ocd/espace/moi").text)
