@@ -19,7 +19,7 @@ in Togo from the start:
 The prices of the shop are in francs CFA: the franc of Central Africa (XAF,
 Cameroon) and the franc of West Africa (XOF, Togo) have the same value.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.0.1",
     "category": "Website/Website",
     "author": "RollBackk",
     "license": "LGPL-3",

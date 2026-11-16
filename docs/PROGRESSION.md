@@ -129,6 +129,10 @@ appliquées à toutes les pages ; le téléphone garde son design.
 - **Plus de tiret cadratin** dans le projet (documentation, écrans, maquettes) ; un test d'`ocd_live`
   le vérifie sur tout le dépôt.
 - La ville d'un lieu n'apparaissait pas dans son formulaire quand le vendeur n'avait pas de pays.
+- **Versions** : les modules changés depuis leur dernière version la montent (oublis des derniers
+  jours). À mettre à jour sur un serveur : `ocd_live` 20.0.1.14.0, `ocd_live_shop` 20.0.1.12.0,
+  `ocd_live_recruitment` 20.0.1.1.0, `ocd_delivery_togo` 20.0.1.0.1, `whatsapp_cloud` 20.0.2.9.0,
+  `whatsapp_cloud_sale` 20.0.2.5.0. `tools/versions.py --check` le vérifie avant chaque commit.
 
 ### 16 novembre 2026 · Les magasins des vendeurs (chantier 17)
 Dessiné d'abord (maquettes `MesMagasins`, `MonMagasin`, `VitrineMagasins`, `BoVerificationMagasins`,

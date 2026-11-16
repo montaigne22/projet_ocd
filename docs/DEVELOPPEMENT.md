@@ -285,6 +285,18 @@ revue chez Meta (le texte approuvé est celui que Meta envoie). Pour un texte qu
 texte n'utilise plus sont retirées, une nouvelle variable est ajoutée sans valeur (la remplir dans la
 migration). Ajouter le module et sa version à `test_migrations_give_the_new_texts`.
 
+## Versions des modules
+
+Chaque commit qui change un module monte sa version (`__manifest__.py`) : `20.0.X.Y.0` pour un ajout
+(écran, fonction), `20.0.X.Y.Z` pour une correction. Un serveur sait ainsi quels modules mettre à jour
+(`-u`), et le journal ([`PROGRESSION.md`](PROGRESSION.md)) le dit à chaque entrée. Avant de committer :
+
+```bash
+python3 tools/versions.py --check
+```
+
+Il liste les modules changés depuis leur version et échoue s'il en reste un.
+
 ## Grand écran : tablette et ordinateur
 
 Le téléphone garde le design validé (`ocd_app.scss`, `ocd_live_shop.scss`) ; la tablette (768 px) et
