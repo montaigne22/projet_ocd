@@ -157,7 +157,8 @@ chantier 1 de la feuille de route. En tout, 5 à 6 mois de travail.
 
 Ce que l'équipe pourra changer dans Odoo sans toucher au code, validé le 16 novembre 2026 avec
 les valeurs par défaut ci-dessous. Chaque réglage est fait avec son chantier, dans les écrans qui
-existent déjà.
+existent déjà. Les Paramètres et les Automatisations sont pour les responsables d'OCD Live, qui
+n'ont pas besoin d'être administrateurs d'Odoo (`PROGRESSION.md`, points d'attention).
 
 ### Paramètres d'OCD Live (OCD Live › Configuration › Paramètres)
 
@@ -226,10 +227,36 @@ clients, le stock jamais vérifié.
 
 ## Liens avec la feuille de route
 
-« Ventes par produit » (3.3) rejoint le chantier 3 (Statistiques du vendeur) ; « Partager un
-produit » (1.3) prépare le chantier 11 (Ambassadeurs) ; les magasins points relais (A.6) se font
-avec le chantier 10 (Points relais) ; les nouveautés aux abonnés (A.8) suivent le chantier 1 (Suivre
-un vendeur).
+Chaque chantier de `FEUILLE_DE_ROUTE.md` (retenus le 14 novembre 2026) et ce qu'il partage avec ce
+plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
+
+| Chantier | Ce qu'il partage avec ce plan | Ce qu'on fait |
+|---|---|---|
+| 1. Suivre un vendeur | Les nouveautés aux abonnés (A.8) en dépendent | Fait avant A.8 ; le bouton « Suivre » est aussi sur les magasins (M.2) |
+| 2. Garantie OCD et avis | Le badge « Vendeur vérifié » ; les avis des acheteurs | Un magasin vérifié (M.5) a le même badge ; les avis de chaque produit s'affichent dans « Mes produits » une fois le chantier 2 fait |
+| 3. Statistiques du vendeur | Les chiffres des produits et des magasins (1.1, 3.3, M.6) | 3.3 se fait dans le chantier 3 ; 1.1 et M.6 restent sous chaque produit et magasin, et l'écran des statistiques les reprend : un seul calcul |
+| 5. Paiement automatique dans l'UEMOA | Le paiement sur le téléphone au comptoir (A.1) | Automatique au Cameroun (CamPay) ; ailleurs, Mobile Money vérifié par l'équipe jusqu'au chantier 5, donc plus lent au comptoir |
+| 7. Programme et événements | Le prix promo (3.1) | Une grande soirée (Vendredi noir, Tabaski…) invite ses vendeurs à mettre une promo pour la soirée |
+| 8. Clips automatiques | Partager un produit, catalogue (1.3, 1.7) | Les clips d'un produit s'affichent dans « Mes produits », prêts à partager |
+| 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur reprend la fiche « lieu » |
+| 10. Points relais | Les lieux (M), A.6 | Un point relais est un lieu ; A.6 se fait avec le chantier 10 |
+| 11. Ambassadeurs | Partager un produit (1.3) | Le lien de partage reçoit ensuite le lien personnel de l'ambassadeur |
+| 12. OCD Business | Plusieurs lieux, stock par magasin, équipe du vendeur, statistiques | À décider : ce qui est réservé à la formule (voir « Encore ouvert ») |
+| 13. Diaspora | Retrait en magasin (A.1) | Un proche retire en magasin ce qu'on lui a acheté : le code part sur son WhatsApp |
+| 14. Live sur la plateforme | Préparer son prochain live (3.2) | Les produits préparés s'affichent dans le lecteur du live |
+
+Écarté le 14 novembre et à ne pas réintroduire : « Préparer son prochain live » (3.2) reste le choix
+des produits pour la régie, sans numéros de produits ni page « Je prends » ; aucune intelligence
+artificielle.
+
+## Encore ouvert
+
+- **OCD Business (chantier 12) : ce qui est réservé à la formule.** Proposition : ce qui aide un
+  petit vendeur à vendre reste pour tous (corrections, étapes 1 à 3, un magasin, retrait, mise de
+  côté) ; plusieurs lieux avec le stock par magasin, l'équipe du vendeur et les statistiques
+  détaillées vont dans la formule. Ces ajouts arrivent bien avant le chantier 12 : à décider
+  maintenant, ou les annoncer « offerts pendant le lancement », pour ne pas retirer plus tard ce
+  que des vendeurs utilisent déjà.
 
 ## Écarté le 16 novembre 2026
 
