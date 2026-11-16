@@ -100,6 +100,7 @@ OCD Live
         "web.assets_frontend": [
             "ocd_live/static/src/scss/ocd_app.scss",
             "ocd_live/static/src/scss/ocd_flags.scss",
+            "ocd_live/static/src/scss/ocd_large.scss",
             "ocd_live/static/src/interactions/*.js",
         ],
     },

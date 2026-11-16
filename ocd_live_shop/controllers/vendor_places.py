@@ -119,6 +119,7 @@ class OcdVendorPlaces(http.Controller):
         ) in ("pickup", "vendor")
         return request.render("ocd_live_shop.vendor_places", common.page_values(
             "mes_magasins",
+            space_page="places",
             back="/ocd/espace/moi",
             back_label=env._("Back to my space"),
             header_title=env._("My stores"),
@@ -169,6 +170,7 @@ class OcdVendorPlaces(http.Controller):
         kind = values.get("kind") or (place.kind if place else "store")
         return request.render("ocd_live_shop.vendor_place_form", common.page_values(
             "mon_magasin",
+            space_page="places",
             back="/ocd/espace/moi/magasins",
             back_label=env._("Back to my stores"),
             header_title=env._("My stores"),

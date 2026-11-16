@@ -252,6 +252,7 @@ class OcdVendorProducts(http.Controller):
         state = state if filters and state in {key for key, _label, _count in filters} else "all"
         return request.render("ocd_live_shop.vendor_products", common.page_values(
             "mes_produits",
+            space_page="products",
             back="/ocd/espace/moi",
             back_label=env._("Back to my space"),
             header_title=env._("My products"),
@@ -281,6 +282,7 @@ class OcdVendorProducts(http.Controller):
             }
         return request.render("ocd_live_shop.vendor_product_edit", common.page_values(
             "mes_produits",
+            space_page="products",
             back="/ocd/espace/moi/produits",
             back_label=env._("Back to my products"),
             header_title=env._("My products"),

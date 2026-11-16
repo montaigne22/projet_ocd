@@ -11,8 +11,10 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Join my live</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_focus o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_join">
+                    <!-- On a computer: the live and its state on the left, what to do on the right -->
+                    <div class="o_ocd_focus_side">
                     <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
                     <p class="o_ocd_lead" t-out="lead"/>
 
@@ -30,6 +32,8 @@
                     </div>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
 
+                    </div>
+                    <div class="o_ocd_focus_main">
                     <t t-if="phase != 'ended'">
                         <ol class="o_ocd_howto o_ocd_join_steps">
                             <li>
@@ -117,6 +121,7 @@
                             <a t-if="whatsapp_url" t-att-href="whatsapp_url" target="_blank" rel="noopener"
                                class="o_ocd_button o_ocd_button_line">WhatsApp</a>
                         </div>
+                    </div>
                     </div>
                 </main>
             </div>

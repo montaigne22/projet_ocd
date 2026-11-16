@@ -12,10 +12,10 @@ téléphone garde son design. Captures dans `docs/captures/maquette-responsive-*
 
 | Maquette | Pages concernées | État |
 |---|---|---|
-| `RespListes` Les listes | Shop (catégories à gauche, 5 produits par ligne), accueil, lives, boutique d'un vendeur, annuaire | maquette à valider |
-| `RespFiche` Les fiches | Fiche produit (photos à gauche, choix, magasins et panier à droite), replay, page d'un live, ticket, suivi de commande | maquette à valider |
-| `RespParcours` Les parcours | Livraison (formulaire à gauche, récapitulatif fixe à droite), réservation d'un live, panier, paiement, connexion, pass | maquette à valider |
-| `RespEspace` Les espaces | Espace vendeur avec son menu à gauche (onglets sur tablette), Mon stock du chantier 18 en tableau, appli du livreur | maquette à valider |
+| `RespListes` Les listes | Shop (catégories à gauche, 5 produits par ligne), lives (grille de cartes), boutique d'un vendeur (le vendeur à gauche, ses produits et ses magasins à droite), accueil | ✅ |
+| `RespFiche` Les fiches | Fiche produit (photos à gauche, choix et panier à droite, « Du même vendeur » 6 par ligne), replay (vidéo à gauche, moments à droite), suivi de commande, ticket (l'image pour annoncer à droite), page d'un live (sa carte au centre) | ✅ |
+| `RespParcours` Les parcours | Panier et livraison (récapitulatif et bouton à droite, dès la tablette), paiement, réservation d'un live (déjà ainsi) ; connexion, code, pass, lien d'un live, suivi du lien, live à distance, paiement d'un colis : le titre et son explication à gauche, le formulaire à droite | ✅ |
+| `RespEspace` Les espaces | Menu de l'espace à gauche sur ordinateur, onglets sur tablette (`ocd_live.space_menu`) ; Mon espace en deux colonnes, Mes produits, Mes magasins, Mes prix de livraison, Ma carte (aperçu à gauche), Mes colis côte à côte, tournée du livreur (l'étape en cours à droite) ; Mon stock avec le chantier 18 | ✅ |
 
 ## Site des vendeurs : réserver un live
 

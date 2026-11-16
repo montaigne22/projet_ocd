@@ -246,6 +246,7 @@ class OcdVendorSpace(http.Controller):
         login = company.ocd_vendor_login
         return request.render("ocd_live.space", common.page_values(
             False,
+            space_page="space",
             nav="me",
             header_link=common.vendor_header_link(source),
             vendor=vendor,
@@ -334,6 +335,7 @@ class OcdVendorSpace(http.Controller):
                 ) if part)
         return request.render("ocd_live.space_card", common.page_values(
             False,
+            space_page="card",
             nav="me",
             back="/ocd/espace/moi",
             back_label=env._("Back to my space"),

@@ -130,6 +130,7 @@ class OcdVendorShare(http.Controller):
         images = [f"/ocd/espace/moi/catalogue/{number}.jpg?unique={stamp}" for number in range(1, len(pages) + 1)]
         return request.render("ocd_live_shop.vendor_catalogue", common.page_values(
             False,
+            space_page="products",
             back="/ocd/espace/moi/produits",
             back_label=env._("Back to my products"),
             header_title=env._("My products"),
@@ -203,6 +204,7 @@ class OcdVendorShare(http.Controller):
         labels = [label for label in labels for _copy in range(copies)]
         return request.render("ocd_live_shop.vendor_labels", common.page_values(
             False,
+            space_page="products",
             back="/ocd/espace/moi/produits",
             back_label=env._("Back to my products"),
             header_title=env._("My products"),

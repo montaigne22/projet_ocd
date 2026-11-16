@@ -396,3 +396,13 @@ VENDOR_SPACE.update({
     "Where": "Où",
     "Product": "Produit",
 })
+
+# The shop in the menu of the space, the categories of the shop on a computer (16 November 2026)
+VENDOR_SPACE.update({
+    "<span>My products</span>": "<span>Mes produits</span>",
+    "<span>My stores</span>": "<span>Mes magasins</span>",
+    "<span>My parcels</span>": "<span>Mes colis</span>",
+    "<span>My delivery prices</span>": "<span>Mes prix de livraison</span>",
+    "<span>See my boutique</span>": "<span>Voir ma boutique</span>",
+    "<b class=\"o_ocd_shop_categories_title\">Categories</b>": "<b class=\"o_ocd_shop_categories_title\">Catégories</b>",
+})

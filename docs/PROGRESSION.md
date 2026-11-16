@@ -32,6 +32,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | « Mes produits » fiable (chantier 15) : stock − / + qui garde les pièces des commandes, prix lu ou refusé, formulaire pour réseau lent (photo gardée, réduite, un seul envoi), galerie, refus expliqué et produit corrigé puis renvoyé, voix de la page | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
 | « Mes produits » aide à vendre (chantier 16) : contacts WhatsApp et clients en attente, menu « Plus », ordre de la boutique, copie, filtres, partage d'un produit avec son image, catalogue pour le statut, démarrage du vendeur | ✅ fait, testé |
 | Magasins des vendeurs (chantier 17) : magasin vérifié ou « je vends depuis chez moi », horaires et « ouvert maintenant », itinéraire, appeler, WhatsApp, visites comptées, affiche QR et étiquettes de prix, magasin de départ des colis, interrupteur OCD Business, back-office et vérification | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
+| Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
 | Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
@@ -103,6 +104,31 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 16 novembre 2026 · Tout le site sur tablette et ordinateur, plus de tiret cadratin
+Sur ordinateur, la plupart des pages tenaient dans une colonne étroite entre deux bandes vides. Quatre
+organisations dessinées puis validées (`RespListes`, `RespFiche`, `RespParcours`, `RespEspace`),
+appliquées à toutes les pages ; le téléphone garde son design.
+- **Les espaces** : le menu de l'espace (Mon espace, Mes produits, Mes magasins, Mes colis, Mes prix de
+  livraison, Ma carte dans le fil, Voir ma boutique, Réserver un live) reste à gauche sur ordinateur,
+  en onglets sur tablette. Mon espace en deux colonnes (les lives à gauche ; l'annuaire, la carte et
+  la boutique à droite), Ma carte avec son aperçu à gauche, Mes colis côte à côte, la tournée du
+  livreur avec l'étape en cours à droite.
+- **Les listes** : le shop avec ses catégories à gauche et 5 produits par ligne, le fil des lives en
+  grille de cartes, la boutique d'un vendeur (le vendeur, son live et le contact à gauche ; ses
+  produits, 4 par ligne, et ses magasins à droite).
+- **Les fiches** : la fiche produit (photos à gauche, choix et panier à droite, « Du même vendeur » 6 par
+  ligne), le replay (la vidéo à gauche, les moments à droite), le suivi de commande, le ticket (l'image
+  pour annoncer le live à droite), la page d'un live (sa carte au centre).
+- **Les parcours** : panier et livraison avec le récapitulatif et son bouton à droite dès la tablette,
+  l'adresse sur deux colonnes ; le paiement ; la connexion, le code, le pass, le lien d'un live, son
+  suivi, le live à distance et le paiement d'un colis avec le titre et son explication à gauche.
+- Contrôlé sur 25 pages en trois tailles (390, 820, 1440 px) avec les données de la démo : aucun
+  débordement, aucune erreur du navigateur. La façon de faire est dans
+  [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (section « Grand écran »).
+- **Plus de tiret cadratin** dans le projet (documentation, écrans, maquettes) ; un test d'`ocd_live`
+  le vérifie sur tout le dépôt.
+- La ville d'un lieu n'apparaissait pas dans son formulaire quand le vendeur n'avait pas de pays.
 
 ### 16 novembre 2026 · Les magasins des vendeurs (chantier 17)
 Dessiné d'abord (maquettes `MesMagasins`, `MonMagasin`, `VitrineMagasins`, `BoVerificationMagasins`,

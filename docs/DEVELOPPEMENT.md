@@ -285,6 +285,29 @@ revue chez Meta (le texte approuvé est celui que Meta envoie). Pour un texte qu
 texte n'utilise plus sont retirées, une nouvelle variable est ajoutée sans valeur (la remplir dans la
 migration). Ajouter le module et sa version à `test_migrations_give_the_new_texts`.
 
+## Grand écran : tablette et ordinateur
+
+Le téléphone garde le design validé (`ocd_app.scss`, `ocd_live_shop.scss`) ; la tablette (768 px) et
+l'ordinateur (1200 px) ont leurs règles à part : `ocd_live/static/src/scss/ocd_large.scss` (les
+organisations) et `ocd_live_shop/static/src/scss/ocd_shop_large.scss` (les pages du shop). Une page
+choisit son organisation par des classes, ses zones n'existant que sur grand écran (`display: contents`
+en dessous, l'ordre du téléphone reste celui du gabarit) :
+
+- `o_ocd_wide` sur le cadre (`o_ocd_frame o_ocd_narrow o_ocd_wide`) : la largeur de l'écran au lieu
+  d'une colonne ;
+- `o_ocd_panes` sur `main`, avec `o_ocd_pane_main` et `o_ocd_pane_side` : le contenu et ce qui va avec
+  (récapitulatif, formulaire) côte à côte sur ordinateur, dès la tablette avec `o_ocd_panes_tablet` ;
+  un bouton `o_ocd_side_cta` remplace alors celui du bas de l'écran ;
+- `o_ocd_detail`, avec `o_ocd_detail_media` et `o_ocd_detail_info` : le média à gauche, les
+  informations à droite (fiche produit, replay) ;
+- `o_ocd_focus` sur le cadre, avec `o_ocd_focus_side` et `o_ocd_focus_main` : une page courte, le titre
+  et son explication sur un panneau à gauche, le formulaire et son bouton à droite ;
+- une page de l'espace vendeur passe `space_page="<page>"` à `common.page_values` : le menu de
+  l'espace (`ocd_live.space_menu`, complété par `ocd_live_shop.space_menu`) s'affiche à gauche sur
+  ordinateur et en onglets sur tablette.
+
+Chaque écran est vérifié en trois tailles (390, 820, 1440 px), sans débordement horizontal.
+
 ## Écriture
 
 Pas de tiret cadratin (U+2014) dans le projet, ni dans le code, les écrans, les maquettes, les

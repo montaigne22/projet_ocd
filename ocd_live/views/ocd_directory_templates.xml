@@ -292,10 +292,12 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Pass of the directory</t>
         <t t-call="ocd_live.app">
-            <form action="/lives/pass" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
+            <form action="/lives/pass" method="post" class="o_ocd_frame o_ocd_focus o_ocd_narrow" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
                 <main class="o_ocd_main">
+                    <!-- On a computer: the title and what explains it on the left, the form on the right -->
+                    <div class="o_ocd_focus_side">
                     <h1 class="o_ocd_h1">Show your live to your country.</h1>
                     <div class="o_ocd_price_card">
                         <div>
@@ -305,6 +307,8 @@
                         <small t-out="per_day"/>
                     </div>
                     <t t-call="ocd_live.windows"/>
+                    </div>
+                    <div class="o_ocd_focus_main">
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
                     <t t-if="pass_end">
                         <div class="o_ocd_ok o_ocd_ok_big" role="status">
@@ -334,6 +338,7 @@
                             <a href="/ocd/connexion" class="o_ocd_link">I already have my space</a>
                         </t>
                     </t>
+                    </div>
                 </main>
                 <div class="o_ocd_actions">
                     <a t-if="pass_end" href="/lives/envoyer" class="o_ocd_cta">Send the link of my live</a>
@@ -347,12 +352,16 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Send the link of my live</t>
         <t t-call="ocd_live.app">
-            <form action="/lives/envoyer" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_send_link" novalidate="novalidate"
+            <form action="/lives/envoyer" method="post" class="o_ocd_frame o_ocd_focus o_ocd_narrow o_ocd_send_link" novalidate="novalidate"
                   t-att-data-platforms="request.env['ocd.live.platform'].sudo()._ocd_domains_json()">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <main class="o_ocd_main">
+                    <!-- On a computer: the title and what explains it on the left, the form on the right -->
+                    <div class="o_ocd_focus_side">
                     <h1 class="o_ocd_h1 o_ocd_h1_small">Send the link of your live.</h1>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    </div>
+                    <div class="o_ocd_focus_main">
                     <div class="o_ocd_field">
                         <label for="g-url" class="o_ocd_label">The link of your live</label>
                         <input id="g-url" name="url" type="url" inputmode="url" autocomplete="off" class="o_ocd_input o_ocd_input_link"
@@ -398,6 +407,7 @@
                             </t>
                         </div>
                     </fieldset>
+                    </div>
                 </main>
                 <div class="o_ocd_actions">
                     <button type="submit" class="o_ocd_cta">Send my live</button>
@@ -410,9 +420,11 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Answer of the team</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_focus o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_poll" t-att-data-state="state"
                       t-att-data-poll-url="poll_url if state == 'pending' else None">
+                    <!-- On a computer: the title and what explains it on the left, the form on the right -->
+                    <div class="o_ocd_focus_side">
                     <h1 t-attf-class="o_ocd_h1 #{'o_ocd_h1_bad' if state == 'refused' else ''}">
                         <t t-if="state == 'live'">You are online on OCD Live.</t>
                         <t t-elif="state == 'refused'">Refused: your live was not running.</t>
@@ -437,6 +449,8 @@
                             <span t-out="shown_in"/>
                         </li>
                     </ol>
+                    </div>
+                    <div class="o_ocd_focus_main">
                     <div class="o_ocd_person o_ocd_person_card">
                         <span class="o_ocd_person_main">
                             <span class="o_ocd_avatar">
@@ -460,6 +474,7 @@
                     <div t-if="state == 'refused'" class="o_ocd_alert" role="alert">
                         <t t-if="reason"><t t-out="reason"/> </t>
                         The team opened your link: no live was running. Start your live again, then send the link again. Your pass stays valid.
+                    </div>
                     </div>
                 </main>
                 <div t-if="state == 'live'" class="o_ocd_actions">

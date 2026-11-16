@@ -92,3 +92,10 @@ SHOP_COURIER_LOGIN = {
     "New personal link": "Nouveau lien personnel",
     "Couriers' space": "Espace livreurs",
 }
+
+# The menu of the space of a vendor, beside its pages on a large screen (16 November 2026)
+SITE_FRAME.update({
+    "<span>My space</span>": "<span>Mon espace</span>",
+    "<span>My card in the lives</span>": "<span>Ma carte dans le fil</span>",
+    "<span>Book a live</span>": "<span>Réserver un live</span>",
+})

@@ -23,8 +23,11 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Boutique</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <!-- On a computer: the vendor, their live and the contact on the left; their
+                     products and their stores on the right (design RespListes) -->
                 <main class="o_ocd_main o_ocd_vitrine">
+                    <div class="o_ocd_vitrine_side">
                     <div class="o_ocd_vendor_head">
                         <span class="o_ocd_avatar o_ocd_avatar_big" aria-hidden="true">
                             <t t-out="initials"/>
@@ -120,6 +123,8 @@
                         <small t-out="contact['note']"/>
                     </div>
 
+                    </div>
+                    <div class="o_ocd_vitrine_main">
                     <div class="o_ocd_section_head">
                         <h2>Their products</h2>
                         <span t-out="count_label"/>
@@ -178,6 +183,7 @@
                             </div>
                         </t>
                     </section>
+                    </div>
                 </main>
             </div>
         </t>
@@ -191,12 +197,14 @@
         <t t-set="first" t-value="([row for row in rows if row['on']] or rows[:1] or [None])[0]"/>
         <t t-set="bottom_cta" t-value="{'href': first['order_url'], 'label': first['order_label']} if first else None"/>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
-                <main class="o_ocd_main o_ocd_replay" t-att-data-platform="embed['platform']" t-att-data-video="embed['id']"
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_replay o_ocd_detail" t-att-data-platform="embed['platform']" t-att-data-video="embed['id']"
                       t-att-data-seek="'1' if embed['seek'] else None" t-att-data-start="start"
                       t-att-data-total="total_seconds">
                     <!-- The video plays here when its platform allows it (loaded on the first tap: nothing is
                          asked to the platform before) -->
+                    <!-- On a tablet and a computer: the video on the left, the moments on the right -->
+                    <div class="o_ocd_detail_media">
                     <div class="o_ocd_video o_ocd_player">
                         <div class="o_ocd_player_frame"/>
                         <div class="o_ocd_player_poster">
@@ -233,6 +241,8 @@
                         <t t-call="ocd_live.icon" icon.f="live"/>
                         <span t-out="open_label"/>
                     </a>
+                    </div>
+                    <div class="o_ocd_detail_info">
                     <div class="o_ocd_replay_head">
                         <h1 t-out="title"/>
                         <span t-out="line"/>
@@ -282,6 +292,7 @@
                             <button type="submit" class="o_ocd_cta o_ocd_cta_dark">Tell me on WhatsApp</button>
                         </form>
                     </section>
+                    </div>
                 </main>
             </div>
         </t>
@@ -364,7 +375,7 @@
         <t t-set="additional_title">My parcels</t>
         <t t-set="reasons" t-value="request.env['stock.picking']._fields['ocd_problem_reason']._description_selection(request.env)"/>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
                 <main class="o_ocd_main o_ocd_parcels">
                     <h1 class="o_ocd_parcels_hello" t-out="hello"/>
                     <span t-if="payout_line" class="o_ocd_parcels_payout" t-out="payout_line"/>
@@ -464,7 +475,7 @@
         <t t-set="reasons" t-value="request.env['stock.picking']._fields['ocd_problem_reason']._description_selection(request.env)"/>
         <t t-set="bottom_cta" t-value="{'href': 'tel:+%s' % dispatch_phone, 'label': call_label} if dispatch_phone else None"/>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
                 <main class="o_ocd_main o_ocd_parcels o_ocd_tour">
                     <div class="o_ocd_tour_head">
                         <div>
@@ -580,13 +591,17 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Pay the parcel</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_focus o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_pay" t-att-data-state="state">
+                    <!-- On a computer: what is paid on the left, the way to pay on the right -->
+                    <div class="o_ocd_focus_side">
                     <h1 class="o_ocd_h1">Pay the parcel</h1>
                     <div class="o_ocd_recap">
                         <b t-out="parcel.ocd_vendor_id.name or parcel.company_id.name"/>
                         <span>Parcel <t t-out="parcel.name"/></span>
                     </div>
+                    </div>
+                    <div class="o_ocd_focus_main">
                     <div t-if="state == 'failed'" class="o_ocd_failed" role="alert">
                         <b>The payment did not go through.</b>
                         <span>Refused or cancelled on the phone, or not enough money. Nothing was taken.</span>
@@ -623,6 +638,7 @@
                     <div t-else="" class="o_ocd_ok o_ocd_ok_big" role="status">
                         <b>Paid. Thank you!</b>
                         <span>Give the code you received to the courier to get your parcel.</span>
+                    </div>
                     </div>
                 </main>
             </div>

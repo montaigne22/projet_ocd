@@ -70,7 +70,10 @@
                             <span t-attf-class="o_ocd_flag o_ocd_flag_#{countries[0]['flag']}"/>
                         </span>
                     </form>
-                    <div class="o_ocd_chips">
+                    <!-- The categories: a line of chips on a phone and a tablet, a column on the
+                         left on a computer (design RespListes) -->
+                    <div class="o_ocd_chips o_ocd_shop_categories">
+                        <b class="o_ocd_shop_categories_title">Categories</b>
                         <t t-foreach="chips" t-as="chip">
                             <a t-att-href="chip['href']" t-att-class="'o_ocd_chip o_ocd_on' if chip['on'] else 'o_ocd_chip'"
                                t-att-aria-current="'true' if chip['on'] else None" t-out="chip['label']"/>
@@ -98,13 +101,16 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Product</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <!-- On a tablet and a computer: the photos on the left, the choice and the cart on
+                     the right (design RespFiche) -->
                 <form t-att-action="'/ocd/panier/ajouter' if ocd else '/ocd/wa/%s' % template.id"
-                      t-att-method="'post' if ocd else 'get'" class="o_ocd_main o_ocd_product_page"
+                      t-att-method="'post' if ocd else 'get'" class="o_ocd_main o_ocd_product_page o_ocd_detail"
                       t-att-data-variants="variants_json">
                     <input t-if="ocd" type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     <input type="hidden" name="product_template_id" t-att-value="template.id"/>
                     <div t-if="request.params.get('erreur')" class="o_ocd_alert" role="alert" t-out="request.params.get('erreur')"/>
+                    <div class="o_ocd_detail_media">
                     <div class="o_ocd_product_gallery">
                         <div class="o_ocd_photo o_ocd_product_hero o_ocd_gallery_track" aria-label="Photos of the product">
                             <t t-foreach="photos" t-as="photo">
@@ -133,6 +139,8 @@
                         </div>
                         <small class="o_ocd_viewer_hint">Pinch or tap twice to zoom</small>
                     </dialog>
+                    </div>
+                    <div class="o_ocd_detail_info">
                     <div class="o_ocd_product_head">
                         <div>
                             <h1 t-out="template.name"/>
@@ -241,6 +249,7 @@
                             <small class="o_ocd_product_note">The message gives your choice and the link of the product.</small>
                         </t>
                     </div>
+                    </div>
                 </form>
                 <form t-if="not alerted" id="ocd-stock-alert" action="/ocd/produit/prevenir" method="post" class="d-none"/>
                 <section t-if="same_vendor" class="o_ocd_same_vendor">
@@ -264,9 +273,11 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My cart</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
-                <main class="o_ocd_main o_ocd_cart">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <!-- On a tablet and a computer: the lines on the left, the sum and the button on the right -->
+                <main class="o_ocd_main o_ocd_cart o_ocd_panes o_ocd_panes_tablet">
                     <div t-if="cart_error" class="o_ocd_alert" role="alert" t-out="cart_error"/>
+                    <div class="o_ocd_pane_main">
                     <t t-foreach="rows" t-as="row">
                         <div class="o_ocd_cart_line">
                             <span class="o_ocd_photo o_ocd_cart_photo">
@@ -297,10 +308,15 @@
                         <b>Your cart is empty.</b>
                         <a href="/shop" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">See the shop</a>
                     </div>
-                    <div t-else="" class="o_ocd_cart_sum">
+                    </div>
+                    <div t-if="rows" class="o_ocd_pane_side">
+                    <div class="o_ocd_cart_sum">
                         <div><span t-out="count_line"/><b t-out="subtotal"/></div>
                         <div><span>Delivery</span><span>depends on your district</span></div>
                         <div class="o_ocd_cart_pay"><t t-call="ocd_live.icon" icon.f="check"/><span>Mobile Money, card, or payment at the delivery.</span></div>
+                    </div>
+                    <!-- The button beside the sum on a tablet and a computer (on a phone, at the bottom of the screen) -->
+                    <a t-if="bottom_cta" t-att-href="bottom_cta['href']" class="o_ocd_cta o_ocd_side_cta" t-out="bottom_cta['label']"/>
                     </div>
                 </main>
             </div>
@@ -313,13 +329,15 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Delivery</t>
         <t t-call="ocd_live.app">
-            <form action="/ocd/livraison" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_delivery_form" novalidate="novalidate">
+            <form action="/ocd/livraison" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_wide o_ocd_delivery_form" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <input t-if="len(countries) &lt; 2" type="hidden" name="delivery_country_id" t-att-value="country.id"/>
-                <main class="o_ocd_main o_ocd_form">
+                <!-- On a tablet and a computer: the address on the left, the delivery and the total on the right -->
+                <main class="o_ocd_main o_ocd_form o_ocd_panes o_ocd_panes_tablet">
                     <h1 class="o_ocd_h1">Where do we deliver?</h1>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
-                    <div t-if="len(countries) &gt; 1" class="o_ocd_field">
+                    <div class="o_ocd_pane_main o_ocd_delivery_address">
+                    <div t-if="len(countries) &gt; 1" class="o_ocd_field o_ocd_field_wide">
                         <label for="d-country" class="o_ocd_label">Country</label>
                         <select id="d-country" name="delivery_country_id" class="o_ocd_input o_ocd_delivery_country">
                             <t t-foreach="countries" t-as="row">
@@ -371,6 +389,8 @@
                                t-att-aria-invalid="'true' if errors.get('delivery_landmark') else None"/>
                         <span t-if="errors.get('delivery_landmark')" class="o_ocd_error" role="alert" t-out="errors['delivery_landmark']"/>
                     </div>
+                    </div>
+                    <div class="o_ocd_pane_side">
                     <div class="o_ocd_delivery_method" role="status">
                         <span class="o_ocd_delivery_icon"><t t-call="ocd_live.icon" icon.f="pin"/></span>
                         <span class="o_ocd_delivery_text">
@@ -397,6 +417,11 @@
                         <span t-out="items_line"/>
                         <b class="o_ocd_delivery_total" t-out="total"/>
                     </div>
+                    <button type="submit" class="o_ocd_cta o_ocd_side_cta">
+                        <span>Continue to the payment</span>
+                        <t t-call="ocd_live.icon" icon.f="arrow"/>
+                    </button>
+                    </div>
                 </main>
                 <div class="o_ocd_actions">
                     <button type="submit" class="o_ocd_cta">
@@ -417,21 +442,12 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Pay the order</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
-                <main class="o_ocd_main o_ocd_pay">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <!-- On a computer: the way to pay on the left, what is paid and the total on the
+                     right; on a phone the lines stay above the way to pay (order below) -->
+                <main class="o_ocd_main o_ocd_pay o_ocd_pay_order o_ocd_panes">
                     <h1 class="o_ocd_h1">Pay</h1>
-                    <div class="o_ocd_pay_lines">
-                        <div><span t-out="items_label"/><b t-out="items_amount"/></div>
-                        <t t-if="parcel_lines">
-                            <t t-foreach="parcel_lines" t-as="line">
-                                <div>
-                                    <span><t t-out="line['label']"/><small t-if="line['sub']" class="d-block" t-out="line['sub']"/></span>
-                                    <b t-out="line['amount']"/>
-                                </div>
-                            </t>
-                        </t>
-                        <div t-else=""><span t-out="delivery_label"/><b t-out="delivery_amount"/></div>
-                    </div>
+                    <div class="o_ocd_pane_main">
                     <div t-if="payment_error" class="o_ocd_failed" role="alert">
                         <b>The payment did not go through.</b>
                         <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your cart is kept.</span>
@@ -451,9 +467,24 @@
                             <t t-call="payment.form"/>
                         </div>
                     </t>
+                    </div>
+                    <div class="o_ocd_pane_side">
+                    <div class="o_ocd_pay_lines">
+                        <div><span t-out="items_label"/><b t-out="items_amount"/></div>
+                        <t t-if="parcel_lines">
+                            <t t-foreach="parcel_lines" t-as="line">
+                                <div>
+                                    <span><t t-out="line['label']"/><small t-if="line['sub']" class="d-block" t-out="line['sub']"/></span>
+                                    <b t-out="line['amount']"/>
+                                </div>
+                            </t>
+                        </t>
+                        <div t-else=""><span t-out="delivery_label"/><b t-out="delivery_amount"/></div>
+                    </div>
                     <div class="o_ocd_total">
                         <span>Total</span>
                         <b t-out="total"/>
+                    </div>
                     </div>
                 </main>
             </div>
@@ -466,12 +497,14 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My order</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
-                <main class="o_ocd_main o_ocd_tracking">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <!-- On a computer: the parcels on the left, the rating and the address on the right -->
+                <main class="o_ocd_main o_ocd_tracking o_ocd_panes">
                     <div class="o_ocd_tracking_head">
                         <h1 t-out="title"/>
                         <span t-out="summary_line"/>
                     </div>
+                    <div class="o_ocd_pane_main">
                     <t t-foreach="parcels" t-as="row">
                         <div t-attf-class="o_ocd_parcel #{'o_ocd_parcel_on' if row['parcel'].ocd_stage == 'on_the_way' else ''}">
                             <div class="o_ocd_parcel_head">
@@ -502,6 +535,8 @@
                     <div t-if="not parcels and order.state in ('draft', 'sent')" class="o_ocd_info">
                         <a t-att-href="'/shop/payment'" class="o_ocd_link">Pay the order</a>
                     </div>
+                    </div>
+                    <div class="o_ocd_pane_side">
                     <div t-if="delivered_all" class="o_ocd_tracking_rate">
                         <span id="l-rate" class="o_ocd_label">Did you like your order?</span>
                         <form t-attf-action="#{base}/note?#{token_query}" method="post" class="o_ocd_stars" role="group" aria-labelledby="l-rate">
@@ -524,6 +559,7 @@
                         <b t-out="address_name"/>
                         <span t-out="address_line"/>
                         <small>An order can come in several parcels: one per vendor, each with its code.</small>
+                    </div>
                     </div>
                 </main>
             </div>
@@ -613,7 +649,7 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My products</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow o_ocd_roomy">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
                 <!-- On a computer: the form on the left, the products on the right -->
                 <main class="o_ocd_main o_ocd_my_products o_ocd_two_panes">
                     <t t-call="ocd_live_shop.vendor_product_form"/>
@@ -751,7 +787,7 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My products</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow o_ocd_roomy">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
                 <main class="o_ocd_main o_ocd_my_catalogue">
                     <h1 class="o_ocd_h1 o_ocd_h1_small">Catalogue for my status</h1>
                     <p class="o_ocd_parcel_hint">Your products on sale, with their price and the QR code of your boutique. Share the images in your WhatsApp status.</p>
@@ -784,7 +820,7 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Price labels</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow o_ocd_roomy">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
                 <main class="o_ocd_main o_ocd_my_labels">
                     <div class="o_ocd_noprint">
                         <h1 class="o_ocd_h1 o_ocd_h1_small">Price labels</h1>
@@ -828,12 +864,14 @@
         <t t-set="additional_title">My delivery prices</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
-                <main class="o_ocd_main o_ocd_my_rates">
+                <!-- On a computer: my prices on the left, the form to add one on the right -->
+                <main class="o_ocd_main o_ocd_my_rates o_ocd_panes">
                     <h1 class="o_ocd_h1 o_ocd_h1_small">My delivery prices</h1>
                     <span class="o_ocd_tag" t-out="origin_line"/>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
                     <div t-if="saved" class="o_ocd_ok" role="status">Saved. Your customers see this price at the step Delivery.</div>
                     <t t-if="delivers">
+                        <div class="o_ocd_pane_main">
                         <div class="o_ocd_my_products_list">
                             <t t-foreach="rows" t-as="row">
                                 <div class="o_ocd_my_rate">
@@ -849,6 +887,8 @@
                             </t>
                             <div t-if="not rows" class="o_ocd_info">No price yet: in your zones you deliver at the price of the OCD courier.</div>
                         </div>
+                        </div>
+                        <div class="o_ocd_pane_side">
                         <form action="/ocd/espace/moi/livraison" method="post" class="o_ocd_form o_ocd_my_rates_form" novalidate="novalidate">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <h2 class="o_ocd_section">Add a price</h2>
@@ -890,6 +930,7 @@
                             </div>
                             <button type="submit" class="o_ocd_cta">Save the price</button>
                         </form>
+                        </div>
                     </t>
                     <div t-else="" class="o_ocd_info">OCD Live delivers your parcels: the customers pay the prices of OCD Live below.</div>
                     <t t-if="ocd_rows">
@@ -905,6 +946,35 @@
                 </main>
             </div>
         </t>
+    </template>
+
+    <!-- The pages of the shop in the menu of the space (beside the pages on a large screen) -->
+    <template id="space_menu" inherit_id="ocd_live.space_menu" name="OCD Live: the shop in the menu of the space">
+        <xpath expr="//a[@data-page='space']" position="after">
+            <t t-set="sold_by_ocd" t-value="space_vendor.ocd_sale_mode == 'ocd'"/>
+            <a href="/ocd/espace/moi/produits" data-page="products" t-att-class="'o_ocd_on' if space_page == 'products' else None"
+               t-att-aria-current="'page' if space_page == 'products' else None">
+                <t t-call="ocd_live.icon" icon.f="bag"/><span>My products</span>
+            </a>
+            <a href="/ocd/espace/moi/magasins" data-page="places" t-att-class="'o_ocd_on' if space_page == 'places' else None"
+               t-att-aria-current="'page' if space_page == 'places' else None">
+                <t t-call="ocd_live.icon" icon.f="pin"/><span>My stores</span>
+            </a>
+            <a t-if="sold_by_ocd" href="/ocd/livrer/moi" data-page="parcels" t-att-class="'o_ocd_on' if space_page == 'parcels' else None"
+               t-att-aria-current="'page' if space_page == 'parcels' else None">
+                <t t-call="ocd_live.icon" icon.f="box"/><span>My parcels</span>
+            </a>
+            <a t-if="sold_by_ocd" href="/ocd/espace/moi/livraison" data-page="rates" t-att-class="'o_ocd_on' if space_page == 'rates' else None"
+               t-att-aria-current="'page' if space_page == 'rates' else None">
+                <t t-call="ocd_live.icon" icon.f="tag"/><span>My delivery prices</span>
+            </a>
+        </xpath>
+        <xpath expr="//a[@data-page='book']" position="before">
+            <a t-if="space_vendor.ocd_vendor_state == 'approved'" t-attf-href="/ocd/boutique/#{space_vendor.id}" data-page="boutique"
+               class="o_ocd_space_menu_more">
+                <t t-call="ocd_live.icon" icon.f="share"/><span>See my boutique</span>
+            </a>
+        </xpath>
     </template>
 
     <template id="space" inherit_id="ocd_live.space" name="OCD Live: products and parcels in the space">

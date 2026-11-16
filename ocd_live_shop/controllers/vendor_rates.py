@@ -56,6 +56,7 @@ class OcdVendorRates(http.Controller):
             bounds = ""
         return request.render("ocd_live_shop.vendor_rates", common.page_values(
             "mes_livraisons",
+            space_page="rates",
             back="/ocd/espace/moi",
             back_label=env._("Back to my space"),
             header_title=env._("My delivery prices"),

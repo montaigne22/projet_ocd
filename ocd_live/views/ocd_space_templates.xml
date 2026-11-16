@@ -52,15 +52,19 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Find my space</t>
         <t t-call="ocd_live.app">
-            <form t-att-action="form_action or '/ocd/connexion'" method="post" class="o_ocd_frame o_ocd_narrow" novalidate="novalidate">
+            <form t-att-action="form_action or '/ocd/connexion'" method="post" class="o_ocd_frame o_ocd_focus o_ocd_narrow" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <main class="o_ocd_main">
+                    <!-- On a computer: the title and what explains it on the left, the form on the right -->
+                    <div class="o_ocd_focus_side">
                     <h1 t-if="target == 'livrer'" class="o_ocd_h1">Your parcels to deliver.</h1>
                     <h1 t-else="" class="o_ocd_h1">Find your space.</h1>
                     <p class="o_ocd_intro">
                         <t t-if="login == 'whatsapp_code'">No password. We send you a code on WhatsApp.</t>
                         <t t-else="">No password. We send you a link on WhatsApp.</t>
                     </p>
+                    </div>
+                    <div class="o_ocd_focus_main">
                     <div t-if="account_name" class="o_ocd_info o_ocd_account_info">
                         <p class="mb-1"><span>Logged in as</span> <b t-out="account_name"/></p>
                         <p class="mb-0">This account is not linked to a vendor yet: give the WhatsApp number of your space of vendor.</p>
@@ -80,6 +84,7 @@
                         Your ticket and your reminders already come with this link. Keep this message in WhatsApp to come back whenever you want.
                     </div>
                     <a t-if="target == 'livrer' and password_url" t-att-href="password_url" class="o_ocd_info d-block">A vendor with a password? Log in</a>
+                    </div>
                 </main>
                 <div class="o_ocd_actions">
                     <button t-if="sent" type="submit" class="o_ocd_cta o_ocd_cta_ghost">I received nothing: send again</button>
@@ -96,16 +101,21 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Code received on WhatsApp</t>
         <t t-call="ocd_live.app">
-            <form t-att-action="code_action or '/ocd/connexion/code'" method="post" class="o_ocd_frame o_ocd_narrow">
+            <form t-att-action="code_action or '/ocd/connexion/code'" method="post" class="o_ocd_frame o_ocd_focus o_ocd_narrow">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <main class="o_ocd_main">
+                    <!-- On a computer: the title and what explains it on the left, the form on the right -->
+                    <div class="o_ocd_focus_side">
                     <h1 class="o_ocd_h1">Type the code.</h1>
                     <p class="o_ocd_intro">If your number is known, a code of 6 digits arrives on your WhatsApp.</p>
+                    </div>
+                    <div class="o_ocd_focus_main">
                     <div class="o_ocd_field o_ocd_field_big">
                         <label for="c-code" class="o_ocd_label">Code</label>
                         <input id="c-code" name="code" class="o_ocd_input o_ocd_code" inputmode="numeric"
                                autocomplete="one-time-code" maxlength="6" required="required"/>
                         <span t-if="error" class="o_ocd_error" role="alert" t-out="error"/>
+                    </div>
                     </div>
                 </main>
                 <div class="o_ocd_actions">
@@ -255,13 +265,18 @@
         <t t-set="additional_title">My space</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
+                <!-- On a computer, the blocks in two columns (design RespEspace): the lives on the
+                     left, the directory, the card and the shop on the right -->
                 <main class="o_ocd_main o_ocd_space">
-                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="vendor.name"/>
-                    <span class="o_ocd_tag o_ocd_tag_flag">
-                        <span t-if="flag" t-attf-class="o_ocd_flag o_ocd_flag_#{flag}"/>
-                        <t t-out="vendor_line"/>
-                    </span>
+                    <div class="o_ocd_space_head">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="vendor.name"/>
+                        <span class="o_ocd_tag o_ocd_tag_flag">
+                            <span t-if="flag" t-attf-class="o_ocd_flag o_ocd_flag_#{flag}"/>
+                            <t t-out="vendor_line"/>
+                        </span>
+                    </div>
 
+                    <section t-if="lives or credits" class="o_ocd_space_block o_ocd_space_lives">
                     <t t-foreach="lives" t-as="live">
                         <h2 t-if="live_first" class="o_ocd_section">My next live</h2>
                         <h2 t-if="live_index == 1" class="o_ocd_section">Then</h2>
@@ -308,6 +323,10 @@
                         </t>
                     </t>
 
+                    </section>
+
+                    <div class="o_ocd_space_side">
+                    <section class="o_ocd_space_block">
                     <h2 class="o_ocd_section">Directory of the lives</h2>
                     <div class="o_ocd_sand_card">
                         <t t-if="pass_end">
@@ -338,6 +357,9 @@
                         </t>
                     </div>
 
+                    </section>
+
+                    <section class="o_ocd_space_block">
                     <h2 class="o_ocd_section">My card in the lives</h2>
                     <div class="o_ocd_sand_card">
                         <div class="o_ocd_live_card_head">
@@ -349,7 +371,10 @@
                         <a href="/ocd/espace/moi/carte" class="o_ocd_button o_ocd_button_line">Change my card</a>
                     </div>
 
-                    <div class="o_ocd_space_shop"/>
+                    </section>
+
+                    <div class="o_ocd_space_block o_ocd_space_shop"/>
+                    </div>
 
                     <form action="/ocd/espace/moi/whatsapp" method="post">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>

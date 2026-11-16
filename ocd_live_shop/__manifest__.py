@@ -80,6 +80,7 @@ OCD Live shop and deliveries
         ],
         "web.assets_frontend": [
             "ocd_live_shop/static/src/scss/ocd_live_shop.scss",
+            "ocd_live_shop/static/src/scss/ocd_shop_large.scss",
             "ocd_live_shop/static/src/interactions/*.js",
         ],
     },

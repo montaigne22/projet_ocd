@@ -350,6 +350,9 @@ class OcdDeliveryApp(http.Controller):
                 "done_label": request.env._("Delivered · %s", len(done)),
             })
             template = "ocd_live_shop.delivery_app"
+        if partner.ocd_is_vendor and not partner.ocd_is_courier:
+            # « My parcels » of a vendor: a page of their space, with its menu on a large screen
+            values.update(space_page="parcels", space_vendor=partner)
         return request.render(template, common.page_values("livrer", **values))
 
     @http.route("/ocd/livrer/<string:token>", type="http", auth="public", website=True, methods=["GET"], sitemap=False)

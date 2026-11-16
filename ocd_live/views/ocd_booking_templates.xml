@@ -32,6 +32,9 @@
         <svg t-elif="icon == 'remote'" class="o_ocd_icon o_ocd_icon_big" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="13" width="21" height="31" rx="5" fill="#FFFFFF"/><rect x="11.5" y="18" width="14" height="18" rx="1.5" fill="#15130F"/><circle cx="18.5" cy="40" r="1.6" fill="#15130F"/><path d="M31 10a6 6 0 0 1 6 6M31 3.5a12.5 12.5 0 0 1 12.5 12.5" fill="none" stroke="#F46A00" stroke-width="3.2" stroke-linecap="round"/></svg>
         <svg t-elif="icon == 'announce'" class="o_ocd_icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 19v10a2 2 0 0 0 2 2h5l19 9V8L13 17H8a2 2 0 0 0-2 2z" fill="#FFFFFF"/><path d="M38 18a8 8 0 0 1 0 12" fill="none" stroke="#F46A00" stroke-width="3.2" stroke-linecap="round"/></svg>
         <svg t-elif="icon == 'download'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <svg t-elif="icon == 'box'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        <svg t-elif="icon == 'tag'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><path d="M7 7h.01"/></svg>
+        <svg t-elif="icon == 'stack'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
         <svg t-elif="icon == 'close'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </template>
 
@@ -88,6 +91,30 @@
         <a href="/ocd/espace/moi" t-att-class="'o_ocd_nav_me o_ocd_on' if nav == 'me' else 'o_ocd_nav_me'" t-att-aria-current="'page' if nav == 'me' else None">
             <t t-call="ocd_live.icon" icon.f="user"/><span>Me</span>
         </a>
+    </template>
+
+    <!-- The pages of the space of a vendor: beside them on a computer, as tabs on a tablet; the
+         phone keeps its menu at the bottom and « My space » (design RespEspace). Each link has its
+         data-page: the shop adds its pages after « My space ». Parameters: space_page (the page
+         shown), space_vendor. -->
+    <template id="space_menu" name="OCD Live: menu of the space">
+        <nav class="o_ocd_space_menu" aria-label="My space">
+            <div class="o_ocd_space_menu_who">
+                <span class="o_ocd_space_menu_initials" aria-hidden="true" t-out="space_initials"/>
+                <span><b t-out="space_vendor.name"/></span>
+            </div>
+            <a href="/ocd/espace/moi" data-page="space" t-att-class="'o_ocd_on' if space_page == 'space' else None"
+               t-att-aria-current="'page' if space_page == 'space' else None">
+                <t t-call="ocd_live.icon" icon.f="home"/><span>My space</span>
+            </a>
+            <a href="/ocd/espace/moi/carte" data-page="card" t-att-class="'o_ocd_on' if space_page == 'card' else None"
+               t-att-aria-current="'page' if space_page == 'card' else None">
+                <t t-call="ocd_live.icon" icon.f="play"/><span>My card in the lives</span>
+            </a>
+            <a href="/ocd" data-page="book" class="o_ocd_space_menu_more">
+                <t t-call="ocd_live.icon" icon.f="calendar"/><span>Book a live</span>
+            </a>
+        </nav>
     </template>
 
     <template id="page_language_menu" name="OCD Live: language of the page">
@@ -244,7 +271,13 @@ Disallow: /*/reserver/
                         </a>
                     </div>
                 </header>
-                <t t-out="0"/>
+                <div t-if="space_page and space_vendor" class="o_ocd_space_layout">
+                    <t t-call="ocd_live.space_menu"/>
+                    <div class="o_ocd_space_body">
+                        <t t-out="0"/>
+                    </div>
+                </div>
+                <t t-else="" t-out="0"/>
                 <!-- The help of the team during a booking: WhatsApp, with the page in the message -->
                 <div t-if="flow_help" class="o_ocd_frame o_ocd_flow_help">
                     <a t-att-href="flow_help" target="_blank" rel="noopener" class="o_ocd_flow_help_link">
@@ -700,16 +733,20 @@ Disallow: /*/reserver/
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Book a live: pay</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame">
+            <div class="o_ocd_frame o_ocd_focus">
                 <main class="o_ocd_main o_ocd_pay o_ocd_poll" t-att-data-state="state"
                       t-att-data-poll-url="status_url if state == 'waiting' else None"
                       t-att-data-access-token="access_token">
+                    <!-- On a computer: what is paid on the left, the way to pay on the right -->
+                    <div class="o_ocd_focus_side">
                     <h1 class="o_ocd_h1">Pay</h1>
                     <div class="o_ocd_recap">
                         <b t-out="what"/>
                         <span t-if="when" t-out="when"/>
                         <small t-if="hold and state in ('form', 'failed', 'waiting')" t-out="hold"/>
                     </div>
+                    </div>
+                    <div class="o_ocd_focus_main">
                     <div t-if="state == 'failed'" class="o_ocd_failed" role="alert">
                         <b>The payment did not go through.</b>
                         <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.</span>
@@ -805,6 +842,7 @@ Disallow: /*/reserver/
                             <a href="/ocd" class="o_ocd_cta">Book a live</a>
                         </div>
                     </t>
+                    </div>
                 </main>
             </div>
         </t>
@@ -843,7 +881,8 @@ Disallow: /*/reserver/
         <t t-set="additional_title">My ticket</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_ticket_page">
-                <main class="o_ocd_main">
+                <!-- On a computer: the ticket on the left, the image to announce the live on the right -->
+                <main class="o_ocd_main o_ocd_panes">
                     <div class="o_ocd_done_title">
                         <span class="o_ocd_check_round"><t t-call="ocd_live.icon" icon.f="check"/></span>
                         <h1 class="o_ocd_h1">It is booked.</h1>
@@ -859,6 +898,7 @@ Disallow: /*/reserver/
                     <div t-if="sent == '0'" class="o_ocd_info" role="status">
                         WhatsApp is not available now: download your ticket below.
                     </div>
+                    <div class="o_ocd_pane_main">
                     <div class="o_ocd_ticket">
                         <div class="o_ocd_ticket_rows">
                             <div class="o_ocd_ticket_row">
@@ -910,6 +950,8 @@ Disallow: /*/reserver/
                         <a t-if="movable" t-att-href="move_url" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">Move my live</a>
                         <a t-if="receipt_url" t-att-href="receipt_url" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">My receipt</a>
                     </div>
+                    </div>
+                    <div class="o_ocd_pane_side">
                     <section t-if="booking.state in ('confirmed', 'done')" id="annonce" class="o_ocd_announce_card">
                         <h2 class="o_ocd_h2">Announce your live</h2>
                         <p class="o_ocd_lead">An image without your number nor your ticket: send it to your friends, put it in your status.</p>
@@ -932,6 +974,7 @@ Disallow: /*/reserver/
                             </a>
                         </div>
                     </section>
+                    </div>
                 </main>
                 <div class="o_ocd_actions">
                     <form t-att-action="send_url" method="post">
