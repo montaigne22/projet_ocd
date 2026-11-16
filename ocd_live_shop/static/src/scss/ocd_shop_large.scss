@@ -461,14 +461,20 @@
             color: $ocd-muted;
             border-bottom: 2px solid $ocd-line;
         }
+        // The note (« 1 kept for an order ») under the − and +: beside them, the column is too
+        // narrow and the note runs into the next store
         .o_ocd_stock_cell {
             display: flex;
-            justify-content: flex-start;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 4px;
             .o_ocd_stepper {
                 order: -1;
             }
             .o_ocd_stock_note {
                 text-align: left;
+                line-height: 1.25;
             }
         }
         .o_ocd_stock_cell_title {

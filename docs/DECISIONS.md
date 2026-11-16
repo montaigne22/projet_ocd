@@ -213,6 +213,27 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   - **le lieu de départ des colis** est choisi par le vendeur (sinon son seul lieu, sinon son adresse) :
     le prix de la livraison part de sa ville, et le colis garde le lieu où le livreur le prend, même si
     le vendeur en change ensuite.
+- **Stock par magasin** (chantier 18, [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md), section S) :
+  - **un emplacement de stock par lieu, dans le stock de l'entrepôt de la boutique**, pas un entrepôt par
+    magasin : le site compte toujours toutes les pièces d'un produit (un entrepôt par magasin ferait
+    paraître épuisés les produits des autres magasins), et chaque lieu a les siennes. Le premier lieu
+    reçoit les pièces que le vendeur avait ; un lieu retiré rend ses pièces libres au lieu de départ des
+    colis ; chaque mouvement est un transfert interne tracé. Les produits gardés dans le stock d'OCD ne
+    sont pas concernés ;
+  - **montré à partir de 2 lieux** : avec un seul, rien ne change pour le vendeur ni pour le client
+    (« Aussi en magasin : Akwa ») ; « Mon stock » sert aussi, avec un seul lieu, aux produits qui ont
+    des tailles ou des couleurs ;
+  - **les − / + et l'envoi d'un magasin à l'autre comptent tout de suite**, dans les deux magasins
+    pour un envoi : pas d'étape « en route », les pièces réservées pour une commande ne bougent pas ;
+  - **le client voit « Disponible », « Disponible · plus que 2 » ou « Épuisé » par magasin**, jamais le
+    nombre exact d'un magasin (la page reçoit au plus 4) ; le bloc est caché quand le choix est épuisé
+    partout, « Préviens-moi » le dit déjà. « Préviens-moi » nomme les magasins où le produit est revenu,
+    une fois ce message approuvé par Meta (l'ancien part jusque-là) ;
+  - **le magasin qui sert une commande** est choisi quand son colis est fait, avant que ses pièces soient
+    réservées : un magasin de la ville du client qui a toute la commande, sinon le lieu de départ des
+    colis s'il a tout, sinon un autre magasin qui a tout, sinon un colis par magasin (chaque produit du
+    premier qui l'a, sinon de celui qui en a le plus). Le prix de la livraison est compté depuis ce
+    magasin ; le client a payé une livraison : elle reste sur le premier colis du vendeur.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

@@ -117,7 +117,7 @@ class TestOcdVendorStockPage(HttpCase, OcdShopCommon):
         self.assertIn("Par Junior", str(transfer.note))
         page = self.url_open(response.headers["Location"]).text
         self.assertIn("3 pieces sent: the stock changed in both stores.", page)
-        self.assertIn("3 Robe en wax sent from Brenda Wax Akwa to Brenda Wax Bonapriso", page)
+        self.assertIn("3 Robe en wax sent: Brenda Wax Akwa → Brenda Wax Bonapriso", page)
         self.url_open(url, data={"csrf_token": self.csrf_token(), "de": akwa.id, "a": bonapriso.id, f"qty_{self.dress.id}": "9"})
         self.assertEqual((pieces(akwa.location_id).get(self.dress, 0), pieces(bonapriso.location_id).get(self.dress)), (0, 5))
         # The same store twice, or nothing chosen: said, nothing moves

@@ -121,20 +121,25 @@ class OcdVendorStock(http.Controller):
             label = " ".join(part for part in (colour.name if colour else "", " · ".join(others.mapped("name"))) if part) or product.name
             qty = int(line.quantity)
             source, destination = names.get(line.location_id.id), names.get(line.location_dest_id.id)
+            one = qty == 1
             if source and destination:
-                text = env._("%(qty)s %(label)s sent from %(start)s to %(end)s",
-                             qty=qty, label=label, start=source, end=destination)
+                text = (env._("1 %(label)s sent: %(start)s → %(end)s", label=label, start=source, end=destination) if one
+                        else env._("%(qty)s %(label)s sent: %(start)s → %(end)s",
+                                   qty=qty, label=label, start=source, end=destination))
             elif destination and line.location_id.usage == "inventory":
                 text = env._("%(label)s: +%(qty)s at %(place)s", label=label, qty=qty, place=destination)
             elif source and line.location_dest_id.usage == "inventory":
                 text = env._("%(label)s: -%(qty)s at %(place)s", label=label, qty=qty, place=source)
             elif source and line.location_dest_id.usage == "customer":
                 order = line.move_id.sale_line_id.order_id.name or line.picking_id.origin or line.reference
-                text = env._("%(qty)s %(label)s sold (%(order)s)", qty=qty, label=label, order=order)
+                text = (env._("1 %(label)s sold (%(order)s)", label=label, order=order) if one
+                        else env._("%(qty)s %(label)s sold (%(order)s)", qty=qty, label=label, order=order))
             elif destination:
-                text = env._("%(qty)s %(label)s received at %(place)s", qty=qty, label=label, place=destination)
+                text = (env._("1 %(label)s received at %(place)s", label=label, place=destination) if one
+                        else env._("%(qty)s %(label)s received at %(place)s", qty=qty, label=label, place=destination))
             else:
-                text = env._("%(qty)s %(label)s left %(place)s", qty=qty, label=label, place=source)
+                text = (env._("1 %(label)s left %(place)s", label=label, place=source) if one
+                        else env._("%(qty)s %(label)s left %(place)s", qty=qty, label=label, place=source))
             when = common.to_viewer(line.date)
             day = env._("Today %s", tools.hour_text(when.hour + when.minute / 60)) if when.date() == today \
                 else tools.day_text(env, when.date(), "d MMM")

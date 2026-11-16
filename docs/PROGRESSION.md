@@ -2,7 +2,7 @@
 
 Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 
-## Où en est le projet (15 novembre 2026)
+## Où en est le projet (16 novembre 2026)
 
 | Domaine | État |
 |---|---|
@@ -32,6 +32,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | « Mes produits » fiable (chantier 15) : stock − / + qui garde les pièces des commandes, prix lu ou refusé, formulaire pour réseau lent (photo gardée, réduite, un seul envoi), galerie, refus expliqué et produit corrigé puis renvoyé, voix de la page | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
 | « Mes produits » aide à vendre (chantier 16) : contacts WhatsApp et clients en attente, menu « Plus », ordre de la boutique, copie, filtres, partage d'un produit avec son image, catalogue pour le statut, démarrage du vendeur | ✅ fait, testé |
 | Magasins des vendeurs (chantier 17) : magasin vérifié ou « je vends depuis chez moi », horaires et « ouvert maintenant », itinéraire, appeler, WhatsApp, visites comptées, affiche QR et étiquettes de prix, magasin de départ des colis, interrupteur OCD Business, back-office et vérification | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
+| Stock par magasin (chantier 18) : un emplacement par lieu, « Mon stock » avec les tailles et les couleurs, envoyer des pièces d'un magasin à l'autre, le magasin qui sert chaque commande (un colis par magasin si besoin), disponibilité par magasin sur la fiche produit, « Préviens-moi » qui nomme les magasins | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -84,7 +85,8 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    réponses rapides de l'équipe se créent dans les conversations (`::livreur`, `::retard`…).
    **Depuis le 16 novembre**, aussi : `ocd_produit_accepte`, `ocd_produit_refuse`, `ocd_stock_bas`,
    `ocd_magasin_accepte`, `ocd_magasin_refuse` (français et anglais), pour les messages aux vendeurs sur
-   leurs produits et leurs magasins.
+   leurs produits et leurs magasins ; et `ocd_produit_de_retour_magasin` (français et anglais), pour
+   « Préviens-moi » qui nomme les magasins où le produit est revenu (l'ancien message part jusque-là).
 3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
    back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
@@ -104,6 +106,38 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 16 novembre 2026 · Le stock par magasin (chantier 18)
+Dessiné d'abord (maquettes `MonStock`, `EnvoyerStock`, `DispoMagasins`, et le tableau sur ordinateur dans
+`RespEspace`), puis codé.
+- **Un emplacement de stock par lieu**, dans le stock de l'entrepôt de la boutique : le site compte
+  toujours le total, chaque magasin a le sien. Le premier lieu d'un vendeur reçoit les pièces qu'il avait ;
+  un lieu retiré rend ses pièces libres au lieu de départ des colis ; chaque mouvement est un transfert
+  interne tracé. À la mise à jour, le lieu de départ de chaque vendeur reçoit ses pièces (migration).
+- **Mon stock** (Mes produits › « Mon stock par magasin ») : les tailles et les couleurs d'un produit,
+  magasin par magasin, avec les − / + qui comptent tout de suite ; les pièces réservées pour une commande
+  restent ; « Épuisé ici · 1 à Marché central » ; les derniers changements (ajouté, retiré, envoyé,
+  vendu). Les magasins côte à côte sur ordinateur. Dans la liste de Mes produits : « 10 en stock · Akwa 7
+  · Marché central 3 ».
+- **Envoyer des pièces** d'un magasin à l'autre : seulement les pièces libres, une note, le stock change
+  tout de suite dans les deux magasins.
+- **Le magasin qui sert une commande** : celui de la ville du client qui a toute la commande, sinon le lieu
+  de départ des colis, sinon un autre magasin qui a tout, sinon un colis par magasin, chacun avec son
+  code. Le livreur prend chaque colis à son magasin, le prix de la livraison est compté depuis le magasin
+  qui servira le panier, et la livraison payée reste sur le premier colis.
+- **Pour le client** : la fiche produit dit, pour la couleur et la taille choisies, « Disponible »,
+  « Disponible · plus que 2 » ou « Épuisé » dans chaque magasin (jamais le nombre exact d'un magasin),
+  ouvert ou fermé, avec « Itinéraire et horaires ». « Préviens-moi » nomme les magasins où le produit est
+  revenu, dès que Meta approuve ce message.
+- **Back-office** : le stock par lieu sur la fiche produit, les pièces de chaque lieu sur la fiche du lieu
+  et l'onglet « Magasins » du vendeur, l'emplacement de chaque lieu pour les gestionnaires du stock.
+- Tests : base neuve, tous les modules OCD : **365 sans échec** (16 nouveaux) ; contrôlé dans un
+  navigateur en français en trois tailles (390, 820, 1440 px) : fiche produit, Mes produits, Mon stock,
+  Envoyer des pièces. Sur ordinateur, la note « 1 réservée pour une commande » passe sous les − / + (elle
+  débordait sur le magasin voisin).
+- **À mettre à jour sur un serveur** : `ocd_live_whatsapp` 20.0.1.9.0, `ocd_live_shop` 20.0.1.17.1,
+  `ocd_live_shop_whatsapp` 20.0.1.10.1 (`-u ocd_live_whatsapp,ocd_live_shop,ocd_live_shop_whatsapp`), puis
+  soumettre à Meta le modèle `ocd_produit_de_retour_magasin`.
 
 ### 16 novembre 2026 · Tout le site sur tablette et ordinateur, plus de tiret cadratin
 Sur ordinateur, la plupart des pages tenaient dans une colonne étroite entre deux bandes vides. Quatre
