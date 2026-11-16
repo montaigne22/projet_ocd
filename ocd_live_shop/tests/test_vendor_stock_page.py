@@ -93,3 +93,37 @@ class TestOcdVendorStockPage(HttpCase, OcdShopCommon):
         self.url_open(url, data={"csrf_token": self.csrf_token(), "variante": variant.id, "lieu": fatou_place.id, "delta": "1"})
         self.assertFalse(self.fatou._ocd_free_pieces(fatou_place.location_id), "Not in the place of another vendor")
         self.assertEqual(self.url_open(f"/ocd/espace/moi/produits/{self.butter.product_tmpl_id.id}/mon-stock").status_code, 404)
+
+    def test_send_pieces_to_another_store(self):
+        self.dress._ocd_set_free_stock(5)
+        akwa = self._place("Brenda Wax Akwa", self.akwa)
+        bonapriso = self._place("Brenda Wax Bonapriso", self.bonapriso)
+        self._login()
+        url = f"/ocd/espace/moi/produits/{self.dress.product_tmpl_id.id}/envoyer"
+        page = self.url_open(f"{url}?de={akwa.id}&a={bonapriso.id}").text
+        self.assertIn("5 free at Brenda Wax Akwa", page)
+        self.assertIn(f'name="qty_{self.dress.id}"', page)
+        self.assertIn('data-label-many="Send __COUNT__ pieces to Brenda Wax Bonapriso"', page)
+        # More than what is free: only the free pieces leave
+        response = self.url_open(url, allow_redirects=False, data={
+            "csrf_token": self.csrf_token(), "de": akwa.id, "a": bonapriso.id, f"qty_{self.dress.id}": "3", "note": "Par Junior",
+        })
+        self.assertIn(f"magasin={bonapriso.id}&envoye=3", response.headers["Location"])
+        pieces = self.brenda._ocd_free_pieces
+        self.assertEqual((pieces(akwa.location_id).get(self.dress), pieces(bonapriso.location_id).get(self.dress)), (2, 3))
+        transfer = self.env["stock.picking"].search([("location_id", "=", akwa.location_id.id),
+                                                     ("location_dest_id", "=", bonapriso.location_id.id)])
+        self.assertEqual(transfer.state, "done")
+        self.assertIn("Par Junior", str(transfer.note))
+        page = self.url_open(response.headers["Location"]).text
+        self.assertIn("3 pieces sent: the stock changed in both stores.", page)
+        self.assertIn("3 Robe en wax sent from Brenda Wax Akwa to Brenda Wax Bonapriso", page)
+        self.url_open(url, data={"csrf_token": self.csrf_token(), "de": akwa.id, "a": bonapriso.id, f"qty_{self.dress.id}": "9"})
+        self.assertEqual((pieces(akwa.location_id).get(self.dress, 0), pieces(bonapriso.location_id).get(self.dress)), (0, 5))
+        # The same store twice, or nothing chosen: said, nothing moves
+        page = self.url_open(url, data={"csrf_token": self.csrf_token(), "de": bonapriso.id, "a": bonapriso.id,
+                                        f"qty_{self.dress.id}": "1"}).text
+        self.assertIn("Choose two different stores.", page)
+        page = self.url_open(url, data={"csrf_token": self.csrf_token(), "de": bonapriso.id, "a": akwa.id}).text
+        self.assertIn("Choose how many pieces to send.", page)
+        self.assertEqual(pieces(bonapriso.location_id).get(self.dress), 5)

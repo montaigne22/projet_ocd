@@ -2883,3 +2883,58 @@
         }
     }
 }
+
+// Send pieces to another store (design EnvoyerStock): on a phone, the stores first
+.o_ocd_app .o_ocd_stock_send {
+    > .o_ocd_h1 {
+        order: -3;
+    }
+    > .o_ocd_alert {
+        order: -2;
+    }
+    .o_ocd_stock_send_places {
+        order: -1;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr);
+        gap: 6px;
+        align-items: end;
+    }
+    .o_ocd_stock_send_swap {
+        width: 44px;
+        height: 50px;
+        border-radius: 12px;
+        font-size: 18px;
+        text-decoration: none;
+    }
+    .o_ocd_stock_send_rows {
+        display: flex;
+        flex-direction: column;
+    }
+    .o_ocd_stock_send_row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid $ocd-line;
+        b {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        small {
+            color: $ocd-muted;
+            font-size: 13px;
+        }
+        .o_ocd_stepper_value {
+            width: 44px;
+            text-align: center;
+        }
+    }
+    .o_ocd_stock_swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+    }
+}

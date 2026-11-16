@@ -36,6 +36,7 @@
                             </div>
                         </nav>
                         <small class="o_ocd_parcel_hint" t-out="total_line"/>
+                        <div t-if="sent_line" class="o_ocd_ok" role="status" t-out="sent_line"/>
 
                         <div class="o_ocd_stock_table">
                             <!-- The titles of the columns, on a computer -->
@@ -96,6 +97,81 @@
                     </div>
                 </main>
             </div>
+        </t>
+    </template>
+
+    <!-- === SEND PIECES TO ANOTHER STORE (design EnvoyerStock, chantier 18) ===
+         Only the free pieces of the store « from »; the stock changes in both stores at once. -->
+    <template id="vendor_stock_send" name="OCD Live: send pieces to another store">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Send pieces</t>
+        <t t-call="ocd_live.app">
+            <form t-attf-action="/ocd/espace/moi/produits/#{product.id}/envoyer" method="post"
+                  class="o_ocd_frame o_ocd_narrow o_ocd_wide o_ocd_stock_send_form"
+                  t-att-data-label-none="label_none" t-att-data-label-one="label_one" t-att-data-label-many="label_many">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <!-- On a computer: the pieces on the left, the stores, the note and the button on the
+                     right; on a phone the stores stay first (order in ocd_live_shop.scss) -->
+                <main class="o_ocd_main o_ocd_stock_send o_ocd_panes">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Send pieces</h1>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div class="o_ocd_pane_main">
+                        <div class="o_ocd_field">
+                            <span class="o_ocd_label">How many pieces</span>
+                            <small class="o_ocd_parcel_hint">Only what is free at <t t-out="source.name"/>: the pieces kept for an order stay.</small>
+                        </div>
+                        <div class="o_ocd_stock_send_rows">
+                            <t t-foreach="rows" t-as="row">
+                                <div class="o_ocd_stock_send_row">
+                                    <span class="o_ocd_my_product_text">
+                                        <b>
+                                            <span t-if="row['swatch']" class="o_ocd_stock_swatch" t-attf-style="background: #{row['swatch']}"/>
+                                            <t t-out="row['label']"/>
+                                        </b>
+                                        <small t-if="row['free'] == 1">1 free at <t t-out="source.name"/></small>
+                                        <small t-else=""><t t-out="row['free']"/> free at <t t-out="source.name"/></small>
+                                    </span>
+                                    <div class="o_ocd_stepper o_ocd_stepper_js" role="group" t-att-aria-label="row['label']">
+                                        <button type="button" class="o_ocd_stepper_less" aria-label="One less">−</button>
+                                        <input type="number" t-attf-name="qty_#{row['variant'].id}" min="0" t-att-max="row['free']"
+                                               inputmode="numeric" class="o_ocd_stepper_value" t-att-value="str(row['value'])"
+                                               t-att-aria-label="row['label']"/>
+                                        <button type="button" class="o_ocd_stepper_more" aria-label="One more">+</button>
+                                    </div>
+                                </div>
+                            </t>
+                            <div t-if="not rows" class="o_ocd_info">No free piece of this product at <t t-out="source.name"/>.</div>
+                        </div>
+                    </div>
+                    <div class="o_ocd_pane_side">
+                        <div class="o_ocd_stock_send_places">
+                            <div class="o_ocd_field">
+                                <label for="env-from" class="o_ocd_label">From</label>
+                                <select id="env-from" name="de" class="o_ocd_input o_ocd_stock_send_place">
+                                    <option t-foreach="places" t-as="place" t-att-value="place.id"
+                                            t-att-selected="'selected' if place == source else None" t-out="place.name"/>
+                                </select>
+                            </div>
+                            <a t-attf-href="/ocd/espace/moi/produits/#{product.id}/envoyer?de=#{destination.id}&amp;a=#{source.id}"
+                               class="o_ocd_round o_ocd_stock_send_swap" aria-label="Swap the stores">⇄</a>
+                            <div class="o_ocd_field">
+                                <label for="env-to" class="o_ocd_label">To</label>
+                                <select id="env-to" name="a" class="o_ocd_input o_ocd_stock_send_place">
+                                    <option t-foreach="places" t-as="place" t-att-value="place.id"
+                                            t-att-selected="'selected' if place == destination else None" t-out="place.name"/>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="env-note" class="o_ocd_label">Note (if you want)</label>
+                            <input id="env-note" name="note" class="o_ocd_input" maxlength="200" t-att-value="note"
+                                   placeholder="By Junior, on a motorbike"/>
+                        </div>
+                        <button type="submit" class="o_ocd_cta o_ocd_stock_send_button" t-out="label_none"/>
+                        <small class="o_ocd_parcel_hint">The stock changes at once in both stores. Each sending stays in the last changes.</small>
+                    </div>
+                </main>
+            </form>
         </t>
     </template>
 

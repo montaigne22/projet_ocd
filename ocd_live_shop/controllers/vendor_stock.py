@@ -6,6 +6,8 @@ the computer all of them side by side. Each − / + is a small form (the page wo
 JavaScript) whose change is added to the stock of the moment, as in « My products »."""
 from collections import defaultdict
 
+from markupsafe import escape
+
 from odoo import fields, http
 from odoo.http import request
 
@@ -120,8 +122,8 @@ class OcdVendorStock(http.Controller):
             qty = int(line.quantity)
             source, destination = names.get(line.location_id.id), names.get(line.location_dest_id.id)
             if source and destination:
-                text = env._("%(qty)s %(label)s sent from %(source)s to %(destination)s",
-                             qty=qty, label=label, source=source, destination=destination)
+                text = env._("%(qty)s %(label)s sent from %(start)s to %(end)s",
+                             qty=qty, label=label, start=source, end=destination)
             elif destination and line.location_id.usage == "inventory":
                 text = env._("%(label)s: +%(qty)s at %(place)s", label=label, qty=qty, place=destination)
             elif source and line.location_dest_id.usage == "inventory":
@@ -141,7 +143,7 @@ class OcdVendorStock(http.Controller):
 
     @http.route("/ocd/espace/moi/produits/<int:product_id>/mon-stock", type="http", auth="public", website=True,
                 methods=["GET"], sitemap=False)
-    def stock(self, product_id, magasin=None, **kwargs):
+    def stock(self, product_id, magasin=None, envoye=None, **kwargs):
         vendor = self._vendor()
         if not vendor:
             return request.redirect("/ocd/connexion")
@@ -181,6 +183,9 @@ class OcdVendorStock(http.Controller):
                              count=sum(totals), places=len(columns)) if len(columns) > 1 else env._("The − and + count at once."),
             changes=self._last_changes(product, columns),
             send_url=f"/ocd/espace/moi/produits/{product.id}/envoyer" if len(columns) > 1 else False,
+            sent_line=(env._("1 piece sent: the stock changed in both stores.") if str(envoye) == "1"
+                       else env._("%s pieces sent: the stock changed in both stores.", envoye))
+            if str(envoye or "").isdigit() and int(envoye) > 0 else False,
         ))
 
     @http.route("/ocd/espace/moi/produits/<int:product_id>/mon-stock", type="http", auth="public", website=True,
@@ -205,3 +210,89 @@ class OcdVendorStock(http.Controller):
         location = place._ocd_location() if place else variant._ocd_stock_location()
         variant._ocd_change_stock(delta, location)
         return request.redirect(f"{back}#v-{variant.id}")
+
+    # === SEND PIECES FROM A PLACE TO ANOTHER (design EnvoyerStock) === #
+
+    def _send_values(self, vendor, product, source_id, destination_id, error=None, kept=None):
+        env = request.env
+        places = vendor._ocd_stock_places()
+        source = places.filtered(lambda p: str(p.id) == str(source_id))[:1] or vendor._ocd_main_stock_place()
+        destination = places.filtered(lambda p: str(p.id) == str(destination_id) and p != source)[:1] or (places - source)[:1]
+        free = product.product_variant_ids._ocd_free_qties(source._ocd_location())
+        rows = []
+        for variant in product.product_variant_ids:
+            if not free[variant.id]:
+                continue
+            colour, others = self._values_of(variant)
+            rows.append({
+                "variant": variant,
+                "label": " · ".join(part for part in (colour.name if colour else "", " · ".join(others.mapped("name"))) if part)
+                or product.name,
+                "swatch": colour.html_color if colour else False,
+                "free": free[variant.id],
+                "value": min(int((kept or {}).get(variant.id, 0)), free[variant.id]),
+            })
+        return {
+            "space_page": "products",
+            "back": f"/ocd/espace/moi/produits/{product.id}/mon-stock?magasin={source.id}",
+            "back_label": env._("Back to my stock"),
+            "header_title": product.name,
+            "vendor": vendor,
+            "product": product,
+            "places": places,
+            "source": source,
+            "destination": destination,
+            "rows": rows,
+            "error": error,
+            "note": (kept or {}).get("note", ""),
+            "label_none": env._("Choose the pieces to send"),
+            "label_one": env._("Send 1 piece to %s", destination.name),
+            "label_many": env._("Send __COUNT__ pieces to %s", destination.name),
+        }
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/envoyer", type="http", auth="public", website=True,
+                methods=["GET"], sitemap=False)
+    def send(self, product_id, de=None, a=None, **kwargs):
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        product = self._own_product(vendor, product_id)
+        if not vendor._ocd_stock_per_place():
+            return request.redirect(f"/ocd/espace/moi/produits/{product.id}/mon-stock")
+        return request.render("ocd_live_shop.vendor_stock_send",
+                              common.page_values(False, **self._send_values(vendor, product, de, a)))
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/envoyer", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def send_post(self, product_id, de=None, a=None, note=None, **post):
+        """Send pieces from a place to another: an internal transfer of the stock, done at once
+        (the stock changes in both places), traced with its note. Only the free pieces leave."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        env = request.env
+        product = self._own_product(vendor, product_id)
+        places = vendor._ocd_stock_places()
+        source = places.filtered(lambda p: str(p.id) == str(de))[:1]
+        destination = places.filtered(lambda p: str(p.id) == str(a))[:1]
+        wanted = {}
+        for variant in product.product_variant_ids:
+            text = str(post.get(f"qty_{variant.id}") or "").strip()
+            if text.isdigit() and int(text) > 0:
+                wanted[variant] = min(int(text), MAX_STOCK)
+        note = common.clean_text(note, 200)
+        kept = {variant.id: qty for variant, qty in wanted.items()} | {"note": note}
+        if not source or not destination or source == destination:
+            values = self._send_values(vendor, product, de, a, env._("Choose two different stores."), kept)
+            return request.render("ocd_live_shop.vendor_stock_send", common.page_values(False, **values))
+        free = product.product_variant_ids._ocd_free_qties(source._ocd_location())
+        quantities = {variant: min(qty, free[variant.id]) for variant, qty in wanted.items() if free[variant.id]}
+        if not any(quantities.values()):
+            values = self._send_values(vendor, product, de, a, env._("Choose how many pieces to send."), kept)
+            return request.render("ocd_live_shop.vendor_stock_send", common.page_values(False, **values))
+        env["stock.picking"]._ocd_transfer(
+            quantities, source._ocd_location(), destination._ocd_location(),
+            note=escape(note) if note else False,
+            origin=env._("Sent by %(vendor)s from %(start)s", vendor=vendor.name, start=source.name),
+        )
+        return request.redirect(f"/ocd/espace/moi/produits/{product.id}/mon-stock?magasin={destination.id}&envoye={sum(quantities.values())}")

@@ -893,6 +893,38 @@ export class OcdPlaceTap extends Interaction {
 }
 
 /**
+ * Send pieces to another store: a store chosen shows its free pieces (the page again, without
+ * the quantities), the button says how many pieces leave and where to.
+ */
+export class OcdSendPieces extends Interaction {
+    static selector = ".o_ocd_stock_send_form";
+    dynamicContent = {
+        ".o_ocd_stock_send_place": { "t-on-change": this.choosePlace },
+        ".o_ocd_stepper_value": { "t-on-change": this.count, "t-on-input": this.count },
+    };
+
+    start() {
+        this.count();
+    }
+
+    choosePlace() {
+        const from = this.el.querySelector("[name=de]").value;
+        const to = this.el.querySelector("[name=a]").value;
+        window.location.assign(`${this.el.getAttribute("action")}?de=${encodeURIComponent(from)}&a=${encodeURIComponent(to)}`);
+    }
+
+    count() {
+        let total = 0;
+        for (const input of this.el.querySelectorAll(".o_ocd_stepper_value")) {
+            total += Math.max(0, parseInt(input.value) || 0);
+        }
+        const { labelNone, labelOne, labelMany } = this.el.dataset;
+        const label = total === 0 ? labelNone : total === 1 ? labelOne : labelMany.replace("__COUNT__", total);
+        this.el.querySelector(".o_ocd_stock_send_button").textContent = label;
+    }
+}
+
+/**
  * The price labels of a store: the button prints the page (the print styles keep the labels only).
  */
 export class OcdPrint extends Interaction {
@@ -958,4 +990,5 @@ registry
     .add("ocd_live_shop.place_form", OcdPlaceForm)
     .add("ocd_live_shop.place_tap", OcdPlaceTap)
     .add("ocd_live_shop.print", OcdPrint)
+    .add("ocd_live_shop.send_pieces", OcdSendPieces)
     .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm);
