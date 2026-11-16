@@ -66,6 +66,28 @@ déjà la boutique et les quartiers.
 | M.4 | **Back-office** | Onglet « Magasins » sur la fiche du vendeur ; menu avec tous les magasins (filtres par ville, vendeur, état) ; l'équipe peut les saisir pour un vendeur ; lien vers la carte | Fiche vendeur | ~1 jour |
 | M.5 | **Vérification** | Nouveau magasin ou nouvelle adresse vérifiés par l'équipe (photo de la devanture, position) avant d'être montrés aux clients | Écran « À vérifier », raisons de refus | 1 à 2 jours |
 
+## Stock par magasin (3 à 4 semaines, demandé le 16 novembre 2026)
+
+« Disponible à Akwa, épuisé à Bonapriso ». Un **emplacement de stock par magasin**, rangé dans
+l'entrepôt où est déjà tout le stock des vendeurs, et non un entrepôt par magasin : un entrepôt
+crée chacun ses emplacements, types d'opérations, routes et numérotations, et la disponibilité du
+site d'Odoo se calcule sur l'entrepôt du site : avec un entrepôt par magasin, les produits des
+autres magasins paraîtraient épuisés. Avec des emplacements, le site compte toujours le total, et
+chaque magasin a le sien. Les vendeurs dont les produits sont dans le stock d'OCD ne sont pas
+concernés.
+
+| # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
+|---|---|---|---|---|
+| S.1 | **Un emplacement par magasin** | Créé avec le magasin ; le stock d'aujourd'hui va au premier magasin du vendeur | Entrepôt actuel, réglage du stock (`_ocd_set_stock`) | ~1 jour |
+| S.2 | **Stock par magasin dans « Mes produits »** | Choisir le magasin, puis les − / + ; avec les tailles et les couleurs (2.5) ; « J'envoie 3 robes à Bonapriso » entre deux magasins, tracé | Écran du stock (à faire une seule fois avec 2.5) | 4 à 5 jours, 2.5 compris |
+| S.3 | **Disponibilité pour le client** | « Disponible à Akwa · Épuisé à Bonapriso » sur la fiche produit et sur les magasins de la boutique ; « Préviens-moi » dit où le produit est revenu | Fiche produit, « Plus que N » des cartes, `ocd.stock.alert` | 1 à 2 jours |
+| S.4 | **Le magasin qui sert une commande** | Le stock est pris dans le bon magasin, le livreur va le chercher là, la livraison est comptée depuis là ; un colis par magasin si un seul n'a pas tout ; un retour revient au magasin d'où il est parti | Colis par vendeur (`stock_move.py`, `_key_assign_picking`), départ des colis (A.4), code de livraison | 1 à 1,5 semaine |
+| S.5 | **Retrait et mise de côté dans un magasin** | Le client ne choisit qu'un magasin qui a le produit | Retrait en magasin (A.1) | ~1 jour de plus sur A.1 |
+| S.6 | **Back-office** | Stock par magasin sur la fiche produit et la fiche vendeur | Stock par emplacement d'Odoo | ~1 jour |
+
+À prévoir dès l'étape 0 : la correction des − / + (0.1) prend le magasin en compte, pour ne pas
+la refaire.
+
 ## Autour des magasins et de la boutique (~4 semaines, validé le 16 novembre 2026)
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
@@ -79,8 +101,9 @@ déjà la boutique et les quartiers.
 
 ## Ordre proposé
 
-Étape 0 → étape 1 → magasins (M) → étape 2 → autour des magasins (A) → étape 3. Le mode vacances
-(A.5) peut remonter à tout moment. En tout, 3 à 4 mois de travail.
+Étape 0 → étape 1 → magasins (M) → stock par magasin (S, avec 2.5) → reste de l'étape 2 → autour
+des magasins (A) → étape 3. Le mode vacances (A.5) peut remonter à tout moment. En tout, 4 à 5 mois
+de travail.
 
 ## Décisions à prendre
 
@@ -101,6 +124,12 @@ déjà la boutique et les quartiers.
 - **Retrait en magasin : où le client paie** (proposition : d'abord seulement payé en ligne). Payé
   en espèces au vendeur, OCD ne touche rien au passage : sa commission serait retenue sur les
   reversements suivants du vendeur.
+- **Stock par magasin seulement à partir de 2 magasins** (proposition) : un vendeur qui n'a qu'un
+  lieu ne voit rien de nouveau.
+- **Le magasin qui sert une livraison** (proposition) : celui de la ville du client qui a toute la
+  commande, sinon le magasin de départ des colis (A.4), sinon un colis par magasin.
+- **Ce que voit le client** (proposition) : « Disponible » ou « Épuisé » par magasin, et « Plus que
+  2 » comme sur les cartes, sans le nombre exact de chaque magasin.
 - **Modèles WhatsApp** à faire approuver par Meta : produit accepté, produit refusé, stock bas.
 - **Liens avec la feuille de route** : « Ventes par produit » rejoint le chantier 3 (Statistiques
   du vendeur) ; « Partager un produit » prépare le chantier 11 (Ambassadeurs, lien personnel).
