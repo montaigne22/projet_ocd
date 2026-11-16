@@ -1,5 +1,6 @@
 import importlib.util
 
+from odoo import Command
 from odoo.modules.module import get_module_path
 from odoo.tests import tagged
 
@@ -101,3 +102,53 @@ class TestOcdPlaceStock(OcdShopCommon):
         self.assertTrue(akwa.location_id and bonapriso.location_id)
         self.assertEqual((self._free(bonapriso.location_id), self._free(akwa.location_id), self._free(self.root)), (4, 0, 0),
                          "The place the parcels leave from receives the pieces")
+
+    def _stores_in_two_cities(self):
+        bastos = self.env.ref("delivery_cameroon.district_yaounde_bastos")
+        douala = self._place(self.brenda, "Brenda Wax Akwa", self.akwa)
+        yaounde = self._place(self.brenda, "Brenda Wax Bastos", bastos)
+        return douala, yaounde
+
+    def test_the_store_of_the_city_of_the_customer_serves(self):
+        douala, yaounde = self._stores_in_two_cities()
+        self.brenda.ocd_departure_place_id = yaounde
+        self.dress._ocd_change_stock(2, douala.location_id)
+        self.dress._ocd_change_stock(2, yaounde.location_id)
+        parcel = self._parcel(self._order(self.estelle, [(self.dress, 1)]), self.brenda)
+        self.assertEqual(len(parcel), 1)
+        self.assertEqual((parcel.location_id, parcel.ocd_pickup_place_id), (douala.location_id, douala),
+                         "Estelle lives in Douala: the store of Douala, not the one the parcels leave from")
+        self.assertEqual(parcel.state, "assigned")
+        self.assertEqual(self._free(douala.location_id), 1)
+
+    def test_another_store_that_has_everything(self):
+        douala, yaounde = self._stores_in_two_cities()
+        self.dress._ocd_change_stock(3, yaounde.location_id)
+        quote = self._order_quote()
+        self.assertEqual(quote["origin"].name, "Yaoundé", "The price is counted from the store that has the pieces")
+        parcel = self._parcel(self._order(self.estelle, [(self.dress, 2)]), self.brenda)
+        self.assertEqual((parcel.ocd_pickup_place_id, parcel.state), (yaounde, "assigned"))
+        self.assertEqual(self._free(yaounde.location_id), 1)
+
+    def _order_quote(self):
+        order = self.env["sale.order"].create({
+            "partner_id": self.estelle.id,
+            "order_line": [Command.create({"product_id": self.dress.id, "product_uom_qty": 2})],
+        })
+        return next(q for q in order._ocd_delivery_quotes() if q["vendor"] == self.brenda)
+
+    def test_a_parcel_per_store(self):
+        douala, yaounde = self._stores_in_two_cities()
+        bag = self._product("Sac en raphia", 8000, self.brenda)
+        bag.is_storable = True
+        self.dress._ocd_change_stock(1, douala.location_id)
+        bag._ocd_change_stock(1, yaounde.location_id)
+        order = self._order(self.estelle, [(self.dress, 1), (bag, 1)])
+        parcels = self._parcel(order, self.brenda).sorted("id")
+        self.assertEqual(len(parcels), 2, "No store has both: a parcel per store, each with its code")
+        self.assertEqual(parcels.mapped("ocd_pickup_place_id"), douala | yaounde)
+        self.assertEqual(parcels[0].move_ids.product_id, self.dress)
+        self.assertEqual(parcels[1].move_ids.product_id, bag)
+        self.assertTrue(all(p.state == "assigned" and p.ocd_is_parcel for p in parcels))
+        self.assertEqual(parcels[1].ocd_fee_amount, 0, "One delivery paid: on the first parcel only")
+        self.assertEqual(parcels[0].ocd_fee_amount, order._ocd_parcel_delivery(self.brenda)[1] or 0)

@@ -109,8 +109,14 @@ class SaleOrder(models.Model):
         Rate = self.env["ocd.delivery.rate"]
         rates = Rate._ocd_rates(self.company_id)
         date = fields.Date.context_today(self)
+        # The pieces of each vendor: the price is counted from the place that serves them
+        quantities = {}
+        for line in self.order_line.filtered(lambda l: not l.is_delivery and not l.display_type and l.product_id):
+            pieces = quantities.setdefault(line.ocd_vendor_id, {})
+            pieces[line.product_id] = pieces.get(line.product_id, 0) + line.product_uom_qty
         return [
-            Rate._ocd_quote(vendor, partner, amount, self.currency_id, self.company_id, date=date, rates=rates)
+            Rate._ocd_quote(vendor, partner, amount, self.currency_id, self.company_id, date=date, rates=rates,
+                            quantities=quantities.get(vendor))
             for vendor, amount in self._ocd_delivery_groups().items()
         ]
 

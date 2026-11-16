@@ -204,7 +204,14 @@ class StockPicking(models.Model):
                 continue
             line, amount = order._ocd_parcel_delivery(picking.ocd_vendor_id)
             if line:
-                picking.ocd_fee_amount = amount
+                # A vendor whose order leaves from several places: the customer paid one
+                # delivery, kept on the first parcel
+                siblings = order.picking_ids.filtered(
+                    lambda p: p.ocd_is_parcel and p.ocd_vendor_id == picking.ocd_vendor_id
+                    and p.ocd_stage != "cancelled" and p.state != "cancel"
+                )
+                first = min(siblings.ids) if siblings else picking.id
+                picking.ocd_fee_amount = amount if picking.id == first else 0.0
                 continue
             parcels = order.picking_ids.filtered(
                 lambda p: p.ocd_is_parcel and p.ocd_stage != "cancelled" and p.state != "cancel"
@@ -252,7 +259,8 @@ class StockPicking(models.Model):
         """Turn the deliveries of shop orders into parcels: who delivers, courier, amounts. With
         the delivery of OCD Live, the delivery kept on the order for the vendor decides who
         delivers (the vendor, an OCD courier, a travel agency), as the customer paid it."""
-        for picking in self:
+        # A vendor with several places: each parcel leaves from the place that has its pieces
+        for picking in self._ocd_split_by_place():
             if picking.ocd_is_parcel or picking.picking_type_code != "outgoing" or not picking.sale_id:
                 continue
             vendor = picking.ocd_vendor_id
@@ -265,7 +273,8 @@ class StockPicking(models.Model):
                 "ocd_is_parcel": True,
                 "ocd_delivery_mode": mode,
                 "ocd_courier_id": courier.id,
-                "ocd_pickup_place_id": vendor.sudo()._ocd_departure_place().id if vendor and mode != "stock" else False,
+                "ocd_pickup_place_id": (picking.ocd_pickup_place_id or vendor.sudo()._ocd_departure_place()).id
+                if vendor and mode != "stock" else False,
                 "ocd_stage": "to_prepare",
                 "ocd_goods_amount": picking._ocd_compute_goods_amount(),
                 "ocd_cod_state": "none" if picking.sale_id._ocd_is_paid_online() else "to_collect",
@@ -288,7 +297,8 @@ class StockPicking(models.Model):
             # An OCD courier of the district of departure takes the parcel to the travel agency
             origin_district = self.env["res.city.district"]
             if vendor and mode == "pickup":
-                origin_district = vendor.sudo()._ocd_departure_place().district_id or vendor.district_id
+                place = self.ocd_pickup_place_id or vendor.sudo()._ocd_departure_place()
+                origin_district = place.district_id or vendor.district_id
             courier = Partner._ocd_find_courier(origin_district)
             note = self.env._(
                 "Sent through a travel agency from %(origin)s to %(city)s: the team validates the "

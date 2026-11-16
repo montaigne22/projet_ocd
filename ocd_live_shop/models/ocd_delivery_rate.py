@@ -165,13 +165,19 @@ class OcdDeliveryRate(models.Model):
     # === ENGINE === #
 
     @api.model
-    def _ocd_origin(self, vendor, company):
-        """Where a parcel leaves from: (country, city) of the place the parcels of the vendor
-        leave from (their store or home, A.4 of the plan), else of the vendor; of the OCD stock
-        for the products of OCD Live and the vendors whose products are in the OCD stock."""
+    def _ocd_origin(self, vendor, company, partner=None, quantities=None):
+        """Where a parcel leaves from: (country, city) of the place that serves it (the one with
+        the pieces in the city of `partner`, S.4 of the plan, when the `quantities` {variant:
+        qty} are known), else of the place the parcels of the vendor leave from (A.4), else of
+        the vendor; of the OCD stock for the products of OCD Live and the vendors whose
+        products are in the OCD stock."""
         City = self.env["res.city"].sudo()
         if vendor and (vendor.ocd_delivery_mode or company.ocd_default_delivery_mode) != "stock":
             place = vendor.sudo()._ocd_departure_place()
+            if quantities and partner is not None:
+                plan = vendor.sudo()._ocd_serving_plan(quantities, partner.city_id or partner.district_id.city_id)
+                if plan:
+                    place = place if place in plan else next(iter(plan))
             city = place.city_id or place.district_id.city_id
             if city:
                 return (city.country_id or vendor.country_id), city
@@ -238,7 +244,7 @@ class OcdDeliveryRate(models.Model):
         return self.sudo().with_context(active_test=True).search([("company_id", "=", company.id)])
 
     @api.model
-    def _ocd_quote(self, vendor, partner, goods_amount, currency, company, date=None, rates=None):
+    def _ocd_quote(self, vendor, partner, goods_amount, currency, company, date=None, rates=None, quantities=None):
         """Return the delivery of the parcel of `vendor` (empty: the products of OCD Live) to the
         address of `partner`, as a dict:
 
@@ -250,7 +256,7 @@ class OcdDeliveryRate(models.Model):
         - ``error``: why the parcel cannot be delivered, for the customer (or False).
         """
         rates = rates if rates is not None else self._ocd_rates(company)
-        origin = self._ocd_origin(vendor, company)
+        origin = self._ocd_origin(vendor, company, partner, quantities)
         rate, operator = self._ocd_find_rate(vendor, partner, origin, rates, company)
         quote = {
             "vendor": vendor,

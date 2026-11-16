@@ -10,6 +10,8 @@ out.
   pieces back to the main place of the vendor (the place the parcels leave from).
 - The vendors whose products are kept in the stock of OCD Live are not concerned.
 - Every move of pieces is an internal transfer of the stock, traced with its reference."""
+from collections import defaultdict
+
 from odoo import Command, api, fields, models
 
 
@@ -140,6 +142,43 @@ class ResPartner(models.Model):
         self.ensure_one()
         return len(self._ocd_stock_places()) >= 2
 
+    def _ocd_serving_plan(self, quantities, city=None):
+        """Where the pieces of an order leave from (S.4 of the plan): {place: {variant: qty}},
+        empty for a vendor with less than two places (nothing to choose).
+
+        - a place in the city of the customer that has every piece;
+        - else the place the parcels leave from, if it has every piece;
+        - else another place that has every piece;
+        - else a parcel per place: each product from the first of these places that has it all,
+          else from the place that has the most of it.
+        A product whose stock is not counted is found everywhere."""
+        self.ensure_one()
+        places = self._ocd_stock_places()
+        quantities = {product: qty for product, qty in quantities.items() if qty > 0}
+        # Without a counted stock, nothing says where the pieces are: the place the parcels
+        # leave from (A.4)
+        if len(places) < 2 or not any(product.is_storable for product in quantities):
+            return {}
+        products = self.env["product.product"].browse([product.id for product in quantities])
+        free = products._ocd_free_by_location(places.location_id)
+        departure = self._ocd_main_stock_place()
+        in_city = places.filtered(lambda p: city and (p.city_id or p.district_id.city_id) == city)
+        ordered = in_city | departure | places
+
+        def has(place, product, qty):
+            return not product.is_storable or free.get((place.location_id.id, product.id), 0) >= qty
+
+        for place in ordered:
+            if all(has(place, product, qty) for product, qty in quantities.items()):
+                return {place: quantities}
+        plan = defaultdict(dict)
+        for product, qty in quantities.items():
+            place = next((p for p in ordered if has(p, product, qty)), None) or max(
+                ordered, key=lambda p: free.get((p.location_id.id, product.id), 0)
+            )
+            plan[place][product] = qty
+        return dict(plan)
+
     def _ocd_free_pieces(self, location, exact=False):
         """{variant: pieces free to sell} of the products of the vendor at `location` (with its
         sub-locations, or only there when `exact`), the pieces kept for an order left out."""
@@ -180,6 +219,39 @@ class ProductTemplate(models.Model):
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
+
+    def _ocd_split_by_place(self):
+        """The new deliveries of the vendors with several places, before their pieces are
+        kept: each one leaves from the place chosen by `_ocd_serving_plan`, a parcel per place
+        when no place has everything. Return the deliveries, the new ones included."""
+        result = self.browse()
+        for picking in self:
+            vendor = picking.sudo().ocd_vendor_id
+            moves = picking.move_ids.filtered(lambda m: m.state not in ("cancel", "done"))
+            if (
+                picking.ocd_is_parcel or picking.picking_type_code != "outgoing" or not picking.sale_id
+                or not vendor or moves.move_line_ids
+            ):
+                result |= picking
+                continue
+            quantities = defaultdict(float)
+            for move in moves:
+                quantities[move.product_id] += move.product_uom_qty
+            customer = picking.partner_id
+            plan = vendor._ocd_serving_plan(quantities, customer.city_id or customer.district_id.city_id)
+            if not plan:
+                result |= picking
+                continue
+            for index, (place, products) in enumerate(plan.items()):
+                target = picking if index == 0 else picking.copy({
+                    "move_ids": [], "ocd_vendor_id": vendor.id, "ocd_pickup_place_id": False,
+                })
+                place_moves = moves.filtered(lambda m: m.product_id in products)
+                location = place._ocd_location()
+                place_moves.write({"picking_id": target.id, "location_id": location.id})
+                target.write({"location_id": location.id, "ocd_pickup_place_id": place.id})
+                result |= target
+        return result
 
     @api.model
     def _ocd_transfer(self, quantities, source, destination, note=False, origin=False):
