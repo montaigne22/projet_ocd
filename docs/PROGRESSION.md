@@ -133,7 +133,8 @@ vendeur, avant les ajouts.
 - **Trois modèles WhatsApp à soumettre à Meta** (*Utility*, français et anglais) : produit accepté,
   produit refusé avec son motif, stock bas. Leur bouton ouvre « Mes produits » par le lien personnel.
   Ils partiront avec les chantiers 19 et 21 ; les soumettre dès maintenant.
-- Tests : base neuve, tous les modules OCD ; vérifié dans un navigateur de téléphone (Pixel 7), en
+- Tests : base neuve, tous les modules OCD (`ocd_live`, shop, WhatsApp, recrutement, Togo,
+  `ocd_debranding`) : **329 sans échec** ; vérifié dans un navigateur de téléphone (Pixel 7), en
   français et en anglais.
 
 ### 15 novembre 2026 — Les étapes d'une réservation sur le téléphone : où l'on est, la sortie, l'aide
