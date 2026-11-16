@@ -68,8 +68,8 @@
                                 <button type="button" class="o_ocd_cash_save" t-on-click="() => this.save(row)">Save the cash</button>
                             </t>
                             <t t-else="">
-                                <span t-out="row.received ? this.money(row.received) : '—'"/>
-                                <span t-att-class="{ 'o_ocd_alert_text': row.difference }" t-out="row.difference ? this.money(row.difference) : '—'"/>
+                                <span t-out="row.received ? this.money(row.received) : '-'"/>
+                                <span t-att-class="{ 'o_ocd_alert_text': row.difference }" t-out="row.difference ? this.money(row.difference) : '-'"/>
                                 <span class="o_ocd_cash_state" t-out="row.state"/>
                             </t>
                         </div>

@@ -7,7 +7,7 @@ du plus rapide au plus long. Les durées sont des estimations, tests compris. Le
 et les réglages des administrateurs sont en bas ; chaque décision rejoindra `DECISIONS.md` quand ce
 qu'elle règle sera fait.
 
-## Étape 0 : corrections, avant tout le reste (~1,5 semaine) — faite le 16 novembre 2026
+## Étape 0 : corrections, avant tout le reste (~1,5 semaine) · faite le 16 novembre 2026
 
 | # | Correction | Le problème aujourd'hui | Ce qu'on fait | Effort |
 |---|---|---|---|---|
@@ -23,7 +23,7 @@ qu'elle règle sera fait.
 Dès le début de l'étape 0 : écrire et soumettre à Meta les modèles WhatsApp du plan (voir les
 décisions), car leur approbation ne dépend pas de nous.
 
-## Étape 1 : rapide, avec ce qui existe déjà (~2,5 semaines) — faite le 16 novembre 2026
+## Étape 1 : rapide, avec ce qui existe déjà (~2,5 semaines) · faite le 16 novembre 2026
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
@@ -57,7 +57,7 @@ décisions), car leur approbation ne dépend pas de nous.
 | 3.4 | **Alerte de stock bas** | WhatsApp au vendeur quand il reste peu de pièces (2 par défaut) | Messages WhatsApp aux vendeurs, stock | 1 à 2 jours, plus l'approbation du modèle par Meta |
 | 3.5 | **Tailles et couleurs dès la création** | Le vendeur choisit les tailles et les couleurs en ajoutant le produit, au lieu de l'équipe | Attributs et variantes d'Odoo, photos des couleurs | 1 à 2 semaines |
 
-## Magasins du vendeur (~2,5 semaines) — faits le 16 novembre 2026 (chantier 17)
+## Magasins du vendeur (~2,5 semaines) · faits le 16 novembre 2026 (chantier 17)
 
 Le client sait où se trouvent les magasins du vendeur ; le vendeur les enregistre et les règle dans
 son espace ; l'équipe les voit dans le back-office.

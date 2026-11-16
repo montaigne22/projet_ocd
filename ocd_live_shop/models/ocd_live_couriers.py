@@ -44,7 +44,7 @@ class OcdLiveCouriers(models.AbstractModel):
                 ("ocd_failed_attempts", ">", 0),
                 ("create_date", ">=", since),
             ])
-            on_time = f"{round((len(month) / (len(month) + failed)) * 100)} %" if month or failed else "—"
+            on_time = f"{round((len(month) / (len(month) + failed)) * 100)} %" if month or failed else "-"
             status = "round" if out else ("available" if courier.ocd_courier_available else "rest")
             cash = courier.ocd_cash_on_hand
             cards.append({

@@ -785,7 +785,10 @@ export class OcdPlaceForm extends Interaction {
             return;
         }
         const select = this.el.querySelector(".o_ocd_place_district");
-        const empty = Object.assign(document.createElement("option"), { value: "", textContent: "—" });
+        // The empty choice keeps the text of the page (« Choose », in the language of the vendor)
+        const empty = select.querySelector('option[value=""]')?.cloneNode(true)
+            || Object.assign(document.createElement("option"), { value: "" });
+        empty.selected = true;
         select.replaceChildren(empty, ...districts.map((district) =>
             Object.assign(document.createElement("option"), { value: district.id, textContent: district.name })
         ));

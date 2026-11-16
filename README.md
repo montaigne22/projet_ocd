@@ -1,4 +1,4 @@
-# OCD Live — modules Odoo 20 Community
+# OCD Live : modules Odoo 20 Community
 
 Réservation de lives au studio de Lomé ou à distance, annuaire des lives, shop des vendeurs avec
 livraison et reversements, messages WhatsApp, recrutement des animatrices. Tout est fait en

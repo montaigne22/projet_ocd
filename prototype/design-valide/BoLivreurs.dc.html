@@ -101,7 +101,7 @@ class Component extends DCLogic {
       { id: "je", name: "Junior Ekwalla", ini: "JE", type: "Livreur salarié OCD", phone: "+237 6 90 00 00 31", zones: ["Akwa", "Bonapriso", "Makepe", "Bonamoussadi"], vehicle: "Moto LT-204-AB · vidange dans 300 km", status: "En tournée", today: "3 colis", ontime: "96 %", rating: "4,8 / 5", cash: 0, momo: 0 },
       { id: "rn", name: "Raoul Nyobe", ini: "RN", type: "Livreur salarié OCD", phone: "+237 6 90 00 00 32", zones: ["Bonabéri", "Ndokoti", "Logpom"], vehicle: "Moto LT-318-CD", status: "En tournée", today: "2 colis", ontime: "91 %", rating: "4,6 / 5", cash: 0, momo: 0 },
       { id: "cm", name: "Christian Mbida", ini: "CM", type: "Livreur salarié OCD", phone: "+237 6 90 00 00 33", zones: ["Deido", "Kotto", "Bali"], vehicle: "Moto LT-127-EF · assurance à renouveler le 15 déc.", status: "Disponible", today: "1 colis", ontime: "98 %", rating: "4,9 / 5", cash: 11500, momo: 0 },
-      { id: "pl", name: "Partenaire Yaoundé", ini: "PY", type: "Société de livraison partenaire (exemple)", phone: "+237 6 90 00 00 40", zones: ["Yaoundé"], vehicle: "5 coursiers, payés à la course", status: "Disponible", today: "0 colis", ontime: "—", rating: "—", cash: 0, momo: 0 }
+      { id: "pl", name: "Partenaire Yaoundé", ini: "PY", type: "Société de livraison partenaire (exemple)", phone: "+237 6 90 00 00 40", zones: ["Yaoundé"], vehicle: "5 coursiers, payés à la course", status: "Disponible", today: "0 colis", ontime: "-", rating: "-", cash: 0, momo: 0 }
     ];
     const stColors = { "En tournée": ["#DCF2E5", "#0A5A31"], "Disponible": ["#EEF0F2", "#15130F"], "Repos": ["#FFF0CC", "#6B4500"] };
     const couriers = defs.map((d) => {
@@ -149,8 +149,8 @@ class Component extends DCLogic {
         aria: "Montant remis par " + d.name,
         editable: editable,
         readonly: !editable,
-        givenLabel: due === 0 ? "—" : fr(gNum),
-        gap: due === 0 ? "—" : gap === 0 ? "0 F" : fr(gap),
+        givenLabel: due === 0 ? "-" : fr(gNum),
+        gap: due === 0 ? "-" : gap === 0 ? "0 F" : fr(gap),
         gapColor: due > 0 && gap !== 0 ? "#8E1220" : "#0A5A31",
         canSave: editable,
         noSave: !editable,

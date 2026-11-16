@@ -232,7 +232,7 @@ class OcdLivePlanning(models.AbstractModel):
         rows.append({"label": self.env._("Payment"), "value": self._ocd_payment_text(booking)})
         if booking.mode == "studio":
             needs = dict(booking._fields["studio_need"]._description_selection(self.env))
-            rows.append({"label": self.env._("At the studio"), "value": needs.get(booking.studio_need) or "—"})
+            rows.append({"label": self.env._("At the studio"), "value": needs.get(booking.studio_need) or "-"})
         else:
             rows.append({"label": self.env._("At the vendor"), "value": self._ocd_time_gap(booking)})
         now = fields.Datetime.now()
@@ -288,7 +288,7 @@ class OcdLivePlanning(models.AbstractModel):
         city = company.ocd_studio_city or "Lomé"
         zones = pytz.country_timezones.get((booking.vendor_country_id.code or "").upper())
         if not zones:
-            return "—"
+            return "-"
         start = pytz.utc.localize(booking.start_datetime)
         gap = (
             start.astimezone(pytz.timezone(zones[0])).utcoffset() - start.astimezone(company._ocd_tz()).utcoffset()

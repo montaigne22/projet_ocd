@@ -17,3 +17,4 @@ from . import test_card_media
 from . import test_currencies
 from . import test_page_cache
 from . import test_tools
+from . import test_writing

@@ -162,7 +162,7 @@ class ResPartner(models.Model):
             ])
             partner.ocd_delivered_30 = len(delivered)
             on_time = len(delivered.filtered(lambda parcel: not parcel.ocd_escalated_at))
-            partner.ocd_on_time_rate = f"{round(on_time / len(delivered) * 100)} %" if delivered else "—"
+            partner.ocd_on_time_rate = f"{round(on_time / len(delivered) * 100)} %" if delivered else "-"
             partner.ocd_failed_30 = Picking.search_count([
                 ("ocd_vendor_id", "=", partner.id),
                 ("ocd_failed_attempts", ">", 0),

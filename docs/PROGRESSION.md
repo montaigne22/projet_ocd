@@ -104,7 +104,7 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
-### 16 novembre 2026 — Les magasins des vendeurs (chantier 17)
+### 16 novembre 2026 · Les magasins des vendeurs (chantier 17)
 Dessiné d'abord (maquettes `MesMagasins`, `MonMagasin`, `VitrineMagasins`, `BoVerificationMagasins`,
 validées), puis codé.
 - **Les lieux d'un vendeur** : un magasin ouvert au public, ou « je vends depuis chez moi ». Un magasin est
@@ -147,7 +147,7 @@ validées), puis codé.
   étiquettes, départ des colis, messages) ; vérifié dans un navigateur de téléphone (Pixel 7), en
   français : boutique, fiche produit, Mes magasins, affiche, étiquettes à l'écran et à l'impression.
 
-### 16 novembre 2026 — « Mes produits » aide à vendre (chantier 16, étape 1 du plan)
+### 16 novembre 2026 · « Mes produits » aide à vendre (chantier 16, étape 1 du plan)
 - **Ce que les produits ont rapporté**, sous chaque produit : « 7 personnes t'ont écrit sur WhatsApp »
   (compté par OCD, vu jusqu'ici seulement par l'équipe), et sur un produit épuisé « 2 clients attendent
   son retour » (les « Préviens-moi »). Une requête pour toute la page.
@@ -174,7 +174,7 @@ validées), puis codé.
 - Tests : base neuve, tous les modules OCD : **336 sans échec** ; vérifié dans un navigateur de téléphone
   (Pixel 7), en français.
 
-### 16 novembre 2026 — « Mes produits » fiable (chantier 15, étape 0 du plan)
+### 16 novembre 2026 · « Mes produits » fiable (chantier 15, étape 0 du plan)
 Premier chantier de [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md) : les corrections de la page du
 vendeur, avant les ajouts.
 - **Boutons − / + du stock** : la page montrait le stock libre (moins les pièces réservées par les
@@ -210,7 +210,7 @@ vendeur, avant les ajouts.
   `ocd_debranding`) : **329 sans échec** ; vérifié dans un navigateur de téléphone (Pixel 7), en
   français et en anglais.
 
-### 15 novembre 2026 — Les étapes d'une réservation sur le téléphone : où l'on est, la sortie, l'aide
+### 15 novembre 2026 · Les étapes d'une réservation sur le téléphone : où l'on est, la sortie, l'aide
 - Sur le téléphone, le menu laisse la place aux étapes de la réservation (parcours fermé : moins de
   distractions, la place pour le résumé et le bouton). Trois manques comblés :
   - **où l'on est** : le nom de l'étape sous la barre, « 2/5 · Heure » (Jour, Heure, Paquet, Tes infos,
@@ -225,7 +225,7 @@ vendeur, avant les ajouts.
   n'envoyait pas leurs traductions à ses pages. Corrigé (`ir.http`). Vérifié avec un navigateur de
   téléphone, en français.
 
-### 15 novembre 2026 — Les robots hors du calendrier des réservations
+### 15 novembre 2026 · Les robots hors du calendrier des réservations
 - Un robot parcourait une à une les étapes de réservation de la préproduction (chaque mois, jour, heure
   et formule, en chaque langue : des milliers de formulaires, 32 requêtes et ~0,2 s chacun, jamais gardés
   en mémoire), malgré le `noindex` de la plateforme : `noindex` empêche d'apparaître dans les résultats,
@@ -240,7 +240,7 @@ vendeur, avant les ajouts.
   plus celle de son entrée, 10.42.2.1), et la base GeoIP (GeoLite2) est installée : le pays du visiteur
   vient de nouveau de son adresse dès la première page (`geoip_country_code` vérifié de l'extérieur).
 
-### 15 novembre 2026 — Test de charge refait pour 3 millions de visiteurs par jour
+### 15 novembre 2026 · Test de charge refait pour 3 millions de visiteurs par jour
 - Coût de chaque page mesuré en processeur (Odoo et PostgreSQL), gardée en mémoire et construite, et le
   parcours refait : ~570 pages/s sur la machine de test, 95 % depuis la mémoire, aucune erreur jusqu'à 32
   visiteurs à la fois. Détail dans [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md#7-3-millions-de-visiteurs-par-jour-15-novembre-2026-après-le-cdn).
@@ -251,7 +251,7 @@ vendeur, avant les ajouts.
 - Nouvel outil `tools/charge/dimensionnement.py` : les cœurs pour N visiteurs par jour, à refaire avec
   les chiffres d'un vrai soir.
 
-### 15 novembre 2026 — CDN en place : le type des vidéos des cartes, des exemples qui ne visent personne
+### 15 novembre 2026 · CDN en place : le type des vidéos des cartes, des exemples qui ne visent personne
 - Le CDN tourne (Cloudflare devant `ocd.my.rollbackk.app`, sur une adresse à part) : vérifié avec un
   navigateur de téléphone, les fichiers, les polices, les photos et la vidéo d'une carte viennent du CDN,
   gardés un an (`MISS` puis `HIT`, aussi par morceaux), les pages restent sur le serveur.
@@ -263,7 +263,7 @@ vendeur, avant les ajouts.
   l'aide de l'adresse du CDN, les tests, les commandes du test de charge (copiées telles quelles, elles
   auraient chargé le serveur de quelqu'un d'autre).
 
-### 15 novembre 2026 — CDN : les polices des icônes, la marche à suivre avec Cloudflare
+### 15 novembre 2026 · CDN : les polices des icônes, la marche à suivre avec Cloudflare
 - Servies depuis l'adresse du CDN pour une page du site, les polices des icônes auraient été refusées par
   les navigateurs (une police ne se prend sur une autre adresse qu'avec `Access-Control-Allow-Origin`, qu'Odoo
   n'envoie pas). Les fichiers, les photos et les vidéos demandés sans session portent maintenant cet
@@ -272,7 +272,7 @@ vendeur, avant les ajouts.
 - La marche à suivre avec Cloudflare (DNS, certificat, règle de cache, nginx, Paramètres) est dans
   [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md#mise-en-production-pour-le-grand-public).
 
-### 15 novembre 2026 — tenir les foules d'un live : pages en mémoire, médias à part, rapport de charge
+### 15 novembre 2026 · tenir les foules d'un live : pages en mémoire, médias à part, rapport de charge
 - **Pages publiques gardées en mémoire** : le fil des lives, la page d'un live, les boutiques, le shop et
   les produits sont construits une fois, puis redonnés pendant 10 à 60 secondes aux visiteurs qui n'ont
   encore rien à eux sur le site (pas connectés, sans vendeur ni livreur sur leur téléphone, sans panier).
@@ -295,7 +295,7 @@ vendeur, avant les ajouts.
   remplir sur la préproduction et la production, mesures de référence ; outil `tools/charge/charge.py`.
   Réglages des serveurs pour le grand public dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md).
 
-### 13 novembre 2026 — le lien partagé d'un live ouvre ce live
+### 13 novembre 2026 · le lien partagé d'un live ouvre ce live
 - **Avant** : l'image et le message « Je passe en live » donnaient `domaine/lives/cm` (la boutique du vendeur
   une fois validé, sinon les lives de tout son pays) : un ami tombait sur les lives du pays entier.
 - **Maintenant** : `domaine/lives/cm/<numéro du live>`, la page de ce live : avant, « Prochain live », le
@@ -305,7 +305,7 @@ vendeur, avant les ajouts.
   numéro, l'adresse donne les lives du pays. Le bouton de partage des cartes du fil donne aussi la page
   du live. Capture : `site-phone-d-5-page-d-un-live.png`.
 
-### 13 novembre 2026 — page d'erreur juste après un paiement, ticket pas reçu sur WhatsApp
+### 13 novembre 2026 · page d'erreur juste après un paiement, ticket pas reçu sur WhatsApp
 - **Page 500 après le paiement** (`/payment/status`, vu sur le staging après un paiement CamPay de démo) :
   la page d'attente du paiement (réservation, pass, boutique) est une page d'Odoo dans le cadre d'OCD Live.
   Depuis le bouton de langue (9 novembre), le cadre lisait la liste des langues des pages d'OCD, absente de
@@ -324,7 +324,7 @@ vendeur, avant les ajouts.
   démo à 25 F CFA, page d'attente, retour sur la réservation payée, ticket avec son bouton. Tests : CamPay,
   WhatsApp et pages du site, 174 sans échec ; boutique, 108 sans échec.
 
-### 12 novembre 2026 — modèles WhatsApp refusés par Meta (INCORRECT_CATEGORY)
+### 12 novembre 2026 · modèles WhatsApp refusés par Meta (INCORRECT_CATEGORY)
 - **Le motif** : Meta prenait quatre modèles *Utilitaires* pour des messages d'*Authentification* (réservés
   au code à usage unique) : « colis en route » (le code à donner au livreur, même sans le donner), « ticket
   du live » (un numéro « que l'équipe vous demandera »), « lien personnel » (« gardez-le pour vous ») et
@@ -347,7 +347,7 @@ vendeur, avant les ajouts.
   pages du site, 178 tests, un seul échec, connu (« commande confirmée puis expédiée ») ; boutique, 108 sans
   échec. Base de démo mise à jour : les 12 modèles ont leurs nouveaux textes.
 
-### 12 novembre 2026 — devises par pays et paiements de démo CamPay
+### 12 novembre 2026 · devises par pays et paiements de démo CamPay
 - **Devises par pays** (Paramètres › Devises par pays, bouton « Mettre en place les devises par pays ») :
   quatre listes de prix par groupe de pays. Les prix restent écrits en XOF ; l'UEMOA les voit en XOF, la
   CEMAC en XAF (donc CamPay est proposé au Cameroun), l'Europe et le reste de l'Afrique en euros, les
@@ -365,7 +365,7 @@ vendeur, avant les ajouts.
   d'`account_payment` (sans quoi la comptabilité aurait pu enregistrer le prix au lieu de l'argent reçu).
 - **Démo** : les devises par pays sont en place (Brenda à Douala en FCFA, Kadi à Paris en euros).
 
-### 12 novembre 2026 — « Ma carte dans le fil » : la photo et la vidéo d'un vendeur pas encore validé
+### 12 novembre 2026 · « Ma carte dans le fil » : la photo et la vidéo d'un vendeur pas encore validé
 - **La photo cassée** : les médias d'une carte n'étaient servis que pour un vendeur validé ; un vendeur
   qui vient de s'inscrire voyait des images cassées dans « Ma carte dans le fil ». Avant la validation,
   le vendeur et l'équipe voient ses médias ; le fil public, seulement après.
@@ -378,7 +378,7 @@ vendeur, avant les ajouts.
   un refus du proxy (« 413 ») ou du réseau dit quoi faire. Les erreurs d'un envoi restent sur la page
   rouverte (la recharger n'envoie rien deux fois).
 
-### 12 novembre 2026 — liens courts des vidéos acceptés
+### 12 novembre 2026 · liens courts des vidéos acceptés
 - Un lien court de TikTok (« Partager › Copier le lien » : `vt.tiktok.com/ZS…`, `vm.tiktok.com/…`,
   `tiktok.com/t/…`) ou de Facebook (`fb.watch/…`) était refusé pour la vidéo des replays : il ne contient
   pas le numéro de la vidéo, que la page du replay doit avoir pour la lire. Il est maintenant suivi
@@ -386,7 +386,7 @@ vendeur, avant les ajouts.
   régie (« Publier le replay »), fiche du live. Si la plateforme ne répond pas, le message dit de coller
   l'adresse complète de la vidéo.
 
-### 12 novembre 2026 — page produit : « Ajouter au panier » et « Écrire sur WhatsApp » réparés ; ffmpeg par pip
+### 12 novembre 2026 · page produit : « Ajouter au panier » et « Écrire sur WhatsApp » réparés ; ffmpeg par pip
 - **Les boutons du bas de la page produit ne faisaient plus rien** dans un navigateur, depuis
   « Préviens-moi quand il revient » : son formulaire était dans celui du produit, le navigateur coupait
   alors celui du produit avant ses boutons. Il est maintenant à part (relié à ses champs par
@@ -398,7 +398,7 @@ vendeur, avant les ajouts.
   `apt-get` ; les vidéos des cartes se convertissent avec lui quand le serveur n'a pas le sien (il n'a
   pas ffprobe : ffmpeg lit lui-même la durée et les pistes).
 
-### 12 novembre 2026 — cartes du fil claires, médias des vendeurs, lives à distance sur les comptes d'OCD
+### 12 novembre 2026 · cartes du fil claires, médias des vendeurs, lives à distance sur les comptes d'OCD
 - **Cartes du fil épurées** : fond blanc et sable, textes à l'encre, la couleur seulement pour l'état du
   live (rouge en live, orange pour le prochain, violet pour le replay) et le bouton principal. En haut le
   média, en bas l'état, le nom, la catégorie et les boutons : ils ne se chevauchent plus et restent
@@ -431,7 +431,7 @@ vendeur, avant les ajouts.
 - Démo : Awa a sa vidéo, Ama son image, les autres le carrousel de leurs produits ; les comptes OCD Live
   Togo et OCD Live Afrique sur TikTok ; les noms TikTok des vendeurs, les téléphones des animatrices.
 
-### 12 novembre 2026 — la boutique de Douala tenue à jour, textes des modules après une mise à jour
+### 12 novembre 2026 · la boutique de Douala tenue à jour, textes des modules après une mise à jour
 - **La boutique de Douala avance chaque jour**, comme les lives : six commandes par jour (heure de
   Douala), chaque colis selon son histoire : livré en espèces ou payé sur le téléphone, une vendeuse en
   retard (Brenda rappelée à 13 h 10, dispatch alerté à 15 h 10, livré le lendemain), un client absent
@@ -462,7 +462,7 @@ vendeur, avant les ajouts.
   des jours suivants aussi ; les produits montrés sont placés le long de la vidéo ; un lien collé à la
   main reste ; vides, les liens d'exemple reviennent. `ocd_live_demo` 20.0.1.3.0.
 
-### 12 novembre 2026 — démo de présentation : 8 pays, tenue à jour
+### 12 novembre 2026 · démo de présentation : 8 pays, tenue à jour
 - **15 vendeurs dans 8 pays**, chacun avec une histoire cohérente (ville, ce qu'il vend, produits avec
   photos, lien de live, heures) : Togo (Awa, Ama Pagnes, Kossi Tech, Yao à vérifier), Cameroun (Brenda,
   Fatou, Papa Ndolé), Côte d'Ivoire (Junior, Adjoua Attiéké), Sénégal (Aminata, Moussa Bazin), Bénin
@@ -494,7 +494,7 @@ vendeur, avant les ajouts.
   `ocd_live_demo_whatsapp` et retire l'ancien live de Brenda au studio (elle est à Douala).
   `ocd_live_demo` 20.0.1.1.0, `ocd_live_demo_whatsapp` 20.0.1.0.0 (nouveau).
 
-### 11 novembre 2026 — photos des produits, replay lu dans la page, retour en stock
+### 11 novembre 2026 · photos des produits, replay lu dans la page, retour en stock
 - **Photos du produit** : la photo s'ouvre en plein écran (glisser d'une photo à l'autre, pincer ou
   toucher deux fois pour zoomer, le bouton retour du téléphone la ferme) ; sans JavaScript, elle s'ouvre
   dans un nouvel onglet. Galerie avec des points : la photo principale, puis les autres photos du produit
@@ -534,7 +534,7 @@ vendeur, avant les ajouts.
 - **À faire (équipe)** : soumettre à Meta le modèle « produit de retour » (`ocd_produit_de_retour`, français
   et anglais).
 
-### 11 novembre 2026 — tous les pays d'Afrique et du monde, paiement par carte, fil des lives
+### 11 novembre 2026 · tous les pays d'Afrique et du monde, paiement par carte, fil des lives
 - **Pays proposés** (OCD Live › Configuration › Pays) : les 54 pays d'Afrique et les plus connus d'Europe
   (23), d'Amérique (14) et d'Asie (21), soit 112 pays au lieu de 5. L'équipe en ajoute ou en retire
   (boutons « Proposer », « Retirer », ou plusieurs à la fois depuis la liste) ; les pays des vendeurs déjà
@@ -567,7 +567,7 @@ vendeur, avant les ajouts.
   pays (Configuration › Pays) ; installer `phonenumbers` sur le serveur (`pip install -r
   requirements.txt`).
 
-### 11 novembre 2026 — ticket en PDF, image pour annoncer son live, heures de chacun
+### 11 novembre 2026 · ticket en PDF, image pour annoncer son live, heures de chacun
 - **Ticket du live en PDF** (une page de 10 × 18 cm, lisible au téléphone ou imprimée) : envoyé sur
   WhatsApp dès le paiement confirmé, téléchargeable sur la page du ticket (« Télécharger mon ticket
   (PDF) ») et imprimable par l'équipe depuis la réservation. Il est **personnel** : jamais partagé, jamais
@@ -613,7 +613,7 @@ vendeur, avant les ajouts.
   reste tel quel : y mettre l'en-tête « Document PDF » (document : Ticket du live), puis le soumettre à
   nouveau.
 
-### 11 novembre 2026 — trois modèles refusés par Meta, navigation sans rechargement
+### 11 novembre 2026 · trois modèles refusés par Meta, navigation sans rechargement
 - **Refusés par Meta** : « ticket du live », « colis en route », « choisir un mot de passe ». Le courriel
   de Meta ne donne pas de motif. Textes revus pour ce que Meta refuse dans un modèle *Utilitaire* :
   - plus de « code » : un code dans un modèle Utilitaire est pris pour un code à usage unique, réservé aux
@@ -648,7 +648,7 @@ vendeur, avant les ajouts.
 - **À faire** : mettre à jour les modules, puis soumettre à Meta les trois modèles corrigés et les versions
   anglaises (WhatsApp › Modèles, filtre de langue « en »).
 
-### 11 novembre 2026 — le téléphone retient le vendeur et le livreur ; messages en français seulement
+### 11 novembre 2026 · le téléphone retient le vendeur et le livreur ; messages en français seulement
 - **Vendeur « plus connecté » après Accueil puis Moi** : pas reproduit en local, avec chaque façon de se
   connecter (lien personnel, code WhatsApp, mot de passe, vue de l'équipe, administrateur connecté dans le
   même navigateur) ; la session reste la même sur Accueil, Moi, Lives, la boutique, le retour arrière et le
@@ -675,7 +675,7 @@ vendeur, avant les ajouts.
   l'avance sans effet, cookie fabriqué refusé, nouveau lien personnel qui arrête le cookie, déconnexion du
   compte Odoo, modèles anglais archivés.
 
-### 11 novembre 2026 — modèles WhatsApp encore refusés : textes corrigés jusque dans les bases
+### 11 novembre 2026 · modèles WhatsApp encore refusés : textes corrigés jusque dans les bases
 - **Ce qui bloquait** : les modèles fournis sont chargés une seule fois, à l'installation (pour garder les
   textes changés par l'équipe). Les textes corrigés juste avant n'arrivaient donc pas dans une base déjà
   installée : « lien refusé », « ticket du live » et « colis en route » gardaient leur ancien texte, bloqué
@@ -701,7 +701,7 @@ vendeur, avant les ajouts.
   modèles qui ne sont pas encore approuvés (WhatsApp › Modèles › « Soumettre à Meta »). Un modèle déjà refusé
   par Meta est renvoyé comme une modification du modèle refusé.
 
-### 11 novembre 2026 — l'appli installée porte le logo d'OCD Live
+### 11 novembre 2026 · l'appli installée porte le logo d'OCD Live
 - « Installer l'appli » du navigateur montrait l'icône et les couleurs d'Odoo (le module de l'OCA
   `web_pwa_customize` n'existe pas encore pour Odoo 20). `ocd_debranding` donne maintenant au manifeste de
   l'appli les icônes d'OCD Live (192 et 512 px, marge pour les téléphones qui découpent l'icône en rond),
@@ -710,7 +710,7 @@ vendeur, avant les ajouts.
   reçoit à la mise à jour, sauf si l'équipe avait mis la sienne. `ocd_debranding` 20.0.1.1.0.
 - Une appli déjà installée garde l'ancienne icône : la désinstaller puis la réinstaller.
 
-### 11 novembre 2026 — modèles WhatsApp acceptés par Meta
+### 11 novembre 2026 · modèles WhatsApp acceptés par Meta
 - **Code de connexion refusé par Meta** (« le composant BODY a un champ inattendu : text ») : un modèle de
   catégorie *Authentification* n'a pas de texte chez Meta, qui écrit lui-même « <code> est votre code de
   vérification » dans la langue du modèle. `whatsapp_cloud` soumet maintenant ces modèles comme Meta
@@ -725,7 +725,7 @@ vendeur, avant les ajouts.
 - Point connu : le test « commande confirmée puis expédiée » de `whatsapp_cloud_sale` échoue quand les
   modules d'OCD sont installés, car OCD remplace volontairement « commande expédiée » par « colis livré ».
 
-### 11 novembre 2026 — les livreurs entrent avec leur numéro
+### 11 novembre 2026 · les livreurs entrent avec leur numéro
 - Page « Tes colis à livrer » (`/ocd/livrer`, « Espace livreurs » dans le pied de page) : le livreur
   tape le numéro de sa fiche et reçoit sur WhatsApp son lien (mode lien) ou un code (mode code, et mode
   mot de passe : il n'a pas de compte). Les vendeurs qui livrent y entrent aussi. Le numéro d'un livreur
@@ -742,7 +742,7 @@ vendeur, avant les ajouts.
 - Après une action dans l'appli (colis prêt, code…), recharger la page réaffiche l'appli.
 - Versions : `ocd_live` 20.0.1.3.0, `ocd_live_shop` 20.0.1.2.0. Captures `site-phone-l-*`.
 
-### 11 novembre 2026 — 404 sur « Moi » en administrateur, pages restées en anglais
+### 11 novembre 2026 · 404 sur « Moi » en administrateur, pages restées en anglais
 - **404 sur « Moi »** (staging) : le code des derniers changements était en place, mais `ocd_live` n'avait pas
   été mis à jour dans la base : la page de l'équipe (`ocd_live.space_team`) n'y existait pas, Odoo répond
   alors « Page introuvable ». Reproduit à l'identique. Remède : mettre à jour `ocd_live` après chaque
@@ -755,7 +755,7 @@ vendeur, avant les ajouts.
   parcours ; une langue seulement parlée (éwé…) ne change que la voix. Les pages sans voix (espace,
   connexion, shop…) ont le bouton de la langue de la page.
 
-### 11 novembre 2026 — « Moi » quand on est déjà connecté à Odoo
+### 11 novembre 2026 · « Moi » quand on est déjà connecté à Odoo
 Constat : connecté à Odoo, « Moi » demandait quand même le numéro pour recevoir un lien.
 1. **Compte relié à un vendeur** (accès avec mot de passe, ou personne de la société du vendeur) :
    l'espace s'ouvre directement, dans tous les modes ; on en sort par « Se déconnecter ».
@@ -770,7 +770,7 @@ Constat : connecté à Odoo, « Moi » demandait quand même le numéro pour rec
    connexion et l'espace se renvoyaient l'un à l'autre).
 Captures `site-phone-v-*`.
 
-### 11 novembre 2026 — thème du site « OCD Live », plus de page 404 après « Confirmer »
+### 11 novembre 2026 · thème du site « OCD Live », plus de page 404 après « Confirmer »
 - **Thème `theme_ocd`**, proposé dans Site Web › Configuration › Paramètres › Choisir un thème (et dans
   l'éditeur, Thème › Changer de thème) : polices Bricolage Grotesque (titres) et Figtree (textes),
   palette orange / encre / sable, boutons arrondis, champs aux grands coins, en-tête blanc (logo, menu,
@@ -786,7 +786,7 @@ Captures `site-phone-v-*`.
   « Cette heure n'est plus disponible : choisis-en une autre ». Même chose pour `/reserver/attente`.
 - Test corrigé : le jeton de l'espace vendeur « modifié » pouvait retomber sur le vrai (1 fois sur 64).
 
-### 11 novembre 2026 — le site est celui d'OCD Live dès l'installation
+### 11 novembre 2026 · le site est celui d'OCD Live dès l'installation
 Constat sur un serveur où tout était installé : `/` montrait la page vide d'Odoo (« Your Logo »,
 « Bienvenue sur votre site », pied de page d'exemple, +1 555-555-5556) et le menu était en anglais.
 - `/` ouvre l'accueil d'OCD Live (réglage « URL de la page d'accueil » du site : `/ocd`).
@@ -799,7 +799,7 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
 - Fait à l'installation de `ocd_live` et, sur un serveur déjà installé, à la mise à jour de `ocd_live`
   (version 20.0.1.1.0). Seul ce qui est encore comme Odoo l'installe est changé.
 
-### 11 novembre 2026 — branche fusionnée dans main, modules complémentaires dans le dépôt
+### 11 novembre 2026 · branche fusionnée dans main, modules complémentaires dans le dépôt
 - `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et `delivery_cameroon` sont dans le dépôt
   (plus de « dépendance absente » dans les Applications). Seul `disable_odoo_online` (OCA) s'ajoute à
   part.
@@ -807,7 +807,7 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
   pages du shop, frais de livraison, démo, paramètres, automatisations, conversations WhatsApp, sans la
   marque Odoo) est dans `main`.
 
-### 11 novembre 2026 — paramètres, automatisations, conversations WhatsApp, sans la marque Odoo
+### 11 novembre 2026 · paramètres, automatisations, conversations WhatsApp, sans la marque Odoo
 - **WhatsApp** : un seul accord (la case d'OCD Live et l'accord WhatsApp, STOP et START, restent
   identiques) ; les messages demandés par le contact (code, lien, ticket, alerte) partent toujours, les
   autres jamais après un refus. Avant, en production, `whatsapp_cloud` aurait bloqué tous les messages
@@ -835,7 +835,7 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
 - Correction : dans un groupe de champs des Paramètres, la saisie du premier champ allait dans le dernier
   (variable de gabarit partagée) ; chaque champ porte maintenant sa clé.
 
-### 11 novembre 2026 — démo qui remplit tous les écrans
+### 11 novembre 2026 · démo qui remplit tous les écrans
 - Photos (illustrations) des 8 produits, robe en 2 couleurs et 4 tailles, stock par variante (« Plus que
   3 », taille épuisée, savon épuisé), commandes chiffrées colis par colis.
 - Colis à chaque étape : à préparer, prêt, en route, livrés (payé sur le téléphone, espèces chez Junior),
@@ -851,11 +851,11 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
   déclaré) chez un vendeur qui livre était retenu sur son reversement comme s'il avait gardé l'argent ;
   seules les espèces gardées par le vendeur sont désormais retenues.
 
-### 11 novembre 2026 — guide des livraisons
+### 11 novembre 2026 · guide des livraisons
 - [`docs/LIVRAISONS.md`](LIVRAISONS.md) : comment le prix d'un colis est choisi, exemples, ce que voient
   le client et le vendeur, l'argent, la mise en route pas à pas, les questions fréquentes, le code.
 
-### 11 novembre 2026 — frais de livraison selon le vendeur
+### 11 novembre 2026 · frais de livraison selon le vendeur
 - **Un prix par colis** (un colis par vendeur), de la ville d'où part le colis au quartier, à la ville
   ou au pays du client ; le tarif le plus précis l'emporte. Le total de la livraison est la somme des
   colis, détaillée sur les pages Livraison et Payer.
@@ -873,7 +873,7 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
   touche sa livraison moins la part d'OCD (réglable, 0 % par défaut). Colis par agence : le livreur le
   porte à l'agence, l'équipe valide quand le client l'a retiré.
 
-### 10 novembre 2026 — toutes les pages du shop fidèles au design
+### 10 novembre 2026 · toutes les pages du shop fidèles au design
 - Shop, fiche produit, panier, livraison, paiement : les pages d'Odoo gardent leur logique (prix des
   listes de prix, panier, modes de livraison, formulaire de paiement, confirmation) ; seul l'affichage
   suit le design, et les formulaires appellent les mêmes méthodes d'Odoo.
@@ -886,7 +886,7 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
 - Choix robustes : pas de remise sans paiement encaissé, reprise de livraison tracée, catégorie du
   vendeur enregistrée sur le produit (filtre du shop sans lire les contacts).
 
-### 10 novembre 2026 — appli des colis et tournée du livreur fidèles au design
+### 10 novembre 2026 · appli des colis et tournée du livreur fidèles au design
 - Vendeur (`Livrer`) : « Bonjour Fatou », reversement à venir, onglets « À faire » et « Livrés », une
   carte par colis : étape, adresse, produits, paiement (payé en ligne ou à encaisser), livreur OCD qui
   passe, et le bouton du moment (c'est prêt, je pars livrer, paiement à la porte, code, problème).
@@ -895,7 +895,7 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
 - Le message ou l'erreur d'une action s'affiche dans la carte du colis ; « Reprendre la livraison »
   après un problème ; un vendeur qui n'encaisse pas peut montrer le paiement sur le téléphone du client.
 
-### 10 novembre 2026 — boutique d'un vendeur et replay fidèles au design
+### 10 novembre 2026 · boutique d'un vendeur et replay fidèles au design
 - Boutique (`/ocd/boutique/<vendeur>`) : vendeur, mode de vente, adresse ; en live (depuis combien de
   temps, sur quelle plateforme, produit à l'écran) ou prochain live ; dernier replay ; bouton WhatsApp
   (OCD Live quand OCD vend, le vendeur sinon) ; produits avec « Plus que N » et « Épuisé ».
@@ -906,12 +906,12 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
   menu du bas.
 - Captures : `tools/captures/site-shop.js`.
 
-### 10 novembre 2026 — outils Odoo dans la documentation, shop du site commencé
+### 10 novembre 2026 · outils Odoo dans la documentation, shop du site commencé
 - La page « Outils Odoo utilisés » quitte le back-office : elle devient `docs/OUTILS_ODOO.md`, avec ce
   que chaque outil fait concrètement pour OCD Live.
 - Dépôt GitHub `projet_ocd` en place : tout y est envoyé à chaque évolution.
 
-### 10 novembre 2026 — back-office fidèle au design
+### 10 novembre 2026 · back-office fidèle au design
 - Couleurs et polices dans un seul fichier, partagé par les deux thèmes (site et back-office).
 - Barre sombre avec le logo et les sections, onglets de la section dessous, menus nommés comme le design.
 - Tableau de bord, planning des réservations, régie en direct, à vérifier, commandes, dispatch, fiche
@@ -920,11 +920,11 @@ Constat sur un serveur où tout était installé : `/` montrait la page vide d'O
 - Traductions françaises de tous les modules.
 - Documents de suivi (`docs/`), prototype complet (`prototype/`), outils de traduction et de captures (`tools/`).
 
-### 10 novembre 2026 — site fidèle au design, paiements génériques
+### 10 novembre 2026 · site fidèle au design, paiements génériques
 - Pages de réservation, annuaire et espace vendeur fidèles au design, responsives.
 - Paiement par le formulaire d'Odoo : aucun fournisseur figé, devise selon le pays.
 - Prix selon l'heure et la date ; barre du bas toujours en bas de l'écran.
 - Module de démonstration désinstallable.
 
-### Avant — modules de base
+### Avant · modules de base
 - Réservations, crédits, annuaire, shop avec colis par vendeur, WhatsApp, Togo, recrutement.

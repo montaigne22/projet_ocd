@@ -99,10 +99,10 @@ class Component extends DCLogic {
     const days = ["Lun. 30", "Mar. 1er", "Mer. 2", "Jeu. 3", "Ven. 4", "Sam. 5", "Dim. 6"];
     const longDays = ["lun. 30 nov.", "mar. 1er déc.", "mer. 2 déc.", "jeu. 3 déc.", "ven. 4 déc.", "sam. 5 déc.", "dim. 6 déc."];
     const S = (n, c, p, need) => ["S", n, c, p, need];
-    const R = (n, c, p) => ["R", n, c, p, "—"];
+    const R = (n, c, p) => ["R", n, c, p, "-"];
     const D = [
       null,
-      [S("Maman Awa Délices", "Togo", "Découverte", "Table"), S("Awa Mensah", "Togo", "Découverte", "Table"), "F", "F", R("Brenda Wax", "Cameroun", "Pack 4"), "F", ["H", "Paiement en cours", "Togo", "Découverte", "—"], S("Kossi Sneakers", "Togo", "Découverte", "Portant"), R("Aïssatou Beauté", "Sénégal", "Duo")],
+      [S("Maman Awa Délices", "Togo", "Découverte", "Table"), S("Awa Mensah", "Togo", "Découverte", "Table"), "F", "F", R("Brenda Wax", "Cameroun", "Pack 4"), "F", ["H", "Paiement en cours", "Togo", "Découverte", "-"], S("Kossi Sneakers", "Togo", "Découverte", "Portant"), R("Aïssatou Beauté", "Sénégal", "Duo")],
       [S("Rose Délices", "Togo", "Duo", "Table"), R("Nadège Perruques", "Cameroun", "Découverte"), ["P", "Yao Vaisselle", "Togo", "Découverte", "Étagère"], "F", R("Blaise Électro", "Cameroun", "Pack 4"), S("Afi Délices", "Togo", "Découverte", "Table"), "F", S("Koffi Mode", "Togo", "Annonce", "Portant"), "F"],
       ["F", S("Edem Pagnes", "Togo", "Découverte", "Portant"), R("Carine Bijoux", "Cameroun", "Duo"), "F", "F", S("Mawuli Phones", "Togo", "Découverte", "Table"), R("Grâce Cosmétiques", "Cameroun", "Découverte"), S("Akossiwa Tresses", "Togo", "Mensuel", "Table"), "F"],
       [S("Sena Jus Naturels", "Togo", "Découverte", "Table"), "F", R("Mireille Couture", "Cameroun", "Pack 4"), S("Kodjo Sneakers", "Togo", "Duo", "Portant"), "F", "F", R("Patrick Sneakers", "Cameroun", "Découverte"), S("Dzifa Beauté", "Togo", "Découverte", "Étagère"), R("Chantal Saveurs", "Cameroun", "Découverte")],
@@ -180,7 +180,7 @@ class Component extends DCLogic {
         ["Paquet", credits[e[3]]],
         ["Paiement", pay],
         [remote ? "Chez le vendeur" : "Au studio", remote ? (e[2] === "Cameroun" ? "1 h de plus qu'à Lomé" : "Même heure qu'à Lomé") : e[4]],
-        ["Rappels WhatsApp", di >= 1 ? "La veille à 18:00 et 1 h avant" : "—"]
+        ["Rappels WhatsApp", di >= 1 ? "La veille à 18:00 et 1 h avant" : "-"]
       ];
     }
     const defaultAnim = e && e !== "F" && e[0] === "R" && !(di === 5 && ri === 6) ? "Animatrice 1 · Dzifa A." : "";

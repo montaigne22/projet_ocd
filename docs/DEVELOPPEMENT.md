@@ -285,6 +285,13 @@ revue chez Meta (le texte approuvé est celui que Meta envoie). Pour un texte qu
 texte n'utilise plus sont retirées, une nouvelle variable est ajoutée sans valeur (la remplir dans la
 migration). Ajouter le module et sa version à `test_migrations_give_the_new_texts`.
 
+## Écriture
+
+Pas de tiret cadratin (U+2014) dans le projet, ni dans le code, les écrans, les maquettes, les
+traductions ou la documentation : un deux-points, une virgule ou « · » dans une phrase, un tiret simple
+(-) pour une valeur absente. Le test `ocd_live/tests/test_writing.py` le vérifie sur tout le dépôt
+(sauf `marketplace/`, modules d'autres auteurs).
+
 ## Traductions
 
 Le code et les vues sont en anglais ; le français est dans `<module>/i18n/fr.po`.

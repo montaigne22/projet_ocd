@@ -25,8 +25,8 @@ Critères de réussite au palier de pointe visé (à confirmer avec l'équipe) :
 
 ## 2. Ce qui est testé
 
-- Date : … — Fait par : …
-- Version du code (commit) : … — Modules et versions : …
+- Date : … · Fait par : …
+- Version du code (commit) : … · Modules et versions : …
 - Base : … vendeurs, … produits, … lives du moment, … commandes (une copie de la production, sinon la
   démo).
 
@@ -36,7 +36,7 @@ Critères de réussite au palier de pointe visé (à confirmer avec l'équipe) :
 | Odoo, actions planifiées | … | 1 | `max_cron_threads = …` |
 | PostgreSQL | … | … | `max_connections = …`, `shared_buffers = …` |
 | nginx ou répartiteur | … | … | gzip, … |
-| CDN | — | — | adresse : …, règles : … |
+| CDN | - | - | adresse : …, règles : … |
 
 Réglages d'OCD Live (OCD Live › Configuration › Paramètres › Vitesse du site) : pages gardées en
 mémoire **oui / non** ; adresse du CDN : ….
@@ -85,7 +85,7 @@ L'outil imprime une ligne prête pour ces tableaux.
 
 | Visiteurs à la fois | Durée | Pages/s | Médiane | p95 | p99 | Erreurs | Depuis la mémoire |
 |---|---|---|---|---|---|---|---|
-| … | … | … | … | … | … | … | — |
+| … | … | … | … | … | … | … | - |
 
 ### Les serveurs au palier le plus haut
 
@@ -183,8 +183,8 @@ tourne à côté.
 | Shop | 1 235 pages/s, 3,1 ms | 63 pages/s, 62 ms (49 + 13) |
 | **Page d'un produit** | 541 pages/s, 7,2 ms | **31 pages/s, 124 ms (97 + 27)** |
 | Boutique d'un vendeur | 777 pages/s, 5,0 ms | 84 pages/s, 46 ms (38 + 8) |
-| Réservation (`/reserver/studio`, jamais gardée) | — | 146 pages/s, 27 ms |
-| Question « nouveaux lives » (jamais gardée) | — | 1 427/s, 2,7 ms |
+| Réservation (`/reserver/studio`, jamais gardée) | - | 146 pages/s, 27 ms |
+| Question « nouveaux lives » (jamais gardée) | - | 1 427/s, 2,7 ms |
 | Question « cartes suivantes » | 1 397/s, 2,7 ms | 58/s, 67 ms (51 + 16) |
 | Question « produit à l'écran » | 1 348/s, 2,8 ms | 671/s, 5,8 ms |
 

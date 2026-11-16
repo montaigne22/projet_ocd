@@ -94,7 +94,7 @@ lendemain matin.
 
 ## Scénario de présentation (20 minutes)
 
-### 1. Le visiteur, sur son téléphone — `/lives`
+### 1. Le visiteur, sur son téléphone · `/lives`
 - Le pays du visiteur vient d'abord (Togo à Lomé, Cameroun à Douala, France à Paris…), pour forcer un
   pays : `/lives?pays=sn`.
 - Faire défiler comme sur TikTok : les lives en cours du pays, son prochain live et son dernier replay
@@ -112,17 +112,17 @@ lendemain matin.
   produits, « Écrire à Ama sur WhatsApp » (vente directe).
 - **Brenda Wax** : boutique vendue par OCD, « Une question ? Écrire à OCD Live », paiement sur le site.
 
-### 3. Le replay — boutique de Brenda › « Revoir »
+### 3. Le replay · boutique de Brenda › « Revoir »
 - Le live se lit dans la page ; les produits montrés à la seconde : toucher « Robe en wax » saute au
   moment où elle est montrée, puis « Commander ».
 
-### 4. Le shop, à Douala — `/shop`
+### 4. Le shop, à Douala · `/shop`
 - **Robe en wax** : la photo change avec la couleur (rouge), « Plus que 3 » en bleu M, taille L épuisée
   (« Préviens-moi sur WhatsApp »), le savon noir épuisé.
 - Panier, adresse à Akwa (point de repère), un prix de livraison par colis, paiement à la livraison.
   La commande passée pendant la présentation arrive dans le dispatch avec celles de la journée.
 
-### 5. Le vendeur — `/ocd`
+### 5. Le vendeur · `/ocd`
 - Réserver un live : au studio ou chez soi, les heures dans le fuseau du vendeur, le samedi complet (liste
   d'attente), le paiement (Mobile Money vérifié par l'équipe, carte), le ticket PDF et l'image à partager.
   Le lien de l'image ouvre la page de ce live (par ex. `/lives/cm/<numéro>` pour Brenda) : son jour et
@@ -140,7 +140,7 @@ lendemain matin.
   mon live » du vendeur ». La page donne les trois gestes (ouvrir TikTok, aller sur le live d'OCD Live,
   accepter l'invitation), « Je suis prêt », « J'ai un problème », et l'animatrice à appeler.
 
-### 6. L'équipe — back-office, application OCD Live
+### 6. L'équipe · back-office, application OCD Live
 - **Tableau de bord** : lives du jour, pass actifs, colis, reversements, et « À traiter maintenant » :
   colis en retard, client absent, le lien à vérifier, le nouveau vendeur, le produit à vérifier, le
   live sans animatrice, les espèces d'un livreur.
