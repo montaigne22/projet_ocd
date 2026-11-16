@@ -150,6 +150,9 @@ class OcdVendorProducts(http.Controller):
         # The free stock and the waiting customers of all the products: one query each
         free = variants._ocd_free_qties()
         waiting = self._waiting_counts(variants)
+        # From two places on, the stock of each place (chantier 18): one query for the page
+        places = vendor._ocd_stock_places() if vendor._ocd_stock_per_place() else env["ocd.vendor.place"]
+        by_place = variants._ocd_free_by_location(places.location_id) if places else {}
         root = request.httprequest.url_root.rstrip("/")
         rows = []
         for index, product in enumerate(products):
@@ -160,9 +163,21 @@ class OcdVendorProducts(http.Controller):
             colours = product.attribute_line_ids.filtered(
                 lambda line: line.attribute_id.display_type == "color"
             ).product_template_value_ids._only_active()
+            places_line = False
+            if places and qty is not None:
+                parts = [
+                    f"{place.name} {sum(by_place.get((place.location_id.id, v.id), 0) for v in product.product_variant_ids)}"
+                    for place in places
+                ]
+                places_line = env._("%(count)s in stock · %(places)s", count=qty, places=" · ".join(parts))
             rows.append({
                 "product": product,
                 "price": common.money(product.list_price, product.currency_id),
+                # « My stock »: the sizes and the colours, or the stock of each place
+                "stock_url": f"/ocd/espace/moi/produits/{product.id}/mon-stock"
+                if places or len(product.product_variant_ids) > 1 else False,
+                "per_place": bool(places),
+                "places_line": places_line,
                 "image": vendor_photo_url(product, "image_128"),
                 "qty": qty,
                 "single": len(product.product_variant_ids) == 1,

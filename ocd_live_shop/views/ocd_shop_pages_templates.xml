@@ -688,7 +688,21 @@
                                     </a>
                                     <small t-if="row['contacts_line']" class="o_ocd_my_product_fact" t-out="row['contacts_line']"/>
                                     <small t-if="row['waiting_line']" class="o_ocd_my_product_fact o_ocd_my_product_waiting" t-out="row['waiting_line']"/>
+                                    <small t-if="row['places_line']" class="o_ocd_my_product_fact" t-out="row['places_line']"/>
                                 </span>
+                                <!-- The stock: − and + here for one size in one place, else « My stock » (chantier 18) -->
+                                <a t-if="row['stock_url']" t-att-href="row['stock_url']" class="o_ocd_button o_ocd_my_product_stock">
+                                    <t t-if="row['per_place']">My stock by store</t>
+                                    <t t-else="">My stock</t>
+                                </a>
+                                <form t-elif="row['single']" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/stock"
+                                      method="post" class="o_ocd_stepper">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button name="delta" value="-1" t-att-aria-label="row['less_aria']"
+                                            t-att-disabled="'disabled' if not row['qty'] else None">−</button>
+                                    <span class="o_ocd_stepper_value" aria-live="polite" t-out="row['qty'] if row['qty'] is not None else '–'"/>
+                                    <button name="delta" value="1" t-att-aria-label="row['more_aria']">+</button>
+                                </form>
                                 <details t-if="row['colours']" class="o_ocd_colour_photos"
                                          t-att-open="'open' if photo_error == str(row['product'].id) else None">
                                     <summary class="o_ocd_link">
@@ -717,14 +731,6 @@
                                         </t>
                                     </div>
                                 </details>
-                                <form t-if="row['single']" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/stock"
-                                      method="post" class="o_ocd_stepper">
-                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                    <button name="delta" value="-1" t-att-aria-label="row['less_aria']"
-                                            t-att-disabled="'disabled' if not row['qty'] else None">−</button>
-                                    <span class="o_ocd_stepper_value" aria-live="polite" t-out="row['qty'] if row['qty'] is not None else '–'"/>
-                                    <button name="delta" value="1" t-att-aria-label="row['more_aria']">+</button>
-                                </form>
                                 <!-- What else the vendor does with the product, folded on the phone -->
                                 <details class="o_ocd_my_product_more" t-att-open="'open' if opened == row['product'].id else None">
                                     <summary class="o_ocd_link" t-att-aria-label="row['more_label']">More</summary>

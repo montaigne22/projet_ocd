@@ -13,3 +13,4 @@ from . import test_product_review
 from . import test_vendor_boutique
 from . import test_vendor_places
 from . import test_place_stock
+from . import test_vendor_stock_page

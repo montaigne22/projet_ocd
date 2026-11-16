@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- === MY STOCK (designs MonStock and RespEspace, chantier 18) ===
+         A column per place: the phone shows the place chosen, the computer every place side by
+         side. Each − / + is a small form: the page works without JavaScript. -->
+    <template id="vendor_stock" name="OCD Live: my stock">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My stock</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_my_stock o_ocd_panes" t-attf-style="--ocd-columns: #{len(columns)}">
+                    <div class="o_ocd_stock_head">
+                        <span class="o_ocd_photo o_ocd_cart_photo">
+                            <t t-call="ocd_live_shop.product_photo" image="image"/>
+                        </span>
+                        <span class="o_ocd_my_product_text">
+                            <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="product.name"/>
+                            <span><t t-out="price"/> · <t t-out="facts"/></span>
+                        </span>
+                    </div>
+                    <div class="o_ocd_pane_main">
+                        <!-- The place whose stock the phone changes -->
+                        <nav t-if="several" class="o_ocd_stock_places" aria-label="Stock of the store">
+                            <span class="o_ocd_label">Stock of the store</span>
+                            <div class="o_ocd_stock_places_list">
+                                <t t-foreach="columns" t-as="column">
+                                    <a t-attf-href="/ocd/espace/moi/produits/#{product.id}/mon-stock?magasin=#{column['place'].id}"
+                                       t-att-class="'o_ocd_on' if column_index == chosen else None"
+                                       t-att-aria-current="'true' if column_index == chosen else None">
+                                        <b t-out="column['name']"/>
+                                        <small t-if="totals[column_index] == 1">1 piece</small>
+                                        <small t-else=""><t t-out="totals[column_index]"/> pieces</small>
+                                    </a>
+                                </t>
+                            </div>
+                        </nav>
+                        <small class="o_ocd_parcel_hint" t-out="total_line"/>
+
+                        <div class="o_ocd_stock_table">
+                            <!-- The titles of the columns, on a computer -->
+                            <div t-if="several" class="o_ocd_stock_row o_ocd_stock_titles" aria-hidden="true">
+                                <span>Colour · size</span>
+                                <span t-foreach="columns" t-as="column" class="o_ocd_stock_cell o_ocd_stock_cell_title">
+                                    <t t-out="column['name']"/> · <t t-out="totals[column_index]"/>
+                                </span>
+                                <span class="o_ocd_stock_total">Total</span>
+                            </div>
+                            <t t-foreach="groups" t-as="group">
+                                <details class="o_ocd_stock_group" t-att-open="'open' if group_first or len(groups) &lt;= 3 else None">
+                                    <summary t-att-class="None if group['colour'] else 'd-none'">
+                                        <span t-if="group['swatch']" class="o_ocd_stock_swatch" t-attf-style="background: #{group['swatch']}"/>
+                                        <b t-out="group['colour']"/>
+                                        <small t-if="several"><t t-out="group['totals'][chosen]"/> at <t t-out="columns[chosen]['name']"/></small>
+                                        <small t-else=""><t t-out="group['totals'][0]"/></small>
+                                    </summary>
+                                    <t t-foreach="group['rows']" t-as="row">
+                                        <div class="o_ocd_stock_row" t-attf-id="v-#{row['variant'].id}">
+                                            <b class="o_ocd_stock_label" t-out="row['label']"/>
+                                            <t t-foreach="row['cells']" t-as="cell">
+                                                <div t-attf-class="o_ocd_stock_cell #{'o_ocd_stock_cell_on' if cell_index == chosen else ''}">
+                                                    <small t-if="cell['kept'] == 1" class="o_ocd_stock_note">1 kept for an order</small>
+                                                    <small t-elif="cell['kept']" class="o_ocd_stock_note"><t t-out="cell['kept']"/> kept for orders</small>
+                                                    <small t-elif="not cell['free'] and cell['elsewhere']" class="o_ocd_stock_note o_ocd_stock_elsewhere">
+                                                        <b>Sold out here</b> · <t t-out="cell['elsewhere']"/>
+                                                    </small>
+                                                    <form t-attf-action="/ocd/espace/moi/produits/#{product.id}/mon-stock" method="post" class="o_ocd_stepper">
+                                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                        <input type="hidden" name="variante" t-att-value="row['variant'].id"/>
+                                                        <input type="hidden" name="lieu" t-att-value="columns[cell_index]['place'].id or ''"/>
+                                                        <button name="delta" value="-1" t-att-disabled="'disabled' if not cell['free'] else None"
+                                                                t-attf-aria-label="One less: #{row['label']}, #{columns[cell_index]['name']}">−</button>
+                                                        <span class="o_ocd_stepper_value" aria-live="polite" t-out="cell['free']"/>
+                                                        <button name="delta" value="1"
+                                                                t-attf-aria-label="One more: #{row['label']}, #{columns[cell_index]['name']}">+</button>
+                                                    </form>
+                                                </div>
+                                            </t>
+                                            <b t-if="several" t-attf-class="o_ocd_stock_total #{'o_ocd_stock_out' if not row['total'] else ''}">
+                                                <t t-if="row['total']" t-out="row['total']"/>
+                                                <t t-else="">Sold out</t>
+                                            </b>
+                                        </div>
+                                    </t>
+                                </details>
+                            </t>
+                        </div>
+                        <small class="o_ocd_parcel_hint">At 0 in all your stores, the size stays visible with « Sold out »; the customers who ask are told when it is back.</small>
+                    </div>
+                    <div class="o_ocd_pane_side">
+                        <a t-if="send_url" t-att-href="send_url" class="o_ocd_button o_ocd_stock_send">Send pieces to another store</a>
+                        <div t-if="changes" class="o_ocd_stock_changes">
+                            <b>Last changes</b>
+                            <span t-foreach="changes" t-as="change"><t t-out="change['when']"/> · <t t-out="change['text']"/></span>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

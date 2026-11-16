@@ -433,3 +433,57 @@
         max-width: 640px;
     }
 }
+
+// « My stock » on a computer: every place side by side, a column each (design RespEspace)
+@media (min-width: $ocd-desktop) {
+    .o_ocd_app .o_ocd_my_stock {
+        // The table takes the room: the column beside it is narrower than in the other pages
+        &.o_ocd_panes {
+            grid-template-columns: minmax(0, 1fr) 300px;
+            column-gap: 32px;
+        }
+        .o_ocd_stock_places,
+        .o_ocd_stock_elsewhere {
+            display: none;
+        }
+        .o_ocd_stock_group {
+            border: 0;
+            border-radius: 0;
+            padding: 0;
+        }
+        .o_ocd_stock_row {
+            grid-template-columns: minmax(90px, 0.8fr) repeat(var(--ocd-columns), minmax(140px, 1fr)) 70px;
+        }
+        .o_ocd_stock_titles {
+            display: grid;
+            font-weight: 800;
+            font-size: 14px;
+            color: $ocd-muted;
+            border-bottom: 2px solid $ocd-line;
+        }
+        .o_ocd_stock_cell {
+            display: flex;
+            justify-content: flex-start;
+            .o_ocd_stepper {
+                order: -1;
+            }
+            .o_ocd_stock_note {
+                text-align: left;
+            }
+        }
+        .o_ocd_stock_cell_title {
+            display: block;
+        }
+        .o_ocd_stock_total {
+            display: block;
+            text-align: right;
+            font-family: $ocd-display;
+        }
+        .o_ocd_stock_out {
+            color: $ocd-red-dark;
+        }
+        .o_ocd_stock_table:not(:has(.o_ocd_stock_titles)) .o_ocd_stock_row {
+            grid-template-columns: minmax(120px, 1fr) minmax(150px, 1fr);
+        }
+    }
+}

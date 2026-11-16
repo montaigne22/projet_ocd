@@ -7,3 +7,4 @@ from . import vendor_products
 from . import vendor_rates
 from . import vendor_share
 from . import vendor_places
+from . import vendor_stock
