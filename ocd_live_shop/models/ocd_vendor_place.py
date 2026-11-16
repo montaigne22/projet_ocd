@@ -90,7 +90,13 @@ class OcdVendorPlace(models.Model):
     )
     previous_refusal = fields.Char(string="Sent Again After", readonly=True, copy=False)
     tap_ids = fields.One2many(comodel_name="ocd.vendor.place.tap", inverse_name="place_id", string="Visits")
+    form_token = fields.Char(
+        copy=False, readonly=True, help="The form that added the place: sent twice, it adds one place only."
+    )
 
+    _form_token_uniq = models.Constraint(
+        "unique(vendor_id, form_token)", "This place was already added from this form."
+    )
     _position_on_earth = models.Constraint(
         "CHECK(latitude BETWEEN -90 AND 90 AND longitude BETWEEN -180 AND 180)",
         "The position must be on Earth.",

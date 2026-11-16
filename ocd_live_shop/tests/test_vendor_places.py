@@ -1,7 +1,8 @@
+import re
 from datetime import date, datetime
 
 from odoo.exceptions import UserError
-from odoo.tests import tagged
+from odoo.tests import HttpCase, tagged
 from odoo.tools import BinaryBytes
 
 from .common import OcdShopCommon
@@ -102,3 +103,98 @@ class TestOcdVendorPlaces(OcdShopCommon):
         Tap = self.env["ocd.vendor.place.tap"]
         Tap.create([{"place_id": store.id, "kind": kind} for kind in ("itinerary", "itinerary", "call")])
         self.assertEqual(store._ocd_week_taps()[store.id], {"itinerary": 2, "call": 1, "whatsapp": 0})
+
+
+@tagged("post_install", "-at_install")
+class TestOcdVendorPlacesPages(HttpCase, OcdShopCommon):
+    """« My stores » from the phone of the vendor (designs MesMagasins and MonMagasin)."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.company.write({"ocd_vendor_login": "link", "ocd_business_offered_all": True, "ocd_place_check": True,
+                           "ocd_place_proof_required": True})
+        cls.akwa = cls.env.ref("delivery_cameroon.district_douala_akwa")
+        cls.brenda.write({"country_id": cls.env.ref("base.cm").id, "city_id": cls.akwa.city_id.id, "phone": "+237 670000001"})
+
+    def _login(self, vendor):
+        self.authenticate(None, None)
+        self.url_open(f"/ocd/espace/{vendor._ocd_get_space_token()}")
+
+    def _form(self, **values):
+        return {
+            "csrf_token": self.csrf_token(), "kind": "store", "name": "Brenda Wax Akwa", "city_id": self.akwa.city_id.id,
+            "district_id": self.akwa.id, "landmark": "En face de la pharmacie du Port",
+            **{f"open_{day}": "1" for day in range(6)}, **{f"from_{day}": "08:00" for day in range(7)},
+            **{f"to_{day}": "19:00" for day in range(7)}, **values,
+        }
+
+    def test_a_store_from_the_phone(self):
+        self._login(self.brenda)
+        page = self.url_open("/ocd/espace/moi").text
+        self.assertIn('href="/ocd/espace/moi/magasins"', page)
+        self.assertIn("No place yet", self.url_open("/ocd/espace/moi/magasins").text)
+        page = self.url_open("/ocd/espace/moi/magasins/nouveau").text
+        token = re.search(r'name="form_token" value="([0-9a-f]{32})"', page).group(1)
+        self.assertIn('value="08:00"', page, "The hours proposed by the settings")
+        # A store needs its front and its position (setting)
+        page = self.url_open("/ocd/espace/moi/magasins/nouveau", data=self._form(form_token=token)).text
+        self.assertIn("Add a photo of the front, with its sign.", page)
+        self.assertIn("Take the position inside your store.", page)
+        # Wrong hours, wrong phone, a position too vague
+        page = self.url_open("/ocd/espace/moi/magasins/nouveau", data=self._form(
+            form_token=token, from_2="19:00", to_2="08:00", phone="12", position_taken="1", latitude="4.05",
+            longitude="9.69", accuracy="900",
+        ), files={"photo": ("devanture.png", PNG, "image/png")}).text
+        self.assertIn("the store opens before it closes", page)
+        self.assertIn("This number is not a number of Cameroon", page)
+        self.assertIn("The position is not precise enough (within 900 m)", page)
+        self.assertIn('name="photo_kept"', page, "The front is kept for the next try")
+        kept = re.search(r'name="photo_kept"[^>]*value="(\d+:[^"]+)"', page).group(1)
+        form = self._form(form_token=token, phone="670 00 00 02", position_taken="1", latitude="4.0511",
+                          longitude="9.6942", accuracy="15", photo_kept=kept)
+        response = self.url_open("/ocd/espace/moi/magasins/nouveau", data=form, allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        place = self.env["ocd.vendor.place"].search([("vendor_id", "=", self.brenda.id)])
+        self.assertEqual((place.state, place.phone, place.position_accuracy), ("to_check", "+237 670000002", 15))
+        self.assertTrue(place.photo)
+        self.assertEqual(place._ocd_hours_lines(), ["Mon.–Sat.: 08:00–19:00", "Sun.: closed"])
+        # Sent twice: one place
+        self.url_open("/ocd/espace/moi/magasins/nouveau", data=form)
+        self.assertEqual(self.env["ocd.vendor.place"].search_count([("vendor_id", "=", self.brenda.id)]), 1)
+        page = self.url_open("/ocd/espace/moi/magasins").text
+        self.assertIn("The team checks it", page)
+        # The front: to its vendor only until the team puts it online
+        photo = f"/ocd/magasin/{place.id}/photo"
+        self.assertEqual(self.url_open(photo).status_code, 200)
+        self.authenticate(None, None)
+        self.assertEqual(self.url_open(photo).status_code, 404)
+        place.action_ocd_approve()
+        self.assertEqual(self.url_open(photo).status_code, 200)
+        # The phone changes at once, the landmark goes back to the check
+        self._login(self.brenda)
+        edit = f"/ocd/espace/moi/magasins/{place.id}"
+        self.assertIn("Change the place", self.url_open(edit).text)
+        self.url_open(edit, data=self._form(phone="670 00 00 03"))
+        self.assertEqual((place.state, place.phone), ("approved", "+237 670000003"))
+        self.url_open(edit, data=self._form(landmark="Derrière le marché"))
+        self.assertEqual(place.state, "to_check")
+        # Another vendor cannot open it
+        self._login(self.fatou)
+        self.assertEqual(self.url_open(edit).status_code, 404)
+
+    def test_a_home_and_the_place_of_the_parcels(self):
+        self._login(self.brenda)
+        self.url_open("/ocd/espace/moi/magasins/nouveau", data=self._form(kind="home", name="", landmark="Rue 1.234"))
+        home = self.env["ocd.vendor.place"].search([("vendor_id", "=", self.brenda.id), ("kind", "=", "home")])
+        self.assertEqual((home.state, home.name), ("approved", "My home"), "A home is shown at once (its district only)")
+        store = self.env["ocd.vendor.place"]._ocd_vendor_create(self.brenda, {
+            "name": "Brenda Wax Akwa", "district_id": self.akwa.id, "city_id": self.akwa.city_id.id,
+        })
+        page = self.url_open("/ocd/espace/moi/magasins").text
+        self.assertIn("My parcels leave from", page, "Brenda is sold by OCD: a courier picks her parcels up")
+        self.url_open("/ocd/espace/moi/magasins/depart", data={"csrf_token": self.csrf_token(), "place_id": store.id})
+        self.assertEqual(self.brenda.ocd_departure_place_id, store)
+        self.url_open(f"/ocd/espace/moi/magasins/{store.id}/retirer", data={"csrf_token": self.csrf_token()})
+        self.assertFalse(store.active)
+        self.assertFalse(self.brenda.ocd_departure_place_id, "No longer the place of the parcels")

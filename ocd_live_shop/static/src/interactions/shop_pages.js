@@ -429,6 +429,46 @@ export function readAmount(text, decimals = 0) {
 const KEEP_AS_TAKEN = 300 * 1024;
 
 /**
+ * A photo reduced on the phone before it is sent (longest side `maxPx`, JPEG): a 6 MB photo goes
+ * in about 300 KB. The photo as taken when it is light already, or when the phone cannot.
+ */
+export async function shrinkPhoto(file, maxPx) {
+    if (!maxPx || !file.type.startsWith("image/") || !window.createImageBitmap) {
+        return file;
+    }
+    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const scale = Math.min(1, maxPx / Math.max(bitmap.width, bitmap.height));
+    if (scale === 1 && file.size <= KEEP_AS_TAKEN) {
+        bitmap.close?.();
+        return file;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const context = canvas.getContext("2d");
+    context.fillStyle = "#fff"; // a transparent image gets a white background, not a black one
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close?.();
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+    if (!blob || blob.size >= file.size) {
+        return file;
+    }
+    const name = file.name.replace(/\.[^.]*$/, "") || "photo";
+    return new File([blob], `${name}.jpg`, { type: "image/jpeg", lastModified: Date.now() });
+}
+
+function replaceInputFile(input, file) {
+    try {
+        const transfer = new DataTransfer();
+        transfer.items.add(file);
+        input.files = transfer.files;
+    } catch {
+        // An old phone: the photo goes as taken (the server still checks its size)
+    }
+}
+
+/**
  * My products, the form to add a product, made for a phone on a slow network:
  * - the photo shows at once, then is reduced (longest side `data-max-px`, JPEG): a 6 MB photo
  *   goes in about 300 KB; if the phone cannot, it goes as taken;
@@ -509,30 +549,8 @@ export class OcdProductForm extends Interaction {
         this.el.querySelector(".o_ocd_photo_preview").src = this.url;
     }
 
-    async shrink(file) {
-        if (!this.maxPx || !file.type.startsWith("image/") || !window.createImageBitmap) {
-            return file;
-        }
-        const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
-        const scale = Math.min(1, this.maxPx / Math.max(bitmap.width, bitmap.height));
-        if (scale === 1 && file.size <= KEEP_AS_TAKEN) {
-            bitmap.close?.();
-            return file;
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-        canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-        const context = canvas.getContext("2d");
-        context.fillStyle = "#fff"; // a transparent image gets a white background, not a black one
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-        bitmap.close?.();
-        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
-        if (!blob || blob.size >= file.size) {
-            return file;
-        }
-        const name = file.name.replace(/\.[^.]*$/, "") || "photo";
-        return new File([blob], `${name}.jpg`, { type: "image/jpeg", lastModified: Date.now() });
+    shrink(file) {
+        return shrinkPhoto(file, this.maxPx);
     }
 
     replaceFile(file) {
@@ -670,6 +688,193 @@ export class OcdProductFilters extends Interaction {
 }
 
 /**
+ * My stores, the form of a place: a store or a home (the parts of a store hidden for a home), the
+ * position taken by the phone (« I am in my store »: refused beyond 200 m of accuracy), the
+ * districts of the city chosen, the photo of the front reduced like the photos of the products,
+ * the hours of a day shown when it is open, checks before sending and one sending only.
+ * Without JavaScript the form still works (no position then: the server says so).
+ */
+export class OcdPlaceForm extends Interaction {
+    static selector = ".o_ocd_place_form";
+    dynamicContent = {
+        _root: { "t-on-submit": this.onSubmit },
+        "input[name='kind']": { "t-on-change": this.onKind },
+        ".o_ocd_place_locate": { "t-on-click": this.locate },
+        ".o_ocd_place_city": { "t-on-change": this.loadDistricts },
+        ".o_ocd_photo_input": { "t-on-change": this.onPhoto },
+        ".o_ocd_place_day input[type='checkbox']": { "t-on-change": this.onDay },
+    };
+
+    setup() {
+        this.messages = JSON.parse(this.el.dataset.messages || "{}");
+        this.maxPx = parseInt(this.el.dataset.maxPx) || 0;
+        this.maxBytes = parseInt(this.el.dataset.maxBytes) || 0;
+        this.sending = false;
+        this.shrinking = null;
+    }
+
+    field(name) {
+        return this.el.querySelector(`[name='${name}']`);
+    }
+
+    kind() {
+        return this.el.querySelector("input[name='kind']:checked")?.value || this.field("kind")?.value || "store";
+    }
+
+    onKind() {
+        const home = this.kind() === "home";
+        for (const el of this.el.querySelectorAll(".o_ocd_place_store_only")) {
+            el.hidden = home;
+        }
+        for (const el of this.el.querySelectorAll(".o_ocd_place_home_only")) {
+            el.hidden = !home;
+        }
+    }
+
+    onDay(ev) {
+        const day = ev.currentTarget.closest(".o_ocd_place_day");
+        day.querySelector(".o_ocd_place_day_hours").hidden = !ev.currentTarget.checked;
+        day.querySelector(".o_ocd_place_day_closed").hidden = ev.currentTarget.checked;
+    }
+
+    showError(id, message) {
+        const span = this.el.querySelector(`#pl-${id}-error`);
+        if (span) {
+            span.textContent = message || "";
+            span.hidden = !message;
+        }
+    }
+
+    locate() {
+        const status = this.el.querySelector(".o_ocd_place_position");
+        if (!navigator.geolocation) {
+            this.showError("position", this.messages.unavailable);
+            return;
+        }
+        status.textContent = this.messages.locating;
+        this.showError("position", "");
+        navigator.geolocation.getCurrentPosition(
+            this.protectSyncAfterAsync((position) => {
+                const { latitude, longitude, accuracy } = position.coords;
+                const meters = Math.round(accuracy);
+                if (meters > 200) {
+                    status.textContent = "";
+                    this.showError("position", this.messages.vague.replace("%s", meters));
+                    return;
+                }
+                this.field("latitude").value = latitude.toFixed(7);
+                this.field("longitude").value = longitude.toFixed(7);
+                this.field("accuracy").value = meters;
+                this.field("position_taken").value = "1";
+                this.el.dataset.hasPosition = "1";
+                status.textContent = this.messages.located.replace("%s", meters);
+            }),
+            this.protectSyncAfterAsync((error) => {
+                status.textContent = "";
+                this.showError("position", error.code === 1 ? this.messages.denied : this.messages.unavailable);
+            }),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+        );
+    }
+
+    async loadDistricts(ev) {
+        let districts = [];
+        try {
+            districts = await this.waitFor(rpc("/delivery_cameroon/districts", { city_id: parseInt(ev.currentTarget.value) }));
+        } catch {
+            return;
+        }
+        const select = this.el.querySelector(".o_ocd_place_district");
+        const empty = Object.assign(document.createElement("option"), { value: "", textContent: "—" });
+        select.replaceChildren(empty, ...districts.map((district) =>
+            Object.assign(document.createElement("option"), { value: district.id, textContent: district.name })
+        ));
+    }
+
+    async onPhoto() {
+        const input = this.el.querySelector(".o_ocd_photo_input");
+        const file = input.files[0];
+        const pick = input.closest(".o_ocd_photo_pick");
+        pick.classList.toggle("o_ocd_has_photo", !!file || !!this.el.dataset.hasPhoto);
+        if (!file) {
+            return;
+        }
+        this.el.querySelector(".o_ocd_photo_kept")?.remove();
+        this.showError("photo", "");
+        if (this.url) {
+            URL.revokeObjectURL(this.url);
+        }
+        this.url = URL.createObjectURL(file);
+        pick.querySelector(".o_ocd_photo_preview").src = this.url;
+        this.shrinking = shrinkPhoto(file, this.maxPx).catch(() => file);
+        const sent = await this.waitFor(this.shrinking);
+        this.shrinking = null;
+        if (sent !== file) {
+            replaceInputFile(input, sent);
+        }
+        if (this.maxBytes && sent.size > this.maxBytes) {
+            this.showError("photo", this.messages.photo_big);
+        }
+    }
+
+    destroy() {
+        if (this.url) {
+            URL.revokeObjectURL(this.url);
+        }
+    }
+
+    check() {
+        const store = this.kind() === "store";
+        const proof = store && this.el.dataset.proof;
+        const errors = {
+            name: store && !this.field("name").value.trim() ? this.messages.name : "",
+            district: !this.field("district_id").value ? this.messages.district : "",
+            photo: proof && !this.el.querySelector(".o_ocd_photo_input").files.length && !this.el.dataset.hasPhoto
+                ? this.messages.photo : "",
+            position: proof && !this.el.dataset.hasPosition ? this.messages.position : "",
+        };
+        for (const [key, message] of Object.entries(errors)) {
+            this.showError(key, message);
+        }
+        const first = Object.keys(errors).find((key) => errors[key]);
+        if (first) {
+            this.el.querySelector(`#pl-${first}-error`)?.scrollIntoView({ block: "center" });
+        }
+        return !first;
+    }
+
+    async onSubmit(ev) {
+        if (this.sending) {
+            ev.preventDefault();
+            return;
+        }
+        if (this.shrinking) {
+            ev.preventDefault();
+            await this.waitFor(this.shrinking);
+            this.protectSyncAfterAsync(() => {
+                if (!this.sending && this.check()) {
+                    this.lock();
+                    this.el.submit();
+                }
+            })();
+            return;
+        }
+        if (!this.check()) {
+            ev.preventDefault();
+            return;
+        }
+        this.lock();
+    }
+
+    lock() {
+        this.sending = true;
+        const button = this.el.querySelector(".o_ocd_place_send");
+        button.textContent = this.messages.sending;
+        button.setAttribute("aria-disabled", "true");
+    }
+}
+
+/**
  * My delivery prices: the districts of the city chosen.
  */
 export class OcdVendorRatesForm extends Interaction {
@@ -722,4 +927,5 @@ registry
     .add("ocd_live_shop.delivery_form", OcdDeliveryForm)
     .add("ocd_live_shop.product_form", OcdProductForm)
     .add("ocd_live_shop.product_filters", OcdProductFilters)
+    .add("ocd_live_shop.place_form", OcdPlaceForm)
     .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm);

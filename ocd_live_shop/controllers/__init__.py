@@ -6,3 +6,4 @@ from . import shop
 from . import vendor_products
 from . import vendor_rates
 from . import vendor_share
+from . import vendor_places

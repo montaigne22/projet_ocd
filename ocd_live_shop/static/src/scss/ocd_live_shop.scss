@@ -2308,3 +2308,190 @@
         }
     }
 }
+
+// My stores and the form of a place (designs MesMagasins and MonMagasin, chantier 17)
+.o_ocd_my_places {
+    .o_ocd_place_card {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 12px;
+        scroll-margin-top: 90px;
+    }
+    .o_ocd_place_card_head {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+        .o_ocd_cart_photo {
+            width: 76px;
+            height: 76px;
+        }
+    }
+    .o_ocd_place_address {
+        font-size: 13.5px;
+    }
+    .o_ocd_place_departure {
+        background: $ocd-orange-pale;
+        color: $ocd-orange-text;
+    }
+    .o_ocd_place_open {
+        font-size: 14px;
+    }
+    .o_ocd_place_is_open {
+        color: $ocd-green-text;
+    }
+    .o_ocd_place_is_closed {
+        color: $ocd-muted;
+    }
+    .o_ocd_place_actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        .o_ocd_button {
+            min-height: 40px;
+            margin: 0;
+            font-size: 14px;
+        }
+    }
+    .o_ocd_place_remove {
+        summary {
+            list-style: none;
+            cursor: pointer;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+    }
+    .o_ocd_place_departure_form {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 16px;
+        background: $ocd-sand;
+        padding: 12px 14px;
+        .o_ocd_button {
+            align-self: flex-start;
+        }
+    }
+    .o_ocd_place_kinds {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .o_ocd_place_kind {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        border: 2px solid $ocd-line;
+        border-radius: 14px;
+        padding: 12px;
+        cursor: pointer;
+        input {
+            width: 20px;
+            height: 20px;
+            margin: 2px 0 0;
+            accent-color: $ocd-orange;
+        }
+        span {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        small {
+            font-size: 13px;
+            color: $ocd-muted;
+        }
+        &:has(input:checked) {
+            border-color: $ocd-ink;
+        }
+    }
+    .o_ocd_place_locate {
+        width: 100%;
+    }
+    .o_ocd_place_position {
+        font-size: 14px;
+        font-weight: 700;
+        color: $ocd-green-text;
+        &:empty {
+            display: none;
+        }
+    }
+    .o_ocd_place_hours {
+        margin: 0;
+        padding: 12px;
+        border: 0;
+        border-radius: 16px;
+        background: $ocd-sand;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        legend {
+            float: left;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+    }
+    .o_ocd_place_day {
+        display: grid;
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 8px;
+        align-items: center;
+        font-size: 14.5px;
+        min-height: 44px;
+    }
+    .o_ocd_place_day_name {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        input {
+            width: 20px;
+            height: 20px;
+            accent-color: $ocd-orange;
+        }
+    }
+    .o_ocd_place_day_hours {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        &[hidden] {
+            display: none;
+        }
+        .o_ocd_input {
+            width: 108px;
+            height: 42px;
+            padding: 0 8px;
+        }
+    }
+    .o_ocd_place_day_closed {
+        font-weight: 700;
+        color: $ocd-muted;
+    }
+    .o_ocd_place_closed {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        font-size: 14.5px;
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: $ocd-orange;
+        }
+        .o_ocd_input {
+            width: 160px;
+            height: 44px;
+        }
+    }
+    [hidden] {
+        display: none !important;
+    }
+}

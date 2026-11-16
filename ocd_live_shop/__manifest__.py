@@ -67,6 +67,7 @@ OCD Live shop and deliveries
         "wizard/ocd_parcel_code_views.xml",
         "views/ocd_live_shop_templates.xml",
         "views/ocd_shop_pages_templates.xml",
+        "views/ocd_vendor_place_templates.xml",
         "views/ocd_live_shop_menus.xml",
     ],
     "assets": {

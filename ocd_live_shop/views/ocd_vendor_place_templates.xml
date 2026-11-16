@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- === MY STORES (design MesMagasins, chantier 17) === -->
+
+    <template id="vendor_places" name="OCD Live: my stores">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My stores</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_my_places">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Where to find you</h1>
+                    <p class="o_ocd_parcel_hint">Your customers see your stores in your boutique, with the itinerary. The team checks each store before showing it.</p>
+                    <div t-if="saved" class="o_ocd_ok" role="status">Saved.</div>
+                    <t t-foreach="rows" t-as="row">
+                        <div class="o_ocd_place_card" t-attf-id="lieu-#{row['place'].id}">
+                            <div class="o_ocd_place_card_head">
+                                <span t-if="row['place'].kind == 'store'" class="o_ocd_photo o_ocd_cart_photo">
+                                    <t t-call="ocd_live_shop.product_photo" image="row['photo']"/>
+                                </span>
+                                <span class="o_ocd_my_product_text">
+                                    <b t-out="row['place'].name"/>
+                                    <span class="o_ocd_place_address" t-out="row['address']"/>
+                                    <span>
+                                        <span t-attf-class="o_ocd_step_pill o_ocd_my_status_#{row['status']}" t-out="row['status_label']"/>
+                                        <span t-if="row['departure']" class="o_ocd_step_pill o_ocd_place_departure">Parcels leave from here</span>
+                                    </span>
+                                </span>
+                            </div>
+                            <small t-if="row['place'].kind == 'home'" class="o_ocd_my_product_fact">Your customers see the district and the WhatsApp button only, never your address.</small>
+                            <span t-if="row['open']" class="o_ocd_place_open">
+                                <b t-attf-class="#{'o_ocd_place_is_open' if row['open']['open'] else 'o_ocd_place_is_closed'}" t-out="row['open']['label']"/>
+                            </span>
+                            <small t-if="row['hours']" class="o_ocd_my_product_fact" t-out="row['hours']"/>
+                            <small t-if="row['visits']" class="o_ocd_my_product_fact" t-out="row['visits']"/>
+                            <small t-if="row['refusal']" class="o_ocd_error" t-out="row['refusal']"/>
+                            <small t-if="row['place'].state == 'to_check' and row['place'].kind == 'store'" class="o_ocd_my_product_fact">The team checks it: it shows in your boutique then.</small>
+                            <small t-if="row['hidden']" class="o_ocd_my_product_fact">Not shown to your customers: one place without OCD Business. Write to OCD Live.</small>
+                            <div class="o_ocd_place_actions">
+                                <a t-attf-href="/ocd/espace/moi/magasins/#{row['place'].id}" class="o_ocd_button">
+                                    <t t-if="row['status'] == 'refused'">Correct and send again</t>
+                                    <t t-else="">Change</t>
+                                </a>
+                                <a t-if="row['poster']" t-attf-href="/ocd/espace/moi/magasins/#{row['place'].id}/affiche.jpg"
+                                   class="o_ocd_button" download="affiche-qr.jpg">QR poster</a>
+                                <details class="o_ocd_place_remove">
+                                    <summary class="o_ocd_button">Remove</summary>
+                                    <form t-attf-action="/ocd/espace/moi/magasins/#{row['place'].id}/retirer" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <small>Your customers no longer see it.</small>
+                                        <button class="o_ocd_button o_ocd_button_dark">Remove this place</button>
+                                    </form>
+                                </details>
+                            </div>
+                        </div>
+                    </t>
+                    <div t-if="not rows" class="o_ocd_info">No place yet: add your store, or the district where you sell from home.</div>
+
+                    <!-- The place the parcels leave from (A.4 of the plan) -->
+                    <form t-if="departure_choice" action="/ocd/espace/moi/magasins/depart" method="post" class="o_ocd_place_departure_form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <label for="mm-depart" class="o_ocd_label">My parcels leave from</label>
+                        <select id="mm-depart" name="place_id" class="o_ocd_input">
+                            <option t-foreach="places" t-as="option" t-att-value="option.id" t-att-selected="'selected' if option == departure else None"
+                                    t-out="option.name"/>
+                        </select>
+                        <small class="o_ocd_parcel_hint">The courier picks your parcels up there; the delivery is counted from there.</small>
+                        <button class="o_ocd_button">Save</button>
+                    </form>
+
+                    <a t-if="can_add" href="/ocd/espace/moi/magasins/nouveau" class="o_ocd_cta">Add a place</a>
+                    <small t-else="" class="o_ocd_parcel_hint">You have all the places you can have. Write to OCD Live for more.</small>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === ADD OR CHANGE A PLACE (design MonMagasin) === -->
+
+    <template id="vendor_place_form" name="OCD Live: a place of the vendor">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My stores</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_my_places">
+                    <!-- The phone checks the form, takes the position and reduces the photo
+                         (OcdPlaceForm); the server checks everything again -->
+                    <form t-att-action="'/ocd/espace/moi/magasins/%s' % place.id if place else '/ocd/espace/moi/magasins/nouveau'"
+                          method="post" enctype="multipart/form-data" class="o_ocd_form o_ocd_place_form" novalidate="novalidate"
+                          t-att-data-max-px="photo_px" t-att-data-max-bytes="photo_max_mb * 1024 * 1024"
+                          t-att-data-messages="json.dumps(form_messages)" t-att-data-proof="'1' if proof_required else None"
+                          t-att-data-has-photo="'1' if current_photo or kept_photo else None"
+                          t-att-data-has-position="'1' if position_known else None">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="form_token" t-att-value="form_token"/>
+                        <input t-if="kept_photo" type="hidden" name="photo_kept" class="o_ocd_photo_kept" t-att-value="kept_photo['value']"/>
+                        <input type="hidden" name="position_taken" value=""/>
+                        <input type="hidden" name="latitude" value=""/>
+                        <input type="hidden" name="longitude" value=""/>
+                        <input type="hidden" name="accuracy" value=""/>
+                        <h1 t-if="place" class="o_ocd_h1 o_ocd_h1_small">Change the place</h1>
+                        <h1 t-else="" class="o_ocd_h1 o_ocd_h1_small">Add a place</h1>
+                        <div t-if="errors.get('form')" class="o_ocd_alert" role="alert" t-out="errors['form']"/>
+                        <div t-if="place and place.state == 'refused'" class="o_ocd_alert" role="status"><b>Refused by the team:</b> <t t-out="place._ocd_refusal_text()"/></div>
+
+                        <fieldset t-if="home_allowed" class="o_ocd_field o_ocd_place_kinds">
+                            <legend class="o_ocd_label">Where your customers find you</legend>
+                            <label class="o_ocd_place_kind">
+                                <input type="radio" name="kind" value="store" t-att-checked="'checked' if kind == 'store' else None"/>
+                                <span><b>A store open to the public</b><small>Address, photo and itinerary shown to the customers.</small></span>
+                            </label>
+                            <label class="o_ocd_place_kind">
+                                <input type="radio" name="kind" value="home" t-att-checked="'checked' if kind == 'home' else None"/>
+                                <span><b>I sell from home</b><small>The customers see your district and « By appointment » only.</small></span>
+                            </label>
+                        </fieldset>
+                        <input t-else="" type="hidden" name="kind" value="store"/>
+
+                        <div class="o_ocd_field o_ocd_place_store_only" t-att-hidden="'hidden' if kind == 'home' else None">
+                            <label for="pl-name" class="o_ocd_label">Name of the store</label>
+                            <input id="pl-name" name="name" class="o_ocd_input" t-att-value="name" maxlength="80" autocomplete="off"
+                                   aria-describedby="pl-name-error" t-att-aria-invalid="'true' if errors.get('name') else None"/>
+                            <span id="pl-name-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('name') else 'hidden'"><t t-out="errors.get('name')"/></span>
+                        </div>
+                        <div class="o_ocd_name_city">
+                            <div class="o_ocd_field">
+                                <label for="pl-city" class="o_ocd_label">City</label>
+                                <select id="pl-city" name="city_id" class="o_ocd_input o_ocd_place_city">
+                                    <option t-foreach="cities" t-as="option" t-att-value="option.id" t-att-selected="'selected' if option == city else None" t-out="option.name"/>
+                                </select>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="pl-district" class="o_ocd_label">District</label>
+                                <select id="pl-district" name="district_id" class="o_ocd_input o_ocd_place_district" aria-describedby="pl-district-error">
+                                    <option value="">—</option>
+                                    <option t-foreach="districts" t-as="option" t-att-value="option.id" t-att-selected="'selected' if option.id == district_id else None" t-out="option.name"/>
+                                </select>
+                            </div>
+                        </div>
+                        <span id="pl-district-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('district') else 'hidden'"><t t-out="errors.get('district')"/></span>
+                        <div class="o_ocd_field">
+                            <label for="pl-landmark" class="o_ocd_label">Landmark</label>
+                            <input id="pl-landmark" name="landmark" class="o_ocd_input" t-att-value="landmark" maxlength="120" autocomplete="off"
+                                   placeholder="Opposite the pharmacy, behind the market…"/>
+                            <small class="o_ocd_parcel_hint o_ocd_place_store_only" t-att-hidden="'hidden' if kind == 'home' else None">A well-known place nearby: the customer and the courier find it.</small>
+                            <small class="o_ocd_parcel_hint o_ocd_place_home_only" t-att-hidden="'hidden' if kind != 'home' else None">Seen by the team and the courier only.</small>
+                        </div>
+
+                        <div class="o_ocd_field">
+                            <span class="o_ocd_label">Position</span>
+                            <button type="button" class="o_ocd_button o_ocd_button_dark o_ocd_place_locate">
+                                <t t-call="ocd_live.icon" icon.f="pin"/>
+                                <span class="o_ocd_place_store_only" t-att-hidden="'hidden' if kind == 'home' else None">I am in my store</span>
+                                <span class="o_ocd_place_home_only" t-att-hidden="'hidden' if kind != 'home' else None">I am at home</span>
+                            </button>
+                            <span class="o_ocd_place_position" role="status">
+                                <t t-if="position_known">Position taken, within <t t-out="position_accuracy"/> m</t>
+                            </span>
+                            <span id="pl-position-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('position') else 'hidden'"><t t-out="errors.get('position')"/></span>
+                            <small class="o_ocd_parcel_hint">Take it there: the itinerary of the customers and the courier start from it.</small>
+                        </div>
+
+                        <div class="o_ocd_field o_ocd_place_store_only" t-att-hidden="'hidden' if kind == 'home' else None">
+                            <span class="o_ocd_label">Photo of the front</span>
+                            <label t-attf-class="o_ocd_photo_pick #{'o_ocd_has_photo' if current_photo or kept_photo else ''}" for="pl-photo">
+                                <input id="pl-photo" type="file" name="photo" accept="image/*" class="o_ocd_photo_input" aria-describedby="pl-photo-error"/>
+                                <span class="o_ocd_photo_pick_empty">
+                                    <t t-call="ocd_live.icon" icon.f="camera"/>
+                                    <span>Add a photo</span>
+                                </span>
+                                <span class="o_ocd_photo_pick_done">
+                                    <img alt="" class="o_ocd_photo_preview" t-att-src="kept_photo['url'] if kept_photo else current_photo"/>
+                                    <span><t t-call="ocd_live.icon" icon.f="check"/>Photo of the front · change it</span>
+                                </span>
+                            </label>
+                            <span id="pl-photo-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('photo') else 'hidden'"><t t-out="errors.get('photo')"/></span>
+                            <small class="o_ocd_parcel_hint">With its sign: the customers recognise the store.</small>
+                        </div>
+
+                        <div class="o_ocd_field">
+                            <label for="pl-phone" class="o_ocd_label">Phone of the store</label>
+                            <input id="pl-phone" name="phone" class="o_ocd_input" t-att-value="phone" inputmode="tel" autocomplete="off"
+                                   aria-describedby="pl-phone-error"/>
+                            <span id="pl-phone-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('phone') else 'hidden'"><t t-out="errors.get('phone')"/></span>
+                            <small class="o_ocd_parcel_hint">Empty: your number.</small>
+                        </div>
+
+                        <fieldset class="o_ocd_field o_ocd_place_store_only o_ocd_place_hours" t-att-hidden="'hidden' if kind == 'home' else None">
+                            <legend class="o_ocd_label">Opening hours</legend>
+                            <t t-foreach="hours" t-as="row">
+                                <div class="o_ocd_place_day">
+                                    <label class="o_ocd_place_day_name">
+                                        <input type="checkbox" t-attf-name="open_#{row['day']}" value="1" t-att-checked="'checked' if row['open'] else None"/>
+                                        <t t-out="row['label']"/>
+                                    </label>
+                                    <span class="o_ocd_place_day_hours" t-att-hidden="None if row['open'] else 'hidden'">
+                                        <input type="time" class="o_ocd_input" t-attf-name="from_#{row['day']}" t-att-value="row['from']"
+                                               t-att-aria-label="row['label']"/>
+                                        <span>to</span>
+                                        <input type="time" class="o_ocd_input" t-attf-name="to_#{row['day']}" t-att-value="row['to']"
+                                               t-att-aria-label="row['label']"/>
+                                    </span>
+                                    <span class="o_ocd_place_day_closed" t-att-hidden="'hidden' if row['open'] else None">Closed</span>
+                                </div>
+                            </t>
+                            <span class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('hours') else 'hidden'"><t t-out="errors.get('hours')"/></span>
+                        </fieldset>
+
+                        <div class="o_ocd_field o_ocd_place_store_only" t-att-hidden="'hidden' if kind == 'home' else None">
+                            <label class="o_ocd_place_closed">
+                                <input type="checkbox" name="closed" value="1" t-att-checked="'checked' if closed else None"/>
+                                <span>Closed until</span>
+                                <input type="date" name="closed_until" class="o_ocd_input" t-att-value="closed_until" aria-label="Closed until"/>
+                            </label>
+                            <span class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('closed') else 'hidden'"><t t-out="errors.get('closed')"/></span>
+                        </div>
+
+                        <button type="submit" class="o_ocd_cta o_ocd_place_send">
+                            <t t-if="place">Save</t>
+                            <t t-else="">Send</t>
+                        </button>
+                        <small class="o_ocd_parcel_hint o_ocd_place_store_only" t-att-hidden="'hidden' if kind == 'home' else None">The team checks a new store, address, position or photo. The hours, the phone and « closed » change at once.</small>
+                        <a href="/ocd/espace/moi/magasins" class="o_ocd_link">Cancel</a>
+                    </form>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- My space: « My stores » next to « My products » -->
+    <template id="space_places" inherit_id="ocd_live_shop.space" name="OCD Live: my stores in the space">
+        <xpath expr="//a[@href='/ocd/espace/moi/produits']" position="after">
+            <a href="/ocd/espace/moi/magasins" class="o_ocd_button o_ocd_button_line">My stores</a>
+        </xpath>
+    </template>
+
+</odoo>

@@ -51,6 +51,66 @@ def price_error(text):
     return env._("Write one price, without cents or dash, for example 3000.")
 
 
+# === PHOTO SENT BY A VENDOR, KEPT AFTER AN ERROR === #
+# A form refused for a field must not ask for the photo again (taken again on a phone, sent again
+# on a slow network): the photo received waits in an attachment of the vendor, shown in the form
+# and sent back by its token. One at a time per vendor, for « My products » and « My stores ».
+
+
+def read_photo(photo, missing=None):
+    """(bytes, filename, error) of the photo sent in a form; (None, None, None) if none."""
+    if not photo or not getattr(photo, "filename", None):
+        return None, None, None
+    env = request.env
+    limit = common.company()._ocd_vendor_photo_max_bytes()
+    data = photo.read(limit + 1)
+    if len(data) > limit:
+        return None, None, env._("The photo is too big (%s MB at most).", limit // (1024 * 1024))
+    if not data or not (photo.mimetype or "").startswith("image/"):
+        return None, None, missing or env._("Add a photo of your product.")
+    return data, photo.filename, None
+
+
+def pending_photos(vendor):
+    return request.env["ir.attachment"].sudo().search([
+        ("res_model", "=", "res.partner"), ("res_id", "=", vendor.id), ("description", "=", PENDING_PHOTO),
+    ])
+
+
+def keep_photo(vendor, data, filename):
+    """Keep the photo of a refused form for the next try (it replaces the one kept before)."""
+    pending_photos(vendor).unlink()
+    attachment = request.env["ir.attachment"].sudo().create({
+        "name": filename or "photo",
+        "raw": data,
+        "res_model": "res.partner",
+        "res_id": vendor.id,
+        "description": PENDING_PHOTO,
+    })
+    attachment.generate_access_token()
+    return attachment
+
+
+def kept_photo(vendor, kept):
+    """The photo kept for `vendor`, from the value `<id>:<token>` sent back by the form."""
+    attachment_id, _sep, token = (kept or "").partition(":")
+    if not attachment_id.isdigit() or not token:
+        return request.env["ir.attachment"]
+    attachment = pending_photos(vendor).filtered(lambda a: a.id == int(attachment_id))
+    if not attachment or not consteq(attachment.access_token or "", token):
+        return request.env["ir.attachment"]
+    return attachment
+
+
+def kept_values(attachment):
+    if not attachment:
+        return False
+    return {
+        "value": f"{attachment.id}:{attachment.access_token}",
+        "url": f"/web/image/{attachment.id}?access_token={attachment.access_token}",
+    }
+
+
 class OcdVendorProducts(http.Controller):
     """My products (design MesProduits): the vendor adds a product from the phone (photo, name,
     price, quantity), checked by the team before it shows in the boutique, and changes the
@@ -274,61 +334,23 @@ class OcdVendorProducts(http.Controller):
             return request.redirect("/ocd/connexion")
         return self._render(vendor, sent=bool(envoye), state=etat)
 
-    # === PHOTO KEPT AFTER AN ERROR === #
-    # A form refused for its name or its price must not ask for the photo again (taken again on a
-    # phone, sent again on a slow network): the photo received waits in an attachment of the
-    # vendor, shown in the form and sent back by its token. One at a time per vendor.
+    # === PHOTO KEPT AFTER AN ERROR (see the functions above) === #
 
     def _read_photo(self, photo):
-        """(bytes, filename, error) of the photo sent in the form; (None, None, None) if none."""
-        if not photo or not getattr(photo, "filename", None):
-            return None, None, None
-        env = request.env
-        company = common.company()
-        limit = company._ocd_vendor_photo_max_bytes()
-        data = photo.read(limit + 1)
-        if len(data) > limit:
-            return None, None, env._("The photo is too big (%s MB at most).", limit // (1024 * 1024))
-        if not data or not (photo.mimetype or "").startswith("image/"):
-            return None, None, env._("Add a photo of your product.")
-        return data, photo.filename, None
+        return read_photo(photo)
 
     def _pending_photos(self, vendor):
-        return request.env["ir.attachment"].sudo().search([
-            ("res_model", "=", "res.partner"), ("res_id", "=", vendor.id), ("description", "=", PENDING_PHOTO),
-        ])
+        return pending_photos(vendor)
 
     def _keep_photo(self, vendor, data, filename):
-        """Keep the photo of a refused form for the next try (it replaces the one kept before)."""
-        self._pending_photos(vendor).unlink()
-        attachment = request.env["ir.attachment"].sudo().create({
-            "name": filename or "photo",
-            "raw": data,
-            "res_model": "res.partner",
-            "res_id": vendor.id,
-            "description": PENDING_PHOTO,
-        })
-        attachment.generate_access_token()
-        return attachment
+        return keep_photo(vendor, data, filename)
 
     def _kept_photo(self, vendor, kept):
-        """The photo kept for `vendor`, from the value `<id>:<token>` sent back by the form."""
-        attachment_id, _sep, token = (kept or "").partition(":")
-        if not attachment_id.isdigit() or not token:
-            return request.env["ir.attachment"]
-        attachment = self._pending_photos(vendor).filtered(lambda a: a.id == int(attachment_id))
-        if not attachment or not consteq(attachment.access_token or "", token):
-            return request.env["ir.attachment"]
-        return attachment
+        return kept_photo(vendor, kept)
 
     @staticmethod
     def _kept_values(attachment):
-        if not attachment:
-            return False
-        return {
-            "value": f"{attachment.id}:{attachment.access_token}",
-            "url": f"/web/image/{attachment.id}?access_token={attachment.access_token}",
-        }
+        return kept_values(attachment)
 
     # === ADD A PRODUCT === #
 
