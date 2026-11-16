@@ -73,8 +73,10 @@ class TestOcdLiveAutomations(OcdLiveCommon):
 
     def test_runs_over_seven_days(self):
         automation = self.env.ref("ocd_live.automation_windows")
+        # The scheduler of the server may have run it already on this database
+        before = automation._ocd_runs()[0]
         self.env["ir.cron.progress"].create([{"cron_id": automation.cron_id.id} for _i in range(3)])
         count, _last, _label = automation._ocd_runs()
-        self.assertEqual(count, 3)
-        self.assertIn("3", automation._ocd_row()["history"])
+        self.assertEqual(count, before + 3)
+        self.assertIn(str(before + 3), automation._ocd_row()["history"])
         self.assertTrue(self.env["ocd.automation"]._ocd_enabled("not_in_the_catalogue"))

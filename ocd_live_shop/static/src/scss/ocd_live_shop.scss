@@ -2603,6 +2603,15 @@
 // The price labels of a store (M.7 of the plan): on the screen as on the sheet, 3 columns of
 // labels of 64 x 36 mm in A4, cut along the dotted lines
 .o_ocd_my_labels {
+    > .o_ocd_noprint {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        .o_ocd_cta,
+        .o_ocd_h1 {
+            margin: 0;
+        }
+    }
     .o_ocd_labels_copies {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 90px auto;
@@ -2617,7 +2626,8 @@
     }
     .o_ocd_labels {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        // One label per line on a phone, the sheet of 3 columns once printed
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
         gap: 0;
         border-top: 1px dashed $ocd-faded;
         border-left: 1px dashed $ocd-faded;
@@ -2658,6 +2668,10 @@
         font-weight: 800;
         font-size: 19px;
         line-height: 1.1;
+        overflow-wrap: anywhere;
+    }
+    .o_ocd_label_price_long {
+        font-size: 16px;
     }
     .o_ocd_label_qr {
         width: 72px;
@@ -2692,6 +2706,8 @@
     .o_ocd_my_labels {
         .o_ocd_labels {
             grid-template-columns: repeat(3, 64mm);
+            // The dotted lines of the top and the left as wide as the labels
+            width: fit-content;
         }
         .o_ocd_label_card {
             height: 36mm;
@@ -2703,6 +2719,9 @@
         }
         .o_ocd_label_price {
             font-size: 14pt;
+        }
+        .o_ocd_label_price_long {
+            font-size: 11pt;
         }
         .o_ocd_label_text small {
             font-size: 6.5pt;

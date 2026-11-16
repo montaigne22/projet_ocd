@@ -20,6 +20,8 @@ _DRAWN_LOCK = threading.Lock()
 IMMUTABLE = "public, max-age=31536000, immutable"
 # Copies of each price label: a sheet of A4 holds 24
 LABELS_MAX_COPIES = 24
+# Characters of a price written at full size on a label
+LABEL_PRICE_SHORT = 9
 
 
 def drawn(key, draw):
@@ -188,14 +190,16 @@ class OcdVendorShare(http.Controller):
         copies = min(max(int(copies), 1), LABELS_MAX_COPIES) if str(copies or "").isdigit() else 1
         root = request.httprequest.url_root.rstrip("/")
         price_by_id = shop_common.prices(products)
-        labels = [
-            {
+        labels = []
+        for product in products:
+            price = price_by_id.get(product.id) or common.money(product.list_price, product.currency_id)
+            labels.append({
                 "name": product.name,
-                "price": price_by_id.get(product.id) or common.money(product.list_price, product.currency_id),
+                "price": price,
+                # A long price (« 125 000 FCFA ») is written smaller to hold beside the QR code
+                "long": len(price) > LABEL_PRICE_SHORT,
                 "qr": tools.qr_data_uri(root + product.website_url, box_size=4),
-            }
-            for product in products
-        ]
+            })
         labels = [label for label in labels for _copy in range(copies)]
         return request.render("ocd_live_shop.vendor_labels", common.page_values(
             False,

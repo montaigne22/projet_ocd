@@ -805,7 +805,7 @@
                             <div class="o_ocd_label_card">
                                 <span class="o_ocd_label_text">
                                     <b class="o_ocd_label_name" t-out="label['name']"/>
-                                    <span class="o_ocd_label_price" t-out="label['price']"/>
+                                    <span t-attf-class="o_ocd_label_price #{'o_ocd_label_price_long' if label['long'] else ''}" t-out="label['price']"/>
                                     <small>Scan to order online</small>
                                 </span>
                                 <img t-att-src="label['qr']" alt="" class="o_ocd_label_qr" width="96" height="96"/>

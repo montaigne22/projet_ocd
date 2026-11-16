@@ -42,7 +42,7 @@ décisions), car leur approbation ne dépend pas de nous.
 |---|---|---|---|---|
 | 2.1 | **Modifier** | Nouveau nom ou nouvelle photo : vérifiés par l'équipe, l'ancienne version reste en vente en attendant. Prix : sans vérification, mais un grand écart se confirme (« Tu passes de 15 000 F à 1 500 F, c'est bien ça ? ») et l'équipe voit l'historique des prix. Stock : jamais vérifié. Les photos de couleur suivent la même règle (aujourd'hui publiées sans vérification) | Formulaire d'ajout, écran « À vérifier » | 4 à 5 jours, plus ~½ jour pour les photos de couleur |
 | 2.2 | **Retirer** | Ne plus montrer un produit, et pouvoir le remettre ; jamais supprimé, les commandes passées le gardent | Produits masqués (`is_published`) | ~½ jour |
-| 2.4 | **WhatsApp accepté ou refusé** | « Ton produit Robe wax est en vente » ou « … est refusé : photo floue », avec le lien de la page | Messages WhatsApp aux vendeurs | 1 à 2 jours, plus l'approbation des modèles par Meta |
+| 2.4 | **WhatsApp accepté ou refusé** | « Ton produit Robe wax est en vente » ou « … est refusé : photo floue », avec le lien de la page | Messages WhatsApp aux vendeurs | 1 à 2 jours, plus l'approbation des modèles par Meta ; **fait le 16 novembre 2026 avec les magasins (chantier 17)** |
 | 2.5 | **Stock par taille et par couleur** | Les − / + pour chaque variante (aujourd'hui seulement les produits sans variantes) ; fait avec S.2, en un seul écran de stock | Réglage du stock (`_ocd_set_stock`), photos des couleurs | Compté dans S.2 |
 | 2.6 | **Plusieurs photos** | Ajouter, retirer et ordonner les photos d'un produit ; une nouvelle photo est vérifiée comme en 2.1 | Galerie de la fiche produit (`product_template_image_ids`) | 2 à 3 jours |
 | 2.7 | **Brouillon hors connexion** | Un produit commencé sans réseau reste dans le téléphone (photo comprise) et part quand le réseau revient | Application installable sur le téléphone, photo réduite (0.4) | 3 à 4 jours |
@@ -57,7 +57,7 @@ décisions), car leur approbation ne dépend pas de nous.
 | 3.4 | **Alerte de stock bas** | WhatsApp au vendeur quand il reste peu de pièces (2 par défaut) | Messages WhatsApp aux vendeurs, stock | 1 à 2 jours, plus l'approbation du modèle par Meta |
 | 3.5 | **Tailles et couleurs dès la création** | Le vendeur choisit les tailles et les couleurs en ajoutant le produit, au lieu de l'équipe | Attributs et variantes d'Odoo, photos des couleurs | 1 à 2 semaines |
 
-## Magasins du vendeur (~2,5 semaines)
+## Magasins du vendeur (~2,5 semaines) — faits le 16 novembre 2026 (chantier 17)
 
 Le client sait où se trouvent les magasins du vendeur ; le vendeur les enregistre et les règle dans
 son espace ; l'équipe les voit dans le back-office.
@@ -110,7 +110,7 @@ de nouveau. Les vendeurs dont les produits sont dans le stock d'OCD ne sont pas 
 | A.1 | **Retrait en magasin** | Le client choisit « Je passe le récupérer » : pas de frais de livraison. Il paie comme à la porte : en ligne, sur son téléphone au comptoir (Mobile Money, chez tous les vendeurs), ou en espèces seulement chez les vendeurs qui encaissent déjà à la porte (commission retenue sur le reversement suivant). Pas de remise sans paiement : le code n'est accepté qu'une fois l'argent encaissé. Pas de retrait chez un vendeur qui vend depuis chez lui. Client qui ne vient pas : rappel WhatsApp la veille de la fin du délai, puis colis annulé et pièces rendues au stock du magasin, avec un avoir s'il a payé en ligne, comme un colis retourné après des échecs de livraison | Paiement à la porte et réglage `ocd_vendor_collects` (`DECISIONS.md:150-152`), code de livraison, reversements, magasins (M.1) | 1 à 2 semaines |
 | A.2 | **Le bot WhatsApp donne les magasins** | Sur le numéro d'OCD, « Où êtes-vous ? » reçoit les magasins du vendeur de la commande ou du produit en question : adresse, horaires, position à ouvrir dans les cartes. Le bouton WhatsApp de la boutique, lui, mène au numéro du vendeur : le bot ne voit pas ces conversations | Envoi des magasins et des positions du bot (`whatsapp_cloud_sale`, `_whatsapp_send_location`), aujourd'hui pour les entrepôts d'OCD | 2 à 3 jours |
 | A.3 | **Vendeurs près de chez moi** | Filtre par ville et quartier dans le shop et l'annuaire ; du plus proche au plus loin si le client partage sa position | Magasins (M.1), villes et quartiers | ~1 semaine |
-| A.4 | **Point de départ des colis** | Le vendeur choisit le magasin d'où partent ses colis : le livreur vient l'y chercher, le prix de la livraison part de là | Départ des colis (`_ocd_origin`, aujourd'hui la ville du vendeur), tournées des livreurs | ~2 jours |
+| A.4 | **Point de départ des colis** | Le vendeur choisit le magasin d'où partent ses colis : le livreur vient l'y chercher, le prix de la livraison part de là | Départ des colis (`_ocd_origin`, aujourd'hui la ville du vendeur), tournées des livreurs | ~2 jours ; **fait le 16 novembre 2026 (chantier 17)** |
 | A.5 | **Mode vacances** | « De retour le 2 janvier » sur la boutique : produits visibles, commandes en pause, « Préviens-moi à son retour » | « Préviens-moi » de la boutique (`ocd.boutique.alert`) | ~2 jours ; ne dépend pas des magasins, peut se faire tôt |
 | A.6 | **Magasins points relais** | Les vendeurs qui le veulent gardent les colis d'autres vendeurs | Magasins (M.1) | Avec le chantier 10 (Points relais) de la feuille de route |
 | A.7 | **Mettre de côté pour essayer** | Le client réserve une pièce dans un magasin pour venir l'essayer ; le vendeur est prévenu et peut refuser ; la pièce est libérée seule après le délai. Garde-fous : 24 h, une réservation active par client chez un vendeur, plus de réservation après deux absences | Stock par magasin (S), magasins (M.1) | ~1 semaine, après S et A.1 |
@@ -133,7 +133,7 @@ WhatsApp *Marketing*). C'est aussi le cœur de l'offre pour les commerçants qui
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
-| B.1 | **Interrupteur « Formule Business »** | Sur la fiche du vendeur, jusqu'à une date ; un réglage général « Fonctions Business offertes à tous », allumé jusqu'au lancement d'OCD Business. Les fonctions de la formule le lisent dès qu'elles sont faites : le chantier 12 n'a plus qu'à vendre la formule | Pass de l'annuaire (30 jours prépayés, rappel, renouvellement) | ~2 jours, avec les magasins |
+| B.1 | **Interrupteur « Formule Business »** | Sur la fiche du vendeur, jusqu'à une date ; un réglage général « Fonctions Business offertes à tous », allumé jusqu'au lancement d'OCD Business. Les fonctions de la formule le lisent dès qu'elles sont faites : le chantier 12 n'a plus qu'à vendre la formule | Pass de l'annuaire (30 jours prépayés, rappel, renouvellement) | ~2 jours, avec les magasins ; **fait le 16 novembre 2026 (chantier 17)** |
 
 - **Avant le lancement** : ces fonctions sont annoncées dès le premier jour « offertes pendant le
   lancement ».

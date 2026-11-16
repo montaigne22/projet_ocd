@@ -186,6 +186,27 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   repère ; il suit sa commande sur WhatsApp et sur la page de suivi.
 - **Retour** demandé par le client depuis la page de suivi pendant **30 jours** après la livraison
   (réglable, 0 = pas de retour) ; l'équipe reçoit une activité pour l'organiser.
+- **Magasins des vendeurs** (chantier 17, [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md)) :
+  - **un magasin est vérifié avant d'être montré** : photo de la devanture avec l'enseigne et position
+    prise dans le magasin (au plus 200 m de précision). Seuls l'adresse, la position et la photo
+    repassent à la vérification, et le magasin est caché aux clients pendant ce temps (jamais une
+    adresse non vérifiée à l'écran) ; horaires, téléphone et « fermé jusqu'au… » changent tout de suite ;
+    un refus envoie son motif ;
+  - **un vendeur qui vend depuis chez lui** est montré aussitôt, sans vérification : son quartier,
+    « Sur rendez-vous » et WhatsApp, jamais sa position, son repère ni sa photo. L'en-tête de la
+    boutique ne montre plus le repère personnel du vendeur (seulement son quartier et sa ville) ;
+    l'équipe et le livreur voient l'adresse complète ;
+  - **ouvert ou fermé à l'heure du magasin**, même pour un client à l'étranger ; « fermé jusqu'au 18 »
+    compte le 18 ;
+  - **les appuis sur Itinéraire, Appeler et WhatsApp** sont comptés pour le vendeur, une fois par
+    visiteur toutes les 10 minutes, gardés 400 jours ;
+  - **un lieu sans OCD Business, plusieurs avec** ; à la fin de la formule rien n'est effacé, les lieux
+    au-delà du premier ne sont plus montrés ; offerts à tous jusqu'au lancement de la formule ;
+  - **l'affiche QR** est une image A4 claire (peu d'encre), envoyable à un imprimeur par WhatsApp ; **les
+    étiquettes de prix** sont une page à imprimer (3 × 8 par A4), le prix étant celui du site ;
+  - **le lieu de départ des colis** est choisi par le vendeur (sinon son seul lieu, sinon son adresse) :
+    le prix de la livraison part de sa ville, et le colis garde le lieu où le livreur le prend, même si
+    le vendeur en change ensuite.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une
@@ -202,6 +223,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   « Préviens-moi ») : la demande vaut accord pour ce message.
 - Les colis d'OCD ont leurs propres messages : le « commande expédiée » du shop n'est pas envoyé pour eux,
   et la demande de note part une fois par commande, après son dernier colis.
+- **Le vendeur apprend la décision de l'équipe** sur un produit ou un magasin (accepté, ou refusé avec son
+  motif), avec un bouton vers « Mes produits » ou « Mes magasins » : un seul message par vendeur quand
+  l'équipe en vérifie plusieurs à la fois ; rien pour un domicile, montré sans vérification ; interrupteur
+  dans les Automatisations.
 - **Rien qui ressemble à une connexion dans un modèle Utilitaire** : Meta le refuse comme
   `INCORRECT_CATEGORY` (il y voit un message d'*Authentification*, dont le seul format est un code à usage
   unique). Ni « code » (même nommé sans le donner), ni « mot de passe », ni « identifiant », ni « lien

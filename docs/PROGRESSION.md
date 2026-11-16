@@ -31,6 +31,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Site : toutes les pages du shop fidèles au design (shop, produit, panier, livraison, paiement, suivi, boutique, replay, mes produits, mes colis, tournée) | ✅ fait, testé |
 | « Mes produits » fiable (chantier 15) : stock − / + qui garde les pièces des commandes, prix lu ou refusé, formulaire pour réseau lent (photo gardée, réduite, un seul envoi), galerie, refus expliqué et produit corrigé puis renvoyé, voix de la page | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
 | « Mes produits » aide à vendre (chantier 16) : contacts WhatsApp et clients en attente, menu « Plus », ordre de la boutique, copie, filtres, partage d'un produit avec son image, catalogue pour le statut, démarrage du vendeur | ✅ fait, testé |
+| Magasins des vendeurs (chantier 17) : magasin vérifié ou « je vends depuis chez moi », horaires et « ouvert maintenant », itinéraire, appeler, WhatsApp, visites comptées, affiche QR et étiquettes de prix, magasin de départ des colis, interrupteur OCD Business, back-office et vérification | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
 | Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
@@ -80,8 +81,9 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    mise à jour du 12 novembre** : WhatsApp › Modèles, filtre « Refusés ou en pause », tout cocher, Action ›
    « Soumettre à Meta » (les textes refusés pour `INCORRECT_CATEGORY` ont été réécrits). Les
    réponses rapides de l'équipe se créent dans les conversations (`::livreur`, `::retard`…).
-   **Depuis le 16 novembre**, aussi : `ocd_produit_accepte`, `ocd_produit_refuse`, `ocd_stock_bas`
-   (français et anglais), pour les messages aux vendeurs sur leurs produits.
+   **Depuis le 16 novembre**, aussi : `ocd_produit_accepte`, `ocd_produit_refuse`, `ocd_stock_bas`,
+   `ocd_magasin_accepte`, `ocd_magasin_refuse` (français et anglais), pour les messages aux vendeurs sur
+   leurs produits et leurs magasins.
 3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
    back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
@@ -101,6 +103,49 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 16 novembre 2026 — Les magasins des vendeurs (chantier 17)
+Dessiné d'abord (maquettes `MesMagasins`, `MonMagasin`, `VitrineMagasins`, `BoVerificationMagasins`,
+validées), puis codé.
+- **Les lieux d'un vendeur** : un magasin ouvert au public, ou « je vends depuis chez moi ». Un magasin est
+  vérifié par l'équipe avant d'être montré (photo de la devanture avec l'enseigne, position prise dans le
+  magasin) ; seuls l'adresse, la position et la photo repassent à la vérification, et le magasin est caché
+  pendant ce temps ; horaires, téléphone et « fermé jusqu'au… » changent tout de suite. Un domicile est
+  montré aussitôt, son quartier seulement. Un refus envoie son motif (devanture absente, position loin de
+  l'adresse, adresse introuvable) : le vendeur corrige et renvoie.
+- **Mes magasins** (espace vendeur) : ajouter, modifier, retirer ; « Je suis dans mon magasin » prend la
+  position du téléphone (refusée au-delà de 200 m de précision) ; photo réduite dans le téléphone ;
+  horaires par jour (proposés par l'équipe) ; fermé pour un temps ; « Cette semaine : 18 itinéraires,
+  6 appels, 4 messages WhatsApp » ; un seul envoi même si le formulaire part deux fois. Le démarrage du
+  vendeur a une étape de plus : « Dis où te trouver ».
+- **Ses magasins** dans la boutique : « 2 magasins à Douala » sous le nom, puis pour chaque magasin la
+  photo, le quartier et le repère, « Ouvert · ferme à 19:00 » ou « Fermé · ouvre lundi à 08:00 » à l'heure
+  du magasin, les horaires repliés, et Itinéraire (Google Maps ou OpenStreetMap, au choix de l'équipe),
+  Appeler, WhatsApp. Chaque appui est compté une fois par visiteur toutes les 10 minutes. La fiche produit
+  dit « Aussi en magasin : Akwa, Bonapriso ». L'en-tête de la boutique ne montre plus le repère personnel
+  du vendeur.
+- **À imprimer** : l'affiche QR d'un magasin (A4 à 300 points par pouce, claire pour économiser l'encre,
+  texte réglé par l'équipe) et une feuille d'étiquettes de prix avec le QR de chaque produit (3 × 8 par
+  page A4, nombre d'exemplaires au choix, imprimée depuis le téléphone ou envoyée en PDF à un imprimeur).
+- **Départ des colis** : le vendeur choisit le lieu d'où partent ses colis ; le prix de la livraison est
+  compté depuis sa ville, le colis garde le lieu où le livreur le prend (même si le vendeur change d'avis
+  ensuite), et l'appli du livreur montre ce lieu, son repère et l'itinéraire.
+- **OCD Business** : un lieu sans la formule, plusieurs avec (date de fin sur la fiche du vendeur) ; à la
+  fin, rien n'est effacé, les lieux au-delà du premier ne sont plus montrés. Tant que la formule n'est pas
+  lancée, l'interrupteur « Fonctions OCD Business offertes à tous » les ouvre à chacun.
+- **Back-office** : menu « Magasins des vendeurs » (filtres par ville, vendeur, état, carte), onglet
+  « Magasins » sur la fiche du vendeur, colonne « Nouveaux magasins » de l'écran « À vérifier » (avant /
+  maintenant après un changement d'adresse), nombre de magasins à vérifier au tableau de bord, et dans les
+  Paramètres : vente depuis chez soi, vérification, devanture et position obligatoires, cartes, texte de
+  l'affiche, horaires proposés, lieux par vendeur.
+- **WhatsApp au vendeur** quand l'équipe accepte ou refuse un magasin ou un produit (avancé du chantier 19,
+  même mécanique) : un message par vendeur quand l'équipe en vérifie plusieurs à la fois, interrupteur dans
+  les Automatisations. Rien ne part tant que Meta n'a pas approuvé le modèle.
+- Un test d'`ocd_live` comptait les passages d'une tâche planifiée depuis zéro : le planificateur du
+  serveur la lance parfois pendant les tests ; il compte maintenant à partir des passages déjà faits.
+- Tests : base neuve, tous les modules OCD : **348 sans échec** (12 nouveaux : magasins, affiche,
+  étiquettes, départ des colis, messages) ; vérifié dans un navigateur de téléphone (Pixel 7), en
+  français : boutique, fiche produit, Mes magasins, affiche, étiquettes à l'écran et à l'impression.
 
 ### 16 novembre 2026 — « Mes produits » aide à vendre (chantier 16, étape 1 du plan)
 - **Ce que les produits ont rapporté**, sous chaque produit : « 7 personnes t'ont écrit sur WhatsApp »

@@ -172,7 +172,7 @@ class OcdVendorPlace(models.Model):
         for day in range(1, 8):
             if day == 7 or texts[day] != texts[start]:
                 days = names[start] if day - 1 == start else f"{names[start]}–{names[day - 1]}"
-                lines.append(f"{days}: {texts[start]}")
+                lines.append(_("%(days)s: %(hours)s", days=days, hours=texts[start]))
                 start = day
         return lines
 
