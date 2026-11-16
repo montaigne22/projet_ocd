@@ -529,68 +529,89 @@
 
     <!-- === MY PRODUCTS (vendor space) === -->
 
+    <!-- The form of a product of the vendor: to add one (`product` not set) or to correct one
+         (refused, or still waiting for the check). See OcdProductForm (shop_pages.js). -->
+    <template id="vendor_product_form" name="OCD Live: form of a product of the vendor">
+        <!-- The phone checks the form before sending it (the server checks it again),
+             reduces the photo, and sends it once: data-* below -->
+        <form t-att-action="f'/ocd/espace/moi/produits/{product.id}/modifier' if product else '/ocd/espace/moi/produits'"
+              method="post" enctype="multipart/form-data"
+              class="o_ocd_form o_ocd_my_products_form" novalidate="novalidate"
+              t-att-data-max-px="photo_px" t-att-data-max-bytes="photo_max_mb * 1024 * 1024"
+              t-att-data-decimals="currency_decimals" t-att-data-messages="json.dumps(form_messages)"
+              t-att-data-has-photo="'1' if current_photo else None">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <input type="hidden" name="form_token" t-att-value="form_token"/>
+            <input t-if="kept_photo" type="hidden" name="photo_kept" class="o_ocd_photo_kept" t-att-value="kept_photo['value']"/>
+            <t t-if="product">
+                <h1 t-if="product.ocd_review_state == 'refused'" class="o_ocd_h1 o_ocd_h1_small">Correct the product</h1>
+                <h1 t-else="" class="o_ocd_h1 o_ocd_h1_small">Change the product</h1>
+                <div t-if="refusal" class="o_ocd_alert" role="status"><b>Refused by the team:</b> <t t-out="refusal"/></div>
+                <p class="o_ocd_parcel_hint o_ocd_my_products_help">Change what is needed, then tap the orange button. The team checks it again.</p>
+            </t>
+            <t t-else="">
+                <h1 class="o_ocd_h1 o_ocd_h1_small">Add a product</h1>
+                <p class="o_ocd_parcel_hint o_ocd_my_products_help">Take a photo, write the name and the price, then tap the orange button.</p>
+            </t>
+            <label t-attf-class="o_ocd_photo_pick #{'o_ocd_has_photo' if kept_photo or current_photo else ''}" for="mp-photo">
+                <input id="mp-photo" type="file" name="photo" accept="image/*" class="o_ocd_photo_input"
+                       t-att-capture="None if photo_gallery else 'environment'" aria-describedby="mp-photo-error"/>
+                <span class="o_ocd_photo_pick_empty">
+                    <t t-call="ocd_live.icon" icon.f="camera"/>
+                    <span t-if="photo_gallery">Add a photo</span>
+                    <span t-else="">Take a photo</span>
+                </span>
+                <span class="o_ocd_photo_pick_done">
+                    <img alt="" class="o_ocd_photo_preview" t-att-src="kept_photo['url'] if kept_photo else current_photo"/>
+                    <span><t t-call="ocd_live.icon" icon.f="check"/>Photo added · change it</span>
+                </span>
+            </label>
+            <span id="mp-photo-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('photo') else 'hidden'"><t t-out="errors.get('photo')"/></span>
+            <div class="o_ocd_field">
+                <label for="mp-name" class="o_ocd_label">Name of the product</label>
+                <input id="mp-name" name="name" class="o_ocd_input" t-att-value="values.get('name')" autocomplete="off"
+                       maxlength="120" required="required" aria-describedby="mp-name-error"
+                       t-att-aria-invalid="'true' if errors.get('name') else None"/>
+                <span id="mp-name-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('name') else 'hidden'"><t t-out="errors.get('name')"/></span>
+            </div>
+            <div class="o_ocd_name_city">
+                <div class="o_ocd_field">
+                    <label for="mp-price" class="o_ocd_label">Price</label>
+                    <div class="o_ocd_price_input">
+                        <input id="mp-price" name="price" inputmode="decimal" class="o_ocd_input" t-att-value="values.get('price')" autocomplete="off"
+                               required="required" aria-describedby="mp-price-error"
+                               t-att-aria-invalid="'true' if errors.get('price') else None"/>
+                        <span t-out="currency_symbol"/>
+                    </div>
+                </div>
+                <div t-if="not product" class="o_ocd_field">
+                    <span id="mp-qty" class="o_ocd_label">How many do you have?</span>
+                    <div class="o_ocd_stepper o_ocd_stepper_js" role="group" aria-labelledby="mp-qty">
+                        <button type="button" class="o_ocd_stepper_less" aria-label="One less">−</button>
+                        <input type="number" name="quantity" min="0" inputmode="numeric" class="o_ocd_stepper_value"
+                               t-att-value="values.get('quantity', 1)" aria-labelledby="mp-qty"/>
+                        <button type="button" class="o_ocd_stepper_more" aria-label="One more">+</button>
+                    </div>
+                </div>
+            </div>
+            <span id="mp-price-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('price') else 'hidden'"><t t-out="errors.get('price')"/></span>
+            <div t-if="sent" class="o_ocd_ok" role="status">Sent. The team checks the photo, then your product shows in your boutique.</div>
+            <button type="submit" class="o_ocd_cta o_ocd_my_products_send">
+                <t t-if="not product">Send for checking</t>
+                <t t-elif="product.ocd_review_state == 'refused'">Send again for checking</t>
+                <t t-else="">Save</t>
+            </button>
+            <a t-if="product" href="/ocd/espace/moi/produits" class="o_ocd_link o_ocd_my_products_cancel">Cancel</a>
+        </form>
+    </template>
+
     <template id="vendor_products" name="OCD Live: my products">
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My products</t>
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_my_products">
-                    <!-- The phone checks the form before sending it (the server checks it again),
-                         reduces the photo, and sends it once: data-* below -->
-                    <form action="/ocd/espace/moi/produits" method="post" enctype="multipart/form-data"
-                          class="o_ocd_form o_ocd_my_products_form" novalidate="novalidate"
-                          t-att-data-max-px="photo_px" t-att-data-max-bytes="photo_max_mb * 1024 * 1024"
-                          t-att-data-decimals="currency_decimals" t-att-data-messages="json.dumps(form_messages)">
-                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                        <input type="hidden" name="form_token" t-att-value="form_token"/>
-                        <input t-if="kept_photo" type="hidden" name="photo_kept" class="o_ocd_photo_kept" t-att-value="kept_photo['value']"/>
-                        <h1 class="o_ocd_h1 o_ocd_h1_small">Add a product</h1>
-                        <p class="o_ocd_parcel_hint o_ocd_my_products_help">Take a photo, write the name and the price, then tap the orange button.</p>
-                        <label t-attf-class="o_ocd_photo_pick #{'o_ocd_has_photo' if kept_photo else ''}" for="mp-photo">
-                            <input id="mp-photo" type="file" name="photo" accept="image/*" class="o_ocd_photo_input"
-                                   t-att-capture="None if photo_gallery else 'environment'" aria-describedby="mp-photo-error"/>
-                            <span class="o_ocd_photo_pick_empty">
-                                <t t-call="ocd_live.icon" icon.f="camera"/>
-                                <span t-if="photo_gallery">Add a photo</span>
-                                <span t-else="">Take a photo</span>
-                            </span>
-                            <span class="o_ocd_photo_pick_done">
-                                <img alt="" class="o_ocd_photo_preview" t-att-src="kept_photo and kept_photo['url']"/>
-                                <span><t t-call="ocd_live.icon" icon.f="check"/>Photo added · change it</span>
-                            </span>
-                        </label>
-                        <span id="mp-photo-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('photo') else 'hidden'"><t t-out="errors.get('photo')"/></span>
-                        <div class="o_ocd_field">
-                            <label for="mp-name" class="o_ocd_label">Name of the product</label>
-                            <input id="mp-name" name="name" class="o_ocd_input" t-att-value="values.get('name')" autocomplete="off"
-                                   maxlength="120" required="required" aria-describedby="mp-name-error"
-                                   t-att-aria-invalid="'true' if errors.get('name') else None"/>
-                            <span id="mp-name-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('name') else 'hidden'"><t t-out="errors.get('name')"/></span>
-                        </div>
-                        <div class="o_ocd_name_city">
-                            <div class="o_ocd_field">
-                                <label for="mp-price" class="o_ocd_label">Price</label>
-                                <div class="o_ocd_price_input">
-                                    <input id="mp-price" name="price" inputmode="decimal" class="o_ocd_input" t-att-value="values.get('price')" autocomplete="off"
-                                           required="required" aria-describedby="mp-price-error"
-                                           t-att-aria-invalid="'true' if errors.get('price') else None"/>
-                                    <span t-out="currency_symbol"/>
-                                </div>
-                            </div>
-                            <div class="o_ocd_field">
-                                <span id="mp-qty" class="o_ocd_label">How many do you have?</span>
-                                <div class="o_ocd_stepper o_ocd_stepper_js" role="group" aria-labelledby="mp-qty">
-                                    <button type="button" class="o_ocd_stepper_less" aria-label="One less">−</button>
-                                    <input type="number" name="quantity" min="0" inputmode="numeric" class="o_ocd_stepper_value"
-                                           t-att-value="values.get('quantity', 1)" aria-labelledby="mp-qty"/>
-                                    <button type="button" class="o_ocd_stepper_more" aria-label="One more">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <span id="mp-price-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('price') else 'hidden'"><t t-out="errors.get('price')"/></span>
-                        <div t-if="sent" class="o_ocd_ok" role="status">Sent. The team checks the photo, then your product shows in your boutique.</div>
-                        <button type="submit" class="o_ocd_cta o_ocd_my_products_send">Send for checking</button>
-                    </form>
+                    <t t-call="ocd_live_shop.vendor_product_form"/>
 
                     <div class="o_ocd_section_head">
                         <h2>My boutique</h2>
@@ -608,6 +629,12 @@
                                         <span t-out="row['price']"/>
                                         <span t-attf-class="o_ocd_step_pill o_ocd_my_status_#{row['status']}" t-out="row['status_label']"/>
                                     </span>
+                                    <small t-if="row['refusal']" class="o_ocd_error o_ocd_my_product_refusal" t-out="row['refusal']"/>
+                                    <a t-if="row['can_correct']" t-attf-href="/ocd/espace/moi/produits/#{row['product'].id}/modifier"
+                                       class="o_ocd_link o_ocd_my_product_correct">
+                                        <t t-if="row['status'] == 'refused'">Correct and send again</t>
+                                        <t t-else="">Change</t>
+                                    </a>
                                 </span>
                                 <details t-if="row['colours']" class="o_ocd_colour_photos"
                                          t-att-open="'open' if photo_error == str(row['product'].id) else None">
@@ -657,6 +684,18 @@
                         </button>
                         <div class="o_ocd_share_done o_ocd_ok" role="status" hidden="hidden">Link copied. Paste it in your WhatsApp status.</div>
                     </t>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="vendor_product_edit" name="OCD Live: correct a product">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My products</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_my_products">
+                    <t t-call="ocd_live_shop.vendor_product_form"/>
                 </main>
             </div>
         </t>

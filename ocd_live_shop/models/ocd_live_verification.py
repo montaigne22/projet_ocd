@@ -37,6 +37,10 @@ class OcdLiveVerification(models.AbstractModel):
                 detail = self.env._("Sold by OCD · %s", (modes.get(vendor.ocd_delivery_mode) or "").lower())
             else:
                 detail = self.env._("Direct contact: the customers write to %s.", vendor.name)
+            if product.ocd_previous_refusal:
+                # Corrected by the vendor: check what was refused
+                detail = self.env._("Sent again after a refusal: %(reason)s. %(detail)s",
+                                    reason=product.ocd_previous_refusal, detail=detail)
             items.append({
                 "key": f"product_{product.id}",
                 "kind": "product",

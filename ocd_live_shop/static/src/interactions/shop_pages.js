@@ -477,7 +477,7 @@ export class OcdProductForm extends Interaction {
 
     async onPhoto() {
         const file = this.input.files[0];
-        this.pick.classList.toggle("o_ocd_has_photo", !!file || !!this.kept());
+        this.pick.classList.toggle("o_ocd_has_photo", !!file || !!this.kept() || !!this.el.dataset.hasPhoto);
         if (!file) {
             return;
         }
@@ -573,8 +573,8 @@ export class OcdProductForm extends Interaction {
         const price = this.el.querySelector("#mp-price");
         const file = this.input.files[0];
         let photo = "";
-        if (!file && !this.kept()) {
-            photo = this.messages.photo;
+        if (!file && !this.kept() && !this.el.dataset.hasPhoto) {
+            photo = this.messages.photo; // a product corrected keeps its photo
         } else if (file && this.maxBytes && file.size > this.maxBytes) {
             photo = this.messages.photo_big;
         }

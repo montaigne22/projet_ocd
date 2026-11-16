@@ -32,6 +32,21 @@ class ProductTemplate(models.Model):
         "before they appear on the website.",
     )
     ocd_review_date = fields.Datetime(string="Checked At", copy=False, readonly=True)
+    ocd_refuse_reason_id = fields.Many2one(
+        comodel_name="ocd.listing.refuse.reason",
+        string="Reason Of The Refusal",
+        copy=False,
+        tracking=True,
+        domain=[("applies_to", "=", "product")],
+        help="Shown to the vendor in « My products », with its message: they correct the product and "
+        "send it again.",
+    )
+    ocd_previous_refusal = fields.Char(
+        string="Sent Again After",
+        copy=False,
+        readonly=True,
+        help="The reason of the last refusal of a product the vendor corrected and sent again.",
+    )
     ocd_form_token = fields.Char(
         string="Form Of The Vendor",
         copy=False,
@@ -63,14 +78,66 @@ class ProductTemplate(models.Model):
                 )
 
     def action_ocd_approve(self):
-        self.write({"ocd_review_state": "approved", "ocd_review_date": fields.Datetime.now()})
+        self.write({
+            "ocd_review_state": "approved",
+            "ocd_review_date": fields.Datetime.now(),
+            "ocd_refuse_reason_id": False,
+            "ocd_previous_refusal": False,
+        })
         return True
 
     def action_ocd_refuse(self, reason=None):
-        self.write({"ocd_review_state": "refused", "is_published": False, "ocd_review_date": fields.Datetime.now()})
-        if reason:
-            for product in self:
-                product.message_post(body=self.env._("Product refused: %s", reason.name))
+        """Refuse the products with `reason` (from the form: the reason chosen on it). The vendor
+        sees its message in « My products », corrects the product and sends it again: a refusal
+        always says why."""
+        for product in self:
+            why = reason or product.ocd_refuse_reason_id
+            if not why:
+                raise UserError(self.env._("Choose the reason sent to the vendor."))
+            product.write({
+                "ocd_review_state": "refused",
+                "is_published": False,
+                "ocd_review_date": fields.Datetime.now(),
+                "ocd_refuse_reason_id": why.id,
+                "ocd_previous_refusal": False,
+            })
+            product.message_post(body=self.env._("Product refused: %s", why.name))
+        return True
+
+    def _ocd_refusal_text(self):
+        """What the vendor reads about the refusal of the product, or False."""
+        self.ensure_one()
+        if self.ocd_review_state != "refused":
+            return False
+        reason = self.ocd_refuse_reason_id
+        return reason.message or reason.name or self.env._("Write to OCD Live to know why.")
+
+    def _ocd_vendor_can_correct(self):
+        """A product the vendor corrects from their space: refused, or still waiting for the
+        check. (A product on sale is changed in another way: its new name or photo are checked
+        while the old ones stay on sale.)"""
+        self.ensure_one()
+        return self.ocd_review_state in ("refused", "to_check")
+
+    def _ocd_vendor_correct(self, values):
+        """Write the corrections of the vendor (`values`: name, price, photo); a refused product
+        goes back to the check of the team, which sees the reason of the refusal."""
+        self.ensure_one()
+        if not self._ocd_vendor_can_correct():
+            raise UserError(self.env._("This product cannot be changed here."))
+        if self.ocd_review_state == "refused":
+            values = {
+                **values,
+                "ocd_review_state": "to_check",
+                "ocd_previous_refusal": self.ocd_refuse_reason_id.name or self.env._("Refused"),
+                "ocd_refuse_reason_id": False,
+            }
+            self.write(values)
+            self.message_post(body=self.env._(
+                "The vendor corrected the product and sent it again (refused for: %s).", self.ocd_previous_refusal,
+            ))
+        else:
+            self.write(values)
         return True
 
     def action_ocd_show_on_live(self):

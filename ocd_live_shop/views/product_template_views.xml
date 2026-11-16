@@ -17,6 +17,12 @@
                     <button name="action_ocd_refuse" type="object" string="Refuse" class="btn btn-sm btn-secondary"
                             invisible="ocd_review_state != 'to_check'" groups="ocd_live.group_ocd_live_user"/>
                 </div>
+                <!-- A refusal always says why: the vendor reads the message of the reason -->
+                <field name="ocd_refuse_reason_id" options="{'no_create': True}"
+                       invisible="not ocd_vendor_id or ocd_review_state not in ('to_check', 'refused')"
+                       readonly="ocd_review_state != 'to_check'"
+                       placeholder="Reason sent to the vendor, to refuse"/>
+                <field name="ocd_previous_refusal" invisible="not ocd_previous_refusal"/>
             </field>
         </field>
     </record>
