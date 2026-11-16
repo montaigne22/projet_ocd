@@ -7,11 +7,13 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My stores</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_roomy">
                 <main class="o_ocd_main o_ocd_my_places">
                     <h1 class="o_ocd_h1 o_ocd_h1_small">Where to find you</h1>
                     <p class="o_ocd_parcel_hint">Your customers see your stores in your boutique, with the itinerary. The team checks each store before showing it.</p>
                     <div t-if="saved" class="o_ocd_ok" role="status">Saved.</div>
+                    <!-- On a computer: the places on the left, what goes with them on the right -->
+                    <div class="o_ocd_place_list">
                     <t t-foreach="rows" t-as="row">
                         <div class="o_ocd_place_card" t-attf-id="lieu-#{row['place'].id}">
                             <div class="o_ocd_place_card_head">
@@ -55,6 +57,8 @@
                         </div>
                     </t>
                     <div t-if="not rows" class="o_ocd_info">No place yet: add your store, or the district where you sell from home.</div>
+                    </div>
+                    <div class="o_ocd_place_side">
 
                     <!-- The place the parcels leave from (A.4 of the plan) -->
                     <form t-if="departure_choice" action="/ocd/espace/moi/magasins/depart" method="post" class="o_ocd_place_departure_form">
@@ -77,6 +81,7 @@
 
                     <a t-if="can_add" href="/ocd/espace/moi/magasins/nouveau" class="o_ocd_cta">Add a place</a>
                     <small t-else="" class="o_ocd_parcel_hint">You have all the places you can have. Write to OCD Live for more.</small>
+                    </div>
                 </main>
             </div>
         </t>
@@ -88,7 +93,7 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My stores</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_roomy">
                 <main class="o_ocd_main o_ocd_my_places">
                     <!-- The phone checks the form, takes the position and reduces the photo
                          (OcdPlaceForm); the server checks everything again -->
@@ -110,6 +115,8 @@
                         <div t-if="errors.get('form')" class="o_ocd_alert" role="alert" t-out="errors['form']"/>
                         <div t-if="place and place.state == 'refused'" class="o_ocd_alert" role="status"><b>Refused by the team:</b> <t t-out="place._ocd_refusal_text()"/></div>
 
+                        <!-- On a computer: the place on the left, its hours on the right -->
+                        <div class="o_ocd_place_form_main">
                         <fieldset t-if="home_allowed" class="o_ocd_field o_ocd_place_kinds">
                             <legend class="o_ocd_label">Where your customers find you</legend>
                             <label class="o_ocd_place_kind">
@@ -192,6 +199,8 @@
                             <small class="o_ocd_parcel_hint">Empty: your number.</small>
                         </div>
 
+                        </div>
+                        <div class="o_ocd_place_form_side">
                         <fieldset class="o_ocd_field o_ocd_place_store_only o_ocd_place_hours" t-att-hidden="'hidden' if kind == 'home' else None">
                             <legend class="o_ocd_label">Opening hours</legend>
                             <t t-foreach="hours" t-as="row">
@@ -222,12 +231,15 @@
                             <span class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('closed') else 'hidden'"><t t-out="errors.get('closed')"/></span>
                         </div>
 
+                        </div>
+                        <div class="o_ocd_place_form_end">
                         <button type="submit" class="o_ocd_cta o_ocd_place_send">
                             <t t-if="place">Save</t>
                             <t t-else="">Send</t>
                         </button>
                         <small class="o_ocd_parcel_hint o_ocd_place_store_only" t-att-hidden="'hidden' if kind == 'home' else None">The team checks a new store, address, position or photo. The hours, the phone and « closed » change at once.</small>
                         <a href="/ocd/espace/moi/magasins" class="o_ocd_link">Cancel</a>
+                        </div>
                     </form>
                 </main>
             </div>

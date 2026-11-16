@@ -57,11 +57,20 @@ class OcdVendorPlaces(http.Controller):
             raise request.not_found()
         return place
 
-    def _cities(self, vendor):
-        company = common.company()
-        country = vendor.country_id or company.country_id
+    def _cities(self, vendor, place=None):
+        """The cities a place can be in: those of the country of the place, else of the vendor,
+        else of OCD Live; the city of the place always among them. Without any city in that
+        country, the cities that have districts (where OCD Live delivers)."""
         City = request.env["res.city"].sudo()
-        return City.search([("country_id", "=", country.id)], order="name") if country else City
+        place_city = place.city_id if place else City
+        country = (
+            place_city.country_id or vendor.country_id or vendor.city_id.country_id or common.company().country_id
+        )
+        cities = City.search([("country_id", "=", country.id)], order="name") if country else City
+        if not cities:
+            districts = request.env["res.city.district"].sudo()._read_group([], ["city_id"])
+            cities = City.browse([city.id for (city,) in districts]).sorted("name")
+        return cities | place_city if place_city not in cities else cities
 
     # === THE LIST === #
 
@@ -153,7 +162,7 @@ class OcdVendorPlaces(http.Controller):
         env = request.env
         company = common.company()
         values = values or {}
-        cities = self._cities(vendor)
+        cities = self._cities(vendor, place)
         city_id = values.get("city_id") or (place.city_id.id if place else False) or (vendor.city_id.id if vendor.city_id else False)
         city = cities.filtered(lambda c: c.id == int(city_id or 0))[:1] or cities[:1]
         districts = env["res.city.district"].sudo().search([("city_id", "=", city.id)], order="name") if city else []
@@ -247,7 +256,7 @@ class OcdVendorPlaces(http.Controller):
             if kind == "store":
                 errors["name"] = _("Write the name of the store.")
             name = _("My home")
-        cities = self._cities(vendor)
+        cities = self._cities(vendor, place)
         city = cities.filtered(lambda c: str(c.id) == str(post.get("city_id")))[:1]
         district = env["res.city.district"].sudo().browse(
             int(post["district_id"]) if str(post.get("district_id", "")).isdigit() else 0

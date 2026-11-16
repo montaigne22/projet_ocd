@@ -613,8 +613,9 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My products</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
-                <main class="o_ocd_main o_ocd_my_products">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_roomy">
+                <!-- On a computer: the form on the left, the products on the right -->
+                <main class="o_ocd_main o_ocd_my_products o_ocd_two_panes">
                     <t t-call="ocd_live_shop.vendor_product_form"/>
 
                     <div class="o_ocd_section_head">
@@ -750,7 +751,7 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My products</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_roomy">
                 <main class="o_ocd_main o_ocd_my_catalogue">
                     <h1 class="o_ocd_h1 o_ocd_h1_small">Catalogue for my status</h1>
                     <p class="o_ocd_parcel_hint">Your products on sale, with their price and the QR code of your boutique. Share the images in your WhatsApp status.</p>
@@ -783,12 +784,13 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Price labels</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_roomy">
                 <main class="o_ocd_main o_ocd_my_labels">
                     <div class="o_ocd_noprint">
                         <h1 class="o_ocd_h1 o_ocd_h1_small">Price labels</h1>
                         <p class="o_ocd_parcel_hint">For your store: the price of each product, with its QR code. Your customers scan it to order online and be delivered.</p>
                         <t t-if="labels">
+                            <div class="o_ocd_labels_tools">
                             <form method="get" class="o_ocd_labels_copies">
                                 <input t-if="chosen" type="hidden" name="produit" t-att-value="chosen"/>
                                 <label for="et-copies" class="o_ocd_label">Copies of each label</label>
@@ -797,6 +799,7 @@
                                 <button class="o_ocd_button">Change</button>
                             </form>
                             <button type="button" class="o_ocd_cta" data-print="1">Print</button>
+                            </div>
                             <small class="o_ocd_parcel_hint">On a phone: Print, then choose a printer or “Save as PDF” to send it to a print shop.</small>
                         </t>
                     </div>
