@@ -7,7 +7,7 @@ du plus rapide au plus long. Les durées sont des estimations, tests compris. Le
 et les réglages des administrateurs sont en bas ; chaque décision rejoindra `DECISIONS.md` quand ce
 qu'elle règle sera fait.
 
-## Étape 0 : corrections, avant tout le reste (~1,5 semaine)
+## Étape 0 : corrections, avant tout le reste (~1,5 semaine) — faite le 16 novembre 2026
 
 | # | Correction | Le problème aujourd'hui | Ce qu'on fait | Effort |
 |---|---|---|---|---|

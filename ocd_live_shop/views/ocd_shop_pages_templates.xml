@@ -563,7 +563,8 @@
                 </span>
                 <span class="o_ocd_photo_pick_done">
                     <img alt="" class="o_ocd_photo_preview" t-att-src="kept_photo['url'] if kept_photo else current_photo"/>
-                    <span><t t-call="ocd_live.icon" icon.f="check"/>Photo added · change it</span>
+                    <span t-if="current_photo" class="o_ocd_photo_current" t-att-hidden="'hidden' if kept_photo else None"><t t-call="ocd_live.icon" icon.f="check"/>Current photo · change it</span>
+                    <span class="o_ocd_photo_added" t-att-hidden="'hidden' if current_photo and not kept_photo else None"><t t-call="ocd_live.icon" icon.f="check"/>Photo added · change it</span>
                 </span>
             </label>
             <span id="mp-photo-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('photo') else 'hidden'"><t t-out="errors.get('photo')"/></span>

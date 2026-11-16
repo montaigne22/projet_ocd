@@ -263,6 +263,8 @@ class TestOcdShopPages(HttpCase, OcdShopCommon):
         self.authenticate(None, None)
         self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
         page = self.url_open("/ocd/espace/moi/produits").text
+        self.assertIn('data-voice-key="mes_produits"', page, "The page speaks its help")
+        self.assertIn("Take a photo, write the name and the price, then tap the orange button.", page)
         token = re.search(r'name="form_token" value="([0-9a-f]{32})"', page).group(1)
         self.assertNotIn('capture="environment"', page, "The gallery is allowed by default")
         self.assertIn("Add a photo", page)

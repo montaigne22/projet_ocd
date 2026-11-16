@@ -54,6 +54,15 @@ class TestOcdProductReview(HttpCase, OcdShopCommon):
         self.assertIn(self.blurry.message, page)
         self.assertIn(f"/ocd/espace/moi/produits/{self.skirt.id}/modifier", page)
         self.assertIn("Correct and send again", page)
+        # The vendor sees the photo the team refused (its public address gives the default
+        # image while the product is not online)
+        photo = f"/ocd/espace/moi/produits/{self.skirt.id}/photo/image_128"
+        self.assertIn(photo, page)
+        response = self.url_open(photo)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.headers["Content-Type"].startswith("image/"))
+        self.assertIn("private", response.headers.get("Cache-Control", ""))
+        self.assertEqual(self.url_open(f"/ocd/espace/moi/produits/{self.skirt.id}/photo/image_1920").status_code, 404)
         url = f"/ocd/espace/moi/produits/{self.skirt.id}/modifier"
         page = self.url_open(url).text
         self.assertIn("Correct the product", page)
@@ -77,6 +86,7 @@ class TestOcdProductReview(HttpCase, OcdShopCommon):
         # Another vendor cannot open it; a product on sale is changed in another way
         self.url_open(f"/ocd/espace/{self.fatou._ocd_get_space_token()}")
         self.assertEqual(self.url_open(url).status_code, 404)
+        self.assertEqual(self.url_open(photo).status_code, 404, "Not the photo of another vendor")
         self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
         self.skirt.action_ocd_approve()
         response = self.url_open(url, allow_redirects=False)

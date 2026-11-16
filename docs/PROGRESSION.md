@@ -29,6 +29,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Adresse du site (`/`) = accueil d'OCD Live, site en français, logo et pied de page d'OCD sur les pages d'Odoo | ✅ fait, testé |
 | Thème du site « OCD Live » (`theme_ocd`) dans le choix des thèmes d'Odoo | ✅ fait, testé |
 | Site : toutes les pages du shop fidèles au design (shop, produit, panier, livraison, paiement, suivi, boutique, replay, mes produits, mes colis, tournée) | ✅ fait, testé |
+| « Mes produits » fiable (chantier 15) : stock − / + qui garde les pièces des commandes, prix lu ou refusé, formulaire pour réseau lent (photo gardée, réduite, un seul envoi), galerie, refus expliqué et produit corrigé puis renvoyé, voix de la page | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
 | Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
@@ -78,6 +79,8 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    mise à jour du 12 novembre** : WhatsApp › Modèles, filtre « Refusés ou en pause », tout cocher, Action ›
    « Soumettre à Meta » (les textes refusés pour `INCORRECT_CATEGORY` ont été réécrits). Les
    réponses rapides de l'équipe se créent dans les conversations (`::livreur`, `::retard`…).
+   **Depuis le 16 novembre**, aussi : `ocd_produit_accepte`, `ocd_produit_refuse`, `ocd_stock_bas`
+   (français et anglais), pour les messages aux vendeurs sur leurs produits.
 3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
    back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
@@ -97,6 +100,41 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 16 novembre 2026 — « Mes produits » fiable (chantier 15, étape 0 du plan)
+Premier chantier de [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md) : les corrections de la page du
+vendeur, avant les ajouts.
+- **Boutons − / + du stock** : la page montrait le stock libre (moins les pièces réservées par les
+  commandes) mais l'enregistrait comme stock total : avec 5 en stock dont 2 réservées, la page montrait
+  3, « + » posait 4 et la page montrait 2 ; et le chiffre de la page écrasait une vente faite entre-temps.
+  Les boutons envoient maintenant +1 ou −1, ajoutés au stock du moment : les pièces des commandes ne
+  sont jamais retirées, chaque changement reste tracé (ajustement d'inventaire), deux appuis rapides
+  comptent deux fois. Le stock de toute la page se calcule en une requête, quel que soit le nombre de
+  produits. Chaque méthode prend l'emplacement : prête pour le stock par magasin.
+- **Prix** : « 2500,50 » devenait 250 050, « 3000-5000 » 30 005 000 (tous les chiffres gardés). Un seul
+  lecteur de montant (`tools.parse_amount`, le même dans le téléphone) lit « 3 000 », « 3.000 F »,
+  « 15 000 FCFA », « 3000frs », les centimes seulement dans une devise qui en a, et refuse le reste avec
+  un message clair. Aussi pour les prix de livraison des vendeurs, qui avaient le même défaut.
+- **Le formulaire sur un réseau lent** : le téléphone vérifie le nom, le prix et la photo avant l'envoi
+  (plus de rechargement pour un oubli) ; une erreur vue par le serveur garde la photo reçue (plus besoin
+  de la reprendre) ; un second appui ne crée plus un second produit (bouton « Envoi… », jeton du
+  formulaire verrouillé par le serveur) ; la photo est réduite dans le téléphone avant l'envoi (une photo
+  de 10,9 Mo partie en 946 Ko).
+- **Galerie ou appareil photo** : « Ajouter une photo » ; nouvelle raison de refus « Photo qui n'est pas
+  la tienne ».
+- **Un refus dit pourquoi** (la décision de l'équipe le prévoyait, le code non) : le motif reste sur le
+  produit (le bouton « Refuser » de la fiche l'exige), le vendeur le lit sous le produit, le corrige et
+  le renvoie ; l'équipe voit « Renvoyé après un refus : … ». Le vendeur voit enfin la photo d'un produit
+  pas encore en ligne (son adresse publique donnait l'image par défaut d'Odoo).
+- **Voix et aide** de la page (prévues par le design validé), lues par la voix du téléphone tant que
+  l'équipe n'a pas enregistré la sienne.
+- **Paramètres › Produits et magasins des vendeurs** (nouvelle section) : photos de la galerie, photo la
+  plus lourde (10 Mo, auparavant écrit dans le code), taille de réduction (1600 px).
+- **Trois modèles WhatsApp à soumettre à Meta** (*Utility*, français et anglais) : produit accepté,
+  produit refusé avec son motif, stock bas. Leur bouton ouvre « Mes produits » par le lien personnel.
+  Ils partiront avec les chantiers 19 et 21 ; les soumettre dès maintenant.
+- Tests : base neuve, tous les modules OCD ; vérifié dans un navigateur de téléphone (Pixel 7), en
+  français et en anglais.
 
 ### 15 novembre 2026 — Les étapes d'une réservation sur le téléphone : où l'on est, la sortie, l'aide
 - Sur le téléphone, le menu laisse la place aux étapes de la réservation (parcours fermé : moins de

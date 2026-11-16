@@ -154,6 +154,17 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   client, sinon il appelle l'équipe (qui peut valider sans code, avec un motif).
 - **Reprise de livraison par le livreur** après un problème, tracée dans l'historique du colis (qui, après
   quel problème). Le nombre d'échecs compte toujours : au-delà du réglage, le colis retourne au vendeur.
+- **« Mes produits »** (16 novembre 2026, [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md)) :
+  - le vendeur règle le **stock libre** (les pièces réservées par les commandes ne sont jamais retirées) ;
+    − et + ajoutent au stock du moment, chaque changement est tracé ;
+  - un **prix** se lit avec ou sans espaces, points et devise (« 3 000 F ») ; ce qui n'est pas un seul
+    prix est refusé, jamais deviné ; centimes seulement dans une devise qui en a ;
+  - **photo de la galerie ou prise** (réglable) : l'authenticité vient de la vérification de l'équipe
+    (raison de refus « Photo qui n'est pas la tienne ») ; réduite dans le téléphone (1600 px, réglable),
+    10 Mo au plus (réglable) ;
+  - **un refus dit toujours pourquoi** : le vendeur lit le message du motif, corrige le produit (nom,
+    prix, photo) et le renvoie à la vérification ; un produit en vente ne se corrige pas ainsi (son
+    nouveau nom ou sa nouvelle photo seront vérifiés pendant que l'ancienne version reste en vente).
 - **Une photo par couleur** (le vendeur dans « Mes produits », ou l'équipe) : la page change de photo avec
   la couleur ; la photo s'ouvre en plein écran. Une taille ou une couleur épuisée se choisit encore, pour
   **« Préviens-moi quand c'est de retour »** (WhatsApp, dès que le stock revient).

@@ -18,6 +18,16 @@ MAX_PRICE = 1_000_000_000
 PENDING_PHOTO = "ocd_pending_product_photo"
 # The token of a form of « My products » (uuid4().hex)
 FORM_TOKEN = re.compile(r"[0-9a-f]{32}")
+# The sizes of the photos of the products a vendor sees in their space
+PHOTO_SIZES = ("image_128", "image_256", "image_512", "image_1024")
+
+
+def vendor_photo_url(product, size="image_128"):
+    """The photo of a product of the vendor, for « My products », whether it is online or not."""
+    if not product or not product.sudo().image_128:
+        return False
+    stamp = product._ocd_photo_stamp(product.sudo())
+    return f"/ocd/espace/moi/produits/{product.id}/photo/{size}?unique={stamp}"
 
 
 def read_price(text):
@@ -72,7 +82,7 @@ class OcdVendorProducts(http.Controller):
             rows.append({
                 "product": product,
                 "price": common.money(product.list_price, product.currency_id),
-                "image": shop_common.image_url(product, "image_128"),
+                "image": vendor_photo_url(product, "image_128"),
                 "qty": qty,
                 "single": len(product.product_variant_ids) == 1,
                 "colours": [
@@ -102,7 +112,7 @@ class OcdVendorProducts(http.Controller):
         max_mb = company._ocd_vendor_photo_max_bytes() // (1024 * 1024)
         return {
             "product": product or False,
-            "current_photo": shop_common.image_url(product, "image_512") if product and product.image_128 else False,
+            "current_photo": vendor_photo_url(product, "image_512"),
             "refusal": product._ocd_refusal_text() if product else False,
             "values": values or {},
             "errors": errors or {},
@@ -173,6 +183,32 @@ class OcdVendorProducts(http.Controller):
         if amount is None:
             errors["price"] = price_error(price)
         return errors, name, amount
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/photo/<string:size>", type="http", auth="public",
+                website=True, methods=["GET"], sitemap=False)
+    def product_photo(self, product_id, size, **kwargs):
+        """The photo of a product of the vendor, also while it waits for the check or is refused:
+        its public address gives the default image until the product is put online, so the
+        vendor would not see the photo the team refused."""
+        vendor = self._vendor()
+        product = request.env["product.template"].sudo().browse(product_id).exists()
+        if not vendor or not product or product.ocd_vendor_id != vendor or size not in PHOTO_SIZES:
+            raise request.not_found()
+        stream = request.env["ir.binary"]._get_image_stream_from(product, size)
+        # Private to the vendor; the address changes with the photo (?unique=)
+        response = stream.get_response(immutable=bool(kwargs.get("unique")))
+        response.headers["Cache-Control"] = response.headers.get("Cache-Control", "").replace("public", "private")
+        return response
+
+    @http.route("/ocd/espace/<string:token>/produits", type="http", auth="public", website=True, methods=["GET"],
+                sitemap=False)
+    def products_link(self, token, **kwargs):
+        """The button of a WhatsApp message to the vendor: their personal link opens their
+        space on the phone, then « My products ». (« moi » takes the route below.)"""
+        vendor = common.current_vendor(token)
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        return request.redirect("/ocd/espace/moi/produits")
 
     @http.route("/ocd/espace/moi/produits", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
     def products(self, envoye=None, **kwargs):

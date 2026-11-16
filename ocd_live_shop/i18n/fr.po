@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-15 09:40+0000\n"
-"PO-Revision-Date: 2026-11-15 09:40+0000\n"
+"POT-Creation-Date: 2026-11-16 13:17+0000\n"
+"PO-Revision-Date: 2026-11-16 13:17+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -539,6 +539,11 @@ msgstr ""
 "                        <span>Donne le code reçu au livreur pour recevoir ton colis.</span>"
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "<b>Refused by the team:</b>"
+msgstr "<b>Refusé par l'équipe :</b>"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.payment
 msgid ""
 "<b>The payment did not go through.</b>\n"
@@ -682,7 +687,7 @@ msgid "<span id=\"l-rate\" class=\"o_ocd_label\">Did you like your order?</span>
 msgstr "<span id=\"l-rate\" class=\"o_ocd_label\">Ta commande t'a plu ?</span>"
 
 #. module: ocd_live_shop
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "<span id=\"mp-qty\" class=\"o_ocd_label\">How many do you have?</span>"
 msgstr "<span id=\"mp-qty\" class=\"o_ocd_label\">Combien tu en as ?</span>"
 
@@ -775,11 +780,6 @@ msgid "<span>Shop</span>"
 msgstr "<span>Shop</span>"
 
 #. module: ocd_live_shop
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
-msgid "<span>Take a photo</span>"
-msgstr "<span>Prendre une photo</span>"
-
-#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
 msgid "<span>Tell me on WhatsApp when it is back.</span>"
 msgstr "<span>Préviens-moi sur WhatsApp quand c'est de retour.</span>"
@@ -820,6 +820,17 @@ msgstr "<span>Ton code pour ce colis</span>"
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_partner_view_form_ocd_vendor
 msgid "<span>hours, then reminder</span>"
 msgstr "<span>heures, puis relance</span>"
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_vendor_photo_max_mb
+msgid "A heavier photo is refused, after its reduction on the phone."
+msgstr "Une photo plus lourde est refusée, après sa réduction dans le téléphone."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "A heavier photo is refused."
+msgstr "Une photo plus lourde est refusée."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -902,6 +913,11 @@ msgid "Activities"
 msgstr "Activités"
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Add a photo"
+msgstr "Ajouter une photo"
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
 msgid "Add a photo of your product."
@@ -913,7 +929,7 @@ msgid "Add a price"
 msgstr "Ajouter un prix"
 
 #. module: ocd_live_shop
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Add a product"
 msgstr "Ajoute un produit"
 
@@ -1118,6 +1134,12 @@ msgstr "Au moins %s."
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "At least 400 pixels, or 0."
+msgstr "Au moins 400 pixels, ou 0."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "At least the lowest price."
 msgstr "Au moins le prix le plus bas."
 
@@ -1186,6 +1208,12 @@ msgstr "Disponible"
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_stock_alert_view_search
 msgid "Back in stock alerts"
 msgstr "Alertes de retour en stock"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Back to my products"
+msgstr "Retour à mes produits"
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -1364,6 +1392,7 @@ msgstr "Appeler le dispatch"
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_parcel_force_view_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_parcel_problem_view_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -1500,10 +1529,25 @@ msgid "Category Of The Vendor"
 msgstr "Catégorie du vendeur"
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Change"
+msgstr "Modifier"
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Change the product"
+msgstr "Modifier le produit"
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/product_template.py:0
 msgid "Change the stock of the product %s from the back office."
 msgstr "Change le stock du produit %s depuis le back-office."
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Change what is needed, then tap the orange button. The team checks it again."
+msgstr "Change ce qu'il faut, puis touche le bouton orange. L'équipe le vérifie de nouveau."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -1565,6 +1609,7 @@ msgstr "Choisis le journal des reversements dans les paramètres."
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+#: code:addons/ocd_live_shop/models/product_template.py:0
 msgid "Choose the reason sent to the vendor."
 msgstr "Choisis le motif envoyé au vendeur."
 
@@ -1773,6 +1818,16 @@ msgid "Control room"
 msgstr "Régie"
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Correct and send again"
+msgstr "Corriger et renvoyer"
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Correct the product"
+msgstr "Corriger le produit"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_cash_remittance__state__done
 msgid "Counted"
 msgstr "Compté"
@@ -1906,6 +1961,11 @@ msgstr "Créé le"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__currency_id
 msgid "Currency"
 msgstr "Devise"
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Current photo · change it"
+msgstr "Photo actuelle · la changer"
 
 #. module: ocd_live_shop
 #. odoo-javascript
@@ -2664,6 +2724,12 @@ msgid "Forbidden product"
 msgstr "Produit interdit"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_form_token
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_form_token
+msgid "Form Of The Vendor"
+msgstr "Formulaire du vendeur"
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 #: code:addons/ocd_live_shop/controllers/vendor_rates.py:0
@@ -3017,6 +3083,17 @@ msgid "Landmark"
 msgstr "Point de repère"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_vendor_photo_max_mb
+msgid "Largest Photo Of A Vendor (MB)"
+msgstr "Photo la plus lourde d'un vendeur (Mo)"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "Largest photo sent"
+msgstr "Photo la plus lourde"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__write_uid
@@ -3216,10 +3293,32 @@ msgid "Log out"
 msgstr "Se déconnecter"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_vendor_photo_px
+msgid "Longest side of a photo of a vendor, reduced on the phone before it is sent: faster, less data. 0: sent as taken."
+msgstr "Plus grand côté d'une photo de vendeur, réduite dans le téléphone avant l'envoi : plus rapide, moins de données. 0 : envoyée telle quelle."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "Longest side, before the photo is sent: faster, less data. 0: sent as taken."
+msgstr "Plus grand côté, avant l'envoi de la photo : plus rapide, moins de données. 0 : envoyée telle quelle."
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_vendor_rate_min
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_config_settings__ocd_vendor_rate_min
 msgid "Lowest Delivery Price Of A Vendor"
 msgstr "Prix de livraison le plus bas d'un vendeur"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "MB"
+msgstr "Mo"
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "MB at most."
+msgstr "Mo au plus."
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__message_has_error
@@ -3381,7 +3480,9 @@ msgstr "Mes colis"
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
 #: code:addons/ocd_live_shop/models/res_partner.py:0
+#: model:ocd.voice.prompt,name:ocd_live_shop.voice_prompt_mes_produits
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.space
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "My products"
 msgstr "Mes produits"
@@ -3397,7 +3498,7 @@ msgid "My tour"
 msgstr "Ma tournée"
 
 #. module: ocd_live_shop
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Name of the product"
 msgstr "Nom du produit"
 
@@ -3946,13 +4047,13 @@ msgstr "Un %s de plus"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "One less"
 msgstr "Un de moins"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "One more"
 msgstr "Un de plus"
 
@@ -4487,14 +4588,35 @@ msgid "Photo Of The Handover"
 msgstr "Photo de la remise"
 
 #. module: ocd_live_shop
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Photo added · change it"
 msgstr "Photo ajoutée · la changer"
+
+#. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,name:ocd_live_shop.refuse_reason_product_not_yours
+msgid "Photo not yours"
+msgstr "Photo qui n'est pas la tienne"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_product_template_attribute_value__ocd_image
 msgid "Photo of the product in this colour: the product page shows it as soon as the colour is chosen. Without it, the main photo of the product."
 msgstr "Photo du produit dans cette couleur : la page du produit la montre dès que la couleur est choisie. Sans elle, la photo principale du produit."
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_vendor_photo_gallery
+msgid "Photos From The Gallery"
+msgstr "Photos de la galerie"
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_vendor_photo_px
+msgid "Photos Reduced On The Phone (px)"
+msgstr "Photos réduites dans le téléphone (px)"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "Photos from the gallery"
+msgstr "Photos de la galerie"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
@@ -4505,6 +4627,12 @@ msgstr "Photos des couleurs ·"
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
 msgid "Photos of the product"
 msgstr "Photos du produit"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "Photos reduced on the phone"
+msgstr "Photos réduites dans le téléphone"
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -4572,7 +4700,7 @@ msgstr "Préparé"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__price
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__amount
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_form
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Price"
 msgstr "Prix"
 
@@ -4686,6 +4814,12 @@ msgstr "Produits"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_booking__vendor_product_ids
 msgid "Products Of The Vendor"
 msgstr "Produits du vendeur"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "Products and stores of the vendors"
+msgstr "Produits et magasins des vendeurs"
 
 #. module: ocd_live_shop
 #: model:ir.actions.act_window,name:ocd_live_shop.product_template_action_ocd_vendor_products
@@ -4810,9 +4944,20 @@ msgid "Reason"
 msgstr "Motif"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_refuse_reason_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_refuse_reason_id
+msgid "Reason Of The Refusal"
+msgstr "Motif du refus"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_force_reason
 msgid "Reason Of The Validation Without Code"
 msgstr "Motif de la validation sans code"
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product_template_form_view
+msgid "Reason sent to the vendor, to refuse"
+msgstr "Motif envoyé au vendeur, pour refuser"
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.parcel_on_the_way
@@ -4866,6 +5011,7 @@ msgstr "Refuser"
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+#: code:addons/ocd_live_shop/models/product_template.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template__ocd_review_state__refused
 msgid "Refused"
 msgstr "Refusé"
@@ -5049,6 +5195,11 @@ msgid "Saturday"
 msgstr "Samedi"
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Save"
+msgstr "Enregistrer"
+
+#. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/couriers/couriers.xml:0
 msgid "Save the cash"
@@ -5152,13 +5303,18 @@ msgid "Send"
 msgstr "Envoyer"
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Send again for checking"
+msgstr "Renvoyer pour vérification"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_form_ocd_parcel
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_picking_form
 msgid "Send back to the vendor"
 msgstr "Renvoyer au vendeur"
 
 #. module: ocd_live_shop
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Send for checking"
 msgstr "Envoyer pour vérification"
 
@@ -5190,16 +5346,34 @@ msgid "Send this link of the delivery app: %s"
 msgstr "Envoie ce lien de l'appli de livraison : %s"
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Sending…"
+msgstr "Envoi…"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_boutique_alert__state__sent
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_stock_alert__state__sent
 msgid "Sent"
 msgstr "Envoyé"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_previous_refusal
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_previous_refusal
+msgid "Sent Again After"
+msgstr "Renvoyé après"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_boutique_alert__sent_at
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__sent_at
 msgid "Sent At"
 msgstr "Envoyé le"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Sent again after a refusal: %(reason)s. %(detail)s"
+msgstr "Renvoyé après un refus : %(reason)s. %(detail)s"
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -5230,7 +5404,7 @@ msgid "Sent to the customer when the parcel leaves. Only the customer sees it."
 msgstr "Envoyé au client quand le colis part. Seul le client le voit."
 
 #. module: ocd_live_shop
-#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Sent. The team checks the photo, then your product shows in your boutique."
 msgstr "Envoyé. L'équipe vérifie la photo, puis ton produit apparaît dans ta boutique."
 
@@ -5345,6 +5519,12 @@ msgid "Shown to the customer, e.g. \"Delivered within 24 to 48 hours\"."
 msgstr "Affiché au client, ex. « Livré sous 24 à 48 h »."
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_product_product__ocd_refuse_reason_id
+#: model:ir.model.fields,help:ocd_live_shop.field_product_template__ocd_refuse_reason_id
+msgid "Shown to the vendor in « My products », with its message: they correct the product and send it again."
+msgstr "Montré au vendeur dans « Mes produits », avec son message : il corrige le produit et le renvoie."
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_orders.py:0
 msgid "Since %s"
@@ -5426,6 +5606,21 @@ msgstr "Mouvement de stock"
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__res_company__ocd_payout_weekday__6
 msgid "Sunday"
 msgstr "Dimanche"
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Take a photo"
+msgstr "Prendre une photo"
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Take a photo, write the name and the price, then tap the orange button."
+msgstr "Prends une photo, écris le nom et le prix, puis touche le bouton orange."
+
+#. module: ocd_live_shop
+#: model:ocd.voice.prompt,text:ocd_live_shop.voice_prompt_mes_produits
+msgid "Take a photo, write the name and the price, then tap the orange button. Below, the minus and the plus change how many you have."
+msgstr "Prends une photo, écris le nom et le prix, puis touche le bouton orange. En dessous, le moins et le plus changent combien tu en as."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -5663,6 +5858,12 @@ msgid "The first bank journal"
 msgstr "Le premier journal de banque"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_product_product__ocd_form_token
+#: model:ir.model.fields,help:ocd_live_shop.field_product_template__ocd_form_token
+msgid "The form of « My products » that added the product: sent twice (a second tap on a slow network), it adds one product only."
+msgstr "Le formulaire de « Mes produits » qui a ajouté le produit : envoyé deux fois (un second appui sur un réseau lent), il n'ajoute qu'un produit."
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/res_partner.py:0
 msgid "The link of the delivery app was sent on WhatsApp."
@@ -5792,14 +5993,14 @@ msgstr "Les reversements sont préparés la veille au soir ; l'équipe les véri
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
-msgid "The photo could not be added: an image of 10 MB at most."
-msgstr "La photo n'a pas pu être ajoutée : une image de 10 Mo au plus."
+msgid "The photo could not be added: an image of"
+msgstr "La photo n'a pas pu être ajoutée : une image de"
 
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
-msgid "The photo is too big (10 MB at most)."
-msgstr "La photo est trop lourde (10 Mo au plus)."
+msgid "The photo is too big (%s MB at most)."
+msgstr "La photo est trop lourde (%s Mo au plus)."
 
 #. module: ocd_live_shop
 #: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_photo
@@ -5864,9 +6065,21 @@ msgid "The rates of a vendor are the deliveries made by the vendor."
 msgstr "Les tarifs d'un vendeur sont les livraisons faites par le vendeur."
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_product_product__ocd_previous_refusal
+#: model:ir.model.fields,help:ocd_live_shop.field_product_template__ocd_previous_refusal
+msgid "The reason of the last refusal of a product the vendor corrected and sent again."
+msgstr "Le motif du dernier refus d'un produit que le vendeur a corrigé et renvoyé."
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_partner_view_form_ocd_vendor
 msgid "The vendor collects the payments at the door (the commission due is withheld from the payout)"
 msgstr "Il encaisse les paiements à la livraison (la commission due est déduite de son reversement)"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "The vendor corrected the product and sent it again (refused for: %s)."
+msgstr "Le vendeur a corrigé le produit et l'a renvoyé (refusé pour : %s)."
 
 #. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_delivery_rate__operator__vendor
@@ -5908,6 +6121,12 @@ msgstr "Il voit ses colis dans son espace, livre, puis saisit le code du client.
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "The vendor takes a photo or chooses one of the phone; the team checks it. Off: the camera only."
+msgstr "Le vendeur prend une photo ou en choisit une du téléphone ; l'équipe la vérifie. Désactivé : l'appareil photo seulement."
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "The vendor was reminded: the parcel is not ready yet."
 msgstr "Le vendeur a été relancé : le colis n'est pas encore prêt."
@@ -5922,6 +6141,11 @@ msgstr "Les vendeurs et les clients de ces pays paient avec les paiements vérif
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "The vendors set their prices in their space, between these amounts (0: no limit)."
 msgstr "Les vendeurs fixent leurs prix dans leur espace, entre ces montants (0 : pas de limite)."
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_vendor_photo_gallery
+msgid "The vendors take a photo or choose one of their phone. Off: the camera only."
+msgstr "Les vendeurs prennent une photo ou en choisissent une de leur téléphone. Désactivé : l'appareil photo seulement."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -6050,6 +6274,17 @@ msgid "This payment method is not allowed for this parcel."
 msgstr "Ce moyen de paiement n'est pas autorisé pour ce colis."
 
 #. module: ocd_live_shop
+#: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_not_yours
+msgid "This photo is not one of yours (taken from the internet or another shop). Take a photo of your own product and send it again."
+msgstr "Cette photo n'est pas la tienne (prise sur internet ou dans une autre boutique). Prends ton produit en photo et renvoie-le."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "This product cannot be changed here."
+msgstr "Ce produit ne se modifie pas ici."
+
+#. module: ocd_live_shop
 #: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_forbidden
 msgid "This product cannot be sold on OCD Live."
 msgstr "Ce produit ne peut pas être vendu sur OCD Live."
@@ -6064,6 +6299,11 @@ msgstr "Ce produit n'appartient pas au vendeur du live."
 #: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_duplicate
 msgid "This product is already in your boutique."
 msgstr "Ce produit est déjà dans ta boutique."
+
+#. module: ocd_live_shop
+#: model:ir.model.constraint,message:ocd_live_shop.constraint_product_template_ocd_form_token_uniq
+msgid "This product was already added from this form."
+msgstr "Ce produit a déjà été ajouté depuis ce formulaire."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -6651,6 +6891,12 @@ msgstr "Écris un prix en francs, par exemple 3000."
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Write one price, without cents or dash, for example 3000."
+msgstr "Écris un seul prix, sans centimes ni tiret, par exemple 3000."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
 msgid "Write the name of the product."
 msgstr "Écris le nom du produit."
 
@@ -6673,6 +6919,12 @@ msgstr "Écrire à %s sur WhatsApp"
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "Write to OCD Live to know the price of the delivery to your city."
 msgstr "Écris à OCD Live pour connaître le prix de la livraison vers ta ville."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "Write to OCD Live to know why."
+msgstr "Écris à OCD Live pour savoir pourquoi."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -7003,6 +7255,12 @@ msgstr "colis"
 #: code:addons/ocd_live_shop/static/src/orders/orders.xml:0
 msgid "parcels, one per vendor"
 msgstr "colis, un par vendeur"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "pixels"
+msgstr "pixels"
 
 #. module: ocd_live_shop
 #. odoo-python

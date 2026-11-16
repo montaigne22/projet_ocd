@@ -230,6 +230,17 @@ class ProductTemplate(models.Model):
             text = f"{text} {link}"
         return f"https://wa.me/{digits}?text={url_quote(text)}"
 
+    def _ocd_free_total(self):
+        """Pieces of the product free to sell, all its variants together (messages to the vendor)."""
+        self.ensure_one()
+        return sum(self.product_variant_ids._ocd_free_qties().values())
+
+    def _ocd_vendor_products_path(self):
+        """« My products » of the vendor of the product, opened by their personal link (the
+        button of a WhatsApp message): without the domain, Meta adds it."""
+        self.ensure_one()
+        return f"ocd/espace/{self.ocd_vendor_id._ocd_get_space_token()}/produits"
+
     def _ocd_single_variant(self):
         """The variant of a product without variants, whose stock the vendor changes from their
         space (the stock of each variant is changed from the back office)."""

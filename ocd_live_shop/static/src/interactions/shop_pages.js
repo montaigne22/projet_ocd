@@ -482,6 +482,8 @@ export class OcdProductForm extends Interaction {
             return;
         }
         this.kept()?.remove(); // the new photo replaces the one kept after an error
+        this.el.querySelector(".o_ocd_photo_current")?.setAttribute("hidden", "");
+        this.el.querySelector(".o_ocd_photo_added")?.removeAttribute("hidden");
         this.showError("photo", "");
         this.showPreview(file);
         const count = ++this.photoCount;
