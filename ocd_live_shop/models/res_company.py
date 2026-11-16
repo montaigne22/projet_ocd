@@ -129,6 +129,12 @@ class ResCompany(models.Model):
         "less data. 0: sent as taken.",
     )
 
+    ocd_vendor_catalogue_items = fields.Integer(
+        string="Products Per Image Of The Catalogue",
+        default=4,
+        help="The catalogue a vendor shares on their WhatsApp status: products on each image (1 to 4).",
+    )
+
     def _ocd_vendor_photo_max_bytes(self):
         self.ensure_one()
         return max(self.ocd_vendor_photo_max_mb or 10, 1) * 1024 * 1024

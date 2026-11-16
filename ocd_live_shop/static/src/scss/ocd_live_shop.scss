@@ -1729,6 +1729,36 @@
             }
         }
     }
+    .o_ocd_my_products_catalogue {
+        width: 100%;
+    }
+    // The catalogue for the status: the images one under the other, their buttons below
+    .o_ocd_catalogue_pages {
+        display: grid;
+        gap: 18px;
+        @media (min-width: $ocd-tablet) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    .o_ocd_catalogue_page {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 0;
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 18px;
+            background: $ocd-sand;
+        }
+        figcaption {
+            display: flex;
+            gap: 8px;
+            > * {
+                flex: 1;
+            }
+        }
+    }
     .o_ocd_my_products_filters .o_ocd_chip[aria-current="true"] {
         border-color: $ocd-ink;
         background: $ocd-ink;

@@ -720,6 +720,7 @@
                             <span>Share my boutique</span>
                         </button>
                         <div class="o_ocd_share_done o_ocd_ok" role="status" hidden="hidden">Link copied. Paste it in your WhatsApp status.</div>
+                        <a href="/ocd/espace/moi/catalogue" class="o_ocd_button o_ocd_my_products_catalogue">Catalogue for my status</a>
                     </t>
                 </main>
             </div>
@@ -733,6 +734,38 @@
             <div class="o_ocd_frame o_ocd_narrow">
                 <main class="o_ocd_main o_ocd_my_products">
                     <t t-call="ocd_live_shop.vendor_product_form"/>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The catalogue of the boutique, as images for the WhatsApp status (1.7 of the plan) -->
+    <template id="vendor_catalogue" name="OCD Live: catalogue for the status">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My products</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_my_catalogue">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Catalogue for my status</h1>
+                    <p class="o_ocd_parcel_hint">Your products on sale, with their price and the QR code of your boutique. Share the images in your WhatsApp status.</p>
+                    <t t-if="images">
+                        <button type="button" class="o_ocd_cta o_ocd_share o_ocd_catalogue_share" t-att-data-url="boutique_url"
+                                t-att-data-images="json.dumps(images)" t-att-data-text="vendor.name">Share the catalogue</button>
+                        <div class="o_ocd_share_done o_ocd_ok" role="status" hidden="hidden">Link copied. Paste it in your WhatsApp status.</div>
+                        <div class="o_ocd_catalogue_pages">
+                            <t t-foreach="images" t-as="image">
+                                <figure class="o_ocd_catalogue_page">
+                                    <img t-att-src="image" alt="" width="1080" height="1350"/>
+                                    <figcaption>
+                                        <a t-att-href="image" t-attf-download="catalogue-#{image_index + 1}.jpg" class="o_ocd_button">Download</a>
+                                        <button type="button" class="o_ocd_button o_ocd_share" t-att-data-url="boutique_url"
+                                                t-att-data-image="image" t-att-data-text="vendor.name">Share</button>
+                                    </figcaption>
+                                </figure>
+                            </t>
+                        </div>
+                    </t>
+                    <div t-else="" class="o_ocd_info">No product on sale yet: the catalogue shows your products put online by the team, with stock.</div>
                 </main>
             </div>
         </t>

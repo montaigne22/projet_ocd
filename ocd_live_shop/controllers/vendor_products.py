@@ -132,7 +132,8 @@ class OcdVendorProducts(http.Controller):
                 "share": {
                     "url": root + product.website_url,
                     "text": f"{product.name} · {common.money(product.list_price, product.currency_id)}",
-                } if online else False,
+                    "image": f"/ocd/produit/{product.id}/partage.jpg?unique={product._ocd_photo_stamp(product)}",
+                } if online and product.ocd_review_state == "approved" else False,
                 "first": index == 0,
                 "last": index == len(products) - 1,
             })

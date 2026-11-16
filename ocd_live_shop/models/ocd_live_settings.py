@@ -35,6 +35,9 @@ class OcdLiveSettings(models.AbstractModel):
                 item("number", "ocd_vendor_photo_px", _("Photos reduced on the phone"),
                      _("Longest side, before the photo is sent: faster, less data. 0: sent as taken."),
                      suffix=_("pixels"), min=0, max=4000, width=80),
+                item("number", "ocd_vendor_catalogue_items", _("Catalogue for the status"),
+                     _("The products on each image the vendor shares on their WhatsApp status."),
+                     suffix=_("products per image"), min=1, max=4, width=70),
             ],
         }
 
