@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mon stock</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+.d{font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-weight:800}
+.h{font-size:13px;color:#665F58;line-height:1.35}
+.pill{border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;border:0;border-radius:14px;padding:0 14px;box-shadow:inset 0 0 0 2px #E7E2DC;background:#FFFFFF;color:#15130F;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.chip{display:flex;flex-direction:column;align-items:flex-start;gap:0;min-height:52px;box-sizing:border-box;border-radius:14px;padding:6px 12px;font-family:inherit;color:#15130F;background:#FFFFFF;border:2px solid #E7E2DC;text-align:left}
+.chip b{font-size:15px}.chip span{font-size:12.5px;color:#665F58}
+.row{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:6px 0}
+.size{font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-weight:800;font-size:17px}
+.step{display:flex;align-items:center;gap:2px;background:#F5F2EE;border-radius:12px;padding:2px}
+.step button{width:44px;height:44px;border:0;border-radius:10px;background:#FFFFFF;color:#15130F;font-family:inherit;font-size:20px;font-weight:700}
+.step b{min-width:28px;text-align:center;font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-size:16px;font-variant-numeric:tabular-nums}
+.sw{width:18px;height:18px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+</style>
+</helmet>
+<!-- Mon stock (chantier 18, S.2 et 2.5) : le stock d'un produit dans chaque magasin, avec ses
+     tailles et ses couleurs. Montré à partir de 2 lieux ; avec un seul lieu, les − / + de « Mes
+     produits » restent comme aujourd'hui. Données d'exemple : Awa Couture, Douala. -->
+<div style="width: 390px; height: 960px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="MesProduits.dc.html" aria-label="Retour à mes produits" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span class="d" style="font-size: 19px">Mes produits</span>
+  </div>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 6px 18px 14px">
+    <div style="display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center">
+      <span style="width: 64px; height: 64px; border-radius: 14px; background: #F5F2EE; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #665F58">Photo</span>
+      <span style="display: flex; flex-direction: column; gap: 2px">
+        <h1 class="d" style="margin: 0; font-size: 26px; line-height: 1.05; letter-spacing: -0.02em">Robe en wax</h1>
+        <span style="font-size: 14px">12 000 F · 2 couleurs, 4 tailles</span>
+      </span>
+    </div>
+
+    <!-- Le magasin dont on change le stock -->
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span style="font-weight: 700; font-size: 14.5px">Stock du magasin</span>
+      <div role="group" aria-label="Magasin" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+        <button class="chip" aria-pressed="true" style="border-color: #15130F; background: #FFF0E3"><b>Akwa</b><span>7 pièces</span></button>
+        <button class="chip" aria-pressed="false"><b>Marché central</b><span>3 pièces</span></button>
+      </div>
+      <span class="h">10 pièces dans tes 2 magasins. Les − / + comptent tout de suite.</span>
+    </div>
+
+    <!-- Une couleur ouverte : ses tailles à Akwa -->
+    <div style="border: 2px solid #E7E2DC; border-radius: 18px; padding: 10px 12px">
+      <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 4px">
+        <span class="sw" style="background: #2B5BB8"></span>
+        <b style="font-size: 15.5px">Bleu</b>
+        <span style="margin-left: auto; font-size: 13.5px; color: #665F58">6 à Akwa</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 18px; height: 18px"><path d="M18 15l-6-6-6 6"></path></svg>
+      </div>
+      <div class="row"><span class="size">S</span><span class="h">—</span><span class="step"><button aria-label="Un de moins en S">−</button><b>1</b><button aria-label="Un de plus en S">+</button></span></div>
+      <div class="row"><span class="size">M</span><span class="h">1 réservée pour une commande</span><span class="step"><button aria-label="Un de moins en M">−</button><b>3</b><button aria-label="Un de plus en M">+</button></span></div>
+      <div class="row"><span class="size">L</span><span class="h">—</span><span class="step"><button aria-label="Un de moins en L">−</button><b>2</b><button aria-label="Un de plus en L">+</button></span></div>
+      <div class="row"><span class="size" style="color: #736D66">XL</span><span class="h"><b style="color: #8E1220">Épuisé ici</b> · 2 au Marché central</span><span class="step"><button disabled aria-label="Un de moins en XL" style="color: #B5AFA8">−</button><b>0</b><button aria-label="Un de plus en XL">+</button></span></div>
+    </div>
+
+    <!-- Une couleur repliée -->
+    <div style="display: flex; align-items: center; gap: 8px; border: 2px solid #E7E2DC; border-radius: 18px; padding: 14px 12px">
+      <span class="sw" style="background: #C4162A"></span>
+      <b style="font-size: 15.5px">Rouge</b>
+      <span style="margin-left: auto; font-size: 13.5px; color: #665F58">1 à Akwa</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 18px; height: 18px"><path d="M6 9l6 6 6-6"></path></svg>
+    </div>
+
+    <span class="h">À 0 dans tous tes magasins, la taille reste visible avec « Épuisé » ; les clients qui le demandent sont prévenus à son retour.</span>
+
+    <!-- Entre deux magasins -->
+    <a href="EnvoyerStock.dc.html" class="btn" style="min-height: 52px"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px"><path d="M17 3l4 4-4 4"></path><path d="M3 7h18"></path><path d="M7 21l-4-4 4-4"></path><path d="M21 17H3"></path></svg>Envoyer des pièces à un autre magasin</a>
+
+    <div style="display: flex; flex-direction: column; gap: 4px; background: #F5F2EE; border-radius: 16px; padding: 12px 14px">
+      <b style="font-size: 14.5px">Derniers changements</b>
+      <span style="font-size: 13.5px">Aujourd'hui 10:12 · Bleu M : 2 → 3 à Akwa</span>
+      <span style="font-size: 13.5px">14 nov. · 2 Bleu XL envoyées d'Akwa au Marché central</span>
+      <span style="font-size: 13.5px">13 nov. · 1 Rouge S vendue (commande S00042)</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

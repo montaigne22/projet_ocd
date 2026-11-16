@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Disponible par magasin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0;background:#EEF0F2}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+.d{font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-weight:800}
+.h{font-size:13px;color:#665F58;line-height:1.35}
+.pill{border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700}
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;padding:18px;background:#FFFFFF;color:#15130F;font-family:'Figtree',system-ui,sans-serif;font-size:16px;line-height:1.4;border-radius:28px}
+.cap{font-family:'Figtree',system-ui,sans-serif;font-size:13px;font-weight:700;color:#665F58;text-transform:uppercase;letter-spacing:.04em}
+.chip{min-height:44px;box-sizing:border-box;border-radius:14px;border:2px solid #E7E2DC;background:#FFFFFF;font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-weight:800;font-size:16px;color:#15130F}
+.store{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #E7E2DC}
+</style>
+</helmet>
+<!-- Disponible par magasin (chantier 18, S.3 et S.2) : à gauche, la fiche produit pour le client
+     (la couleur et la taille choisies, magasin par magasin, sans le nombre exact de chaque
+     magasin) ; à droite, « Mes produits » pour un vendeur à 2 magasins (le stock se change dans
+     « Mon stock »). Données d'exemple : Awa Couture, Douala. -->
+<div style="width: 840px; display: grid; grid-template-columns: 390px 390px; gap: 20px; padding: 20px; box-sizing: border-box; align-items: start">
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span class="cap">Fiche produit (client)</span>
+    <div class="phone">
+      <span class="d" style="font-size: 24px; line-height: 1.1">Robe en wax</span>
+      <span class="d" style="font-size: 21px; color: #B84F00">12 000 F</span>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-weight: 700; font-size: 14.5px">Couleur · Bleu</span>
+        <span style="font-weight: 700; font-size: 14.5px">Taille</span>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px">
+          <button class="chip">S</button><button class="chip" style="border-color: #15130F; background: #FFF0E3">M</button><button class="chip">L</button><button class="chip">XL</button>
+        </div>
+        <span style="font-size: 13.5px; font-weight: 700; color: #B84F00">Plus que 3 en taille M</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 2px; background: #F5F2EE; border-radius: 16px; padding: 10px 14px">
+        <b style="font-size: 15px">Dans ses magasins · Bleu, M</b>
+        <div class="store">
+          <span><b style="font-size: 14.5px">Akwa</b><br><span class="h">En face de la pharmacie du Port · ouvert</span></span>
+          <span class="pill" style="background: #DCF2E5; color: #0A5A31">Disponible · plus que 2</span>
+        </div>
+        <div class="store">
+          <span><b style="font-size: 14.5px">Marché central</b><br><span class="h">Allée des tissus, stand 42 · ouvert</span></span>
+          <span class="pill" style="background: #DCF2E5; color: #0A5A31">Disponible</span>
+        </div>
+        <div class="store" style="border-bottom: 0">
+          <span><b style="font-size: 14.5px">Bonapriso</b><br><span class="h">Rue Njo-Njo · fermé, ouvre à 08:00</span></span>
+          <span class="pill" style="background: #EEF0F2; color: #665F58">Épuisé</span>
+        </div>
+        <a href="VitrineMagasins.dc.html" style="font-size: 14px; font-weight: 700; text-decoration: underline">Itinéraire et horaires</a>
+      </div>
+      <span class="h">Ou commande-la : livrée chez toi.</span>
+      <button class="d" style="min-height: 56px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-size: 18px">Ajouter au panier</button>
+
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span class="cap">« Préviens-moi » (WhatsApp)</span>
+        <span style="align-self: flex-start; max-width: 300px; background: #DCF8C6; border-radius: 12px; padding: 8px 10px; font-size: 14px">Bonne nouvelle : Robe en wax est de nouveau disponible en Bleu, XL sur OCD Live, aussi au magasin Akwa. Touchez le bouton pour la commander…</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span class="cap">Mes produits (vendeur à 2 magasins)</span>
+    <div class="phone">
+      <h2 class="d" style="margin: 0; font-size: 21px">Ma boutique</h2>
+      <div style="display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid #E7E2DC">
+        <span style="width: 52px; height: 52px; border-radius: 12px; background: #F5F2EE; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #665F58">Photo</span>
+        <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+          <span style="font-weight: 700; font-size: 15px">Robe en wax</span>
+          <span style="display: flex; gap: 8px; align-items: center; font-size: 13.5px">12 000 F <span class="pill" style="background: #DCF2E5; color: #0A5A31">En ligne</span></span>
+          <span style="font-size: 13.5px">10 en stock · Akwa 7 · Marché central 3</span>
+        </span>
+        <a href="MonStock.dc.html" style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 13px; box-shadow: inset 0 0 0 2px #E7E2DC; font-weight: 700; font-size: 14.5px">Mon stock par magasin</a>
+      </div>
+      <div style="display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid #E7E2DC">
+        <span style="width: 52px; height: 52px; border-radius: 12px; background: #F5F2EE; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #665F58">Photo</span>
+        <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+          <span style="font-weight: 700; font-size: 15px">Sac en raphia</span>
+          <span style="display: flex; gap: 8px; align-items: center; font-size: 13.5px">8 500 F <span class="pill" style="background: #FCE4E4; color: #8E1220">Épuisé</span></span>
+          <span style="font-size: 13.5px">0 en stock · 2 clients attendent son retour</span>
+        </span>
+        <a href="MonStock.dc.html" style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 13px; box-shadow: inset 0 0 0 2px #E7E2DC; font-weight: 700; font-size: 14.5px">Mon stock par magasin</a>
+      </div>
+      <span class="h">Avec un seul magasin, les − / + restent sous chaque produit, comme aujourd'hui.</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

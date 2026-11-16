@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Envoyer des pièces</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#15130F;text-decoration:none}a:hover{color:#15130F}
+.d{font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-weight:800}
+.f{display:flex;flex-direction:column;gap:5px}
+.l{font-weight:700;font-size:14.5px}
+.i{height:50px;box-sizing:border-box;border-radius:14px;padding:0 14px;font-family:inherit;font-size:16.5px;color:#15130F;background:#FFFFFF;width:100%;border:2px solid #E7E2DC}
+.h{font-size:13px;color:#665F58;line-height:1.35}
+.row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC}
+.step{display:flex;align-items:center;gap:2px;background:#F5F2EE;border-radius:12px;padding:2px}
+.step button{width:44px;height:44px;border:0;border-radius:10px;background:#FFFFFF;color:#15130F;font-family:inherit;font-size:20px;font-weight:700}
+.step b{min-width:28px;text-align:center;font-family:'Bricolage Grotesque','Trebuchet MS',sans-serif;font-size:16px;font-variant-numeric:tabular-nums}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+</style>
+</helmet>
+<!-- Envoyer des pièces d'un magasin à l'autre (chantier 18, S.2) : « J'envoie 3 robes à
+     Bonapriso ». Le stock change dans les deux magasins à l'envoi ; chaque envoi est tracé. -->
+<div style="width: 390px; height: 1000px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15130F; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.4; position: relative; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px">
+    <a href="MonStock.dc.html" aria-label="Retour à mon stock" style="width: 46px; height: 46px; border-radius: 50%; background: #F5F2EE; display: grid; place-items: center; flex: none"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></a>
+    <span class="d" style="font-size: 19px">Robe en wax</span>
+  </div>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 6px 18px 14px">
+    <h1 class="d" style="margin: 0; font-size: 30px; line-height: 1.05; letter-spacing: -0.025em">Envoyer des pièces</h1>
+
+    <div style="display: grid; grid-template-columns: 1fr 40px 1fr; gap: 6px; align-items: end">
+      <div class="f"><label class="l" for="e-from">De</label><select id="e-from" class="i"><option>Akwa</option></select></div>
+      <button aria-label="Inverser" style="width: 40px; height: 50px; border: 0; border-radius: 12px; background: #F5F2EE; display: grid; place-items: center"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px"><path d="M17 3l4 4-4 4"></path><path d="M3 7h18"></path><path d="M7 21l-4-4 4-4"></path><path d="M21 17H3"></path></svg></button>
+      <div class="f"><label class="l" for="e-to">À</label><select id="e-to" class="i"><option>Marché central</option></select></div>
+    </div>
+
+    <div class="f">
+      <span class="l">Combien de pièces</span>
+      <span class="h">Seulement ce qui est libre à Akwa : les pièces réservées pour une commande restent.</span>
+      <div>
+        <div class="row"><span><span class="sw" style="background: #2B5BB8"></span><b>Bleu · S</b><br><span class="h">1 libre à Akwa</span></span><span class="step"><button disabled style="color: #B5AFA8" aria-label="Une de moins">−</button><b>0</b><button aria-label="Une de plus">+</button></span></div>
+        <div class="row"><span><span class="sw" style="background: #2B5BB8"></span><b>Bleu · M</b><br><span class="h">2 libres à Akwa</span></span><span class="step"><button aria-label="Une de moins">−</button><b>2</b><button aria-label="Une de plus">+</button></span></div>
+        <div class="row"><span><span class="sw" style="background: #2B5BB8"></span><b>Bleu · L</b><br><span class="h">2 libres à Akwa</span></span><span class="step"><button aria-label="Une de moins">−</button><b>1</b><button aria-label="Une de plus">+</button></span></div>
+        <div class="row"><span><span class="sw" style="background: #C4162A"></span><b>Rouge · S</b><br><span class="h">1 libre à Akwa</span></span><span class="step"><button disabled style="color: #B5AFA8" aria-label="Une de moins">−</button><b>0</b><button aria-label="Une de plus">+</button></span></div>
+      </div>
+    </div>
+
+    <div class="f"><label class="l" for="e-note">Note (si tu veux)</label><input id="e-note" class="i" value="Par Junior, en moto"></div>
+  </div>
+
+  <div style="border-top: 1px solid #E7E2DC; padding: 10px 14px 14px">
+    <button class="d" style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 58px; border: 0; border-radius: 17px; background: #F46A00; color: #15130F; font-size: 18.5px">Envoyer 3 pièces au Marché central</button>
+    <span class="h" style="display: block; text-align: center; margin-top: 6px">Le stock change tout de suite dans les deux magasins. Chaque envoi reste dans l'historique.</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
