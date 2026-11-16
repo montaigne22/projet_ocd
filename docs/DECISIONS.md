@@ -165,6 +165,13 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   - **un refus dit toujours pourquoi** : le vendeur lit le message du motif, corrige le produit (nom,
     prix, photo) et le renvoie à la vérification ; un produit en vente ne se corrige pas ainsi (son
     nouveau nom ou sa nouvelle photo seront vérifiés pendant que l'ancienne version reste en vente).
+  - **« Mes produits » suit l'ordre de la boutique** : un nouveau produit et une copie arrivent en
+    premier ; le vendeur met un produit en premier, le monte ou le descend ;
+  - **une copie** n'a ni stock ni historique (contacts, refus) et passe à la vérification ;
+  - **partager un produit** donne une image au format du statut WhatsApp (photo, nom, prix, QR code) ;
+    **le catalogue** met 4 produits en vente par image (réglable), avec le QR code de la boutique ;
+  - **le démarrage du vendeur** (« Ta boutique est prête à … % ») reste dans « Mon espace » tant qu'une
+    étape manque.
 - **Une photo par couleur** (le vendeur dans « Mes produits », ou l'équipe) : la page change de photo avec
   la couleur ; la photo s'ouvre en plein écran. Une taille ou une couleur épuisée se choisit encore, pour
   **« Préviens-moi quand c'est de retour »** (WhatsApp, dès que le stock revient).

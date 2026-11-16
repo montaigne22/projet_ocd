@@ -696,7 +696,7 @@
                                                 t-att-data-image="row['share'].get('image')">Share</button>
                                         <form t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/dupliquer" method="post">
                                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                            <button class="o_ocd_button">Duplicate</button>
+                                            <button class="o_ocd_button">Make a copy</button>
                                         </form>
                                         <form t-if="len(rows) &gt; 1" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/ordre"
                                               method="post" class="o_ocd_my_product_order">

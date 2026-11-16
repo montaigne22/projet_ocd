@@ -105,7 +105,10 @@ class OcdVendorShare(http.Controller):
         )
         per_page = min(max(company.ocd_vendor_catalogue_items or share_image.CATALOGUE_ITEMS, 1),
                        share_image.CATALOGUE_ITEMS)
-        pages = [products[start:start + per_page] for start in range(0, len(products), per_page)]
+        # As many images as needed, the products spread evenly: 5 products give 2 + 3, not 4 + 1
+        count = -(-len(products) // per_page)
+        bounds = [round(len(products) * index / count) for index in range(count + 1)] if count else []
+        pages = [products[bounds[index]:bounds[index + 1]] for index in range(count)]
         latest = max((p.write_date for p in products), default=None)
         stamp = f"{latest:%Y%m%d%H%M%S}-{len(products)}-{per_page}" if latest else "0"
         return products, stamp, pages
@@ -123,7 +126,7 @@ class OcdVendorShare(http.Controller):
             False,
             back="/ocd/espace/moi/produits",
             back_label=env._("Back to my products"),
-            header_title=env._("Catalogue for my status"),
+            header_title=env._("My products"),
             vendor=vendor,
             images=images,
             count=len(products),

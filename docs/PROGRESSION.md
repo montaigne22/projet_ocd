@@ -30,6 +30,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Thème du site « OCD Live » (`theme_ocd`) dans le choix des thèmes d'Odoo | ✅ fait, testé |
 | Site : toutes les pages du shop fidèles au design (shop, produit, panier, livraison, paiement, suivi, boutique, replay, mes produits, mes colis, tournée) | ✅ fait, testé |
 | « Mes produits » fiable (chantier 15) : stock − / + qui garde les pièces des commandes, prix lu ou refusé, formulaire pour réseau lent (photo gardée, réduite, un seul envoi), galerie, refus expliqué et produit corrigé puis renvoyé, voix de la page | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
+| « Mes produits » aide à vendre (chantier 16) : contacts WhatsApp et clients en attente, menu « Plus », ordre de la boutique, copie, filtres, partage d'un produit avec son image, catalogue pour le statut, démarrage du vendeur | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
 | Back-office fidèle au design : barre, onglets, tableau de bord, réservations, régie, à vérifier, commandes, dispatch, fiche livraison, livreurs et caisse, fiche vendeur, reversements, recrutement | ✅ fait |
@@ -100,6 +101,33 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 16 novembre 2026 — « Mes produits » aide à vendre (chantier 16, étape 1 du plan)
+- **Ce que les produits ont rapporté**, sous chaque produit : « 7 personnes t'ont écrit sur WhatsApp »
+  (compté par OCD, vu jusqu'ici seulement par l'équipe), et sur un produit épuisé « 2 clients attendent
+  son retour » (les « Préviens-moi »). Une requête pour toute la page.
+- **Un menu « Plus »** sous chaque produit, replié sur le téléphone, sans JavaScript : le voir dans ma
+  boutique, partager, faire une copie, mettre en premier, monter, descendre.
+- **L'ordre de la boutique** : « Mes produits » montre les produits comme les voient les clients ; un
+  nouveau produit ou une copie arrive en premier ; un déplacement n'écrit qu'un ou deux produits, ceux des
+  autres vendeurs gardent leur place ; le menu reste ouvert après un déplacement.
+- **Faire une copie** (même modèle, autre tissu) : sans stock ni historique, vérifiée par l'équipe comme un
+  nouveau produit ; le vendeur arrive sur sa fiche pour changer le nom ou la photo.
+- **Filtres par état** dès 5 produits dans au moins deux états (Tout, En vente, Épuisés, À vérifier,
+  Refusés) : des liens qui marchent sans JavaScript, appliqués aussitôt avec, l'adresse garde le filtre.
+- **Partager un produit avec son image** : une image au format du statut WhatsApp (1080 × 1350 : photo,
+  nom, prix, boutique, QR code de la page), dessinée comme l'annonce d'un live ; publique comme la page du
+  produit, gardée un an par son adresse. Le téléphone la prépare dès l'ouverture du menu (il n'ouvre sa
+  feuille de partage que juste après le toucher).
+- **Catalogue pour mon statut** : les produits en vente avec du stock, dans l'ordre de la boutique, 4 par
+  image (réglable, 1 à 4), répartis équitablement, avec le QR code de la boutique ; partagés d'un coup, un
+  par un ou téléchargés.
+- **Démarrage du vendeur** dans « Mon espace » : « Ta boutique est prête à 75 % », avec les étapes (premier
+  produit, 5 produits en vente, boutique partagée, première vente ou, en contact direct, premier client
+  sur WhatsApp) et un lien vers chacune ; le bloc disparaît quand tout est fait. Le téléphone signale un
+  partage réussi (balise, sans formulaire).
+- Tests : base neuve, tous les modules OCD : **336 sans échec** ; vérifié dans un navigateur de téléphone
+  (Pixel 7), en français.
 
 ### 16 novembre 2026 — « Mes produits » fiable (chantier 15, étape 0 du plan)
 Premier chantier de [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md) : les corrections de la page du

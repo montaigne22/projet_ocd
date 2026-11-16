@@ -23,7 +23,7 @@ qu'elle règle sera fait.
 Dès le début de l'étape 0 : écrire et soumettre à Meta les modèles WhatsApp du plan (voir les
 décisions), car leur approbation ne dépend pas de nous.
 
-## Étape 1 : rapide, avec ce qui existe déjà (~2,5 semaines)
+## Étape 1 : rapide, avec ce qui existe déjà (~2,5 semaines) — faite le 16 novembre 2026
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|

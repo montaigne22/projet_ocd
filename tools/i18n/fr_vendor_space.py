@@ -73,4 +73,48 @@ VENDOR_SPACE = {
     "OCD Live: product refused (English)": "OCD Live : produit refusé (anglais)",
     "OCD Live: stock low": "OCD Live : stock bas",
     "OCD Live: stock low (English)": "OCD Live : stock bas (anglais)",
+    # « My products »: what the products brought, the menu « More », the filters (chantier 16)
+    "1 person wrote to you on WhatsApp": "1 personne t'a écrit sur WhatsApp",
+    "%s people wrote to you on WhatsApp": "%s personnes t'ont écrit sur WhatsApp",
+    "1 customer waits for it to be back": "1 client attend son retour",
+    "%s customers wait for it to be back": "%s clients attendent son retour",
+    "More": "Plus",
+    "More for %s": "Plus pour %s",
+    "See it in my boutique": "Le voir dans ma boutique",
+    "Put first": "Mettre en premier",
+    "Make a copy": "Faire une copie",
+    "Move up": "Monter",
+    "Move down": "Descendre",
+    "%s (copy)": "%s (copie)",
+    "Copy of %s, made by the vendor.": "Copie de %s, faite par le vendeur.",
+    "Filter my products": "Filtrer mes produits",
+    "No product in this state.": "Aucun produit dans cet état.",
+    # Share a product, the catalogue
+    "Order it on OCD Live": "Commande-le sur OCD Live",
+    "Order on OCD Live": "Commande sur OCD Live",
+    "Catalogue for my status": "Catalogue pour mon statut",
+    "Your products on sale, with their price and the QR code of your boutique. Share the images in your WhatsApp status.":
+        "Tes produits en vente, avec leur prix et le QR code de ta boutique. Partage les images dans ton statut WhatsApp.",
+    "Share the catalogue": "Partager le catalogue",
+    "Share": "Partager",
+    "Download": "Télécharger",
+    "No product on sale yet: the catalogue shows your products put online by the team, with stock.":
+        "Aucun produit en vente pour l'instant : le catalogue montre tes produits mis en ligne par l'équipe, avec du stock.",
+    "Catalogue for the status": "Catalogue pour le statut",
+    "The products on each image the vendor shares on their WhatsApp status.":
+        "Les produits sur chaque image que le vendeur partage dans son statut WhatsApp.",
+    "products per image": "produits par image",
+    "Products Per Image Of The Catalogue": "Produits par image du catalogue",
+    "The catalogue a vendor shares on their WhatsApp status: products on each image (1 to 4).":
+        "Le catalogue qu'un vendeur partage dans son statut WhatsApp : produits sur chaque image (1 à 4).",
+    # The first steps of a vendor
+    "Your boutique is %s%% ready": "Ta boutique est prête à %s %%",
+    "Add your first product": "Ajoute ton premier produit",
+    "Have 5 products on sale (%s now)": "Aie 5 produits en vente (%s maintenant)",
+    "Share your boutique in your WhatsApp status": "Partage ta boutique dans ton statut WhatsApp",
+    "Your first sale": "Ta première vente",
+    "A first customer writes to you on WhatsApp": "Un premier client t'écrit sur WhatsApp",
+    "Boutique First Shared": "Boutique partagée la première fois",
+    "When the vendor first shared their boutique, a product or their catalogue from their space.":
+        "Quand le vendeur a partagé pour la première fois sa boutique, un produit ou son catalogue depuis son espace.",
 }
