@@ -628,10 +628,10 @@
                                 <form t-if="row['single']" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/stock"
                                       method="post" class="o_ocd_stepper">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                    <button name="quantity" t-att-value="max((row['qty'] or 0) - 1, 0)" t-att-aria-label="row['less_aria']"
+                                    <button name="delta" value="-1" t-att-aria-label="row['less_aria']"
                                             t-att-disabled="'disabled' if not row['qty'] else None">−</button>
                                     <span class="o_ocd_stepper_value" aria-live="polite" t-out="row['qty'] if row['qty'] is not None else '–'"/>
-                                    <button name="quantity" t-att-value="(row['qty'] or 0) + 1" t-att-aria-label="row['more_aria']">+</button>
+                                    <button name="delta" value="1" t-att-aria-label="row['more_aria']">+</button>
                                 </form>
                             </div>
                         </t>

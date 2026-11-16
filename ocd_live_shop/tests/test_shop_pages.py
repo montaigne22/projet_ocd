@@ -216,6 +216,14 @@ class TestOcdShopPages(HttpCase, OcdShopCommon):
             "csrf_token": self.csrf_token(), "name": "Jupe en wax", "price": "8000", "quantity": "2",
         })
         self.assertIn("Add a photo of your product.", response.text)
+        # Two prices, or a letter, are refused with a clear message, never misread (cents are
+        # refused too in a currency without them: see test_tools)
+        for price in ("3000-5000", "3k", "1.000.5"):
+            response = self.url_open("/ocd/espace/moi/produits", data={
+                "csrf_token": self.csrf_token(), "name": "Jupe en wax", "price": price, "quantity": "2",
+            }, files={"photo": ("jupe.png", PNG, "image/png")})
+            self.assertIn("Write one price, without cents or dash, for example 3000.", response.text, price)
+        self.assertFalse(self.env["product.template"].search([("name", "=", "Jupe en wax")]))
         response = self.url_open("/ocd/espace/moi/produits", data={
             "csrf_token": self.csrf_token(), "name": "Jupe en wax", "price": "8 000", "quantity": "2",
         }, files={"photo": ("jupe.png", PNG, "image/png")}, allow_redirects=False)
@@ -226,7 +234,21 @@ class TestOcdShopPages(HttpCase, OcdShopCommon):
         self.assertEqual(product.list_price, 8000)
         self.assertTrue(product.image_128)
         self.assertEqual(product.qty_available, 2)
-        self.url_open(f"/ocd/espace/moi/produits/{product.id}/stock", data={"csrf_token": self.csrf_token(), "quantity": 0})
+        # − and + add to the stock of the moment
+        stock = f"/ocd/espace/moi/produits/{product.id}/stock"
+        self.url_open(stock, data={"csrf_token": self.csrf_token(), "delta": "1"})
+        self.url_open(stock, data={"csrf_token": self.csrf_token(), "delta": "1"})
+        self.url_open(stock, data={"csrf_token": self.csrf_token(), "delta": "-1"})
+        product.invalidate_recordset(["qty_available"])
+        self.assertEqual(product.qty_available, 3)
+        response = self.url_open("/ocd/espace/moi/produits")
+        self.assertIn('name="delta" value="1"', response.text)
+        # The stock to have, sent by a page shown before the change, is still read
+        self.url_open(stock, data={"csrf_token": self.csrf_token(), "quantity": 0})
+        product.invalidate_recordset(["qty_available"])
+        self.assertEqual(product.qty_available, 0)
+        # Not a number: nothing changes
+        self.url_open(stock, data={"csrf_token": self.csrf_token(), "delta": "beaucoup"})
         product.invalidate_recordset(["qty_available"])
         self.assertEqual(product.qty_available, 0)
         # Another vendor cannot change it

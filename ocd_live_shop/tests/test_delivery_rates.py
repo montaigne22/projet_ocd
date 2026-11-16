@@ -343,6 +343,10 @@ class TestOcdDeliveryRatesWebsite(HttpCase, OcdRatesCommon):
         response = self.url_open("/ocd/espace/moi/livraison", data={**form, "price": "5000"})
         self.assertIn("between", response.text)
         self.assertFalse(self.Rate.search([("vendor_id", "=", self.fatou.id), ("price", "=", 5000)]), "Refused: not saved")
+        # Two prices are refused, never read as 10001500
+        response = self.url_open("/ocd/espace/moi/livraison", data={**form, "price": "1000-1500"})
+        self.assertIn("Write a price in francs, for example 1000.", response.text)
+        self.assertFalse(self.Rate.search([("vendor_id", "=", self.fatou.id), ("district_ids", "=", self.bonaberi.id)]))
         self.url_open("/ocd/espace/moi/livraison", data={**form, "price": "1 500"})
         rate = self.Rate.search([("vendor_id", "=", self.fatou.id), ("district_ids", "=", self.bonaberi.id)])
         self.assertEqual(rate.price, 1500)

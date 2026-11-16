@@ -8,3 +8,4 @@ from . import test_automations
 from . import test_courier_login
 from . import test_product_media
 from . import test_card_products
+from . import test_vendor_stock

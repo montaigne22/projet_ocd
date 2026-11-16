@@ -18,6 +18,43 @@ from odoo.tools.misc import babel_locale_parse
 
 _logger = logging.getLogger(__name__)
 
+# What may come with an amount typed on a phone: the currency, written in any usual way
+# ("3000 F", "3 000 FCFA", "3000frs", "15 €"), and the spaces between the thousands (also the
+# no-break ones of a copied price, and the apostrophe of "1'000")
+AMOUNT_CURRENCY = re.compile(
+    r"(?i)(?<![a-z])(f\s?cfa|cfa|xaf|xof|francs?|frs?|eur|euros?|usd|dollars?|f)(?![a-z])\.?|[€$]"
+)
+AMOUNT_SPACES = re.compile(r"[\s  ']")
+# Thousands grouped by 3 with one separator (3.000, 3,000, 1.000.000) or none (3000), then
+# maybe decimals after the other separator (12,50 · 1.234,56 · 1,234.56)
+AMOUNT = re.compile(r"(\d{1,3}(?:([.,])\d{3})(?:\2\d{3})*|\d+)(?:([.,])(\d+))?")
+
+
+def parse_amount(text, decimal_places=0, symbol=None):
+    """Read an amount typed by a person: "3000", "3 000", "3.000 F", "15 000 FCFA", "3000frs",
+    and for a currency with cents "12,50" or "1.234,56". Return the amount (an int when it has no
+    cents), or None when the text is not exactly one amount: a range ("3000-5000"), cents for a
+    currency without them ("2500,50"), a letter ("3k"), nothing. The caller checks the bounds."""
+    if text is None or isinstance(text, bool):
+        return None
+    value = str(text)
+    if symbol:
+        value = value.replace(symbol, " ")
+    value = AMOUNT_SPACES.sub("", AMOUNT_CURRENCY.sub(" ", value))
+    match = AMOUNT.fullmatch(value)
+    if not match:
+        return None
+    whole, thousands, separator, cents = match.groups()
+    if separator and separator == thousands:
+        return None  # "1.000.5": the same sign for the thousands and the cents
+    if cents and len(cents) > decimal_places:
+        return None
+    number = int(whole.replace(".", "").replace(",", ""))
+    if not cents:
+        return number
+    return round(number + int(cents) / 10 ** len(cents), decimal_places)
+
+
 # Short links of the platforms (Share › Copy the link on a phone): the page of a replay plays a
 # video from its full address only, which holds the number of the video
 SHORT_VIDEO_HOSTS = ("vt.tiktok.com", "vm.tiktok.com", "fb.watch")

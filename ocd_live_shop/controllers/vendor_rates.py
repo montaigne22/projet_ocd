@@ -1,9 +1,8 @@
-import re
-
 from odoo import http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 
+from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
 
@@ -112,8 +111,9 @@ class OcdVendorRates(http.Controller):
         districts = env["res.city.district"].sudo().browse(
             [int(d) for d in values["district_ids"] if str(d).isdigit()]
         ).exists().filtered(lambda d: d.city_id == city)
-        digits = re.sub(r"[^\d]", "", price or "")
-        if not digits:
+        # One amount, 0 for a free delivery (see tools.parse_amount: "1 000 F" yes, "1000-1500" no)
+        amount = tools.parse_amount(price, company.currency_id.decimal_places, company.currency_id.symbol)
+        if amount is None:
             return self._render(vendor, values, error=env._("Write a price in francs, for example 1000."))
         try:
             # sudo: the vendor has no account; the price is checked against the limits of the
@@ -127,7 +127,7 @@ class OcdVendorRates(http.Controller):
                     "country_id": city.country_id.id,
                     "city_ids": [(6, 0, city.ids)],
                     "district_ids": [(6, 0, districts.ids)],
-                    "price": int(digits),
+                    "price": amount,
                     "description": common.clean_text(description, 80) or False,
                 })
         except (UserError, ValidationError) as exc:

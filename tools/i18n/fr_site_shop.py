@@ -237,6 +237,7 @@ SITE_SHOP = {
     "Type your name.": "Écris ton nom.",
     "Where do we deliver?": "On livre où ?",
     "Write a price in francs, for example 3000.": "Écris un prix en francs, par exemple 3000.",
+    "Write one price, without cents or dash, for example 3000.": "Écris un seul prix, sans centimes ni tiret, par exemple 3000.",
     "Write the name of the product.": "Écris le nom du produit.",
     "Your cart changed: go back to the cart to check it.": "Ton panier a changé : retourne au panier pour le vérifier.",
     "Your order is on the way": "Ta commande est en route",

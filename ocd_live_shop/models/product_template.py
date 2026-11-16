@@ -151,22 +151,19 @@ class ProductTemplate(models.Model):
             text = f"{text} {link}"
         return f"https://wa.me/{digits}?text={url_quote(text)}"
 
-    def _ocd_set_stock(self, quantity):
-        """Set the quantity in stock of a product without variants, as an inventory adjustment
-        of the main warehouse (traced in the stock moves). Used by the vendors from their
-        space."""
+    def _ocd_single_variant(self):
+        """The variant of a product without variants, whose stock the vendor changes from their
+        space (the stock of each variant is changed from the back office)."""
         self.ensure_one()
-        variant = self.product_variant_ids[:1]
-        if not variant or len(self.product_variant_ids) != 1:
+        if len(self.product_variant_ids) != 1:
             raise UserError(self.env._("Change the stock of the product %s from the back office.", self.name))
-        company = self.company_id or self.env.company
-        warehouse = self.env["stock.warehouse"].sudo().search([("company_id", "=", company.id)], limit=1)
-        if not warehouse:
-            return False
-        Quant = self.env["stock.quant"].sudo().with_context(inventory_mode=True)
-        quant = Quant.search([("product_id", "=", variant.id), ("location_id", "=", warehouse.lot_stock_id.id)], limit=1)
-        if not quant:
-            quant = Quant.create({"product_id": variant.id, "location_id": warehouse.lot_stock_id.id})
-        quant.inventory_quantity = quantity
-        quant.action_apply_inventory()
-        return True
+        return self.product_variant_ids
+
+    def _ocd_set_stock(self, quantity):
+        """Make `quantity` pieces of a product without variants free to sell (the pieces reserved
+        for orders are kept), as an inventory adjustment traced in the stock moves."""
+        return self._ocd_single_variant()._ocd_set_free_stock(quantity)
+
+    def _ocd_change_stock(self, delta):
+        """Add `delta` pieces to the free stock of a product without variants; return it."""
+        return self._ocd_single_variant()._ocd_change_stock(delta)
