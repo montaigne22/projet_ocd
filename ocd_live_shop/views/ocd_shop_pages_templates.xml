@@ -1407,6 +1407,22 @@
     </template>
 
     <template id="space" inherit_id="ocd_live.space" name="OCD Live: products and parcels in the space">
+        <!-- Prepare the live (PreparerLive, chantier 21): the products the host has at hand -->
+        <xpath expr="//div[hasclass('o_ocd_live_card_buttons')]" position="before">
+            <t t-set="prep_booking" t-value="live['booking']"/>
+            <div t-if="prep_booking._ocd_can_prepare()" class="o_ocd_live_prepare">
+                <t t-set="prep_products" t-value="prep_booking._ocd_prepared_products()"/>
+                <span t-if="prep_products">
+                    <b><t t-if="len(prep_products) == 1">1 product ready</t><t t-else=""><t t-out="len(prep_products)"/> products ready</t></b>:
+                    <t t-out="', '.join(prep_products.mapped('name'))"/>
+                </span>
+                <span t-else="">No product prepared: the host does not know yet what to show.</span>
+                <a t-attf-href="/ocd/espace/moi/live/#{prep_booking.id}"
+                   t-attf-class="o_ocd_button #{'o_ocd_button_line' if prep_products else 'o_ocd_button_orange'}">
+                    <t t-if="prep_products">Change</t><t t-else="">Prepare my live</t>
+                </a>
+            </div>
+        </xpath>
         <xpath expr="//div[hasclass('o_ocd_space_shop')]" position="inside">
             <!-- The first steps of the vendor, until all are done (1.8 of the plan) -->
             <t t-set="start" t-value="vendor._ocd_start_steps()"/>
@@ -1426,6 +1442,7 @@
                 </ol>
             </div>
             <h2 class="o_ocd_section">My shop</h2>
+            <div t-if="request.params.get('pret')" class="o_ocd_ok" role="status">It is ready: the host sees your products in the control room.</div>
             <!-- On holiday (chantier 20): until when, the customers who wait, come back now -->
             <div t-if="request.params.get('revenu')" class="o_ocd_ok" role="status">Welcome back: the orders start again.</div>
             <a t-if="vendor._ocd_on_holiday()" href="/ocd/espace/moi/vacances" class="o_ocd_holiday o_ocd_holiday_link">
@@ -1440,6 +1457,80 @@
                 <a t-if="not vendor._ocd_on_holiday()" href="/ocd/espace/moi/vacances" class="o_ocd_button o_ocd_button_line">Holiday mode</a>
             </div>
         </xpath>
+    </template>
+
+    <!-- === PREPARE MY LIVE (chantier 21, design PreparerLive) === -->
+
+    <template id="vendor_live_prepare" name="OCD Live: prepare my live">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Prepare my live</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main t-if="not booking" class="o_ocd_main o_ocd_live_prep">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">No live booked</h1>
+                    <p class="o_ocd_note">Book a live: you prepare your products here then.</p>
+                    <a href="/ocd" class="o_ocd_cta o_ocd_cta_line">Book a live</a>
+                </main>
+                <form t-else="" t-attf-action="/ocd/espace/moi/live/#{booking.id}" method="post"
+                      class="o_ocd_main o_ocd_live_prep o_ocd_form" t-att-data-max-note="200">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="ordre" class="o_ocd_prep_order" t-att-value="order"/>
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div t-if="not can_prepare" class="o_ocd_alert" role="status">This live is over: prepare your next one.</div>
+                    <p class="o_ocd_note">Tick what you are going to show. The host has them at hand, in this order.</p>
+                    <!-- On a tablet and a computer: the order on the left, the products on the right -->
+                    <div class="o_ocd_prep_panes">
+                        <div class="o_ocd_prep_side">
+                            <h2 id="dans-mon-live" class="o_ocd_label o_ocd_prep_title">In my live · <span class="o_ocd_prep_count" t-out="len(chosen)"/></h2>
+                            <ol class="o_ocd_prep_chosen">
+                                <t t-foreach="chosen" t-as="row">
+                                    <li class="o_ocd_prep_row" t-att-data-id="row['product'].id">
+                                        <span class="o_ocd_prep_number" t-out="row_index + 1"/>
+                                        <span class="o_ocd_photo o_ocd_cart_photo">
+                                            <t t-call="ocd_live_shop.product_photo" image="row['image']"/>
+                                        </span>
+                                        <span class="o_ocd_prep_text"><b t-out="row['product'].name"/><small t-out="row['line']"/></span>
+                                        <span class="o_ocd_prep_moves">
+                                            <button type="submit" name="monter" t-att-value="row['product'].id" class="o_ocd_prep_up"
+                                                    t-att-hidden="'hidden' if row_first else None" aria-label="↑">↑</button>
+                                            <button type="submit" name="descendre" t-att-value="row['product'].id" class="o_ocd_prep_down"
+                                                    t-att-hidden="'hidden' if row_last else None" aria-label="↓">↓</button>
+                                        </span>
+                                    </li>
+                                </t>
+                            </ol>
+                            <p t-attf-class="o_ocd_note o_ocd_prep_empty #{'d-none' if chosen else ''}">Tick the products below: they come here.</p>
+                            <div class="o_ocd_field">
+                                <label for="lp-note" class="o_ocd_label">A word for the host (if you want)</label>
+                                <input id="lp-note" name="note" class="o_ocd_input" maxlength="200" autocomplete="off" t-att-value="note"
+                                       placeholder="e.g. I start with the dresses"/>
+                            </div>
+                            <button type="submit" class="o_ocd_cta o_ocd_prep_save">Save</button>
+                            <p class="o_ocd_note">You can change until the end of the live. A product sold out can be ticked too: put stock back before.</p>
+                        </div>
+                        <div class="o_ocd_prep_list">
+                            <h2 class="o_ocd_label o_ocd_prep_title">My products</h2>
+                            <input type="search" class="o_ocd_input o_ocd_prep_search" placeholder="Search a product" aria-label="Search a product"
+                                   autocomplete="off"/>
+                            <t t-foreach="rows" t-as="row">
+                                <label t-attf-class="o_ocd_prep_item #{'o_ocd_prep_out' if row['out'] else ''}"
+                                       t-att-data-id="row['product'].id" t-att-data-name="row['product'].name.lower()">
+                                    <input type="checkbox" name="coches" t-att-value="row['product'].id"
+                                           t-att-checked="'checked' if row['chosen'] else None"/>
+                                    <span class="o_ocd_photo o_ocd_cart_photo">
+                                        <t t-call="ocd_live_shop.product_photo" image="row['image']"/>
+                                    </span>
+                                    <span class="o_ocd_prep_text"><b t-out="row['product'].name"/><small t-out="row['line']"/></span>
+                                    <span t-if="row['out']" class="o_ocd_badge_off">Sold out</span>
+                                </label>
+                            </t>
+                            <p t-if="not rows" class="o_ocd_note">No product on sale yet: <a href="/ocd/espace/moi/produits" class="o_ocd_link">add one</a>.</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </t>
     </template>
 
 </odoo>

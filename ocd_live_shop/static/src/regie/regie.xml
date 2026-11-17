@@ -85,21 +85,22 @@
                         <h2>The products</h2>
                         <span>Touch the one the vendor shows: the boutique shows it at once</span>
                     </div>
+                    <!-- Prepared by the vendor (chantier 21): their word, then their products in their order -->
+                    <p t-if="data.host_note" class="o_ocd_regie_note" t-out="data.host_note"/>
+                    <t t-if="data.prepared.length">
+                        <h3 class="o_ocd_regie_group" t-out="data.prepared_title"/>
+                        <div class="o_ocd_regie_tiles">
+                            <t t-foreach="data.prepared" t-as="product" t-key="product.id">
+                                <t t-call="ocd_live_shop.RegieTile"/>
+                            </t>
+                        </div>
+                        <h3 t-if="data.products.length" class="o_ocd_regie_group" t-out="data.others_title"/>
+                    </t>
                     <div class="o_ocd_regie_tiles">
-                        <button t-foreach="data.products" t-as="product" t-key="product.id" type="button"
-                                t-att-class="{ 'o_ocd_regie_tile': true, 'o_ocd_shown': product.shown }"
-                                t-att-aria-pressed="product.shown ? 'true' : 'false'"
-                                t-att-disabled="!data.can_show"
-                                t-on-click="() => this.show(product)">
-                            <img t-att-src="product.image" alt="" loading="lazy"/>
-                            <span>
-                                <b t-out="product.name"/>
-                                <span><t t-out="product.price"/><t t-if="product.stock"> · <t t-out="product.stock"/></t></span>
-                                <small t-if="product.shown">On screen now</small>
-                                <small t-else="">Show on screen</small>
-                            </span>
-                        </button>
-                        <p t-if="!data.products.length" class="o_ocd_regie_empty">No approved product for this vendor yet.</p>
+                        <t t-foreach="data.products" t-as="product" t-key="product.id">
+                            <t t-call="ocd_live_shop.RegieTile"/>
+                        </t>
+                        <p t-if="!data.products.length and !data.prepared.length" class="o_ocd_regie_empty">No approved product for this vendor yet.</p>
                     </div>
                     <div class="o_ocd_regie_moments">
                         <span class="o_ocd_regie_caption">Moments saved for the replay</span>
@@ -112,6 +113,22 @@
                 </div>
             </div>
         </div>
+    </t>
+
+    <t t-name="ocd_live_shop.RegieTile">
+        <button type="button" t-att-class="{ 'o_ocd_regie_tile': true, 'o_ocd_shown': product.shown, 'o_ocd_regie_prepared': !!product.number }"
+                t-att-aria-pressed="product.shown ? 'true' : 'false'"
+                t-att-disabled="!data.can_show"
+                t-on-click="() => this.show(product)">
+            <span t-if="product.number" class="o_ocd_regie_number" t-out="product.number"/>
+            <img t-att-src="product.image" alt="" loading="lazy"/>
+            <span>
+                <b t-out="product.name"/>
+                <span><t t-out="product.price"/><t t-if="product.stock"> · <t t-out="product.stock"/></t></span>
+                <small t-if="product.shown">On screen now</small>
+                <small t-else="">Show on screen</small>
+            </span>
+        </button>
     </t>
 
 </templates>

@@ -105,7 +105,8 @@ class OcdLiveRegie(models.AbstractModel):
             "sold_by_ocd": vendor.ocd_sale_mode == "ocd",
             "replay_url": booking.replay_url or "",
             "replay_published": booking.replay_published,
-            "products": [self._ocd_product_tile(booking, product) for product in booking.vendor_product_ids],
+            # Prepared by the vendor (chantier 21): first, numbered in their order, then the others
+            **self._ocd_products_of_live(booking),
             "moments": [
                 {"id": moment.id, "time": moment.offset_label, "name": moment.product_tmpl_id.name}
                 for moment in booking.moment_ids.sorted("offset_seconds")
@@ -154,6 +155,23 @@ class OcdLiveRegie(models.AbstractModel):
             ("order_id.date_order", "<", booking.end_datetime),
         ])
         return lines.order_id
+
+    @api.model
+    def _ocd_products_of_live(self, booking):
+        prepared = booking._ocd_prepared_products()
+        others = booking.vendor_product_ids - prepared
+        first_name = (booking.partner_id.name or "").split()[0] if booking.partner_id.name else ""
+        return {
+            "prepared": [
+                dict(self._ocd_product_tile(booking, product), number=index)
+                for index, product in enumerate(prepared, start=1)
+            ],
+            "products": [self._ocd_product_tile(booking, product) for product in others],
+            "prepared_title": self.env._("Prepared by %(vendor)s · %(count)s", vendor=first_name, count=len(prepared)),
+            "others_title": self.env._("Their other products · %s", len(others)),
+            "host_note": self.env._("Word of %(vendor)s: « %(note)s »", vendor=first_name, note=booking.ocd_host_note)
+            if booking.ocd_host_note else "",
+        }
 
     @api.model
     def _ocd_product_tile(self, booking, product):

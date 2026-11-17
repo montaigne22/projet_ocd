@@ -11,7 +11,16 @@
                     <page name="ocd_control_room" string="Control room" invisible="state not in ('confirmed', 'done')">
                         <group>
                             <field name="current_product_tmpl_id" readonly="1"/>
+                            <!-- Prepared by the vendor from their space (chantier 21) -->
+                            <field name="ocd_host_note" readonly="1" invisible="not ocd_host_note"/>
+                            <field name="ocd_prepared_at" invisible="not ocd_prepared_at"/>
                         </group>
+                        <field name="ocd_prepared_ids" readonly="1" invisible="not ocd_prepared_ids">
+                            <list create="false" delete="false">
+                                <field name="sequence" widget="handle"/>
+                                <field name="product_tmpl_id" string="Prepared by the vendor"/>
+                            </list>
+                        </field>
                         <field name="vendor_product_ids" context="{'ocd_booking_id': id}" readonly="1">
                             <list create="false" delete="false">
                                 <field name="name"/>

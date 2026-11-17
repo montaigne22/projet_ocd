@@ -3051,6 +3051,116 @@
         color: $ocd-muted;
     }
 }
+// Prepare my live (design PreparerLive)
+.o_ocd_live_prepare {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-radius: 14px;
+    background: $ocd-orange-pale;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+.o_ocd_prep_panes {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.o_ocd_prep_side, .o_ocd_prep_list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+.o_ocd_prep_title {
+    margin: 0;
+}
+.o_ocd_prep_chosen {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.o_ocd_prep_row {
+    display: grid;
+    grid-template-columns: 30px 44px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    border-radius: 14px;
+    background: $ocd-orange-pale;
+    padding: 8px 10px;
+    .o_ocd_photo {
+        width: 44px;
+        height: 44px;
+    }
+}
+.o_ocd_prep_number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: $ocd-ink;
+    color: #FFFFFF;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+}
+.o_ocd_prep_text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    b {
+        font-size: 15px;
+        overflow-wrap: anywhere;
+    }
+    small {
+        font-size: 13px;
+        color: $ocd-muted;
+    }
+}
+.o_ocd_prep_moves {
+    display: flex;
+    gap: 4px;
+    button {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        border: 2px solid $ocd-line;
+        &[hidden] {
+            display: none;
+        }
+        background: #FFFFFF;
+        font-weight: 800;
+        font-size: 17px;
+        cursor: pointer;
+    }
+}
+.o_ocd_prep_item {
+    display: grid;
+    grid-template-columns: 24px 52px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid $ocd-line;
+    cursor: pointer;
+    input {
+        width: 22px;
+        height: 22px;
+        margin: 0;
+        accent-color: $ocd-orange;
+    }
+    .o_ocd_photo {
+        width: 52px;
+        height: 52px;
+    }
+    &.o_ocd_prep_out {
+        opacity: 0.6;
+    }
+    &[hidden] {
+        display: none;
+    }
+}
 .o_ocd_my_product_low {
     align-self: flex-start;
     border-radius: 8px;

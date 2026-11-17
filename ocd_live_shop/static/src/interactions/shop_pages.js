@@ -1160,6 +1160,86 @@ export class OcdAutoSubmit extends Interaction {
     }
 }
 
+/**
+ * Prepare my live (design PreparerLive): a product ticked goes at the end of « In my live », ↑ and
+ * ↓ move it without a new page, the search filters the list; the order goes with the form. Without
+ * JavaScript the page works the same: ↑ and ↓ send the form.
+ */
+export class OcdLivePrepare extends Interaction {
+    static selector = "form.o_ocd_live_prep";
+    dynamicContent = {
+        ".o_ocd_prep_item input": { "t-on-change": this.tick },
+        ".o_ocd_prep_moves button": { "t-on-click": this.move },
+        ".o_ocd_prep_search": { "t-on-input": this.search },
+    };
+
+    tick(ev) {
+        const item = ev.currentTarget.closest(".o_ocd_prep_item");
+        const list = this.el.querySelector(".o_ocd_prep_chosen");
+        const id = item.dataset.id;
+        const row = list.querySelector(`.o_ocd_prep_row[data-id="${id}"]`);
+        if (ev.currentTarget.checked && !row) {
+            const added = document.createElement("li");
+            added.className = "o_ocd_prep_row";
+            added.dataset.id = id;
+            const number = document.createElement("span");
+            number.className = "o_ocd_prep_number";
+            const moves = document.createElement("span");
+            moves.className = "o_ocd_prep_moves";
+            for (const [name, label] of [["monter", "↑"], ["descendre", "↓"]]) {
+                const button = document.createElement("button");
+                Object.assign(button, { type: "submit", name, value: id, textContent: label });
+                button.className = name === "monter" ? "o_ocd_prep_up" : "o_ocd_prep_down";
+                button.setAttribute("aria-label", label);
+                moves.append(button);
+            }
+            added.append(number, item.querySelector(".o_ocd_photo").cloneNode(true),
+                item.querySelector(".o_ocd_prep_text").cloneNode(true), moves);
+            list.append(added);
+        } else if (!ev.currentTarget.checked && row) {
+            row.remove();
+        }
+        this.renumber();
+    }
+
+    move(ev) {
+        ev.preventDefault();
+        const row = ev.currentTarget.closest(".o_ocd_prep_row");
+        if (ev.currentTarget.name === "monter" && row.previousElementSibling) {
+            row.parentElement.insertBefore(row, row.previousElementSibling);
+        } else if (ev.currentTarget.name === "descendre" && row.nextElementSibling) {
+            row.parentElement.insertBefore(row.nextElementSibling, row);
+        }
+        this.renumber();
+    }
+
+    renumber() {
+        // The numbers, the arrows at the ends, the count and the order sent with the form
+        const rows = [...this.el.querySelectorAll(".o_ocd_prep_row")];
+        rows.forEach((row, index) => {
+            row.querySelector(".o_ocd_prep_number").textContent = index + 1;
+            const up = row.querySelector(".o_ocd_prep_up");
+            const down = row.querySelector(".o_ocd_prep_down");
+            if (up) {
+                up.hidden = index === 0;
+            }
+            if (down) {
+                down.hidden = index === rows.length - 1;
+            }
+        });
+        this.el.querySelector(".o_ocd_prep_count").textContent = rows.length;
+        this.el.querySelector(".o_ocd_prep_empty").classList.toggle("d-none", rows.length > 0);
+        this.el.querySelector(".o_ocd_prep_order").value = rows.map((row) => row.dataset.id).join(",");
+    }
+
+    search(ev) {
+        const words = ev.currentTarget.value.trim().toLowerCase();
+        for (const item of this.el.querySelectorAll(".o_ocd_prep_item")) {
+            item.hidden = Boolean(words) && !item.dataset.name.includes(words);
+        }
+    }
+}
+
 registry
     .category("public.interactions")
     .add("ocd_live_shop.colour_photo", OcdColourPhoto)
@@ -1174,4 +1254,5 @@ registry
     .add("ocd_live_shop.send_pieces", OcdSendPieces)
     .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm)
     .add("ocd_live_shop.near_me", OcdNearMe)
-    .add("ocd_live_shop.autosubmit", OcdAutoSubmit);
+    .add("ocd_live_shop.autosubmit", OcdAutoSubmit)
+    .add("ocd_live_shop.live_prepare", OcdLivePrepare);
