@@ -301,6 +301,27 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     perdraient leur stock) ; une valeur ne se retire pas, à 0 pièce elle est « Épuisé ». À
     l'installation, la Taille et la Couleur d'Odoo sont proposées, avec des valeurs courantes si elles
     n'en ont pas.
+- **L'équipe du vendeur** (chantier 22, [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md), A.9 ; maquette
+  `EquipeDuVendeur` validée le 17 novembre 2026) :
+  - la personne qui tient un magasin a **son propre accès**, avec son numéro WhatsApp comme le vendeur
+    (son lien en mode lien, un code sinon ; jamais de mot de passe). Elle voit et change le stock de **son
+    magasin seulement**, prépare les colis qui en partent, remet les retraits au comptoir (l'argent
+    encaissé revient au vendeur) et répond aux pièces à essayer. Jamais : les prix, l'ajout ou la
+    modification d'un produit, les reversements, les autres magasins, débloquer un client ; un produit
+    dont le stock n'est pas compté le reste (c'est au vendeur de le décider) ;
+  - **une personne, une équipe** : le numéro d'un vendeur ou d'un livreur est refusé, comme celui d'une
+    personne déjà dans l'équipe d'un autre vendeur. Un téléphone ouvre une seule personne : sa connexion
+    oublie le vendeur ou le livreur ouvert avant ;
+  - **5 personnes au plus** (réglable, et par vendeur) ; **OCD Business** seulement : à la fin de la
+    formule, l'équipe est en pause (elle voit « L'équipe est en pause »), rien n'est supprimé ; retirée,
+    elle perd l'accès tout de suite et son historique reste ;
+  - **ce qu'elle fait est tracé** : sur le colis (« Fait par Aïcha, équipe de Brenda »), sur la mise de
+    côté (« Répondu par »), et dans les derniers changements de « Mon stock » du vendeur (« …, par
+    Aïcha ») ;
+  - **WhatsApp** : son lien part quand le vendeur l'ajoute ou le renvoie (comme un message demandé) ; les
+    nouvelles de son magasin (colis à préparer, pièce à essayer) seulement **si elle les accepte** depuis
+    son accueil, le même accord que partout (STOP les arrête). Le vendeur continue de tout recevoir ;
+  - le lien personnel d'un livreur ou d'une personne d'une équipe n'ouvre jamais un espace de vendeur.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

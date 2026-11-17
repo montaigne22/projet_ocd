@@ -94,8 +94,8 @@ class OcdVendorTeam(http.Controller):
             paused=bool(members) and not business,
             blocked=blocked,
             add_places=not places and business and stock_here,
-            count_line=(env._("1 person out of %s.", allowed) if len(members) == 1
-                        else env._("%(count)s people out of %(max)s.", count=len(members), max=allowed)) if allowed else "",
+            count_line=(env._("1 person out of %s", allowed) if len(members) == 1
+                        else env._("%(count)s people out of %(max)s", count=len(members), max=allowed)) if allowed else "",
             error=error,
             message=message,
             share=share,

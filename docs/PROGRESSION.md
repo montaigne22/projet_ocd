@@ -36,6 +36,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Gérer ses produits (chantier 19) : modifier un produit en vente (vérifié pendant que la version d'aujourd'hui reste en vente, prix tout de suite, grand écart confirmé, historique des prix), plusieurs photos, retirer de la vente et remettre, produit gardé dans le téléphone sans réseau | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Autour des magasins (chantier 20) : mode vacances, vendeurs près de chez moi, le bot WhatsApp donne les magasins, retrait en magasin (payé au comptoir, code après l'argent), mettre de côté pour essayer | ✅ fait, testé (8 modèles WhatsApp à faire approuver par Meta) ; les nouveautés aux abonnés (A.8) attendent le chantier 1 |
 | Vendre plus (chantier 21) : préparer son prochain live (les produits pour la régie, dans l'ordre du vendeur), alerte de stock bas sur WhatsApp, tailles et couleurs dès la création | ✅ fait, testé (le WhatsApp est le modèle `ocd_stock_bas`, soumis à Meta le 16 novembre) |
+| Équipe du vendeur (chantier 22) : la personne qui tient un magasin a son espace « Mon magasin » (connexion par son numéro, lien ou code), le stock de son magasin sans les prix, ses colis, retraits au comptoir et pièces à essayer, sans les reversements ; « Mon équipe » du vendeur (5 au plus, OCD Business, en pause sans rien supprimer) ; onglet « Équipe » du back-office | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -110,6 +111,40 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 17 novembre 2026 · L'équipe du vendeur (chantier 22)
+Dessiné d'abord (maquette `EquipeDuVendeur`, validée), puis codé.
+- **Mon équipe** (Mon espace et menu du vendeur) : les personnes qui tiennent ses magasins, leur
+  WhatsApp, leur magasin, « Active », « Pas encore venu » ou « En pause », leur dernière visite ;
+  « Renvoyer son lien » (une fois par minute au plus), « Changer de magasin », « Retirer ». Ajouter :
+  son nom, son WhatsApp, son magasin, puis son lien part sur WhatsApp ; si le WhatsApp d'OCD Live ne peut
+  pas partir, le vendeur l'envoie lui-même depuis son WhatsApp (bouton prérempli). 5 personnes au plus
+  (réglage « Personnes dans l'équipe d'un vendeur, au plus », modifiable sur la fiche du vendeur). Refusés :
+  le numéro d'un vendeur ou d'un livreur, une personne déjà dans une autre équipe. OCD Business : à la fin
+  de la formule l'équipe est en pause, rien n'est supprimé, elle revient avec la formule.
+- **Mon magasin** (`/ocd/mon-magasin`) : elle se connecte avec son numéro comme le vendeur (son lien, ou
+  un code ; la page des vendeurs et celle des colis répondent aussi à son numéro, « Moi » la mène à son
+  magasin). Accueil : ses colis (à préparer, retraits, à essayer) et son stock (produits, stock bas), côte
+  à côte sur tablette et ordinateur. **Le stock du magasin** : les − / + de chaque taille et couleur de son
+  magasin seulement, sans les prix ; un produit dont le stock n'est pas compté reste ainsi (le vendeur le
+  décide) ; le vendeur voit qui a changé le stock dans « Mon stock » (« …, par Aïcha »). **Les colis du
+  magasin** : l'app des colis limitée aux colis qui partent de son magasin, ses retraits (encaisser puis le
+  code du client, l'argent revient au vendeur) et ses pièces à essayer (d'accord, refuser, puis ce qui
+  s'est passé ; débloquer un client reste au vendeur), sans les reversements ; ce qu'elle fait est tracé
+  sur le colis et la mise de côté. Retirée de l'équipe ou nouveau lien : son téléphone redemande le numéro.
+- **WhatsApp** : son lien (« Mon magasin »), puis, si elle l'accepte depuis son accueil, un message quand
+  un colis est à préparer ou qu'un client veut essayer une pièce dans son magasin ; le bouton ouvre la
+  bonne page. Le vendeur reçoit toujours ses messages. Automatisation « Équipe d'un vendeur ».
+- **Back-office** : onglet « Équipe » de la fiche du vendeur (ajouter, renvoyer le lien, retirer), menu
+  Shop › « Équipes des vendeurs ». Le lien personnel d'un livreur ou d'une personne d'une équipe n'ouvre
+  jamais un espace de vendeur.
+- Tests : base neuve, tous les modules OCD : **424 sans échec** (11 nouveaux) ; contrôlé dans un
+  navigateur en français en trois tailles (390, 820, 1440 px) : Mon équipe, Mon magasin, le stock du
+  magasin, les colis du magasin.
+- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.17.0, `ocd_live_shop` 20.0.1.33.0,
+  `ocd_live_shop_whatsapp` 20.0.1.23.0 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`). À soumettre à
+  Meta (Utility, français et anglais) : `ocd_equipe_lien`, `ocd_equipe_colis`, `ocd_equipe_essai`. Tant que
+  `ocd_equipe_lien` attend Meta, la page « Mon magasin » demande un code.
 
 ### 17 novembre 2026 · Vendre plus (chantier 21)
 Dessiné d'abord (maquettes `PreparerLive`, `TaillesCouleurs`, `StockBas`, validées), puis codé.

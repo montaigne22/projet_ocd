@@ -98,12 +98,12 @@
                                 </label>
                             </fieldset>
                             <div class="o_ocd_team_can">
-                                <b>She sees and changes</b>
-                                <span>✓ The stock of this store (− / +)</span>
-                                <span>✓ Its parcels: to prepare, pickups, pieces to try</span>
-                                <span>✓ A WhatsApp when a parcel or a piece to try arrives</span>
-                                <b>She does not see</b>
-                                <span>✗ The prices, your payouts, your other stores</span>
+                                <div class="o_ocd_team_can_title">She sees and changes</div>
+                                <div>✓ The stock of this store (− / +)</div>
+                                <div>✓ Its parcels: to prepare, pickups, pieces to try</div>
+                                <div>✓ A WhatsApp when a parcel or a piece to try arrives</div>
+                                <div class="o_ocd_team_can_title">She does not see</div>
+                                <div>✗ The prices, your payouts, your other stores</div>
                             </div>
                             <button type="submit" class="o_ocd_cta">Add and send her link</button>
                             <small class="o_ocd_parcel_hint">She opens her space with her number, like you. You can remove her whenever you want.</small>
@@ -256,7 +256,7 @@
                                         <span class="o_ocd_member_variant_label">
                                             <t t-if="line['label']" t-out="line['label']"/>
                                             <t t-else="">Pieces</t>
-                                            <small t-if="line['kept']"><t t-out="line['kept']"/> kept for an order</small>
+                                            <small t-if="line['kept_line']" t-out="line['kept_line']"/>
                                         </span>
                                         <form action="/ocd/mon-magasin/stock" method="post" class="o_ocd_stepper">
                                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -268,9 +268,7 @@
                                                     t-attf-aria-label="One more: #{row['product'].name} #{line['label']}">+</button>
                                         </form>
                                     </div>
-                                    <span t-if="row['low']" class="o_ocd_step_pill o_ocd_member_low">
-                                        <t t-out="low_label"/>: <t t-out="', '.join(line['label'] or row['product'].name for line in row['low'])"/>
-                                    </span>
+                                    <span t-if="row['low_line']" class="o_ocd_step_pill o_ocd_member_low" t-out="row['low_line']"/>
                                 </t>
                             </div>
                         </div>

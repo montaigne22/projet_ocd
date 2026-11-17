@@ -291,8 +291,12 @@ class OcdMemberSpace(http.Controller):
                     "label": ", ".join(variant.product_template_attribute_value_ids.mapped("name")),
                     "free": pieces,
                     "kept": kept[variant.id],
+                    "kept_line": (env._("1 kept for an order") if kept[variant.id] == 1
+                                  else env._("%s kept for an order", kept[variant.id])) if kept[variant.id] else "",
                     "low": tracked and limit and 0 < pieces <= limit,
                 })
+            low = [row for row in variants if row["low"]]
+            low_labels = [row["label"] for row in low if row["label"]]
             rows.append({
                 "product": product,
                 "photo": f"/ocd/mon-magasin/photo/{product.id}?unique={product._ocd_photo_stamp(product)}"
@@ -300,7 +304,8 @@ class OcdMemberSpace(http.Controller):
                 "tracked": tracked,
                 "variants": variants,
                 "pieces": sum(row["free"] for row in variants),
-                "low": [row for row in variants if row["low"]],
+                "low": low,
+                "low_line": (env._("Low stock: %s", ", ".join(low_labels)) if low_labels else env._("Low stock")) if low else "",
             })
         return rows
 
@@ -318,7 +323,6 @@ class OcdMemberSpace(http.Controller):
             header_name=env._("My store"),
             title=env._("The stock · %s", member.place_id.name),
             rows=rows,
-            low_label=env._("Low stock"),
         ))
 
     @http.route("/ocd/mon-magasin/stock", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
