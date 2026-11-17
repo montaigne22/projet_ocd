@@ -140,6 +140,9 @@ class OcdVendorStock(http.Controller):
             else:
                 text = (env._("1 %(label)s left %(place)s", label=label, place=source) if one
                         else env._("%(qty)s %(label)s left %(place)s", qty=qty, label=label, place=source))
+            if line.move_id.ocd_member_id:
+                # Changed by a person of the team at her store (chantier 22)
+                text = env._("%(change)s, by %(person)s", change=text, person=line.move_id.ocd_member_id.name)
             when = common.to_viewer(line.date)
             day = env._("Today %s", tools.hour_text(when.hour + when.minute / 60)) if when.date() == today \
                 else tools.day_text(env, when.date(), "d MMM")

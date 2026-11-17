@@ -157,6 +157,12 @@ class ResCompany(models.Model):
         default=5,
         help="With OCD Business; without it, one place. Changed on the form of a vendor.",
     )
+    # The team of the vendors (chantier 22): the people who hold their stores
+    ocd_vendor_team_max = fields.Integer(
+        string="People In The Team Of A Vendor At Most",
+        default=5,
+        help="With OCD Business. Changed on the form of a vendor.",
+    )
     ocd_place_home_allowed = fields.Boolean(
         string="Selling From Home Allowed",
         default=True,

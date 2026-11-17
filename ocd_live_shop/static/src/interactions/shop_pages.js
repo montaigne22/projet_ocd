@@ -1241,6 +1241,24 @@ export class OcdLivePrepare extends Interaction {
 }
 
 /**
+ * The stock of her store (design EquipeDuVendeur): the search filters the products of the
+ * vendor without a new page.
+ */
+export class OcdMemberStock extends Interaction {
+    static selector = ".o_ocd_member_stock";
+    dynamicContent = {
+        ".o_ocd_member_search": { "t-on-input": this.search },
+    };
+
+    search(ev) {
+        const words = ev.currentTarget.value.trim().toLowerCase();
+        for (const item of this.el.querySelectorAll(".o_ocd_member_product")) {
+            item.hidden = Boolean(words) && !item.dataset.name.includes(words);
+        }
+    }
+}
+
+/**
  * Sizes and colours of a new product (design TaillesCouleurs): « Several sizes or colours »
  * shows the values offered by the team; each value ticked redraws the stock of each choice (the
  * colours in rows, the sizes in columns), keeping what was typed, with the total. Without
@@ -1364,4 +1382,5 @@ registry
     .add("ocd_live_shop.near_me", OcdNearMe)
     .add("ocd_live_shop.autosubmit", OcdAutoSubmit)
     .add("ocd_live_shop.live_prepare", OcdLivePrepare)
-    .add("ocd_live_shop.variants_form", OcdVariantsForm);
+    .add("ocd_live_shop.variants_form", OcdVariantsForm)
+    .add("ocd_live_shop.member_stock", OcdMemberStock);

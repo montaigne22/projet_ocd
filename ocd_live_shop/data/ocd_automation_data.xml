@@ -156,6 +156,20 @@ Tell the customer.</field>
         <field name="tools">Code of OCD Live.</field>
     </record>
 
+    <record id="automation_team" model="ocd.automation">
+        <field name="code">team</field>
+        <field name="name">Team of a vendor: her link, the news of her store</field>
+        <field name="sequence">76</field>
+        <field name="group">shop</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_vendor_member"/>
+        <field name="when">When the vendor adds a person, when a parcel or a piece to try arrives at her store</field>
+        <field name="trigger">« Add and send her link » in « My team », a new parcel prepared at a store, a piece held there.</field>
+        <field name="scope">The people who hold the stores of the vendors (OCD Business, not paused).</field>
+        <field name="actions">Send her the link of her space; tell her a parcel is to prepare or a customer wants to try a piece at her store.</field>
+        <field name="tools">Code of OCD Live.</field>
+    </record>
+
     <record id="automation_holiday_back" model="ocd.automation">
         <field name="code">holiday_back</field>
         <field name="name">Vendor back from holiday: tell the customers who asked</field>

@@ -12,3 +12,5 @@ from . import vendor_holiday
 from . import directory_where
 from . import product_hold
 from . import live_prepare
+from . import vendor_team
+from . import member_space

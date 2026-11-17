@@ -291,3 +291,63 @@ class TestOcdLowStockMessage(OcdShopCommon):
         self.env.invalidate_all()
         self.assertIn("ocd_low_qty", template.variable_ids.filtered(lambda v: v.sequence == 2).value)
         self.assertIn("ocd_low_name", template.variable_ids.filtered(lambda v: v.sequence == 3).value)
+
+
+@tagged("post_install", "-at_install")
+class TestOcdTeamMessages(OcdShopCommon):
+    """The team of a vendor (chantier 22): her link when she is added, then the news of her store
+    (a parcel to prepare, a piece to try) when she agreed to them; nothing while the team is
+    paused."""
+
+    def test_messages_of_the_team(self):
+        self.env["res.lang"]._activate_lang("fr_FR")
+        self.company.write({"ocd_business_offered_all": True, "ocd_vendor_places_max": 5, "ocd_place_check": False,
+                            "ocd_place_proof_required": False, "ocd_hold_enabled": True, "ocd_vendor_team_max": 5})
+        self.brenda.country_id = self.env.ref("base.cm")
+        self.dress.is_storable = True
+        self.dress.product_tmpl_id.write({"is_published": True, "ocd_review_state": "approved"})
+        store = self.env["ocd.vendor.place"]._ocd_vendor_create(self.brenda, {
+            "name": "Brenda Wax Akwa", "kind": "store", "district_id": self.akwa.id, "city_id": self.akwa.city_id.id,
+        })
+        store._ocd_set_hours(self.company._ocd_place_default_intervals())
+        self.brenda.ocd_departure_place_id = store
+        self.dress._ocd_change_stock(3)
+        calls = []
+
+        def fake_send(template, records):
+            calls.append((template.template_name, records, dict(template.env.context)))
+            return template.env["whatsapp.message"]
+
+        Member = self.env["ocd.vendor.member"]
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            aicha = Member._ocd_add(self.brenda, "Aïcha Njoya", "+237699123456", store)
+            self.assertEqual([(name, records) for name, records, _ctx in calls], [("ocd_equipe_lien", aicha)])
+            self.assertTrue(calls[0][2]["ocd_whatsapp_requested"], "Her link: sent even without the consent")
+            # The news of her store: when she agreed to them
+            aicha.partner_id.ocd_whatsapp_optin = True
+            calls.clear()
+            order = self._order(self.estelle, [(self.dress, 1)])
+            parcel = order.picking_ids.filtered(lambda p: p.ocd_vendor_id == self.brenda)
+            self.assertEqual(parcel.ocd_pickup_place_id, store)
+            team = [(name, records, ctx) for name, records, ctx in calls if records == aicha]
+            self.assertEqual([(name, ctx["ocd_customer"]) for name, _r, ctx in team], [("ocd_equipe_colis", "Estelle")])
+            calls.clear()
+            hold = self.env["ocd.product.hold"]._ocd_request(store, self.dress, self.herve)
+            team = [(name, ctx) for name, records, ctx in calls if records == aicha]
+            self.assertEqual([name for name, _ctx in team], ["ocd_equipe_essai"])
+            self.assertEqual(team[0][1]["ocd_until_fr"], hold._ocd_deadline_text("fr_FR"))
+            # Paused (no more OCD Business): nothing to her
+            self.company.ocd_business_offered_all = False
+            calls.clear()
+            self._order(self.estelle, [(self.dress, 1)])
+            self.assertFalse([records for _name, records, _ctx in calls if records == aicha])
+        template = self.env.ref("ocd_live_shop_whatsapp.template_team_link")
+        values = [template._render(variable.value, aicha)[aicha.id] for variable in template.variable_ids.sorted("sequence")]
+        self.assertEqual(values, ["Aïcha", "Brenda Wax", "Brenda Wax Akwa"])
+        self.assertEqual(template._render(template.button_url_value, aicha)[aicha.id],
+                         f"ocd/mon-magasin/{aicha.partner_id._ocd_get_space_token()}")
+        self.assertEqual(template._get_recipient(aicha), aicha.partner_id)
+        parcel_template = self.env.ref("ocd_live_shop_whatsapp.template_team_parcel")
+        self.assertTrue(parcel_template._render(parcel_template.button_url_value, aicha)[aicha.id].endswith("?vers=colis"))
+        # Her login page sends this link in the link mode
+        self.assertEqual(self.env["res.partner"]._ocd_link_templates()["magasin"], "ocd_live_shop_whatsapp.template_team_link")

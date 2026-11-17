@@ -11,6 +11,7 @@ from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
 from .delivery_login import current_courier, remember_courier
+from .member_session import HOME, current_member, member_header_link
 
 OPEN_STAGES = ("to_prepare", "ready", "picked", "on_the_way", "problem")
 # Label and colour of the step of a parcel, as in the design
@@ -27,7 +28,9 @@ PILLS = {
 class OcdDeliveryApp(http.Controller):
     """Delivery app on the phone (designs Livrer and Tournee): the vendor prepares and
     delivers the parcels, the OCD courier picks them up and delivers them. Each one only sees
-    the parcels assigned."""
+    the parcels assigned. A person of the team of a vendor (chantier 22) sees the parcels of her
+    store: she prepares them and hands over the ones picked up at the counter, without the
+    payouts."""
 
     def _partner(self, token):
         """The courier or the vendor of the app: from its personal link (link mode), or opened on
@@ -48,12 +51,44 @@ class OcdDeliveryApp(http.Controller):
         else:
             partner = current_courier() or common.current_vendor()
             if not partner:
-                werkzeug.exceptions.abort(request.redirect("/ocd/livrer"))
+                member = current_member()
+                if not member:
+                    werkzeug.exceptions.abort(request.redirect("/ocd/livrer"))
+                if member._ocd_paused():
+                    # Her home says the team is paused
+                    werkzeug.exceptions.abort(request.redirect(HOME))
+                member._ocd_visit()
+                request._ocd_member = member
+                partner = member.partner_id
         # The hours of the app are the ones of this person (their phone, else their country)
         request._ocd_viewer_tz = common.viewer_tz(partner)
         return partner
 
+    def _member(self, partner):
+        """The place in a team of `partner` when the app is opened by a person of a team (empty
+        for the vendors and the couriers)."""
+        member = getattr(request, "_ocd_member", None)
+        if member and member.partner_id == partner:
+            return member
+        return request.env["ocd.vendor.member"]
+
+    def _roles(self, parcel, partner):
+        """(prepares, delivers): what `partner` does with the parcel. A person of a team prepares
+        the parcels of her store and hands over the ones picked up at its counter."""
+        member = self._member(partner)
+        if member:
+            prepares = parcel.ocd_vendor_id == member.vendor_id and parcel.ocd_pickup_place_id == member.place_id
+            return prepares, prepares and parcel.ocd_collect
+        return parcel.ocd_vendor_id == partner, parcel.ocd_courier_id == partner
+
+    def _collector(self, partner):
+        """Who receives the money at the counter: the vendor, when a person of their team does."""
+        member = self._member(partner)
+        return member.vendor_id if member else partner
+
     def _header_link(self, partner):
+        if self._member(partner):
+            return member_header_link()
         if partner.ocd_is_courier:
             return {"href": "/ocd/livrer/deconnexion", "post": True, "label": request.env._("Log out")}
         return common.vendor_header_link(common.current_vendor_and_source()[1])
@@ -61,6 +96,17 @@ class OcdDeliveryApp(http.Controller):
     def _parcels(self, partner):
         Picking = request.env["stock.picking"].sudo()
         domain = [("ocd_is_parcel", "=", True), ("ocd_stage", "in", OPEN_STAGES)]
+        member = self._member(partner)
+        if member:
+            store = [("ocd_vendor_id", "=", member.vendor_id.id), ("ocd_pickup_place_id", "=", member.place_id.id)]
+            if member.vendor_id.ocd_sale_mode != "ocd":
+                return Picking, Picking
+            mine = Picking.search(domain + store, order="create_date, id")
+            done = Picking.search(
+                [("ocd_is_parcel", "=", True), ("ocd_stage", "=", "delivered")] + store,
+                order="ocd_delivered_at desc", limit=20,
+            )
+            return mine, done
         if partner.ocd_is_courier:
             mine = Picking.search(domain + [("ocd_courier_id", "=", partner.id)], order="create_date, id")
         else:
@@ -154,15 +200,19 @@ class OcdDeliveryApp(http.Controller):
         )
 
     def _card(self, parcel, partner):
-        prepares = parcel.ocd_vendor_id == partner
-        delivers = parcel.ocd_courier_id == partner
+        prepares, delivers = self._roles(parcel, partner)
+        member = self._member(partner)
         # The courier still has to pick the parcel up at the vendor (or at the stock)
         to_pick = delivers and parcel.ocd_delivery_mode != "vendor" and parcel.ocd_stage in ("to_prepare", "ready")
         pill, pill_label = self._pill(parcel)
         pay, pay_label = self._payment(parcel, delivers)
         customer = self._first_name(parcel.partner_id)
         courier = parcel.ocd_courier_id
-        other_courier = courier if courier and courier != partner else False
+        # For a person of a team, the vendor is not « another courier »: they deliver it themselves
+        other_courier = courier if courier and courier not in (partner, member.vendor_id) else False
+        when = self._when(parcel)
+        if member and courier == member.vendor_id and not parcel.ocd_collect:
+            when = request.env._("%s delivers it: get it ready.", self._first_name(courier))
         phone = re.sub(r"\D", "", parcel.ocd_customer_phone or "")
         return {
             "parcel": parcel,
@@ -176,7 +226,7 @@ class OcdDeliveryApp(http.Controller):
             "items": self._items(parcel),
             "pay": pay,
             "pay_label": pay_label,
-            "when": self._when(parcel),
+            "when": when,
             "customer": customer,
             "phone": phone,
             "whatsapp": f"https://wa.me/{phone}" if len(phone) >= 8 else False,
@@ -196,7 +246,8 @@ class OcdDeliveryApp(http.Controller):
             "leave_note": request.env._("%s receives the code on WhatsApp when you leave.", customer),
             "code_label": request.env._("Code given by %s", customer),
             "problem_line": self._problem_line(parcel) if parcel.ocd_stage == "problem" else "",
-            "methods": self._methods(parcel, partner) if delivers and parcel.ocd_cod_state == "to_collect" else [],
+            "methods": self._methods(parcel, self._collector(partner))
+            if delivers and parcel.ocd_cod_state == "to_collect" else [],
             "pay_question": request.env._("How does %s pay?", customer),
             "pickup_title": request.env._("Pick up at %s", parcel.ocd_vendor_id.name) if parcel.ocd_vendor_id
             else request.env._("Pick up at the OCD stock"),
@@ -224,9 +275,17 @@ class OcdDeliveryApp(http.Controller):
             "first_pick": request.env._("First pick the parcel up at %s.", parcel.ocd_vendor_id.name or request.env._("the OCD stock")),
         }
 
-    def _handed_over(self, parcel):
+    def _handed_over(self, parcel, member=None):
         """The message once a parcel is handed over at the counter."""
         customer = self._first_name(parcel.partner_id)
+        if member:
+            # Without the payouts: what was collected only
+            if parcel.ocd_cod_state in ("collected", "remitted") and parcel.ocd_cod_method == "cash":
+                return request.env._(
+                    "Handed over to %(customer)s. %(amount)s collected in cash.",
+                    customer=customer, amount=common.money(parcel.ocd_cod_collected_amount, parcel.ocd_currency_id),
+                )
+            return request.env._("Handed over to %s. Thank you!", customer)
         if parcel.ocd_cod_state in ("collected", "remitted") and parcel.ocd_cod_method == "cash":
             return request.env._(
                 "Handed over to %(customer)s. You collected %(amount)s in cash: the commission of OCD is "
@@ -276,7 +335,7 @@ class OcdDeliveryApp(http.Controller):
 
     def _payout_line(self, partner):
         """What the vendor receives at the next payout, when OCD sells for them."""
-        if partner.ocd_is_courier or partner.ocd_sale_mode != "ocd":
+        if partner.ocd_is_courier or partner.ocd_sale_mode != "ocd" or self._member(partner):
             return False
         moves = request.env["account.move"].sudo().search([
             ("partner_id", "=", partner.id),
@@ -319,10 +378,15 @@ class OcdDeliveryApp(http.Controller):
         return name if name.startswith("+") else (name.split()[0] if name else "")
 
     def _hold_cards(self, partner):
-        if partner.ocd_is_courier or not partner.ocd_is_vendor:
+        member = self._member(partner)
+        if member:
+            domain = [("vendor_id", "=", member.vendor_id.id), ("place_id", "=", member.place_id.id)]
+        elif partner.ocd_is_courier or not partner.ocd_is_vendor:
             return []
+        else:
+            domain = [("vendor_id", "=", partner.id)]
         holds = request.env["ocd.product.hold"].sudo().search(
-            [("vendor_id", "=", partner.id), ("state", "in", ("requested", "accepted"))], order="deadline, id"
+            domain + [("state", "in", ("requested", "accepted"))], order="deadline, id"
         )
         return [self._hold_card(hold) for hold in holds]
 
@@ -355,7 +419,13 @@ class OcdDeliveryApp(http.Controller):
         """The answer of the vendor to a piece held, then how it went at the store."""
         partner = self._partner(token)
         hold = request.env["ocd.product.hold"].sudo().browse(hold_id).exists()
-        if not hold or hold.vendor_id != partner:
+        member = self._member(partner)
+        if member:
+            # Her store only; unblocking a customer stays with the vendor
+            mine = hold and hold.vendor_id == member.vendor_id and hold.place_id == member.place_id
+            if not mine or action == "unblock":
+                raise request.not_found()
+        elif not hold or hold.vendor_id != partner:
             raise request.not_found()
         env = request.env
         customer = self._customer_name(hold.partner_id)
@@ -374,7 +444,7 @@ class OcdDeliveryApp(http.Controller):
                     "not_taken": env._("Noted: the piece is on sale again."),
                     "no_show": env._("Noted: the piece is on sale again."),
                 }[action]
-                if action == "no_show" and env["ocd.product.hold"].sudo()._ocd_blocked(hold.partner_id, partner):
+                if action == "no_show" and not member and env["ocd.product.hold"].sudo()._ocd_blocked(hold.partner_id, partner):
                     blocked = hold
             elif action == "unblock":
                 hold.action_ocd_unblock()
@@ -383,6 +453,9 @@ class OcdDeliveryApp(http.Controller):
                 raise request.not_found()
         except UserError as exc:
             return self._render(token, partner, error=exc.args[0], tab="essayer")
+        if member:
+            # The vendor and the team see who of the team answered
+            hold.ocd_member_id = member
         return self._render(token, partner, message=message, tab="essayer", blocked_hold=blocked)
 
     def _render(self, token, partner, message=None, error=None, parcel_id=None, tab=None, blocked_hold=None):
@@ -406,7 +479,8 @@ class OcdDeliveryApp(http.Controller):
             "card_error": error if parcel_id else None,
             "card_id": parcel_id,
             "tab": {"livres": "done", "magasin": "store", "essayer": "try"}.get(tab, "todo"),
-            "header_name": request.env._("OCD courier") if partner.ocd_is_courier else request.env._("My parcels"),
+            "header_name": request.env._("OCD courier") if partner.ocd_is_courier
+            else request.env._("My store") if self._member(partner) else request.env._("My parcels"),
             "header_link": self._header_link(partner),
             "nav": False if partner.ocd_is_courier else "me",
         }
@@ -445,6 +519,15 @@ class OcdDeliveryApp(http.Controller):
             store_cards = [card for card in cards if card["collect"]]
             hold_cards = self._hold_cards(partner)
             customer = self._customer_name(blocked_hold.partner_id) if blocked_hold else ""
+            member = self._member(partner)
+            if member:
+                values.update({
+                    "member_line": request.env._("%(store)s · the store of %(vendor)s",
+                                                 store=member.place_id.name, vendor=member.vendor_id.name),
+                    "back": HOME,
+                    "back_label": request.env._("Back to my store"),
+                })
+                blocked_hold = None
             values.update({
                 "hold_cards": hold_cards,
                 "hold_label": request.env._("To try · %s", len(hold_cards)) if hold_cards else "",
@@ -455,7 +538,7 @@ class OcdDeliveryApp(http.Controller):
                     "%(count)s absences: %(customer)s can no longer hold pieces at your stores. You can unblock them.",
                     count=blocked_hold.company_id.ocd_hold_max_absences, customer=customer,
                 ) if blocked_hold else "",
-                "hello": request.env._("Hello %s", self._first_name(partner)),
+                "hello": request.env._("Hello %s", member._ocd_first_name() if member else self._first_name(partner)),
                 "payout_line": self._payout_line(partner),
                 "todo_label": request.env._("To do · %s", len(cards)),
                 "done_label": request.env._("Delivered · %s", len(done)),
@@ -464,7 +547,7 @@ class OcdDeliveryApp(http.Controller):
             if values["tab"] == "store":
                 values["cards"] = store_cards
             template = "ocd_live_shop.delivery_app"
-        if partner.ocd_is_vendor and not partner.ocd_is_courier:
+        if partner.ocd_is_vendor and not partner.ocd_is_courier and not self._member(partner):
             # « My parcels » of a vendor: a page of their space, with its menu on a large screen
             values.update(space_page="parcels", space_vendor=partner)
         return request.render(template, common.page_values("livrer", **values))
@@ -490,10 +573,10 @@ class OcdDeliveryApp(http.Controller):
     def act(self, token, picking_id, action, **post):
         partner = self._partner(token)
         parcel = request.env["stock.picking"].sudo().browse(picking_id).exists()
-        prepares = parcel and parcel.ocd_vendor_id == partner
-        delivers = parcel and parcel.ocd_courier_id == partner
+        prepares, delivers = self._roles(parcel, partner) if parcel else (False, False)
         if not parcel or not parcel.ocd_is_parcel or not (prepares or delivers):
             raise request.not_found()
+        member = self._member(partner)
         message = None
         try:
             if action == "ready" and prepares and parcel.ocd_collect:
@@ -514,7 +597,7 @@ class OcdDeliveryApp(http.Controller):
                     raise UserError(request.env._("Collect the payment first, then type the code of the customer."))
                 delivered, left = parcel._ocd_check_code(post.get("code"))
                 if delivered and parcel.ocd_collect:
-                    message = self._handed_over(parcel)
+                    message = self._handed_over(parcel, member)
                 elif delivered:
                     message = request.env._("Delivered. Thank you!")
                 elif left:
@@ -522,7 +605,7 @@ class OcdDeliveryApp(http.Controller):
                 else:
                     raise UserError(request.env._("Wrong code: the parcel is locked. Call the team."))
             elif action == "collect" and delivers:
-                parcel._ocd_collect(post.get("method"), partner, reference=post.get("reference"))
+                parcel._ocd_collect(post.get("method"), self._collector(partner), reference=post.get("reference"))
                 message = request.env._("Payment saved.")
             elif action == "problem" and delivers:
                 reason = post.get("reason")
@@ -537,11 +620,17 @@ class OcdDeliveryApp(http.Controller):
                 # Traced on the parcel: who resumed, after which problem
                 parcel.message_post(body=request.env._(
                     "Delivery resumed by %(who)s from the delivery app, after: %(reason)s",
-                    who=partner.name, reason=reason,
+                    who=member.name if member else partner.name, reason=reason,
                 ))
                 message = request.env._("Delivery resumed.")
             else:
                 raise request.not_found()
         except UserError as exc:
             return self._render(token, partner, error=exc.args[0], parcel_id=parcel.id)
+        if member and action != "retry":
+            # The vendor sees who of the team did it, on the parcel
+            parcel.message_post(body=request.env._(
+                "Done by %(person)s, team of %(vendor)s: %(what)s",
+                person=member.name, vendor=member.vendor_id.name, what=message,
+            ))
         return self._render(token, partner, message=message, parcel_id=parcel.id)

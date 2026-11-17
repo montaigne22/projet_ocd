@@ -234,6 +234,9 @@ def current_vendor_and_source(token=None):
     login = company().ocd_vendor_login
     if token and token != "moi":
         vendor = Partner._ocd_find_by_space_token(token) if login == "link" else Partner
+        if not vendor.ocd_is_vendor:
+            # The personal link of a courier or of a person of a team never opens a space
+            vendor = Partner
         if vendor:
             # The personal link opens the space on this browser for the next pages
             remember_vendor(vendor)

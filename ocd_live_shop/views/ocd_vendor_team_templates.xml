@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- === MY TEAM (design EquipeDuVendeur, chantier 22) === -->
+
+    <template id="vendor_team" name="OCD Live: my team">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My team</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_my_team">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">My team</h1>
+                    <p class="o_ocd_parcel_hint">The people who hold your stores: each one sees the stock and the parcels of her store.</p>
+                    <t t-call="ocd_live.message_box"/>
+                    <div t-if="share" class="o_ocd_info o_ocd_team_share" role="status">
+                        <span>The WhatsApp of OCD Live could not leave: send <t t-out="share['name']"/> her link yourself.</span>
+                        <a t-att-href="share['url']" target="_blank" rel="noopener" class="o_ocd_button">Send her link on WhatsApp</a>
+                    </div>
+                    <!-- On a computer: the people on the left, « Add a person » on the right -->
+                    <div class="o_ocd_team_list">
+                        <t t-foreach="rows" t-as="row">
+                            <t t-set="member" t-value="row['member']"/>
+                            <div class="o_ocd_team_card" t-attf-id="personne-#{member.id}">
+                                <span class="o_ocd_team_initials" aria-hidden="true" t-out="row['initials']"/>
+                                <div class="o_ocd_team_text">
+                                    <div class="o_ocd_team_head">
+                                        <b t-out="member.name"/>
+                                        <span t-attf-class="o_ocd_step_pill o_ocd_team_state_#{row['state']}" t-out="row['state_label']"/>
+                                    </div>
+                                    <span class="o_ocd_team_line" t-out="row['line']"/>
+                                    <small t-if="row['visit']" class="o_ocd_team_visit" t-out="row['visit']"/>
+                                    <div class="o_ocd_team_actions">
+                                        <form t-attf-action="/ocd/espace/moi/equipe/#{member.id}/lien" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button class="o_ocd_button">Send her link again</button>
+                                        </form>
+                                        <details class="o_ocd_team_more">
+                                            <summary class="o_ocd_button">Remove</summary>
+                                            <form t-attf-action="/ocd/espace/moi/equipe/#{member.id}/retirer" method="post">
+                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                <small>She no longer opens the space of the store. You can add her again later.</small>
+                                                <button class="o_ocd_button o_ocd_button_dark">Remove <t t-out="member._ocd_first_name()"/></button>
+                                            </form>
+                                        </details>
+                                    </div>
+                                    <details t-if="len(places) &gt; 1" class="o_ocd_team_more">
+                                        <summary class="o_ocd_link">Change her store</summary>
+                                        <form t-attf-action="/ocd/espace/moi/equipe/#{member.id}/magasin" method="post" class="o_ocd_team_move">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <label class="visually-hidden" t-attf-for="tm-place-#{member.id}">Her store</label>
+                                            <select t-attf-id="tm-place-#{member.id}" name="place_id" class="o_ocd_input">
+                                                <option t-foreach="places" t-as="option" t-att-value="option.id"
+                                                        t-att-selected="'selected' if option == member.place_id else None" t-out="option.name"/>
+                                            </select>
+                                            <button class="o_ocd_button">Save</button>
+                                        </form>
+                                    </details>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="not rows" class="o_ocd_info">No one yet: add the person who holds your store.</div>
+                        <small t-if="count_line" class="o_ocd_parcel_hint">
+                            <t t-out="count_line"/>
+                            <t t-if="business_line"> · <b>OCD Business</b> <t t-out="business_line"/></t>
+                        </small>
+                    </div>
+                    <div class="o_ocd_team_side">
+                        <div t-if="paused" class="o_ocd_info o_ocd_team_paused" role="status">
+                            Your team is paused: OCD Business ended. Nothing is deleted, it comes back with the formula.
+                        </div>
+                        <t t-if="blocked">
+                            <div class="o_ocd_info" t-out="blocked"/>
+                            <a t-if="add_places" href="/ocd/espace/moi/magasins/nouveau" class="o_ocd_cta">Add my store</a>
+                        </t>
+                        <form t-else="" action="/ocd/espace/moi/equipe" method="post" class="o_ocd_team_form o_ocd_form" novalidate="novalidate">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <h2 class="o_ocd_section">Add a person</h2>
+                            <div class="o_ocd_team_who">
+                                <div class="o_ocd_field">
+                                    <label for="tm-name" class="o_ocd_label">Her name</label>
+                                    <input id="tm-name" name="name" class="o_ocd_input" maxlength="80" autocomplete="off"
+                                           required="required" t-att-value="form_name"/>
+                                </div>
+                                <div class="o_ocd_field">
+                                    <label for="tm-phone" class="o_ocd_label">Her WhatsApp</label>
+                                    <t t-call="ocd_live.phone_field" field_id.f="tm-phone"/>
+                                </div>
+                            </div>
+                            <fieldset class="o_ocd_field o_ocd_team_places">
+                                <legend class="o_ocd_label">Her store</legend>
+                                <label t-foreach="places" t-as="option" class="o_ocd_team_place">
+                                    <input type="radio" name="place_id" t-att-value="option.id" required="required"
+                                           t-att-checked="'checked' if option.id == form_place else None"/>
+                                    <span>
+                                        <b t-out="option.name"/>
+                                        <small t-out="option._ocd_address_line() if option.kind == 'store' else option._ocd_area()"/>
+                                    </span>
+                                </label>
+                            </fieldset>
+                            <div class="o_ocd_team_can">
+                                <b>She sees and changes</b>
+                                <span>✓ The stock of this store (− / +)</span>
+                                <span>✓ Its parcels: to prepare, pickups, pieces to try</span>
+                                <span>✓ A WhatsApp when a parcel or a piece to try arrives</span>
+                                <b>She does not see</b>
+                                <span>✗ The prices, your payouts, your other stores</span>
+                            </div>
+                            <button type="submit" class="o_ocd_cta">Add and send her link</button>
+                            <small class="o_ocd_parcel_hint">She opens her space with her number, like you. You can remove her whenever you want.</small>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- My space: « My team » after « My stores », in the menu and on the home page -->
+    <template id="space_menu_team" inherit_id="ocd_live_shop.space_menu" name="OCD Live: my team in the menu of the space">
+        <xpath expr="//a[@data-page='places']" position="after">
+            <a t-if="space_vendor.ocd_team_ids or space_vendor._ocd_team_allowed()" href="/ocd/espace/moi/equipe" data-page="team"
+               t-att-class="'o_ocd_on' if space_page == 'team' else None" t-att-aria-current="'page' if space_page == 'team' else None">
+                <t t-call="ocd_live.icon" icon.f="user"/><span>My team</span>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="space_team" inherit_id="ocd_live_shop.space_places" name="OCD Live: my team in the space">
+        <xpath expr="//a[@href='/ocd/espace/moi/magasins']" position="after">
+            <a t-if="vendor.ocd_team_ids or vendor._ocd_team_allowed()" href="/ocd/espace/moi/equipe" class="o_ocd_button o_ocd_button_line">
+                My team<t t-if="vendor.ocd_team_ids"> · <t t-out="len(vendor.ocd_team_ids)"/></t>
+            </a>
+        </xpath>
+    </template>
+
+    <!-- === HER SPACE: MY STORE === -->
+
+    <!-- Her login: the same pages as the vendors, with her words -->
+    <template id="space_login_store" inherit_id="ocd_live.space_login" name="OCD Live: login of a person of a team">
+        <xpath expr="//h1[@t-else='']" position="before">
+            <h1 t-elif="target == 'magasin'" class="o_ocd_h1">Your store.</h1>
+        </xpath>
+        <xpath expr="//div[@t-elif=&quot;target == 'livrer'&quot;]" position="before">
+            <div t-elif="target == 'magasin'" class="o_ocd_info">For the people of the team of a vendor: give the number the vendor gave.</div>
+        </xpath>
+    </template>
+
+    <template id="space_login_code_store" inherit_id="ocd_live.space_login_code" name="OCD Live: code of a person of a team">
+        <xpath expr="//button[@t-else='']" position="before">
+            <button t-elif="target == 'magasin'" type="submit" class="o_ocd_cta">Open my store</button>
+        </xpath>
+    </template>
+
+    <!-- The parcels of her store: which store, whose -->
+    <template id="delivery_app_store" inherit_id="ocd_live_shop.delivery_app" name="OCD Live: the parcels of a store">
+        <xpath expr="//span[hasclass('o_ocd_parcels_payout')]" position="after">
+            <span t-if="member_line" class="o_ocd_parcels_payout o_ocd_parcels_store" t-out="member_line"/>
+        </xpath>
+    </template>
+
+    <template id="member_home" name="OCD Live: my store">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My store</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_member">
+                    <div class="o_ocd_member_hero">
+                        <span class="o_ocd_member_store" t-out="place.name"/>
+                        <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="hello"/>
+                        <span t-out="intro"/>
+                    </div>
+                    <!-- On a tablet and a computer: the parcels on the left, the stock on the right -->
+                    <div class="o_ocd_member_panes">
+                        <div t-if="sells" class="o_ocd_member_pane">
+                            <a href="/ocd/livrer/moi" class="o_ocd_member_card">
+                                <span><b>The parcels of the store</b><small t-out="parcels_line"/></span>
+                                <t t-call="ocd_live.icon" icon.f="arrow"/>
+                            </a>
+                            <ul t-if="preview" class="o_ocd_member_preview">
+                                <li t-foreach="preview" t-as="row">
+                                    <span><b t-out="row['title']"/><small t-out="row['line']"/></span>
+                                    <span class="o_ocd_step_pill o_ocd_step_pill_prep" t-out="row['pill']"/>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="o_ocd_member_pane">
+                            <a href="/ocd/mon-magasin/stock" class="o_ocd_member_card">
+                                <span><b>The stock of the store</b><small t-out="stock_line"/></span>
+                                <t t-call="ocd_live.icon" icon.f="arrow"/>
+                            </a>
+                            <ul t-if="low_preview" class="o_ocd_member_preview">
+                                <li t-foreach="low_preview" t-as="row">
+                                    <span><b t-out="row['label']"/></span>
+                                    <span class="o_ocd_step_pill o_ocd_member_low" t-out="row['left']"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- The news of her store on WhatsApp: her choice -->
+                    <form action="/ocd/mon-magasin/whatsapp" method="post" class="o_ocd_member_optin">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <t t-if="told">
+                            <span><t t-call="ocd_live.icon" icon.f="check"/> You receive a WhatsApp when a parcel or a piece to try arrives.</span>
+                            <button name="oui" value="0" class="o_ocd_link">Stop these messages</button>
+                        </t>
+                        <t t-else="">
+                            <span>Receive a WhatsApp when a parcel or a piece to try arrives at the store?</span>
+                            <button name="oui" value="1" class="o_ocd_button o_ocd_button_dark">Yes, tell me</button>
+                        </t>
+                    </form>
+                    <p class="o_ocd_note" t-out="rest_line"/>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="member_paused" name="OCD Live: my store, paused">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My store</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_member">
+                    <div class="o_ocd_member_hero">
+                        <span class="o_ocd_member_store" t-out="place.name"/>
+                        <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="hello"/>
+                    </div>
+                    <div class="o_ocd_info o_ocd_team_paused" role="status">
+                        <b t-out="paused_line"/>
+                        <span t-out="ask_line"/>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="member_stock" name="OCD Live: the stock of my store">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">The stock of the store</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_member_stock">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
+                    <input t-if="len(rows) &gt; 4" type="search" class="o_ocd_input o_ocd_member_search"
+                           placeholder="Search a product" aria-label="Search a product" autocomplete="off"/>
+                    <div class="o_ocd_member_products">
+                        <div t-foreach="rows" t-as="row" class="o_ocd_member_product" t-att-data-name="row['product'].name.lower()">
+                            <span class="o_ocd_photo o_ocd_cart_photo">
+                                <t t-call="ocd_live_shop.product_photo" image="row['photo']"/>
+                            </span>
+                            <div class="o_ocd_member_product_main">
+                                <b t-out="row['product'].name"/>
+                                <small t-if="not row['tracked']" class="o_ocd_parcel_hint">
+                                    Its stock is not counted: <t t-out="vendor.name"/> decides it.
+                                </small>
+                                <t t-else="">
+                                    <div t-foreach="row['variants']" t-as="line" class="o_ocd_member_variant" t-attf-id="v-#{line['variant'].id}">
+                                        <span class="o_ocd_member_variant_label">
+                                            <t t-if="line['label']" t-out="line['label']"/>
+                                            <t t-else="">Pieces</t>
+                                            <small t-if="line['kept']"><t t-out="line['kept']"/> kept for an order</small>
+                                        </span>
+                                        <form action="/ocd/mon-magasin/stock" method="post" class="o_ocd_stepper">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="variante" t-att-value="line['variant'].id"/>
+                                            <button name="delta" value="-1" t-att-disabled="'disabled' if not line['free'] else None"
+                                                    t-attf-aria-label="One less: #{row['product'].name} #{line['label']}">−</button>
+                                            <span class="o_ocd_stepper_value" aria-live="polite" t-out="line['free']"/>
+                                            <button name="delta" value="1"
+                                                    t-attf-aria-label="One more: #{row['product'].name} #{line['label']}">+</button>
+                                        </form>
+                                    </div>
+                                    <span t-if="row['low']" class="o_ocd_step_pill o_ocd_member_low">
+                                        <t t-out="low_label"/>: <t t-out="', '.join(line['label'] or row['product'].name for line in row['low'])"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </div>
+                        <div t-if="not rows" class="o_ocd_info">No product yet: <t t-out="vendor.name"/> adds them.</div>
+                    </div>
+                    <p class="o_ocd_note">Only the pieces of this store. The pieces kept for an order do not move.</p>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

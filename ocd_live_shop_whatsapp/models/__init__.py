@@ -9,3 +9,4 @@ from . import vendor_review
 from . import discuss_channel
 from . import product_hold
 from . import low_stock
+from . import vendor_team

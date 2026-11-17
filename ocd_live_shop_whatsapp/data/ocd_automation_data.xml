@@ -39,6 +39,10 @@
         <field name="template_ids" eval="[Command.set([ref('template_hold_requested'), ref('template_hold_accepted'),
                                                        ref('template_hold_refused')])]"/>
     </record>
+    <record id="ocd_live_shop.automation_team" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_team_link'), ref('template_team_parcel'),
+                                                       ref('template_team_hold')])]"/>
+    </record>
     <record id="ocd_live_shop.automation_low_stock" model="ocd.automation">
         <field name="template_ids" eval="[Command.set([ref('template_stock_low')])]"/>
     </record>

@@ -11,5 +11,11 @@ class ResPartner(models.Model):
 
     @api.model
     def _ocd_link_templates(self):
-        """Override of `ocd_live_whatsapp`: the link of the delivery app, for its login page."""
-        return {**super()._ocd_link_templates(), "livrer": "ocd_live_shop_whatsapp.template_delivery_link"}
+        """Override of `ocd_live_whatsapp`: the link of the delivery app and the one of the
+        people of a team, for their login pages."""
+        return {
+            **super()._ocd_link_templates(),
+            "livrer": "ocd_live_shop_whatsapp.template_delivery_link",
+            # The people of the team of a vendor (chantier 22)
+            "magasin": "ocd_live_shop_whatsapp.template_team_link",
+        }

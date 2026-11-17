@@ -50,6 +50,10 @@ class OcdLiveSettings(models.AbstractModel):
                 item("number", "ocd_vendor_places_max", _("Places per vendor, at most"),
                      _("Stores and home together, with OCD Business (without it: one). Changed on the form of a vendor."),
                      suffix=_("places"), min=1, max=50, width=70),
+                item("number", "ocd_vendor_team_max", _("People in the team of a vendor, at most"),
+                     _("With OCD Business: the people who hold their stores (stock and parcels, without the "
+                       "prices). Changed on the form of a vendor."),
+                     suffix=_("people"), min=1, max=50, width=70),
                 item("group", "ocd_place_hours", _("Opening hours proposed to a new store"),
                      _("The vendor changes them for their store."), fields=[
                          item("time", "ocd_place_hours_from", _("from"), before=True),
