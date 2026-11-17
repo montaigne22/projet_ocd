@@ -30,6 +30,16 @@
         <field name="interval_type">minutes</field>
     </record>
 
+    <record id="ir_cron_vendor_news" model="ir.cron">
+        <field name="name">OCD Live: the news of the vendors to their followers</field>
+        <field name="model_id" ref="model_ocd_vendor_follower"/>
+        <field name="state">code</field>
+        <field name="code">model._ocd_send_news()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+    </record>
+
     <record id="ir_cron_boutique_alerts" model="ir.cron">
         <field name="name">OCD Live: tell the visitors that a vendor is live</field>
         <field name="model_id" ref="model_ocd_boutique_alert"/>

@@ -25,6 +25,7 @@
             <span class="o_ocd_photo o_ocd_product_photo">
                 <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
                 <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
+                <span t-elif="card.get('new')" class="o_ocd_product_flag o_ocd_product_flag_new">New</span>
             </span>
             <span class="o_ocd_product_text">
                 <b t-out="card['product'].name"/>
@@ -237,6 +238,11 @@
                             <small t-out="vendor_line"/>
                         </span>
                         <span class="o_ocd_link">Their boutique</span>
+                    </a>
+                    <!-- Follow the vendor (chantier 1): their lives and their news on WhatsApp -->
+                    <a t-if="vendor" t-attf-href="/ocd/suivre/#{vendor.id}?source=product&amp;depuis=#{template.website_url}"
+                       class="o_ocd_link o_ocd_product_follow">
+                        <t t-call="ocd_live.icon" icon.f="bell"/>Follow <t t-out="vendor.name"/>
                     </a>
                     <a t-if="also_in_stores" t-attf-href="/ocd/boutique/#{vendor.id}#magasins" class="o_ocd_link o_ocd_product_stores">
                         <t t-call="ocd_live.icon" icon.f="pin"/>Also in store: <t t-out="also_in_stores"/>

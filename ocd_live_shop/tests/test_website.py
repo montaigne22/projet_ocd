@@ -144,44 +144,45 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
         self.assertIn("On screen now", response.text)
         self.assertIn("Sold and delivered by OCD Live", response.text)
 
-    def test_boutique_tells_the_next_live_and_registers_an_alert(self):
+    def test_boutique_tells_the_next_live_and_the_old_form_follows(self):
         self.authenticate(None, None)
         response = self.url_open(f"/ocd/boutique/{self.awa.id}")
         self.assertIn("No live planned for now", response.text)
         self.assertIn("Direct contact with the vendor", response.text)
         self.assertIn(f"/ocd/boutique/{self.awa.id}/ecrire", response.text)
+        self.assertIn(f'href="/ocd/suivre/{self.awa.id}?depuis=', response.text)
+        # The form « Tell me on WhatsApp » of a page kept by a browser: the lives are followed
         response = self.url_open(f"/ocd/boutique/{self.awa.id}/prevenir", data={
             "csrf_token": self.csrf_token(),
             "country_id": self.env.ref("base.tg").id,
             "phone": "90 11 22 33",
         })
-        self.assertIn("goes live", response.text)
-        alert = self.env["ocd.boutique.alert"].search([("vendor_id", "=", self.awa.id)])
-        self.assertEqual(alert.state, "waiting")
-        self.assertEqual(alert.partner_id.phone, "+228 90112233")
-        # The same number twice: one alert
-        self.url_open(f"/ocd/boutique/{self.awa.id}/prevenir", data={
-            "csrf_token": self.csrf_token(),
-            "country_id": self.env.ref("base.tg").id,
-            "phone": "90 11 22 33",
-        })
-        self.assertEqual(self.env["ocd.boutique.alert"].search_count([("vendor_id", "=", self.awa.id)]), 1)
+        self.assertIn("You follow Awa: a WhatsApp at each live.", response.text)
+        follower = self.env["ocd.vendor.follower"].search([("vendor_id", "=", self.awa.id)])
+        self.assertEqual((follower.lives, follower.news), (True, False), "Never the news without asking")
+        self.assertEqual(follower.partner_id.phone, "+228 90112233")
         # A wrong number is said on the page
         response = self.url_open(f"/ocd/boutique/{self.awa.id}/prevenir", data={
             "csrf_token": self.csrf_token(),
             "country_id": self.env.ref("base.tg").id,
             "phone": "12",
         })
-        self.assertIn('class="o_ocd_alert"', response.text)
+        self.assertIn("You are told on WhatsApp when it starts", response.text, "This browser follows already")
 
-    def test_alert_is_sent_when_the_live_starts(self):
-        alert = self.env["ocd.boutique.alert"]._ocd_register(self.awa, phone="+228 90112233")
-        self.env["ocd.boutique.alert"]._ocd_send_due()
-        self.assertEqual(alert.state, "waiting", "No live yet")
-        live = self._live_now(self.awa)
-        self.env["ocd.boutique.alert"]._ocd_send_due()
-        self.assertEqual(alert.state, "sent")
-        self.assertEqual(alert.booking_id, live)
+    def test_followers_are_told_when_the_live_starts(self):
+        Follower = self.env["ocd.vendor.follower"]
+        follower = Follower._ocd_follow(self.awa, Follower._ocd_contact("+228 90112233"))
+        follower.followed_at = fields.Datetime.now() - timedelta(days=1)
+        told = []
+        with patch.object(type(Follower), "_ocd_tell_live", lambda followers, live: told.append((followers, live))):
+            self.env["ocd.boutique.alert"]._ocd_send_due()
+            self.assertFalse(told, "No live yet")
+            live = self._live_now(self.awa)
+            self.env["ocd.boutique.alert"]._ocd_send_due()
+            self.assertEqual(told, [(follower, live)])
+            self.assertTrue(live.ocd_followers_told_at)
+            self.env["ocd.boutique.alert"]._ocd_send_due()
+            self.assertEqual(len(told), 1, "Once per live")
 
     def test_whatsapp_of_a_vendor_in_direct_contact(self):
         response = self.url_open(f"/ocd/boutique/{self.awa.id}/ecrire", allow_redirects=False)

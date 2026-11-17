@@ -9,6 +9,7 @@ from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
 from . import shop_common
+from .vendor_follow import follow_url, remember_follow, visitor_follow, visitor_partner
 from .vendor_places import place_photo_url
 
 def platform(url):
@@ -100,6 +101,27 @@ class OcdBoutique(http.Controller):
             ("is_published", "=", True),
             ("sale_ok", "=", True),
         ], order="website_sequence, id")
+
+    def _follow_values(self, vendor, back, source="boutique", noted=False):
+        """« Follow » or « Followed » (chantier 1): the follow of the visitor, how many follow the
+        vendor, the message after following."""
+        env = request.env
+        follower = visitor_follow(vendor)
+        count = vendor._ocd_follower_stats()[0]
+        first = (vendor.name or "").split()[0]
+        done = request.params.get("suivi")
+        message = False
+        if done == "1" or (noted and follower):
+            message = env._("You follow %s: a WhatsApp at each live, and their news.", first) if follower.news \
+                else env._("You follow %s: a WhatsApp at each live.", first)
+        elif done == "0":
+            message = env._("You no longer follow %s.", first)
+        return {
+            "follower": follower,
+            "followers_line": (env._("1 follower") if count == 1 else env._("%s followers", count)) if count else "",
+            "follow_href": follow_url(vendor, back, source),
+            "follow_message": message,
+        }
 
     def _price(self, product):
         return shop_common.prices(product).get(product.id) or common.money(product.list_price, product.currency_id)
@@ -225,6 +247,15 @@ class OcdBoutique(http.Controller):
         price_by_id = shop_common.prices(products)
         country = vendor.country_id
         categories = " · ".join(part for part in (vendor.ocd_category_id.name, vendor.ocd_business) if part)
+        # « New » (chantier 1): put on sale this week; from the message of the news, its products
+        # first
+        news_first = bool(kwargs.get("nouveautes"))
+        news_ids = set(vendor.sudo().ocd_news_product_ids.ids) if news_first else set()
+        cards = [shop_common.card(product, price_by_id) for product in products]
+        for card in cards:
+            card["new"] = card["product"].id in news_ids or card["product"]._ocd_is_new()
+        if news_first:
+            cards.sort(key=lambda card: card["product"].id not in news_ids)
         return request.render("ocd_live_shop.boutique", common.page_values(
             "boutique",
             nav="lives",
@@ -244,10 +275,10 @@ class OcdBoutique(http.Controller):
             next_live=self._next_info(next_live) if next_live else False,
             replay=self._replay_info(replay) if replay else False,
             contact=self._contact(vendor),
-            cards=[shop_common.card(product, price_by_id) for product in products],
+            cards=cards,
             visitor=visitor,
             noted=bool(noted),
-            noted_text=request.env._("Noted. We write to you when %s goes live.", (vendor.name or "").split()[0]),
+            **self._follow_values(vendor, f"/ocd/boutique/{vendor.id}", noted=bool(noted)),
             count_label=request.env._("%s products", len(products)) if len(products) != 1 else request.env._("1 product"),
             error=error,
             dial_rows=common.dial_rows(visitor.country_id if visitor else common.default_country()),
@@ -257,13 +288,12 @@ class OcdBoutique(http.Controller):
     @http.route("/ocd/boutique/<int:vendor_id>/prevenir", type="http", auth="public", website=True,
                 methods=["POST"], sitemap=False)
     def boutique_alert(self, vendor_id, phone=None, country_id=None, replay=None, **post):
-        """Tell the visitor on WhatsApp when the vendor goes live (from the boutique, or from a
-        replay: `replay` is the live watched again, where the visitor comes back)."""
+        """The form « Tell me on WhatsApp » of before (a page kept by a browser): the visitor
+        follows the lives of the vendor (chantier 1), not their news, never asked here."""
         vendor = self._vendor(vendor_id)
         if post.get("website_url"):
             raise request.not_found()
-        Alert = request.env["ocd.boutique.alert"].sudo().with_company(common.company())
-        visitor = common.current_vendor()
+        Follower = request.env["ocd.vendor.follower"].sudo().with_company(common.company())
         live = int(replay) if replay and str(replay).isdigit() else None
 
         def again(**values):
@@ -272,16 +302,18 @@ class OcdBoutique(http.Controller):
             return self.boutique(vendor_id, **values)
 
         try:
-            if visitor:
-                Alert._ocd_register(vendor, partner=visitor)
-            else:
+            partner = visitor_partner()
+            if not partner:
                 country = request.env["res.country"].sudo().browse(int(country_id or 0)).exists()
                 number = common.normalize_phone(country, phone)
                 if not number:
                     return again(error=common.phone_error(country))
-                Alert._ocd_register(vendor, phone=number)
+                partner = Follower._ocd_contact(number)
+            follower = Follower._ocd_follow(vendor, partner, lives=True, news=False, source="replay" if live else "boutique")
         except (UserError, ValidationError) as exc:
             return again(error=exc.args[0])
+        if not visitor_partner():
+            remember_follow(follower)
         if live:
             return request.redirect(f"/ocd/boutique/{vendor.id}/replay?live={live}&noted=1#prevenir")
         return request.redirect(f"/ocd/boutique/{vendor.id}?noted=1")
@@ -420,6 +452,7 @@ class OcdBoutique(http.Controller):
             error=error,
             dial_rows=common.dial_rows(visitor.country_id if visitor else common.default_country()),
             first_name=(vendor.name or "").split()[0] if vendor.name else "",
+            **self._follow_values(vendor, f"/ocd/boutique/{vendor.id}/replay?live={replay.id}#prevenir", "replay", bool(noted)),
             title=request.env._("Live of %s", vendor.name),
             banner=" · ".join(part for part in (vendor.name, place) if part),
             shop_line=request.env._("Their boutique on OCD Live"),

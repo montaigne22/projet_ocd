@@ -14,3 +14,4 @@ from . import product_hold
 from . import live_prepare
 from . import vendor_team
 from . import member_space
+from . import vendor_follow

@@ -19,6 +19,7 @@ from .delivery_login import OcdDeliveryLogin, current_courier, forget_courier
 from .member_session import (
     HOME, LOGIN, current_member, forget_member, member_header_link, member_login_mode, remember_member,
 )
+from .vendor_follow import visitor_follows
 
 # The lines shown on the home page of a tablet and a computer, beside the counts
 PREVIEW = 3
@@ -77,6 +78,12 @@ class OcdMemberLogin(OcdDeliveryLogin):
             return HOME
         forget_member()
         return super()._ocd_open_session(partner, target)
+
+    def _render_login(self, *args, **kwargs):
+        """The page of the number also leads to the vendors followed on this phone (chantier 1)."""
+        response = super()._render_login(*args, **kwargs)
+        response.qcontext["followed_count"] = len(visitor_follows().filtered("active"))
+        return response
 
     @http.route()
     def login(self, **kwargs):

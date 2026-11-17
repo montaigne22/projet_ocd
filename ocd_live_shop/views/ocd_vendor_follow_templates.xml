@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- === FOLLOW A VENDOR (design SuivreVendeur, chantier 1) === -->
+
+    <template id="vendor_follow" name="OCD Live: follow a vendor">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Follow</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_follow_page">
+                    <div class="o_ocd_follow_who">
+                        <span class="o_ocd_avatar o_ocd_avatar_mid" aria-hidden="true" t-out="initials"/>
+                        <span>
+                            <b t-out="vendor.name"/>
+                            <small t-if="vendor.ocd_category_id" t-out="vendor.ocd_category_id.name"/>
+                        </span>
+                    </div>
+                    <form t-attf-action="/ocd/suivre/#{vendor.id}" method="post" class="o_ocd_form o_ocd_follow_form" novalidate="novalidate">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="depuis" t-att-value="depuis"/>
+                        <input type="hidden" name="source" t-att-value="source"/>
+                        <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                        <h1 t-if="follower" class="o_ocd_h1 o_ocd_h1_small">You follow <t t-out="first_name"/></h1>
+                        <h1 t-else="" class="o_ocd_h1 o_ocd_h1_small">Follow <t t-out="vendor.name"/></h1>
+                        <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                        <t t-if="not follower">
+                            <p t-if="known" class="o_ocd_note">With the number <b t-out="known.phone"/>.</p>
+                            <div t-else="" class="o_ocd_field">
+                                <label for="f-phone" class="o_ocd_label">Your WhatsApp</label>
+                                <t t-call="ocd_live.phone_field" field_id.f="f-phone"/>
+                            </div>
+                        </t>
+                        <label class="o_ocd_follow_choice">
+                            <input type="checkbox" name="lives" value="1" t-att-checked="'checked' if not follower or follower.lives else None"/>
+                            <span><b>At each live</b><small t-out="live_line"/></span>
+                        </label>
+                        <label class="o_ocd_follow_choice">
+                            <input type="checkbox" name="news" value="1" t-att-checked="'checked' if not follower or follower.news else None"/>
+                            <span><b>Their news</b><small t-out="news_line"/></span>
+                        </label>
+                        <t t-if="follower">
+                            <button type="submit" class="o_ocd_cta">Save</button>
+                            <button type="submit" name="action" value="stop" class="o_ocd_cta o_ocd_cta_line">Stop following</button>
+                            <a href="/ocd/suivis" class="o_ocd_link">All my followed vendors</a>
+                        </t>
+                        <t t-else="">
+                            <button type="submit" class="o_ocd_cta">Follow</button>
+                            <small class="o_ocd_parcel_hint">You stop whenever you want, here or by answering STOP.</small>
+                        </t>
+                    </form>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="followed_vendors" name="OCD Live: my followed vendors">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My followed vendors</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_followed">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">My followed vendors</h1>
+                    <p t-if="number" class="o_ocd_note">On this phone, with the <t t-out="number"/>.</p>
+                    <div class="o_ocd_followed_list">
+                        <div t-foreach="rows" t-as="row" class="o_ocd_followed_row" t-attf-id="abonnement-#{row['follower'].id}">
+                            <t t-set="follower" t-value="row['follower']"/>
+                            <span class="o_ocd_avatar o_ocd_avatar_mid" aria-hidden="true" t-out="row['initials']"/>
+                            <form t-attf-action="/ocd/suivis/#{follower.id}" method="post" class="o_ocd_followed_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <span class="o_ocd_followed_head">
+                                    <a t-attf-href="/ocd/boutique/#{follower.vendor_id.id}" t-out="follower.vendor_id.name"/>
+                                    <span t-if="row['status'] == 'live'" class="o_ocd_step_pill o_ocd_followed_live" t-out="row['status_line']"/>
+                                    <small t-elif="row['status_line']" t-out="row['status_line']"/>
+                                </span>
+                                <label class="o_ocd_followed_switch">
+                                    <span>At each live</span>
+                                    <input type="checkbox" name="lives" value="1" role="switch" class="o_ocd_autosubmit"
+                                           t-att-checked="'checked' if follower.lives else None"/>
+                                </label>
+                                <label class="o_ocd_followed_switch">
+                                    <span>Their news</span>
+                                    <input type="checkbox" name="news" value="1" role="switch" class="o_ocd_autosubmit"
+                                           t-att-checked="'checked' if follower.news else None"/>
+                                </label>
+                                <span class="o_ocd_followed_buttons">
+                                    <noscript><button type="submit" class="o_ocd_button">Save</button></noscript>
+                                    <button type="submit" name="action" value="stop" class="o_ocd_link">Stop following</button>
+                                </span>
+                            </form>
+                        </div>
+                    </div>
+                    <div t-if="not rows" class="o_ocd_info">You follow no vendor yet. Tap « Follow » on a boutique: a WhatsApp at each live.</div>
+                    <a href="/lives" class="o_ocd_cta o_ocd_cta_line">See the lives</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The cards of the lives: « Follow » beside « Their boutique » -->
+    <template id="feed_cards_follow" inherit_id="ocd_live.feed_cards" name="OCD Live: follow from the cards of the lives">
+        <xpath expr="//a[@t-att-href=&quot;card['shop_url']&quot;]" position="after">
+            <a t-if="card.get('shop_url') and card.get('vendor_id')" t-attf-href="/ocd/suivre/#{card['vendor_id']}?source=feed&amp;depuis=/lives"
+               class="o_ocd_feed_follow">
+                <t t-call="ocd_live.icon" icon.f="bell"/>
+                <span>Follow</span>
+            </a>
+        </xpath>
+    </template>
+
+    <!-- The page of the number: the vendors followed on this phone -->
+    <template id="space_login_followed" inherit_id="ocd_live.space_login" name="OCD Live: my followed vendors on the page of the number">
+        <xpath expr="//div[hasclass('o_ocd_focus_main')]" position="inside">
+            <a t-if="followed_count" href="/ocd/suivis" class="o_ocd_info d-block o_ocd_followed_link">
+                <t t-call="ocd_live.icon" icon.f="bell"/>
+                <span>My followed vendors · <t t-out="followed_count"/></span>
+            </a>
+        </xpath>
+    </template>
+
+    <!-- My space: « My followers » and the next news (design SuivreVendeur) -->
+    <template id="space_followers" inherit_id="ocd_live_shop.space" name="OCD Live: my followers in the space">
+        <xpath expr="//div[hasclass('o_ocd_space_links')]" position="after">
+            <t t-if="vendor.ocd_vendor_state == 'approved'">
+                <t t-set="fans" t-value="vendor._ocd_followers_card()"/>
+                <div class="o_ocd_space_fans">
+                    <div class="o_ocd_space_fans_box">
+                        <small>My followers</small>
+                        <span class="o_ocd_space_fans_count">
+                            <b t-out="fans['count']"/>
+                            <span t-if="fans['new']" class="o_ocd_space_fans_new" t-out="fans['new']"/>
+                        </span>
+                        <small>They receive a WhatsApp at each live, and your news.</small>
+                    </div>
+                    <div class="o_ocd_space_fans_box">
+                        <b t-out="fans['news_title']"/>
+                        <small t-out="fans['news_line']"/>
+                        <small t-out="fans['rhythm']"/>
+                    </div>
+                    <button type="button" class="o_ocd_button o_ocd_share" t-att-data-url="fans['share_url']">
+                        <t t-call="ocd_live.icon" icon.f="share"/><span>Share my boutique to get followers</span>
+                    </button>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

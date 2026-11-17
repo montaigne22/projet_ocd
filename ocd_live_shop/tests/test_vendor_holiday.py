@@ -74,9 +74,9 @@ class TestOcdVendorHoliday(HttpCase, OcdShopCommon):
         self.assertEqual((back.state, back.partner_id.phone), ("waiting", "+237 670000009"))
         self.assertIn("Noted: we write to you on WhatsApp when Brenda is back.",
                       self.url_open(f"{self.dress_tmpl.website_url}?retour=1").text)
-        # The same contact also waits for the next live: both are kept
-        live = self.Alert._ocd_register(self.brenda, partner=back.partner_id)
-        self.assertEqual(live.kind, "live")
+        # The same contact also follows the vendor: both are kept
+        follower = self.env["ocd.vendor.follower"]._ocd_follow(self.brenda, back.partner_id)
+        self.assertTrue(follower.active)
         self.assertEqual(self.Alert._ocd_register(self.brenda, partner=back.partner_id, kind="back"), back)
         sent = []
         with patch.object(type(self.Alert), "_ocd_send_vendor_back", lambda alerts: sent.extend(alerts.ids)):
@@ -86,7 +86,8 @@ class TestOcdVendorHoliday(HttpCase, OcdShopCommon):
             self.brenda.ocd_holiday_until = self.brenda._ocd_today()
             self.env["res.partner"]._cron_holiday_back()
         self.assertEqual(sent, back.ids)
-        self.assertEqual((back.state, live.state), ("sent", "waiting"))
+        self.assertEqual(back.state, "sent")
+        self.assertTrue(follower.active, "Still followed")
         self.assertFalse(self.brenda.ocd_holiday_until)
 
     def test_the_page_of_the_vendor(self):

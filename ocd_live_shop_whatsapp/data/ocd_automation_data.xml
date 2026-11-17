@@ -39,6 +39,9 @@
         <field name="template_ids" eval="[Command.set([ref('template_hold_requested'), ref('template_hold_accepted'),
                                                        ref('template_hold_refused')])]"/>
     </record>
+    <record id="ocd_live_shop.automation_vendor_news" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_vendor_news')])]"/>
+    </record>
     <record id="ocd_live_shop.automation_team" model="ocd.automation">
         <field name="template_ids" eval="[Command.set([ref('template_team_link'), ref('template_team_parcel'),
                                                        ref('template_team_hold')])]"/>

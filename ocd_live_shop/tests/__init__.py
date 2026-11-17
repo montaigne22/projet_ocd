@@ -24,3 +24,4 @@ from . import test_low_stock
 from . import test_live_prepare
 from . import test_vendor_variants
 from . import test_vendor_team
+from . import test_vendor_follow

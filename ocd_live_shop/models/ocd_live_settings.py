@@ -50,6 +50,13 @@ class OcdLiveSettings(models.AbstractModel):
                 item("number", "ocd_vendor_places_max", _("Places per vendor, at most"),
                      _("Stores and home together, with OCD Business (without it: one). Changed on the form of a vendor."),
                      suffix=_("places"), min=1, max=50, width=70),
+                item("select", "ocd_news_weekday", _("News to the followers"),
+                     _("The products a vendor put on sale, to their followers: once a month (the first such day), "
+                       "each week with OCD Business; from 10:00."),
+                     options=self._ocd_selection_options("ocd_news_weekday")),
+                item("number", "ocd_live_messages_per_day", _("Lives told to the followers"),
+                     _("Per vendor and per day: the followers are told of their first lives only. 0: never."),
+                     suffix=_("lives a day at most"), min=0, max=10, width=70),
                 item("number", "ocd_vendor_team_max", _("People in the team of a vendor, at most"),
                      _("With OCD Business: the people who hold their stores (stock and parcels, without the "
                        "prices). Changed on the form of a vendor."),

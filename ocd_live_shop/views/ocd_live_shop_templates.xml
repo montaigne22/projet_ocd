@@ -38,6 +38,14 @@
                             <span t-if="categories" class="o_ocd_vendor_what" t-out="categories"/>
                             <span t-if="sold_by_ocd" class="o_ocd_mode o_ocd_mode_ocd">Sold and delivered by OCD Live</span>
                             <span t-else="" class="o_ocd_mode">Direct contact with the vendor</span>
+                            <!-- Follow (chantier 1): how many follow, then « Follow » or « Followed » -->
+                            <span class="o_ocd_follow_row">
+                                <a t-att-href="follow_href" t-attf-class="o_ocd_follow #{'o_ocd_follow_on' if follower else ''}">
+                                    <t t-if="follower"><t t-call="ocd_live.icon" icon.f="check"/><span>Followed</span></t>
+                                    <t t-else=""><t t-call="ocd_live.icon" icon.f="bell"/><span>Follow</span></t>
+                                </a>
+                                <small t-if="followers_line" class="o_ocd_follow_count" t-out="followers_line"/>
+                            </span>
                         </div>
                     </div>
                     <span t-if="location" class="o_ocd_vendor_place">
@@ -50,6 +58,10 @@
                     </a>
 
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div t-if="follow_message" class="o_ocd_ok o_ocd_info_icon" role="status">
+                        <t t-call="ocd_live.icon" icon.f="check"/>
+                        <span t-out="follow_message"/>
+                    </div>
 
                     <!-- On holiday: the products stay visible, the orders are paused (chantier 20) -->
                     <t t-if="holiday">
@@ -88,26 +100,11 @@
                             <b t-else="">No live planned for now</b>
                             <small t-if="next_live" t-out="next_live['where']"/>
                         </span>
-                        <div t-if="noted" class="o_ocd_next_noted" role="status" t-out="noted_text"/>
-                        <form t-else="" t-attf-action="/ocd/boutique/#{vendor.id}/prevenir" method="post" class="o_ocd_wait_form">
-                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
-                            <button t-if="visitor" type="submit" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">
-                                <t t-call="ocd_live.icon" icon.f="bell"/>
-                                <span>Tell me on WhatsApp</span>
-                            </button>
-                            <details t-else="" class="o_ocd_wait_details" t-att-open="'open' if error else None">
-                                <summary class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">
-                                    <t t-call="ocd_live.icon" icon.f="bell"/>
-                                    <span>Tell me on WhatsApp</span>
-                                </summary>
-                                <div class="o_ocd_form o_ocd_wait_box">
-                                    <label for="b-phone" class="o_ocd_label">Your WhatsApp</label>
-                                    <t t-call="ocd_live.phone_field" field_id.f="b-phone" phone_value="''"/>
-                                    <button type="submit" class="o_ocd_cta o_ocd_cta_small">Tell me</button>
-                                </div>
-                            </details>
-                        </form>
+                        <span t-if="follower and follower.lives" class="o_ocd_next_noted" role="status">You are told on WhatsApp when it starts.</span>
+                        <a t-else="" t-att-href="follow_href" class="o_ocd_cta o_ocd_cta_dark o_ocd_cta_small">
+                            <t t-call="ocd_live.icon" icon.f="bell"/>
+                            <span>Follow: a WhatsApp at each live</span>
+                        </a>
                     </div>
                     <a t-if="replay" t-attf-href="/ocd/boutique/#{vendor.id}/replay" class="o_ocd_replay_card">
                         <span class="o_ocd_replay_thumb">
@@ -150,6 +147,7 @@
                                 <span class="o_ocd_photo o_ocd_product_photo">
                                     <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
                                     <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
+                                    <span t-elif="card.get('new')" class="o_ocd_product_flag o_ocd_product_flag_new">New</span>
                                 </span>
                                 <span class="o_ocd_product_text">
                                     <b t-out="card['product'].name"/>
@@ -281,21 +279,19 @@
                     </t>
                     <section id="prevenir" class="o_ocd_replay_next">
                         <h2>The next live of <t t-out="first_name"/></h2>
-                        <div t-if="noted" class="o_ocd_ok o_ocd_info_icon" role="status">
+                        <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                        <div t-if="follow_message" class="o_ocd_ok o_ocd_info_icon" role="status">
                             <t t-call="ocd_live.icon" icon.f="check"/>
-                            <span>Noted: we write to you on WhatsApp when the live starts.</span>
+                            <span t-out="follow_message"/>
                         </div>
-                        <form t-else="" t-attf-action="/ocd/boutique/#{vendor.id}/prevenir" method="post" class="o_ocd_form">
-                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <input type="hidden" name="replay" t-att-value="replay.id"/>
-                            <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
-                            <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
-                            <t t-if="not visitor">
-                                <label for="rn-phone" class="o_ocd_label">Your WhatsApp</label>
-                                <t t-call="ocd_live.phone_field" field_id.f="rn-phone" phone_value="''"/>
-                            </t>
-                            <button type="submit" class="o_ocd_cta o_ocd_cta_dark">Tell me on WhatsApp</button>
-                        </form>
+                        <div t-elif="follower and follower.lives" class="o_ocd_ok o_ocd_info_icon" role="status">
+                            <t t-call="ocd_live.icon" icon.f="check"/>
+                            <span>You follow <t t-out="first_name"/>: you are told on WhatsApp at each live.</span>
+                        </div>
+                        <a t-else="" t-att-href="follow_href" class="o_ocd_cta o_ocd_cta_dark">
+                            <t t-call="ocd_live.icon" icon.f="bell"/>
+                            <span>Follow: a WhatsApp at each live</span>
+                        </a>
                     </section>
                     </div>
                 </main>

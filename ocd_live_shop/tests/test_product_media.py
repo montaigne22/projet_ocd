@@ -211,12 +211,15 @@ class TestOcdProductMedia(TestOcdShopWebsite):
         # The product page says where it was seen
         page = self.url_open(self.robe.website_url)
         self.assertIn(f"/replay?live={booking.id}&amp;t=1260", page.text)
-        # « Tell me » the next live, from the replay
+        # Follow the next lives, from the replay (the form of before still works)
+        replay_page = self.url_open(f"/ocd/boutique/{self.brenda.id}/replay?live={booking.id}").text
+        self.assertIn(f"/ocd/suivre/{self.brenda.id}?depuis=", replay_page)
         response = self.url_open(f"/ocd/boutique/{self.brenda.id}/prevenir", data={
             "csrf_token": self.csrf_token(), "replay": booking.id,
             "country_id": self.env.ref("base.cm").id, "phone": "6 70 00 00 08",
         })
         self.assertIn(f"/replay?live={booking.id}&noted=1", response.url)
+        self.assertIn("You follow Brenda", response.text)
 
     def test_replay_links_of_the_platforms(self):
         booking = self._live_now(self.brenda)

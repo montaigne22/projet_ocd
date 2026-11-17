@@ -5,8 +5,9 @@ from odoo.exceptions import UserError
 
 
 class OcdBoutiqueAlert(models.Model):
-    """A visitor of a boutique who wants a WhatsApp message when the vendor goes live ("Tell me
-    on WhatsApp"), or when the vendor is back from holiday ("Tell me when they are back")."""
+    """A visitor of a boutique who wants a WhatsApp message when the vendor is back from holiday
+    ("Tell me when they are back"). The alerts of the next live ("Tell me on WhatsApp") became
+    follows (ocd.vendor.follower, chantier 1): the ones of before stay for the history."""
 
     _name = "ocd.boutique.alert"
     _description = "Alert When A Vendor Goes Live"
@@ -46,9 +47,9 @@ class OcdBoutiqueAlert(models.Model):
     )
 
     @api.model
-    def _ocd_register(self, vendor, phone=None, partner=None, kind="live"):
-        """Tell the contact of `phone` (or `partner`) when `vendor` goes live (`kind` « live »),
-        or is back from holiday (« back »)."""
+    def _ocd_register(self, vendor, phone=None, partner=None, kind="back"):
+        """Tell the contact of `phone` (or `partner`) when `vendor` is back from holiday. The next
+        live: they follow the vendor (ocd.vendor.follower)."""
         Partner = self.env["res.partner"].sudo()
         if not partner:
             if len(re.sub(r"\D", "", phone or "")) < 8:
@@ -65,23 +66,9 @@ class OcdBoutiqueAlert(models.Model):
 
     @api.model
     def _ocd_send_due(self):
-        """Send the alerts of the vendors whose live just started."""
-        now = fields.Datetime.now()
-        waiting = self.search([("state", "=", "waiting"), ("kind", "=", "live")])
-        if not waiting:
-            return
-        lives = self.env["ocd.live.booking"].search([
-            ("partner_id", "in", waiting.vendor_id.ids),
-            ("state", "=", "confirmed"),
-            ("start_datetime", "<=", now),
-            ("end_datetime", ">", now),
-        ])
-        live_by_vendor = {live.partner_id: live for live in lives}
-        for alert in waiting:
-            live = live_by_vendor.get(alert.vendor_id)
-            if live:
-                alert._ocd_send_live_started(live)
-                alert.write({"state": "sent", "sent_at": now, "booking_id": live.id})
+        """Tell the followers of the vendors whose live just started (chantier 1: « Follow »
+        replaced « Tell me on WhatsApp » of the next live; the scheduled task stays the same)."""
+        self.env["ocd.vendor.follower"].sudo()._ocd_send_lives()
 
     @api.model
     def _ocd_send_vendors_back(self, vendors):
@@ -98,6 +85,3 @@ class OcdBoutiqueAlert(models.Model):
         """Send the news that the vendor is back. Extended by ocd_live_shop_whatsapp."""
         return False
 
-    def _ocd_send_live_started(self, booking):
-        """Send the news that the vendor is live. Extended by ocd_live_shop_whatsapp."""
-        return False

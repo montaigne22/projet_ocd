@@ -114,7 +114,9 @@ class TestOcdParcelMessages(OcdShopCommon):
         self.assertTrue(Partner._ocd_link_login_ready("space"), "The page of the vendors has its own link")
 
     def test_message_when_the_vendor_goes_live(self):
-        alert = self.env["ocd.boutique.alert"]._ocd_register(self.brenda, phone="+228 90112233")
+        Follower = self.env["ocd.vendor.follower"]
+        follower = Follower._ocd_follow(self.brenda, Follower._ocd_contact("+228 90112233"))
+        follower.followed_at = fields.Datetime.now() - timedelta(days=1)
         later = self.company._ocd_local_today() + timedelta(days=30)
         booking = self.env["ocd.live.booking"].create({
             "partner_id": self.brenda.id, "start_datetime": self.company._ocd_slot_starts(later)[0], "mode": "remote",
@@ -134,11 +136,19 @@ class TestOcdParcelMessages(OcdShopCommon):
 
         with patch.object(WhatsappTemplate, "_send", fake_send):
             self.env["ocd.boutique.alert"]._ocd_send_due()
-        self.assertEqual(calls, [("ocd_vendeur_en_live", alert)])
-        self.assertEqual(alert.state, "sent")
+        self.assertEqual(calls, [("ocd_vendeur_en_live", follower)])
+        self.assertTrue(follower.live_told_at)
         template = self.env.ref("ocd_live_shop_whatsapp.template_vendor_live")
-        rendered = template._render(template.variable_ids.value, alert)
-        self.assertEqual(rendered[alert.id], "Brenda Wax")
+        rendered = template._render(template.variable_ids.value, follower)
+        self.assertEqual(rendered[follower.id], "Brenda Wax")
+        url = template._render(template.button_url_value, follower)[follower.id]
+        self.assertEqual(url, f"ocd/abonne/{follower.id}/{follower.sudo().access_token}")
+        # Following is the consent to these messages, never after STOP
+        self.assertTrue(follower.partner_id.whatsapp_opt_in)
+        stopped = Follower._ocd_contact("+228 90112244")
+        stopped.write({"whatsapp_opt_out": True, "ocd_whatsapp_optin": False})
+        Follower._ocd_follow(self.brenda, stopped)
+        self.assertFalse(stopped.ocd_whatsapp_optin)
 
     def _deliver(self, parcel):
         if parcel.ocd_stage == "to_prepare":
@@ -351,3 +361,39 @@ class TestOcdTeamMessages(OcdShopCommon):
         self.assertTrue(parcel_template._render(parcel_template.button_url_value, aicha)[aicha.id].endswith("?vers=colis"))
         # Her login page sends this link in the link mode
         self.assertEqual(self.env["res.partner"]._ocd_link_templates()["magasin"], "ocd_live_shop_whatsapp.template_team_link")
+
+
+@tagged("post_install", "-at_install")
+class TestOcdFollowerMessages(OcdShopCommon):
+    """Follow a vendor (chantier 1): the news of the vendor to the followers who want them
+    (A.8, Marketing at Meta)."""
+
+    def test_message_of_the_news(self):
+        self.env["res.lang"]._activate_lang("fr_FR")
+        self.company.write({"ocd_business_offered_all": True, "ocd_news_weekday": "4"})
+        self.brenda.country_id = self.env.ref("base.cm")
+        self.dress.product_tmpl_id.write({"is_published": True, "ocd_review_state": "approved",
+                                         "ocd_review_date": fields.Datetime.now() - timedelta(days=1)})
+        Follower = self.env["ocd.vendor.follower"]
+        follower = Follower._ocd_follow(self.brenda, Follower._ocd_contact("+237 670000011"))
+        calls = []
+
+        def fake_send(template, records):
+            calls.append((template.template_name, records, dict(template.env.context)))
+            return template.env["whatsapp.message"]
+
+        friday = fields.Datetime.now()
+        while friday.weekday() != 4:
+            friday += timedelta(days=1)
+        friday = friday.replace(hour=9, minute=30)  # 10:30 in Douala
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            Follower._ocd_send_news(friday)
+        self.assertEqual([(name, records) for name, records, _ctx in calls], [("ocd_vendeur_nouveautes", follower)])
+        self.assertEqual(calls[0][2]["ocd_news_fr"], "Robe en wax")
+        self.assertFalse(calls[0][2]["ocd_whatsapp_requested"], "STOP stops them like the others")
+        template = self.env.ref("ocd_live_shop_whatsapp.template_vendor_news").with_context(ocd_news_fr="Robe en wax")
+        self.assertEqual(template.category, "marketing")
+        values = [template._render(variable.value, follower)[follower.id] for variable in template.variable_ids.sorted("sequence")]
+        self.assertEqual(values, ["Brenda Wax", "Robe en wax"])
+        self.assertTrue(template._render(template.button_url_value, follower)[follower.id].endswith("?vers=nouveautes"))
+        self.assertEqual(template._get_recipient(follower), follower.partner_id)
