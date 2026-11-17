@@ -6,3 +6,4 @@ from . import whatsapp_template
 from . import ocd_live_settings
 from . import ocd_whatsapp_inbox
 from . import vendor_review
+from . import discuss_channel
