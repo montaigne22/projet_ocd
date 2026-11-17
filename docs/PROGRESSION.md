@@ -35,6 +35,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Stock par magasin (chantier 18) : un emplacement par lieu, « Mon stock » avec les tailles et les couleurs, envoyer des pièces d'un magasin à l'autre, le magasin qui sert chaque commande (un colis par magasin si besoin), disponibilité par magasin sur la fiche produit, « Préviens-moi » qui nomme les magasins | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Gérer ses produits (chantier 19) : modifier un produit en vente (vérifié pendant que la version d'aujourd'hui reste en vente, prix tout de suite, grand écart confirmé, historique des prix), plusieurs photos, retirer de la vente et remettre, produit gardé dans le téléphone sans réseau | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Autour des magasins (chantier 20) : mode vacances, vendeurs près de chez moi, le bot WhatsApp donne les magasins, retrait en magasin (payé au comptoir, code après l'argent), mettre de côté pour essayer | ✅ fait, testé (8 modèles WhatsApp à faire approuver par Meta) ; les nouveautés aux abonnés (A.8) attendent le chantier 1 |
+| Vendre plus (chantier 21) : préparer son prochain live (les produits pour la régie, dans l'ordre du vendeur), alerte de stock bas sur WhatsApp, tailles et couleurs dès la création | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -109,6 +110,33 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 17 novembre 2026 · Vendre plus (chantier 21)
+Dessiné d'abord (maquettes `PreparerLive`, `TaillesCouleurs`, `StockBas`, validées), puis codé.
+- **Alerte de stock bas** : quand une commande laisse une taille ou une couleur à 2 pièces ou moins (mais
+  pas à 0), le vendeur reçoit un WhatsApp avec le bouton « Mes produits », une fois par passage sous le
+  seuil. Réglage « Alerte de stock bas » (0 : jamais), modifiable sur la fiche du vendeur ; automatisation
+  « Stock bas : prévenir le vendeur ». Mes produits : « Stock bas · plus que 2 » (ou les tailles et
+  couleurs concernées) et un filtre « Stock bas ».
+- **Préparer son prochain live** : sur la carte du live dans Mon espace, « Préparer mon live » : cocher
+  les produits, chercher, les mettre dans l'ordre (↑ ↓, aussi sans JavaScript), un mot pour
+  l'animatrice ; modifiable jusqu'à la fin du live. La régie montre le mot, « Préparés par Brenda · 3 »
+  numérotés, puis « Ses autres produits » ; rien de préparé : tous ses produits comme avant. La
+  réservation le montre dans le back-office.
+- **Tailles et couleurs dès la création** : en ajoutant un produit, « Plusieurs tailles ou couleurs »
+  montre les valeurs des attributs « Proposé aux vendeurs » (à l'installation, la Taille et la Couleur
+  d'Odoo, avec des valeurs courantes si elles n'en ont pas) ; chaque valeur cochée dessine la grille du
+  stock (couleurs en lignes, tailles en colonnes, le total). Le produit reçoit ses variantes et leur
+  stock, vérifié comme avant ; sa ligne s'ouvre ensuite sur les photos des couleurs. Un produit gardé
+  dans le téléphone sans réseau garde ses tailles et couleurs. Sur un produit en vente : « Ajouter une
+  taille ou une couleur » (sans stock, à remplir dans Mon stock).
+- Tests : en cours sur base neuve ; contrôlé dans un navigateur en français en trois tailles (390, 820,
+  1440 px) : formulaire avec tailles et couleurs, préparer mon live, Mon espace, Mes produits (stock bas),
+  et la régie sur ordinateur.
+- **À mettre à jour sur un serveur** : `ocd_live_shop` 20.0.1.31.0, `ocd_live_shop_whatsapp` 20.0.1.20.0
+  (`-u ocd_live_shop,ocd_live_shop_whatsapp`), puis soumettre à Meta le modèle `ocd_stock_bas` (français
+  et anglais). Dans les Paramètres d'OCD Live (Shop et livraisons › « Tailles et couleurs des vendeurs » ›
+  Attributs), l'équipe coche « Proposé aux vendeurs » sur les tailles, couleurs ou pointures à proposer.
 
 ### 17 novembre 2026 · Autour des magasins (chantier 20)
 Dessiné d'abord (maquettes `VacancesProximite`, `RetraitMagasin`, `MettreDeCote`, validées), puis codé en

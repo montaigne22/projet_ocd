@@ -285,6 +285,22 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     venu » du vendeur compte ; après 2 absences (réglable) chez un vendeur, plus de mise de côté chez lui,
     le vendeur peut débloquer. Une mise de côté à la fois chez un vendeur. Un vendeur qui n'a qu'un
     magasin montre maintenant le stock du choix dans ce magasin, pour qu'on puisse y mettre de côté.
+- **Vendre plus** (chantier 21, [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md), 3.2, 3.4, 3.5 ; maquettes
+  `PreparerLive`, `TaillesCouleurs`, `StockBas` validées le 17 novembre 2026) :
+  - **préparer son live** : le vendeur coche et ordonne ses produits jusqu'à la fin du live, avec un mot
+    pour l'animatrice ; la régie les montre d'abord, numérotés, puis les autres ; rien de préparé : comme
+    avant. Toujours sans numéros de produits ni page « Je prends » ;
+  - **stock bas** : compté à la confirmation d'une commande depuis le stock libre d'avant, pour chaque
+    taille et couleur : un WhatsApp quand elle passe au seuil ou moins mais pas à 0 (« Épuisé » le dit
+    déjà) ; une fois par passage sous le seuil, sans rien garder ; seuil 2 (réglable, 0 : jamais),
+    modifiable par vendeur ; une mise de côté n'est pas une vente ;
+  - **tailles et couleurs** : seulement les valeurs choisies par l'équipe (attribut « Proposé aux
+    vendeurs ») ; une valeur qui manque se demande à l'équipe ; le même prix pour toutes ; 100 choix au
+    plus ; le produit est vérifié comme avant, ses photos de couleur aussi. Sur un produit en vente, on
+    ajoute des valeurs d'un attribut qu'il a déjà (jamais un nouvel attribut : ses pièces d'aujourd'hui
+    perdraient leur stock) ; une valeur ne se retire pas, à 0 pièce elle est « Épuisé ». À
+    l'installation, la Taille et la Couleur d'Odoo sont proposées, avec des valeurs courantes si elles
+    n'en ont pas.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

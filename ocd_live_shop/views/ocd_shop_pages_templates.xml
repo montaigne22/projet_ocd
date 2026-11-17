@@ -1513,8 +1513,8 @@
             <div t-if="prep_booking._ocd_can_prepare()" class="o_ocd_live_prepare">
                 <t t-set="prep_products" t-value="prep_booking._ocd_prepared_products()"/>
                 <span t-if="prep_products">
-                    <b><t t-if="len(prep_products) == 1">1 product ready</t><t t-else=""><t t-out="len(prep_products)"/> products ready</t></b>:
-                    <t t-out="', '.join(prep_products.mapped('name'))"/>
+                    <b><t t-if="len(prep_products) == 1">1 product ready</t><t t-else=""><t t-out="len(prep_products)"/> products ready</t></b>
+                    · <t t-out="', '.join(prep_products.mapped('name'))"/>
                 </span>
                 <span t-else="">No product prepared: the host does not know yet what to show.</span>
                 <a t-attf-href="/ocd/espace/moi/live/#{prep_booking.id}"

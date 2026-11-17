@@ -908,3 +908,98 @@ VENDOR_SPACE.update({
     "OCD Live: the store keeps the piece": "OCD Live : le magasin garde la pièce",
     "OCD Live: the store keeps the piece (English)": "OCD Live : le magasin garde la pièce (anglais)",
 })
+
+# Chantier 21 « Sell more »: the low stock alert, prepare the next live, sizes and colours from
+# the creation (designs StockBas, PreparerLive, TaillesCouleurs). The pages say « tu ».
+VENDOR_SPACE.update({
+    # Low stock (21a)
+    "A WhatsApp to the vendor when a sale leaves this number of pieces or less (changed on the form of each vendor). 0: no alert.":
+        "Un WhatsApp au vendeur quand une vente laisse ce nombre de pièces ou moins (modifiable sur la fiche de chaque vendeur). 0 : pas d'alerte.",
+    "A WhatsApp to the vendor when a sale leaves this number of pieces or less of a product (a colour, a size). 0: no alert.":
+        "Un WhatsApp au vendeur quand une vente laisse ce nombre de pièces ou moins d'un produit (une couleur, une taille). 0 : pas d'alerte.",
+    "An order leaves a product (a colour, a size) with the threshold of pieces or less":
+        "Une commande laisse un produit (une couleur, une taille) au seuil de pièces ou moins",
+    "Empty: the setting of OCD Live.": "Vide : le réglage d'OCD Live.",
+    "Low Stock Alert": "Alerte de stock bas",
+    "Low Stock Alert (Pieces)": "Alerte de stock bas (pièces)",
+    "Low stock": "Stock bas",
+    "Low stock alert": "Alerte de stock bas",
+    "Low stock · only %s left": "Stock bas · plus que %s",
+    "Low stock: %(choice)s · only %(count)s left": "Stock bas : %(choice)s · plus que %(count)s",
+    "Low stock: %s": "Stock bas : %s",
+    "Low stock: tell the vendor": "Stock bas : prévenir le vendeur",
+    "Tell the vendor how many pieces are left, with the link of « My products ».":
+        "Dire au vendeur combien de pièces il reste, avec le lien de « Mes produits ».",
+    "The vendors whose stock limits the sales; once per passage under the threshold (2 pieces by default, changed on the vendor).":
+        "Les vendeurs dont le stock limite les ventes ; une fois par passage sous le seuil (2 pièces par défaut, modifiable sur le vendeur).",
+    "OCD Live: low stock": "OCD Live : stock bas",
+    "OCD Live: low stock (English)": "OCD Live : stock bas (anglais)",
+    # Prepare the next live (21b)
+    "%s cannot be shown in your live.": "%s ne peut pas être montré dans ton live.",
+    "1 product ready": "1 produit prêt",
+    "A product is prepared once per live.": "Un produit est préparé une fois par live.",
+    "A word for the host (if you want)": "Un mot pour l'animatrice (si tu veux)",
+    "Book a live: you prepare your products here then.": "Réserve un live : tu prépares ensuite tes produits ici.",
+    "In my live ·": "Dans mon live ·",
+    "It is ready: the host sees your products in the control room.": "C'est prêt : l'animatrice voit tes produits dans la régie.",
+    "My live of %s": "Mon live de %s",
+    "No live booked": "Pas de live réservé",
+    "No product on sale yet:": "Pas encore de produit en vente :",
+    "No product prepared: the host does not know yet what to show.":
+        "Aucun produit préparé : l'animatrice ne sait pas encore quoi montrer.",
+    "Prepare my live": "Préparer mon live",
+    "Prepared At": "Préparé le",
+    "Prepared by %(vendor)s · %(count)s": "Préparés par %(vendor)s · %(count)s",
+    "Prepared by the vendor": "Préparé par le vendeur",
+    "Product Prepared For A Live": "Produit préparé pour un live",
+    "Products Prepared By The Vendor": "Produits préparés par le vendeur",
+    "Their other products · %s": "Ses autres produits · %s",
+    "This live is over: prepare your next one.": "Ce live est terminé : prépare le prochain.",
+    "Tick the products below: they come here.": "Coche les produits plus bas : ils viennent ici.",
+    "Tick what you are going to show. The host has them at hand, in this order.":
+        "Coche ce que tu vas montrer. L'animatrice les a sous la main, dans cet ordre.",
+    "Word For The Host": "Mot pour l'animatrice",
+    "Word of %(vendor)s: « %(note)s »": "Mot de %(vendor)s : « %(note)s »",
+    "Written by the vendor when they prepare the live.": "Écrit par le vendeur quand il prépare le live.",
+    "You can change until the end of the live. A product sold out can be ticked too: put stock back before.":
+        "Tu peux changer jusqu'à la fin du live. Un produit épuisé se coche aussi : remets du stock avant.",
+    "add one": "ajoutes-en un",
+    "e.g. I start with the dresses": "ex. je commence par les robes",
+    "products ready": "produits prêts",
+    # Sizes and colours (21c)
+    "%(pieces)s pieces · %(choices)s choices (a size and a colour each)":
+        "%(pieces)s pièces · %(choices)s choix (une taille et une couleur chacun)",
+    "%s choices at most: tick fewer sizes or colours.": "%s choix au plus : coche moins de tailles ou de couleurs.",
+    ", without stock: put it in": ", sans stock : mets-le dans",
+    "<b>Add a size or a colour</b>": "<b>Ajouter une taille ou une couleur</b>",
+    "<small class=\"o_ocd_parcel_hint\">A size or a colour is not removed: at 0 piece, it shows « Sold out ». A colour added waits for its photo.</small>":
+        "<small class=\"o_ocd_parcel_hint\">Une taille ou une couleur ne se retire pas : à 0 pièce, elle s'affiche « Épuisé ». Une couleur ajoutée attend sa photo.</small>",
+    "<span class=\"o_ocd_label\">How many do you have?</span>": "<span class=\"o_ocd_label\">Combien tu en as ?</span>",
+    "<span class=\"o_ocd_label\">Sizes and colours</span>": "<span class=\"o_ocd_label\">Tailles et couleurs</span>",
+    "<span><b>Several sizes or colours</b><small>The same price for all</small></span>":
+        "<span><b>Plusieurs tailles ou couleurs</b><small>Le même prix pour toutes</small></span>",
+    "A size or a colour is missing?": "Une taille ou une couleur manque ?",
+    "Add": "Ajouter",
+    "Add the photo of each colour: the customer sees the right colour when they choose it.":
+        "Ajoute la photo de chaque couleur : le client voit la bonne couleur quand il la choisit.",
+    "Added by the vendor: %s": "Ajouté par le vendeur : %s",
+    "Added:": "Ajouté :",
+    "Attributes": "Attributs",
+    "Choose a size or a colour to add.": "Choisis une taille ou une couleur à ajouter.",
+    "Hello, a size or a colour is missing for my products: ": "Bonjour, il me manque une taille ou une couleur pour mes produits : ",
+    "Offered To The Vendors": "Proposé aux vendeurs",
+    "Offered when a vendor adds a product: « Offered to the vendors » on an attribute, and its values.":
+        "Proposés quand un vendeur ajoute un produit : « Proposé aux vendeurs » sur un attribut, et ses valeurs.",
+    "Product Attribute": "Attribut de produit",
+    "Sizes and colours of the vendors": "Tailles et couleurs des vendeurs",
+    "The vendors choose its values when they add a product (sizes, colours…).":
+        "Les vendeurs choisissent ses valeurs en ajoutant un produit (tailles, couleurs…).",
+    "Tick at least one size or one colour.": "Coche au moins une taille ou une couleur.",
+    "Tick the sizes and the colours: the stock of each comes here.": "Coche les tailles et les couleurs : le stock de chacune vient ici.",
+    "Write how many you have of each choice.": "Écris combien tu en as de chaque choix.",
+    "Write to the team": "Écris à l'équipe",
+    "Book a live": "Réserver un live",
+    "Language": "Langue",
+    "My next live": "Mon prochain live",
+    "Product Variant": "Variante de produit",
+})
