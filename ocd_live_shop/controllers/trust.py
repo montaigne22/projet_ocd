@@ -27,7 +27,9 @@ class OcdTrust(http.Controller):
             False,
             back="/shop",
             header_title=request.env._("OCD Live guarantee"),
-            return_days=common.company().ocd_return_days,
+            return_line=request.env._(
+                "For %s days after the delivery, from the page of your order.", common.company().ocd_return_days,
+            ) if common.company().ocd_return_days else "",
         ))
 
     # === REPORT === #

@@ -139,9 +139,11 @@ class OcdBoutique(http.Controller):
 
     def _review_values(self, vendor):
         Review = request.env["ocd.vendor.review"]
+        summary = Review._ocd_summary(vendor)
         return {
-            "reviews": Review._ocd_summary(vendor),
+            "reviews": summary,
             "review_rows": review_rows(Review._ocd_latest(vendor)),
+            "reviews_all": request.env._("See the %s reviews", summary["count"]),
         }
 
     @http.route(
@@ -158,6 +160,7 @@ class OcdBoutique(http.Controller):
             back=f"/ocd/boutique/{vendor.id}",
             back_label=request.env._("Back to the boutique"),
             header_title=request.env._("Reviews"),
+            title=request.env._("Reviews of %s", vendor.name),
             vendor=vendor,
             reviews=Review._ocd_summary(vendor),
             review_rows=review_rows(reviews),

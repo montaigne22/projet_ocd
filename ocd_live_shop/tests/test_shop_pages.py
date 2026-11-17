@@ -194,11 +194,13 @@ class TestOcdShopPages(HttpCase, OcdShopCommon):
         parcel._ocd_collect("cash", self.courier)
         parcel._ocd_check_code(parcel.sudo().ocd_delivery_code)
         response = self.url_open(f"/ocd/suivi/{order.id}?access_token={token}")
-        self.assertIn("Did you like your order?", response.text)
+        # A review per vendor delivered (chantier 2); the note of the order (old links) gives it too
+        self.assertIn("Your review of Brenda Wax", response.text)
         self.url_open(f"/ocd/suivi/{order.id}/note?access_token={token}", data={
             "csrf_token": self.csrf_token(), "stars": 5,
         })
         self.assertEqual(order.ocd_rating, 5)
+        self.assertEqual(self.env["ocd.vendor.review"].search([("picking_id", "=", parcel.id)]).stars, 5)
         self.url_open(f"/ocd/suivi/{order.id}/retour?access_token={token}", data={"csrf_token": self.csrf_token()})
         self.assertTrue(order.ocd_return_requested_at)
         self.assertTrue(order.activity_ids, "The team has an activity to organise the return")

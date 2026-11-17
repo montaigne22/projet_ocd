@@ -5,18 +5,9 @@
 
     <template id="guarantee_box" name="OCD Live: the guarantee of OCD Live">
         <!-- Parameters: guarantee_vendor (the vendor), guarantee_short (the boutique: one line) -->
-        <t t-set="guarantee_company" t-value="guarantee_vendor.company_id or request.env.company"/>
         <div t-if="guarantee_vendor.ocd_sale_mode == 'ocd'" class="o_ocd_guarantee">
             <b><t t-call="ocd_live.icon" icon.f="shield"/>OCD Live guarantee</b>
-            <span t-if="guarantee_short">
-                You pay on OCD Live, <t t-out="(guarantee_vendor.name or '').split()[0]"/> is paid after the delivery, when you give your code.
-                Not delivered: refunded.
-            </span>
-            <span t-else="">
-                <t t-out="(guarantee_vendor.name or '').split()[0]"/> is paid only once the parcel is delivered, when you give your code.
-                Not delivered: refunded.
-                <t t-if="guarantee_company.ocd_return_days">Return possible for <t t-out="guarantee_company.ocd_return_days"/> days.</t>
-            </span>
+            <span t-out="guarantee_vendor._ocd_guarantee_text(guarantee_short)"/>
             <a href="/ocd/garantie" class="o_ocd_link">How it works</a>
         </div>
         <div t-else="" class="o_ocd_guarantee o_ocd_guarantee_off">
@@ -37,7 +28,7 @@
                         <li><b>You receive a code</b><span>On WhatsApp, when your parcel leaves. You give it to the courier only when you have the parcel in hand.</span></li>
                         <li><b>The vendor is paid after</b><span>Only once the code is given: never before the delivery.</span></li>
                         <li><b>Not delivered: refunded</b><span>A parcel that does not arrive goes back to the vendor, and what you paid online comes back to you.</span></li>
-                        <li t-if="return_days"><b>Return possible</b><span>For <t t-out="return_days"/> days after the delivery, from the page of your order.</span></li>
+                        <li t-if="return_line"><b>Return possible</b><span t-out="return_line"/></li>
                     </ol>
                     <div class="o_ocd_guarantee o_ocd_guarantee_off">
                         <span>The vendors in direct contact (« Write to the vendor ») are paid by you directly: they are outside the OCD Live guarantee.</span>
@@ -68,7 +59,7 @@
         <t t-call="ocd_live.app">
             <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
                 <main class="o_ocd_main o_ocd_reviews o_ocd_reviews_page">
-                    <h1 class="o_ocd_h1 o_ocd_h1_small">Reviews of <t t-out="vendor.name"/></h1>
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
                     <p class="o_ocd_review_summary">
                         <span t-if="vendor.ocd_verified" class="o_ocd_verified"><t t-call="ocd_live.icon" icon.f="check"/>Verified vendor</span>
                         <t t-if="reviews['note']"><span class="o_ocd_star" aria-hidden="true">★</span> <b t-out="reviews['note']"/> · </t>

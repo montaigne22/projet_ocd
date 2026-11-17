@@ -99,3 +99,16 @@ SITE_FRAME.update({
     "<span>My card in the lives</span>": "<span>Ma carte dans le fil</span>",
     "<span>Book a live</span>": "<span>Réserver un live</span>",
 })
+
+# Chantier 2: « Verified vendor » (ocd_live)
+SITE_FRAME.update({
+    "Identity and number checked": "Identité et numéro vérifiés",
+    "Not yet": "Pas encore",
+    "The team checked the identity and the WhatsApp number of the vendor: « Verified vendor » is shown to the customers.":
+        "L'équipe a vérifié l'identité et le numéro WhatsApp du vendeur : « Vendeur vérifié » est montré aux clients.",
+    "Verified": "Vérifié",
+    "Verified At": "Vérifié le",
+    "Verified By": "Vérifié par",
+    "Verified Vendor": "Vendeur vérifié",
+    "Yes: « Verified vendor »": "Oui : « Vendeur vérifié »",
+})

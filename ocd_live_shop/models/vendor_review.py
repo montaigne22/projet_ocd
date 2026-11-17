@@ -204,6 +204,21 @@ class ResPartner(models.Model):
         for partner in self:
             partner.ocd_review_count = stats.get(partner._origin.id, (0, 0))[1]
 
+    def _ocd_guarantee_text(self, short=False):
+        """The guarantee of OCD Live told for the vendor (chantier 2): paid after the delivery,
+        refunded when not delivered, the return (the product page)."""
+        self.ensure_one()
+        first = (self.name or "").split()[0] if self.name else ""
+        if short:
+            return self.env._(
+                "You pay on OCD Live, %s is paid after the delivery, when you give your code. Not delivered: refunded.", first
+            )
+        text = self.env._(
+            "%s is paid only once the parcel is delivered, when you give your code. Not delivered: refunded.", first
+        )
+        days = (self.company_id or self.env.company).ocd_return_days
+        return f"{text} {self.env._('Return possible for %s days.', days)}" if days else text
+
     def action_ocd_view_reviews(self):
         self.ensure_one()
         return {

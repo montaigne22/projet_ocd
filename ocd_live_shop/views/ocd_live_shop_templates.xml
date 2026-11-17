@@ -177,9 +177,8 @@
                         <div class="o_ocd_review_list">
                             <t t-foreach="review_rows" t-as="row" t-call="ocd_live_shop.review_row"/>
                         </div>
-                        <a t-if="reviews['count'] &gt; len(review_rows)" t-attf-href="/ocd/boutique/#{vendor.id}/avis" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">
-                            See the <t t-out="reviews['count']"/> reviews
-                        </a>
+                        <a t-if="reviews['count'] &gt; len(review_rows)" t-attf-href="/ocd/boutique/#{vendor.id}/avis"
+                           class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small" t-out="reviews_all"/>
                     </section>
                     <a t-attf-href="/ocd/signaler?vendeur=#{vendor.id}" class="o_ocd_link o_ocd_report_link" rel="nofollow">
                         <t t-call="ocd_live.icon" icon.f="flag"/>Report this vendor

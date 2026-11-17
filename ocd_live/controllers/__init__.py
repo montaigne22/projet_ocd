@@ -4,3 +4,4 @@ from . import payment
 from . import remote
 from . import vendor_space
 from . import voice
+from . import language

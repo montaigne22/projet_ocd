@@ -30,6 +30,8 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   au choix du visiteur. Odoo suit la langue du téléphone ou du compte connecté quand le site la propose.
 - **Un seul bouton de langue sur les pages d'OCD** : la langue de la page et de la voix. Français ou
   English change la page (et le choix reste) ; une langue seulement parlée (éwé, mina…) change la voix.
+  Le bouton passe par `/ocd/langue/<code>` : le choix est gardé même par un navigateur qui n'avait
+  jamais choisi (sinon Odoo reprend la langue du téléphone), puis la même page s'ouvre dans la langue.
 - **Les pages d'Odoo gardées telles quelles** (recrutement, connexion, portail, contact) portent le logo,
   le nom et les coordonnées d'OCD Live : pied de page d'OCD, téléphone et e-mail de la société, aucun
   texte d'exemple d'Odoo. Ce que l'équipe a déjà choisi (page d'accueil, langue, logo, nom) n'est jamais
@@ -339,6 +341,21 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     l'équipe les voit dans le back-office ;
   - « Nouveau » sur la boutique : un produit mis en vente dans les 7 derniers jours ; depuis le message des
     nouveautés, ses produits passent en premier.
+- **Garantie OCD et avis** (chantier 2 ; maquette `GarantieAvis` validée le 17 novembre 2026) :
+  - **la garantie dit ce qui est vrai** : le vendeur n'est payé qu'après le code de livraison, pas livré :
+    remboursé, retour possible pendant le nombre de jours réglé (rien sur le retour s'il est à 0). Un
+    vendeur en vente directe (il encaisse lui-même) est dit hors de la garantie ;
+  - **un avis par colis livré** : seul celui qui a reçu le colis le donne, une fois, et peut le changer ;
+    la note de WhatsApp ou de l'ancienne page devient l'avis de chaque colis livré de la commande (le mot
+    écrit avant est gardé). Le nom montré est le prénom et l'initiale, jamais le numéro ;
+  - **la note dès 3 avis**, avant : « Nouveau vendeur » (une seule note ne dit rien) ;
+  - **le vendeur ne supprime pas un avis** : il le signale avec un mot, l'avis reste affiché jusqu'à la
+    décision de l'équipe (garder ou masquer) ; un avis masqué ne compte plus ;
+  - **« Vendeur vérifié » est une décision de l'équipe** (qui et quand sont gardés), proposée à la
+    validation d'un nouveau vendeur, retirée en décochant ;
+  - **signaler** : une fois par jour et par personne (ou par téléphone sans numéro, sous une signature,
+    jamais l'adresse en clair) ; le vendeur ne sait jamais qui a signalé ; un produit retiré à la suite
+    d'un signalement l'est comme un refus de l'équipe, avec sa raison envoyée au vendeur.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

@@ -554,22 +554,28 @@ class TestOcdLiveWebsite(HttpCase):
         # A page with a voice: the button shows the language of the page, French shows it again in French
         response = self.url_open("/en/ocd")
         self.assertIn('data-page-code="en"', response.text)
-        self.assertRegex(response.text, r'data-code="fr"[^>]*data-page-url="/website/lang/fr\?r=%2Focd"')
+        self.assertRegex(response.text, r'data-code="fr"[^>]*data-page-url="/ocd/langue/fr\?r=%2Focd"')
         self.assertIn('aria-label="Language of the page and of the voice">EN<', response.text)
         # « Français » from English, French being the language of the site: Odoo keeps the choice
         # (its cookie) then shows the page in French, without the code in the address; the next
         # pages stay in French (before, the link lost its code and the browser came back to English)
-        response = self.url_open("/website/lang/fr?r=%2Focd")
+        response = self.url_open("/ocd/langue/fr?r=%2Focd")
         self.assertTrue(response.url.endswith("/ocd") and "/en/" not in response.url)
         self.assertIn('data-page-code="fr"', response.text)
         self.assertIn('data-page-code="fr"', self.url_open("/ocd").text)
         # A page without a voice: the button of the language of the page
         response = self.url_open("/ocd/connexion")
         self.assertIn('aria-label="Language of the page"', response.text)
-        self.assertIn('href="/website/lang/en?r=%2Fen%2Focd%2Fconnexion"', response.text)
-        response = self.url_open("/website/lang/en?r=%2Fen%2Focd%2Fconnexion")
+        self.assertIn('href="/ocd/langue/en?r=%2Fen%2Focd%2Fconnexion"', response.text)
+        response = self.url_open("/ocd/langue/en?r=%2Fen%2Focd%2Fconnexion")
         self.assertTrue(response.url.endswith("/en/ocd/connexion"))
         self.assertIn('lang="en-US"', response.text)
+        # A browser that never chose a language, English for its phone: French is kept all the same
+        self.opener.cookies.clear()
+        response = self.url_open("/ocd/langue/fr?r=%2Focd", headers={"Accept-Language": "en-US,en;q=0.9"})
+        self.assertTrue(response.url.endswith("/ocd") and "/en/" not in response.url)
+        self.assertIn('data-page-code="fr"', response.text)
+        self.assertEqual(self.url_open("/ocd/langue/xx?r=%2Focd").status_code, 404)
 
     def test_new_personal_link_ends_the_open_browsers(self):
         token = self.vendor._ocd_get_space_token()

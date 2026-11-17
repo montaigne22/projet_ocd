@@ -2,7 +2,7 @@
 
 Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 
-## Où en est le projet (16 novembre 2026)
+## Où en est le projet (17 novembre 2026)
 
 | Domaine | État |
 |---|---|
@@ -38,6 +38,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Vendre plus (chantier 21) : préparer son prochain live (les produits pour la régie, dans l'ordre du vendeur), alerte de stock bas sur WhatsApp, tailles et couleurs dès la création | ✅ fait, testé (le WhatsApp est le modèle `ocd_stock_bas`, soumis à Meta le 16 novembre) |
 | Équipe du vendeur (chantier 22) : la personne qui tient un magasin a son espace « Mon magasin » (connexion par son numéro, lien ou code), le stock de son magasin sans les prix, ses colis, retraits au comptoir et pièces à essayer, sans les reversements ; « Mon équipe » du vendeur (5 au plus, OCD Business, en pause sans rien supprimer) ; onglet « Équipe » du back-office | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
 | Suivre un vendeur (chantier 1) et ses nouveautés (A.8) : « Suivre » sur la boutique, les cartes des lives, le replay et la fiche produit ; un WhatsApp à chaque live (2 par jour au plus) ; les nouveautés le vendredi (une fois par mois, chaque semaine avec OCD Business) ; « Mes vendeurs suivis » ; « Mes abonnés » du vendeur | ✅ fait, testé (1 modèle WhatsApp Marketing à faire approuver par Meta) |
+| Garantie OCD et avis (chantier 2) : la garantie montrée sur la fiche produit et la boutique (le vendeur payé après le code de livraison, pas livré : remboursé, retour possible), un avis par colis livré, la note du vendeur dès 3 avis, « Vendeur vérifié », « Signaler » un produit ou un vendeur vers « À vérifier » | ✅ fait, testé |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -112,6 +113,51 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 17 novembre 2026 · Le bouton de langue garde le choix sur toutes les pages
+- **Le défaut** : sur certaines pages, « Français » rechargeait la page en anglais. Le lien vers `/fr/…`
+  perdait son code (Odoo l'enlève des liens quand le français est la langue du site), puis le navigateur
+  qui avait choisi l'anglais revenait à l'anglais ; et un navigateur qui n'avait jamais choisi gardait la
+  langue devinée par Odoo (son téléphone), écrite après le choix.
+- **Corrigé** : le bouton passe par `/ocd/langue/<code>?r=<page>`, qui garde le choix (le dernier mot de la
+  réponse) puis ouvre la même page dans cette langue. Contrôlé sur 26 pages (publiques et espace du
+  vendeur, depuis l'anglais), et pour un navigateur neuf dans les deux sens (téléphone en anglais qui
+  choisit le français, et l'inverse) : la page suivante garde la langue choisie.
+- **À mettre à jour sur un serveur** : `ocd_live` (`-u ocd_live`).
+
+### 17 novembre 2026 · Garantie OCD et avis (chantier 2)
+Dessiné d'abord (maquette `GarantieAvis`, validée), puis codé.
+- **La garantie, visible** : sur la fiche produit et la boutique, « Garantie OCD Live » : le vendeur n'est
+  payé qu'une fois le colis livré, quand le client donne son code ; pas livré : remboursé ; retour
+  possible pendant N jours (le réglage des retours). Un vendeur qui encaisse lui-même (vente directe) est
+  dit « hors de la garantie OCD Live ». La page `/ocd/garantie` explique les trois promesses.
+- **Les avis des acheteurs** : un avis par colis livré (donc par vendeur d'une commande), sur la page de
+  suivi de la commande (« Ton avis sur Brenda Wax » : étoiles et un mot, à changer ensuite) ; la note
+  donnée sur WhatsApp ou sur l'ancienne note de la commande devient l'avis de chaque colis livré.
+  Seuls le prénom et l'initiale du nom sont montrés (« Estelle N. »), jamais le numéro ; chaque avis est
+  un « Achat vérifié ». La note du vendeur (« ★ 4,8 · 12 avis ») s'affiche dès **3 avis** ; avant :
+  « Nouveau vendeur ». Elle est sur la boutique (avec les derniers avis et « Voir les N avis »), la fiche
+  produit, les cartes du fil des lives, et dans « Mes produits » pour chaque produit.
+- **Le vendeur** : « Mes avis » dans Mon espace, et « Signaler cet avis » avec un mot ; l'avis reste
+  affiché jusqu'à la décision de l'équipe (garder ou masquer, dans « À vérifier ») ; un avis masqué ne
+  compte plus dans la note.
+- **Vendeur vérifié** : une case de la fiche du vendeur (qui et quand), proposée quand l'équipe valide un
+  nouveau vendeur ; le badge est sur la boutique, la fiche produit et les cartes du fil.
+- **Signaler** un produit ou un vendeur (lien en bas de la fiche produit et de la boutique) : ce qui ne va
+  pas (contrefaçon, prix ou description trompeurs, arnaque ou jamais livré, produit interdit ou choquant,
+  autre chose avec un mot), son WhatsApp si on veut ; une fois par jour et par personne (ou par téléphone
+  sans numéro). Le vendeur ne sait jamais qui a signalé. **L'équipe** voit les signalements dans
+  « À vérifier » (colonne « Signalements », groupés par produit ou vendeur) : « Rien à faire », ou le
+  produit retiré de la vente avec une raison envoyée au vendeur (comme un refus) ; un vendeur signalé :
+  « Vu » (« Voir le vendeur » ouvre sa fiche). Back-office : Shop › « Avis des acheteurs » et « Signalements des
+  clients », boutons « Avis » et « Signalements » sur la fiche du vendeur.
+- Tests : base neuve, tous les modules OCD : **441 sans échec** (8 nouveaux ; le test de l'ancienne note
+  de la commande suit les avis) ; contrôlé dans un navigateur en français en trois tailles (390, 820,
+  1440 px) : la boutique et ses avis, la fiche produit et sa garantie, la page Signaler, la page de la
+  garantie, la page des avis, Mes avis du vendeur ; aucun débordement.
+- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.21.0, `ocd_live_shop` 20.0.1.37.0,
+  `ocd_live_shop_whatsapp` 20.0.1.27.0 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`). Aucun nouveau
+  modèle WhatsApp à soumettre à Meta : la note demandée après la livraison reste le même message.
 
 ### 17 novembre 2026 · Suivre un vendeur et ses nouveautés (chantier 1, A.8)
 Dessiné d'abord (maquette `SuivreVendeur`, validée), puis codé.

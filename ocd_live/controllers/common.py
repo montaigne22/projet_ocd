@@ -344,11 +344,11 @@ def page_languages(url=None):
             "code": lang.code,
             "short": (lang.iso_code or lang.code).split("_")[0].lower(),
             "name": lang.name.split(" / ")[-1],
-            # By the route of Odoo that keeps the choice (its cookie), then this page in that
+            # By a route that keeps the choice (controllers/language.py), then this page in that
             # language: a link to /fr/… would lose its code when French is the language of the
             # site (Odoo removes it from the links of the pages), and the browser that chose
             # English before would come back to English
-            "url": f"/website/lang/{lang.url_code}?{urlencode({'r': page})}",
+            "url": f"/ocd/langue/{lang.url_code}?{urlencode({'r': page})}",
             "current": lang.code == current,
         })
     return rows
