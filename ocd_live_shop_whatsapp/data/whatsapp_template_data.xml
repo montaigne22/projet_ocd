@@ -39,7 +39,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">ocd_vendor_id</field>
-            <field name="body">Bonjour {{1}}, {{2}} passe chercher sa commande au magasin {{3}}. Contenu : {{4}}. Préparez-la et touchez le bouton quand elle est prête : le client reçoit alors son code.</field>
+            <field name="body">Bonjour {{1}}, le client {{2}} passe chercher sa commande au magasin {{3}}. Contenu : {{4}}. Préparez-la et touchez le bouton quand elle est prête : le client est alors prévenu.</field>
             <field name="button_url_value">{{ 'ocd/livrer/' + object.ocd_vendor_id._ocd_get_space_token() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
             <field name="variable_ids" eval="[
@@ -292,14 +292,14 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, votre commande {{2}} est prête au magasin {{3}}. Vous avez jusqu'au {{4}} pour la retirer. Touchez « Voir mon code » pour votre code de retrait et l'itinéraire.</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} est prête au magasin {{3}}. Vous avez jusqu'au {{4}} pour la retirer. Touchez « Ma commande » pour savoir comment la retirer et voir l'itinéraire.</field>
             <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
-            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir mon code', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Ma commande', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin or object.name }}', 'sample_value': 'S00042'}),
                 (0, 0, {'sequence': 3, 'value': '{{ object.ocd_pickup_place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
-                (0, 0, {'sequence': 4, 'value': '{{ object.with_context(lang=\'fr_FR\')._ocd_collect_deadline_text() }}', 'sample_value': 'jeudi 20 novembre à 19:00'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_collect_deadline_text(\'fr_FR\') }}', 'sample_value': 'jeudi 20 novembre à 19:00'}),
             ]"/>
         </record>
 
@@ -309,14 +309,14 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, votre commande {{2}} vous attend au magasin {{3}} jusqu'au {{4}}. Passé ce délai, elle sera annulée. Touchez « Voir mon code » pour votre code de retrait et l'itinéraire.</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} vous attend au magasin {{3}} jusqu'au {{4}}. Passé ce délai, elle sera annulée. Touchez « Ma commande » pour savoir comment la retirer et voir l'itinéraire.</field>
             <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
-            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir mon code', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Ma commande', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin or object.name }}', 'sample_value': 'S00042'}),
                 (0, 0, {'sequence': 3, 'value': '{{ object.ocd_pickup_place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
-                (0, 0, {'sequence': 4, 'value': '{{ object.with_context(lang=\'fr_FR\')._ocd_collect_deadline_text() }}', 'sample_value': 'jeudi 20 novembre à 19:00'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_collect_deadline_text(\'fr_FR\') }}', 'sample_value': 'jeudi 20 novembre à 19:00'}),
             ]"/>
         </record>
 
@@ -341,7 +341,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live_shop.model_ocd_product_hold"/>
             <field name="partner_field">vendor_id</field>
-            <field name="body">Bonjour {{1}}, {{2}} veut essayer {{3}} au magasin {{4}}, jusqu'à {{5}}. La pièce est mise de côté. Touchez « Mes colis » pour accepter ou refuser.</field>
+            <field name="body">Bonjour {{1}}, le client {{2}} veut essayer {{3}} au magasin {{4}}, jusqu'à {{5}}. La pièce est mise de côté. Touchez « Mes colis » pour accepter ou refuser.</field>
             <field name="button_url_value">{{ 'ocd/livrer/' + object.vendor_id._ocd_get_space_token() + '?vue=essayer' }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123?vue=essayer'})]"/>
             <field name="variable_ids" eval="[
@@ -349,7 +349,7 @@
                 (0, 0, {'sequence': 2, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
                 (0, 0, {'sequence': 3, 'value': '{{ object.product_id.display_name }}', 'sample_value': 'Robe en wax (Bleu, M)'}),
                 (0, 0, {'sequence': 4, 'value': '{{ object.place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
-                (0, 0, {'sequence': 5, 'value': '{{ object.with_context(lang=\'fr_FR\')._ocd_deadline_text() }}', 'sample_value': 'demain à 14:00'}),
+                (0, 0, {'sequence': 5, 'value': '{{ object._ocd_deadline_text(\'fr_FR\') }}', 'sample_value': 'demain à 14:00'}),
             ]"/>
         </record>
 
@@ -359,14 +359,14 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live_shop.model_ocd_product_hold"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, {{2}} garde {{3}} pour vous jusqu'à {{4}}. Touchez le bouton pour l'itinéraire.</field>
+            <field name="body">Bonjour {{1}}, le magasin {{2}} garde {{3}} pour vous jusqu'à {{4}}. Touchez le bouton pour l'itinéraire.</field>
             <field name="button_url_value">{{ object._ocd_page_path() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Itinéraire', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/essayer/12?t=abc123'})]"/>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object.place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
                 (0, 0, {'sequence': 3, 'value': '{{ object.product_id.display_name }}', 'sample_value': 'Robe en wax (Bleu, M)'}),
-                (0, 0, {'sequence': 4, 'value': '{{ object.with_context(lang=\'fr_FR\')._ocd_deadline_text() }}', 'sample_value': 'demain à 14:00'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_deadline_text(\'fr_FR\') }}', 'sample_value': 'demain à 14:00'}),
             ]"/>
         </record>
 
@@ -376,7 +376,7 @@
             <field name="lang_code">fr</field>
             <field name="model_id" ref="ocd_live_shop.model_ocd_product_hold"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Bonjour {{1}}, {{2}} ne peut pas garder {{3}} pour le moment. Touchez le bouton pour commander en ligne.</field>
+            <field name="body">Bonjour {{1}}, le magasin {{2}} ne peut pas garder {{3}} pour le moment. Touchez le bouton pour commander en ligne.</field>
             <field name="button_url_value">{{ object._ocd_product_path() }}</field>
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Commander', 'url': '{base_url}/{{1}}', 'url_example': 'shop/robe-en-wax-57'})]"/>
             <field name="variable_ids" eval="[

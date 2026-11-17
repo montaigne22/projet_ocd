@@ -206,9 +206,12 @@ class StockPicking(models.Model):
             closing = tz.localize(datetime.combine(day, time(23, 59)))
         return closing.astimezone(pytz.utc).replace(tzinfo=None)
 
-    def _ocd_collect_deadline_text(self):
-        """« Thursday 20 November at 19:00 », at the hour of the store."""
+    def _ocd_collect_deadline_text(self, lang=None):
+        """« Thursday 20 November at 19:00 », at the hour of the store; in `lang` when it is
+        installed (the language of a WhatsApp template), else in the one of the context."""
         self.ensure_one()
+        if lang and lang != self.env.lang and self.env["res.lang"]._ocd_is_active(lang):
+            return self.with_context(lang=lang)._ocd_collect_deadline_text()
         if not self.ocd_collect_deadline:
             return ""
         place = self.ocd_pickup_place_id

@@ -146,8 +146,8 @@ cinq étapes.
   navigateur en français en trois tailles (390, 820, 1440 px) : mode vacances, shop « Près de moi », lives
   d'un pays, étape « Livraison » avec retrait, paiement au comptoir, suivi « Prête au magasin », fiche
   produit et ses magasins, demande et page de mise de côté, Mes colis (« Retrait », « À essayer »).
-- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.16.0, `ocd_live_shop` 20.0.1.26.0,
-  `ocd_live_shop_whatsapp` 20.0.1.16.0 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`), puis soumettre à
+- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.16.0, `ocd_live_shop` 20.0.1.27.0,
+  `ocd_live_shop_whatsapp` 20.0.1.17.0 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`), puis soumettre à
   Meta les modèles `ocd_vendeur_de_retour`, `ocd_colis_a_preparer_magasin`, `ocd_colis_pret_magasin`,
   `ocd_colis_rappel_magasin`, `ocd_colis_non_retire`, `ocd_essai_demande`, `ocd_essai_garde`,
   `ocd_essai_refuse` (français et anglais).

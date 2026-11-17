@@ -48,6 +48,15 @@ class ResCompany(models.Model):
     )
 
 
+class ResLang(models.Model):
+    _inherit = "res.lang"
+
+    @api.model
+    def _ocd_is_active(self, code):
+        """Whether the language `code` is installed: a text asked in it can be written in it."""
+        return bool(self.sudo().search_count([("code", "=", code), ("active", "=", True)], limit=1))
+
+
 class OcdProductHold(models.Model):
     _name = "ocd.product.hold"
     _description = "Piece Held In A Store To Try"
@@ -332,10 +341,13 @@ class OcdProductHold(models.Model):
                 return closes.astimezone(pytz.utc).replace(tzinfo=None)
         return end
 
-    def _ocd_deadline_text(self):
+    def _ocd_deadline_text(self, lang=None):
         """« today at 19:00 », « tomorrow at 14:00 », « Thursday 20 November at 14:00 », at the
-        hour of the store, in the language of the context."""
+        hour of the store; in `lang` when it is installed (the language of a WhatsApp template),
+        else in the one of the context."""
         self.ensure_one()
+        if lang and lang != self.env.lang and self.env["res.lang"]._ocd_is_active(lang):
+            return self.with_context(lang=lang)._ocd_deadline_text()
         tz = self.place_id.sudo()._ocd_tz()
         local = pytz.utc.localize(self.deadline).astimezone(tz)
         today = pytz.utc.localize(fields.Datetime.now()).astimezone(tz).date()
