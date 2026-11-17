@@ -3,6 +3,12 @@ from urllib.parse import quote as url_quote
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import BinaryBytes
+
+
+def _binary(data, filename):
+    """The bytes of a photo sent by the vendor, with its name."""
+    return BinaryBytes(data, filename=filename) if filename else data
 
 
 class ProductTemplate(models.Model):
@@ -232,10 +238,34 @@ class ProductTemplate(models.Model):
         return self.ocd_review_state == "approved"
 
     def _ocd_change_waiting(self):
-        """What of the change of the vendor the team still checks: ["name"] (the photos are
-        added by the photos of a product)."""
+        """What of the change of the vendor waits for the team (to check, or refused and not
+        corrected yet): "name", "photos", "colours"."""
         self.ensure_one()
-        return ["name"] if self.ocd_change_name and self.ocd_change_name != self.name else []
+        parts = []
+        if self.ocd_change_name and self.ocd_change_name != self.name:
+            parts.append("name")
+        if self._ocd_new_images():
+            parts.append("photos")
+        if self._ocd_new_colour_values():
+            parts.append("colours")
+        return parts
+
+    def _ocd_new_images(self, states=("to_check", "refused")):
+        self.ensure_one()
+        return self.sudo().product_template_image_ids.filtered(lambda image: image.ocd_review_state in states)
+
+    def _ocd_new_colour_values(self, states=("to_check", "refused")):
+        self.ensure_one()
+        return self.sudo().attribute_line_ids.product_template_value_ids.filtered(
+            lambda value: value.ocd_image_state in states and value.ocd_image_pending
+        )
+
+    def _ocd_change_settle(self):
+        """Nothing left of the change of the vendor (a new photo removed, the name of today
+        typed again): no change to check any more."""
+        for product in self.sudo():
+            if product.ocd_change_state in ("to_check", "refused") and not product._ocd_change_waiting():
+                product.write({"ocd_change_state": False, "ocd_change_reason_id": False, "ocd_change_name": False})
 
     def _ocd_change_rows(self):
         """The change of the vendor, before (on sale) and now, for the board of the checks:
@@ -243,8 +273,27 @@ class ProductTemplate(models.Model):
         self.ensure_one()
         _ = self.env._
         rows = []
-        if "name" in self._ocd_change_waiting():
+        waiting = self._ocd_change_waiting()
+        if "name" in waiting:
             rows.append({"label": _("Name"), "before": self.name, "now": self.ocd_change_name})
+        if "photos" in waiting:
+            photos = self._ocd_vendor_photos()
+            shown = [photo for photo in photos if photo["state"] == "approved"]
+            rows.append({
+                "label": _("Photos"),
+                "before_photos": [photo["bo"] for photo in shown],
+                "now_photos": [{"src": photo["bo"], "new": photo["state"] == "to_check"}
+                               for photo in photos if photo["state"] in ("approved", "to_check")],
+            })
+        for value in self._ocd_new_colour_values(("to_check",)):
+            rows.append({
+                "label": _("Colour %s", value.name),
+                "before": "" if value.ocd_image else _("No photo"),
+                "before_photos": [f"/web/image/product.template.attribute.value/{value.id}/ocd_image/256x256"]
+                if value.ocd_image else [],
+                "now_photos": [{"src": f"/web/image/product.template.attribute.value/{value.id}/ocd_image_pending/256x256",
+                                "new": True}],
+            })
         # The price changed with the change: already on sale, not checked
         price = self.ocd_price_ids.filtered(
             lambda line: line.source == "vendor" and self.ocd_change_date and line.create_date >= self.ocd_change_date
@@ -276,14 +325,18 @@ class ProductTemplate(models.Model):
         elif product.ocd_change_name:
             # Back to the name on sale: nothing left to check for the name
             product.ocd_change_name = False
-            if not product._ocd_change_waiting():
-                product.write({"ocd_change_state": False, "ocd_change_reason_id": False})
+            product._ocd_change_settle()
+        if product.ocd_change_state == "refused" and product._ocd_change_waiting():
+            # Saved again after a refusal: the photos kept go back to the check with the rest
+            product._ocd_change_sent()
         return product.ocd_change_state == "to_check"
 
     def _ocd_change_sent(self):
         """Something new to check in the change of the vendor."""
         for product in self.sudo():
             refused = product.ocd_change_state == "refused" and product.ocd_change_reason_id.name
+            product._ocd_new_images(("refused",)).ocd_review_state = "to_check"
+            product._ocd_new_colour_values(("refused",)).ocd_image_state = "to_check"
             product.write({
                 "ocd_change_state": "to_check",
                 "ocd_change_date": self.env.cr.now(),
@@ -302,8 +355,11 @@ class ProductTemplate(models.Model):
                 "ocd_change_reason_id": False,
                 "ocd_change_name": False,
             }
-            if product.ocd_change_name:
+            if product.ocd_change_name and product.ocd_change_name != product.name:
                 values["name"] = product.ocd_change_name
+            product._ocd_new_images(("to_check",)).ocd_review_state = "approved"
+            for value in product._ocd_new_colour_values(("to_check",)):
+                value.write({"ocd_image": value.ocd_image_pending, "ocd_image_pending": False, "ocd_image_state": False})
             product.write(values)
             product.message_post(body=self.env._("Change accepted."))
         self._ocd_tell_vendor_change()
@@ -316,6 +372,8 @@ class ProductTemplate(models.Model):
             why = reason or product.ocd_change_reason_id
             if not why:
                 raise UserError(self.env._("Choose the reason sent to the vendor."))
+            product._ocd_new_images(("to_check",)).ocd_review_state = "refused"
+            product._ocd_new_colour_values(("to_check",)).ocd_image_state = "refused"
             product.write({
                 "ocd_change_state": "refused",
                 "ocd_change_review_date": fields.Datetime.now(),
@@ -337,6 +395,140 @@ class ProductTemplate(models.Model):
             return False
         reason = self.ocd_change_reason_id
         return reason.message or reason.name or self.env._("Write to OCD Live to know why.")
+
+    # === THE PHOTOS OF A PRODUCT (2.6 of the plan of « My products ») === #
+    #
+    # Odoo keeps the photos of a product in their order, the first one being the main photo (the
+    # photo of the product, of the cards): moving a photo first makes it the main one. A new photo
+    # of a product on sale is checked by the team: it never goes first before that.
+
+    def _ocd_vendor_images(self):
+        """The photos of the product in their order, the main one first."""
+        self.ensure_one()
+        return self.sudo().product_template_image_ids.filtered("image_128").sorted(lambda i: (i.sequence, i.id))
+
+    def _ocd_vendor_photos(self):
+        """The photos of the product for the vendor and the team, the main one first:
+        [{key, image, state, main, bo}]. A product whose photo Odoo did not copy among its
+        photos (made before) shows its main photo alone."""
+        self.ensure_one()
+        product = self.sudo()
+        images = product._ocd_vendor_images()
+        if not images:
+            if not product.image_128:
+                return []
+            return [{
+                "key": "principale", "image": False, "state": "approved", "main": True,
+                "bo": f"/web/image/product.template/{product.id}/image_256",
+            }]
+        return [{
+            "key": str(image.id), "image": image, "state": image.ocd_review_state, "main": index == 0,
+            "bo": f"/web/image/product.image/{image.id}/image_256",
+        } for index, image in enumerate(images)]
+
+    def _ocd_photos_max(self):
+        self.ensure_one()
+        return max((self.company_id or self.env.company).ocd_product_photos_max or 8, 1)
+
+    def _ocd_ensure_photo_images(self):
+        """The main photo among the photos of the product, as Odoo keeps it (a product made
+        before has it alone)."""
+        self.ensure_one()
+        product = self.sudo()
+        if product.image_1920 and not product._ocd_vendor_images():
+            product._set_extra_image_from_main_image(product.image_1920)
+
+    def _ocd_vendor_add_photo(self, data, filename):
+        """A photo the vendor adds, after the others: checked by the team before it shows, for
+        a product on sale (it stays on sale as it was); a product not checked yet is checked
+        with it."""
+        self.ensure_one()
+        product = self.sudo()
+        if len(product._ocd_vendor_photos()) >= product._ocd_photos_max():
+            raise UserError(self.env._("%s photos at most: remove one first.", product._ocd_photos_max()))
+        product._ocd_ensure_photo_images()
+        on_sale = product._ocd_vendor_can_change()
+        last = max(product.product_template_image_ids.mapped("sequence") or [0])
+        image = self.env["product.image"].sudo().with_context(skip_update_main_image=True).create({
+            "name": product.name,
+            "product_tmpl_id": product.id,
+            "image_1920": _binary(data, filename),
+            "sequence": last + 1,
+            "ocd_review_state": "to_check" if on_sale else "approved",
+        })
+        if on_sale:
+            product._ocd_change_sent()
+        else:
+            # A product without a photo yet takes this one as its main photo
+            product._set_main_image_from_extra_images()
+            product.message_post(body=self.env._("The vendor added a photo."))
+        return image
+
+    def _ocd_vendor_image(self, key):
+        """The photo `key` of the product (the id of one of its photos, « principale » for the
+        main one)."""
+        self.ensure_one()
+        product = self.sudo()
+        if key == "principale":
+            product._ocd_ensure_photo_images()
+            return product._ocd_vendor_images()[:1]
+        image = product.product_template_image_ids.filtered(lambda i: str(i.id) == str(key))
+        if not image:
+            raise UserError(self.env._("This photo is not one of the product."))
+        return image
+
+    def _ocd_vendor_remove_photo(self, key):
+        """Remove a photo. The main one is replaced by the next checked photo: a product keeps
+        one checked photo at least."""
+        self.ensure_one()
+        product = self.sudo()
+        image = product._ocd_vendor_image(key)
+        images = product._ocd_vendor_images()
+        checked = images.filtered(lambda i: i.ocd_review_state == "approved")
+        if image.ocd_review_state == "approved" and not (checked - image):
+            raise UserError(self.env._("Add another photo before you remove this one: a product keeps one photo."))
+        if image == images[:1]:
+            # The next checked photo becomes the main one, never a photo not checked yet
+            following = (checked - image)[:1]
+            following.with_context(skip_update_main_image=True).sequence = image.sequence - 1
+        image.unlink()
+        product.message_post(body=self.env._("The vendor removed a photo."))
+        product._ocd_change_settle()
+        return True
+
+    def _ocd_vendor_move_photo(self, key):
+        """Move a checked photo one place earlier; first, it becomes the main photo (the photo
+        of the cards)."""
+        self.ensure_one()
+        product = self.sudo()
+        image = product._ocd_vendor_image(key)
+        if image.ocd_review_state != "approved":
+            return False
+        images = product._ocd_vendor_images()
+        index = images.ids.index(image.id)
+        if index == 0:
+            return False
+        if len(set(images.mapped("sequence"))) < len(images):
+            for position, other in enumerate(images):
+                other.with_context(skip_update_main_image=True).sequence = position + 1
+        previous = images[index - 1]
+        mine, theirs = image.sequence, previous.sequence
+        previous.with_context(skip_update_main_image=True).sequence = mine
+        # Its sequence written last: Odoo makes the first photo the main one
+        image.sequence = theirs
+        return True
+
+    def _ocd_vendor_colour_photo(self, value, data, filename):
+        """The photo of the product in the colour `value`: for a product on sale, checked by the
+        team while the photo of today (or none) stays."""
+        self.ensure_one()
+        product = self.sudo()
+        if product._ocd_vendor_can_change():
+            value.sudo().write({"ocd_image_pending": _binary(data, filename), "ocd_image_state": "to_check"})
+            product._ocd_change_sent()
+        else:
+            value.sudo().ocd_image = _binary(data, filename)
+        return True
 
     # === TAKE OFF SALE, PUT BACK (2.2 of the plan of « My products ») === #
 
@@ -405,7 +597,10 @@ class ProductTemplate(models.Model):
         the main photo among the photos of the product: it is shown once."""
         self.ensure_one()
         main = self._ocd_photo(self) if self.image_128 else None
-        images = self.product_template_image_ids.filtered("image_128").sorted("sequence")
+        # A new photo of a product on sale shows once the team checked it (chantier 19)
+        images = self.product_template_image_ids.filtered(
+            lambda image: image.image_128 and image.ocd_review_state == "approved"
+        ).sorted("sequence")
         if not images:
             return main, []
         checksums = {

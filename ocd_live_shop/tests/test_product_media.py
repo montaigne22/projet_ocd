@@ -175,6 +175,10 @@ class TestOcdProductMedia(TestOcdShopWebsite):
         response = self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/couleur/{red.id}",
                                  data={"csrf_token": self.csrf_token()}, files={"photo": ("rouge.png", PNG, "image/png")})
         self.assertEqual(response.status_code, 200)
+        # The robe is on sale: the new photo is checked by the team first (chantier 19)
+        self.assertFalse(red.ocd_image)
+        self.assertTrue(red.ocd_image_pending)
+        self.robe.action_ocd_approve_change()
         self.assertTrue(red.ocd_image)
         other = self.env["product.template"].create({"name": "Pagne", "ocd_vendor_id": self.fatou.id})
         value = self._value("Bleu")

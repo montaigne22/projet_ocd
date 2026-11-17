@@ -186,7 +186,11 @@ class OcdVendorProducts(http.Controller):
                 "colours": [
                     {
                         "value": value,
-                        "image": product._ocd_photo(value, "ocd_image")["src"] if value.ocd_image else False,
+                        "image": f"/ocd/espace/moi/produits/{product.id}/couleur/{value.id}/nouvelle"
+                        f"?unique={product._ocd_photo_stamp(value)}" if value.ocd_image_pending
+                        else product._ocd_photo(value, "ocd_image")["src"] if value.ocd_image else False,
+                        "checking": value.ocd_image_state == "to_check" and bool(value.ocd_image_pending),
+                        "refused": value.ocd_image_state == "refused" and bool(value.ocd_image_pending),
                         "swatch": value.html_color or "#FFFFFF",
                     }
                     for value in colours
@@ -234,7 +238,7 @@ class OcdVendorProducts(http.Controller):
 
     def _waiting_labels(self, product):
         env = request.env
-        labels = {"name": env._("new name")}
+        labels = {"name": env._("new name"), "photos": env._("new photos"), "colours": env._("photos of the colours")}
         return [labels[part] for part in product._ocd_change_waiting() if part in labels]
 
     def _filters(self, rows, current):
@@ -347,10 +351,31 @@ class OcdVendorProducts(http.Controller):
             change_refusal=product._ocd_change_refusal_text() if on_sale else False,
             price_question=price_question,
             can_retire=product._ocd_vendor_can_retire(),
+            photos=self._photos(product) if on_sale else [],
+            photos_max=product._ocd_photos_max(),
+            photos_error=request.params.get("photo_erreur"),
             stock_url=f"/ocd/espace/moi/produits/{product.id}/mon-stock" if on_sale and (
                 vendor._ocd_stock_per_place() or len(product.product_variant_ids) > 1) else False,
             **self._form_values(values, errors, kept, product=product),
         ))
+
+    def _photos(self, product):
+        """The photos of a product on sale for its page of change (design GererProduits): the
+        main one first, the new ones checked by the team."""
+        photos = product._ocd_vendor_photos()
+        checked = [photo for photo in photos if photo["state"] == "approved"]
+        rows = []
+        for photo in photos:
+            image = photo["image"]
+            rows.append({
+                **photo,
+                "src": vendor_photo_url(product, "image_512") if photo["main"] or not image
+                else f"/ocd/espace/moi/produits/{product.id}/photos/{image.id}?unique={product._ocd_photo_stamp(image)}",
+                # A product keeps one checked photo: the main one is replaced by the next one
+                "can_remove": photo["state"] != "approved" or len(checked) > 1,
+                "can_move": not photo["main"] and photo["state"] == "approved",
+            })
+        return rows
 
     def _check_fields(self, name, price):
         """(errors, name, price) of the name and the price typed by the vendor."""
@@ -531,6 +556,83 @@ class OcdVendorProducts(http.Controller):
         self._pending_photos(vendor).unlink()
         return request.redirect(f"/ocd/espace/moi/produits?envoye=1#produit-{product.id}" if resent else back)
 
+    # === THE PHOTOS OF A PRODUCT ON SALE (2.6 of the plan) === #
+
+    def _photos_back(self, product, error=None):
+        """Back to the photos of the product; `error`: « taille » (photo too big or not an
+        image), « nombre » (too many photos), « garder » (the last photo)."""
+        url = f"/ocd/espace/moi/produits/{product.id}/modifier"
+        return request.redirect(f"{url}?photo_erreur={error}#photos" if error else f"{url}#photos")
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/photos", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def product_photo_add(self, product_id, photo=None, **post):
+        """Add a photo: checked by the team before it shows; the product stays on sale."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        product = self._own_product(vendor, product_id)
+        data, filename, error = self._read_photo(photo)
+        if data is None:
+            return self._photos_back(product, "taille" if error else None)
+        try:
+            with request.env.cr.savepoint():
+                product._ocd_vendor_add_photo(data, filename)
+        except ValidationError:
+            return self._photos_back(product, "taille")
+        except UserError:
+            return self._photos_back(product, "nombre")
+        return self._photos_back(product)
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/photos/<string:key>/<string:what>", type="http",
+                auth="public", website=True, methods=["POST"], sitemap=False)
+    def product_photo_change(self, product_id, key, what, **post):
+        """Remove a photo (« retirer »), or move it one place earlier (« avant »)."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        product = self._own_product(vendor, product_id)
+        try:
+            with request.env.cr.savepoint():
+                if what == "retirer":
+                    product._ocd_vendor_remove_photo(key)
+                elif what == "avant":
+                    product._ocd_vendor_move_photo(key)
+                else:
+                    raise request.not_found()
+        except UserError:
+            return self._photos_back(product, "garder")
+        return self._photos_back(product)
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/photos/<int:image_id>", type="http", auth="public",
+                website=True, methods=["GET"], sitemap=False)
+    def product_photo_image(self, product_id, image_id, **kwargs):
+        """A photo of a product of the vendor, also while the team checks it."""
+        vendor = self._vendor()
+        product = request.env["product.template"].sudo().browse(product_id).exists()
+        image = product.product_template_image_ids.filtered(lambda i: i.id == image_id) if product else False
+        if not vendor or not product or product.ocd_vendor_id != vendor or not image:
+            raise request.not_found()
+        return self._private_image(image, "image_512", kwargs)
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/couleur/<int:value_id>/nouvelle", type="http",
+                auth="public", website=True, methods=["GET"], sitemap=False)
+    def product_colour_pending(self, product_id, value_id, **kwargs):
+        """The new photo of a colour, while the team checks it."""
+        vendor = self._vendor()
+        product = request.env["product.template"].sudo().browse(product_id).exists()
+        value = request.env["product.template.attribute.value"].sudo().browse(value_id).exists()
+        if not vendor or not product or product.ocd_vendor_id != vendor or not value \
+                or value.product_tmpl_id != product or not value.ocd_image_pending:
+            raise request.not_found()
+        return self._private_image(value, "ocd_image_pending", kwargs)
+
+    def _private_image(self, record, field, kwargs):
+        stream = request.env["ir.binary"]._get_image_stream_from(record, field, width=512, height=512)
+        response = stream.get_response(immutable=bool(kwargs.get("unique")))
+        response.headers["Cache-Control"] = response.headers.get("Cache-Control", "").replace("public", "private")
+        return response
+
     def _change_on_sale(self, vendor, product, name, price, post):
         """Change a product on sale (2.1 of the plan, design GererProduits): the price at once
         (a big change confirmed first), the name checked by the team while the product stays
@@ -625,7 +727,8 @@ class OcdVendorProducts(http.Controller):
             return request.redirect(f"/ocd/espace/moi/produits?photo_erreur={product.id}#produit-{product.id}")
         try:
             with request.env.cr.savepoint():
-                value.ocd_image = BinaryBytes(data, filename=photo.filename)
+                # A product on sale: the new photo is checked by the team (chantier 19)
+                product._ocd_vendor_colour_photo(value, data, photo.filename)
         except (UserError, ValidationError):
             return request.redirect(f"/ocd/espace/moi/produits?photo_erreur={product.id}#produit-{product.id}")
         product.message_post(body=request.env._(

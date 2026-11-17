@@ -603,19 +603,14 @@
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
             <input type="hidden" name="form_token" t-att-value="form_token"/>
             <input t-if="kept_photo" type="hidden" name="photo_kept" class="o_ocd_photo_kept" t-att-value="kept_photo['value']"/>
-            <t t-if="product and on_sale">
-                <!-- A product on sale (design GererProduits): the version of today stays on sale -->
-                <h1 class="o_ocd_h1 o_ocd_h1_small">Change the product</h1>
-                <div t-if="change_refusal" class="o_ocd_alert" role="status"><b>Change refused by the team:</b> <t t-out="change_refusal"/> The version before stays on sale.</div>
-                <div class="o_ocd_change_note">The name and the photos are checked by the team: meanwhile, the product stays on sale as it is today.</div>
-            </t>
-            <t t-elif="product">
+            <!-- A product on sale: its title and its photos are above this form (vendor_product_edit) -->
+            <t t-if="product and not on_sale">
                 <h1 t-if="product.ocd_review_state == 'refused'" class="o_ocd_h1 o_ocd_h1_small">Correct the product</h1>
                 <h1 t-else="" class="o_ocd_h1 o_ocd_h1_small">Change the product</h1>
                 <div t-if="refusal" class="o_ocd_alert" role="status"><b>Refused by the team:</b> <t t-out="refusal"/></div>
                 <p class="o_ocd_parcel_hint o_ocd_my_products_help">Change what is needed, then tap the orange button. The team checks it again.</p>
             </t>
-            <t t-else="">
+            <t t-elif="not product">
                 <h1 class="o_ocd_h1 o_ocd_h1_small">Add a product</h1>
                 <p class="o_ocd_parcel_hint o_ocd_my_products_help">Take a photo, write the name and the price, then tap the orange button.</p>
             </t>
@@ -780,6 +775,8 @@
                                                     <i t-attf-style="background: #{colour['swatch']}" aria-hidden="true"/>
                                                     <t t-out="colour['value'].name"/>
                                                 </span>
+                                                <small t-if="colour['checking']" class="o_ocd_my_product_change">Being checked</small>
+                                                <small t-elif="colour['refused']" class="o_ocd_my_product_change_refused">Refused: send another one</small>
                                                 <noscript><button type="submit" class="o_ocd_link">Send</button></noscript>
                                             </form>
                                         </t>
@@ -838,8 +835,53 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">My products</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame o_ocd_narrow">
-                <main class="o_ocd_main o_ocd_my_products">
+            <div t-attf-class="o_ocd_frame o_ocd_narrow #{'o_ocd_wide' if on_sale else ''}">
+                <main t-attf-class="o_ocd_main o_ocd_my_products #{'o_ocd_product_change' if on_sale else ''}">
+                    <t t-if="on_sale">
+                        <!-- A product on sale (design GererProduits): the version of today stays on sale -->
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">Change the product</h1>
+                        <div t-if="change_refusal" class="o_ocd_alert" role="status"><b>Change refused by the team:</b> <t t-out="change_refusal"/> The version before stays on sale.</div>
+                        <div class="o_ocd_change_note">The name and the photos are checked by the team: meanwhile, the product stays on sale as it is today.</div>
+                        <!-- Its photos (2.6 of the plan): each one has its own form -->
+                        <section id="photos" class="o_ocd_product_photos" aria-labelledby="pp-title">
+                            <span id="pp-title" class="o_ocd_label">Photos <small>· <t t-out="len(photos)"/> of <t t-out="photos_max"/> · the first one is on the card</small></span>
+                            <div class="o_ocd_product_photos_list">
+                                <div t-foreach="photos" t-as="photo" t-attf-class="o_ocd_product_photo o_ocd_product_photo_#{photo['state']}">
+                                    <img t-att-src="photo['src']" alt="" loading="lazy"/>
+                                    <span t-if="photo['main']" class="o_ocd_product_photo_tag">Main</span>
+                                    <span t-elif="photo['state'] == 'to_check'" class="o_ocd_product_photo_tag o_ocd_new">New · being checked</span>
+                                    <span t-elif="photo['state'] == 'refused'" class="o_ocd_product_photo_tag o_ocd_refused">Refused</span>
+                                    <form t-if="photo['can_remove']" t-attf-action="/ocd/espace/moi/produits/#{product.id}/photos/#{photo['key']}/retirer"
+                                          method="post" class="o_ocd_product_photo_remove">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button aria-label="Remove this photo">×</button>
+                                    </form>
+                                    <form t-if="photo['can_move']" t-attf-action="/ocd/espace/moi/produits/#{product.id}/photos/#{photo['key']}/avant"
+                                          method="post" class="o_ocd_product_photo_move">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button aria-label="Move this photo one place earlier">←</button>
+                                    </form>
+                                </div>
+                                <form t-if="len(photos) &lt; photos_max" t-attf-action="/ocd/espace/moi/produits/#{product.id}/photos"
+                                      method="post" enctype="multipart/form-data" class="o_ocd_colour_photo o_ocd_product_photo_add"
+                                      t-att-data-max-px="photo_px">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <label class="o_ocd_product_photo_pick">
+                                        <input type="file" name="photo" accept="image/*" class="o_ocd_colour_photo_input"
+                                               t-att-capture="None if photo_gallery else 'environment'" aria-label="Add a photo"/>
+                                        <t t-call="ocd_live.icon" icon.f="camera"/>
+                                        <span>Add a photo</span>
+                                    </label>
+                                    <noscript><button type="submit" class="o_ocd_link">Send</button></noscript>
+                                </form>
+                            </div>
+                            <span t-if="photos_error == 'taille'" class="o_ocd_error" role="alert">The photo could not be added: an image of <t t-out="photo_max_mb"/> MB at most.</span>
+                            <span t-elif="photos_error == 'nombre'" class="o_ocd_error" role="alert"><t t-out="photos_max"/> photos at most: remove one first.</span>
+                            <span t-elif="photos_error == 'garder'" class="o_ocd_error" role="alert">Add another photo before you remove this one: a product keeps one photo.</span>
+                            <small t-if="any(photo['state'] != 'approved' for photo in photos)" class="o_ocd_parcel_hint">The new photos show once the team checked them. ← moves a photo one place earlier.</small>
+                            <small t-else="" class="o_ocd_parcel_hint">← moves a photo one place earlier: the first one is the photo of the cards.</small>
+                        </section>
+                    </t>
                     <t t-call="ocd_live_shop.vendor_product_form"/>
                     <!-- Take off sale, put back (2.2 of the plan): never deleted -->
                     <div t-if="on_sale and (can_retire or product.ocd_vendor_retired)" class="o_ocd_retire_box">

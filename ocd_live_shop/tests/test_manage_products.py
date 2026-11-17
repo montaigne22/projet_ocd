@@ -1,7 +1,9 @@
+from odoo import Command
 from odoo.tests import HttpCase, tagged
 from odoo.tools import BinaryBytes
 
 from .common import OcdShopCommon
+from .test_product_media import other_png
 from .test_shop_pages import PNG
 
 
@@ -82,7 +84,7 @@ class TestOcdManageProducts(HttpCase, OcdShopCommon):
         self._login()
         page = self.url_open(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/modifier").text
         self.assertIn("the product stays on sale as it is today", page)
-        self.assertNotIn('name="photo"', page, "The photos of a product on sale are changed apart")
+        self.assertNotIn('id="mp-photo"', page, "The photos of a product on sale are changed apart")
         response = self._change(name="Robe en wax, col rond")
         self.assertIn("modifie=verification", response.headers["Location"])
         self.assertEqual(self.dress_tmpl.name, "Robe en wax", "The version of today stays on sale")
@@ -162,3 +164,90 @@ class TestOcdManageProducts(HttpCase, OcdShopCommon):
         self.company.ocd_price_gap_confirm = 0
         self._change(price="100")
         self.assertEqual(self.dress_tmpl.list_price, 100, "0: never asked")
+
+    # === SEVERAL PHOTOS (2.6) === #
+
+    def _add_photo(self, colour="red"):
+        return self.url_open(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/photos", data={"csrf_token": self.csrf_token()},
+                             files={"photo": ("photo.png", other_png(colour), "image/png")}, allow_redirects=False)
+
+    def _photo_action(self, key, what):
+        return self._post(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/photos/{key}/{what}")
+
+    def test_a_new_photo_is_checked_while_the_product_stays_on_sale(self):
+        self._login()
+        page = self.url_open(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/modifier").text
+        self.assertIn(f'action="/ocd/espace/moi/produits/{self.dress_tmpl.id}/photos"', page)
+        self.assertIn("· 1 of 8 ·", page)
+        response = self._add_photo()
+        self.assertTrue(response.headers["Location"].endswith("/modifier#photos"))
+        image = self.dress_tmpl.product_template_image_ids.filtered(lambda i: i.ocd_review_state == "to_check")
+        self.assertEqual(len(image), 1)
+        self.assertEqual(self.dress_tmpl._ocd_vendor_images()[-1], image, "After the photos already there")
+        self.assertEqual(self.dress_tmpl.ocd_change_state, "to_check")
+        self.assertEqual(self.dress_tmpl._ocd_page_photos()[1], [], "Not shown before the check")
+        page = self.url_open(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/modifier").text
+        self.assertIn("New · being checked", page)
+        self.assertEqual(self.url_open(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/photos/{image.id}").status_code, 200)
+        self.assertIn("Change being checked: new photos.", self.url_open("/ocd/espace/moi/produits").text)
+        rows = next(i for i in self.env["ocd.live.verification"]._ocd_change_items() if i["id"] == self.dress_tmpl.id)["changes"]
+        self.assertEqual(rows[0]["label"], "Photos")
+        self.assertEqual([photo["new"] for photo in rows[0]["now_photos"]], [False, True])
+        self.env["ocd.live.verification"].ocd_approve("product_change", self.dress_tmpl.id)
+        self.assertEqual(image.ocd_review_state, "approved")
+        self.assertEqual(len(self.dress_tmpl._ocd_page_photos()[1]), 1, "Shown once checked")
+        # Moved before the main one: it becomes the photo of the cards
+        main = self.dress_tmpl.image_1920.content
+        self._photo_action(image.id, "avant")
+        self.assertEqual(self.dress_tmpl._ocd_vendor_images()[0], image)
+        self.assertEqual(self.dress_tmpl.image_1920.content, image.image_1920.content)
+        self.assertNotEqual(self.dress_tmpl.image_1920.content, main)
+        # The main one removed: the next checked photo takes its place; the last one stays
+        self._photo_action("principale", "retirer")
+        self.assertFalse(image.exists())
+        self.assertEqual(self.dress_tmpl.image_1920.content, main)
+        response = self._photo_action("principale", "retirer")
+        self.assertIn("photo_erreur=garder", response.headers["Location"])
+        self.assertTrue(self.dress_tmpl.image_1920)
+        # At most the photos of the setting
+        self.company.ocd_product_photos_max = 1
+        self.assertIn("photo_erreur=nombre", self._add_photo().headers["Location"])
+        # Not the photos of another vendor
+        self.assertEqual(self._post(f"/ocd/espace/moi/produits/{self.other.id}/photos/principale/retirer").status_code, 404)
+
+    def test_a_refused_photo_is_removed_or_sent_again(self):
+        self._login()
+        self._add_photo()
+        image = self.dress_tmpl.product_template_image_ids.filtered(lambda i: i.ocd_review_state == "to_check")
+        reason = self.env.ref("ocd_live_shop.refuse_reason_product_photo")
+        self.env["ocd.live.verification"].ocd_refuse("product_change", self.dress_tmpl.id, reason.id)
+        self.assertEqual((image.ocd_review_state, self.dress_tmpl.ocd_change_state), ("refused", "refused"))
+        self.assertIn("Refused", self.url_open(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/modifier").text)
+        # Saved again: back to the check
+        self._change()
+        self.assertEqual((image.ocd_review_state, self.dress_tmpl.ocd_change_state), ("to_check", "to_check"))
+        # Removed: nothing left to check
+        self._photo_action(image.id, "retirer")
+        self.assertFalse(image.exists())
+        self.assertFalse(self.dress_tmpl.ocd_change_state)
+
+    def test_the_new_photo_of_a_colour_is_checked(self):
+        colour = self.env["product.attribute"].create({"name": "Couleur", "display_type": "color", "value_ids": [
+            Command.create({"name": "Bleu", "html_color": "#2F6FB8"}),
+        ]})
+        self.dress_tmpl.attribute_line_ids = [
+            Command.create({"attribute_id": colour.id, "value_ids": [Command.set(colour.value_ids.ids)]}),
+        ]
+        value = self.dress_tmpl.attribute_line_ids.product_template_value_ids
+        self._login()
+        self.url_open(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/couleur/{value.id}", data={"csrf_token": self.csrf_token()},
+                      files={"photo": ("bleu.png", PNG, "image/png")})
+        self.assertFalse(value.ocd_image, "The page keeps the main photo meanwhile")
+        self.assertTrue(value.ocd_image_pending)
+        self.assertEqual((value.ocd_image_state, self.dress_tmpl.ocd_change_state), ("to_check", "to_check"))
+        self.assertIn("Being checked", self.url_open("/ocd/espace/moi/produits").text)
+        rows = next(i for i in self.env["ocd.live.verification"]._ocd_change_items() if i["id"] == self.dress_tmpl.id)["changes"]
+        self.assertEqual(rows[0]["label"], "Colour Bleu")
+        self.env["ocd.live.verification"].ocd_approve("product_change", self.dress_tmpl.id)
+        self.assertTrue(value.ocd_image)
+        self.assertFalse(value.ocd_image_pending)

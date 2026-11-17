@@ -129,6 +129,11 @@ class ResCompany(models.Model):
         "less data. 0: sent as taken.",
     )
 
+    ocd_product_photos_max = fields.Integer(
+        string="Photos Per Product, At Most",
+        default=8,
+        help="The photos a vendor gives to a product, the main one included.",
+    )
     ocd_price_gap_confirm = fields.Integer(
         string="Price Change To Confirm (%)",
         default=50,

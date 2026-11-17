@@ -1001,11 +1001,28 @@ export class OcdColourPhoto extends Interaction {
         ".o_ocd_colour_photo_input": { "t-on-change": this.send },
     };
 
-    send(ev) {
-        if (ev.target.files?.length) {
-            this.el.classList.add("o_ocd_sending");
-            this.el.requestSubmit ? this.el.requestSubmit() : this.el.submit();
+    async send(ev) {
+        const input = ev.target;
+        const file = input.files?.[0];
+        if (!file) {
+            return;
         }
+        this.el.classList.add("o_ocd_sending");
+        // The photo of a product (chantier 19): reduced on the phone first, faster on a slow network
+        const maxPx = parseInt(this.el.dataset.maxPx) || 0;
+        if (maxPx) {
+            const reduced = await this.waitFor(shrinkPhoto(file, maxPx).catch(() => file));
+            if (reduced !== file) {
+                try {
+                    const transfer = new DataTransfer();
+                    transfer.items.add(reduced);
+                    input.files = transfer.files;
+                } catch {
+                    // An old phone: the photo goes as taken
+                }
+            }
+        }
+        this.el.requestSubmit ? this.el.requestSubmit() : this.el.submit();
     }
 }
 

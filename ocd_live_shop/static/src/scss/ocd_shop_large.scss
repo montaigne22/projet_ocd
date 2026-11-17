@@ -434,6 +434,35 @@
     }
 }
 
+// Change a product on sale on a computer (design GererProduits): the photos on the left, the
+// name and the price on the right
+@media (min-width: $ocd-desktop) {
+    .o_ocd_space_body .o_ocd_my_products.o_ocd_product_change {
+        max-width: none;
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        column-gap: 40px;
+        align-items: start;
+        > h1,
+        > .o_ocd_alert,
+        > .o_ocd_change_note {
+            grid-column: 1 / -1;
+        }
+        > .o_ocd_product_photos {
+            grid-column: 1;
+            grid-row: span 2;
+        }
+        > .o_ocd_my_products_form,
+        > .o_ocd_retire_box {
+            grid-column: 2;
+        }
+        .o_ocd_product_photos_list {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+    }
+}
+
 // « My stock » on a computer: every place side by side, a column each (design RespEspace)
 @media (min-width: $ocd-desktop) {
     .o_ocd_app .o_ocd_my_stock {
