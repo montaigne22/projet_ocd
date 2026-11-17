@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mettre de côté pour essayer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.wa{align-self:flex-start;max-width:320px;background:#DCF8C6;border-radius:12px;padding:8px 10px;font-size:14px}
+.box{display:flex;flex-direction:column;gap:2px;background:#F5F2EE;border-radius:16px;padding:10px 14px}
+.store{display:grid;grid-template-columns:1fr auto;gap:6px 8px;align-items:center;padding:10px 0;border-bottom:1px solid #E7E2DC}
+.store:last-of-type{border-bottom:0}
+.keep{grid-column:1/-1;justify-self:start;font-weight:700;font-size:14px;text-decoration:underline}
+.sheet{border-radius:22px 22px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,.12);padding:16px 18px;display:flex;flex-direction:column;gap:10px;background:#FFF}
+.pcard{border:2px solid #E7E2DC;border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.line{display:flex;justify-content:space-between;gap:8px}
+</style>
+</head>
+<body>
+<!-- Mettre de côté pour essayer (chantier 20, A.7 du plan de « Mes produits ») : le client réserve
+     une pièce dans un magasin qui l'a, pour venir l'essayer ; il paie seulement s'il la prend. Le
+     vendeur est prévenu et peut refuser ; sans réponse, la pièce reste de côté. La pièce est libérée
+     seule après le délai. Garde-fous (réglables) : 24 h, une mise de côté à la fois chez un vendeur,
+     plus de mise de côté après deux absences. Données d'exemple : Brenda Wax, Douala ; Estelle,
+     cliente. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le client : depuis la fiche produit</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. Dans ses magasins : « Mettre de côté » sous un magasin qui a la pièce -->
+  <div class="phone">
+    <span class="d" style="font-size:24px;line-height:1.1">Robe en wax</span>
+    <span class="d" style="font-size:21px;color:#B84F00">12 000 F</span>
+    <span class="small"><b>Couleur · Bleu · Taille · M</b></span>
+    <div class="box">
+      <b style="font-size:15px">Dans ses magasins · Bleu, M</b>
+      <div class="store">
+        <span><b>Brenda Wax Akwa</b><br><span class="h">En face de la pharmacie du Port · Ouvert</span></span>
+        <span class="tag ok">Disponible · plus que 2</span>
+        <a class="keep">Mettre de côté pour l'essayer</a>
+      </div>
+      <div class="store">
+        <span><b>Marché central</b><br><span class="h">Allée des tissus, stand 42 · Ouvert</span></span>
+        <span class="tag ok">Disponible</span>
+        <a class="keep">Mettre de côté pour l'essayer</a>
+      </div>
+      <a class="linkb" style="font-weight:700;font-size:14px;text-decoration:underline;padding:6px 0">Itinéraire et horaires</a>
+    </div>
+    <span class="h">Ou fais-toi livrer chez toi.</span>
+    <span class="cta">Ajouter au panier · 12 000 F</span>
+  </div>
+
+  <!-- 2. La demande -->
+  <div class="phone" style="padding:0;overflow:hidden;background:#EEF0F2">
+    <div style="padding:16px 18px;opacity:.45;display:flex;flex-direction:column;gap:8px;background:#FFF">
+      <span class="d" style="font-size:24px">Robe en wax</span><span class="h">Dans ses magasins · Bleu, M</span>
+    </div>
+    <div class="sheet">
+      <b class="d" style="font-size:22px">Mettre de côté pour essayer</b>
+      <span>Brenda Wax Akwa garde <b>Robe en wax · Bleu, M</b> pour toi <b>jusqu'à demain 14:00</b>. Tu l'essaies sur place et tu paies seulement si tu la prends.</span>
+      <div><div class="lab">Ton WhatsApp</div><div class="in">+237 6 70 00 00 09</div></div>
+      <span class="cta">Mettre de côté</span>
+      <span class="h">Le magasin peut refuser : on te l'écrit tout de suite. Une mise de côté à la fois chez un vendeur ; après deux absences, ce n'est plus possible chez lui.</span>
+      <a class="linkb" style="align-self:center;font-weight:700;text-decoration:underline">Annuler</a>
+    </div>
+  </div>
+
+  <!-- 3. Mis de côté, et les messages -->
+  <div class="phone">
+    <div class="ok" style="border-radius:14px;padding:12px 14px;font-weight:600;font-size:14.5px">Mis de côté à Brenda Wax Akwa jusqu'à demain 14:00. Le magasin te répond sur WhatsApp.</div>
+    <div class="pcard">
+      <b>Robe en wax · Bleu, M</b>
+      <span class="h">Brenda Wax Akwa · en face de la pharmacie du Port</span>
+      <span class="small"><b>Jusqu'à demain 14:00</b></span>
+      <div class="two"><span class="btn">Itinéraire</span><span class="btn">Je ne viens plus</span></div>
+    </div>
+    <span class="cap" style="margin:6px 0 0">WhatsApp au client</span>
+    <span class="wa">Bonjour Estelle, Brenda Wax Akwa garde Robe en wax (Bleu, M) pour vous jusqu'à demain 14:00. Touchez le bouton pour l'itinéraire.</span>
+    <span class="wa">Bonjour Estelle, Brenda Wax Akwa ne peut pas garder Robe en wax (Bleu, M) pour le moment. Touchez le bouton pour la commander en ligne.</span>
+    <span class="h">À 14:00 sans visite, la pièce redevient disponible pour tous.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · 390 px · le vendeur : le message, puis Mes colis</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div class="phone">
+    <span class="cap" style="margin:0">WhatsApp au vendeur</span>
+    <span class="wa">Bonjour Brenda, Estelle veut essayer Robe en wax (Bleu, M) au magasin Brenda Wax Akwa, jusqu'à demain 14:00. La pièce est mise de côté. Touchez « Mes colis » pour accepter ou refuser.</span>
+    <h1 class="d" style="margin:6px 0 0;font-size:26px;line-height:1.05">Mes colis</h1>
+    <div style="display:flex;gap:6px;overflow:hidden"><span class="chip">À préparer · 2</span><span class="chip">Retrait · 1</span><span class="chip on">À essayer · 1</span></div>
+    <div class="pcard">
+      <div class="line"><b>Estelle veut l'essayer</b><span class="tag low">Nouveau</span></div>
+      <span class="small">Robe en wax · Bleu, M · Brenda Wax Akwa</span>
+      <span class="h">Mise de côté jusqu'à demain 14:00</span>
+      <div class="two"><span class="btn" style="background:#15130F;color:#FFF;box-shadow:none">D'accord</span><span class="btn">Refuser</span></div>
+      <span class="h">Sans réponse, la pièce reste de côté jusqu'à 14:00.</span>
+    </div>
+  </div>
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes colis</span></div>
+    <div class="pcard" style="border-color:#15130F">
+      <div class="line"><b>Estelle est au magasin</b><span class="tag ok">De côté</span></div>
+      <span class="small">Robe en wax · Bleu, M · jusqu'à 14:00</span>
+      <span class="lab" style="margin:4px 0 0">Comment ça s'est passé ?</span>
+      <div class="three"><span class="btn" style="font-size:13.5px">Elle l'a prise</span><span class="btn" style="font-size:13.5px">Pas prise</span><span class="btn" style="font-size:13.5px">Pas venue</span></div>
+      <span class="h">« Elle l'a prise » : payée au magasin, la pièce sort du stock d'Akwa. « Pas prise » : la pièce revient en vente.</span>
+    </div>
+    <div class="note">Deux absences : Estelle ne peut plus mettre de côté chez toi. Tu peux la débloquer.</div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · Mes colis du vendeur : à préparer, retrait en magasin, à essayer</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Moi</a></nav>
+<span class="right"><span class="pill">Partager</span><span class="round">FR</span></span></div>
+<div style="display:grid;grid-template-columns:270px minmax(0,1fr)">
+  <aside class="side" style="display:flex;flex-direction:column;gap:4px;padding:24px 16px;border-right:1px solid #E7E2DC;min-height:560px;box-sizing:border-box">
+    <div style="display:flex;gap:10px;align-items:center;padding:0 6px 14px"><span class="round" style="width:44px;height:44px;background:#FFE7D1;border:0">BW</span><span><b>Brenda Wax</b><br><span class="h">Vendu par OCD</span></span></div>
+    <a>Mon espace</a><a>Mes produits</a><a>Mes magasins</a><a class="on">Mes colis</a><a>Mes prix de livraison</a>
+  </aside>
+  <main style="display:flex;flex-direction:column;gap:18px;padding:28px 40px 40px">
+    <h1 class="d" style="margin:0;font-size:34px">Mes colis</h1>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:12px"><span class="cap" style="margin:0">À préparer · 2</span>
+        <div class="pcard"><b>Pour Sandrine · Bonamoussadi</b><span class="small">Pagne wax 6 yards × 1</span><span class="h">Avant 18:30 · le livreur passe à Akwa</span><span class="btn">C'est prêt</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:12px"><span class="cap" style="margin:0">Retrait en magasin · 1</span>
+        <div class="pcard"><b>Estelle passe la chercher</b><span class="small">Robe en wax · Bleu, M</span><span class="h">Akwa · avant jeu. 19:00 · à encaisser 12 000 F</span><span class="btn">C'est prêt</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:12px"><span class="cap" style="margin:0">À essayer · 1</span>
+        <div class="pcard"><b>Paul veut l'essayer</b><span class="small">Chemise wax homme · L</span><span class="h">Marché central · jusqu'à demain 10:00</span><div class="two"><span class="btn">D'accord</span><span class="btn">Refuser</span></div></div></div>
+    </div>
+  </main>
+</div></div>
+
+<span class="cap" style="margin-top:18px">Tablette · 820 px · la fiche produit : les magasins et « Mettre de côté »</span>
+<div class="screen tab"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a class="on">Shop</a><a>Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+<main style="display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;padding:22px 24px 28px;align-items:start">
+  <span class="ph" style="height:300px">Photo</span>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <span class="d" style="font-size:26px">Robe en wax</span><span class="d" style="font-size:21px;color:#B84F00">12 000 F</span>
+    <div class="box">
+      <b style="font-size:15px">Dans ses magasins · Bleu, M</b>
+      <div class="store"><span><b>Brenda Wax Akwa</b><br><span class="h">Ouvert · ferme à 19:00</span></span><span class="tag ok">Disponible · plus que 2</span><a class="keep">Mettre de côté pour l'essayer</a></div>
+      <div class="store"><span><b>Marché central</b><br><span class="h">Ouvert · ferme à 18:00</span></span><span class="tag" style="background:#EEF0F2;color:#665F58">Épuisé</span></div>
+    </div>
+    <span class="cta">Ajouter au panier · 12 000 F</span>
+  </div>
+</main></div>
+
+</div>
+</body>
+</html>

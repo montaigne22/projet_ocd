@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Vacances et proximité</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.wa{align-self:flex-start;max-width:320px;background:#DCF8C6;border-radius:12px;padding:8px 10px;font-size:14px}
+.me{align-self:flex-end;max-width:300px;background:#FFFFFF;border-radius:12px;padding:8px 10px;font-size:14px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.chat{background:#ECE5DD;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.pin{align-self:flex-start;width:250px;background:#DCF8C6;border-radius:12px;padding:6px;font-size:13px}
+.pin .map{height:96px;border-radius:9px;background:repeating-linear-gradient(45deg,#D9E6D0 0 12px,#E6EEDF 12px 24px);display:grid;place-items:center;font-size:22px}
+.vac{border-radius:16px;background:#E7F0FB;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.card2{border:2px solid #E7E2DC;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card2 .ph{height:120px;border-radius:0}
+.card2 span.t{padding:8px 10px;display:flex;flex-direction:column;gap:2px;font-size:13.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toggle{display:inline-flex;width:46px;height:28px;border-radius:99px;background:#0F7A43;position:relative;flex:none}
+.toggle::after{content:"";position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#FFF}
+.line{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+</style>
+</head>
+<body>
+<!-- Mode vacances (A.5), vendeurs près de chez moi (A.3) et le bot WhatsApp qui donne les magasins
+     (A.2) : chantier 20 du plan de « Mes produits ». Vacances : 60 jours au plus ; les produits
+     restent visibles, les commandes sont en pause, les clients demandent à être prévenus du retour ;
+     au retour (la date, ou « Revenir maintenant »), un WhatsApp à ceux qui l'ont demandé. Près de
+     chez moi : ville et quartier, ou la position du téléphone (jamais gardée), dans le shop et
+     l'annuaire des lives. Le bot répond sur le numéro d'OCD, pour le vendeur d'une commande ou d'un
+     produit dont le client lui a parlé. Données d'exemple : Awa Couture, Brenda Wax, Douala. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · mode vacances : le vendeur, la boutique, la fiche produit</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Mode vacances</h1>
+    <span>Tu pars quelques jours ? Ta boutique reste visible, les commandes sont en pause, et tes clients peuvent demander à être prévenus de ton retour.</span>
+    <div><div class="lab">De retour le</div><div class="in">vendredi 2 janvier</div></div>
+    <span class="h">60 jours au plus. Tes lives réservés ne bougent pas.</span>
+    <div><div class="lab">Un mot pour tes clients (si tu veux)</div><div class="in" style="height:auto;min-height:48px;padding:10px 14px">Bonnes fêtes ! Nouvelle collection au retour.</div></div>
+    <span class="cta">Partir en vacances</span>
+    <span class="cap" style="margin:8px 0 0">Pendant les vacances</span>
+    <div class="vac">
+      <div class="line"><b>En vacances jusqu'au 2 janvier</b><span class="toggle"></span></div>
+      <span class="h">12 clients attendent ton retour. Les commandes reprennent le 2 janvier au matin.</span>
+      <span class="btn">Revenir maintenant</span>
+    </div>
+  </div>
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Boutique</span></div>
+    <div style="display:flex;gap:12px;align-items:center"><span class="round" style="width:56px;height:56px;background:#FFE7D1;border:0;font-size:16px">AC</span><span><b class="d" style="font-size:20px">Awa Couture</b><br><span class="h">Douala · Akwa</span></span></div>
+    <div class="vac">
+      <b>En vacances · de retour le vendredi 2 janvier</b>
+      <span class="small">« Bonnes fêtes ! Nouvelle collection au retour. »</span>
+      <span class="h">Tu peux regarder les produits ; les commandes reprennent à son retour.</span>
+      <span class="cta" style="min-height:50px;font-size:16px;background:#15130F;color:#FFF">Préviens-moi à son retour</span>
+    </div>
+    <div class="grid2">
+      <div class="card2"><span class="ph">Photo</span><span class="t"><b>Robe en wax</b><span>12 000 F</span></span></div>
+      <div class="card2"><span class="ph">Photo</span><span class="t"><b>Boubou brodé</b><span>25 000 F</span></span></div>
+    </div>
+  </div>
+  <div class="phone">
+    <span class="d" style="font-size:24px;line-height:1.1">Robe en wax</span>
+    <span class="d" style="font-size:21px;color:#B84F00">12 000 F</span>
+    <span class="small"><b>Couleur · Bleu · Taille · M</b></span>
+    <div class="vac"><b>Awa Couture est en vacances</b><span class="h">De retour le vendredi 2 janvier : les commandes reprennent ce jour-là.</span></div>
+    <span class="btn" style="background:#EEF0F2;color:#665F58;box-shadow:none;min-height:56px">Commandes en pause jusqu'au 2 janvier</span>
+    <span class="cta" style="background:#15130F;color:#FFF">Préviens-moi à son retour</span>
+    <span class="cap" style="margin:8px 0 0">WhatsApp au retour</span>
+    <span class="wa">Bonne nouvelle : Awa Couture est de retour sur OCD Live et reprend les commandes. Touchez le bouton pour voir sa boutique.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · 390 px · près de chez moi : le shop et l'annuaire ; le bot WhatsApp</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div class="phone">
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Shop</h1>
+    <div style="display:flex;gap:6px;overflow:hidden"><span class="chip on">◎ Près de moi</span><span class="chip">Douala ▾</span><span class="chip">Akwa ▾</span></div>
+    <span class="h">Du plus proche au plus loin, avec la position de ton téléphone (elle n'est pas gardée).</span>
+    <div class="grid2">
+      <div class="card2"><span class="ph">Photo</span><span class="t"><b>Robe en wax</b><span>12 000 F</span><span class="h">Brenda Wax · Akwa · 400 m</span></span></div>
+      <div class="card2"><span class="ph">Photo</span><span class="t"><b>Sac en raphia</b><span>8 500 F</span><span class="h">Awa Couture · Bonapriso · 2,1 km</span></span></div>
+      <div class="card2"><span class="ph">Photo</span><span class="t"><b>Beurre de karité</b><span>2 000 F</span><span class="h">Fatou · Deido · 3,5 km</span></span></div>
+      <div class="card2"><span class="ph">Photo</span><span class="t"><b>Chemise wax</b><span>10 000 F</span><span class="h">Brenda Wax · Marché central · 3,8 km</span></span></div>
+    </div>
+  </div>
+  <div class="phone">
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Lives au Cameroun</h1>
+    <div style="display:flex;gap:6px;overflow:hidden"><span class="chip">◎ Près de moi</span><span class="chip on">Douala ▾</span><span class="chip">Tous les quartiers ▾</span></div>
+    <div class="card" style="display:flex;gap:12px;align-items:center;padding:12px"><span class="round" style="width:48px;height:48px;background:#FFE7D1;border:0">BW</span><span><b>Brenda Wax</b><br><span class="h">Pagnes · 2 magasins à Douala · Akwa, Marché central</span></span></div>
+    <div class="card" style="display:flex;gap:12px;align-items:center;padding:12px"><span class="round" style="width:48px;height:48px;background:#FFE7D1;border:0">AC</span><span><b>Awa Couture</b><br><span class="h">Couture · Bonapriso · en vacances jusqu'au 2 janvier</span></span></div>
+    <div class="card" style="display:flex;gap:12px;align-items:center;padding:12px"><span class="round" style="width:48px;height:48px;background:#FFE7D1;border:0">F</span><span><b>Fatou Karité</b><br><span class="h">Beauté · Deido · vend depuis chez elle</span></span></div>
+  </div>
+  <div class="phone">
+    <span class="cap" style="margin:0">WhatsApp d'OCD Live : « Où êtes-vous ? »</span>
+    <div class="chat">
+      <span class="me">Bonjour, la robe en wax de Brenda Wax, le magasin est où ?</span>
+      <span class="wa">Les magasins de Brenda Wax à Douala :<br>1. Brenda Wax Akwa, en face de la pharmacie du Port. Ouvert, ferme à 19:00.<br>2. Marché central, allée des tissus, stand 42. Ouvert, ferme à 18:00.<br>Voici leurs positions :</span>
+      <div class="pin"><div class="map">📍</div><b>Brenda Wax Akwa</b><br><span class="h">En face de la pharmacie du Port, Akwa</span></div>
+      <div class="pin"><div class="map">📍</div><b>Marché central</b><br><span class="h">Allée des tissus, stand 42</span></div>
+    </div>
+    <span class="h">Le bot répond pour le vendeur d'une commande du client ou d'un produit dont il parle. Le bouton WhatsApp de la boutique mène au numéro du vendeur : le bot ne voit pas ces messages.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · le shop près de chez moi : où, à gauche avec les catégories</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a class="on">Shop</a><a>Moi</a></nav>
+<span class="right"><span class="pill dark">Panier · 0</span><span class="round">FR</span></span></div>
+<div style="display:grid;grid-template-columns:270px minmax(0,1fr)">
+  <aside style="display:flex;flex-direction:column;gap:10px;padding:24px 20px;border-right:1px solid #E7E2DC;min-height:520px;box-sizing:border-box">
+    <span class="cap" style="margin:0">Où ?</span>
+    <span class="chip on" style="justify-content:flex-start">◎ Près de moi</span>
+    <div><div class="lab">Ville</div><div class="in">Douala</div></div>
+    <div><div class="lab">Quartier</div><div class="in">Tous les quartiers</div></div>
+    <span class="cap" style="margin:12px 0 0">Catégories</span>
+    <span class="small">Mode · Beauté · Maison · Alimentation</span>
+  </aside>
+  <main style="display:flex;flex-direction:column;gap:14px;padding:24px 40px 40px">
+    <div class="line"><h1 class="d" style="margin:0;font-size:32px">Shop</h1><span class="h">Du plus proche au plus loin</span></div>
+    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px">
+      <div class="card2"><span class="ph" style="height:170px">Photo</span><span class="t"><b>Robe en wax</b><span>12 000 F</span><span class="h">Brenda Wax · Akwa · 400 m</span></span></div>
+      <div class="card2"><span class="ph" style="height:170px">Photo</span><span class="t"><b>Sac en raphia</b><span>8 500 F</span><span class="h">Awa Couture · Bonapriso · 2,1 km</span></span></div>
+      <div class="card2"><span class="ph" style="height:170px">Photo</span><span class="t"><b>Beurre de karité</b><span>2 000 F</span><span class="h">Fatou · Deido · 3,5 km</span></span></div>
+      <div class="card2"><span class="ph" style="height:170px">Photo</span><span class="t"><b>Chemise wax</b><span>10 000 F</span><span class="h">Brenda Wax · Marché central · 3,8 km</span></span></div>
+      <div class="card2"><span class="ph" style="height:170px">Photo</span><span class="t"><b>Pagne 6 yards</b><span>15 000 F</span><span class="h">Brenda Wax · Akwa · 400 m</span></span></div>
+    </div>
+  </main>
+</div></div>
+
+<span class="cap" style="margin-top:18px">Tablette · 820 px · la boutique en vacances</span>
+<div class="screen tab"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a class="on">Lives</a><a>Shop</a><a>Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+<main style="display:flex;flex-direction:column;gap:14px;padding:22px 24px 28px">
+  <div style="display:flex;gap:12px;align-items:center"><span class="round" style="width:56px;height:56px;background:#FFE7D1;border:0;font-size:16px">AC</span><span><b class="d" style="font-size:22px">Awa Couture</b><br><span class="h">Douala · Akwa</span></span></div>
+  <div class="vac" style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px">
+    <span><b>En vacances · de retour le vendredi 2 janvier</b><br><span class="h">Tu peux regarder les produits ; les commandes reprennent à son retour.</span></span>
+    <span class="cta" style="min-height:50px;font-size:16px;background:#15130F;color:#FFF;padding:0 18px">Préviens-moi à son retour</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+    <div class="card2"><span class="ph">Photo</span><span class="t"><b>Robe en wax</b><span>12 000 F</span></span></div>
+    <div class="card2"><span class="ph">Photo</span><span class="t"><b>Boubou brodé</b><span>25 000 F</span></span></div>
+    <div class="card2"><span class="ph">Photo</span><span class="t"><b>Jupe pagne</b><span>9 000 F</span></span></div>
+    <div class="card2"><span class="ph">Photo</span><span class="t"><b>Chemise</b><span>11 000 F</span></span></div>
+  </div>
+</main></div>
+
+</div>
+</body>
+</html>
