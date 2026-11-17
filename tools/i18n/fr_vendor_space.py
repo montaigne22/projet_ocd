@@ -1294,9 +1294,9 @@ VENDOR_SPACE.update({
 # Chantier 2: the guarantee of OCD Live, the reviews, the verified vendor, report (design GarantieAvis)
 VENDOR_SPACE.update({
     "%s is paid only once the parcel is delivered, when you give your code. Not delivered: refunded.":
-        "%s n'est payé qu'une fois le colis livré, quand tu donnes ton code. Pas livré : remboursé.",
+        "%s ne reçoit l'argent qu'une fois le colis livré, quand tu donnes ton code. Pas livré : remboursé.",
     "You pay on OCD Live, %s is paid after the delivery, when you give your code. Not delivered: refunded.":
-        "Tu paies sur OCD Live, %s est payé après la livraison, quand tu donnes ton code. Pas livré : remboursé.",
+        "Tu paies sur OCD Live, %s reçoit l'argent après la livraison, quand tu donnes ton code. Pas livré : remboursé.",
     "Return possible for %s days.": "Retour possible pendant %s jours.",
     "For %s days after the delivery, from the page of your order.":
         "Pendant %s jours après la livraison, depuis la page de ta commande.",

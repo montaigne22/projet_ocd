@@ -240,7 +240,7 @@
                             <t t-set="vendor_reviews" t-value="request.env['ocd.vendor.review']._ocd_summary(vendor)"/>
                             <small t-if="vendor.ocd_verified or vendor_reviews['note']" class="o_ocd_trust_line">
                                 <span t-if="vendor.ocd_verified" class="o_ocd_verified"><t t-call="ocd_live.icon" icon.f="check"/>Verified vendor</span>
-                                <t t-if="vendor_reviews['note']"><span class="o_ocd_star" aria-hidden="true">★</span> <b t-out="vendor_reviews['note']"/> · <t t-out="vendor_reviews['count']"/> reviews</t>
+                                <span t-if="vendor_reviews['note']" class="o_ocd_review_note"><span class="o_ocd_star" aria-hidden="true">★</span> <b t-out="vendor_reviews['note']"/> · <t t-out="vendor_reviews['count']"/> reviews</span>
                             </small>
                         </span>
                         <span class="o_ocd_link">Their boutique</span>

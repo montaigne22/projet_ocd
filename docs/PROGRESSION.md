@@ -155,7 +155,7 @@ Dessiné d'abord (maquette `GarantieAvis`, validée), puis codé.
   de la commande suit les avis) ; contrôlé dans un navigateur en français en trois tailles (390, 820,
   1440 px) : la boutique et ses avis, la fiche produit et sa garantie, la page Signaler, la page de la
   garantie, la page des avis, Mes avis du vendeur ; aucun débordement.
-- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.21.0, `ocd_live_shop` 20.0.1.37.0,
+- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.21.0, `ocd_live_shop` 20.0.1.38.0,
   `ocd_live_shop_whatsapp` 20.0.1.27.0 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`). Aucun nouveau
   modèle WhatsApp à soumettre à Meta : la note demandée après la livraison reste le même message.
 
