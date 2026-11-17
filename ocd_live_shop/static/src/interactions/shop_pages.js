@@ -1,6 +1,7 @@
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
 import { rpc } from "@web/core/network/rpc";
+import { newFormToken, productDrafts } from "./product_drafts";
 
 /**
  * Quantity with − and + (product page, my products): the field stays a normal number field,
@@ -608,12 +609,48 @@ export class OcdProductForm extends Interaction {
             return;
         }
         this.lock();
+        if (this.offline()) {
+            ev.preventDefault();
+            await this.keepDraft();
+        }
     }
 
     send() {
         if (!this.sending && this.check()) {
             this.lock();
+            if (this.offline()) {
+                this.keepDraft();
+            } else {
+                this.el.submit();
+            }
+        }
+    }
+
+    /** A product to add, without network: kept in the phone (2.7 of the plan). */
+    offline() {
+        return Boolean(this.el.dataset.draft) && !navigator.onLine;
+    }
+
+    async keepDraft() {
+        try {
+            await this.waitFor(productDrafts.put(productDrafts.fromForm(this.el)));
+        } catch {
+            // No database in this browser: sent as before
             this.el.submit();
+            return;
+        }
+        // The form is ready for the next product, with a new token
+        this.el.reset();
+        this.el.querySelector("input[name=form_token]").value = newFormToken();
+        this.kept()?.remove();
+        this.pick?.classList.remove("o_ocd_has_photo");
+        this.el.querySelector(".o_ocd_photo_preview")?.removeAttribute("src");
+        this.el.querySelector(".o_ocd_photo_added")?.setAttribute("hidden", "");
+        this.unlock();
+        const note = this.el.querySelector(".o_ocd_draft_kept");
+        if (note) {
+            note.hidden = false;
+            note.scrollIntoView({ block: "center" });
         }
     }
 

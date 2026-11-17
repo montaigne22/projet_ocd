@@ -307,6 +307,8 @@ class OcdVendorProducts(http.Controller):
             opened=int(request.params["ouvert"]) if str(request.params.get("ouvert", "")).isdigit() else False,
             sent=sent,
             photo_error=request.params.get("photo_erreur"),
+            draft_hint=env._("Leaves by itself when the network is back, or at your next visit of My products."),
+            draft_failed=env._("Not added: the photo could not be read. Add it again."),
             boutique_url=request.httprequest.url_root.rstrip("/") + f"/ocd/boutique/{vendor.id}"
             if vendor.ocd_vendor_state == "approved" else False,
             **self._form_values(values, errors, kept, form_token),

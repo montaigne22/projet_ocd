@@ -599,7 +599,8 @@
               class="o_ocd_form o_ocd_my_products_form" novalidate="novalidate"
               t-att-data-max-px="photo_px" t-att-data-max-bytes="photo_max_mb * 1024 * 1024"
               t-att-data-decimals="currency_decimals" t-att-data-messages="json.dumps(form_messages)"
-              t-att-data-has-photo="'1' if current_photo else None">
+              t-att-data-has-photo="'1' if current_photo else None"
+              t-att-data-draft="None if product else '1'">
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
             <input type="hidden" name="form_token" t-att-value="form_token"/>
             <input t-if="kept_photo" type="hidden" name="photo_kept" class="o_ocd_photo_kept" t-att-value="kept_photo['value']"/>
@@ -651,10 +652,10 @@
                 <div t-if="not product" class="o_ocd_field">
                     <span id="mp-qty" class="o_ocd_label">How many do you have?</span>
                     <div class="o_ocd_stepper o_ocd_stepper_js" role="group" aria-labelledby="mp-qty">
-                        <button type="button" class="o_ocd_stepper_less" aria-label="One less">−</button>
+                        <button type="button" class="o_ocd_stepper_less" aria-label="One less" data-available-offline="1">−</button>
                         <input type="number" name="quantity" min="0" inputmode="numeric" class="o_ocd_stepper_value"
                                t-att-value="values.get('quantity', 1)" aria-labelledby="mp-qty"/>
-                        <button type="button" class="o_ocd_stepper_more" aria-label="One more">+</button>
+                        <button type="button" class="o_ocd_stepper_more" aria-label="One more" data-available-offline="1">+</button>
                     </div>
                 </div>
             </div>
@@ -672,7 +673,10 @@
             <small t-if="on_sale" class="o_ocd_parcel_hint">The price changes at once, without a check. The stock is changed
                 <a t-if="stock_url" t-att-href="stock_url" class="o_ocd_link">in My stock</a><a t-else="" href="/ocd/espace/moi/produits" class="o_ocd_link">from My products</a>.</small>
             <div t-if="sent" class="o_ocd_ok" role="status">Sent. The team checks the photo, then your product shows in your boutique.</div>
-            <button type="submit" class="o_ocd_cta o_ocd_my_products_send">
+            <!-- A product added without network: kept in the phone (2.7 of the plan) -->
+            <div t-if="not product" class="o_ocd_ok o_ocd_draft_kept" role="status" hidden="hidden">No network: your product is kept in your phone, with its photo. It leaves by itself when the network is back. You can add another one.</div>
+            <!-- Not disabled by Odoo without network: a new product is then kept in the phone -->
+            <button type="submit" class="o_ocd_cta o_ocd_my_products_send" t-att-data-available-offline="None if product else '1'">
                 <t t-if="not product">Send for checking</t>
                 <t t-elif="product.ocd_review_state == 'refused'">Send again for checking</t>
                 <t t-else="">Save</t>
@@ -688,6 +692,7 @@
             <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
                 <!-- On a computer: the form on the left, the products on the right -->
                 <main class="o_ocd_main o_ocd_my_products o_ocd_two_panes">
+                    <div class="o_ocd_offline_note" role="status" hidden="hidden"><b>No network.</b> You can go on: your products are kept in your phone and leave by themselves when the network is back.</div>
                     <t t-call="ocd_live_shop.vendor_product_form"/>
 
                     <div class="o_ocd_section_head">
@@ -707,6 +712,27 @@
                                t-att-aria-current="'true' if state == chip[0] else None"><t t-out="chip[1]"/> · <t t-out="chip[2]"/></a>
                         </t>
                     </nav>
+                    <!-- The products kept in the phone without network (OcdProductDrafts): sent as
+                         soon as the network is back -->
+                    <div class="o_ocd_my_drafts" hidden="hidden" t-att-data-csrf="request.csrf_token()"
+                         t-att-data-currency="currency_symbol"
+                         t-att-data-messages="json.dumps({'hint': draft_hint, 'failed': draft_failed})">
+                        <div class="o_ocd_my_drafts_list"/>
+                        <template>
+                            <div class="o_ocd_my_product o_ocd_my_draft">
+                                <span class="o_ocd_photo o_ocd_cart_photo"><img alt=""/></span>
+                                <span class="o_ocd_my_product_text">
+                                    <b class="o_ocd_my_draft_name"/>
+                                    <span>
+                                        <span class="o_ocd_my_draft_price"/>
+                                        <span class="o_ocd_step_pill o_ocd_my_status_draft">In your phone</span>
+                                    </span>
+                                    <small class="o_ocd_my_product_fact o_ocd_my_draft_hint"/>
+                                </span>
+                                <button type="button" class="o_ocd_link o_ocd_my_draft_remove" data-available-offline="1">Remove from my phone</button>
+                            </div>
+                        </template>
+                    </div>
                     <div class="o_ocd_my_products_list">
                         <t t-foreach="rows" t-as="row">
                             <div class="o_ocd_my_product" t-attf-id="produit-#{row['product'].id}" t-att-data-status="row['status']"

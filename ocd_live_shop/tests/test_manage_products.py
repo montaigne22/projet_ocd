@@ -251,3 +251,22 @@ class TestOcdManageProducts(HttpCase, OcdShopCommon):
         self.env["ocd.live.verification"].ocd_approve("product_change", self.dress_tmpl.id)
         self.assertTrue(value.ocd_image)
         self.assertFalse(value.ocd_image_pending)
+
+    # === A DRAFT KEPT WITHOUT NETWORK (2.7) === #
+
+    def test_a_product_added_without_network_is_kept_in_the_phone(self):
+        """The page has what the phone needs (OcdProductDrafts): the form of a new product says
+        it can be kept, the list has the place of the products kept. The same form sent again
+        when the network is back adds one product only."""
+        self._login()
+        page = self.url_open("/ocd/espace/moi/produits").text
+        self.assertRegex(page, r'<form[^>]*action="/ocd/espace/moi/produits"[^>]*data-draft="1"')
+        self.assertIn('class="o_ocd_my_drafts"', page)
+        self.assertIn("No network.", page)
+        self.assertNotIn('data-draft="1"', self.url_open(f"/ocd/espace/moi/produits/{self.dress_tmpl.id}/modifier").text)
+        data = {"csrf_token": self.csrf_token(), "form_token": "a" * 32, "name": "Pagne", "price": "6000", "quantity": "2"}
+        files = {"photo": ("pagne.png", PNG, "image/png")}
+        for _sending in range(2):
+            response = self.url_open("/ocd/espace/moi/produits", data=data, files=files)
+            self.assertTrue(response.url.endswith("/ocd/espace/moi/produits?envoye=1"))
+        self.assertEqual(self.env["product.template"].search_count([("ocd_vendor_id", "=", self.brenda.id), ("name", "=", "Pagne")]), 1)
