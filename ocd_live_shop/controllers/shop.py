@@ -8,6 +8,7 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.tools import consteq
 
+from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 from odoo.addons.payment.controllers.payment_status import PaymentStatus
 from odoo.addons.website_sale.controllers.cart import Cart
@@ -988,6 +989,9 @@ class OcdShop(WebsiteSale):
             "delivered_all": delivered_all,
             "rating": order.ocd_rating,
             "rated": bool(kwargs.get("note")),
+            "review_rows": self._ocd_review_rows(parcels),
+            "reviewed": str(kwargs.get("avis") or ""),
+            "review_error": kwargs.get("erreur_avis"),
             "can_return": delivered_all and order._ocd_can_request_return(),
             "return_label": env._("Ask for a return (%s days)", order.company_id.ocd_return_days),
             "return_requested": bool(order.ocd_return_requested_at),
@@ -1000,6 +1004,26 @@ class OcdShop(WebsiteSale):
             "base": f"/ocd/suivi/{order.id}",
             "token_query": urlencode({"access_token": access_token}),
         }
+
+    def _ocd_review_rows(self, parcels):
+        """A review for each vendor whose parcel was delivered (chantier 2, design GarantieAvis)."""
+        env = request.env
+        Review = env["ocd.vendor.review"].sudo()
+        rows = []
+        for parcel in parcels.filtered(lambda p: p.ocd_stage == "delivered" and p.ocd_vendor_id):
+            review = Review.search([("picking_id", "=", parcel.id)], limit=1)
+            when = common.to_viewer(parcel.ocd_delivered_at).date() if parcel.ocd_delivered_at else None
+            rows.append({
+                "parcel": parcel,
+                "review": review,
+                "title": env._("Your review of %s", parcel.ocd_vendor_id.name),
+                "line": " · ".join(part for part in (
+                    ", ".join(parcel.move_ids.product_id.product_tmpl_id.mapped("name")),
+                    env._("delivered %s", tools.day_text(env, when, "d MMM")) if when else "",
+                ) if part),
+                "thanks": env._("Thank you: %s sent.", "★" * review.stars) if review else "",
+            })
+        return rows
 
     def _ocd_parcel_row(self, parcel):
         if parcel.ocd_collect:
@@ -1118,6 +1142,22 @@ class OcdShop(WebsiteSale):
         except (UserError, ValueError):
             pass
         return request.redirect(f"/ocd/suivi/{order.id}?{urlencode({'access_token': access_token, 'note': 1})}")
+
+    @http.route("/ocd/suivi/<int:order_id>/avis/<int:picking_id>", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def ocd_tracking_review(self, order_id, picking_id, access_token=None, stars=None, comment=None, **post):
+        """The review of the buyer for the vendor of a parcel delivered (chantier 2)."""
+        order = order_by_token(order_id, access_token)
+        parcel = order.picking_ids.filtered(lambda picking: picking.id == picking_id and picking.ocd_is_parcel)
+        if not parcel:
+            raise request.not_found()
+        params = {"access_token": access_token}
+        try:
+            request.env["ocd.vendor.review"]._ocd_give(parcel, stars, comment)
+            params["avis"] = parcel.id
+        except UserError as exc:
+            params["erreur_avis"] = exc.args[0]
+        return request.redirect(f"/ocd/suivi/{order.id}?{urlencode(params)}#avis-{parcel.id}")
 
     @http.route("/ocd/suivi/<int:order_id>/retour", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
     def ocd_tracking_return(self, order_id, access_token=None, **post):

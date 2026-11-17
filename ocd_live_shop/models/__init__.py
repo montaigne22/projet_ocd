@@ -31,6 +31,8 @@ from . import live_prepare
 from . import vendor_variants
 from . import vendor_team
 from . import vendor_follower
+from . import vendor_review
+from . import ocd_report
 from . import delivery_carrier
 from . import payment_provider
 from . import ocd_live_booking

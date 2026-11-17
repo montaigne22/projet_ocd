@@ -237,6 +237,7 @@ def _vendor_values(vendor, name):
         media = dict(media, video=common.cdn_url(media["video"]), poster=common.cdn_url(media["poster"]))
     values = {
         "vendor_id": vendor.id,
+        "verified": bool(vendor.ocd_verified),
         "name": name,
         "initials": common.initials(name),
         "category": " · ".join(part for part in (vendor.ocd_category_id.name, vendor.ocd_business) if part),

@@ -67,11 +67,14 @@
                                     </select>
                                 </t>
                                 <div class="o_ocd_verification_buttons">
-                                    <button type="button" class="o_ocd_verification_button" t-on-click="() => this.open(item)" t-out="item.open_label"/>
+                                    <button t-if="item.open_label" type="button" class="o_ocd_verification_button" t-on-click="() => this.open(item)" t-out="item.open_label"/>
                                     <button type="button" class="o_ocd_verification_button o_ocd_green" t-on-click="() => this.approve(item)" t-out="item.ok_label"/>
-                                    <button type="button" class="o_ocd_verification_button o_ocd_refuse"
+                                    <button t-if="item.reasons and item.reasons.length" type="button" class="o_ocd_verification_button o_ocd_refuse"
                                             t-att-aria-expanded="this.refusing() === item.key ? 'true' : 'false'"
-                                            t-on-click="() => this.toggleRefuse(item)">Refuse</button>
+                                            t-on-click="() => this.toggleRefuse(item)">
+                                        <t t-if="item.refuse_label" t-out="item.refuse_label"/>
+                                        <t t-else="">Refuse</t>
+                                    </button>
                                 </div>
                                 <div t-if="this.refusing() === item.key" class="o_ocd_verification_refuse">
                                     <label t-att-for="item.key + '_reason'">Reason sent on WhatsApp</label>

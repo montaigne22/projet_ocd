@@ -4483,3 +4483,264 @@
         height: 18px;
     }
 }
+
+// The guarantee of OCD Live, the reviews of the buyers, report (design GarantieAvis, chantier 2)
+.o_ocd_app {
+    .o_ocd_star {
+        color: #F2A900;
+    }
+    .o_ocd_trust_line {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px 8px;
+        font-size: 13.5px;
+        .o_ocd_verified {
+            margin-right: 0;
+        }
+    }
+    .o_ocd_review_note {
+        color: $ocd-ink;
+        text-decoration: none;
+    }
+    .o_ocd_review_new {
+        color: $ocd-muted;
+    }
+    .o_ocd_guarantee {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 16px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        padding: 12px 14px;
+        font-size: 14px;
+        b {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 15px;
+        }
+        .o_ocd_icon {
+            width: 18px;
+            height: 18px;
+        }
+        .o_ocd_link {
+            color: $ocd-green-text;
+            align-self: flex-start;
+        }
+        &.o_ocd_guarantee_off {
+            background: $ocd-sand;
+            color: $ocd-muted;
+        }
+    }
+    .o_ocd_guarantee_steps {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 0;
+        padding-left: 22px;
+        li {
+            padding-left: 4px;
+        }
+        b, span {
+            display: block;
+        }
+        span {
+            color: $ocd-muted;
+            font-size: 14.5px;
+        }
+    }
+    .o_ocd_reviews {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        scroll-margin-top: 90px;
+    }
+    .o_ocd_review_list {
+        display: flex;
+        flex-direction: column;
+    }
+    .o_ocd_review {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 10px 0;
+        border-bottom: 1px solid $ocd-line;
+        small {
+            font-size: 13px;
+            color: $ocd-muted;
+        }
+    }
+    .o_ocd_review_head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+    }
+    .o_ocd_review_stars {
+        color: #F2A900;
+        letter-spacing: 1px;
+        white-space: nowrap;
+    }
+    .o_ocd_review_stars_off {
+        color: #D9D3CC;
+    }
+    .o_ocd_review_summary {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+    }
+    .o_ocd_report_link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        align-self: center;
+        margin: 12px auto 0;
+        font-size: 13.5px;
+        color: $ocd-muted;
+        .o_ocd_icon {
+            width: 15px;
+            height: 15px;
+        }
+    }
+    // The page of the order: a review per parcel delivered
+    .o_ocd_review_box {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        scroll-margin-top: 90px;
+        > small {
+            color: $ocd-muted;
+            font-size: 13.5px;
+        }
+    }
+    .o_ocd_review_form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 0;
+    }
+    // The stars: the radios in reverse order, the checked one and those before it lit
+    .o_ocd_review_pick {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 6px;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        input {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+        }
+        label {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            background: $ocd-sand;
+            color: #C9C3BC;
+            cursor: pointer;
+        }
+        input:checked ~ label,
+        label:hover,
+        label:hover ~ label {
+            background: $ocd-yellow-soft;
+            color: #F2A900;
+        }
+        input:focus-visible + label {
+            outline: 3px solid $ocd-orange;
+            outline-offset: 2px;
+        }
+    }
+    .o_ocd_review_comment {
+        min-height: 64px;
+        resize: vertical;
+    }
+    // Report
+    .o_ocd_report_form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_report_reasons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+    .o_ocd_report_reason {
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr);
+        gap: 10px;
+        align-items: center;
+        border: 2px solid $ocd-line;
+        border-radius: 14px;
+        padding: 10px 12px;
+        font-size: 14.5px;
+        cursor: pointer;
+        input {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            accent-color: $ocd-ink;
+        }
+        &:has(input:checked) {
+            border-color: $ocd-ink;
+            background: $ocd-orange-pale;
+        }
+    }
+    // The vendor: my reviews
+    .o_ocd_my_review {
+        border-bottom: 1px solid $ocd-line;
+        padding-bottom: 8px;
+        scroll-margin-top: 90px;
+        .o_ocd_review {
+            border-bottom: 0;
+        }
+    }
+    .o_ocd_my_review_report {
+        summary {
+            list-style: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+    }
+    .o_ocd_space_reviews {
+        color: $ocd-ink;
+        text-decoration: none;
+        margin-top: 12px;
+    }
+    .o_ocd_feed_note {
+        margin-left: 6px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+}
+// On a tablet and a computer, the reviews of a boutique side by side
+@media (min-width: 768px) {
+    .o_ocd_app .o_ocd_reviews .o_ocd_review_list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        column-gap: 20px;
+    }
+}

@@ -12,6 +12,20 @@ from . import shop_common
 from .vendor_follow import follow_url, remember_follow, visitor_follow, visitor_partner
 from .vendor_places import place_photo_url
 
+def review_rows(reviews):
+    """The reviews of the buyers as shown (chantier 2): « Estelle N. », the stars, verified
+    purchase, the products, when, their word."""
+    env = request.env
+    return [{
+        "author": review.author_name,
+        "stars": review.stars,
+        "line": " · ".join(part for part in (
+            env._("Verified purchase"), ", ".join(review.product_ids.mapped("name")[:2]), review._ocd_when(),
+        ) if part),
+        "comment": review.comment,
+    } for review in reviews]
+
+
 def platform(url):
     """Return the name of the platform of a live link ("TikTok"), or "" (the live platforms of
     the configuration)."""
@@ -122,6 +136,32 @@ class OcdBoutique(http.Controller):
             "follow_href": follow_url(vendor, back, source),
             "follow_message": message,
         }
+
+    def _review_values(self, vendor):
+        Review = request.env["ocd.vendor.review"]
+        return {
+            "reviews": Review._ocd_summary(vendor),
+            "review_rows": review_rows(Review._ocd_latest(vendor)),
+        }
+
+    @http.route(
+        "/ocd/boutique/<int:vendor_id>/avis", type="http", auth="public", website=True, sitemap=False, ocd_cache=60,
+    )
+    def boutique_reviews(self, vendor_id, **kwargs):
+        """All the reviews of the buyers of a vendor (chantier 2)."""
+        vendor = self._vendor(vendor_id)
+        Review = request.env["ocd.vendor.review"].sudo()
+        reviews = Review.search([("vendor_id", "=", vendor.id)] + Review._ocd_visible_domain(), limit=200)
+        return request.render("ocd_live_shop.boutique_reviews", common.page_values(
+            False,
+            nav="lives",
+            back=f"/ocd/boutique/{vendor.id}",
+            back_label=request.env._("Back to the boutique"),
+            header_title=request.env._("Reviews"),
+            vendor=vendor,
+            reviews=Review._ocd_summary(vendor),
+            review_rows=review_rows(reviews),
+        ))
 
     def _price(self, product):
         return shop_common.prices(product).get(product.id) or common.money(product.list_price, product.currency_id)
@@ -278,6 +318,7 @@ class OcdBoutique(http.Controller):
             cards=cards,
             visitor=visitor,
             noted=bool(noted),
+            **self._review_values(vendor),
             **self._follow_values(vendor, f"/ocd/boutique/{vendor.id}", noted=bool(noted)),
             count_label=request.env._("%s products", len(products)) if len(products) != 1 else request.env._("1 product"),
             error=error,

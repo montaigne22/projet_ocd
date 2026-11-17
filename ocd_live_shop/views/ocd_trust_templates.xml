@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- === THE GUARANTEE OF OCD LIVE, THE REVIEWS, REPORT (design GarantieAvis, chantier 2) === -->
+
+    <template id="guarantee_box" name="OCD Live: the guarantee of OCD Live">
+        <!-- Parameters: guarantee_vendor (the vendor), guarantee_short (the boutique: one line) -->
+        <t t-set="guarantee_company" t-value="guarantee_vendor.company_id or request.env.company"/>
+        <div t-if="guarantee_vendor.ocd_sale_mode == 'ocd'" class="o_ocd_guarantee">
+            <b><t t-call="ocd_live.icon" icon.f="shield"/>OCD Live guarantee</b>
+            <span t-if="guarantee_short">
+                You pay on OCD Live, <t t-out="(guarantee_vendor.name or '').split()[0]"/> is paid after the delivery, when you give your code.
+                Not delivered: refunded.
+            </span>
+            <span t-else="">
+                <t t-out="(guarantee_vendor.name or '').split()[0]"/> is paid only once the parcel is delivered, when you give your code.
+                Not delivered: refunded.
+                <t t-if="guarantee_company.ocd_return_days">Return possible for <t t-out="guarantee_company.ocd_return_days"/> days.</t>
+            </span>
+            <a href="/ocd/garantie" class="o_ocd_link">How it works</a>
+        </div>
+        <div t-else="" class="o_ocd_guarantee o_ocd_guarantee_off">
+            <span>Direct contact: you pay the vendor yourself, outside the OCD Live guarantee.</span>
+        </div>
+    </template>
+
+    <template id="guarantee_page" name="OCD Live: how the guarantee works">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">OCD Live guarantee</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_guarantee_page">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">The OCD Live guarantee</h1>
+                    <p class="o_ocd_intro">For the vendors sold and delivered by OCD Live: your money is safe until you have your parcel.</p>
+                    <ol class="o_ocd_guarantee_steps">
+                        <li><b>You pay on OCD Live</b><span>Online, or at the door when the vendor allows it. OCD Live keeps the money.</span></li>
+                        <li><b>You receive a code</b><span>On WhatsApp, when your parcel leaves. You give it to the courier only when you have the parcel in hand.</span></li>
+                        <li><b>The vendor is paid after</b><span>Only once the code is given: never before the delivery.</span></li>
+                        <li><b>Not delivered: refunded</b><span>A parcel that does not arrive goes back to the vendor, and what you paid online comes back to you.</span></li>
+                        <li t-if="return_days"><b>Return possible</b><span>For <t t-out="return_days"/> days after the delivery, from the page of your order.</span></li>
+                    </ol>
+                    <div class="o_ocd_guarantee o_ocd_guarantee_off">
+                        <span>The vendors in direct contact (« Write to the vendor ») are paid by you directly: they are outside the OCD Live guarantee.</span>
+                    </div>
+                    <p class="o_ocd_note">Something is wrong with a product or a vendor? Tap « Report » on its page: the team looks at it within 24 hours.</p>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="review_row" name="OCD Live: a review of a buyer">
+        <!-- Parameter: row (see controllers/boutique.py, _review_rows) -->
+        <div class="o_ocd_review">
+            <span class="o_ocd_review_head">
+                <b t-out="row['author']"/>
+                <span class="o_ocd_review_stars" t-att-aria-label="'%s / 5' % row['stars']">
+                    <t t-out="'★' * row['stars']"/><span class="o_ocd_review_stars_off" t-out="'★' * (5 - row['stars'])"/>
+                </span>
+            </span>
+            <small t-out="row['line']"/>
+            <span t-if="row['comment']" class="o_ocd_review_comment">« <t t-out="row['comment']"/> »</span>
+        </div>
+    </template>
+
+    <template id="boutique_reviews" name="OCD Live: the reviews of the buyers of a vendor">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Reviews</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_reviews o_ocd_reviews_page">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Reviews of <t t-out="vendor.name"/></h1>
+                    <p class="o_ocd_review_summary">
+                        <span t-if="vendor.ocd_verified" class="o_ocd_verified"><t t-call="ocd_live.icon" icon.f="check"/>Verified vendor</span>
+                        <t t-if="reviews['note']"><span class="o_ocd_star" aria-hidden="true">★</span> <b t-out="reviews['note']"/> · </t>
+                        <t t-out="reviews['line'] if not reviews['note'] else ''"/>
+                        <t t-if="reviews['note']"><t t-out="reviews['count']"/> reviews</t>
+                    </p>
+                    <p class="o_ocd_note">Only the buyers whose parcel was delivered give a review.</p>
+                    <div class="o_ocd_review_list">
+                        <t t-foreach="review_rows" t-as="row" t-call="ocd_live_shop.review_row"/>
+                    </div>
+                    <div t-if="not review_rows" class="o_ocd_info">No review yet.</div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_page" name="OCD Live: report a product or a vendor">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Report</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_report_page">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
+                    <t t-if="sent">
+                        <div class="o_ocd_ok o_ocd_info_icon" role="status">
+                            <t t-call="ocd_live.icon" icon.f="check"/>
+                            <span>Thank you: the team of OCD Live looks at it within 24 hours.</span>
+                        </div>
+                        <a t-att-href="back" class="o_ocd_cta o_ocd_cta_line">Back</a>
+                    </t>
+                    <form t-else="" action="/ocd/signaler" method="post" class="o_ocd_form o_ocd_report_form" novalidate="novalidate">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input t-if="product" type="hidden" name="produit" t-att-value="product.id"/>
+                        <input t-else="" type="hidden" name="vendeur" t-att-value="vendor.id"/>
+                        <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                        <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                        <fieldset class="o_ocd_report_reasons">
+                            <legend class="o_ocd_label">What is wrong?</legend>
+                            <label t-foreach="reasons" t-as="option" class="o_ocd_report_reason">
+                                <input type="radio" name="reason" t-att-value="option[0]" required="required"
+                                       t-att-checked="'checked' if option[0] == reason else None"/>
+                                <span t-out="option[1]"/>
+                            </label>
+                        </fieldset>
+                        <div class="o_ocd_field">
+                            <label for="r-note" class="o_ocd_label">Tell us more (if you want)</label>
+                            <textarea id="r-note" name="note" class="o_ocd_input" rows="3" maxlength="500" t-out="note"/>
+                        </div>
+                        <div t-if="not known" class="o_ocd_field">
+                            <label for="r-phone" class="o_ocd_label">Your WhatsApp, to answer you (if you want)</label>
+                            <t t-call="ocd_live.phone_field" field_id.f="r-phone"/>
+                        </div>
+                        <button type="submit" class="o_ocd_cta">Send</button>
+                        <small class="o_ocd_parcel_hint">The team of OCD Live looks at each report within 24 hours. The vendor does not know who reported.</small>
+                    </form>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="vendor_reviews" name="OCD Live: my reviews">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My reviews</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_reviews o_ocd_my_reviews">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">My reviews</h1>
+                    <p class="o_ocd_review_summary">
+                        <t t-if="reviews['note']"><span class="o_ocd_star" aria-hidden="true">★</span> <b t-out="reviews['note']"/> · <t t-out="reviews['count']"/> reviews</t>
+                        <t t-else="" t-out="reviews['line']"/>
+                    </p>
+                    <p class="o_ocd_note">Your buyers give a review once their parcel is delivered. Your note shows from 3 reviews.</p>
+                    <t t-call="ocd_live.message_box"/>
+                    <div class="o_ocd_review_list">
+                        <div t-foreach="rows" t-as="row" class="o_ocd_my_review" t-attf-id="avis-#{row['review'].id}">
+                            <t t-call="ocd_live_shop.review_row"/>
+                            <small t-if="row['state'] == 'reported'" class="o_ocd_my_product_fact">Reported: the team looks at it.</small>
+                            <small t-elif="row['state'] == 'hidden'" class="o_ocd_my_product_fact">Hidden by the team.</small>
+                            <details t-else="" class="o_ocd_my_review_report">
+                                <summary class="o_ocd_link">Report this review</summary>
+                                <form t-attf-action="/ocd/espace/moi/avis/#{row['review'].id}/signaler" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <label t-attf-for="rv-#{row['review'].id}" class="o_ocd_label">Why is it wrong?</label>
+                                    <input t-attf-id="rv-#{row['review'].id}" name="note" class="o_ocd_input" maxlength="200" required="required"
+                                           placeholder="e.g. This person never ordered from me"/>
+                                    <button type="submit" class="o_ocd_button">Send to the team</button>
+                                </form>
+                            </details>
+                        </div>
+                    </div>
+                    <div t-if="not rows" class="o_ocd_info">No review yet: your buyers give one once their parcel is delivered.</div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- My space: « My reviews » -->
+    <template id="space_reviews" inherit_id="ocd_live_shop.space" name="OCD Live: my reviews in the space">
+        <xpath expr="//div[hasclass('o_ocd_space_links')]" position="after">
+            <t t-if="vendor.ocd_vendor_state == 'approved' and vendor.ocd_sale_mode == 'ocd'">
+                <t t-set="my_reviews" t-value="request.env['ocd.vendor.review']._ocd_summary(vendor)"/>
+                <t t-set="last_review" t-value="request.env['ocd.vendor.review']._ocd_latest(vendor, 1)"/>
+                <a href="/ocd/espace/moi/avis" class="o_ocd_space_fans_box o_ocd_space_reviews">
+                    <small>My reviews</small>
+                    <span class="o_ocd_space_fans_count">
+                        <b><t t-if="my_reviews['note']"><t t-out="my_reviews['note']"/> <span class="o_ocd_star">★</span></t><t t-else="" t-out="my_reviews['count']"/></b>
+                        <small t-out="my_reviews['line'] if not my_reviews['note'] else ''"/>
+                        <small t-if="my_reviews['note']"><t t-out="my_reviews['count']"/> reviews</small>
+                    </span>
+                    <small t-if="last_review">Last: <t t-out="last_review.author_name"/>, <t t-out="'★' * last_review.stars"/><t t-if="last_review.comment"> « <t t-out="last_review.comment[:60]"/> »</t></small>
+                    <small t-else="">Your buyers give a review once their parcel is delivered.</small>
+                </a>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- The cards of the lives: the note of the buyers -->
+    <template id="feed_cards_reviews" inherit_id="ocd_live.feed_cards" name="OCD Live: the note on the cards of the lives">
+        <xpath expr="//p[hasclass('o_ocd_feed_category')]" position="inside">
+            <t t-set="card_note" t-value="card.get('vendor_id') and request.env['ocd.vendor.review']._ocd_card_line(card['vendor_id'])"/>
+            <span t-if="card_note" class="o_ocd_feed_note"><span class="o_ocd_star" aria-hidden="true">★</span> <t t-out="card_note"/></span>
+        </xpath>
+    </template>
+
+</odoo>

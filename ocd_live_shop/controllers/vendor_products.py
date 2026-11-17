@@ -158,6 +158,9 @@ class OcdVendorProducts(http.Controller):
         by_place = variants._ocd_free_by_location(places.location_id) if places else {}
         root = request.httprequest.url_root.rstrip("/")
         limit = vendor._ocd_low_stock_limit()
+        # The note of each product from the reviews of the buyers (chantier 2): one query
+        Review = env["ocd.vendor.review"]
+        review_stats = Review._ocd_product_stats(products)
         rows = []
         for index, product in enumerate(products):
             qty = sum(free[v.id] for v in product.product_variant_ids) if shop_common.tracked(product) else None
@@ -204,6 +207,10 @@ class OcdVendorProducts(http.Controller):
                 # Low on stock (chantier 21): the pieces left of the colours and sizes concerned
                 "low": bool(low_line),
                 "low_line": low_line,
+                "review_line": (env._("★ %(note)s · 1 review", note=Review._ocd_note(review_stats[product.id][0]))
+                                if review_stats[product.id][1] == 1 else
+                                env._("★ %(note)s · %(count)s reviews", note=Review._ocd_note(review_stats[product.id][0]),
+                                      count=review_stats[product.id][1])) if product.id in review_stats else False,
                 # « M, L · Blue, Red »: its sizes and colours (chantier 21)
                 "variants_line": " · ".join(
                     ", ".join(line.value_ids.sorted(lambda value: (value.sequence, value.id)).mapped("name"))

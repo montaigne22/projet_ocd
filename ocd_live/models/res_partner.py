@@ -25,6 +25,15 @@ class ResPartner(models.Model):
         comodel_name="ocd.live.category", string="Live Category", index="btree_not_null"
     )
     ocd_vendor_checked_at = fields.Datetime(string="Vendor Checked At", copy=False, readonly=True)
+    # « Verified vendor » (chantier 2): the team checked their identity and their number; shown to
+    # the customers on the boutique, the cards of the lives and the products
+    ocd_verified = fields.Boolean(
+        string="Verified Vendor", copy=False, tracking=True,
+        help="The team checked the identity and the WhatsApp number of the vendor: « Verified vendor » "
+        "is shown to the customers.",
+    )
+    ocd_verified_at = fields.Datetime(string="Verified At", copy=False, readonly=True)
+    ocd_verified_by_id = fields.Many2one(comodel_name="res.users", string="Verified By", copy=False, readonly=True)
     ocd_vendor_state = fields.Selection(
         selection=[("to_check", "To check"), ("approved", "Approved"), ("refused", "Refused")],
         string="Vendor Status",
@@ -238,6 +247,11 @@ class ResPartner(models.Model):
 
     def write(self, vals):
         self._ocd_prepare_card_video_vals(vals)
+        if vals.get("ocd_verified"):
+            # Who checked the vendor, and when (kept until they are no longer verified)
+            vals = {**vals, "ocd_verified_at": fields.Datetime.now(), "ocd_verified_by_id": self.env.user.id}
+        elif "ocd_verified" in vals:
+            vals = {**vals, "ocd_verified_at": False, "ocd_verified_by_id": False}
         result = super().write(vals)
         if vals.get("ocd_card_video_pending"):
             self._ocd_trigger_card_videos()

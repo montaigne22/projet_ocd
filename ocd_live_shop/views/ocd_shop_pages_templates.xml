@@ -236,9 +236,16 @@
                         <span class="o_ocd_product_vendor_text">
                             <b t-out="vendor_title"/>
                             <small t-out="vendor_line"/>
+                            <!-- Verified vendor, the note of the buyers (chantier 2) -->
+                            <t t-set="vendor_reviews" t-value="request.env['ocd.vendor.review']._ocd_summary(vendor)"/>
+                            <small t-if="vendor.ocd_verified or vendor_reviews['note']" class="o_ocd_trust_line">
+                                <span t-if="vendor.ocd_verified" class="o_ocd_verified"><t t-call="ocd_live.icon" icon.f="check"/>Verified vendor</span>
+                                <t t-if="vendor_reviews['note']"><span class="o_ocd_star" aria-hidden="true">★</span> <b t-out="vendor_reviews['note']"/> · <t t-out="vendor_reviews['count']"/> reviews</t>
+                            </small>
                         </span>
                         <span class="o_ocd_link">Their boutique</span>
                     </a>
+                    <t t-if="vendor" t-call="ocd_live_shop.guarantee_box" guarantee_vendor="vendor"/>
                     <!-- Follow the vendor (chantier 1): their lives and their news on WhatsApp -->
                     <a t-if="vendor" t-attf-href="/ocd/suivre/#{vendor.id}?source=product&amp;depuis=#{template.website_url}"
                        class="o_ocd_link o_ocd_product_follow">
@@ -367,6 +374,9 @@
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     <input type="hidden" name="produit" t-att-value="template.id"/>
                 </form>
+                <a t-if="vendor" t-attf-href="/ocd/signaler?produit=#{template.id}" class="o_ocd_link o_ocd_report_link" rel="nofollow">
+                    <t t-call="ocd_live.icon" icon.f="flag"/>Report this product
+                </a>
                 <section t-if="same_vendor" class="o_ocd_same_vendor">
                     <div class="o_ocd_section_head">
                         <h2>From the same vendor</h2>
@@ -801,16 +811,33 @@
                     </div>
                     </div>
                     <div class="o_ocd_pane_side">
-                    <div t-if="delivered_all" class="o_ocd_tracking_rate">
-                        <span id="l-rate" class="o_ocd_label">Did you like your order?</span>
-                        <form t-attf-action="#{base}/note?#{token_query}" method="post" class="o_ocd_stars" role="group" aria-labelledby="l-rate">
+                    <!-- The reviews of the buyer (chantier 2, design GarantieAvis): one per parcel delivered -->
+                    <div t-if="review_error" class="o_ocd_alert" role="alert" t-out="review_error"/>
+                    <div t-foreach="review_rows" t-as="row" class="o_ocd_review_box" t-attf-id="avis-#{row['parcel'].id}">
+                        <t t-set="review" t-value="row['review']"/>
+                        <b t-out="row['title']"/>
+                        <small t-out="row['line']"/>
+                        <div t-if="reviewed == str(row['parcel'].id)" class="o_ocd_ok" role="status" t-out="row['thanks']"/>
+                        <form t-attf-action="#{base}/avis/#{row['parcel'].id}?#{token_query}" method="post" class="o_ocd_review_form">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <t t-foreach="range(1, 6)" t-as="star">
-                                <button name="stars" t-att-value="star" t-att-aria-pressed="'true' if rating and star &lt;= rating else 'false'"
-                                        t-att-class="'o_ocd_on' if rating and star &lt;= rating else None" t-out="star"/>
-                            </t>
+                            <fieldset class="o_ocd_review_pick">
+                                <legend class="visually-hidden">Stars</legend>
+                                <t t-foreach="[5, 4, 3, 2, 1]" t-as="star">
+                                    <input type="radio" name="stars" t-att-value="star" t-attf-id="st-#{row['parcel'].id}-#{star}"
+                                           required="required" t-att-checked="'checked' if review and review.stars == star else None"/>
+                                    <label t-attf-for="st-#{row['parcel'].id}-#{star}" t-att-title="star">★</label>
+                                </t>
+                            </fieldset>
+                            <label t-attf-for="cm-#{row['parcel'].id}" class="visually-hidden">A word for the other buyers</label>
+                            <textarea t-attf-id="cm-#{row['parcel'].id}" name="comment" class="o_ocd_input o_ocd_review_comment" maxlength="500"
+                                      rows="2" placeholder="A word for the other buyers (if you want)" t-out="review.comment if review else ''"/>
+                            <button type="submit" class="o_ocd_cta o_ocd_cta_small">
+                                <t t-if="review">Change my review</t><t t-else="">Send my review</t>
+                            </button>
+                            <small class="o_ocd_parcel_hint">Your first name and the initial of your name are shown, never your number.</small>
                         </form>
-                        <span t-if="rated" class="o_ocd_parcel_hint" role="status">Thank you, the vendors see your rating.</span>
+                    </div>
+                    <div t-if="can_return or return_requested" class="o_ocd_tracking_rate">
                         <form t-if="can_return" t-attf-action="#{base}/retour?#{token_query}" method="post">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <button class="o_ocd_cta o_ocd_cta_line" t-out="return_label"/>
@@ -1062,6 +1089,7 @@
                                         <t t-if="row['status'] == 'refused' or row['change_refused']">Correct and send again</t>
                                         <t t-else="">Change</t>
                                     </a>
+                                    <small t-if="row['review_line']" class="o_ocd_my_product_fact o_ocd_my_product_reviews" t-out="row['review_line']"/>
                                     <small t-if="row['contacts_line']" class="o_ocd_my_product_fact" t-out="row['contacts_line']"/>
                                     <small t-if="row['waiting_line']" class="o_ocd_my_product_fact o_ocd_my_product_waiting" t-out="row['waiting_line']"/>
                                     <small t-if="row['places_line']" class="o_ocd_my_product_fact" t-out="row['places_line']"/>

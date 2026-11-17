@@ -11,3 +11,4 @@ from . import product_hold
 from . import low_stock
 from . import vendor_team
 from . import vendor_follower
+from . import sale_order

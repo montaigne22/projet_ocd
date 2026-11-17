@@ -195,9 +195,16 @@ class OcdLiveVerification(models.AbstractModel):
 
     @api.model
     def _ocd_vendor_choices(self, vendor):
-        """Hook: fields chosen when a vendor is validated, as dicts with `name`, `label`,
-        `value` and `options` (the shop adds the sale mode)."""
-        return []
+        """Fields chosen when a vendor is validated, as dicts with `name`, `label`, `value` and
+        `options` (the shop adds the sale mode): « Verified vendor » when the team checked their
+        identity and their number (chantier 2)."""
+        return [{
+            "name": "ocd_verified",
+            "label": self.env._("Identity and number checked"),
+            "value": "1" if vendor.ocd_verified else "",
+            "options": [{"value": "", "label": self.env._("Not yet")},
+                        {"value": "1", "label": self.env._("Yes: « Verified vendor »")}],
+        }]
 
     # === CHECKED TODAY === #
 

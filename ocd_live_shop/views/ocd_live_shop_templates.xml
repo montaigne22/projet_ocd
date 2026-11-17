@@ -38,6 +38,14 @@
                             <span t-if="categories" class="o_ocd_vendor_what" t-out="categories"/>
                             <span t-if="sold_by_ocd" class="o_ocd_mode o_ocd_mode_ocd">Sold and delivered by OCD Live</span>
                             <span t-else="" class="o_ocd_mode">Direct contact with the vendor</span>
+                            <!-- Verified vendor, the note of the buyers (chantier 2) -->
+                            <span class="o_ocd_trust_line">
+                                <span t-if="vendor.ocd_verified" class="o_ocd_verified"><t t-call="ocd_live.icon" icon.f="check"/>Verified vendor</span>
+                                <a t-if="reviews['note']" href="#avis" class="o_ocd_review_note">
+                                    <span class="o_ocd_star" aria-hidden="true">★</span> <b t-out="reviews['note']"/> · <t t-out="reviews['count']"/> reviews
+                                </a>
+                                <small t-else="" class="o_ocd_review_new" t-out="reviews['line']"/>
+                            </span>
                             <!-- Follow (chantier 1): how many follow, then « Follow » or « Followed » -->
                             <span class="o_ocd_follow_row">
                                 <a t-att-href="follow_href" t-attf-class="o_ocd_follow #{'o_ocd_follow_on' if follower else ''}">
@@ -125,6 +133,8 @@
                         <small t-out="contact['note']"/>
                     </div>
 
+                    <!-- The guarantee of OCD Live (chantier 2): the vendor is paid after the delivery -->
+                    <t t-call="ocd_live_shop.guarantee_box" guarantee_vendor="vendor" guarantee_short="True"/>
                     </div>
                     <div class="o_ocd_vitrine_main">
                     <div class="o_ocd_section_head">
@@ -157,6 +167,23 @@
                         </t>
                     </div>
                     <div t-else="" class="o_ocd_info">The products of this boutique are coming soon.</div>
+
+                    <!-- The reviews of the buyers (chantier 2, design GarantieAvis) -->
+                    <section t-if="review_rows" id="avis" class="o_ocd_reviews">
+                        <div class="o_ocd_section_head">
+                            <h2>Reviews of the buyers</h2>
+                            <span t-if="reviews['note']"><span class="o_ocd_star" aria-hidden="true">★</span> <b t-out="reviews['note']"/> · <t t-out="reviews['count']"/></span>
+                        </div>
+                        <div class="o_ocd_review_list">
+                            <t t-foreach="review_rows" t-as="row" t-call="ocd_live_shop.review_row"/>
+                        </div>
+                        <a t-if="reviews['count'] &gt; len(review_rows)" t-attf-href="/ocd/boutique/#{vendor.id}/avis" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">
+                            See the <t t-out="reviews['count']"/> reviews
+                        </a>
+                    </section>
+                    <a t-attf-href="/ocd/signaler?vendeur=#{vendor.id}" class="o_ocd_link o_ocd_report_link" rel="nofollow">
+                        <t t-call="ocd_live.icon" icon.f="flag"/>Report this vendor
+                    </a>
 
                     <!-- Their stores (VitrineMagasins, chantier 17): the visits are counted -->
                     <section t-if="stores" id="magasins" class="o_ocd_stores">

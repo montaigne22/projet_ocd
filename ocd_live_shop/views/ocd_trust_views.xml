@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The reviews of the buyers and the reports of the customers (chantier 2, design GarantieAvis) -->
+    <record id="ocd_vendor_review_view_list" model="ir.ui.view">
+        <field name="name">ocd.vendor.review.list</field>
+        <field name="model">ocd.vendor.review</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-muted="state == 'hidden'" decoration-warning="state == 'reported'">
+                <field name="create_date" string="Given at"/>
+                <field name="vendor_id" column_invisible="context.get('default_vendor_id')"/>
+                <field name="author_name"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="stars"/>
+                <field name="comment"/>
+                <field name="product_ids" widget="many2many_tags" optional="show"/>
+                <field name="source" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'published'"
+                       decoration-warning="state == 'reported'" decoration-muted="state == 'hidden'"/>
+                <field name="report_note" optional="show"/>
+                <button name="action_ocd_hide" type="object" string="Hide" icon="fa-eye-slash" invisible="state == 'hidden'"/>
+                <button name="action_ocd_publish" type="object" string="Show" icon="fa-eye" invisible="state == 'published'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_vendor_review_view_form" model="ir.ui.view">
+        <field name="name">ocd.vendor.review.form</field>
+        <field name="model">ocd.vendor.review</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_ocd_hide" type="object" string="Hide the review" invisible="state == 'hidden'"/>
+                    <button name="action_ocd_publish" type="object" string="Show the review" invisible="state == 'published'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="vendor_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="author_name"/>
+                            <field name="picking_id" readonly="1"/>
+                            <field name="order_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="stars" readonly="1"/>
+                            <field name="source" readonly="1"/>
+                            <field name="product_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="report_note" invisible="not report_note"/>
+                        </group>
+                    </group>
+                    <field name="comment" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_vendor_review_view_search" model="ir.ui.view">
+        <field name="name">ocd.vendor.review.search</field>
+        <field name="model">ocd.vendor.review</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="vendor_id"/>
+                <field name="partner_id"/>
+                <field name="comment"/>
+                <filter name="reported" string="Reported by the vendor" domain="[('state', '=', 'reported')]"/>
+                <filter name="hidden" string="Hidden" domain="[('state', '=', 'hidden')]"/>
+                <filter name="low" string="1 or 2 stars" domain="[('stars', '&lt;=', 2)]"/>
+                <separator/>
+                <filter name="group_vendor" string="Vendor" context="{'group_by': 'vendor_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_vendor_review_action" model="ir.actions.act_window">
+        <field name="name">Reviews of the buyers</field>
+        <field name="res_model">ocd.vendor.review</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>The reviews the buyers give once their parcel is delivered: shown on the boutique, the cards of the lives and the products. A review reported by the vendor waits in « To check ».</p>
+        </field>
+    </record>
+
+    <record id="ocd_report_view_list" model="ir.ui.view">
+        <field name="name">ocd.report.list</field>
+        <field name="model">ocd.report</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-muted="state != 'new'">
+                <field name="create_date" string="Reported at"/>
+                <field name="product_id"/>
+                <field name="vendor_id"/>
+                <field name="reason"/>
+                <field name="note"/>
+                <field name="phone" optional="show"/>
+                <field name="state" widget="badge" decoration-warning="state == 'new'" decoration-danger="state == 'done'"/>
+                <field name="decision" optional="show"/>
+                <field name="handled_by_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_report_view_form" model="ir.ui.view">
+        <field name="name">ocd.report.form</field>
+        <field name="model">ocd.report</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id" readonly="1"/>
+                            <field name="vendor_id" readonly="1"/>
+                            <field name="reason" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="phone"/>
+                        </group>
+                        <group>
+                            <field name="decision"/>
+                            <field name="handled_at"/>
+                            <field name="handled_by_id"/>
+                        </group>
+                    </group>
+                    <field name="note" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_report_view_search" model="ir.ui.view">
+        <field name="name">ocd.report.search</field>
+        <field name="model">ocd.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="vendor_id"/>
+                <field name="product_id"/>
+                <filter name="new" string="To check" domain="[('state', '=', 'new')]"/>
+                <separator/>
+                <filter name="group_vendor" string="Vendor" context="{'group_by': 'vendor_id'}"/>
+                <filter name="group_reason" string="Reason" context="{'group_by': 'reason'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_report_action" model="ir.actions.act_window">
+        <field name="name">Reports of the customers</field>
+        <field name="res_model">ocd.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>What the customers report on a product or a vendor. They wait in « To check »: nothing to do, or the product removed from sale with a reason sent to the vendor.</p>
+        </field>
+    </record>
+
+    <record id="res_partner_view_form_ocd_vendor_trust" model="ir.ui.view">
+        <field name="name">res.partner.view.form.ocd.vendor.trust</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.res_partner_view_form_ocd_vendor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_ocd_view_reviews" type="object" class="oe_stat_button" icon="star">
+                    <field name="ocd_review_count" widget="statinfo" string="Reviews"/>
+                </button>
+                <button name="action_ocd_view_reports" type="object" class="oe_stat_button" icon="flag">
+                    <field name="ocd_report_count" widget="statinfo" string="Reports"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

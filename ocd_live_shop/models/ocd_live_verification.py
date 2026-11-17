@@ -23,7 +23,91 @@ class OcdLiveVerification(models.AbstractModel):
             "empty": self.env._("No store waiting."),
             "items": self._ocd_store_items(),
         })
+        # The reports of the customers and the reviews the vendors report (chantier 2)
+        columns.insert(3, {
+            "key": "report",
+            "label": self.env._("Reports"),
+            "empty": self.env._("No report waiting."),
+            "items": self._ocd_report_items(),
+        })
         return columns
+
+    @api.model
+    def _ocd_report_items(self):
+        """The reports of the customers, one card per product or vendor reported (the reasons
+        counted, their words and their numbers), then the reviews the vendors report."""
+        _ = self.env._
+        reports = self.env["ocd.report"].search([("state", "=", "new")], order="create_date")
+        reasons = dict(reports._fields["reason"]._description_selection(self.env))
+        items = []
+        groups = {}
+        for report in reports:
+            groups.setdefault((report.product_id, report.vendor_id), self.env["ocd.report"])
+            groups[(report.product_id, report.vendor_id)] |= report
+        for (product, vendor), group in groups.items():
+            counts = {}
+            for report in group:
+                counts[report.reason] = counts.get(report.reason, 0) + 1
+            words = [
+                " · ".join(part for part in (f"« {report.note} »" if report.note else "", report.phone or "") if part)
+                for report in group if report.note or report.phone
+            ]
+            item = {
+                "tag": _("1 report") if len(group) == 1 else _("%s reports", len(group)),
+                "sub": " · ".join(
+                    f"{reasons[reason]} ({count})" if count > 1 else reasons[reason] for reason, count in counts.items()
+                ),
+                "detail": " / ".join(words),
+            }
+            if product:
+                item.update({
+                    "key": f"report_product_{product.id}",
+                    "kind": "report_product",
+                    "id": product.id,
+                    "title": f"{product.name} · {vendor.name}",
+                    "photo": f"/web/image/product.template/{product.id}/image_256" if product.image_128 else "",
+                    "open_label": _("See the product"),
+                    "open_url": product.website_url,
+                    "ok_label": _("Nothing to do"),
+                    "refuse_label": _("Remove the product…"),
+                    "reasons": self._ocd_reasons("product"),
+                })
+            else:
+                item.update({
+                    "key": f"report_vendor_{vendor.id}",
+                    "kind": "report_vendor",
+                    "id": vendor.id,
+                    "title": _("Vendor · %s", vendor.name),
+                    "open_label": _("See the vendor"),
+                    "open_action": self.env["ocd.live.dashboard"]._ocd_record_action(vendor),
+                    "ok_label": _("Seen"),
+                    "reasons": [],
+                })
+            items.append(item)
+        for review in self.env["ocd.vendor.review"].search([("state", "=", "reported")], order="write_date"):
+            items.append({
+                "key": f"review_{review.id}",
+                "kind": "review",
+                "id": review.id,
+                "tag": _("Review reported"),
+                "title": f"{review.author_name} · {'★' * review.stars}",
+                "sub": _("Review of %s", review.vendor_id.name),
+                "detail": " · ".join(part for part in (
+                    f"« {review.comment} »" if review.comment else "",
+                    _("The vendor: %s", review.report_note) if review.report_note else "",
+                ) if part),
+                "open_label": False,
+                "ok_label": _("Confirm"),
+                "reasons": [],
+                "choices": [{
+                    "name": "state",
+                    "label": _("Decision"),
+                    "value": "published",
+                    "options": [{"value": "published", "label": _("Keep it shown")},
+                                {"value": "hidden", "label": _("Hide the review")}],
+                }],
+            })
+        return items
 
     @api.model
     def _ocd_store_items(self):
@@ -185,10 +269,31 @@ class OcdLiveVerification(models.AbstractModel):
     @api.model
     def _ocd_models(self):
         return {**super()._ocd_models(), "product": "product.template", "product_change": "product.template",
-                "store": "ocd.vendor.place"}
+                "store": "ocd.vendor.place", "report_product": "product.template", "report_vendor": "res.partner",
+                "review": "ocd.vendor.review"}
+
+    @api.model
+    def _ocd_new_reports(self, kind, record):
+        domain = [("state", "=", "new")]
+        if kind == "report_product":
+            return self.env["ocd.report"].search(domain + [("product_id", "=", record.id)])
+        return self.env["ocd.report"].search(domain + [("vendor_id", "=", record.id), ("product_id", "=", False)])
 
     @api.model
     def ocd_approve(self, kind, record_id, values=None):
+        if kind in ("report_product", "report_vendor"):
+            record = self._ocd_record(kind, record_id)
+            self._ocd_new_reports(kind, record)._ocd_close(
+                "dismissed", self.env._("Nothing to do") if kind == "report_product" else self.env._("Seen"),
+            )
+            return True
+        if kind == "review":
+            review = self._ocd_record(kind, record_id)
+            if (values or {}).get("state") == "hidden":
+                review.action_ocd_hide()
+            else:
+                review.action_ocd_publish()
+            return True
         if kind == "product_change":
             return self._ocd_record(kind, record_id).action_ocd_approve_change()
         if kind == "store":
@@ -202,6 +307,15 @@ class OcdLiveVerification(models.AbstractModel):
 
     @api.model
     def ocd_refuse(self, kind, record_id, reason_id):
+        if kind == "report_product":
+            # The reports were right: the product leaves the sale, the vendor learns why
+            product = self._ocd_record(kind, record_id)
+            reason = self.env["ocd.listing.refuse.reason"].browse(reason_id).exists()
+            if not reason:
+                raise UserError(self.env._("Choose the reason sent to the vendor."))
+            product.action_ocd_refuse(reason)
+            self._ocd_new_reports(kind, product)._ocd_close("done", self.env._("Removed from sale: %s", reason.name))
+            return True
         if kind == "product_change":
             reason = self.env["ocd.listing.refuse.reason"].browse(reason_id).exists()
             if not reason:

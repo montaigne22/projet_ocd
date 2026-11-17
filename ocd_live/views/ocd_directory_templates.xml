@@ -169,7 +169,10 @@
                         <span t-out="card['when']"/>
                     </p>
                     <h2 class="o_ocd_feed_name" t-out="card['name']"/>
-                    <p t-if="card['category']" class="o_ocd_feed_category" t-out="card['category']"/>
+                    <p t-if="card['category'] or card.get('verified')" class="o_ocd_feed_category">
+                        <span t-if="card.get('verified')" class="o_ocd_verified"><t t-call="ocd_live.icon" icon.f="check"/>Verified</span>
+                        <t t-out="card['category']"/>
+                    </p>
                     <p t-if="card['where'] or card.get('zone')" class="o_ocd_feed_where">
                         <t t-out="' · '.join(part for part in (card['where'], card.get('zone')) if part)"/>
                     </p>
