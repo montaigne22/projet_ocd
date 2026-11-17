@@ -1,6 +1,7 @@
 import logging
 import re
 from datetime import date, datetime, time, timedelta
+from urllib.parse import urlencode
 
 from odoo import fields
 from odoo.exceptions import UserError
@@ -338,13 +339,16 @@ def page_languages(url=None):
     IrHttp = request.env["ir.http"]
     rows = []
     for lang in website.language_ids.sorted(lambda lang: (lang != website.default_lang_id, lang.name)):
+        page = IrHttp._url_localized(url=url, lang_code=lang.code)
         rows.append({
             "code": lang.code,
             "short": (lang.iso_code or lang.code).split("_")[0].lower(),
             "name": lang.name.split(" / ")[-1],
-            # Always with the code of the language (/fr/…, /en/…): Odoo then remembers the choice,
-            # even for the language of the site (it shows the page without the code after)
-            "url": IrHttp._url_localized(url=url, lang_code=lang.code, force_default_lang=True),
+            # By the route of Odoo that keeps the choice (its cookie), then this page in that
+            # language: a link to /fr/… would lose its code when French is the language of the
+            # site (Odoo removes it from the links of the pages), and the browser that chose
+            # English before would come back to English
+            "url": f"/website/lang/{lang.url_code}?{urlencode({'r': page})}",
             "current": lang.code == current,
         })
     return rows
