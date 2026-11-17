@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 05:26+0000\n"
-"PO-Revision-Date: 2026-11-17 05:26+0000\n"
+"POT-Creation-Date: 2026-11-17 07:39+0000\n"
+"PO-Revision-Date: 2026-11-17 07:39+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,9 +16,27 @@ msgstr ""
 
 #. module: ocd_live_shop_whatsapp
 #. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/discuss_channel.py:0
+msgid " (they sell from %s)"
+msgstr " (vend depuis %s)"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
 #: code:addons/ocd_live_shop_whatsapp/models/ocd_whatsapp_inbox.py:0
 msgid "%(count)s in progress, %(late)s late"
 msgstr "%(count)s en cours, %(late)s en retard"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/discuss_channel.py:0
+msgid "%(vendor)s has no store open to the public%(area)s: order on OCD Live, the products are delivered."
+msgstr "%(vendor)s n'a pas de magasin ouvert au public%(area)s : commandez sur OCD Live, les produits sont livrés."
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/discuss_channel.py:0
+msgid "%(vendor)s is on holiday until %(day)s: the orders start again that day."
+msgstr "%(vendor)s est en vacances jusqu'au %(day)s : les commandes reprennent ce jour-là."
 
 #. module: ocd_live_shop_whatsapp
 #. odoo-python
@@ -84,8 +102,15 @@ msgid "Delivery"
 msgstr "Livraison"
 
 #. module: ocd_live_shop_whatsapp
+#: model:ir.model,name:ocd_live_shop_whatsapp.model_discuss_channel
+msgid "Discussion Channel"
+msgstr "Canal de discussion"
+
+#. module: ocd_live_shop_whatsapp
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_discuss_channel__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_boutique_alert__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_product_hold__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_stock_alert__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_vendor_place__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_whatsapp_inbox__display_name
@@ -97,8 +122,10 @@ msgid "Display Name"
 msgstr "Nom d'affichage"
 
 #. module: ocd_live_shop_whatsapp
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_discuss_channel__id
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_boutique_alert__id
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_product_hold__id
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_stock_alert__id
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_vendor_place__id
 #: model:ir.model.fields,field_description:ocd_live_shop_whatsapp.field_ocd_whatsapp_inbox__id
@@ -155,6 +182,16 @@ msgid "OCD Live: parcel delivered (English)"
 msgstr "OCD Live : colis livré (anglais)"
 
 #. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_collect_expired
+msgid "OCD Live: parcel not picked up, cancelled"
+msgstr "OCD Live : colis pas retiré, annulé"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_collect_expired_en
+msgid "OCD Live: parcel not picked up, cancelled (English)"
+msgstr "OCD Live : colis pas retiré, annulé (anglais)"
+
+#. module: ocd_live_shop_whatsapp
 #: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_reminder
 msgid "OCD Live: parcel not ready"
 msgstr "OCD Live : colis pas prêt"
@@ -175,6 +212,16 @@ msgid "OCD Live: parcel on the way (English)"
 msgstr "OCD Live : colis en route (anglais)"
 
 #. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_collect_ready
+msgid "OCD Live: parcel ready at the store"
+msgstr "OCD Live : colis prêt au magasin"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_collect_ready_en
+msgid "OCD Live: parcel ready at the store (English)"
+msgstr "OCD Live : colis prêt au magasin (anglais)"
+
+#. module: ocd_live_shop_whatsapp
 #: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_returned
 msgid "OCD Live: parcel returned"
 msgstr "OCD Live : colis retourné"
@@ -185,6 +232,16 @@ msgid "OCD Live: parcel returned (English)"
 msgstr "OCD Live : colis retourné (anglais)"
 
 #. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_collect_reminder
+msgid "OCD Live: parcel to pick up before the end"
+msgstr "OCD Live : colis à retirer avant la fin"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_collect_reminder_en
+msgid "OCD Live: parcel to pick up before the end (English)"
+msgstr "OCD Live : colis à retirer avant la fin (anglais)"
+
+#. module: ocd_live_shop_whatsapp
 #: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_to_prepare
 msgid "OCD Live: parcel to prepare"
 msgstr "OCD Live : colis à préparer"
@@ -193,6 +250,26 @@ msgstr "OCD Live : colis à préparer"
 #: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_to_prepare_en
 msgid "OCD Live: parcel to prepare (English)"
 msgstr "OCD Live : colis à préparer (anglais)"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_collect_to_prepare
+msgid "OCD Live: parcel to prepare for the store"
+msgstr "OCD Live : colis à préparer pour le magasin"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_parcel_collect_to_prepare_en
+msgid "OCD Live: parcel to prepare for the store (English)"
+msgstr "OCD Live : colis à préparer pour le magasin (anglais)"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_hold_requested
+msgid "OCD Live: piece held to try"
+msgstr "OCD Live : pièce mise de côté pour essayer"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_hold_requested_en
+msgid "OCD Live: piece held to try (English)"
+msgstr "OCD Live : pièce mise de côté pour essayer (anglais)"
 
 #. module: ocd_live_shop_whatsapp
 #: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_product_accepted
@@ -265,6 +342,26 @@ msgid "OCD Live: store refused (English)"
 msgstr "OCD Live : magasin refusé (anglais)"
 
 #. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_hold_refused
+msgid "OCD Live: the store cannot keep the piece"
+msgstr "OCD Live : le magasin ne peut pas garder la pièce"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_hold_refused_en
+msgid "OCD Live: the store cannot keep the piece (English)"
+msgstr "OCD Live : le magasin ne peut pas garder la pièce (anglais)"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_hold_accepted
+msgid "OCD Live: the store keeps the piece"
+msgstr "OCD Live : le magasin garde la pièce"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_hold_accepted_en
+msgid "OCD Live: the store keeps the piece (English)"
+msgstr "OCD Live : le magasin garde la pièce (anglais)"
+
+#. module: ocd_live_shop_whatsapp
 #: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_vendor_live
 msgid "OCD Live: the vendor is live"
 msgstr "OCD Live : le vendeur est en live"
@@ -273,6 +370,16 @@ msgstr "OCD Live : le vendeur est en live"
 #: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_vendor_live_en
 msgid "OCD Live: the vendor is live (English)"
 msgstr "OCD Live : le vendeur est en live (anglais)"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_vendor_back
+msgid "OCD Live: vendor back from holiday"
+msgstr "OCD Live : vendeur de retour de vacances"
+
+#. module: ocd_live_shop_whatsapp
+#: model:whatsapp.template,name:ocd_live_shop_whatsapp.template_vendor_back_en
+msgid "OCD Live: vendor back from holiday (English)"
+msgstr "OCD Live : vendeur de retour de vacances (anglais)"
 
 #. module: ocd_live_shop_whatsapp
 #. odoo-python
@@ -328,6 +435,11 @@ msgid "Parcels of the vendor"
 msgstr "Colis du vendeur"
 
 #. module: ocd_live_shop_whatsapp
+#: model:ir.model,name:ocd_live_shop_whatsapp.model_ocd_product_hold
+msgid "Piece Held In A Store To Try"
+msgstr "Pièce mise de côté en magasin pour essayer"
+
+#. module: ocd_live_shop_whatsapp
 #: model:ir.model,name:ocd_live_shop_whatsapp.model_ocd_vendor_place
 msgid "Place Of A Vendor"
 msgstr "Lieu d'un vendeur"
@@ -347,6 +459,12 @@ msgstr "Voir au dispatch"
 #: model:ir.model,name:ocd_live_shop_whatsapp.model_ocd_live_settings
 msgid "Settings Page Of OCD Live"
 msgstr "Page des paramètres d'OCD Live"
+
+#. module: ocd_live_shop_whatsapp
+#. odoo-python
+#: code:addons/ocd_live_shop_whatsapp/models/discuss_channel.py:0
+msgid "The stores of %s:"
+msgstr "Les magasins de %s :"
 
 #. module: ocd_live_shop_whatsapp
 #. odoo-python

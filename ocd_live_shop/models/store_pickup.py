@@ -155,7 +155,7 @@ class OcdDeliveryRate(models.Model):
             "origin": store.city_id or store.district_id.city_id,
             "price": 0.0,
             "allow_cod": True,
-            "description": self.env._("Picked up at %s", store.name),
+            "description": self.env._("Pickup at %s", store.name),
             "error": False,
             "place": store,
         }

@@ -336,7 +336,7 @@ class OcdDeliveryApp(http.Controller):
             "hold": hold,
             "new": new,
             "title": env._("%s wants to try it", customer) if new else env._("%s comes to try it", customer),
-            "pill_label": env._("New") if new else env._("Held"),
+            "pill_label": env._("New") if new else env._("Held aside"),
             "items": " · ".join((hold.product_id.display_name, hold.place_id.name)),
             "until": env._("Held until %s", until),
             "hint": env._("Without an answer, the piece stays held until %s.", until) if new else env._(

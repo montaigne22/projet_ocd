@@ -892,7 +892,7 @@ class OcdShop(WebsiteSale):
             items_amount=common.money(sum(lines.mapped("price_total")), order.currency_id),
             delivery_label=env._("Delivery to %s", place) if place else env._("Delivery"),
             parcel_lines=[{
-                "label": env._("Picked up at %s", line.pickup_place_id.name),
+                "label": env._("Pickup at %s", line.pickup_place_id.name),
                 "sub": line.pickup_place_id._ocd_address_line(),
                 "amount": env._("Free"),
             } if line.operator == "store" and line.pickup_place_id else {

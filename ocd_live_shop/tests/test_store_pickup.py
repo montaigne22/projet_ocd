@@ -164,7 +164,7 @@ class TestOcdStorePickup(HttpCase, OcdRatesCommon):
         })
         self.assertTrue(result["collect_only"])
         self.assertEqual(result["method"]["fee"], "Free")
-        self.assertEqual(result["method"]["rows"][0]["sub"], "Picked up at Brenda Wax Akwa")
+        self.assertEqual(result["method"]["rows"][0]["sub"], "Pickup at Brenda Wax Akwa")
         result = self.make_jsonrpc_request("/ocd/livraison/tarif", {
             "country_id": self.cameroon.id, "city_id": self.douala.id, "district_id": self.akwa.id, "collect": {key: 0},
         })
@@ -190,7 +190,7 @@ class TestOcdStorePickup(HttpCase, OcdRatesCommon):
         self.assertFalse(order.partner_shipping_id.delivery_landmark, "No address asked")
         cod = self._enable_counter_payment()
         page = self.url_open("/shop/payment").text
-        self.assertIn("Picked up at Brenda Wax Akwa", page)
+        self.assertIn("Pickup at Brenda Wax Akwa", page)
         if cod:
             self.assertIn("Pay at the counter", page)
             self.assertIn("Your code is accepted once the money is received.", page)

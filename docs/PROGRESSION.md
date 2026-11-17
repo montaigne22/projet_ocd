@@ -34,6 +34,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Magasins des vendeurs (chantier 17) : magasin vérifié ou « je vends depuis chez moi », horaires et « ouvert maintenant », itinéraire, appeler, WhatsApp, visites comptées, affiche QR et étiquettes de prix, magasin de départ des colis, interrupteur OCD Business, back-office et vérification | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | Stock par magasin (chantier 18) : un emplacement par lieu, « Mon stock » avec les tailles et les couleurs, envoyer des pièces d'un magasin à l'autre, le magasin qui sert chaque commande (un colis par magasin si besoin), disponibilité par magasin sur la fiche produit, « Préviens-moi » qui nomme les magasins | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Gérer ses produits (chantier 19) : modifier un produit en vente (vérifié pendant que la version d'aujourd'hui reste en vente, prix tout de suite, grand écart confirmé, historique des prix), plusieurs photos, retirer de la vente et remettre, produit gardé dans le téléphone sans réseau | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
+| Autour des magasins (chantier 20) : mode vacances, vendeurs près de chez moi, le bot WhatsApp donne les magasins, retrait en magasin (payé au comptoir, code après l'argent), mettre de côté pour essayer | ✅ fait, testé (8 modèles WhatsApp à faire approuver par Meta) ; les nouveautés aux abonnés (A.8) attendent le chantier 1 |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -108,6 +109,48 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 17 novembre 2026 · Autour des magasins (chantier 20)
+Dessiné d'abord (maquettes `VacancesProximite`, `RetraitMagasin`, `MettreDeCote`, validées), puis codé en
+cinq étapes.
+- **Mode vacances** (Mon espace › « Mode vacances ») : « De retour le » un jour (60 jours au plus,
+  réglable) et un mot pour les clients. Les produits restent visibles, les commandes sont en pause
+  partout (bouton du produit, panier même rempli avant, paiement, WhatsApp d'un vendeur en contact
+  direct) ; « Préviens-moi à son retour » sur la boutique et le produit ; le jour du retour (ou « Revenir
+  maintenant »), les commandes reprennent et les clients sont prévenus sur WhatsApp.
+- **Vendeurs près de chez moi** : « Où ? » dans le shop et dans les lives d'un pays, par ville et
+  quartier, ou « Près de moi » avec la position du téléphone (jamais gardée) : les produits du vendeur le
+  plus proche d'abord, « Akwa · 700 m » sur les cartes ; dans les lives, où vend chaque vendeur ou ses
+  vacances.
+- **Le bot WhatsApp d'OCD donne les magasins** : « Où êtes-vous ? » reçoit les magasins du vendeur du
+  produit ou de la boutique dont parle le client (sinon de sa dernière commande) : adresse, ouvert ou
+  fermé, horaires, téléphone, puis la position à ouvrir dans les cartes.
+- **Retrait en magasin** : à l'étape « Livraison », par vendeur qui a un magasin, « Livrée chez moi » ou
+  « Je passe la récupérer » dans un magasin qui a toute la commande (« Pas toute ta commande ici » pour
+  les autres) : gratuit, sans adresse quand tout est retiré ; « Payer au comptoir » au paiement. Le
+  vendeur touche « C'est prêt » (onglet « Retrait » de Mes colis) : le client reçoit un WhatsApp avec la
+  date limite, son code est sur le suivi (« Prête au magasin », itinéraire). Au comptoir, l'argent
+  d'abord (Mobile Money sur son téléphone, ou espèces chez un vendeur qui encaisse déjà), puis le code.
+  Rappel la veille ; pas venu à temps (3 jours, réglable) : annulé, pièces rendues au magasin, avoir s'il
+  a payé en ligne. Le vendeur reçoit un message à part (« X passe chercher sa commande »).
+- **Mettre de côté pour essayer** : sur la fiche produit, sous chaque magasin qui a la couleur et la
+  taille choisies ; le client donne son WhatsApp, la pièce est réservée tout de suite (24 h, réglable,
+  jusqu'à la prochaine fermeture si le magasin est fermé à cette heure) ; sa page dit où et jusqu'à quand,
+  avec l'itinéraire et « Je ne viens plus ». Le vendeur répond dans l'onglet « À essayer » (d'accord ou
+  refuser, le client est prévenu), puis : achetée (la pièce sort du stock), pas achetée ou pas venu (de
+  nouveau en vente). Une à la fois chez un vendeur ; après 2 absences, plus possible chez lui (le vendeur
+  peut débloquer). Délai passé : la pièce revient seule, sans compter d'absence. Back-office : « Pièces
+  mises de côté ».
+- Corrigé au passage : les onglets de Mes colis restent sur une ligne quel que soit leur nombre.
+- Tests : 28 nouveaux ; la suite complète sur base neuve (tous les modules OCD) est en cours ; contrôlé dans un
+  navigateur en français en trois tailles (390, 820, 1440 px) : mode vacances, shop « Près de moi », lives
+  d'un pays, étape « Livraison » avec retrait, paiement au comptoir, suivi « Prête au magasin », fiche
+  produit et ses magasins, demande et page de mise de côté, Mes colis (« Retrait », « À essayer »).
+- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.16.0, `ocd_live_shop` 20.0.1.26.0,
+  `ocd_live_shop_whatsapp` 20.0.1.16.0 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`), puis soumettre à
+  Meta les modèles `ocd_vendeur_de_retour`, `ocd_colis_a_preparer_magasin`, `ocd_colis_pret_magasin`,
+  `ocd_colis_rappel_magasin`, `ocd_colis_non_retire`, `ocd_essai_demande`, `ocd_essai_garde`,
+  `ocd_essai_refuse` (français et anglais).
 
 ### 17 novembre 2026 · Gérer ses produits (chantier 19)
 Dessiné d'abord (maquette `GererProduits`, validée), puis codé.

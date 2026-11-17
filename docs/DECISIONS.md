@@ -255,6 +255,36 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   - **WhatsApp** : une modification acceptée envoie le message « produit accepté » ; une modification
     refusée a son propre message (`ocd_modification_refusee`), envoyé une fois approuvé par Meta (le message
     « produit refusé » dirait qu'il n'est pas en ligne).
+- **Autour des magasins** (chantier 20, [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md), A.1 à A.3, A.5,
+  A.7 ; maquettes `VacancesProximite`, `RetraitMagasin`, `MettreDeCote` validées le 17 novembre 2026) :
+  - **mode vacances** : 60 jours au plus (réglable) ; les produits restent visibles, les commandes sont en
+    pause partout (bouton du produit, panier même rempli avant, paiement, WhatsApp d'un vendeur en contact
+    direct) ; les commandes reprennent le jour du retour, à l'heure du vendeur, ou avec « Revenir
+    maintenant » ; les clients qui ont demandé sont prévenus sur WhatsApp ; un « Préviens-moi » de produit
+    attend aussi le retour du vendeur ;
+  - **près de chez moi** : la position du téléphone, arrondie à environ 100 m, n'est que dans l'adresse de
+    la page (jamais gardée, une telle page n'est jamais mise en mémoire) ; un vendeur qui vend depuis chez
+    lui ne montre jamais sa position : il est classé par ville ;
+  - **le bot d'OCD donne les magasins** du vendeur dont parle le client (lien d'un produit ou d'une
+    boutique dans la conversation, sinon sa dernière commande), sinon il répond comme avant ;
+  - **retrait en magasin** : seulement dans un magasin ouvert au public qui a toute la commande du vendeur
+    (les autres sont montrés, pas choisis) ; gratuit ; sans adresse demandée quand tous les colis sont
+    retirés ; le colis part de ce magasin avec son vendeur, aucun livreur ne lui est jamais donné.
+    « C'est prêt » donne la date limite : la fermeture du magasin après 3 jours (réglable), son jour
+    ouvert suivant s'il est fermé. Au comptoir, **l'argent d'abord, puis le code** : Mobile Money sur le
+    téléphone du client chez tous les vendeurs, espèces seulement chez un vendeur qui encaisse déjà à la
+    porte (commission retenue sur le reversement). **Le code de retrait n'est pas dans le WhatsApp** (Meta
+    prend un code dans un modèle Utility pour une authentification) : le bouton ouvre le suivi, où il est.
+    Pas venu : rappel la veille, puis annulé comme un colis retourné (pièces rendues au magasin, avoir s'il
+    a payé en ligne) ;
+  - **mettre de côté pour essayer** : la pièce est réservée tout de suite dans le magasin (une livraison
+    du magasin au client, en attente : elle n'est plus libre pour les autres), faite si le client l'achète
+    au magasin, annulée sinon ; OCD ne prend rien sur cette vente faite au magasin. 24 h (réglable),
+    jusqu'à la prochaine fermeture si le magasin est fermé à cette heure. Le vendeur répond d'accord ou
+    refuser ; sans réponse, la pièce reste de côté. **Un délai passé n'est pas une absence** : seul « Pas
+    venu » du vendeur compte ; après 2 absences (réglable) chez un vendeur, plus de mise de côté chez lui,
+    le vendeur peut débloquer. Une mise de côté à la fois chez un vendeur. Un vendeur qui n'a qu'un
+    magasin montre maintenant le stock du choix dans ce magasin, pour qu'on puisse y mettre de côté.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

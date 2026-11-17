@@ -605,3 +605,306 @@ VENDOR_SPACE.update({
     'Team': 'Équipe',
     'sent %s': 'envoyée %s',
 })
+
+# Chantier 20 « Around the stores »: holiday mode, the vendors near me, the stores given by the
+# bot, pick up in a store, hold a piece to try (designs VacancesProximite, RetraitMagasin,
+# MettreDeCote). The pages say « tu », like the validated designs.
+VENDOR_SPACE.update({
+    # Holiday mode (20a)
+    "%(vendor)s is on holiday until %(day)s: remove their products from the cart, or order them on their return.":
+        "%(vendor)s est en vacances jusqu'au %(day)s : retire ses produits du panier, ou commande-les à son retour.",
+    "%(vendor)s is on holiday until %(day)s: the orders start again that day.":
+        "%(vendor)s est en vacances jusqu'au %(day)s : les commandes reprennent ce jour-là.",
+    "%s days at most. Your lives already booked do not move.":
+        "%s jours au plus. Tes lives déjà réservés ne bougent pas.",
+    "%s days at most: choose an earlier day.": "%s jours au plus : choisis un jour plus proche.",
+    "%s is on holiday": "%s est en vacances",
+    "1 customer waits for your return.": "1 client attend ton retour.",
+    ": the orders start again that day.": " : les commandes reprennent ce jour-là.",
+    "<span>The orders are paused. Come back now or change it.</span>":
+        "<span>Les commandes sont en pause. Reviens maintenant ou change la date.</span>",
+    "A word for your customers (if you want)": "Un mot pour tes clients (si tu veux)",
+    "Back from holiday": "De retour de vacances",
+    "Back from holiday: the orders start again.": "De retour de vacances : les commandes reprennent.",
+    "Back on": "De retour le",
+    "Choose the day you are back: tomorrow at the earliest.": "Choisis le jour de ton retour : demain au plus tôt.",
+    "Come back now": "Revenir maintenant",
+    "Every hour, and when the vendor taps « Come back now ».":
+        "Toutes les heures, et quand le vendeur touche « Revenir maintenant ».",
+    "Go on holiday": "Partir en vacances",
+    "Good holiday! Your boutique stays visible, the orders are paused.":
+        "Bonnes vacances ! Ta boutique reste visible, les commandes sont en pause.",
+    "Happy holidays! A new collection on my return.": "Bonnes fêtes ! Une nouvelle collection à mon retour.",
+    "Holiday": "Vacances",
+    "Holiday Of A Vendor, At Most (Days)": "Vacances d'un vendeur, au plus (jours)",
+    "Holiday mode": "Mode vacances",
+    "Holiday of a vendor, at most": "Vacances d'un vendeur, au plus",
+    "On Holiday Until": "En vacances jusqu'au",
+    "On holiday until": "En vacances jusqu'au",
+    "On holiday until %s": "En vacances jusqu'au %s",
+    "On holiday until %s.": "En vacances jusqu'au %s.",
+    "On the day the vendor is back, or when they come back sooner":
+        "Le jour du retour du vendeur, ou plus tôt s'il revient avant",
+    "Only a vendor can go on holiday.": "Seul un vendeur peut partir en vacances.",
+    "Orders paused until %s": "Commandes en pause jusqu'au %s",
+    "Shown on the boutique while the vendor is on holiday.": "Affiché sur la boutique pendant les vacances du vendeur.",
+    "Tell me when they are back": "Préviens-moi à son retour",
+    "Tell them that the vendor takes orders again, with the link of the boutique.":
+        "Leur dire que le vendeur reprend les commandes, avec le lien de la boutique.",
+    "The customers who asked « Tell me when they are back » on the boutique or a product.":
+        "Les clients qui ont demandé « Préviens-moi à son retour » sur la boutique ou un produit.",
+    "The longest holiday a vendor chooses from their space: the orders are paused meanwhile.":
+        "Les plus longues vacances qu'un vendeur choisit depuis son espace : les commandes sont en pause pendant ce temps.",
+    "The orders start again on": "Les commandes reprennent le",
+    "The products stay visible, the orders are paused, the customers are told of the return.":
+        "Les produits restent visibles, les commandes sont en pause, les clients sont prévenus du retour.",
+    "The vendor is on holiday until this day, when the orders start again: the products stay visible, the orders are paused, the customers can ask to be told of the return.":
+        "Le vendeur est en vacances jusqu'à ce jour, où les commandes reprennent : les produits restent visibles, les commandes sont en pause, les clients peuvent demander à être prévenus du retour.",
+    "This contact is already told about this vendor.": "Ce contact est déjà prévenu pour ce vendeur.",
+    "Told When": "Prévenu quand",
+    "Noted: we write to you on WhatsApp when %s is back.": "C'est noté : on t'écrit sur WhatsApp au retour de %s.",
+    "Vendor back from holiday: tell the customers who asked": "Vendeur de retour de vacances : prévenir les clients qui l'ont demandé",
+    "Welcome back: the orders start again.": "Bon retour : les commandes reprennent.",
+    "Word Of The Holiday": "Mot des vacances",
+    "You leave for a few days? Your boutique stays visible, the orders are paused, and your customers can ask to be told when you are back.":
+        "Tu pars quelques jours ? Ta boutique reste visible, les commandes sont en pause, et tes clients peuvent demander à être prévenus de ton retour.",
+    "customers wait for your return.": "clients attendent ton retour.",
+    "in the morning, and the customers who asked are told on WhatsApp.":
+        "au matin, et les clients qui l'ont demandé sont prévenus sur WhatsApp.",
+    "OCD Live: vendors back from holiday": "OCD Live : vendeurs de retour de vacances",
+    "OCD Live: vendor back from holiday": "OCD Live : vendeur de retour de vacances",
+    "OCD Live: vendor back from holiday (English)": "OCD Live : vendeur de retour de vacances (anglais)",
+    # The vendors near me (20b)
+    "%(count)s stores · %(names)s": "%(count)s magasins · %(names)s",
+    "%s km": "%s km",
+    "%s m": "%s m",
+    "1 store · %s": "1 magasin · %s",
+    "<b class=\"o_ocd_shop_categories_title\">Where?</b>": "<b class=\"o_ocd_shop_categories_title\">Où ?</b>",
+    "<small class=\"o_ocd_where_error\" role=\"alert\" hidden=\"hidden\">Your position is not available: choose your city.</small>":
+        "<small class=\"o_ocd_where_error\" role=\"alert\" hidden=\"hidden\">Ta position n'est pas disponible : choisis ta ville.</small>",
+    "All the cities": "Toutes les villes",
+    "All the districts": "Tous les quartiers",
+    "Everywhere": "Partout",
+    "From the nearest, with the position of your phone: it is not kept.":
+        "Du plus proche, avec la position de ton téléphone : elle n'est pas gardée.",
+    "Near me": "Près de moi",
+    # The bot gives the stores (20c)
+    " (they sell from %s)": " (vend depuis %s)",
+    "%(vendor)s has no store open to the public%(area)s: order on OCD Live, the products are delivered.":
+        "%(vendor)s n'a pas de magasin ouvert au public%(area)s : commandez sur OCD Live, les produits sont livrés.",
+    "The stores of %s:": "Les magasins de %s :",
+    "Discussion Channel": "Canal de discussion",
+    # Pick up in a store (20d)
+    "%(vendor)s has not prepared the parcel %(parcel)s yet: the customer picks it up at the store.":
+        "%(vendor)s n'a pas encore préparé le colis %(parcel)s : le client vient le chercher au magasin.",
+    "%s comes to pick it up": "%s passe la chercher",
+    "%s does not have your whole order any more: choose another store or the delivery.":
+        "%s n'a plus toute ta commande : choisis un autre magasin ou la livraison.",
+    "%s receives the code on WhatsApp when you tap « It is ready ».":
+        "%s reçoit son code sur WhatsApp quand tu touches « C'est prêt ».",
+    "<b>Delivered to me</b>": "<b>Livrée chez moi</b>",
+    "<b>I come and get it</b>": "<b>Je passe la récupérer</b>",
+    "<small>Give it at the counter.</small>": "<small>Donne-le au comptoir.</small>",
+    "<span>Your pickup code</span>": "<span>Ton code de retrait</span>",
+    "A parcel ready in a store waits so many days for its customer (until the closing of the store on the last day): a reminder the day before, then it is cancelled.":
+        "Un colis prêt en magasin attend son client autant de jours (jusqu'à la fermeture du magasin le dernier jour) : un rappel la veille, puis il est annulé.",
+    "At the store: on your phone with Mobile Money, or in cash where the vendor takes it. Your code is accepted once the money is received.":
+        "Au magasin : sur ton téléphone avec Mobile Money, ou en espèces chez un vendeur qui les accepte. Ton code est accepté une fois l'argent reçu.",
+    "At your place, in %s": "Chez toi, à %s",
+    "Choose the store where you pick it up.": "Choisis le magasin où tu passes la récupérer.",
+    "Choose your city: the price shows here.": "Choisis ta ville : le prix s'affiche ici.",
+    "Days To Pick Up A Parcel": "Jours pour retirer un colis",
+    "Days to pick up a parcel": "Jours pour retirer un colis",
+    "Handed over to %(customer)s. You collected %(amount)s in cash: the commission of OCD is withheld from your next payout.":
+        "Remise à %(customer)s. Tu as encaissé %(amount)s en espèces : la commission d'OCD est retenue sur ton prochain reversement.",
+    "Handed over to %s. Thank you!": "Remise à %s. Merci !",
+    "Has your whole order": "A toute ta commande",
+    "How do you get your order?": "Comment reçois-tu ta commande ?",
+    "In one of their stores": "Dans un de ses magasins",
+    "None of their stores has your whole order": "Aucun de ses magasins n'a toute ta commande",
+    "Not picked up before %s: the parcel is cancelled and its pieces go back to the stock of the store.":
+        "Pas retiré avant %s : le colis est annulé et ses pièces reviennent au stock du magasin.",
+    "Not picked up before %s: the parcel is cancelled.": "Pas retiré avant %s : le colis est annulé.",
+    "Not picked up in time: the order is cancelled. Paid online, OCD Live refunds you.":
+        "Pas retirée à temps : la commande est annulée. Payée en ligne, OCD Live te rembourse.",
+    "Not picked up: cancelled": "Pas retiré : annulé",
+    "Not your whole order here": "Pas toute ta commande ici",
+    "OCD Live: parcels to pick up in a store": "OCD Live : colis à retirer en magasin",
+    "Parcel in a store: ready, reminder, cancelled": "Colis en magasin : prêt, rappel, annulé",
+    "Pay at the counter": "Payer au comptoir",
+    "Pay at the delivery or at the counter": "Payer à la livraison ou au comptoir",
+    "Pick Up In A Store": "Retrait en magasin",
+    "Pick it up before %s": "À retirer avant %s",
+    "Pick up in a store": "Retrait en magasin",
+    "Picked Up At The Store": "Retiré au magasin",
+    "Picked Up Before": "À retirer avant",
+    "Picked Up By The Customer At": "Retiré par le client à",
+    "Picked Up In": "Retiré dans",
+    "Picked up at %s. Code checked.": "Retiré à %s. Code vérifié.",
+    "Picked up at the store": "Retrait en magasin",
+    "Picked up at the store · %s": "Retrait · %s",
+    "Picked up at the store, with your code": "Retrait au magasin, avec ton code",
+    "Pickup at %s": "Retrait à %s",
+    "Ready at the store": "Prête au magasin",
+    "Reminded To Pick Up At": "Rappel de retrait le",
+    "Tell them it waits for them and until when; remind them the day before; cancel it at the end (the pieces back in the store, a refund when paid online).":
+        "Lui dire que le colis l'attend et jusqu'à quand ; le lui rappeler la veille ; l'annuler à la fin (les pièces reviennent au magasin, remboursement s'il a payé en ligne).",
+    "Thank you: %s receives the code on WhatsApp.": "Merci : %s reçoit son code sur WhatsApp.",
+    "The customer picks it up at the store": "Le client vient le chercher au magasin",
+    "The customer picks the parcel of a vendor up in one of their stores that has it, without delivery fee; paid online or at the counter.":
+        "Le client retire le colis d'un vendeur dans un de ses magasins qui l'a, sans frais de livraison ; payé en ligne ou au comptoir.",
+    "The customer picks the parcel up at %s.": "Le client retire le colis à %s.",
+    "The customer picks the parcel up at the store it leaves from (« Picked Up At »).":
+        "Le client retire le colis au magasin d'où il part (« Retiré par le client à »).",
+    "The customer picks this parcel up at the store: no courier delivers it.":
+        "Le client retire ce colis au magasin : aucun livreur ne le livre.",
+    "The customers pick the parcel of a vendor up in one of their stores that has it, without delivery fee.":
+        "Les clients retirent le colis d'un vendeur dans un de ses magasins qui l'a, sans frais de livraison.",
+    "The customers who pick their parcel up in a store.": "Les clients qui retirent leur colis en magasin.",
+    "The parcel %s is delivered, not picked up at the store.": "Le colis %s est livré, pas retiré au magasin.",
+    "The parcel ready in the store waits until then: a reminder the day before, then it is cancelled.":
+        "Le colis prêt au magasin attend jusque-là : un rappel la veille, puis il est annulé.",
+    "The store where the customer picks the parcel up, without delivery fee.":
+        "Le magasin où le client retire le colis, sans frais de livraison.",
+    "The store writes to you on WhatsApp when it is ready, with your code. You have %s days to come.":
+        "Le magasin t'écrit sur WhatsApp quand c'est prêt, avec ton code. Tu as %s jours pour passer.",
+    "The store writes to you on WhatsApp when it is ready.": "Le magasin t'écrit sur WhatsApp quand c'est prêt.",
+    "The stores where the customer picks the parcels up (one per vendor).":
+        "Les magasins où le client retire ses colis (un par vendeur).",
+    "To collect at the counter: %s": "À encaisser au comptoir : %s",
+    "Until the closing of the store on the last day; a reminder the day before, then cancelled.":
+        "Jusqu'à la fermeture du magasin le dernier jour ; un rappel la veille, puis annulé.",
+    "When the vendor taps « It is ready », the day before the end, at the end":
+        "Quand le vendeur touche « C'est prêt », la veille de la fin, à la fin",
+    "to pay at the counter": "à payer au comptoir",
+    "« It is ready » in « My parcels », then every hour.": "« C'est prêt » dans « Mes colis », puis toutes les heures.",
+    "OCD Live: parcel not picked up, cancelled": "OCD Live : colis pas retiré, annulé",
+    "OCD Live: parcel not picked up, cancelled (English)": "OCD Live : colis pas retiré, annulé (anglais)",
+    "OCD Live: parcel ready at the store": "OCD Live : colis prêt au magasin",
+    "OCD Live: parcel ready at the store (English)": "OCD Live : colis prêt au magasin (anglais)",
+    "OCD Live: parcel to pick up before the end": "OCD Live : colis à retirer avant la fin",
+    "OCD Live: parcel to pick up before the end (English)": "OCD Live : colis à retirer avant la fin (anglais)",
+    "OCD Live: parcel to prepare for the store": "OCD Live : colis à préparer pour le magasin",
+    "OCD Live: parcel to prepare for the store (English)": "OCD Live : colis à préparer pour le magasin (anglais)",
+    # Hold a piece to try (20e)
+    "%(count)s absences: %(customer)s can no longer hold pieces at your stores. You can unblock them.":
+        "%(count)s absences : %(customer)s ne peut plus mettre de côté chez toi. Tu peux le débloquer.",
+    "%(product)s for %(customer)s": "%(product)s pour %(customer)s",
+    "%(store)s keeps %(product)s for you until %(until)s. You try it there and you pay only if you take it.":
+        "%(store)s garde %(product)s pour toi jusqu'à %(until)s. Tu l'essaies sur place et tu paies seulement si tu le prends.",
+    "%(store)s keeps it for you until %(until)s.": "%(store)s te le garde jusqu'à %(until)s.",
+    "%s can hold pieces at your stores again.": "%s peut de nouveau mettre de côté chez toi.",
+    "%s cannot hold it for now. You can still order it online.":
+        "%s ne peut pas le garder pour le moment. Tu peux toujours le commander en ligne.",
+    "%s comes to try it": "%s vient l'essayer",
+    "%s pieces held to try": "%s pièces mises de côté à essayer",
+    "%s wants to try it": "%s veut l'essayer",
+    "1 piece held to try": "1 pièce mise de côté à essayer",
+    "<span class=\"o_ocd_parcel_label\">How did it go?</span>": "<span class=\"o_ocd_parcel_label\">Comment ça s'est passé ?</span>",
+    "A customer who did not come so many times can no longer hold a piece at this vendor (the vendor can unblock them).":
+        "Un client qui n'est pas venu autant de fois ne peut plus mettre de côté chez ce vendeur (le vendeur peut le débloquer).",
+    "Absence Forgiven": "Absence pardonnée",
+    "Absences Before No More Holds": "Absences avant de ne plus pouvoir mettre de côté",
+    "Absences before no more holds": "Absences avant de ne plus pouvoir mettre de côté",
+    "Access Token": "Jeton d'accès",
+    "Answered At": "Répondu le",
+    "At the same vendor, who can unblock the customer. 0: no limit.":
+        "Chez un même vendeur, qui peut débloquer le client. 0 : pas de limite.",
+    "Back to the product": "Retour au produit",
+    "Bought": "Achetée",
+    "Bought at %s. Enjoy it!": "Achetée à %s. Profites-en bien !",
+    "Bought at the store": "Achetée au magasin",
+    "Call the store": "Appeler le magasin",
+    "Cancelled by the customer": "Annulée par le client",
+    "Choose how it went.": "Choisis comment ça s'est passé.",
+    "Closed At": "Terminée le",
+    "Did not come": "Pas venu",
+    "From the page of a product, the customer holds a piece in a store that has it, to come and try it; they pay at the store only if they take it.":
+        "Depuis la fiche d'un produit, le client met une pièce de côté dans un magasin qui l'a, pour venir l'essayer ; il paie au magasin seulement s'il la prend.",
+    "From the page of a product, the customers hold a piece in a store that has it, to come and try it; they pay only if they take it.":
+        "Depuis la fiche d'un produit, les clients mettent une pièce de côté dans un magasin qui l'a, pour venir l'essayer ; ils paient seulement s'ils la prennent.",
+    "Held aside": "De côté",
+    "Held Until": "Mise de côté jusqu'au",
+    "before %s": "avant %s",
+    "Held at": "Mise de côté le",
+    "Held at %(store)s until %(until)s. The store answers you on WhatsApp.":
+        "Mis de côté à %(store)s jusqu'à %(until)s. Le magasin te répond sur WhatsApp.",
+    "Held now": "De côté en ce moment",
+    "Held to try": "Mis de côté",
+    "Held to try: %s": "Mis de côté pour essayer : %s",
+    "Held until %s": "Mise de côté jusqu'à %s",
+    "Held, accepted by the vendor": "De côté, accepté par le vendeur",
+    "Held, waiting for the vendor": "De côté, en attente du vendeur",
+    "Hold A Piece To Try": "Mettre de côté pour essayer",
+    "Hold a piece to try": "Mettre de côté pour essayer",
+    "Hold it": "Mettre de côté",
+    "Hold it to try": "Mettre de côté pour l'essayer",
+    "Hours A Piece Is Held": "Heures de mise de côté",
+    "I no longer come": "Je ne viens plus",
+    "No piece held to try.": "Aucune pièce mise de côté.",
+    "No piece left in this size at %s.": "Plus de pièce dans cette taille à %s.",
+    "Not bought": "Pas achetée",
+    "Noted: the piece is on sale again.": "C'est noté : la pièce est de nouveau en vente.",
+    "Noted: you no longer come. The piece is on sale again.":
+        "C'est noté : tu ne viens plus. La pièce est de nouveau en vente.",
+    "OCD Live: pieces held to try, past their time": "OCD Live : pièces mises de côté, délai passé",
+    "OK": "D'accord",
+    "OK: %s is told the piece waits for them.": "D'accord : %s est prévenu que la pièce l'attend.",
+    "One piece held at a time at a vendor.": "Une mise de côté à la fois chez un vendeur.",
+    "Piece Held In A Store To Try": "Pièce mise de côté en magasin pour essayer",
+    "Piece held to try: the vendor, then the customer": "Pièce mise de côté : le vendeur, puis le client",
+    "Pieces held to try": "Pièces mises de côté",
+    "Refused by the vendor": "Refusée par le vendeur",
+    "Refused: the piece is on sale again, %s is told.": "Refusé : la pièce est de nouveau en vente, %s est prévenu.",
+    "Reservation": "Réservation",
+    "Reserves the piece in the store while it is held; done when the customer buys it.":
+        "Réserve la pièce au magasin pendant la mise de côté ; faite quand le client l'achète.",
+    "Sold: the piece left the stock of %s.": "Vendue : la pièce est sortie du stock de %s.",
+    "Store": "Magasin",
+    "Tell the vendor a piece is held for a customer; tell the customer the store keeps it for them, or cannot (with the link to order it).":
+        "Prévenir le vendeur qu'une pièce est mise de côté pour un client ; dire au client que le magasin la lui garde, ou ne peut pas (avec le lien pour la commander).",
+    "The customer did not come": "Le client n'est pas venu",
+    "The piece was held at %s and is on sale again.": "La pièce était mise de côté à %s et elle est de nouveau en vente.",
+    "The pieces the customers hold in a store to come and try them. The vendor answers in « My parcels »; past the time, the piece is on sale again.":
+        "Les pièces que les clients mettent de côté en magasin pour venir les essayer. Le vendeur répond dans « Mes colis » ; passé le délai, la pièce est de nouveau en vente.",
+    "The store can refuse: we write to you right away.\n                            One piece held at a time at a vendor; after several absences, it is no longer possible there.":
+        "Le magasin peut refuser : on te l'écrit tout de suite.\n                            Une mise de côté à la fois chez un vendeur ; après plusieurs absences, ce n'est plus possible chez lui.",
+    "The time is over: the piece is on sale again.": "Le délai est passé : la pièce est de nouveau en vente.",
+    "The vendor unblocked the customer: this absence no longer counts.":
+        "Le vendeur a débloqué le client : cette absence ne compte plus.",
+    "The vendors of the stores, the customers who hold a piece.": "Les vendeurs des magasins, les clients qui mettent une pièce de côté.",
+    "Then it is on sale again; a store closed at that hour holds it until its next closing.":
+        "Ensuite elle est de nouveau en vente ; un magasin fermé à cette heure la garde jusqu'à sa prochaine fermeture.",
+    "Then the piece is on sale again. A store closed at that hour holds it until its next closing.":
+        "Ensuite la pièce est de nouveau en vente. Un magasin fermé à cette heure la garde jusqu'à sa prochaine fermeture.",
+    "This hold is already over.": "Cette mise de côté est déjà terminée.",
+    "This product cannot be held in this store.": "Ce produit ne peut pas être mis de côté dans ce magasin.",
+    "This store does not hold pieces to try.": "Ce magasin ne met pas de pièces de côté.",
+    "Time a piece is held": "Durée de mise de côté",
+    "Time over": "Délai passé",
+    "To try · %s": "À essayer · %s",
+    "Tried at %s. The piece is on sale again.": "Essayée à %s. La pièce est de nouveau en vente.",
+    "Tried, not bought": "Essayée, pas achetée",
+    "Unblock": "Débloquer",
+    "Until %s": "Jusqu'à %s",
+    "When a customer holds a piece, when the vendor answers": "Quand un client met une pièce de côté, quand le vendeur répond",
+    "Without a visit by then, the piece is on sale again for everyone.":
+        "Sans visite d'ici là, la pièce redevient disponible pour tous.",
+    "Without an answer, the piece stays held until %s.": "Sans réponse, la pièce reste de côté jusqu'à %s.",
+    "You already hold %(product)s at %(store)s: try it first, or tell them you no longer come.":
+        "Tu as déjà mis de côté %(product)s à %(store)s : essaie-le d'abord, ou dis que tu ne viens plus.",
+    "You did not come several times: holding a piece is no longer possible at %s.":
+        "Tu n'es pas venu plusieurs fois : mettre de côté n'est plus possible chez %s.",
+    "absences": "absences",
+    "today at %s": "aujourd'hui à %s",
+    "« Bought »: paid at the store, the piece leaves the stock of %s. « Not bought »: it is on sale again.":
+        "« Achetée » : payée au magasin, la pièce sort du stock de %s. « Pas achetée » : elle revient en vente.",
+    "« Hold it to try » on the page of a product, « OK » or « Refuse » in « My parcels ».":
+        "« Mettre de côté pour l'essayer » sur la fiche d'un produit, « D'accord » ou « Refuser » dans « Mes colis ».",
+    "OCD Live: piece held to try": "OCD Live : pièce mise de côté pour essayer",
+    "OCD Live: piece held to try (English)": "OCD Live : pièce mise de côté pour essayer (anglais)",
+    "OCD Live: the store cannot keep the piece": "OCD Live : le magasin ne peut pas garder la pièce",
+    "OCD Live: the store cannot keep the piece (English)": "OCD Live : le magasin ne peut pas garder la pièce (anglais)",
+    "OCD Live: the store keeps the piece": "OCD Live : le magasin garde la pièce",
+    "OCD Live: the store keeps the piece (English)": "OCD Live : le magasin garde la pièce (anglais)",
+})
