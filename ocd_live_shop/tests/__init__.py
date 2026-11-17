@@ -20,3 +20,4 @@ from . import test_vendor_holiday
 from . import test_vendor_nearby
 from . import test_store_pickup
 from . import test_product_hold
+from . import test_low_stock

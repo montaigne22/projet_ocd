@@ -973,7 +973,8 @@
                     <div class="o_ocd_my_products_list">
                         <t t-foreach="rows" t-as="row">
                             <div class="o_ocd_my_product" t-attf-id="produit-#{row['product'].id}" t-att-data-status="row['status']"
-                                 t-att-hidden="'hidden' if state not in ('all', row['status']) else None">
+                                 t-att-data-low="'1' if row['low'] else None"
+                                 t-att-hidden="'hidden' if state not in ('all', row['status']) and not (state == 'low' and row['low']) else None">
                                 <span class="o_ocd_photo o_ocd_cart_photo">
                                     <t t-call="ocd_live_shop.product_photo" image="row['image']"/>
                                 </span>
@@ -983,6 +984,7 @@
                                         <span t-out="row['price']"/>
                                         <span t-attf-class="o_ocd_step_pill o_ocd_my_status_#{row['status']}" t-out="row['status_label']"/>
                                     </span>
+                                    <span t-if="row['low_line']" class="o_ocd_my_product_low" t-out="row['low_line']"/>
                                     <small t-if="row['refusal']" class="o_ocd_error o_ocd_my_product_refusal" t-out="row['refusal']"/>
                                     <small t-if="row['change_line']" t-attf-class="o_ocd_my_product_fact #{'o_ocd_my_product_change_refused' if row['change_refused'] else 'o_ocd_my_product_change'}"
                                            t-out="row['change_line']"/>
@@ -1077,7 +1079,7 @@
                         </t>
                         <div t-if="not rows" class="o_ocd_info">No product yet: add your first one above.</div>
                         <div t-if="rows" class="o_ocd_info o_ocd_my_products_none"
-                             t-att-hidden="None if state != 'all' and not any(row['status'] == state for row in rows) else 'hidden'">No product in this state.</div>
+                             t-att-hidden="None if state != 'all' and not any(row['status'] == state or (state == 'low' and row['low']) for row in rows) else 'hidden'">No product in this state.</div>
                     </div>
                     <small class="o_ocd_parcel_hint">At 0, the product stays visible with “Sold out”. Put a quantity back when you have some.</small>
                     <t t-if="boutique_url">

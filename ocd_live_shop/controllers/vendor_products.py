@@ -156,10 +156,12 @@ class OcdVendorProducts(http.Controller):
         places = vendor._ocd_stock_places() if vendor._ocd_stock_per_place() else env["ocd.vendor.place"]
         by_place = variants._ocd_free_by_location(places.location_id) if places else {}
         root = request.httprequest.url_root.rstrip("/")
+        limit = vendor._ocd_low_stock_limit()
         rows = []
         for index, product in enumerate(products):
             qty = sum(free[v.id] for v in product.product_variant_ids) if shop_common.tracked(product) else None
             status, status_label = self._status(product, qty)
+            low_line = self._low_line(product, free, limit) if status == "on" and qty is not None else False
             online = status in ("on", "out")
             clicks, waits = product.ocd_wa_clicks, waiting[product.id]
             colours = product.attribute_line_ids.filtered(
@@ -198,6 +200,9 @@ class OcdVendorProducts(http.Controller):
                 "colours_done": len(colours.filtered("ocd_image")),
                 "status": status,
                 "status_label": status_label,
+                # Low on stock (chantier 21): the pieces left of the colours and sizes concerned
+                "low": bool(low_line),
+                "low_line": low_line,
                 "refusal": product._ocd_refusal_text(),
                 "can_correct": product._ocd_vendor_can_correct(),
                 "can_change": product._ocd_vendor_can_change(),
@@ -225,6 +230,25 @@ class OcdVendorProducts(http.Controller):
             })
         return rows
 
+    def _low_line(self, product, free, limit):
+        """« Low stock · only 2 left », or the colours and sizes concerned: « Low stock: Blue, M ·
+        only 2 left », « Low stock: Blue, M (2) · Red, L (1) »; False when the stock is fine."""
+        if not limit:
+            return False
+        env = request.env
+        low = product.product_variant_ids.filtered(lambda variant: 1 <= free.get(variant.id, 0) <= limit)
+        if not low:
+            return False
+        if len(product.product_variant_ids) == 1:
+            return env._("Low stock · only %s left", free[low.id])
+        if len(low) == 1:
+            return env._("Low stock: %(choice)s · only %(count)s left", choice=self._choice(low), count=free[low.id])
+        return env._("Low stock: %s", " · ".join(f"{self._choice(variant)} ({free[variant.id]})" for variant in low))
+
+    def _choice(self, variant):
+        """« Blue, M »: the colour and the size of a variant."""
+        return ", ".join(variant.product_template_attribute_value_ids.mapped("name")) or variant.name
+
     def _change_line(self, product):
         env = request.env
         if not product._ocd_vendor_can_change():
@@ -248,10 +272,13 @@ class OcdVendorProducts(http.Controller):
         counts = defaultdict(int)
         for row in rows:
             counts[row["status"]] += 1
-        if len(rows) < FILTER_FROM or len(counts) < 2:
+        low = sum(1 for row in rows if row["low"])
+        if len(rows) < FILTER_FROM or (len(counts) < 2 and not low):
             return []
-        labels = [("on", env._("On sale")), ("out", env._("Sold out")), ("check", env._("To check")),
-                  ("refused", env._("Refused")), ("retired", env._("Off sale")), ("hidden", env._("Not shown"))]
+        counts["low"] = low  # not a state: the products on sale low on stock (chantier 21)
+        labels = [("on", env._("On sale")), ("low", env._("Low stock")), ("out", env._("Sold out")),
+                  ("check", env._("To check")), ("refused", env._("Refused")), ("retired", env._("Off sale")),
+                  ("hidden", env._("Not shown"))]
         return [("all", env._("All"), len(rows))] + [
             (key, label, counts[key]) for key, label in labels if counts[key] or key == current
         ]

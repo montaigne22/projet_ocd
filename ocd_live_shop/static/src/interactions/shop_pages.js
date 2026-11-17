@@ -781,7 +781,7 @@ export class OcdProductFilters extends Interaction {
         const list = document.querySelector(".o_ocd_my_products_list");
         let shown = 0;
         for (const row of list.querySelectorAll(".o_ocd_my_product[data-status]")) {
-            const visible = state === "all" || row.dataset.status === state;
+            const visible = state === "all" || row.dataset.status === state || (state === "low" && !!row.dataset.low);
             row.hidden = !visible;
             shown += visible ? 1 : 0;
         }

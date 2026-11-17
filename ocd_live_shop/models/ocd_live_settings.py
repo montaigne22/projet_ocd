@@ -112,6 +112,10 @@ class OcdLiveSettings(models.AbstractModel):
                 item("number", "ocd_collect_days", _("Days to pick up a parcel"),
                      _("Until the closing of the store on the last day; a reminder the day before, then cancelled."),
                      suffix=_("days"), min=1, max=30, width=70),
+                item("number", "ocd_low_stock_threshold", _("Low stock alert"),
+                     _("A WhatsApp to the vendor when a sale leaves this number of pieces or less (changed on the "
+                       "form of each vendor). 0: no alert."),
+                     suffix=_("pieces"), min=0, max=99, width=70),
                 item("check", "ocd_hold_enabled", _("Hold a piece to try"),
                      _("From the page of a product, the customer holds a piece in a store that has it, to come "
                        "and try it; they pay at the store only if they take it.")),

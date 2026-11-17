@@ -252,3 +252,27 @@ class TestOcdHoldMessages(OcdShopCommon):
         self.assertIn("?vue=essayer", template._render(template.button_url_value, hold)[hold.id])
         accepted = self.env.ref("ocd_live_shop_whatsapp.template_hold_accepted")
         self.assertEqual(accepted._render(accepted.button_url_value, hold)[hold.id], hold._ocd_page_path())
+
+
+@tagged("post_install", "-at_install")
+class TestOcdLowStockMessage(OcdShopCommon):
+    """Low stock (chantier 21): the vendor is told how many pieces are left."""
+
+    def test_message_of_low_stock(self):
+        self.company.ocd_low_stock_threshold = 2
+        self.dress.product_tmpl_id.write({"is_storable": True, "allow_out_of_stock_order": False})
+        self.dress._ocd_change_stock(3)
+        calls = []
+
+        def fake_send(template, records):
+            calls.append((template.template_name, records, template.env.context.get("ocd_low_qty")))
+            return template.env["whatsapp.message"]
+
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            self._order(self.estelle, [(self.dress, 2)])
+        self.assertIn(("ocd_stock_bas", self.dress, 1), calls)
+        template = self.env.ref("ocd_live_shop_whatsapp.template_low_stock").with_context(ocd_low_qty=1)
+        values = [template._render(variable.value, self.dress)[self.dress.id] for variable in template.variable_ids.sorted("sequence")]
+        self.assertEqual(values, [self.brenda.name, "1 pièce", self.dress.display_name])
+        self.assertEqual(template._get_recipient(self.dress), self.brenda)
+        self.assertIn("/produits", template._render(template.button_url_value, self.dress)[self.dress.id])

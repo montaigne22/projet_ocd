@@ -371,5 +371,21 @@
             ]"/>
         </record>
 
+        <record id="template_low_stock_en" model="whatsapp.template">
+            <field name="name">OCD Live: low stock (English)</field>
+            <field name="template_name">ocd_stock_bas</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="partner_field">product_tmpl_id.ocd_vendor_id</field>
+            <field name="body">Hello {{1}}, only {{2}} of {{3}} are left in stock after a sale. Tap « My products » to add more when you have some.</field>
+            <field name="button_url_value">{{ object.product_tmpl_id._ocd_vendor_products_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My products', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/produits'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.product_tmpl_id.ocd_vendor_id.name }}', 'sample_value': 'Brenda'}),
+                (0, 0, {'sequence': 2, 'value': '{{ \'1 piece\' if ctx.get(\'ocd_low_qty\') == 1 else \'%s pieces\' % ctx.get(\'ocd_low_qty\') }}', 'sample_value': '2 pieces'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.display_name }}', 'sample_value': 'Wax dress (Blue, M)'}),
+            ]"/>
+        </record>
+
     </data>
 </odoo>
