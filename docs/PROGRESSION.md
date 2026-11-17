@@ -141,8 +141,11 @@ cinq étapes.
   nouveau en vente). Une à la fois chez un vendeur ; après 2 absences, plus possible chez lui (le vendeur
   peut débloquer). Délai passé : la pièce revient seule, sans compter d'absence. Back-office : « Pièces
   mises de côté ».
-- Corrigé au passage : les onglets de Mes colis restent sur une ligne quel que soit leur nombre.
-- Tests : 28 nouveaux ; la suite complète sur base neuve (tous les modules OCD) est en cours ; contrôlé dans un
+- Corrigé au passage : les onglets de Mes colis restent sur une ligne quel que soit leur nombre. Le
+  contrôle des modèles WhatsApp (base neuve) a fait réécrire les nouveaux messages selon les règles de
+  Meta : des mots entre deux variables, pas le mot « code » (le bouton d'un colis prêt est « Ma
+  commande », le code est sur cette page), assez de mots pour les variables.
+- Tests : base neuve, tous les modules OCD : **404 sans échec** (28 nouveaux) ; contrôlé dans un
   navigateur en français en trois tailles (390, 820, 1440 px) : mode vacances, shop « Près de moi », lives
   d'un pays, étape « Livraison » avec retrait, paiement au comptoir, suivi « Prête au magasin », fiche
   produit et ses magasins, demande et page de mise de côté, Mes colis (« Retrait », « À essayer »).
