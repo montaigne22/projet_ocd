@@ -103,7 +103,7 @@ de nouveau. Les vendeurs dont les produits sont dans le stock d'OCD ne sont pas 
 | S.5 | **Retrait dans un magasin** | Le client ne choisit qu'un magasin qui a le produit | Retrait en magasin (A.1) | ~1 jour de plus sur A.1 ; **fait le 17 novembre 2026 (chantier 20, avec A.1)** |
 | S.6 | **Back-office** | Stock par magasin sur la fiche produit et la fiche vendeur | Stock par emplacement d'Odoo | ~1 jour ; **fait le 16 novembre 2026 (chantier 18)** |
 
-## Autour des magasins et de la boutique (7 à 8 semaines) · A.1 à A.3, A.5 et A.7 faits le 17 novembre 2026 (chantier 20), A.9 le même jour (chantier 22)
+## Autour des magasins et de la boutique (7 à 8 semaines) · A.1 à A.3, A.5 et A.7 faits le 17 novembre 2026 (chantier 20), A.8 et A.9 le même jour (chantiers 1 et 22)
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
@@ -114,7 +114,7 @@ de nouveau. Les vendeurs dont les produits sont dans le stock d'OCD ne sont pas 
 | A.5 | **Mode vacances** | « De retour le 2 janvier » sur la boutique : produits visibles, commandes en pause, « Préviens-moi à son retour » | « Préviens-moi » de la boutique (`ocd.boutique.alert`) | ~2 jours ; ne dépend pas des magasins, peut se faire tôt ; **fait le 17 novembre 2026 (chantier 20)** |
 | A.6 | **Magasins points relais** | Les vendeurs qui le veulent gardent les colis d'autres vendeurs | Magasins (M.1) | Avec le chantier 10 (Points relais) de la feuille de route |
 | A.7 | **Mettre de côté pour essayer** | Le client réserve une pièce dans un magasin pour venir l'essayer ; le vendeur est prévenu et peut refuser ; la pièce est libérée seule après le délai. Garde-fous : 24 h, une réservation active par client chez un vendeur, plus de réservation après deux absences | Stock par magasin (S), magasins (M.1) | ~1 semaine, après S et A.1 ; **fait le 17 novembre 2026 (chantier 20)** |
-| A.8 | **Nouveautés aux abonnés** | Un message groupé : « Cette semaine chez Awa : 3 nouveautés », seulement à ceux qui suivent le vendeur ; une fois par mois, chaque semaine avec OCD Business | « Suivre un vendeur » (chantier 1 de la feuille de route), modèle WhatsApp *Marketing* | 2 à 3 jours, après le chantier 1 |
+| A.8 | **Nouveautés aux abonnés** | Un message groupé : « Cette semaine chez Awa : 3 nouveautés », seulement à ceux qui suivent le vendeur ; une fois par mois, chaque semaine avec OCD Business | « Suivre un vendeur » (chantier 1 de la feuille de route), modèle WhatsApp *Marketing* | 2 à 3 jours, après le chantier 1 ; **fait le 17 novembre 2026 (chantier 1)** |
 | A.9 | **Équipe du vendeur** | La vendeuse d'un magasin a son propre accès, limité au stock et aux commandes de son magasin, sans les prix ni les reversements | Connexion par lien ou code WhatsApp, magasins, stock par magasin | 1 à 2 semaines, en dernier ; **fait le 17 novembre 2026 (chantier 22)** |
 
 ## OCD Business : ce qui est réservé à la formule (~2 jours dans ce plan)

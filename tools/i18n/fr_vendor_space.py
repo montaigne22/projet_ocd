@@ -1177,3 +1177,116 @@ VENDOR_SPACE.update({
     "OCD Live: piece to try at the store (team)": "OCD Live : pièce à essayer au magasin (équipe)",
     "OCD Live: piece to try at the store (team) (English)": "OCD Live : pièce à essayer au magasin (équipe) (anglais)",
 })
+
+# Chantier 1: follow a vendor and their news (design SuivreVendeur)
+VENDOR_SPACE.update({
+    "%(contact)s follows %(vendor)s": "%(contact)s suit %(vendor)s",
+    "%(count)s products put on sale since the last news: %(names)s":
+        "%(count)s produits mis en vente depuis le dernier envoi : %(names)s",
+    "%(names)s and %(count)s more": "%(names)s et %(count)s autres",
+    "%s and 1 more": "%s et 1 autre",
+    "%s followers": "%s abonnés",
+    "+%s this week": "+%s cette semaine",
+    "1 follower": "1 abonné",
+    "1 product put on sale since the last news: %s": "1 produit mis en vente depuis le dernier envoi : %s",
+    ": you are told on WhatsApp at each live.": " : tu es prévenu sur WhatsApp à chaque live.",
+    "<b>At each live</b>": "<b>À chaque live</b>",
+    "<b>Their news</b>": "<b>Ses nouveautés</b>",
+    "<small class=\"o_ocd_parcel_hint\">You stop whenever you want, here or by answering STOP.</small>":
+        "<small class=\"o_ocd_parcel_hint\">Tu arrêtes quand tu veux, ici ou en répondant STOP.</small>",
+    "<small>My followers</small>": "<small>Mes abonnés</small>",
+    "<small>They receive a WhatsApp at each live, and your news.</small>":
+        "<small>Ils reçoivent un WhatsApp à chaque live, et tes nouveautés.</small>",
+    "<span>At each live</span>": "<span>À chaque live</span>",
+    "<span>Follow: a WhatsApp at each live</span>": "<span>Suivre : un WhatsApp à chaque live</span>",
+    "<span>Follow</span>": "<span>Suivre</span>",
+    "<span>Followed</span>": "<span>Suivie</span>",
+    "<span>Share my boutique to get followers</span>": "<span>Partager ma boutique pour avoir des abonnés</span>",
+    "<span>Their news</span>": "<span>Ses nouveautés</span>",
+    "A WhatsApp message on Friday with the products the vendor put on sale.":
+        "Un message WhatsApp le vendredi avec les produits mis en vente par le vendeur.",
+    "A WhatsApp message when the vendor goes live.": "Un message WhatsApp quand le vendeur est en live.",
+    "A message on %(day)s with what is new at %(vendor)s, each week":
+        "Un message le %(day)s avec les nouveautés de %(vendor)s, chaque semaine",
+    "A message once a month, on %(day)s, with what is new at %(vendor)s":
+        "Un message une fois par mois, le %(day)s, avec les nouveautés de %(vendor)s",
+    "All my followed vendors": "Tous mes vendeurs suivis",
+    "At Each Live": "À chaque live",
+    "Choose the lives, the news, or both.": "Choisis les lives, les nouveautés, ou les deux.",
+    "Day Of The News To The Followers": "Jour des nouveautés aux abonnés",
+    "Each week, with OCD Business.": "Chaque semaine, avec OCD Business.",
+    "Follow": "Suivre",
+    "Followed At": "Suivi depuis le",
+    "Followed From": "Suivi depuis",
+    "Follower Of A Vendor": "Abonné d'un vendeur",
+    "Followers": "Abonnés",
+    "Followers Count": "Nombre d'abonnés",
+    "Followers Not Told": "Abonnés pas prévenus",
+    "Followers Told At": "Abonnés prévenus le",
+    "Followers of %s": "Abonnés de %s",
+    "Followers of the vendors": "Abonnés des vendeurs",
+    "Follows": "Suit",
+    "Last Live Told": "Dernier live annoncé",
+    "Last News Told": "Dernières nouveautés envoyées",
+    "Live %s": "Live %s",
+    "Live Messages To The Followers Per Day At Most": "Lives annoncés aux abonnés par jour, au plus",
+    "Lives told to the followers": "Lives annoncés aux abonnés",
+    "My followed vendors": "Mes vendeurs suivis",
+    "My followed vendors ·": "Mes vendeurs suivis ·",
+    "News Sent At": "Nouveautés envoyées le",
+    "News of a vendor: tell their followers": "Nouveautés d'un vendeur : prévenir ses abonnés",
+    "News to the followers": "Nouveautés aux abonnés",
+    "Next news: %s": "Prochaines nouveautés : %s",
+    "No longer follow": "Ne suivent plus",
+    "No longer followed: kept for the history of the vendor.": "Plus suivi : gardé pour l'historique du vendeur.",
+    "Nothing new since the last news: put a product on sale, your followers get it.":
+        "Rien de nouveau depuis le dernier envoi : mets un produit en vente, tes abonnés le reçoivent.",
+    "OCD Live team": "Équipe OCD Live",
+    "OCD Live: the news of the vendors to their followers": "OCD Live : les nouveautés des vendeurs à leurs abonnés",
+    "On Friday from 10:00 at the hour of the vendor (setting): once a month, each week with OCD Business":
+        "Le vendredi dès 10 h à l'heure du vendeur (réglage) : une fois par mois, chaque semaine avec OCD Business",
+    "On this phone, with the": "Sur ce téléphone, avec le",
+    "Once a month (the first such day of the month) for every vendor, each week with OCD Business.":
+        "Une fois par mois (le premier de ces jours du mois) pour tous les vendeurs, chaque semaine avec OCD Business.",
+    "Once a month. With OCD Business: each week.": "Une fois par mois. Avec OCD Business : chaque semaine.",
+    "Per vendor and per day: the followers are told of their first lives only. 0: never.":
+        "Par vendeur et par jour : les abonnés sont prévenus de ses premiers lives seulement. 0 : jamais.",
+    "Per vendor: the followers are told of their first lives of the day only. 0: never.":
+        "Par vendeur : les abonnés sont prévenus de ses premiers lives du jour seulement. 0 : jamais.",
+    "Products Of The Last News": "Produits des dernières nouveautés",
+    "Send them the products put on sale, with the link of the boutique (the news first).":
+        "Leur envoyer les produits mis en vente, avec le lien de la boutique (les nouveautés d'abord).",
+    "Stop following": "Ne plus suivre",
+    "Tell me (before)": "Me prévenir (avant)",
+    "The customers who follow a vendor: a WhatsApp at each live of the vendor, and their news on Friday if they want. The vendor sees how many, never their numbers.":
+        "Les clients qui suivent un vendeur : un WhatsApp à chaque live du vendeur, et ses nouveautés le vendredi s'ils le veulent. Le vendeur voit combien, jamais leurs numéros.",
+    "The followers of the vendor who want their lives (2 lives at most a day per vendor, setting).":
+        "Les abonnés du vendeur qui veulent ses lives (2 lives au plus par jour et par vendeur, réglage).",
+    "The followers were not told: %s lives told today already.": "Les abonnés n'ont pas été prévenus : %s lives déjà annoncés aujourd'hui.",
+    "The followers who want the news of the vendor; only when the vendor put products on sale since the last news.":
+        "Les abonnés qui veulent les nouveautés du vendeur ; seulement s'il a mis des produits en vente depuis le dernier envoi.",
+    "The products a vendor put on sale, to their followers: once a month (the first such day), each week with OCD Business; from 10:00.":
+        "Les produits mis en vente par un vendeur, à ses abonnés : une fois par mois (le premier de ces jours), chaque semaine avec OCD Business ; dès 10 h.",
+    "Their News": "Ses nouveautés",
+    "This contact already follows this vendor.": "Ce contact suit déjà ce vendeur.",
+    "This is your boutique: your customers follow it.": "C'est ta boutique : ce sont tes clients qui la suivent.",
+    "This vendor cannot be followed.": "Ce vendeur ne peut pas être suivi.",
+    "Too many lives of the vendor today: the followers were not told of this one.":
+        "Trop de lives du vendeur aujourd'hui : les abonnés n'ont pas été prévenus de celui-ci.",
+    "Vendor live: tell their followers": "Vendeur en live : prévenir ses abonnés",
+    "Want the news": "Veulent les nouveautés",
+    "When the followers of the vendor were told this live started.": "Quand les abonnés du vendeur ont été prévenus du début de ce live.",
+    "With the number": "Avec le numéro",
+    "You are told on WhatsApp when it starts.": "Tu es prévenu sur WhatsApp quand il commence.",
+    "You follow": "Tu suis",
+    "You follow %s: a WhatsApp at each live, and their news.": "Tu suis %s : un WhatsApp à chaque live, et ses nouveautés.",
+    "You follow %s: a WhatsApp at each live.": "Tu suis %s : un WhatsApp à chaque live.",
+    "You follow no vendor yet. Tap « Follow » on a boutique: a WhatsApp at each live.":
+        "Tu ne suis encore aucun vendeur. Touche « Suivre » sur une boutique : un WhatsApp à chaque live.",
+    "You no longer follow %s.": "Tu ne suis plus %s.",
+    "lives a day at most": "lives par jour au plus",
+    "« %s is live now »": "« %s est en live maintenant »",
+    "See the lives": "Voir les lives",
+    "OCD Live: news of a vendor": "OCD Live : nouveautés d'un vendeur",
+    "OCD Live: news of a vendor (English)": "OCD Live : nouveautés d'un vendeur (anglais)",
+})

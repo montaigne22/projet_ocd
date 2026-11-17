@@ -37,6 +37,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Autour des magasins (chantier 20) : mode vacances, vendeurs près de chez moi, le bot WhatsApp donne les magasins, retrait en magasin (payé au comptoir, code après l'argent), mettre de côté pour essayer | ✅ fait, testé (8 modèles WhatsApp à faire approuver par Meta) ; les nouveautés aux abonnés (A.8) attendent le chantier 1 |
 | Vendre plus (chantier 21) : préparer son prochain live (les produits pour la régie, dans l'ordre du vendeur), alerte de stock bas sur WhatsApp, tailles et couleurs dès la création | ✅ fait, testé (le WhatsApp est le modèle `ocd_stock_bas`, soumis à Meta le 16 novembre) |
 | Équipe du vendeur (chantier 22) : la personne qui tient un magasin a son espace « Mon magasin » (connexion par son numéro, lien ou code), le stock de son magasin sans les prix, ses colis, retraits au comptoir et pièces à essayer, sans les reversements ; « Mon équipe » du vendeur (5 au plus, OCD Business, en pause sans rien supprimer) ; onglet « Équipe » du back-office | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
+| Suivre un vendeur (chantier 1) et ses nouveautés (A.8) : « Suivre » sur la boutique, les cartes des lives, le replay et la fiche produit ; un WhatsApp à chaque live (2 par jour au plus) ; les nouveautés le vendredi (une fois par mois, chaque semaine avec OCD Business) ; « Mes vendeurs suivis » ; « Mes abonnés » du vendeur | ✅ fait, testé (1 modèle WhatsApp Marketing à faire approuver par Meta) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -111,6 +112,37 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 17 novembre 2026 · Suivre un vendeur et ses nouveautés (chantier 1, A.8)
+Dessiné d'abord (maquette `SuivreVendeur`, validée), puis codé.
+- **Suivre** remplace « Me prévenir sur WhatsApp » (un seul live) : sur la boutique (sous le nom, avec le
+  nombre d'abonnés, et dans « Prochain live »), les cartes des lives, le replay et la fiche d'un produit.
+  La page `/ocd/suivre/<vendeur>` demande le numéro (sauf pour une personne connue sur ce téléphone) et
+  deux choix : « À chaque live », « Ses nouveautés ». « Suivie » ouvre la même page pour changer ou
+  « Ne plus suivre ». Suivre vaut accord pour ces messages ; STOP les arrête comme les autres.
+- **À chaque live** : au début de chaque live, les abonnés reçoivent le WhatsApp `ocd_vendeur_en_live`
+  (le même modèle qu'avant, son bouton ouvre la boutique sur leur téléphone) ; 2 lives par jour au plus et
+  par vendeur (réglage « Lives annoncés aux abonnés ») ; un abonné arrivé pendant le live n'est pas
+  prévenu de ce live.
+- **Nouveautés** (A.8) : le vendredi (réglage) dès 10 h à l'heure du vendeur, les produits mis en vente
+  depuis le dernier envoi (« Robe en wax, Sac en raphia et 1 autre ») ; rien de nouveau, rien d'envoyé ;
+  une fois par mois (le premier vendredi) pour tous, chaque semaine avec OCD Business. Le bouton ouvre la
+  boutique avec ces produits en premier, marqués « Nouveau » (les produits de la semaine le sont toujours).
+- **Mes vendeurs suivis** (`/ocd/suivis`, aussi depuis la page du numéro) : un interrupteur par choix et
+  « Ne plus suivre ». Un numéro tapé n'est pas vérifié : ce téléphone ne retrouve que les abonnements faits
+  sur lui ; le bouton d'un message ouvre tous ceux de son numéro.
+- **Le vendeur** : « Mes abonnés » dans Mon espace (combien, +N cette semaine, jamais les numéros), les
+  prochaines nouveautés et « Partager ma boutique pour avoir des abonnés ». **Back-office** : bouton
+  « Abonnés » sur la fiche du vendeur, menu Shop › « Abonnés des vendeurs », automatisation « Nouveautés
+  d'un vendeur : prévenir ses abonnés ».
+- Les « Me prévenir » en attente deviennent des abonnements aux lives (sans les nouveautés).
+- Tests : base neuve, tous les modules OCD : **433 sans échec** (9 nouveaux) ; contrôlé dans
+  un navigateur en français en trois tailles (390, 820, 1440 px) : la boutique, la page Suivre, Mes
+  vendeurs suivis, les cartes des lives, Mon espace du vendeur.
+- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.18.0, `ocd_live_shop` 20.0.1.35.0,
+  `ocd_live_shop_whatsapp` 20.0.1.25.0 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`). À soumettre à
+  Meta (**Marketing**, français et anglais) : `ocd_vendeur_nouveautes`. Le modèle `ocd_vendeur_en_live`
+  ne change pas chez Meta.
 
 ### 17 novembre 2026 · L'équipe du vendeur (chantier 22)
 Dessiné d'abord (maquette `EquipeDuVendeur`, validée), puis codé.

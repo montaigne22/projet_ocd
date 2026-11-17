@@ -322,6 +322,23 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     nouvelles de son magasin (colis à préparer, pièce à essayer) seulement **si elle les accepte** depuis
     son accueil, le même accord que partout (STOP les arrête). Le vendeur continue de tout recevoir ;
   - le lien personnel d'un livreur ou d'une personne d'une équipe n'ouvre jamais un espace de vendeur.
+- **Suivre un vendeur** (chantier 1 et A.8 du plan ; maquette `SuivreVendeur` validée le 17 novembre 2026) :
+  - « Suivre » remplace « Me prévenir sur WhatsApp » : **un WhatsApp à chaque live** du vendeur, au début
+    du live, 2 lives par jour au plus et par vendeur (réglable) ; un abonné arrivé pendant le live n'est
+    pas prévenu de celui-ci. Les « Me prévenir » en attente sont devenus des abonnements aux lives ;
+  - **les nouveautés** : le vendredi (réglable) dès 10 h à l'heure du vendeur, les produits mis en vente
+    (vérifiés, en vente) depuis le dernier envoi ; rien de nouveau, rien d'envoyé. **Une fois par mois**
+    (le premier vendredi) pour tous, **chaque semaine avec OCD Business**. Modèle **Marketing** chez Meta,
+    seulement aux abonnés qui ont coché « Ses nouveautés » ;
+  - **suivre vaut accord** pour ces messages (la case d'OCD Live et celle de WhatsApp), jamais après STOP ;
+    STOP arrête tout, « Ne plus suivre » arrête un vendeur ;
+  - **un numéro tapé n'est pas vérifié** : un téléphone ne retrouve que les abonnements faits sur lui
+    (cookie signé) ; le bouton d'un message (son secret) ouvre tous les abonnements de ce numéro. Une
+    personne connue (vendeur, compte, abonné venu d'un message) suit sans retaper son numéro ;
+  - **le vendeur voit combien** d'abonnés (et les nouveaux de la semaine), **jamais leurs numéros** ;
+    l'équipe les voit dans le back-office ;
+  - « Nouveau » sur la boutique : un produit mis en vente dans les 7 derniers jours ; depuis le message des
+    nouveautés, ses produits passent en premier.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une
