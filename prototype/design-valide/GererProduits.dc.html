@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Gérer ses produits</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.thumbs{display:flex;gap:8px;overflow:hidden}
+.th{position:relative;flex:none;width:92px;height:92px;border-radius:14px;background:#F5F2EE;display:grid;place-items:center;font-size:11.5px;font-weight:600;color:#665F58}
+.th .x{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;background:#FFFFFF;display:grid;place-items:center;font-size:14px;font-weight:800;color:#15130F;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.th .main{position:absolute;left:4px;bottom:4px;background:#15130F;color:#FFF;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700}
+.th .new{position:absolute;left:4px;bottom:4px;background:#FFF0CC;color:#6B4500;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700}
+.th.add{background:#FFFFFF;border:2px dashed #E7E2DC;box-sizing:border-box;color:#15130F;font-weight:700;font-size:13px;text-align:center;line-height:1.2}
+.ask{border-radius:14px;background:#FFF0E3;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.ask b{font-size:15px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wait{background:#FFF0CC;color:#6B4500}
+.gone{background:#EEF0F2;color:#665F58}
+.prod{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC}
+.prod .ph{width:52px;height:52px;font-size:11px;border-radius:12px}
+.small{font-size:13.5px}
+.linkb{font-weight:700;font-size:14.5px;text-decoration:underline}
+.wa{align-self:flex-start;max-width:310px;background:#DCF8C6;border-radius:12px;padding:8px 10px;font-size:14px}
+.ba{display:grid;grid-template-columns:110px 1fr 1fr;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid #E3E6E9;font-size:14px}
+.ba .k{font-weight:700;color:#5A6068}
+.bo{background:#F4F5F7}
+</style>
+</head>
+<body>
+<!-- Gérer ses produits (chantier 19, étape 2 du plan) : modifier un produit en vente (2.1),
+     plusieurs photos (2.6), retirer et remettre (2.2), brouillon gardé hors connexion (2.7), et ce
+     que l'équipe vérifie. Le nom et les photos (photos de couleur comprises) sont vérifiés par
+     l'équipe : la version d'aujourd'hui reste en vente en attendant. Le prix n'est pas vérifié, un
+     écart de plus de 50 % se confirme ; le stock ne l'est jamais. Données d'exemple : Awa Couture,
+     Douala. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · modifier un produit en vente, Mes produits, l'enregistrement</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. Modifier : les photos, le nom, le prix -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes produits</span></div>
+    <h1 class="d" style="margin:0;font-size:28px;line-height:1.05">Modifier</h1>
+    <div class="note">Le nom et les photos sont vérifiés par l'équipe : en attendant, la robe reste en vente comme aujourd'hui.</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span class="lab" style="margin:0">Photos <span class="h" style="font-weight:600">· 3 sur 8 · la première est sur la carte</span></span>
+      <div class="thumbs">
+        <span class="th">Photo 1<span class="x">×</span><span class="main">Principale</span></span>
+        <span class="th">Photo 2<span class="x">×</span></span>
+        <span class="th">Photo 3<span class="x">×</span><span class="new">Nouvelle</span></span>
+      </div>
+      <div class="two">
+        <span class="btn">+ Ajouter une photo</span>
+        <span class="btn">Changer l'ordre</span>
+      </div>
+    </div>
+    <div><div class="lab">Nom</div><div class="in">Robe en wax, col rond</div></div>
+    <div><div class="lab">Prix</div><div class="in" style="border-color:#F46A00">1 500 F</div></div>
+    <div class="ask" role="alert">
+      <b>Tu passes de 15 000 F à 1 500 F, c'est bien ça ?</b>
+      <div class="two"><span class="btn" style="background:#15130F;color:#FFF;box-shadow:none">Oui, 1 500 F</span><span class="btn">Corriger</span></div>
+    </div>
+    <div class="h">Le prix change tout de suite, sans vérification. Le stock se change dans <a class="linkb">Mon stock</a>.</div>
+    <span class="cta">Enregistrer</span>
+    <div style="border-top:1px solid #E7E2DC;padding-top:12px;display:flex;flex-direction:column;gap:6px">
+      <span class="btn">Retirer de la vente</span>
+      <span class="h">Le produit n'est plus montré ; tu peux le remettre quand tu veux. Il n'est jamais effacé : les commandes passées le gardent.</span>
+    </div>
+  </div>
+
+  <!-- 2. Mes produits : une modification en vérification, un produit retiré, un brouillon hors connexion -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <div class="note" style="background:#EEF0F2;border-color:#C9CDD2;color:#15130F"><b>Pas de réseau.</b> Tu peux continuer : tes produits sont gardés dans ton téléphone et partent tout seuls quand le réseau revient.</div>
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Ma boutique</h1>
+    <div style="display:flex;gap:6px;overflow:hidden">
+      <span class="chip on">Tous · 4</span><span class="chip">En ligne · 2</span><span class="chip">À vérifier · 1</span><span class="chip">Retirés · 1</span>
+    </div>
+    <div class="prod">
+      <span class="ph">Photo</span>
+      <span style="display:flex;flex-direction:column;gap:3px;min-width:0">
+        <b style="font-size:15px">Pagne super wax</b>
+        <span style="display:flex;gap:8px;align-items:center" class="small">9 000 F <span class="tag wait">Dans ton téléphone</span></span>
+        <span class="h">Partira tout seul quand le réseau revient</span>
+      </span>
+    </div>
+    <div class="prod">
+      <span class="ph">Photo</span>
+      <span style="display:flex;flex-direction:column;gap:3px;min-width:0">
+        <b style="font-size:15px">Robe en wax</b>
+        <span style="display:flex;gap:8px;align-items:center" class="small">15 000 F <span class="tag ok">En ligne</span></span>
+        <span class="h">Modification en vérification : nouveau nom, 1 nouvelle photo. La version d'aujourd'hui reste en vente.</span>
+      </span>
+    </div>
+    <div class="prod">
+      <span class="ph">Photo</span>
+      <span style="display:flex;flex-direction:column;gap:3px;min-width:0">
+        <b style="font-size:15px">Sac en raphia</b>
+        <span style="display:flex;gap:8px;align-items:center" class="small">8 500 F <span class="tag gone">Retiré</span></span>
+        <span class="h">Plus montré dans ta boutique</span>
+      </span>
+      <span class="btn" style="grid-column:1/-1">Remettre en vente</span>
+    </div>
+    <div class="prod" style="border-bottom:0">
+      <span class="ph">Photo</span>
+      <span style="display:flex;flex-direction:column;gap:3px;min-width:0">
+        <b style="font-size:15px">Chemise wax</b>
+        <span style="display:flex;gap:8px;align-items:center" class="small">9 000 F <span class="tag ok">En ligne</span></span>
+        <span class="h"><b style="color:#8E1220">Modification refusée</b> : « Nom qui ne décrit pas le produit ». La version d'avant reste en vente.</span>
+      </span>
+      <span class="btn" style="grid-column:1/-1">Corriger et renvoyer</span>
+    </div>
+  </div>
+
+  <!-- 3. Après « Enregistrer », et le message de l'équipe -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <div class="ok" style="border-radius:14px;padding:12px 14px;font-weight:600;font-size:14.5px">C'est noté : l'équipe vérifie le nouveau nom et la nouvelle photo. La robe reste en vente comme avant en attendant. Le prix a changé tout de suite.</div>
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Ma boutique</h1>
+    <div class="prod" style="border-bottom:0">
+      <span class="ph">Photo</span>
+      <span style="display:flex;flex-direction:column;gap:3px;min-width:0">
+        <b style="font-size:15px">Robe en wax</b>
+        <span style="display:flex;gap:8px;align-items:center" class="small">1 500 F <span class="tag ok">En ligne</span></span>
+        <span class="h">Modification en vérification</span>
+      </span>
+    </div>
+    <span class="cap" style="margin:8px 0 0">Brouillon commencé sans réseau</span>
+    <div class="note" style="background:#F5F2EE;border:0;color:#15130F">Ton produit est gardé dans ton téléphone, avec sa photo. Il partira tout seul vers l'équipe dès que le réseau revient, même si tu fermes la page.</div>
+    <span class="cap" style="margin:8px 0 0">WhatsApp au vendeur</span>
+    <span class="wa">Bonjour Awa, votre produit Robe en wax, col rond est accepté : il est maintenant visible dans votre boutique OCD Live. Touchez « Mes produits » pour le voir.</span>
+    <span class="h">Le message existe déjà (chantier 17) : il sert aussi pour une modification acceptée ou refusée.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · modifier : les photos à gauche, le nom et le prix à droite</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Moi</a></nav>
+<span class="right"><span class="pill">Partager</span><span class="round">FR</span></span></div>
+<div style="display:grid;grid-template-columns:270px minmax(0,1fr)">
+  <aside class="side" style="display:flex;flex-direction:column;gap:4px;padding:24px 16px;border-right:1px solid #E7E2DC;min-height:760px;box-sizing:border-box">
+    <div style="display:flex;gap:10px;align-items:center;padding:0 6px 14px"><span class="round" style="width:44px;height:44px;background:#FFE7D1;border:0">AC</span><span><b>Awa Couture</b><br><span class="h">Vendu par OCD</span></span></div>
+    <a>Mon espace</a><a class="on">Mes produits</a><a>Mes magasins</a><a>Mes colis</a><a>Mes prix de livraison</a><a>Ma carte dans le fil</a>
+  </aside>
+  <main style="display:flex;flex-direction:column;gap:18px;padding:28px 40px 40px">
+    <h1 class="d" style="margin:0;font-size:34px">Modifier · Robe en wax</h1>
+    <div class="note" style="max-width:760px">Le nom et les photos sont vérifiés par l'équipe : en attendant, la robe reste en vente comme aujourd'hui. Le prix change tout de suite.</div>
+    <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span class="lab" style="margin:0">Photos <span class="h" style="font-weight:600">· 3 sur 8 · glisse une photo pour changer l'ordre, la première est sur la carte</span></span>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+          <span class="th" style="width:auto;height:150px">Photo 1<span class="x">×</span><span class="main">Principale</span></span>
+          <span class="th" style="width:auto;height:150px">Photo 2<span class="x">×</span></span>
+          <span class="th" style="width:auto;height:150px">Photo 3<span class="x">×</span><span class="new">Nouvelle</span></span>
+          <span class="th add" style="width:auto;height:150px">+ Ajouter<br>une photo</span>
+        </div>
+        <span class="h">Photos des couleurs : Bleu (vérifiée), Rouge (nouvelle, en vérification) · <a class="linkb">Mon stock</a></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><div class="lab">Nom</div><div class="in">Robe en wax, col rond</div></div>
+        <div><div class="lab">Prix</div><div class="in" style="border-color:#F46A00">1 500 F</div></div>
+        <div class="ask" role="alert"><b>Tu passes de 15 000 F à 1 500 F, c'est bien ça ?</b>
+          <div class="two"><span class="btn" style="background:#15130F;color:#FFF;box-shadow:none">Oui, 1 500 F</span><span class="btn">Corriger</span></div></div>
+        <span class="cta">Enregistrer</span>
+        <div style="display:flex;gap:12px;align-items:center"><span class="btn">Retirer de la vente</span><span class="h">Jamais effacé : tu peux le remettre quand tu veux.</span></div>
+      </div>
+    </div>
+  </main>
+</div></div>
+
+<span class="cap" style="margin-top:18px">Tablette · 820 px · les photos sur une ligne, le nom et le prix côte à côte</span>
+<div class="screen tab"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Moi</a></nav>
+<span class="right"><span class="round">FR</span></span></div>
+<div style="display:flex;gap:8px;padding:14px 24px;border-bottom:1px solid #E7E2DC"><span class="chip">Mon espace</span><span class="chip on">Mes produits</span><span class="chip">Mes magasins</span><span class="chip">Mes colis</span></div>
+<main style="display:flex;flex-direction:column;gap:14px;padding:22px 24px 28px">
+  <h1 class="d" style="margin:0;font-size:28px">Modifier · Robe en wax</h1>
+  <div class="note">Le nom et les photos sont vérifiés par l'équipe : en attendant, la robe reste en vente comme aujourd'hui.</div>
+  <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px">
+    <span class="th" style="width:auto;height:120px">Photo 1<span class="x">×</span><span class="main">Principale</span></span>
+    <span class="th" style="width:auto;height:120px">Photo 2<span class="x">×</span></span>
+    <span class="th" style="width:auto;height:120px">Photo 3<span class="x">×</span><span class="new">Nouvelle</span></span>
+    <span class="th add" style="width:auto;height:120px">+ Ajouter<br>une photo</span>
+  </div>
+  <div class="two" style="gap:16px"><div><div class="lab">Nom</div><div class="in">Robe en wax, col rond</div></div><div><div class="lab">Prix</div><div class="in">15 000 F</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center"><span class="cta">Enregistrer</span><span class="btn">Retirer de la vente</span></div>
+</main></div>
+
+<span class="cap" style="margin-top:18px">Back-office · « À vérifier » : une modification, avant et maintenant ; l'historique des prix sur la fiche du produit</span>
+<div class="screen pc bo" style="padding:24px 32px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:start">
+  <div style="background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:16px 18px">
+    <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">Robe en wax · Awa Couture</b><span class="tag low">Modification</span></div>
+    <span class="h">En vente pendant la vérification · envoyée il y a 12 min</span>
+    <div class="ba" style="border-top:1px solid #E3E6E9;margin-top:10px"><span></span><span class="k">Avant (en vente)</span><span class="k">Maintenant</span></div>
+    <div class="ba"><span class="k">Nom</span><span>Robe en wax</span><span><b>Robe en wax, col rond</b></span></div>
+    <div class="ba"><span class="k">Photos</span><span style="display:flex;gap:6px"><span class="ph" style="width:56px;height:56px">1</span><span class="ph" style="width:56px;height:56px">2</span></span><span style="display:flex;gap:6px"><span class="ph" style="width:56px;height:56px">1</span><span class="ph" style="width:56px;height:56px">2</span><span class="ph" style="width:56px;height:56px;outline:2px solid #F0C987">3 · nouvelle</span></span></div>
+    <div class="ba"><span class="k">Couleur Rouge</span><span class="h">Pas de photo</span><span><span class="ph" style="width:56px;height:56px;outline:2px solid #F0C987">nouvelle</span></span></div>
+    <div class="ba" style="border-bottom:0"><span class="k">Prix</span><span>15 000 F</span><span>1 500 F <span class="h">(déjà en vente, confirmé par le vendeur)</span></span></div>
+    <div style="display:flex;gap:10px;margin-top:10px"><span class="btn" style="background:#0F7A43;color:#FFF;box-shadow:none">Accepter la modification</span><span class="btn">Refuser avec un motif</span></div>
+    <span class="h" style="display:block;margin-top:8px">Refusée : la version d'avant reste en vente, le vendeur reçoit le motif et corrige.</span>
+  </div>
+  <div style="background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:16px 18px">
+    <b style="font-size:16px">Historique des prix · Robe en wax</b>
+    <div class="ba" style="grid-template-columns:120px 1fr 1fr"><span class="k">Date</span><span class="k">Prix</span><span class="k">Par</span></div>
+    <div class="ba" style="grid-template-columns:120px 1fr 1fr"><span>16 nov. 10:12</span><span><b>1 500 F</b> <span class="tag low">−90 %</span></span><span>Awa (confirmé)</span></div>
+    <div class="ba" style="grid-template-columns:120px 1fr 1fr"><span>2 nov. 18:40</span><span>15 000 F</span><span>Awa</span></div>
+    <div class="ba" style="grid-template-columns:120px 1fr 1fr;border-bottom:0"><span>28 oct. 09:05</span><span>12 000 F</span><span>Awa (création)</span></div>
+    <span class="h">Un écart de plus de 50 % (réglable) est signalé ; l'équipe peut remettre l'ancien prix.</span>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
