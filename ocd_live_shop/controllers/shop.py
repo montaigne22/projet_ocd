@@ -14,6 +14,10 @@ from odoo.addons.website_sale.controllers.cart import Cart
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 
 from . import shop_common
+from . import where as where_filter
+
+# Products of the shop shown at once from the nearest vendor, then « See more » (chantier 20)
+NEAR_PAGE = 24
 
 PAGE_TEMPLATES = {
     "website_sale.products": "ocd_live_shop.shop",
@@ -46,6 +50,16 @@ class OcdShop(WebsiteSale):
 
     # === SHOP === #
 
+    def _ocd_where(self):
+        """The filter « Where? » of the address (see controllers/where.py)."""
+        return where_filter.state()
+
+    def _ocd_where_domain(self):
+        where = self._ocd_where()
+        if where["vendors"] is None:
+            return None
+        return Domain("ocd_vendor_id", "in", where["vendors"].ids)
+
     def _get_shop_domain(self, search, category, attribute_value_dict, search_in_description=True, tags=None):
         domain = super()._get_shop_domain(
             search, category, attribute_value_dict, search_in_description=search_in_description, tags=tags
@@ -53,6 +67,9 @@ class OcdShop(WebsiteSale):
         ocd_category = request.params.get("categorie")
         if ocd_category and str(ocd_category).isdigit():
             domain = Domain.AND([domain, Domain("ocd_category_id", "=", int(ocd_category))])
+        where = self._ocd_where_domain()
+        if where is not None:
+            domain = Domain.AND([domain, where])
         return domain
 
     def _get_search_options(self, *args, **kwargs):
@@ -62,31 +79,66 @@ class OcdShop(WebsiteSale):
         if ocd_category and str(ocd_category).isdigit():
             extra = [("ocd_category_id", "=", int(ocd_category))]
             options["extra_domain"] = Domain.AND([options["extra_domain"], extra]) if options.get("extra_domain") else extra
+        where = self._ocd_where_domain()
+        if where is not None:
+            options["extra_domain"] = Domain.AND([options["extra_domain"], where]) if options.get("extra_domain") else where
         return options
 
-    @http.route(ocd_cache=60, ocd_cache_params=("categorie",))
+    # The position of the phone makes a page of its own: never kept in memory (see page_cache)
+    @http.route(ocd_cache=60, ocd_cache_params=("categorie", "ville", "quartier"))
     def shop(self, *args, **kwargs):
+        if self._ocd_where()["position"]:
+            return self._ocd_shop_near(kwargs.get("search") or "")
         response = super().shop(*args, **kwargs)
         if getattr(response, "template", None) == "website_sale.products":
             response.template = PAGE_TEMPLATES[response.template]
             response.qcontext.update(self._ocd_shop_values(response.qcontext))
         return response
 
+    def _ocd_shop_near(self, search):
+        """The shop from the nearest vendor (?pres=1): their products, the nearest first;
+        « See more » makes the list longer."""
+        env = request.env
+        where = self._ocd_where()
+        rank = {vendor.id: index for index, (vendor, _km, _place) in enumerate(where["ranked"])}
+        domain = Domain.AND([
+            Domain(env.website.sale_product_domain()),
+            Domain("is_published", "=", True),
+            Domain("ocd_vendor_id", "in", list(rank)),
+        ])
+        ocd_category = request.params.get("categorie")
+        if ocd_category and str(ocd_category).isdigit():
+            domain = Domain.AND([domain, Domain("ocd_category_id", "=", int(ocd_category))])
+        if search:
+            domain = Domain.AND([domain, Domain("name", "ilike", search)])
+        products = env["product.template"].search(domain).sorted(
+            lambda product: (rank.get(product.ocd_vendor_id.id, len(rank)), product.website_sequence, product.id)
+        )
+        page = int(request.params["page"]) if str(request.params.get("page") or "").isdigit() else 1
+        shown = products[: max(page, 1) * NEAR_PAGE]
+        values = self._ocd_shop_values({"products": shown, "search": search})
+        values["more_url"] = self._ocd_where_url(page=page + 1) if len(products) > len(shown) else False
+        return request.render("ocd_live_shop.shop", values)
+
+    def _ocd_where_url(self, **changes):
+        return where_filter.url("/shop", **changes)
+
     def _ocd_shop_values(self, values):
         products = values.get("products") or request.env["product.template"]
         price_by_id = shop_common.prices(products)
         current = request.params.get("categorie")
         search = values.get("search") or ""
-        query = {"search": search} if search else {}
+        where_lines = where_filter.lines()
+        # The categories keep the filter « Where? »
         chips = [{
             "label": request.env._("All"),
-            "href": "/shop" + (f"?{urlencode(query)}" if query else ""),
+            "href": self._ocd_where_url(categorie=None, page=None, search=search or None),
             "on": not current,
         }]
         for category in request.env["ocd.live.category"].sudo().search([]):
             chips.append({
                 "label": category.name,
-                "href": f"/shop?{urlencode({**query, 'categorie': category.id})}",
+                "href": self._ocd_where_url(categorie=category.id, page=None, search=search or None),
                 "on": str(category.id) == str(current),
             })
         pager = values.get("pager") or {}
@@ -98,9 +150,11 @@ class OcdShop(WebsiteSale):
             nav="shop",
             header_name=request.env._("Shop OCD"),
             header_pill=cart_pill(),
-            cards=[shop_common.card(product, price_by_id) for product in products],
+            cards=[{**shop_common.card(product, price_by_id), "where": where_lines.get(product.ocd_vendor_id.id)}
+                   for product in products],
             chips=chips,
             categorie=current,
+            where=where_filter.values("/shop"),
             countries=self._ocd_countries(),
             country_aria=request.env._("Country of delivery. Change"),
             more_url=more_url,

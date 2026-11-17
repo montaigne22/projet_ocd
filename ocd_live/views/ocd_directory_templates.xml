@@ -257,6 +257,8 @@
                                t-att-aria-current="'true' if chip['on'] else None" t-out="chip['label']"/>
                         </t>
                     </div>
+                    <!-- « Where? » of the shop (chantier 20) -->
+                    <div class="o_ocd_lives_where"/>
                     <div class="o_ocd_people">
                         <t t-foreach="rows" t-as="row">
                             <div class="o_ocd_person">
@@ -271,6 +273,7 @@
                                     <span class="o_ocd_person_text">
                                         <b t-out="row['name']"/>
                                         <small t-out="row['meta']"/>
+                                        <small t-if="row.get('where')" class="o_ocd_person_where" t-out="row['where']"/>
                                         <span t-if="row['shop_url']" class="o_ocd_person_shop">Their shop</span>
                                     </span>
                                 </a>

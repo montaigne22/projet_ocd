@@ -3280,3 +3280,59 @@
         cursor: default;
     }
 }
+
+// « Where? »: near me, the city, the district (design VacancesProximite, chantier 20)
+.o_ocd_app {
+    .o_ocd_where {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 0;
+    }
+    .o_ocd_where_row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        .o_ocd_chip {
+            gap: 6px;
+            margin: 0;
+            cursor: pointer;
+            .o_ocd_icon {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    }
+    .o_ocd_where_select {
+        min-height: 38px;
+        max-width: 100%;
+        border: 2px solid $ocd-line;
+        border-radius: 999px;
+        padding: 0 12px;
+        background: #FFFFFF;
+        color: $ocd-ink;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 700;
+    }
+    .o_ocd_where_hint,
+    .o_ocd_where_error {
+        font-size: 13px;
+        color: $ocd-muted;
+    }
+    .o_ocd_where_error {
+        color: $ocd-red-dark;
+    }
+    .o_ocd_product_where {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 12.5px;
+        color: $ocd-muted;
+        .o_ocd_icon {
+            width: 13px;
+            height: 13px;
+            flex: none;
+        }
+    }
+}

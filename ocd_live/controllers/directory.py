@@ -150,6 +150,8 @@ class OcdLiveDirectory(http.Controller):
         categories = request.env["ocd.live.category"].sudo().search([])
         category = categories.filtered(lambda c: str(c.id) == categorie)[:1]
         shown = listings.filtered(lambda listing: listing.category_id == category) if category else listings
+        # Hook: the shop filters them by place (« Where? ») and orders them from the nearest
+        shown = self._ocd_directory_filter(country, shown)
         now = common.now()
         rows = []
         for listing in shown:
@@ -164,7 +166,9 @@ class OcdLiveDirectory(http.Controller):
                 ),
                 "shop_url": self._shop_url(listing.partner_id),
                 "aria": request.env._("See the live of %s", name),
+                "where": False,
             })
+        self._ocd_directory_rows(rows)
         return request.render("ocd_live.lives_country", common.page_values(
             False,
             nav="lives",
@@ -174,13 +178,33 @@ class OcdLiveDirectory(http.Controller):
             header_flag=country.code.lower(),
             header_count=request.env._("%s lives", len(shown)),
             country=country,
-            chips=[{"label": request.env._("All"), "href": f"/lives/{code.lower()}", "on": not category}] + [
-                {"label": c.name, "href": f"/lives/{code.lower()}?categorie={c.id}", "on": c == category}
+            chips=[{"label": request.env._("All"), "href": self._ocd_directory_url(code, None), "on": not category}] + [
+                {"label": c.name, "href": self._ocd_directory_url(code, c.id), "on": c == category}
                 for c in categories
             ],
             rows=rows,
             windows=common.windows_info(),
+            categorie=category.id if category else False,
+            **self._ocd_directory_values(country),
         ))
+
+    # === HOOKS OF THE SHOP (« Where? », chantier 20) === #
+
+    def _ocd_directory_filter(self, country, listings):
+        """The listings shown, in their order (the shop keeps those of a place)."""
+        return listings
+
+    def _ocd_directory_rows(self, rows):
+        """Add to the rows of the listings what the shop knows (where the vendor sells)."""
+        return rows
+
+    def _ocd_directory_values(self, country):
+        """More values for the page (the filter « Where? » of the shop)."""
+        return {}
+
+    def _ocd_directory_url(self, code, category_id):
+        """The address of a category of the page."""
+        return f"/lives/{code.lower()}" + (f"?categorie={category_id}" if category_id else "")
 
     @http.route(
         "/lives/<string:code>/<int:booking_id>", type="http", auth="public", website=True, sitemap=False,

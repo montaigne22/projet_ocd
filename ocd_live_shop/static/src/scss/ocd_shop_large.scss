@@ -192,6 +192,12 @@
 .o_ocd_shop_categories_title {
     display: none;
 }
+// The categories and « Where? »: one after the other below a computer
+@media (max-width: $ocd-desktop - 1px) {
+    .o_ocd_shop_side {
+        display: contents;
+    }
+}
 // The boutique of a vendor: its two parts exist for the computer only
 @media (max-width: $ocd-desktop - 1px) {
     .o_ocd_vitrine > .o_ocd_vitrine_side,
@@ -211,11 +217,25 @@
         > * {
             grid-column: 2;
         }
-        > .o_ocd_shop_categories {
+        // The categories and « Where? » (chantier 20) in the column on the left
+        > .o_ocd_shop_side {
             grid-column: 1;
             grid-row: 1 / span 4;
             position: sticky;
             top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .o_ocd_where_row {
+            flex-direction: column;
+            align-items: stretch;
+            .o_ocd_chip,
+            .o_ocd_where_select {
+                width: 100%;
+            }
+        }
+        .o_ocd_shop_categories {
             flex-direction: column;
             align-items: stretch;
             flex-wrap: nowrap;

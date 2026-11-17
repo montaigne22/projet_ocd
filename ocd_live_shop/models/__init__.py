@@ -21,6 +21,7 @@ from . import ocd_stock_alert
 from . import ocd_listing_refuse_reason
 from . import ocd_vendor_place
 from . import place_stock
+from . import vendor_nearby
 from . import ocd_delivery_rate
 from . import ocd_order_delivery
 from . import delivery_carrier

@@ -30,9 +30,49 @@
                 <b t-out="card['product'].name"/>
                 <small t-if="show_by" class="o_ocd_product_by" t-out="card['by']"/>
                 <span class="o_ocd_product_price" t-out="card['price']"/>
+                <small t-if="card.get('where')" class="o_ocd_product_where"><t t-call="ocd_live.icon" icon.f="pin"/><t t-out="card['where']"/></small>
                 <small t-if="show_by" t-attf-class="o_ocd_product_mode #{'o_ocd_product_mode_ocd' if card['ocd'] else ''}" t-out="card['mode']"/>
             </span>
         </a>
+    </template>
+
+    <!-- « Where? » (chantier 20, A.3 of the plan): near me (the position of the phone, never
+         kept), the city and the district. Parameters: where (the values of the filter),
+         where_action (the page), categorie, search. -->
+    <template id="where_filter" name="OCD Live: where">
+        <form t-if="where and (where['cities'] or where['near'])" t-att-action="where_action" method="get" class="o_ocd_where">
+            <b class="o_ocd_shop_categories_title">Where?</b>
+            <input t-if="categorie" type="hidden" name="categorie" t-att-value="categorie"/>
+            <input t-if="search" type="hidden" name="search" t-att-value="search"/>
+            <div class="o_ocd_where_row">
+                <button type="button" t-attf-class="o_ocd_chip o_ocd_near_me #{'o_ocd_on' if where['near'] else ''}"
+                        t-att-data-url="where['near_url']" t-att-aria-pressed="'true' if where['near'] else 'false'">
+                    <t t-call="ocd_live.icon" icon.f="pin"/>Near me
+                </button>
+                <select t-if="where['cities']" name="ville" class="o_ocd_where_select o_ocd_autosubmit" aria-label="City">
+                    <option value="">All the cities</option>
+                    <option t-foreach="where['cities']" t-as="city" t-att-value="city['id']"
+                            t-att-selected="'selected' if city['on'] else None" t-out="city['name']"/>
+                </select>
+                <select t-if="where['districts']" name="quartier" class="o_ocd_where_select o_ocd_autosubmit" aria-label="District">
+                    <option value="">All the districts</option>
+                    <option t-foreach="where['districts']" t-as="district" t-att-value="district['id']"
+                            t-att-selected="'selected' if district['on'] else None" t-out="district['name']"/>
+                </select>
+                <noscript><button type="submit" class="o_ocd_chip">OK</button></noscript>
+            </div>
+            <small t-if="where['near']" class="o_ocd_where_hint">From the nearest, with the position of your phone: it is not kept.
+                <a t-att-href="where['clear_url']" class="o_ocd_link">Everywhere</a></small>
+            <small t-elif="where['active']" class="o_ocd_where_hint"><a t-att-href="where['clear_url']" class="o_ocd_link">Everywhere</a></small>
+            <small class="o_ocd_where_error" role="alert" hidden="hidden">Your position is not available: choose your city.</small>
+        </form>
+    </template>
+
+    <!-- The lives of a country: « Where? » under the categories (chantier 20) -->
+    <template id="lives_country_where" inherit_id="ocd_live.lives_country" name="OCD Live: where in the lives of a country">
+        <xpath expr="//div[hasclass('o_ocd_lives_where')]" position="inside">
+            <t t-call="ocd_live_shop.where_filter" where_action="request.httprequest.path"/>
+        </xpath>
     </template>
 
     <!-- === SHOP === -->
@@ -70,14 +110,17 @@
                             <span t-attf-class="o_ocd_flag o_ocd_flag_#{countries[0]['flag']}"/>
                         </span>
                     </form>
-                    <!-- The categories: a line of chips on a phone and a tablet, a column on the
-                         left on a computer (design RespListes) -->
+                    <!-- The categories and « Where? »: lines on a phone and a tablet, a column on
+                         the left on a computer (designs RespListes, VacancesProximite) -->
+                    <div class="o_ocd_shop_side">
                     <div class="o_ocd_chips o_ocd_shop_categories">
                         <b class="o_ocd_shop_categories_title">Categories</b>
                         <t t-foreach="chips" t-as="chip">
                             <a t-att-href="chip['href']" t-att-class="'o_ocd_chip o_ocd_on' if chip['on'] else 'o_ocd_chip'"
                                t-att-aria-current="'true' if chip['on'] else None" t-out="chip['label']"/>
                         </t>
+                    </div>
+                    <t t-call="ocd_live_shop.where_filter" where_action="'/shop'"/>
                     </div>
                     <div t-if="cards" class="o_ocd_products">
                         <t t-foreach="cards" t-as="card">

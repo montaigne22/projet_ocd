@@ -1064,6 +1064,63 @@ export class OcdColourPhoto extends Interaction {
     }
 }
 
+/**
+ * « Near me » (chantier 20): the position of the phone, rounded (about 100 m), goes in the
+ * address of the page only; it is never kept. Without it, the city is chosen.
+ */
+export class OcdNearMe extends Interaction {
+    static selector = ".o_ocd_near_me";
+    dynamicContent = {
+        _root: { "t-on-click": this.onClick },
+    };
+
+    onClick() {
+        const url = new URL(this.el.dataset.url, window.location.origin);
+        if (this.el.getAttribute("aria-pressed") === "true") {
+            window.location.assign(url.pathname + url.search);
+            return;
+        }
+        const error = this.el.closest("form")?.querySelector(".o_ocd_where_error");
+        if (!navigator.geolocation) {
+            if (error) {
+                error.hidden = false;
+            }
+            return;
+        }
+        this.el.setAttribute("aria-busy", "true");
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                url.searchParams.set("pres", "1");
+                url.searchParams.set("lat", position.coords.latitude.toFixed(3));
+                url.searchParams.set("lon", position.coords.longitude.toFixed(3));
+                window.location.assign(url.pathname + url.search);
+            },
+            () => {
+                this.el.removeAttribute("aria-busy");
+                if (error) {
+                    error.hidden = false;
+                }
+            },
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 }
+        );
+    }
+}
+
+/** A list that sends its form as soon as a choice is made (the city, the district). */
+export class OcdAutoSubmit extends Interaction {
+    static selector = ".o_ocd_autosubmit";
+    dynamicContent = {
+        _root: { "t-on-change": this.onChange },
+    };
+
+    onChange() {
+        const form = this.el.form;
+        if (form) {
+            form.requestSubmit ? form.requestSubmit() : form.submit();
+        }
+    }
+}
+
 registry
     .category("public.interactions")
     .add("ocd_live_shop.colour_photo", OcdColourPhoto)
@@ -1076,4 +1133,6 @@ registry
     .add("ocd_live_shop.place_tap", OcdPlaceTap)
     .add("ocd_live_shop.print", OcdPrint)
     .add("ocd_live_shop.send_pieces", OcdSendPieces)
-    .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm);
+    .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm)
+    .add("ocd_live_shop.near_me", OcdNearMe)
+    .add("ocd_live_shop.autosubmit", OcdAutoSubmit);
