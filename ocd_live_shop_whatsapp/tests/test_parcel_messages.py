@@ -270,9 +270,24 @@ class TestOcdLowStockMessage(OcdShopCommon):
 
         with patch.object(WhatsappTemplate, "_send", fake_send):
             self._order(self.estelle, [(self.dress, 2)])
-        self.assertIn(("ocd_stock_bas", self.dress, 1), calls)
-        template = self.env.ref("ocd_live_shop_whatsapp.template_low_stock").with_context(ocd_low_qty=1)
-        values = [template._render(variable.value, self.dress)[self.dress.id] for variable in template.variable_ids.sorted("sequence")]
-        self.assertEqual(values, [self.brenda.name, "1 pièce", self.dress.display_name])
-        self.assertEqual(template._get_recipient(self.dress), self.brenda)
-        self.assertIn("/produits", template._render(template.button_url_value, self.dress)[self.dress.id])
+        product = self.dress.product_tmpl_id
+        self.assertIn(("ocd_stock_bas", product, 1), calls)
+        template = self.env.ref("ocd_live_shop_whatsapp.template_stock_low").with_context(
+            ocd_low_qty=1, ocd_low_name=self.dress.display_name)
+        values = [template._render(variable.value, product)[product.id] for variable in template.variable_ids.sorted("sequence")]
+        self.assertEqual(values, [self.brenda.name, "1", self.dress.display_name], "The choice and its pieces")
+        self.assertEqual(template._get_recipient(product), self.brenda)
+        self.assertIn("/produits", template._render(template.button_url_value, product)[product.id])
+
+    def test_migration_gives_the_values_of_the_choice(self):
+        """A database installed before: the template keeps its values; the migration makes it read
+        the pieces and the choice of the sending, and removes a second template of the same name."""
+        from odoo.modules.module import load_script
+        template = self.env.ref("ocd_live_shop_whatsapp.template_stock_low")
+        template.variable_ids.filtered(lambda v: v.sequence == 2).value = "{{ object._ocd_free_total() }}"
+        template.variable_ids.filtered(lambda v: v.sequence == 3).value = "{{ object.name }}"
+        load_script("ocd_live_shop_whatsapp/migrations/20.0.1.21.0/post-migration.py",
+                    "ocd_shop_whatsapp_low_stock_20_0_1_21_0").migrate(self.env.cr, "20.0.1.20.0")
+        self.env.invalidate_all()
+        self.assertIn("ocd_low_qty", template.variable_ids.filtered(lambda v: v.sequence == 2).value)
+        self.assertIn("ocd_low_name", template.variable_ids.filtered(lambda v: v.sequence == 3).value)

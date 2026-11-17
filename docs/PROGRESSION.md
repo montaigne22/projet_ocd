@@ -35,7 +35,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Stock par magasin (chantier 18) : un emplacement par lieu, « Mon stock » avec les tailles et les couleurs, envoyer des pièces d'un magasin à l'autre, le magasin qui sert chaque commande (un colis par magasin si besoin), disponibilité par magasin sur la fiche produit, « Préviens-moi » qui nomme les magasins | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Gérer ses produits (chantier 19) : modifier un produit en vente (vérifié pendant que la version d'aujourd'hui reste en vente, prix tout de suite, grand écart confirmé, historique des prix), plusieurs photos, retirer de la vente et remettre, produit gardé dans le téléphone sans réseau | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Autour des magasins (chantier 20) : mode vacances, vendeurs près de chez moi, le bot WhatsApp donne les magasins, retrait en magasin (payé au comptoir, code après l'argent), mettre de côté pour essayer | ✅ fait, testé (8 modèles WhatsApp à faire approuver par Meta) ; les nouveautés aux abonnés (A.8) attendent le chantier 1 |
-| Vendre plus (chantier 21) : préparer son prochain live (les produits pour la régie, dans l'ordre du vendeur), alerte de stock bas sur WhatsApp, tailles et couleurs dès la création | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
+| Vendre plus (chantier 21) : préparer son prochain live (les produits pour la régie, dans l'ordre du vendeur), alerte de stock bas sur WhatsApp, tailles et couleurs dès la création | ✅ fait, testé (le WhatsApp est le modèle `ocd_stock_bas`, soumis à Meta le 16 novembre) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -133,9 +133,9 @@ Dessiné d'abord (maquettes `PreparerLive`, `TaillesCouleurs`, `StockBas`, valid
 - Tests : en cours sur base neuve ; contrôlé dans un navigateur en français en trois tailles (390, 820,
   1440 px) : formulaire avec tailles et couleurs, préparer mon live, Mon espace, Mes produits (stock bas),
   et la régie sur ordinateur.
-- **À mettre à jour sur un serveur** : `ocd_live_shop` 20.0.1.31.0, `ocd_live_shop_whatsapp` 20.0.1.20.0
-  (`-u ocd_live_shop,ocd_live_shop_whatsapp`), puis soumettre à Meta le modèle `ocd_stock_bas` (français
-  et anglais). Dans les Paramètres d'OCD Live (Shop et livraisons › « Tailles et couleurs des vendeurs » ›
+- **À mettre à jour sur un serveur** : `ocd_live_shop` 20.0.1.31.0, `ocd_live_shop_whatsapp` 20.0.1.21.0
+  (`-u ocd_live_shop,ocd_live_shop_whatsapp`). Le WhatsApp est le modèle `ocd_stock_bas` soumis à Meta le
+  16 novembre : rien de nouveau à soumettre. Dans les Paramètres d'OCD Live (Shop et livraisons › « Tailles et couleurs des vendeurs » ›
   Attributs), l'équipe coche « Proposé aux vendeurs » sur les tailles, couleurs ou pointures à proposer.
 
 ### 17 novembre 2026 · Autour des magasins (chantier 20)

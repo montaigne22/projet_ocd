@@ -278,8 +278,8 @@
             <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes produits', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/produits'})]"/>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Awa'}),
-                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_free_total() }}', 'sample_value': '2'}),
-                (0, 0, {'sequence': 3, 'value': '{{ object.name }}', 'sample_value': 'Robe en wax'}),
+                (0, 0, {'sequence': 2, 'value': '{{ ctx.get(\'ocd_low_qty\') or object._ocd_free_total() }}', 'sample_value': '2'}),
+                (0, 0, {'sequence': 3, 'value': '{{ ctx.get(\'ocd_low_name\') or object.name }}', 'sample_value': 'Robe en wax'}),
             ]"/>
         </record>
 
@@ -383,23 +383,6 @@
                 (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object.place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
                 (0, 0, {'sequence': 3, 'value': '{{ object.product_id.display_name }}', 'sample_value': 'Robe en wax (Bleu, M)'}),
-            ]"/>
-        </record>
-
-        <!-- Low stock (chantier 21): the pieces left are given by the context of the sending -->
-        <record id="template_low_stock" model="whatsapp.template">
-            <field name="name">OCD Live: low stock</field>
-            <field name="template_name">ocd_stock_bas</field>
-            <field name="lang_code">fr</field>
-            <field name="model_id" ref="product.model_product_product"/>
-            <field name="partner_field">product_tmpl_id.ocd_vendor_id</field>
-            <field name="body">Bonjour {{1}}, il ne reste que {{2}} de {{3}} en stock après une vente. Touchez « Mes produits » pour en remettre quand vous en avez.</field>
-            <field name="button_url_value">{{ object.product_tmpl_id._ocd_vendor_products_path() }}</field>
-            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes produits', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/produits'})]"/>
-            <field name="variable_ids" eval="[
-                (0, 0, {'sequence': 1, 'value': '{{ object.product_tmpl_id.ocd_vendor_id.name }}', 'sample_value': 'Brenda'}),
-                (0, 0, {'sequence': 2, 'value': '{{ \'1 pièce\' if ctx.get(\'ocd_low_qty\') == 1 else \'%s pièces\' % ctx.get(\'ocd_low_qty\') }}', 'sample_value': '2 pièces'}),
-                (0, 0, {'sequence': 3, 'value': '{{ object.display_name }}', 'sample_value': 'Robe en wax (Bleu, M)'}),
             ]"/>
         </record>
 
