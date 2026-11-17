@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Suivre un vendeur</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.wa{align-self:flex-start;max-width:320px;background:#DCF8C6;border-radius:12px;padding:8px 10px;font-size:14px}
+.wabtn{align-self:flex-start;width:320px;box-sizing:border-box;background:#FFFFFF;border-radius:12px;padding:8px 10px;text-align:center;color:#0A7CFF;font-weight:700;font-size:14px;margin-top:-8px}
+.who{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:center}
+.av{width:72px;height:72px;border-radius:50%;background:#FFE7D1;display:grid;place-items:center;font-weight:800;font-size:22px;color:#B84F00}
+.av.s{width:44px;height:44px;font-size:15px}
+.follow{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;background:#F46A00;font-weight:800;font-size:14.5px}
+.follow.on{background:#FFFFFF;box-shadow:inset 0 0 0 2px #15130F}
+.next{display:flex;flex-direction:column;gap:8px;border-radius:18px;background:#F5F2EE;padding:14px 16px}
+.dark{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:14px;background:#15130F;color:#FFF;font-weight:800}
+.okline{display:flex;align-items:center;gap:8px;border-radius:12px;background:#DCF2E5;color:#0A5A31;font-weight:700;padding:10px 12px;font-size:14.5px}
+.sheet{display:flex;flex-direction:column;gap:12px;border-radius:24px 24px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.12);padding:18px;margin:0 -18px -20px}
+.check{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;border:2px solid #E7E2DC;border-radius:14px;padding:10px 12px}
+.box{width:22px;height:22px;border-radius:6px;background:#15130F;color:#FFF;display:grid;place-items:center;font-size:14px;font-weight:800}
+.box.off{background:#FFF;box-shadow:inset 0 0 0 2px #15130F}
+.feed{border-radius:22px;background:#F5F2EE;padding:12px;display:flex;flex-direction:column;gap:10px}
+.feed .img{height:150px;border-radius:16px;background:#EEE8FB}
+.row{display:flex;gap:8px;align-items:center}
+.row .cta{flex:1;min-height:50px;font-size:16px}
+.sq{width:50px;height:50px;border-radius:14px;box-shadow:inset 0 0 0 2px #E7E2DC;background:#FFF;display:grid;place-items:center;font-weight:800}
+.line{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.vrow{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start;border-bottom:1px solid #E7E2DC;padding:10px 0}
+.sw{width:42px;height:24px;border-radius:999px;background:#15130F;position:relative;flex:none}
+.sw::after{content:"";position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#FFF}
+.sw.off{background:#D9D3CC}.sw.off::after{right:auto;left:3px}
+.big{display:flex;flex-direction:column;gap:6px;border:2px solid #E7E2DC;border-radius:18px;padding:14px 16px}
+.num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34px;line-height:1}
+.up{color:#0A5A31;font-weight:800;font-size:14px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+</style>
+</head>
+<body>
+<!-- Suivre un vendeur (chantier 1 de la feuille de route) et les nouveautés aux abonnés (A.8 du plan
+     de « Mes produits ») : « Suivre » remplace le « Me prévenir sur WhatsApp » d'un seul live. Un
+     abonné reçoit un WhatsApp à chaque live du vendeur, et, s'il le veut, ses nouveautés le vendredi
+     (une fois par mois pour tous, chaque semaine avec OCD Business). Le vendeur voit combien il a
+     d'abonnés, jamais leurs numéros. Données d'exemple : Brenda Wax, 128 abonnés ; Estelle, cliente. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · la cliente : suivre depuis la boutique</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. La boutique, pas encore suivie -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Boutique</span></div>
+    <div class="who"><span class="av">BW</span><span style="display:flex;flex-direction:column;gap:6px">
+      <b class="d" style="font-size:26px;line-height:1">Brenda Wax</b>
+      <span class="h">Pagnes et robes en wax · 128 abonnés</span>
+      <span class="follow" style="align-self:flex-start">🔔 Suivre</span>
+    </span></div>
+    <div class="next">
+      <b>Prochain live : ven. 20 nov. à 14:30</b>
+      <span class="h">À distance, avec OCD Live · Sur TikTok</span>
+      <span class="dark">🔔 Suivre : un WhatsApp à chaque live</span>
+    </div>
+    <span class="h small">Remplace « Me prévenir sur WhatsApp » : on ne rate plus aucun live, pas seulement le prochain.</span>
+  </div>
+
+  <!-- 2. Suivre avec son numéro -->
+  <div class="phone" style="min-height:560px;justify-content:flex-end;background:linear-gradient(#00000033,#00000033) top/100% 160px no-repeat,#FFF">
+    <div class="sheet" style="background:#FFF">
+      <b class="d" style="font-size:22px">Suivre Brenda Wax</b>
+      <div><div class="lab">Ton WhatsApp</div><div class="in">🇨🇲 +237 &nbsp; 6 70 00 00 00</div></div>
+      <div class="check"><span class="box">✓</span><span><b>À chaque live</b><br><span class="h">« Brenda Wax est en live maintenant »</span></span></div>
+      <div class="check"><span class="box">✓</span><span><b>Ses nouveautés</b><br><span class="h">Un message le vendredi : « Cette semaine chez Brenda Wax : 3 nouveautés »</span></span></div>
+      <span class="cta">Suivre</span>
+      <span class="h small">Tu arrêtes quand tu veux, ici ou en répondant STOP.</span>
+    </div>
+  </div>
+
+  <!-- 3. Suivie -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Boutique</span></div>
+    <div class="who"><span class="av">BW</span><span style="display:flex;flex-direction:column;gap:6px">
+      <b class="d" style="font-size:26px;line-height:1">Brenda Wax</b>
+      <span class="h">Pagnes et robes en wax · 129 abonnés</span>
+      <span class="follow on" style="align-self:flex-start">✓ Suivie</span>
+    </span></div>
+    <div class="okline">✓ Tu suis Brenda Wax : un WhatsApp à chaque live, et ses nouveautés.</div>
+    <div class="next">
+      <b>Prochain live : ven. 20 nov. à 14:30</b>
+      <span class="h">Tu seras prévenue sur WhatsApp quand il commence.</span>
+    </div>
+    <span class="h small">« Suivie » ouvre : À chaque live (oui / non), Ses nouveautés (oui / non), Ne plus suivre.</span>
+    <span class="cap" style="margin:8px 0 0">Ailleurs, le même bouton</span>
+    <div class="feed">
+      <span class="img"></span>
+      <b class="d" style="font-size:22px">Ama Pagnes</b>
+      <span class="h">Demain à 17:30 · Au studio OCD Live</span>
+      <div class="row"><span class="cta">Sa boutique</span><span class="follow" style="min-height:50px;border-radius:14px">🔔 Suivre</span><span class="sq">⇪</span></div>
+    </div>
+    <span class="h small">Sur les cartes du fil, sur la page d'un live, sur ses magasins et sur la fiche d'un produit (sous le nom du vendeur).</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · 390 px · les messages, mes vendeurs suivis, le vendeur</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 4. Les WhatsApp -->
+  <div class="phone">
+    <span class="cap" style="margin:0">WhatsApp à chaque live (modèle existant)</span>
+    <span class="wa">Bonjour, Brenda Wax est en live maintenant. Touchez le bouton pour voir le live et sa boutique sur OCD Live.</span>
+    <span class="wabtn">Voir la boutique</span>
+    <span class="cap" style="margin:8px 0 0">WhatsApp des nouveautés (nouveau, Marketing)</span>
+    <span class="wa">Bonjour, cette semaine chez Brenda Wax : 3 nouveautés, dont Robe en wax. Touchez « Voir les nouveautés » pour les découvrir.</span>
+    <span class="wabtn">Voir les nouveautés</span>
+    <div class="rule">
+      <b>Les règles</b>
+      <span>• Un live : un message, au début du live ; 2 au plus par jour et par vendeur.</span>
+      <span>• Nouveautés : les produits mis en vente depuis le dernier envoi ; rien de nouveau, rien d'envoyé.</span>
+      <span>• Le vendredi : une fois par mois (le premier vendredi), chaque semaine avec OCD Business.</span>
+      <span>• STOP arrête tout ; le bouton ouvre la boutique, où « Suivie » permet d'arrêter.</span>
+    </div>
+  </div>
+
+  <!-- 5. Mes vendeurs suivis -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Moi</span></div>
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Mes vendeurs suivis</h1>
+    <span class="h">Sur ce téléphone, avec le +237 6 70 00 00 00.</span>
+    <div class="vrow"><span class="av s">BW</span><span style="display:flex;flex-direction:column;gap:6px">
+      <span class="line"><b>Brenda Wax</b><span class="tag ok">En live</span></span>
+      <span class="line small"><span>À chaque live</span><span class="sw"></span></span>
+      <span class="line small"><span>Ses nouveautés</span><span class="sw"></span></span>
+      <span class="small" style="text-decoration:underline;font-weight:700">Ne plus suivre</span>
+    </span></div>
+    <div class="vrow" style="border-bottom:0"><span class="av s">AP</span><span style="display:flex;flex-direction:column;gap:6px">
+      <span class="line"><b>Ama Pagnes</b><span class="h">Live demain 17:30</span></span>
+      <span class="line small"><span>À chaque live</span><span class="sw"></span></span>
+      <span class="line small"><span>Ses nouveautés</span><span class="sw off"></span></span>
+      <span class="small" style="text-decoration:underline;font-weight:700">Ne plus suivre</span>
+    </span></div>
+    <span class="h small">Dans « Moi » pour tout le monde ; s'ouvre aussi depuis le bouton d'un message.</span>
+  </div>
+
+  <!-- 6. Le vendeur : Mon espace -->
+  <div class="phone">
+    <span class="cap" style="margin:0">Le vendeur · Mon espace</span>
+    <div class="big">
+      <span class="h">Mes abonnés</span>
+      <span class="line"><span class="num">128</span><span class="up">+12 cette semaine</span></span>
+      <span class="h">Ils reçoivent un WhatsApp à chaque live, et tes nouveautés le vendredi.</span>
+    </div>
+    <div class="big">
+      <b>Prochaines nouveautés : vendredi 5 déc.</b>
+      <span class="h">3 produits mis en vente depuis le dernier envoi : Robe en wax, Sac en raphia, Veste.</span>
+      <span class="h small">Une fois par mois. <b>Avec OCD Business : chaque vendredi.</b></span>
+    </div>
+    <span class="btn">Partager ma boutique pour avoir des abonnés</span>
+    <span class="h small">Le vendeur voit combien, jamais les numéros de ses abonnés.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · la boutique : « Suivre » sous le nom</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a class="on">Lives</a><a>Shop</a><a>Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <div style="display:grid;grid-template-columns:420px minmax(0,1fr);gap:40px;padding:28px 40px 36px">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="who"><span class="av">BW</span><span style="display:flex;flex-direction:column;gap:6px">
+        <b class="d" style="font-size:30px;line-height:1">Brenda Wax</b>
+        <span class="h">Pagnes et robes en wax · 128 abonnés</span>
+        <span class="follow" style="align-self:flex-start">🔔 Suivre</span>
+      </span></div>
+      <div class="next"><b>Prochain live : ven. 20 nov. à 14:30</b><span class="h">À distance, avec OCD Live · Sur TikTok</span><span class="dark">🔔 Suivre : un WhatsApp à chaque live</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <b class="d" style="font-size:24px">Ses produits</b>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+        <div class="card" style="padding:0;overflow:hidden"><div class="ph" style="height:150px;border-radius:0">Photo</div><div style="padding:10px 12px"><b>Robe en wax</b><br><span class="tag low">Nouveau</span></div></div>
+        <div class="card" style="padding:0;overflow:hidden"><div class="ph" style="height:150px;border-radius:0">Photo</div><div style="padding:10px 12px"><b>Sac en raphia</b><br><span class="tag low">Nouveau</span></div></div>
+        <div class="card" style="padding:0;overflow:hidden"><div class="ph" style="height:150px;border-radius:0">Photo</div><div style="padding:10px 12px"><b>Veste</b><br><span class="tag low">Nouveau</span></div></div>
+        <div class="card" style="padding:0;overflow:hidden"><div class="ph" style="height:150px;border-radius:0">Photo</div><div style="padding:10px 12px"><b>Chemise wax</b></div></div>
+      </div>
+      <span class="h small">Depuis « Voir les nouveautés », la boutique s'ouvre sur ses produits, les nouveautés marquées « Nouveau ».</span>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · fiche du vendeur et réglages</span>
+<div class="screen" style="width:1100px;padding:20px 24px;display:flex;flex-direction:column;gap:12px">
+  <div class="row"><span class="pill dark">128 Abonnés</span><span class="pill">Nouveautés : chaque vendredi (OCD Business)</span></div>
+  <div class="rule">
+    <b>Réglages (Paramètres d'OCD Live › Produits et magasins des vendeurs)</b>
+    <span>• Nouveautés aux abonnés : jour d'envoi (vendredi) ; une fois par mois pour tous, chaque semaine avec OCD Business</span>
+    <span>• WhatsApp de live aux abonnés : 2 au plus par jour et par vendeur</span>
+    <span>• Automatisations : « Abonnés : le vendeur est en live », « Abonnés : les nouveautés du vendredi »</span>
+  </div>
+  <span class="h small">Les « Me prévenir » déjà demandés deviennent des abonnements au live (sans les nouveautés, qu'ils n'ont pas demandées).</span>
+</div>
+
+</div>
+</body>
+</html>
