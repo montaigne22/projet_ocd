@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>OCD Vote</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.muted{color:#665F58}
+.lnk{text-decoration:underline;font-weight:700}
+.hero{border-radius:20px;background:linear-gradient(135deg,#2B1A4A,#5B2DB0);color:#FFF;padding:16px;display:flex;flex-direction:column;gap:6px}
+.hero .t{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1.1}
+.hero .org{display:flex;align-items:center;gap:6px;font-size:13.5px;opacity:.95}
+.badge{border-radius:999px;background:#DCF2E5;color:#0A5A31;font-weight:800;font-size:12px;padding:2px 9px;white-space:nowrap}
+.live{border-radius:999px;background:#FF4D5A;color:#FFF;font-weight:800;font-size:12px;padding:2px 9px}
+.count{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.count div{display:flex;flex-direction:column;align-items:center;gap:0;border-radius:14px;background:rgba(255,255,255,.14);padding:8px 4px}
+.count b{font-family:'Bricolage Grotesque',sans-serif;font-size:20px}
+.count span{font-size:12px}
+.how{display:flex;flex-direction:column;gap:4px;border-radius:16px;background:#FFF0E3;color:#6B3300;padding:12px 14px;font-size:14.5px}
+.search{height:46px;border-radius:14px;border:2px solid #E7E2DC;display:flex;align-items:center;padding:0 14px;color:#665F58}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cand{display:flex;flex-direction:column;gap:6px;border:2px solid #E7E2DC;border-radius:18px;padding:8px;position:relative}
+.cand .p{height:150px;border-radius:12px;background:#EEE8FB;display:grid;place-items:center;color:#5B2DB0;font-weight:700;font-size:12px}
+.num{position:absolute;top:14px;left:14px;border-radius:10px;background:#15130F;color:#FFF;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px;padding:2px 9px}
+.rank{position:absolute;top:14px;right:14px;border-radius:999px;background:#F46A00;color:#15130F;font-weight:800;font-size:12px;padding:2px 8px}
+.cand .v{display:flex;justify-content:space-between;align-items:center;font-size:13.5px}
+.vote{display:flex;align-items:center;justify-content:center;min-height:42px;border-radius:12px;background:#F46A00;font-weight:800;font-size:15px}
+.packs{display:flex;flex-direction:column;gap:8px}
+.pack{display:flex;justify-content:space-between;align-items:center;border:2px solid #E7E2DC;border-radius:16px;padding:12px 14px}
+.pack.on{border-color:#15130F;box-shadow:inset 0 0 0 1px #15130F}
+.pack b{font-size:16px}
+.save{border-radius:999px;background:#DCF2E5;color:#0A5A31;font-weight:800;font-size:12px;padding:2px 8px}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper i{width:40px;height:40px;border-radius:12px;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.board2{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:28px 44px 1fr auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #E7E2DC}
+.row .av{width:44px;height:44px;border-radius:12px;background:#EEE8FB}
+.bar{height:8px;border-radius:99px;background:#F5F2EE;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:#5B2DB0;border-radius:99px}
+.ok2{display:flex;flex-direction:column;gap:6px;border-radius:16px;background:#DCF2E5;color:#0A5A31;padding:14px}
+.receipt{display:flex;flex-direction:column;gap:4px;border:2px dashed #E7E2DC;border-radius:16px;padding:12px 14px;font-size:14px}
+.wa{width:330px;border-radius:18px;background:#E5DDD5;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.wa .me{align-self:flex-end;background:#DCF8C6;border-radius:12px 12px 2px 12px;padding:8px 10px;max-width:80%}
+.wa .bot{align-self:flex-start;background:#FFF;border-radius:12px 12px 12px 2px;padding:8px 10px;max-width:88%;display:flex;flex-direction:column;gap:6px}
+.wa .bt{background:#FFF;border-radius:10px;text-align:center;color:#1F7A4D;font-weight:700;padding:8px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule b{font-size:15px}
+.tile{display:flex;flex-direction:column;gap:2px;border:2px solid #E7E2DC;border-radius:16px;padding:10px 12px}
+.tile b.n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;line-height:1.1}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.step{display:flex;gap:8px;align-items:center;font-size:14px}
+.step i{width:22px;height:22px;border-radius:50%;background:#DCF2E5;color:#0A5A31;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:12px;flex:none}
+.step i.w{background:#F5F2EE;color:#665F58}
+/* the band of the final, on the live */
+.band{width:1280px;height:720px;border-radius:18px;background:#1B1430;position:relative;overflow:hidden;color:#FFF}
+.band .cam{position:absolute;inset:0;background:radial-gradient(circle at 40% 40%,#4A3A6A,#1B1430);display:grid;place-items:center;font-size:20px;opacity:.9}
+.band .lb{position:absolute;right:28px;top:28px;width:360px;border-radius:20px;background:rgba(21,19,15,.82);padding:16px;display:flex;flex-direction:column;gap:10px}
+.band .lb .r{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;font-size:17px}
+.band .lb .r b.k{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;color:#FF9A4D}
+.band .foot{position:absolute;left:28px;right:28px;bottom:24px;border-radius:20px;background:#F46A00;color:#15130F;display:flex;align-items:center;gap:20px;padding:14px 20px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px}
+.band .qr{width:86px;height:86px;border-radius:12px;background:#FFF;flex:none;display:grid;place-items:center;font-size:12px;color:#15130F}
+/* computer */
+.pcbody{display:grid;grid-template-columns:1fr 380px;gap:28px;padding:24px 40px 32px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+table.t{width:100%;border-collapse:collapse;font-size:14.5px}
+table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
+table.t td{padding:10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
+table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
+.bo{background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.bobtn{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid #AEB4BA;font-weight:700;font-size:13.5px;background:#FFF}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#FFF8E6;border:1px dashed #F0C987;padding:12px 14px;font-size:14px;color:#6B4500}
+.q b{color:#15130F}
+</style>
+</head>
+<body>
+<!-- OCD Vote (chantier 4 de la feuille de route) : des votes payants en Mobile Money pour des concours
+     (miss, awards, talents, écoles). La page du concours, les candidats avec leur numéro, le vote sur la
+     page ou par WhatsApp (« VOTE 12 »), le classement en direct, le bandeau pour le live de la finale,
+     l'espace de l'organisateur et son reversement. Seules les voix payées comptent, chacune liée à son
+     paiement. Les choix proposés (prix, paquets, partage) sont à confirmer : liste en bas.
+     Données d'exemple : « Miss Douala 2026 », organisé par Étoile Events, 24 candidates. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le public : le concours, une candidate, voter, c'est compté</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. La page du concours -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Concours</span></div>
+    <div class="hero">
+      <span class="small" style="opacity:.85">OCD Vote · Douala</span>
+      <span class="t">Miss Douala 2026</span>
+      <span class="org">Par Étoile Events <span class="badge">Organisateur vérifié</span></span>
+      <span class="small">Les votes ferment le <b>samedi 28 novembre à 20 h</b> (heure de Douala), pendant la finale en live.</span>
+      <div class="count"><div><b>24</b><span>candidates</span></div><div><b>18 640</b><span>voix</span></div><div><b>10 j 4 h</b><span>pour voter</span></div></div>
+    </div>
+    <div class="how">
+      <b>Comment voter</b>
+      <span>Choisis ta candidate, puis le nombre de voix : <b>100 F la voix</b>, payées en Mobile Money. Ou sur WhatsApp : écris <b>VOTE 12</b> au +237 6 90 00 00 00.</span>
+    </div>
+    <div class="search">🔎 Un numéro ou un nom</div>
+    <div class="chips" style="display:flex;gap:8px"><span class="chip on">Classement</span><span class="chip">Par numéro</span></div>
+    <div class="grid">
+      <div class="cand"><span class="num">12</span><span class="rank">1re</span><div class="p">Photo</div><b>Aïcha Mbappe</b><span class="v"><span class="muted">Akwa</span><b>3 412 voix</b></span><span class="vote">Voter</span></div>
+      <div class="cand"><span class="num">7</span><span class="rank">2e</span><div class="p">Photo</div><b>Grâce Ndongo</b><span class="v"><span class="muted">Bonapriso</span><b>2 980 voix</b></span><span class="vote">Voter</span></div>
+      <div class="cand"><span class="num">3</span><span class="rank">3e</span><div class="p">Photo</div><b>Linda Eko</b><span class="v"><span class="muted">Makepe</span><b>2 105 voix</b></span><span class="vote">Voter</span></div>
+      <div class="cand"><span class="num">19</span><div class="p">Photo</div><b>Sandrine Tchami</b><span class="v"><span class="muted">Bonaberi</span><b>1 744 voix</b></span><span class="vote">Voter</span></div>
+    </div>
+    <span class="small muted">Prix de la gagnante : la couronne, 1 000 000 F et un an de contrat avec Étoile Events. Règlement du concours · Signaler</span>
+  </div>
+
+  <!-- 2. Une candidate : choisir ses voix -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Miss Douala 2026</span></div>
+    <div style="position:relative"><div class="ph" style="height:260px;background:#EEE8FB;color:#5B2DB0">Photo de la candidate</div><span class="num" style="top:12px;left:12px">12</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><b class="d" style="font-size:24px">Aïcha Mbappe</b><span class="badge" style="background:#FFF0E3;color:#B84F00">1re · 3 412 voix</span></div>
+    <span class="small muted">21 ans · Akwa · étudiante en marketing. « Je veux ouvrir une école de couture pour les filles de mon quartier. »</span>
+    <span class="btn" style="align-self:flex-start">Partager sa page</span>
+    <b class="d" style="font-size:20px">Combien de voix ?</b>
+    <div class="packs">
+      <div class="pack"><span><b>1 voix</b></span><b>100 F</b></div>
+      <div class="pack on"><span><b>10 voix</b> <span class="save">1 offerte</span></span><b>900 F</b></div>
+      <div class="pack"><span><b>50 voix</b> <span class="save">10 offertes</span></span><b>4 000 F</b></div>
+      <div class="pack"><span><b>Autre nombre</b> <span class="small muted">100 F la voix</span></span><span class="stepper"><i>−</i><b>25</b><i>+</i></span></div>
+    </div>
+    <div><div class="lab">Ton numéro Mobile Money</div><div class="in">🇨🇲 +237 &nbsp;6 70 00 00 00</div></div>
+    <span class="small muted">Tu reçois une demande sur ton téléphone : tape ton code Mobile Money pour payer. Tes voix comptent dès que l'argent arrive.</span>
+    <span class="cta">Payer 900 F pour 10 voix</span>
+  </div>
+
+  <!-- 3. Payé : les voix comptées, le reçu -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes voix</span></div>
+    <div class="ok2">
+      <b class="d" style="font-size:22px">10 voix pour Aïcha, c'est compté</b>
+      <span>Aïcha (N° 12) a maintenant <b>3 422 voix</b> : toujours 1re, 442 voix devant Grâce.</span>
+    </div>
+    <div class="receipt">
+      <b>Reçu</b>
+      <span>Miss Douala 2026 · N° 12 Aïcha Mbappe</span>
+      <span>10 voix · 900 F · MTN Mobile Money</span>
+      <span class="muted">Payé le 18 nov. à 14 h 32 · référence CP-48213977</span>
+      <span class="muted">Chaque voix est liée à ce paiement : un paiement annulé retire ses voix.</span>
+    </div>
+    <span class="cta">Revoter pour Aïcha</span>
+    <span class="btn">Partager : « J'ai voté pour Aïcha, N° 12 »</span>
+    <span class="small muted">En attente : « On attend ton paiement… » avec la page qui se met à jour seule, puis cet écran. Pas payé dans les 10 minutes : « Paiement pas reçu : aucune voix comptée, rien n'a été pris. »</span>
+    <b class="d" style="font-size:20px;margin-top:6px">Classement en direct</b>
+    <div class="board2">
+      <div class="row"><b>1</b><span class="av"></span><span><b>N° 12 Aïcha Mbappe</b><div class="bar"><i style="width:100%"></i></div></span><b>3 422</b></div>
+      <div class="row"><b>2</b><span class="av"></span><span><b>N° 7 Grâce Ndongo</b><div class="bar"><i style="width:87%"></i></div></span><b>2 980</b></div>
+      <div class="row"><b>3</b><span class="av"></span><span><b>N° 3 Linda Eko</b><div class="bar"><i style="width:62%"></i></div></span><b>2 105</b></div>
+    </div>
+    <span class="small muted">Mis à jour toutes les 10 secondes. Les 2 dernières heures, les nombres sont cachés : seul l'ordre reste (réglage de l'organisateur), jusqu'aux résultats.</span>
+  </div>
+
+  <!-- 4. WhatsApp : VOTE 12 -->
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <span class="cap" style="margin:0">Voter sur WhatsApp (le bot d'OCD Live)</span>
+    <div class="wa">
+      <span class="me">VOTE 12</span>
+      <div class="bot"><span><b>Miss Douala 2026</b> · N° 12 <b>Aïcha Mbappe</b> (1re, 3 412 voix). Combien de voix pour elle ?</span></div>
+      <span class="bt">1 voix · 100 F</span><span class="bt">10 voix · 900 F</span><span class="bt">50 voix · 4 000 F</span>
+      <span class="me">10 voix · 900 F</span>
+      <div class="bot"><span>Une demande de 900 F arrive sur ce numéro : tape ton code Mobile Money pour payer.</span></div>
+      <div class="bot"><span>C'est payé : <b>10 voix pour Aïcha</b>. Elle a maintenant 3 422 voix, toujours 1re. Merci !</span><span class="bt">Voir le classement</span></div>
+    </div>
+    <span class="small muted" style="width:330px">« VOTE 12 » sans concours ouvert, ou un numéro inconnu : le bot donne les concours ouverts et leur lien. Un numéro qui sert à plusieurs concours ouverts : il demande lequel.</span>
+    <span class="cap" style="margin:6px 0 0">Après la finale</span>
+    <div class="phone" style="gap:8px">
+      <span class="live" style="align-self:flex-start">Résultats</span>
+      <b class="d" style="font-size:22px">Aïcha Mbappe est Miss Douala 2026</b>
+      <span class="small">Avec 6 108 voix sur 31 420. Merci aux 4 312 personnes qui ont voté.</span>
+      <span class="btn">Voir tout le classement</span>
+      <span class="small muted">Les résultats sont certifiés par OCD Live : seules les voix payées comptent.</span>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · la page du concours</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Votes</a><a>Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <div class="pcbody">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="hero" style="flex-direction:row;align-items:center;gap:28px;padding:24px 28px">
+        <div style="display:flex;flex-direction:column;gap:6px;flex:1"><span class="small" style="opacity:.85">OCD Vote · Douala</span><span class="t" style="font-size:40px">Miss Douala 2026</span><span class="org">Par Étoile Events <span class="badge">Organisateur vérifié</span></span><span class="small">Les votes ferment le samedi 28 novembre à 20 h, pendant la finale en live.</span></div>
+        <div class="count" style="width:420px"><div><b>24</b><span>candidates</span></div><div><b>18 640</b><span>voix</span></div><div><b>10 j 4 h</b><span>pour voter</span></div></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center"><div class="search" style="flex:1">🔎 Un numéro ou un nom</div><span class="chip on">Classement</span><span class="chip">Par numéro</span></div>
+      <div class="grid4">
+        <div class="cand"><span class="num">12</span><span class="rank">1re</span><div class="p" style="height:220px">Photo</div><b>Aïcha Mbappe</b><span class="v"><span class="muted">Akwa</span><b>3 412 voix</b></span><span class="vote">Voter</span></div>
+        <div class="cand"><span class="num">7</span><span class="rank">2e</span><div class="p" style="height:220px">Photo</div><b>Grâce Ndongo</b><span class="v"><span class="muted">Bonapriso</span><b>2 980 voix</b></span><span class="vote">Voter</span></div>
+        <div class="cand"><span class="num">3</span><span class="rank">3e</span><div class="p" style="height:220px">Photo</div><b>Linda Eko</b><span class="v"><span class="muted">Makepe</span><b>2 105 voix</b></span><span class="vote">Voter</span></div>
+        <div class="cand"><span class="num">19</span><div class="p" style="height:220px">Photo</div><b>Sandrine Tchami</b><span class="v"><span class="muted">Bonaberi</span><b>1 744 voix</b></span><span class="vote">Voter</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="how"><b>Comment voter</b><span>Choisis ta candidate, puis le nombre de voix : 100 F la voix, en Mobile Money. Ou sur WhatsApp : <b>VOTE 12</b> au +237 6 90 00 00 00.</span></div>
+      <div class="card" style="display:flex;flex-direction:column;gap:8px">
+        <b class="d" style="font-size:20px">Classement en direct</b>
+        <div class="row"><b>1</b><span class="av"></span><span><b>N° 12 Aïcha</b><div class="bar"><i style="width:100%"></i></div></span><b>3 412</b></div>
+        <div class="row"><b>2</b><span class="av"></span><span><b>N° 7 Grâce</b><div class="bar"><i style="width:87%"></i></div></span><b>2 980</b></div>
+        <div class="row"><b>3</b><span class="av"></span><span><b>N° 3 Linda</b><div class="bar"><i style="width:62%"></i></div></span><b>2 105</b></div>
+        <span class="lnk small">Tout le classement</span>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:6px"><b>La finale en live</b><span class="small">Samedi 28 nov. à 18 h sur TikTok et Facebook. Les votes restent ouverts jusqu'à 20 h.</span><span class="lnk small">Me prévenir sur WhatsApp</span></div>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Le bandeau de la finale · une page à mettre dans le logiciel du live (OBS, 1280 × 720, fond transparent)</span>
+<div class="band">
+  <div class="cam">L'image de la finale (caméra)</div>
+  <div class="lb">
+    <span style="display:flex;justify-content:space-between;align-items:center"><b class="d" style="font-size:20px">Miss Douala 2026</b><span class="live">● En direct</span></span>
+    <div class="r"><b class="k">12</b><span>Aïcha Mbappe</span><b>6 108</b></div>
+    <div class="r"><b class="k">7</b><span>Grâce Ndongo</span><b>5 744</b></div>
+    <div class="r"><b class="k">3</b><span>Linda Eko</span><b>4 920</b></div>
+    <div class="r"><b class="k">19</b><span>Sandrine Tchami</span><b>3 015</b></div>
+    <div class="r"><b class="k">5</b><span>Mireille Abena</span><b>2 870</b></div>
+    <span style="font-size:14px;opacity:.8">Mis à jour toutes les 5 secondes · fermeture des votes dans 1 h 12</span>
+  </div>
+  <div class="foot"><span class="qr">QR</span><span>Vote maintenant : <u>ocdlive.com/vote/miss-douala</u> ou sur WhatsApp <b>VOTE + numéro</b> au +237 6 90 00 00 00</span></div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · l'organisateur : son concours (connexion par son numéro, comme les vendeurs)</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon concours</span></div>
+    <span style="display:flex;justify-content:space-between;align-items:center"><b class="d" style="font-size:22px">Miss Douala 2026</b><span class="badge">Votes ouverts</span></span>
+    <div class="tiles">
+      <div class="tile"><span class="small muted">Voix payées</span><b class="n">18 640</b><span class="small muted">4 312 personnes</span></div>
+      <div class="tile"><span class="small muted">Encaissé</span><b class="n">1 702 400 F</b><span class="small muted">avec les paquets</span></div>
+      <div class="tile"><span class="small muted">Ta part (60 %)</span><b class="n">1 021 440 F</b><span class="small muted">après les votes</span></div>
+      <div class="tile"><span class="small muted">Aujourd'hui</span><b class="n">+1 284</b><span class="small muted">voix</span></div>
+    </div>
+    <b class="d" style="font-size:20px">Les étapes</b>
+    <span class="step"><i>✓</i>Concours et règlement envoyés</span>
+    <span class="step"><i>✓</i>Vérifié par OCD Live (organisateur et règlement)</span>
+    <span class="step"><i>✓</i>24 candidates, chacune avec sa photo et son numéro</span>
+    <span class="step"><i>✓</i>Votes ouverts le 10 nov.</span>
+    <span class="step"><i class="w">5</i>Fermeture le 28 nov. à 20 h, puis les résultats certifiés</span>
+    <span class="step"><i class="w">6</i>Ta part versée sous 3 jours sur ton Mobile Money</span>
+    <span class="btn">Partager le concours</span>
+    <span class="btn">Le bandeau pour mon live</span>
+  </div>
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Les candidates</span></div>
+    <div class="row" style="grid-template-columns:44px 1fr auto"><span class="av" style="width:44px;height:44px;border-radius:12px;background:#EEE8FB"></span><span><b>N° 12 Aïcha Mbappe</b><br><span class="small muted">3 412 voix · 1re</span></span><span class="lnk small">Modifier</span></div>
+    <div class="row" style="grid-template-columns:44px 1fr auto"><span class="av" style="width:44px;height:44px;border-radius:12px;background:#EEE8FB"></span><span><b>N° 7 Grâce Ndongo</b><br><span class="small muted">2 980 voix · 2e</span></span><span class="lnk small">Modifier</span></div>
+    <div class="row" style="grid-template-columns:44px 1fr auto"><span class="av" style="width:44px;height:44px;border-radius:12px;background:#EEE8FB"></span><span><b>N° 24 Pauline Ewane</b><br><span class="small muted">Photo à vérifier</span></span><span class="lnk small">Modifier</span></div>
+    <span class="cta">Ajouter une candidate</span>
+    <span class="small muted">Son nom, sa photo, une phrase ; son numéro est donné dans l'ordre (le suivant : 25). Une candidate ajoutée ou changée après l'ouverture est vérifiée par l'équipe avant d'être montrée. Une candidate qui a des voix ne se retire pas : l'équipe décide avec l'organisateur.</span>
+    <div class="note">Après l'ouverture, le prix de la voix, les paquets et la date de fin ne changent plus : ils sont dans le règlement que les votants ont vu.</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;width:360px">
+    <span class="cap" style="margin:0">Comment c'est compté</span>
+    <div class="rule"><b>Seules les voix payées comptent</b><span>Une voix existe quand son paiement est confirmé (CamPay au Cameroun, Mobile Money vérifié par l'équipe ailleurs, jusqu'au paiement automatique du chantier 5). Chaque voix est liée à son paiement ; un paiement annulé ou remboursé retire ses voix.</span></div>
+    <div class="rule"><b>Pas de voix gratuites</b><span>Ni par l'organisateur, ni par l'équipe. Les paquets donnent des voix en plus, payées avec le paquet.</span></div>
+    <div class="rule"><b>Après la fermeture</b><span>Un paiement arrivé après l'heure de fin ne compte pas : il est remboursé. Les résultats certifiés (PDF signé, comme le ticket du live) donnent les voix de chaque candidate.</span></div>
+    <div class="rule"><b>Le reversement</b><span>60 % des sommes encaissées pour l'organisateur, 40 % pour OCD Live, versés sous 3 jours après les résultats, comme les reversements des vendeurs.</span></div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · l'équipe</span>
+<div class="screen" style="width:1300px;padding:20px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
+  <div class="bo">
+    <b>OCD Live › Votes › Concours</b>
+    <table class="t">
+      <tr><th>Concours</th><th>Organisateur</th><th>État</th><th class="r">Voix</th><th class="r">Encaissé</th><th class="r">Part organisateur</th></tr>
+      <tr><td><b>Miss Douala 2026</b></td><td>Étoile Events</td><td><span class="tag ok">Votes ouverts</span></td><td class="r">18 640</td><td class="r">1 702 400 F</td><td class="r">1 021 440 F</td></tr>
+      <tr><td><b>Lomé Music Awards</b></td><td>OCD Live</td><td><span class="tag low">À vérifier</span></td><td class="r">0</td><td class="r">0 F</td><td class="r">-</td></tr>
+      <tr><td><b>Talents du Lycée Joss</b></td><td>Lycée Joss</td><td><span class="tag">Résultats</span></td><td class="r">5 210</td><td class="r">487 300 F</td><td class="r">Versé</td></tr>
+    </table>
+    <span>Fiche d'un concours : organisateur, dates (ouverture, fin, à l'heure du pays), prix de la voix et paquets, partage, classement caché les dernières heures, candidates (photo, numéro, vérification), le live de la finale (lien vers une réservation), règlement.</span>
+    <span style="display:flex;gap:8px"><span class="bobtn">Vérifier et ouvrir</span><span class="bobtn">Fermer maintenant</span><span class="bobtn">Résultats certifiés</span><span class="bobtn">Voix</span><span class="bobtn">Reversement</span></span>
+  </div>
+  <div class="bo">
+    <b>Votes › Voix (une ligne par paiement)</b>
+    <span>Date, concours, candidate, nombre de voix, montant, moyen de paiement et sa référence, téléphone du votant (vu par l'équipe seulement), page ou WhatsApp.</span>
+    <span>Un paiement remboursé retire ses voix (avec une trace). Les voix d'un même téléphone se voient d'un coup (pour repérer un abus).</span>
+    <b style="margin-top:6px">À vérifier</b>
+    <span>Un nouveau concours, une nouvelle candidate ou sa nouvelle photo, comme les produits des vendeurs.</span>
+    <b style="margin-top:6px">Réglages · Votes</b>
+    <span>Prix de la voix par défaut (<b>100 F</b>), paquets (<b>10 voix 900 F, 50 voix 4 000 F</b>), part de l'organisateur (<b>60 %</b>), numéro WhatsApp des votes, délai pour payer (10 min), classement caché les dernières heures (2 h).</span>
+    <b style="margin-top:6px">Automatisations</b>
+    <span>« Voix payée : prévenir le votant » ; « Concours fermé : résultats et reversement » ; « Finale : prévenir ceux qui l'ont demandé ».</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Choix proposés, à valider</span>
+<div class="q" style="max-width:1300px">
+  <span><b>1. Qui crée un concours ?</b> Des organisateurs (vérifiés par l'équipe, comme les vendeurs : identité, numéro, règlement du concours) et OCD Live lui-même. L'organisateur se connecte par son numéro, comme les vendeurs.</span>
+  <span><b>2. Prix et paquets :</b> 100 F la voix ; 10 voix à 900 F ; 50 voix à 4 000 F ; un autre nombre à 100 F la voix. Changeables par concours avant l'ouverture, plus après.</span>
+  <span><b>3. Partage :</b> 60 % pour l'organisateur, 40 % pour OCD Live, sur les sommes encaissées (frais du Mobile Money compris dans la part d'OCD). Versé sous 3 jours après les résultats.</span>
+  <span><b>4. Pas de voix gratuites,</b> pas de limite par personne (c'est le principe des votes payants) ; l'équipe voit les gros paiements d'un même téléphone.</span>
+  <span><b>5. Classement caché les 2 dernières heures</b> (l'ordre reste, les nombres sont cachés) : le suspense de la finale ; réglable par concours, 0 pour toujours montrer.</span>
+  <span><b>6. Pays :</b> d'abord le Cameroun (CamPay, automatique) ; ailleurs le Mobile Money vérifié par l'équipe est trop lent pour des votes : ouvert dans l'UEMOA avec le chantier 5.</span>
+  <span><b>7. Cadre légal :</b> à vérifier dans chaque pays avant d'ouvrir (ne pas être assimilé à une loterie : pas de tirage au sort, pas de gain pour les votants). Le règlement de chaque concours le dit.</span>
+</div>
+
+</div>
+</body>
+</html>
