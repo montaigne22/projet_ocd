@@ -1865,15 +1865,25 @@
     .o_ocd_product_photos_list {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+        align-items: start;
         gap: 8px;
     }
-    .o_ocd_product_photo {
-        position: relative;
+    // Square tiles the width of their column, whatever the size of the photo
+    .o_ocd_vendor_photo,
+    .o_ocd_vendor_photo_add {
+        width: 100%;
+        min-width: 0;
         aspect-ratio: 1;
+    }
+    .o_ocd_vendor_photo {
+        position: relative;
         border-radius: 14px;
         overflow: hidden;
         background: $ocd-sand;
         img {
+            position: absolute;
+            inset: 0;
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -1883,6 +1893,7 @@
         }
         button {
             position: absolute;
+            z-index: 1;
             display: grid;
             place-items: center;
             width: 32px;
@@ -1896,20 +1907,21 @@
             font-weight: 800;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
         }
-        .o_ocd_product_photo_remove button {
+        .o_ocd_vendor_photo_remove button {
             top: 4px;
             right: 4px;
         }
-        .o_ocd_product_photo_move button {
+        .o_ocd_vendor_photo_move button {
             top: 4px;
             left: 4px;
         }
-        &.o_ocd_product_photo_refused img {
+        &.o_ocd_vendor_photo_refused img {
             opacity: 0.55;
         }
     }
-    .o_ocd_product_photo_tag {
+    .o_ocd_vendor_photo_tag {
         position: absolute;
+        z-index: 1;
         left: 4px;
         bottom: 4px;
         max-width: calc(100% - 8px);
@@ -1928,16 +1940,15 @@
             color: $ocd-red-dark;
         }
     }
-    .o_ocd_product_photo_add {
+    .o_ocd_vendor_photo_add {
         position: relative;
         margin: 0;
-        aspect-ratio: 1;
         &.o_ocd_sending {
             opacity: 0.6;
             pointer-events: none;
         }
     }
-    .o_ocd_product_photo_pick {
+    .o_ocd_vendor_photo_pick {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -3025,6 +3036,17 @@
         padding: 0 12px;
         font-size: 14px;
         white-space: nowrap;
+    }
+    // On a phone, under the product the width of the row (design DispoMagasins): beside it, the
+    // name, the price and what the product tells had a narrow column
+    @media (max-width: $ocd-tablet - 1px) {
+        .o_ocd_my_product_stock {
+            grid-column: 1 / -1;
+            justify-content: center;
+        }
+        .o_ocd_my_product_stock ~ .o_ocd_colour_photos {
+            grid-column: 1 / -1;
+        }
     }
     .o_ocd_my_stock {
         .o_ocd_stock_head {

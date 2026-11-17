@@ -234,6 +234,27 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     colis s'il a tout, sinon un autre magasin qui a tout, sinon un colis par magasin (chaque produit du
     premier qui l'a, sinon de celui qui en a le plus). Le prix de la livraison est compté depuis ce
     magasin ; le client a payé une livraison : elle reste sur le premier colis du vendeur.
+- **Gérer ses produits** (chantier 19, [`PLAN_MES_PRODUITS.md`](PLAN_MES_PRODUITS.md), étape 2) :
+  - **un produit en vente reste en vente pendant sa vérification** : le nouveau nom et les nouvelles photos
+    (photos de couleur comprises) attendent l'équipe, la version d'aujourd'hui reste à l'écran. Acceptée,
+    la modification s'affiche tout de suite ; refusée, avec un motif, la version d'avant reste et le vendeur
+    corrige ; revenu au nom d'aujourd'hui et sans nouvelle photo, il n'y a plus rien à vérifier ;
+  - **le prix change tout de suite, sans vérification** ; au-delà d'un écart de 50 % (réglable, 0 : jamais
+    demandé), le vendeur le confirme. Chaque prix d'un produit de vendeur va dans son historique (par le
+    vendeur, l'équipe ou à la création), les grands écarts en couleur ; **le stock n'est jamais vérifié** ;
+  - **les photos suivent l'ordre d'Odoo** : la première est la photo principale (celle des cartes) ; une
+    photo non vérifiée ne passe jamais en premier ; un produit garde au moins une photo vérifiée ; 8 photos
+    au plus (réglable) ;
+  - **retirer de la vente ne supprime rien** : le produit n'est plus montré, les commandes passées le
+    gardent, le vendeur le remet d'un geste ; un produit caché par l'équipe ne peut pas être remis par le
+    vendeur ; les clients qui attendent son retour sont prévenus quand il est remis et en stock ;
+  - **un produit ajouté sans réseau reste dans le téléphone** (base du navigateur), photo comprise, et part
+    quand le réseau revient ou à la prochaine visite de « Mes produits » ; le jeton du formulaire évite
+    qu'il soit ajouté deux fois. Pas de *service worker* : il ne part pas tant que la page n'est pas
+    rouverte, et la page ne s'ouvre pas sans réseau ;
+  - **WhatsApp** : une modification acceptée envoie le message « produit accepté » ; une modification
+    refusée a son propre message (`ocd_modification_refusee`), envoyé une fois approuvé par Meta (le message
+    « produit refusé » dirait qu'il n'est pas en ligne).
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

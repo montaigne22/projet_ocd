@@ -36,16 +36,16 @@ décisions), car leur approbation ne dépend pas de nous.
 | 1.7 | **Catalogue pour le statut WhatsApp** | Des images prêtes à poster (produits, prix, QR de la boutique), téléchargées d'un geste ; fait avec 1.3 | Image d'annonce du live (`ocd_live/announce_image.py`), QR code (`ocd_live/tools.py`) | 3 à 4 jours |
 | 1.8 | **Démarrage du vendeur** | « Ta boutique est prête à 60 % : ajoute 5 produits, un magasin, partage ta boutique » : guide un nouveau vendeur jusqu'à sa première vente | Espace vendeur | 2 à 3 jours |
 
-## Étape 2 : gérer ses produits (~2,5 semaines)
+## Étape 2 : gérer ses produits (~2,5 semaines) · faite le 17 novembre 2026 (chantier 19)
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
-| 2.1 | **Modifier** | Nouveau nom ou nouvelle photo : vérifiés par l'équipe, l'ancienne version reste en vente en attendant. Prix : sans vérification, mais un grand écart se confirme (« Tu passes de 15 000 F à 1 500 F, c'est bien ça ? ») et l'équipe voit l'historique des prix. Stock : jamais vérifié. Les photos de couleur suivent la même règle (aujourd'hui publiées sans vérification) | Formulaire d'ajout, écran « À vérifier » | 4 à 5 jours, plus ~½ jour pour les photos de couleur |
-| 2.2 | **Retirer** | Ne plus montrer un produit, et pouvoir le remettre ; jamais supprimé, les commandes passées le gardent | Produits masqués (`is_published`) | ~½ jour |
+| 2.1 | **Modifier** | Nouveau nom ou nouvelle photo : vérifiés par l'équipe, l'ancienne version reste en vente en attendant. Prix : sans vérification, mais un grand écart se confirme (« Tu passes de 15 000 F à 1 500 F, c'est bien ça ? ») et l'équipe voit l'historique des prix. Stock : jamais vérifié. Les photos de couleur suivent la même règle (aujourd'hui publiées sans vérification) | Formulaire d'ajout, écran « À vérifier » | 4 à 5 jours, plus ~½ jour pour les photos de couleur ; **fait le 17 novembre 2026 (chantier 19)** |
+| 2.2 | **Retirer** | Ne plus montrer un produit, et pouvoir le remettre ; jamais supprimé, les commandes passées le gardent | Produits masqués (`is_published`) | ~½ jour ; **fait le 17 novembre 2026 (chantier 19)** |
 | 2.4 | **WhatsApp accepté ou refusé** | « Ton produit Robe wax est en vente » ou « … est refusé : photo floue », avec le lien de la page | Messages WhatsApp aux vendeurs | 1 à 2 jours, plus l'approbation des modèles par Meta ; **fait le 16 novembre 2026 avec les magasins (chantier 17)** |
 | 2.5 | **Stock par taille et par couleur** | Les − / + pour chaque variante (aujourd'hui seulement les produits sans variantes) ; fait avec S.2, en un seul écran de stock | Réglage du stock (`_ocd_set_stock`), photos des couleurs | Compté dans S.2 ; **fait le 16 novembre 2026 (chantier 18)** |
-| 2.6 | **Plusieurs photos** | Ajouter, retirer et ordonner les photos d'un produit ; une nouvelle photo est vérifiée comme en 2.1 | Galerie de la fiche produit (`product_template_image_ids`) | 2 à 3 jours |
-| 2.7 | **Brouillon hors connexion** | Un produit commencé sans réseau reste dans le téléphone (photo comprise) et part quand le réseau revient | Application installable sur le téléphone, photo réduite (0.4) | 3 à 4 jours |
+| 2.6 | **Plusieurs photos** | Ajouter, retirer et ordonner les photos d'un produit ; une nouvelle photo est vérifiée comme en 2.1 | Galerie de la fiche produit (`product_template_image_ids`) | 2 à 3 jours ; **fait le 17 novembre 2026 (chantier 19)** |
+| 2.7 | **Brouillon hors connexion** | Un produit commencé sans réseau reste dans le téléphone (photo comprise) et part quand le réseau revient | Application installable sur le téléphone, photo réduite (0.4) | 3 à 4 jours ; **fait le 17 novembre 2026 (chantier 19)** |
 
 ## Étape 3 : vendre plus et suivre (4 à 5 semaines)
 
@@ -220,6 +220,7 @@ Une nouvelle section « Produits et magasins des vendeurs », comme « Shop et l
 | Taille des photos réduites dans le téléphone | 0.4 | 1600 px de côté |
 | Changements vérifiés par l'équipe | 2.1, 2.6 | Nom, photos, photos de couleur ; pas le prix |
 | Écart de prix à confirmer par le vendeur | 2.1 | 50 % |
+| Photos par produit, au plus | 2.6 | 8, la principale comprise |
 | « Plus que N » sur les cartes et par magasin | S.3 | 3 (aujourd'hui écrit dans le code : `LOW_STOCK`) |
 | Seuil de l'alerte de stock bas | 3.4 | 2 pièces |
 | Prix promo : durée et remise au plus | 3.1 | 30 jours, 50 % |

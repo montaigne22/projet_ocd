@@ -246,3 +246,9 @@ RECRUITMENT3.update({
     "Apply for a Job": "Postuler",
     'You accompany the vendors who do their live from home: you welcome them, you\n                    follow the comments, you encourage the buyers and you help the vendor during the\n                    live.': 'Tu accompagnes les vendeurs qui font leur live de chez eux : tu les accueilles, tu\n                    suis les commentaires, tu encourages les acheteurs et tu aides le vendeur pendant le\n                    live.',
 })
+
+# The board of the checks: a change of a record already shown, before and now (chantier 19)
+BO3.update({
+    "Before (shown)": "Avant (montré)",
+    "Now": "Maintenant",
+})

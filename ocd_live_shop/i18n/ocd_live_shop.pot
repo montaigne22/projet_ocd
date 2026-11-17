@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-16 21:50+0000\n"
-"PO-Revision-Date: 2026-11-16 21:50+0000\n"
+"POT-Creation-Date: 2026-11-17 05:26+0000\n"
+"PO-Revision-Date: 2026-11-17 05:26+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -227,6 +227,12 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "%(price)s (already on sale, confirmed by the vendor)"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_stock.py:0
 msgid "%(qty)s %(label)s left %(place)s"
 msgstr ""
@@ -307,6 +313,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
 msgid "%(zone)s: %(price)s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "%s (already on sale)"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -429,6 +441,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
 msgid "%s people wrote to you on WhatsApp"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "%s photos at most: remove one first."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -724,6 +742,11 @@ msgid "<b class=\"o_ocd_shop_categories_title\">Categories</b>"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "<b>Change refused by the team:</b>"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_stock
 msgid "<b>Last changes</b>"
 msgstr ""
@@ -731,6 +754,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.boutique
 msgid "<b>Live now</b>"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "<b>No network.</b> You can go on: your products are kept in your phone and leave by themselves when the network is back."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -825,6 +853,11 @@ msgid "<small class=\"o_ocd_parcel_hint\">The courier picks your parcels up ther
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "<small class=\"o_ocd_parcel_hint\">The product is no longer shown; you can put it back when you want. It is never deleted: the past orders keep it.</small>"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_stock_send
 msgid "<small class=\"o_ocd_parcel_hint\">The stock changes at once in both stores. Each sending stays in the last changes.</small>"
 msgstr ""
@@ -909,6 +942,19 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.boutique
 msgid "<span class=\"o_ocd_link\">Watch again</span>"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid ""
+"<span class=\"o_ocd_my_product_text\">\n"
+"                                    <b class=\"o_ocd_my_draft_name\"/>\n"
+"                                    <span>\n"
+"                                        <span class=\"o_ocd_my_draft_price\"/>\n"
+"                                        <span class=\"o_ocd_step_pill o_ocd_my_status_draft\">In your phone</span>\n"
+"                                    </span>\n"
+"                                    <small class=\"o_ocd_my_product_fact o_ocd_my_draft_hint\"/>\n"
+"                                </span>"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1011,6 +1057,7 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_place_form
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
 msgid "<span>Add a photo</span>"
 msgstr ""
 
@@ -1157,6 +1204,16 @@ msgid "<span>to</span>"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_product_price__confirmed
+msgid "A big gap the vendor confirmed (« You go from 15,000 to 1,500, is that right? »)."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_product_price__big_gap
+msgid "A change bigger than the gap the vendors confirm (setting)."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/res_partner.py:0
 msgid "A first customer writes to you on WhatsApp"
@@ -1200,6 +1257,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/payment_provider.py:0
 msgid "A parcel of the order cannot be paid at the door"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_product_image__ocd_review_state
+msgid "A photo the vendor adds to a product on sale is checked by the team before it shows (2.6 of the plan of « My products »)."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1248,6 +1310,17 @@ msgid "A vendor may say they sell from home: the customers see their district on
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "A vendor who changes a price by more confirms it; the team sees each change. 0: never asked."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_price_gap_confirm
+msgid "A vendor who changes a price by more than this confirms it (« You go from 15,000 to 1,500, is that right? »); the team sees it in the history of the prices. 0: never asked."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "A vendor who is not ready is reminded, then the dispatch is alerted."
 msgstr ""
@@ -1271,6 +1344,18 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "Above the QR code of the boutique, on the poster a vendor prints for their store."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product_template_form_view
+msgid "Accept the change"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template__ocd_change_state__approved
+msgid "Accepted"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1311,6 +1396,7 @@ msgid "Activities"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Add a photo"
 msgstr ""
@@ -1341,6 +1427,13 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Add a product"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "Add another photo before you remove this one: a product keeps one photo."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1533,6 +1626,7 @@ msgid "Approve"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_image__ocd_review_state__approved
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template__ocd_review_state__approved
 msgid "Approved"
 msgstr ""
@@ -1659,6 +1753,11 @@ msgid "Back in stock alerts"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Back on sale: it shows again in your boutique."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
 #: code:addons/ocd_live_shop/controllers/vendor_share.py:0
@@ -1739,6 +1838,7 @@ msgid "Banner on screen · sold by OCD"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__previous_price
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "Before"
 msgstr ""
@@ -1747,6 +1847,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
 msgid "Before %s"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Being checked"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1782,6 +1887,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_ocd_delivery_rate__sequence
 msgid "Between two rates as precise as each other, the first one is used."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__big_gap
+msgid "Big Gap"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -1822,6 +1932,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ocd.voice.prompt,name:ocd_live_shop.voice_prompt_boutique
 msgid "Boutique of a vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__source
+msgid "By"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2023,10 +2138,71 @@ msgid "Category Of The Vendor"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_labels
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_places
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Change"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__gap
+msgid "Change (%)"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_change_review_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_change_review_date
+msgid "Change Checked At"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_change_state
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_change_state
+msgid "Change Of The Vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_change_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_change_date
+msgid "Change Sent At"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "Change accepted."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Change being checked: %s. The version of today stays on sale."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Change put online"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Change refused"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "Change refused: %s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Change refused: « %s ». The version before stays on sale."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2035,6 +2211,7 @@ msgid "Change the place"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Change the product"
 msgstr ""
@@ -2071,6 +2248,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_places.py:0
 msgid "Check %s: the store opens before it closes."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template_attribute_value__ocd_image_state
+msgid "Check Of The New Photo"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2354,6 +2536,12 @@ msgid "Collects The Payment At The Door"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "Colour %s"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__product_id
 msgid "Colour Shown"
 msgstr ""
@@ -2398,6 +2586,11 @@ msgid "Config Settings"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__confirmed
+msgid "Confirmed By The Vendor"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/res_partner.py:0
 msgid "Consignment: the vendor leaves the products at OCD, which delivers from its stock."
@@ -2435,6 +2628,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/product_template.py:0
 msgid "Copy of %s, made by the vendor."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "Correct"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2553,6 +2751,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__create_uid
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__create_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place_hour__create_uid
@@ -2570,6 +2769,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__create_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__create_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place_hour__create_date
@@ -2578,10 +2778,16 @@ msgid "Created on"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_product_price__source__creation
+msgid "Creation"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__currency_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__currency_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__currency_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__currency_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__currency_id
 msgid "Currency"
 msgstr ""
 
@@ -2627,6 +2833,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__date
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product_template_form_view
 msgid "Date"
 msgstr ""
 
@@ -3110,12 +3317,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place_hour__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place_tap__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_provider__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_transaction__display_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_image__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__display_name
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template_attribute_value__display_name
@@ -3705,6 +3914,11 @@ msgid "How many places the vendor may show. 0: the setting of OCD Live."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_product_price__gap
+msgid "How much the price changed, in percent of the price before (negative: lower)."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_ocd_vendor_place__position_accuracy
 msgid "How precise the phone was, in meters."
 msgstr ""
@@ -3765,12 +3979,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place_hour__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place_tap__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_provider__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_payment_transaction__id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_image__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template_attribute_value__id
@@ -3905,6 +4121,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__write_uid
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__write_uid
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place_hour__write_uid
@@ -3922,6 +4139,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_force__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_parcel_problem__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__write_date
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__write_date
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place_hour__write_date
@@ -3981,6 +4199,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_form_ocd_parcel
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_picking_form
 msgid "Leaves (send the code)"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Leaves by itself when the network is back, or at your next visit of My products."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4139,8 +4363,14 @@ msgid "MB"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "MB at most."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "Main"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4300,6 +4530,11 @@ msgid "Move down"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "Move this photo one place earlier"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Move up"
 msgstr ""
@@ -4403,6 +4638,8 @@ msgid "My tour"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__name
 msgid "Name"
 msgstr ""
@@ -4429,6 +4666,17 @@ msgstr ""
 #: code:addons/ocd_live_shop/models/ocd_cash_remittance.py:0
 #: code:addons/ocd_live_shop/models/ocd_payout.py:0
 msgid "New"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_change_name
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_change_name
+msgid "New Name To Check"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template_attribute_value__ocd_image_pending
+msgid "New Photo Of The Colour To Check"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4460,13 +4708,18 @@ msgstr ""
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
-msgid "New products"
+msgid "New products and changes"
 msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
 msgid "New stores"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "New · being checked"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4540,6 +4793,16 @@ msgid "No live today. The control room opens the live of the moment by itself."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "No longer shown in your boutique"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "No network: your product is kept in your phone, with its photo. It leaves by itself when the network is back. You can add another one."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 #: code:addons/ocd_live_shop/models/res_config_settings.py:0
@@ -4589,6 +4852,12 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.actions.act_window,help:ocd_live_shop.ocd_payout_action
 msgid "No payout to prepare"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "No photo"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4681,6 +4950,12 @@ msgid "Not a Cameroonian mobile number: %s."
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Not added: the photo could not be read. Add it again."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery
 msgid "Not needed"
 msgstr ""
@@ -4717,6 +4992,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/boutique.py:0
 msgid "Noted. We write to you when %s goes live."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Noted: the team checks your change. The product stays on sale as before meanwhile."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -4959,6 +5239,12 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Off sale"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "Offered on the website for: %s."
 msgstr ""
@@ -5160,6 +5446,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/regie/regie.js:0
 msgid "Open the live on %s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "Open the product"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5734,8 +6026,20 @@ msgid "Photo of the product in this colour: the product page shows it as soon as
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "Photos"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_vendor_photo_gallery
 msgid "Photos From The Gallery"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_product_photos_max
+msgid "Photos Per Product, At Most"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5757,6 +6061,12 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
 msgid "Photos of the product"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "Photos per product, at most"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5896,11 +6206,30 @@ msgid "Prepared"
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_delivery_rate__price
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__amount
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__price
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
 msgid "Price"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_company__ocd_price_gap_confirm
+msgid "Price Change To Confirm (%)"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_ocd_product_price
+msgid "Price Of A Product Of A Vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "Price change to confirm"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5922,6 +6251,13 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_rates
 msgid "Price of the delivery"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_price_ids
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_price_ids
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product_template_form_view
+msgid "Prices"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -5983,10 +6319,16 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_product_template
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_live_moment__product_tmpl_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_product_price__product_tmpl_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_stock_alert__product_id
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_stock_alert_view_search
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product
 msgid "Product"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model,name:ocd_live_shop.model_product_image
+msgid "Product Image"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -6117,6 +6459,18 @@ msgid "Publish the replay in the boutique"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Put back on sale"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "Put back on sale by the vendor."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Put first"
 msgstr ""
@@ -6233,6 +6587,12 @@ msgid "Reason Of The Refusal"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_change_reason_id
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_change_reason_id
+msgid "Reason Of The Refusal Of The Change"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_force_reason
 msgid "Reason Of The Validation Without Code"
 msgstr ""
@@ -6241,6 +6601,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_vendor_place_view_form
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.product_template_form_view
 msgid "Reason sent to the vendor, to refuse"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product_template_form_view
+msgid "Reason sent to the vendor, to refuse the change"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -6294,13 +6659,22 @@ msgid "Refuse"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.product_template_form_view
+msgid "Refuse the change"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_places.py:0
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
 #: code:addons/ocd_live_shop/models/product_template.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_vendor_place__state__refused
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_image__ocd_review_state__refused
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template__ocd_change_state__refused
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template__ocd_review_state__refused
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template_attribute_value__ocd_image_state__refused
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_vendor_place_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
 msgid "Refused"
 msgstr ""
 
@@ -6308,6 +6682,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_vendor_place.py:0
 msgid "Refused: %s"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Refused: send another one"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -6341,10 +6720,20 @@ msgid "Remove"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Remove from my phone"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.delivery
 msgid "Remove their products"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "Remove this photo"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -6439,6 +6828,7 @@ msgid "Returned"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_image__ocd_review_state
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_review_state
 #: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_review_state
 msgid "Review"
@@ -6533,6 +6923,7 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_places
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Saved."
 msgstr ""
 
@@ -6676,6 +7067,7 @@ msgstr ""
 
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_place_form
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Send"
 msgstr ""
@@ -6954,6 +7346,12 @@ msgid "Shown to the vendor in « My products », with its message: they correct 
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_product_product__ocd_change_reason_id
+#: model:ir.model.fields,help:ocd_live_shop.field_product_template__ocd_change_reason_id
+msgid "Shown to the vendor in « My products »: the product stays on sale as it was, the vendor corrects the change and sends it again."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_orders.py:0
 msgid "Since %s"
@@ -7138,6 +7536,12 @@ msgid "Take a photo, write the name and the price, then tap the orange button. B
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Take off sale"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/vendor_places.py:0
 msgid "Take the position inside your store."
@@ -7150,9 +7554,37 @@ msgid "Take to the travel agency for %s"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_product__ocd_vendor_retired
+#: model:ir.model.fields,field_description:ocd_live_shop.field_product_template__ocd_vendor_retired
+msgid "Taken Off Sale By The Vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Taken off sale"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "Taken off sale by the vendor."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "Taken off sale: it no longer shows in your boutique. Put it back on sale when you want."
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/boutique.py:0
 msgid "Tap a product: the video goes to its moment."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_product_price__source__team
+msgid "Team"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -7434,9 +7866,30 @@ msgid "The live the contact was told about."
 msgstr ""
 
 #. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "The main one included. A new photo of a product on sale is checked by the team."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,help:ocd_live_shop.field_res_partner__ocd_business_until
 #: model:ir.model.fields,help:ocd_live_shop.field_res_users__ocd_business_until
 msgid "The monthly formula: several places and the stock per store, the team of the vendor, the detailed statistics. Nothing is deleted when it ends: the places beyond the first one are no longer shown to the customers."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "The name and the photos are checked by the team: meanwhile, the product stays on sale as it is today."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "The new photos show once the team checked them. ← moves a photo one place earlier."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
+msgid "The new price shows at once."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -7562,6 +8015,7 @@ msgid "The phone of the store; the one of the vendor when empty."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "The photo could not be added: an image of"
 msgstr ""
@@ -7581,6 +8035,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_photo
 msgid "The photo of your product is blurry. Take a new photo in daylight and add the product again."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_product_photos_max
+msgid "The photos a vendor gives to a product, the main one included."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -7617,6 +8076,11 @@ msgid "The position taken is far from the address of your store. Take it again i
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "The price changes at once, without a check. The stock is changed"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_delivery_rate.py:0
 msgid "The price of a delivery is at least %s."
@@ -7637,6 +8101,18 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ocd.listing.refuse.reason,message:ocd_live_shop.refuse_reason_product_price
 msgid "The price of your product is missing or wrong. Correct it and add the product again."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "The product %s cannot be put back on sale."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "The product %s is not on sale."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -7713,6 +8189,18 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "The vendor added a photo."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_product_product__ocd_change_state
+#: model:ir.model.fields,help:ocd_live_shop.field_product_template__ocd_change_state
+msgid "The vendor changed the name (or the photos) of a product on sale: the team checks it while the product stays on sale as it was."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "The vendor changes them for their store."
 msgstr ""
@@ -7768,14 +8256,38 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "The vendor removed a photo."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/res_partner.py:0
 msgid "The vendor sees the parcels in the space, delivers, then types the code of the customer."
 msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "The vendor sent a change again (refused for: %s)."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "The vendor sent a change to check."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "The vendor takes a photo or chooses one of the phone; the team checks it. Off: the camera only."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_product_product__ocd_vendor_retired
+#: model:ir.model.fields,help:ocd_live_shop.field_product_template__ocd_vendor_retired
+msgid "The vendor took the product off sale from « My products »: not shown, never deleted (the past orders keep it), and the vendor can put it back on sale."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -7820,6 +8332,11 @@ msgstr ""
 #: model:ir.model.fields,help:ocd_live_shop.field_res_company__ocd_vendor_rate_min
 #: model:ir.model.fields,help:ocd_live_shop.field_res_config_settings__ocd_vendor_rate_min
 msgid "The vendors who deliver set their prices between this amount and the highest one. 0: no limit."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "The version before stays on sale."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -7945,6 +8462,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "This payment method is not allowed for this parcel."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/product_template.py:0
+msgid "This photo is not one of the product."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -8080,7 +8603,10 @@ msgstr ""
 #: code:addons/ocd_live_shop/controllers/vendor_products.py:0
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_payout__state__draft
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_vendor_place__state__to_check
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_image__ocd_review_state__to_check
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template__ocd_change_state__to_check
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template__ocd_review_state__to_check
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__product_template_attribute_value__ocd_image_state__to_check
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_payout_view_search
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_vendor_place_view_search
 msgid "To check"
@@ -8373,6 +8899,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_order_delivery__vendor_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__vendor_id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__vendor_id
+#: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_product_price__source__vendor
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_delivery_rate_view_search
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_vendor_place_view_search
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
@@ -8770,6 +9297,18 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "Yes, %s"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "You go from %(before)s to %(after)s, is that right?"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_vendor_place.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_places
 msgid "You have all the places you can have. Write to OCD Live for more."
@@ -9006,6 +9545,11 @@ msgid "from %s"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "from My products"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/boutique.py:0
 msgid "from home"
@@ -9044,6 +9588,11 @@ msgid "https://"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_form
+msgid "in My stock"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/controllers/boutique.py:0
 msgid "its site"
@@ -9079,6 +9628,18 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "new name"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "new photos"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_orders.py:0
 msgid "ocd_delivered_at"
 msgstr ""
@@ -9096,9 +9657,20 @@ msgid "ocd_picked_at"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "of"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/regie/regie.js:0
 msgid "of live"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "on sale during the check"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -9135,6 +9707,23 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/orders/orders.xml:0
 msgid "parcels, one per vendor"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
+msgid "photos"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "photos at most: remove one first."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "photos of the colours"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -9194,8 +9783,20 @@ msgstr ""
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/controllers/vendor_products.py:0
+msgid "retired"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 msgid "route"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_verification.py:0
+msgid "sent %s"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -9273,4 +9874,14 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "wrong codes"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "· the first one is on the card"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_product_edit
+msgid "← moves a photo one place earlier: the first one is the photo of the cards."
 msgstr ""

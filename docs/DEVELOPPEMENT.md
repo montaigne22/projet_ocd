@@ -378,6 +378,14 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   dans la page se relie à ses champs par l'attribut `form="<id>"` (ex. « Préviens-moi » de la page
   produit ; `ocd_live.phone_field` prend `field_form`).
   `tools/demo/card_video.py` fabrique une vidéo de démo à partir de photos.
+- Sans réseau, Odoo désactive tous les boutons de la page (`o_disabled_offline`, sauf ceux qui portent
+  `data-available-offline`) : le bouton d'ajout d'un produit et les − / + de son formulaire le portent,
+  pour garder le produit dans le téléphone (`ocd_live_shop/static/src/interactions/product_drafts.js`,
+  base IndexedDB `ocd_live`, envoi au retour du réseau sous le jeton du formulaire).
+- Photos d'un produit : Odoo 20 garde la photo principale comme la première des photos du produit
+  (`product.image`, par `sequence`) ; changer l'ordre change la photo principale. Une photo ajoutée à un
+  produit en vente est `ocd_review_state = "to_check"` et n'est montrée qu'une fois acceptée
+  (`product.template._ocd_vendor_photos`, `_ocd_page_photos`).
 - Plateformes et comptes de live : `ocd.live.platform` (`_ocd_for_url`, cache vidé à chaque changement),
   `ocd.live.account` (`_ocd_pick` : pays du vendeur d'abord, libre à l'heure). Lien d'un live :
   `booking._ocd_watch_url()` (le sien, sinon celui de son compte).

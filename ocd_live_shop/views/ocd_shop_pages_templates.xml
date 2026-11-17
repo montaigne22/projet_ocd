@@ -872,27 +872,27 @@
                         <section id="photos" class="o_ocd_product_photos" aria-labelledby="pp-title">
                             <span id="pp-title" class="o_ocd_label">Photos <small>· <t t-out="len(photos)"/> of <t t-out="photos_max"/> · the first one is on the card</small></span>
                             <div class="o_ocd_product_photos_list">
-                                <div t-foreach="photos" t-as="photo" t-attf-class="o_ocd_product_photo o_ocd_product_photo_#{photo['state']}">
+                                <div t-foreach="photos" t-as="photo" t-attf-class="o_ocd_vendor_photo o_ocd_vendor_photo_#{photo['state']}">
                                     <img t-att-src="photo['src']" alt="" loading="lazy"/>
-                                    <span t-if="photo['main']" class="o_ocd_product_photo_tag">Main</span>
-                                    <span t-elif="photo['state'] == 'to_check'" class="o_ocd_product_photo_tag o_ocd_new">New · being checked</span>
-                                    <span t-elif="photo['state'] == 'refused'" class="o_ocd_product_photo_tag o_ocd_refused">Refused</span>
+                                    <span t-if="photo['main']" class="o_ocd_vendor_photo_tag">Main</span>
+                                    <span t-elif="photo['state'] == 'to_check'" class="o_ocd_vendor_photo_tag o_ocd_new">New · being checked</span>
+                                    <span t-elif="photo['state'] == 'refused'" class="o_ocd_vendor_photo_tag o_ocd_refused">Refused</span>
                                     <form t-if="photo['can_remove']" t-attf-action="/ocd/espace/moi/produits/#{product.id}/photos/#{photo['key']}/retirer"
-                                          method="post" class="o_ocd_product_photo_remove">
+                                          method="post" class="o_ocd_vendor_photo_remove">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         <button aria-label="Remove this photo">×</button>
                                     </form>
                                     <form t-if="photo['can_move']" t-attf-action="/ocd/espace/moi/produits/#{product.id}/photos/#{photo['key']}/avant"
-                                          method="post" class="o_ocd_product_photo_move">
+                                          method="post" class="o_ocd_vendor_photo_move">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         <button aria-label="Move this photo one place earlier">←</button>
                                     </form>
                                 </div>
                                 <form t-if="len(photos) &lt; photos_max" t-attf-action="/ocd/espace/moi/produits/#{product.id}/photos"
-                                      method="post" enctype="multipart/form-data" class="o_ocd_colour_photo o_ocd_product_photo_add"
+                                      method="post" enctype="multipart/form-data" class="o_ocd_vendor_photo_add"
                                       t-att-data-max-px="photo_px">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                    <label class="o_ocd_product_photo_pick">
+                                    <label class="o_ocd_vendor_photo_pick">
                                         <input type="file" name="photo" accept="image/*" class="o_ocd_colour_photo_input"
                                                t-att-capture="None if photo_gallery else 'environment'" aria-label="Add a photo"/>
                                         <t t-call="ocd_live.icon" icon.f="camera"/>

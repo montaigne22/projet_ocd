@@ -33,6 +33,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | « Mes produits » aide à vendre (chantier 16) : contacts WhatsApp et clients en attente, menu « Plus », ordre de la boutique, copie, filtres, partage d'un produit avec son image, catalogue pour le statut, démarrage du vendeur | ✅ fait, testé |
 | Magasins des vendeurs (chantier 17) : magasin vérifié ou « je vends depuis chez moi », horaires et « ouvert maintenant », itinéraire, appeler, WhatsApp, visites comptées, affiche QR et étiquettes de prix, magasin de départ des colis, interrupteur OCD Business, back-office et vérification | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | Stock par magasin (chantier 18) : un emplacement par lieu, « Mon stock » avec les tailles et les couleurs, envoyer des pièces d'un magasin à l'autre, le magasin qui sert chaque commande (un colis par magasin si besoin), disponibilité par magasin sur la fiche produit, « Préviens-moi » qui nomme les magasins | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
+| Gérer ses produits (chantier 19) : modifier un produit en vente (vérifié pendant que la version d'aujourd'hui reste en vente, prix tout de suite, grand écart confirmé, historique des prix), plusieurs photos, retirer de la vente et remettre, produit gardé dans le téléphone sans réseau | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -86,7 +87,8 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    **Depuis le 16 novembre**, aussi : `ocd_produit_accepte`, `ocd_produit_refuse`, `ocd_stock_bas`,
    `ocd_magasin_accepte`, `ocd_magasin_refuse` (français et anglais), pour les messages aux vendeurs sur
    leurs produits et leurs magasins ; et `ocd_produit_de_retour_magasin` (français et anglais), pour
-   « Préviens-moi » qui nomme les magasins où le produit est revenu (l'ancien message part jusque-là).
+   « Préviens-moi » qui nomme les magasins où le produit est revenu (l'ancien message part jusque-là) ; et `ocd_modification_refusee` (français et anglais), pour une modification de produit
+   refusée par l'équipe (rien ne part avant).
 3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
    back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
@@ -106,6 +108,36 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 17 novembre 2026 · Gérer ses produits (chantier 19)
+Dessiné d'abord (maquette `GererProduits`, validée), puis codé.
+- **Modifier un produit en vente** : le nouveau nom est vérifié par l'équipe pendant que le produit reste
+  en vente comme avant ; « Mes produits » dit « Modification en vérification » ou « Modification refusée »
+  avec son motif et « Corriger et renvoyer ». Le prix change tout de suite ; au-delà de 50 % d'écart
+  (réglage « Écart de prix à confirmer »), le vendeur confirme : « Tu passes de 15 000 F à 1 500 F, c'est
+  bien ça ? ». Chaque prix va dans l'historique du produit (onglet « Prix » du back-office).
+- **Plusieurs photos** : jusqu'à 8 (réglage), réduites dans le téléphone ; une nouvelle photo est
+  vérifiée avant d'être montrée ; « ← » avance une photo, la première devient la photo des cartes ;
+  « × » retire une photo, un produit en garde une. Les nouvelles photos des couleurs d'un produit en
+  vente sont aussi vérifiées (avant, elles s'affichaient tout de suite).
+- **Retirer de la vente** (menu « Plus », ou en bas de la page du produit) : plus montré, jamais effacé,
+  « Remettre en vente » d'un geste ; filtre « Retirés ».
+- **Sans réseau** : un produit ajouté reste dans le téléphone avec sa photo (« Dans ton téléphone ») et
+  part tout seul quand le réseau revient, ou à la prochaine visite de « Mes produits ». Odoo désactivait
+  les boutons sans réseau : celui de l'ajout reste utilisable. Essayé dans un navigateur de téléphone :
+  réseau coupé, produit ajouté, réseau revenu, produit envoyé et montré.
+- **Back-office** : « À vérifier » montre la modification, avant et maintenant côte à côte (nom, photos,
+  photos des couleurs, prix déjà changé) ; accepter ou refuser avec un motif. WhatsApp : une modification
+  acceptée envoie « produit accepté » ; une modification refusée a son propre message, envoyé une fois
+  approuvé par Meta.
+- Corrigé au passage : sur téléphone, « Mon stock par magasin » passe sous le produit, en pleine largeur
+  comme dans la maquette `DispoMagasins` (il serrait le nom et les chiffres dans une colonne étroite).
+- Tests : base neuve, tous les modules OCD : **376 sans échec** (11 nouveaux) ; contrôlé dans un navigateur
+  en français en trois tailles (390, 820, 1440 px) : page de modification, question du prix, Mes produits,
+  « À vérifier ».
+- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.15.1, `ocd_live_shop` 20.0.1.21.1,
+  `ocd_live_shop_whatsapp` 20.0.1.11.1 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`), puis soumettre à
+  Meta le modèle `ocd_modification_refusee`.
 
 ### 16 novembre 2026 · Le stock par magasin (chantier 18)
 Dessiné d'abord (maquettes `MonStock`, `EnvoyerStock`, `DispoMagasins`, et le tableau sur ordinateur dans

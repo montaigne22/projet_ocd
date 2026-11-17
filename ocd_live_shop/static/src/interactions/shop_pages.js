@@ -1033,7 +1033,8 @@ export class OcdVendorRatesForm extends Interaction {
  * My products: the photo of a colour is sent as soon as it is chosen.
  */
 export class OcdColourPhoto extends Interaction {
-    static selector = ".o_ocd_colour_photo";
+    // Also the photos of a product on sale (chantier 19)
+    static selector = ".o_ocd_colour_photo, .o_ocd_vendor_photo_add";
     dynamicContent = {
         ".o_ocd_colour_photo_input": { "t-on-change": this.send },
     };
