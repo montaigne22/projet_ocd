@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>L'équipe du vendeur</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.wa{align-self:flex-start;max-width:320px;background:#DCF8C6;border-radius:12px;padding:8px 10px;font-size:14px}
+.wabtn{align-self:flex-start;width:320px;box-sizing:border-box;background:#FFFFFF;border-radius:12px;padding:8px 10px;text-align:center;color:#0A7CFF;font-weight:700;font-size:14px;margin-top:-8px}
+.member{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start;border:2px solid #E7E2DC;border-radius:18px;padding:12px 14px}
+.av{width:44px;height:44px;border-radius:50%;background:#FFE7D1;display:grid;place-items:center;font-weight:800;color:#B84F00}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.acts{display:grid;grid-template-columns:1fr auto;gap:8px}
+.acts .btn{white-space:nowrap;padding-left:14px;padding-right:14px}
+.opt{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:center;border:2px solid #E7E2DC;border-radius:14px;padding:10px 12px}
+.opt.on{border-color:#15130F;background:#FFF0E3}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid #15130F;box-sizing:border-box}
+.on .dot{border-width:6px}
+.can{display:flex;flex-direction:column;gap:4px;border-radius:14px;background:#F5F2EE;padding:10px 12px;font-size:14px}
+.biz{border-radius:14px;background:#15130F;color:#FFF;padding:10px 12px;font-size:14px}
+.biz b{color:#FF9A4D}
+.home{display:flex;flex-direction:column;gap:6px;border-radius:20px;background:#15130F;color:#FFF;padding:14px 16px}
+.home .h{color:#D9D3CC}
+.big{display:flex;justify-content:space-between;align-items:center;border:2px solid #E7E2DC;border-radius:18px;padding:14px 16px}
+.srow{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid #E7E2DC}
+.ph52{width:52px;height:52px;border-radius:12px;background:#FFE7D1}
+.steps{display:grid;grid-template-columns:auto 44px 44px 44px;gap:6px;align-items:center;font-size:14px}
+.steps span.b{height:40px;border-radius:12px;border:2px solid #E7E2DC;display:grid;place-items:center;font-weight:800}
+.pcard{border:2px solid #E7E2DC;border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.line{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<!-- L'équipe du vendeur (chantier 22, A.9 du plan de « Mes produits ») : la vendeuse d'un magasin a
+     son propre accès, par son numéro WhatsApp (lien ou code, comme le vendeur), limité au stock et
+     aux colis de son magasin : ni les prix, ni l'ajout de produits, ni les reversements, ni les
+     autres magasins. 5 personnes au plus (réglable). Réservé à OCD Business, offert pendant le
+     lancement ; à la fin de la formule, l'équipe est mise en pause, rien n'est supprimé.
+     Données d'exemple : Brenda Wax, magasin Brenda Wax Akwa ; Aïcha, vendeuse. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le vendeur : Mon espace, Mon équipe, le WhatsApp à la vendeuse</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. Mon équipe -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Mon équipe</h1>
+    <span class="h">Les personnes qui tiennent tes magasins : chacune voit le stock et les colis de son magasin.</span>
+    <div class="member"><span class="av">AN</span><span style="display:flex;flex-direction:column;gap:4px">
+      <span class="line"><b>Aïcha Njoya</b><span class="tag ok">Active</span></span>
+      <span class="h">+237 6 99 12 34 56 · Brenda Wax Akwa</span>
+      <span class="small">Dernière visite : aujourd'hui, 10:12</span>
+      <span class="acts"><span class="btn">Renvoyer son lien</span><span class="btn">Retirer</span></span>
+    </span></div>
+    <div class="member"><span class="av">PE</span><span style="display:flex;flex-direction:column;gap:4px">
+      <span class="line"><b>Paul Eto'o</b><span class="tag" style="background:#FFF0CC;color:#6B4500">Pas encore venu</span></span>
+      <span class="h">+237 6 77 00 11 22 · Marché central</span>
+      <span class="acts"><span class="btn">Renvoyer son lien</span><span class="btn">Retirer</span></span>
+    </span></div>
+    <span class="cta">Ajouter une personne</span>
+    <span class="h small">2 personnes sur 5.</span>
+    <div class="biz"><b>OCD Business</b> · offert pendant le lancement.</div>
+  </div>
+
+  <!-- 2. Ajouter une personne -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon équipe</span></div>
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Ajouter une personne</h1>
+    <div><div class="lab">Son nom</div><div class="in">Aïcha Njoya</div></div>
+    <div><div class="lab">Son WhatsApp</div><div class="in">+237 6 99 12 34 56</div></div>
+    <div><div class="lab">Son magasin</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="opt on"><span class="dot"></span><span><b>Brenda Wax Akwa</b><br><span class="h">En face de la pharmacie du Port</span></span></div>
+        <div class="opt"><span class="dot"></span><span><b>Marché central</b><br><span class="h">Allée des tissus, stand 42</span></span></div>
+      </div></div>
+    <div class="can">
+      <b>Elle voit et change</b>
+      <span>✓ Le stock de ce magasin (− / +)</span>
+      <span>✓ Ses colis : à préparer, retraits, pièces à essayer</span>
+      <span>✓ Un WhatsApp quand un colis ou une pièce à essayer arrive</span>
+      <b style="margin-top:4px">Elle ne voit pas</b>
+      <span>✗ Les prix, tes reversements, tes autres magasins</span>
+    </div>
+    <span class="cta">Ajouter et lui envoyer son lien</span>
+    <span class="h small">Elle ouvre son espace avec son numéro, comme toi. Tu peux la retirer quand tu veux.</span>
+  </div>
+
+  <!-- 3. Le WhatsApp à la vendeuse, et un numéro déjà utilisé -->
+  <div class="phone">
+    <span class="cap" style="margin:0">WhatsApp à la vendeuse</span>
+    <span class="wa">Bonjour Aïcha, Brenda Wax vous a ajoutée à son équipe pour le magasin Brenda Wax Akwa. Touchez « Mon magasin » pour ouvrir votre espace.</span>
+    <span class="wabtn">Mon magasin</span>
+    <span class="cap" style="margin:8px 0 0">WhatsApp quand il y a du nouveau au magasin</span>
+    <span class="wa">Bonjour Aïcha, du nouveau au magasin Brenda Wax Akwa : un colis à préparer pour Sandrine avant 18:30. Touchez « Mon magasin » pour le voir.</span>
+    <span class="wabtn">Mon magasin</span>
+    <span class="cap" style="margin:8px 0 0">Les refus</span>
+    <div class="alert" style="border-radius:14px;padding:10px 12px;background:#FCE4E4;color:#B01522;font-weight:600;font-size:14px">Ce numéro est déjà celui d'un vendeur ou d'un livreur : choisis-en un autre.</div>
+    <div class="alert" style="border-radius:14px;padding:10px 12px;background:#FCE4E4;color:#B01522;font-weight:600;font-size:14px">5 personnes au plus dans une équipe : retire quelqu'un d'abord.</div>
+    <span class="cap" style="margin:8px 0 0">Mon espace</span>
+    <div class="big"><span><b>Mon équipe</b><br><span class="h">2 personnes</span></span><span>→</span></div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · 390 px · la vendeuse : son espace, le stock du magasin, les colis</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 4. Son espace -->
+  <div class="phone">
+    <div class="home">
+      <span class="small" style="color:#FF9A4D;font-weight:800">BRENDA WAX AKWA</span>
+      <b class="d" style="font-size:24px">Bonjour Aïcha</b>
+      <span class="h">Tu tiens le magasin de Brenda Wax : son stock et ses colis.</span>
+    </div>
+    <div class="big"><span><b>Les colis du magasin</b><br><span class="h">2 à préparer · 1 retrait · 1 à essayer</span></span><span>→</span></div>
+    <div class="big"><span><b>Le stock du magasin</b><br><span class="h">12 produits · 3 en stock bas</span></span><span>→</span></div>
+    <span class="h small">Les prix, l'ajout de produits et les reversements restent à Brenda.</span>
+    <span class="cap" style="margin:8px 0 0">Équipe en pause (fin d'OCD Business)</span>
+    <div class="note" style="border-radius:14px;background:#F5F2EE;padding:10px 12px">L'équipe de Brenda Wax est en pause. Demande à Brenda de la remettre.</div>
+  </div>
+
+  <!-- 5. Le stock du magasin -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon magasin</span></div>
+    <h1 class="d" style="margin:0;font-size:24px;line-height:1.05">Le stock · Brenda Wax Akwa</h1>
+    <div class="search" style="border:2px solid #E7E2DC;border-radius:14px;padding:10px 12px;color:#736D66">Chercher un produit</div>
+    <div class="srow"><span class="ph52"></span><span style="display:flex;flex-direction:column;gap:6px">
+      <b>Robe en wax</b>
+      <span class="steps"><span>Bleu, M</span><span class="b">−</span><span class="b">3</span><span class="b">+</span></span>
+      <span class="steps"><span>Bleu, L</span><span class="b">−</span><span class="b">1</span><span class="b">+</span></span>
+      <span class="tag" style="align-self:flex-start;background:#FFF0CC;color:#6B4500">Stock bas : Bleu, L · plus que 1</span>
+    </span></div>
+    <div class="srow" style="border-bottom:0"><span class="ph52"></span><span style="display:flex;flex-direction:column;gap:6px">
+      <b>Sac en raphia</b>
+      <span class="steps"><span>&nbsp;</span><span class="b">−</span><span class="b">4</span><span class="b">+</span></span>
+    </span></div>
+    <span class="h small">Seulement les pièces de ce magasin. Les pièces réservées pour une commande ne bougent pas.</span>
+  </div>
+
+  <!-- 6. Les colis du magasin -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon magasin</span></div>
+    <h1 class="d" style="margin:0;font-size:24px;line-height:1.05">Les colis du magasin</h1>
+    <div class="chips"><span class="chip on">À faire · 2</span><span class="chip">Retrait · 1</span><span class="chip">À essayer · 1</span><span class="chip">Livrés</span></div>
+    <div class="pcard">
+      <div class="line"><b>Pour Sandrine · Bonamoussadi</b><span class="tag" style="background:#FFF0CC;color:#6B4500">À préparer</span></div>
+      <span class="small">Pagne wax 6 yards × 1</span>
+      <span class="h">Avant 18:30 · Junior, livreur OCD, passe le chercher</span>
+      <span class="cta" style="min-height:48px;font-size:16px">C'est prêt</span>
+    </div>
+    <div class="pcard">
+      <div class="line"><b>Estelle passe la chercher</b><span class="tag ok">Prête</span></div>
+      <span class="small">Robe en wax · Bleu, M</span>
+      <span class="h">À encaisser au comptoir : 12 000 F</span>
+      <span class="btn">Encaisser, puis son code</span>
+    </div>
+    <span class="h small">Les colis qui partent de Brenda Wax Akwa, et ses retraits et pièces à essayer. Pas les reversements.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · Mon équipe : les personnes à gauche, l'ajout à droite</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <div style="display:grid;grid-template-columns:270px minmax(0,1fr)">
+    <aside class="side" style="display:flex;flex-direction:column;gap:4px;padding:24px 16px;border-right:1px solid #E7E2DC;min-height:520px;box-sizing:border-box">
+      <a>Mon espace</a><a>Ma carte dans les lives</a><a>Mes produits</a><a>Mes magasins</a><a>Mes colis</a><a>Mes prix de livraison</a><a class="on">Mon équipe</a>
+    </aside>
+    <main style="display:flex;flex-direction:column;gap:16px;padding:28px 40px 40px">
+      <h1 class="d" style="margin:0;font-size:32px">Mon équipe</h1>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="member"><span class="av">AN</span><span style="display:flex;flex-direction:column;gap:4px"><span class="line"><b>Aïcha Njoya</b><span class="tag ok">Active</span></span><span class="h">+237 6 99 12 34 56 · Brenda Wax Akwa</span><span class="acts"><span class="btn">Renvoyer son lien</span><span class="btn">Retirer</span></span></span></div>
+          <div class="member"><span class="av">PE</span><span style="display:flex;flex-direction:column;gap:4px"><span class="line"><b>Paul Eto'o</b><span class="tag" style="background:#FFF0CC;color:#6B4500">Pas encore venu</span></span><span class="h">+237 6 77 00 11 22 · Marché central</span><span class="acts"><span class="btn">Renvoyer son lien</span><span class="btn">Retirer</span></span></span></div>
+          <span class="h small">2 personnes sur 5 · OCD Business, offert pendant le lancement.</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;border:2px solid #E7E2DC;border-radius:22px;padding:20px">
+          <b class="d" style="font-size:20px">Ajouter une personne</b>
+          <div class="two" style="gap:14px"><div><div class="lab">Son nom</div><div class="in">Aïcha Njoya</div></div><div><div class="lab">Son WhatsApp</div><div class="in">+237 6 99 12 34 56</div></div></div>
+          <div class="two" style="gap:10px"><div class="opt on"><span class="dot"></span><span><b>Brenda Wax Akwa</b></span></div><div class="opt"><span class="dot"></span><span><b>Marché central</b></span></div></div>
+          <div class="can"><span>✓ Le stock de ce magasin · ✓ ses colis</span><span>✗ Les prix, tes reversements, tes autres magasins</span></div>
+          <span class="cta">Ajouter et lui envoyer son lien</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Tablette · 820 px · la vendeuse : les colis à gauche, le stock à droite</span>
+<div class="screen tab"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Mon magasin</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <main style="display:flex;flex-direction:column;gap:14px;padding:22px 24px 28px">
+    <div class="home"><span class="small" style="color:#FF9A4D;font-weight:800">BRENDA WAX AKWA</span><b class="d" style="font-size:24px">Bonjour Aïcha</b></div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <b class="d" style="font-size:20px">Les colis du magasin</b>
+        <div class="pcard"><div class="line"><b>Pour Sandrine</b><span class="tag" style="background:#FFF0CC;color:#6B4500">À préparer</span></div><span class="small">Pagne wax 6 yards × 1</span><span class="cta" style="min-height:48px;font-size:16px">C'est prêt</span></div>
+        <div class="pcard"><div class="line"><b>Mireille veut l'essayer</b><span class="tag" style="background:#E5EEFF;color:#1F4FA3">Nouveau</span></div><span class="small">Robe en wax · Rouge, S</span><span class="two"><span class="btn">D'accord</span><span class="btn">Refuser</span></span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <b class="d" style="font-size:20px">Le stock du magasin</b>
+        <div class="srow"><span class="ph52"></span><span style="display:flex;flex-direction:column;gap:6px"><b>Robe en wax</b><span class="steps"><span>Bleu, M</span><span class="b">−</span><span class="b">3</span><span class="b">+</span></span></span></div>
+        <div class="srow" style="border-bottom:0"><span class="ph52"></span><span style="display:flex;flex-direction:column;gap:6px"><b>Sac en raphia</b><span class="steps"><span>&nbsp;</span><span class="b">−</span><span class="b">4</span><span class="b">+</span></span></span></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · fiche du vendeur, onglet « Équipe » · réglage « Personnes dans l'équipe d'un vendeur, au plus : 5 »</span>
+<div class="screen" style="width:1100px;padding:20px 24px;display:flex;flex-direction:column;gap:12px">
+  <div class="chips"><span class="chip">Boutique</span><span class="chip">Magasins</span><span class="chip on">Équipe</span><span class="chip">Reversements</span></div>
+  <div style="display:grid;grid-template-columns:1.2fr 1fr 1.2fr .8fr 1fr;gap:0;font-size:14px;border:1px solid #E7E2DC;border-radius:12px;overflow:hidden">
+    <b style="padding:8px 10px;background:#F5F2EE">Nom</b><b style="padding:8px 10px;background:#F5F2EE">WhatsApp</b><b style="padding:8px 10px;background:#F5F2EE">Magasin</b><b style="padding:8px 10px;background:#F5F2EE">État</b><b style="padding:8px 10px;background:#F5F2EE">Dernière visite</b>
+    <span style="padding:8px 10px">Aïcha Njoya</span><span style="padding:8px 10px">+237 6 99 12 34 56</span><span style="padding:8px 10px">Brenda Wax Akwa</span><span style="padding:8px 10px">Active</span><span style="padding:8px 10px">17/11 10:12</span>
+    <span style="padding:8px 10px">Paul Eto'o</span><span style="padding:8px 10px">+237 6 77 00 11 22</span><span style="padding:8px 10px">Marché central</span><span style="padding:8px 10px">Pas encore venu</span><span style="padding:8px 10px"></span>
+  </div>
+  <span class="h small">L'équipe peut aussi ajouter ou retirer une personne ici. Sans OCD Business, l'équipe est en pause : rien n'est supprimé, elle revient avec la formule.</span>
+</div>
+
+</div>
+</body>
+</html>
