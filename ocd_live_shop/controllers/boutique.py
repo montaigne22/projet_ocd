@@ -1,5 +1,5 @@
 import re
-from urllib.parse import quote as url_quote
+from urllib.parse import quote as url_quote, urlencode
 
 from odoo import fields, http
 from odoo.exceptions import UserError, ValidationError
@@ -251,6 +251,7 @@ class OcdBoutique(http.Controller):
             count_label=request.env._("%s products", len(products)) if len(products) != 1 else request.env._("1 product"),
             error=error,
             dial_rows=common.dial_rows(visitor.country_id if visitor else common.default_country()),
+            holiday=shop_common.holiday(vendor),
         ))
 
     @http.route("/ocd/boutique/<int:vendor_id>/prevenir", type="http", auth="public", website=True,
@@ -284,6 +285,34 @@ class OcdBoutique(http.Controller):
         if live:
             return request.redirect(f"/ocd/boutique/{vendor.id}/replay?live={live}&noted=1#prevenir")
         return request.redirect(f"/ocd/boutique/{vendor.id}?noted=1")
+
+    @http.route("/ocd/boutique/<int:vendor_id>/retour", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def boutique_back_alert(self, vendor_id, phone=None, country_id=None, produit=None, **post):
+        """« Tell me when they are back »: a WhatsApp message when the vendor is back from
+        holiday (from the boutique, or from a product: `produit`, where the visitor comes back)."""
+        vendor = self._vendor(vendor_id)
+        if post.get("website_url"):
+            raise request.not_found()
+        product = request.env["product.template"].sudo().browse(int(produit)).exists() \
+            if produit and str(produit).isdigit() else request.env["product.template"]
+        if product and product.ocd_vendor_id != vendor:
+            raise request.not_found()
+        back = product.website_url if product else f"/ocd/boutique/{vendor.id}"
+        Alert = request.env["ocd.boutique.alert"].sudo().with_company(common.company())
+        visitor = common.current_vendor()
+        try:
+            if visitor:
+                Alert._ocd_register(vendor, partner=visitor, kind="back")
+            else:
+                country = request.env["res.country"].sudo().browse(int(country_id or 0)).exists()
+                number = common.normalize_phone(country, phone)
+                if not number:
+                    return request.redirect(f"{back}?{urlencode({'erreur_retour': common.phone_error(country)})}#vacances")
+                Alert._ocd_register(vendor, phone=number, kind="back")
+        except (UserError, ValidationError) as exc:
+            return request.redirect(f"{back}?{urlencode({'erreur_retour': exc.args[0]})}#vacances")
+        return request.redirect(f"{back}?retour=1#vacances")
 
     @http.route("/ocd/boutique/<int:vendor_id>/ecrire", type="http", auth="public", website=True, sitemap=False)
     def boutique_whatsapp(self, vendor_id, **kwargs):
@@ -410,6 +439,9 @@ class OcdBoutique(http.Controller):
         product = request.env["product.template"].sudo().browse(product_id).exists()
         if not product or not product.ocd_vendor_id or product.ocd_review_state != "approved":
             raise request.not_found()
+        if product.ocd_vendor_id._ocd_on_holiday():
+            # The orders are paused: the page says until when (chantier 20)
+            return request.redirect(f"{product.website_url}#vacances")
         chosen = []
         for line in product.valid_product_template_attribute_line_ids:
             value = kwargs.get(f"attribute_{line.id}")

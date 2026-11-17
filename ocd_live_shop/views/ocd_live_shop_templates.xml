@@ -51,6 +51,11 @@
 
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
 
+                    <!-- On holiday: the products stay visible, the orders are paused (chantier 20) -->
+                    <t t-if="holiday">
+                        <t t-call="ocd_live_shop.holiday_box" holiday_known="visitor" holiday_form="False" dial_rows="dial_rows"/>
+                    </t>
+
                     <div t-if="live" class="o_ocd_onair o_ocd_live_shop_live" t-att-data-vendor-id="vendor.id">
                         <div class="o_ocd_onair_bar">
                             <i class="o_ocd_onair_dot" aria-hidden="true"/>

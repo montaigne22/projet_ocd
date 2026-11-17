@@ -16,6 +16,7 @@ from . import ocd_payout
 from . import ocd_cash_remittance
 from . import ocd_live_moment
 from . import ocd_boutique_alert
+from . import vendor_holiday
 from . import ocd_stock_alert
 from . import ocd_listing_refuse_reason
 from . import ocd_vendor_place

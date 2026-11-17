@@ -100,4 +100,5 @@ class ProductProduct(models.Model):
         on the website (OCD Live does not take the money), the customer writes to the vendor."""
         allowed = super()._is_add_to_cart_allowed()
         vendor = self.sudo().product_tmpl_id.ocd_vendor_id
-        return allowed and not (vendor and vendor.ocd_sale_mode == "direct")
+        # A vendor on holiday: the orders are paused (chantier 20)
+        return allowed and not (vendor and (vendor.ocd_sale_mode == "direct" or vendor._ocd_on_holiday()))

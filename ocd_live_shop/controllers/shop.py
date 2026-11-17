@@ -342,6 +342,8 @@ class OcdShop(WebsiteSale):
             store_rows=store_rows,
             has_choices=bool(lines),
             delivery_lines=delivery_lines,
+            # On holiday: the products stay visible, the orders are paused (chantier 20)
+            holiday=shop_common.holiday(vendor) if vendor else False,
             direct_line=env._(
                 "Payment and delivery are agreed directly with %s. OCD Live does not take the money for this product.",
                 first_name,
@@ -409,12 +411,14 @@ class OcdShop(WebsiteSale):
         order = request.cart
         if not order or not order.order_line:
             return request.redirect("/shop/cart")
+        if order._ocd_holiday_vendors():
+            return request.redirect("/shop/cart")
         return self._ocd_render_delivery(order, values={"delivery_country_id": pays} if pays else None)
 
     @http.route()
     def shop_address(self, partner_id=None, address_type="billing", use_delivery_as_billing=None, **query_params):
         order = request.cart
-        if not order or not order.order_line:
+        if not order or not order.order_line or order._ocd_holiday_vendors():
             return request.redirect("/shop/cart")
         return self._ocd_render_delivery(order)
 
@@ -881,7 +885,8 @@ class OcdCart(Cart):
             count_line=env._("%s items", count) if count != 1 else env._("1 item"),
             subtotal=subtotal,
             bottom_cta={"href": "/shop/checkout", "label": env._("Order · %s", subtotal)} if rows else None,
-            cart_error=post.get("erreur"),
+            # A vendor of the cart on holiday: the cart waits for their return (chantier 20)
+            cart_error=post.get("erreur") or (order._ocd_holiday_message() if order else False),
         )
 
     @http.route("/ocd/panier/ligne", type="http", auth="public", website=True, methods=["POST"], sitemap=False)
@@ -920,6 +925,11 @@ class OcdCart(Cart):
         if not template:
             raise request.not_found()
         variant, no_variant_values = self._ocd_selected_variant(template, post)
+        vendor = template.ocd_vendor_id
+        if vendor and vendor._ocd_on_holiday():
+            message = request.env._("%(vendor)s is on holiday until %(day)s: the orders start again that day.",
+                                    vendor=vendor.name, day=vendor._ocd_holiday_back_text())
+            return request.redirect(f"{template.website_url}?{urlencode({'erreur': message})}")
         try:
             qty = max(1, int(quantity or 1))
         except ValueError:

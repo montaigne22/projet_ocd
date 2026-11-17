@@ -171,3 +171,23 @@ class TestOcdVendorProductMessages(HttpCase, OcdShopCommon):
             values = [record._render(variable.value, product)[product.id] for variable in record.variable_ids]
             self.assertEqual(values[:2], ["Brenda Wax", "Pagne wax"])
             self.assertTrue(values[2], "The reason, in the language of the vendor")
+
+    def test_the_customers_are_told_that_the_vendor_is_back(self):
+        """Back from holiday (chantier 20): the customers who asked are told on WhatsApp."""
+        alert = self.env["ocd.boutique.alert"]._ocd_register(self.brenda, phone="+237 670000009", kind="back")
+        for xmlid in ("template_vendor_back", "template_vendor_back_en"):
+            template = self.env.ref(f"ocd_live_shop_whatsapp.{xmlid}")
+            values = [template._render(variable.value, alert)[alert.id] for variable in template.variable_ids]
+            self.assertEqual(values, ["Brenda Wax"])
+            self.assertEqual(template._render(template.button_url_value, alert)[alert.id], f"ocd/boutique/{self.brenda.id}")
+        calls = []
+
+        def fake_send(template, records):
+            calls.append(template.template_name)
+            return template.env["whatsapp.message"]
+
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            self.brenda.ocd_holiday_until = "2099-01-02"
+            self.brenda._ocd_end_holiday()
+        self.assertEqual(calls, ["ocd_vendeur_de_retour"])
+        self.assertEqual(alert.state, "sent")

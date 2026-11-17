@@ -90,3 +90,22 @@ def card(template, price_by_id):
         "ocd": ocd,
         "mode": request.env._("Delivered by OCD") if ocd else request.env._("Direct contact with the vendor"),
     }
+
+
+def holiday(vendor):
+    """The holiday of the vendor for their pages (chantier 20): when they are back, their word,
+    and whether the visitor asked to be told; False when they take orders."""
+    if not vendor or not vendor._ocd_on_holiday():
+        return False
+    env = request.env
+    first_name = (vendor.name or "").split()[0] if vendor.name else ""
+    return {
+        "vendor": vendor,
+        "back": vendor._ocd_holiday_back_text(),
+        "title": env._("%s is on holiday", vendor.name),
+        "note": vendor.ocd_holiday_note,
+        "paused": env._("Orders paused until %s", vendor._ocd_holiday_back_text()),
+        "noted": bool(request.params.get("retour")),
+        "noted_text": env._("Noted: we write to you on WhatsApp when %s is back.", first_name),
+        "error": request.params.get("erreur_retour"),
+    }

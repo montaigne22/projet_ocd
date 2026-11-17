@@ -129,6 +129,11 @@ class ResCompany(models.Model):
         "less data. 0: sent as taken.",
     )
 
+    ocd_holiday_max_days = fields.Integer(
+        string="Holiday Of A Vendor, At Most (Days)",
+        default=60,
+        help="The longest holiday a vendor chooses from their space: the orders are paused meanwhile.",
+    )
     ocd_product_photos_max = fields.Integer(
         string="Photos Per Product, At Most",
         default=8,

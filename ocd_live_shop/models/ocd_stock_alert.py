@@ -57,6 +57,9 @@ class OcdStockAlert(models.Model):
         template = product.product_tmpl_id
         if not (product.active and template.sale_ok and template.is_published):
             return False
+        vendor = template.sudo().ocd_vendor_id
+        if vendor and vendor._ocd_on_holiday():
+            return False  # told once the vendor is back and takes orders again (chantier 20)
         if not product.is_storable or product.allow_out_of_stock_order:
             return True
         product = product.sudo()

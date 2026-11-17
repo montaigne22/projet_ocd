@@ -97,6 +97,37 @@
 
     <!-- === PRODUCT === -->
 
+    <!-- A vendor on holiday (design VacancesProximite, chantier 20): when they are back, their
+         word, « Tell me when they are back ». Parameters: holiday (shop_common.holiday),
+         holiday_known (the contact known on this browser: no number to type), holiday_form (the
+         id of the form of the alert when the block is inside another form), dial_rows. -->
+    <template id="holiday_box" name="OCD Live: a vendor on holiday">
+        <section id="vacances" class="o_ocd_holiday">
+            <b t-out="holiday['title']"/>
+            <span>Back on <t t-out="holiday['back']"/>: the orders start again that day.</span>
+            <small t-if="holiday['note']">« <t t-out="holiday['note']"/> »</small>
+            <div t-if="holiday['noted']" class="o_ocd_ok" role="status" t-out="holiday['noted_text']"/>
+            <t t-elif="holiday_form">
+                <div t-if="holiday['error']" class="o_ocd_alert" role="alert" t-out="holiday['error']"/>
+                <t t-if="not holiday_known">
+                    <label for="hb-phone" class="o_ocd_label">Your WhatsApp</label>
+                    <t t-call="ocd_live.phone_field" field_id.f="hb-phone" field_form="holiday_form" phone_value="''" dial_rows="dial_rows"/>
+                </t>
+                <button type="submit" t-att-form="holiday_form" class="o_ocd_cta o_ocd_cta_dark">Tell me when they are back</button>
+            </t>
+            <form t-else="" t-attf-action="/ocd/boutique/#{holiday['vendor'].id}/retour" method="post" class="o_ocd_form o_ocd_holiday_form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                <div t-if="holiday['error']" class="o_ocd_alert" role="alert" t-out="holiday['error']"/>
+                <t t-if="not holiday_known">
+                    <label for="hb-phone" class="o_ocd_label">Your WhatsApp</label>
+                    <t t-call="ocd_live.phone_field" field_id.f="hb-phone" phone_value="''" dial_rows="dial_rows"/>
+                </t>
+                <button type="submit" class="o_ocd_cta o_ocd_cta_dark">Tell me when they are back</button>
+            </form>
+        </section>
+    </template>
+
     <template id="product" name="OCD Live: product">
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Product</t>
@@ -188,7 +219,11 @@
                             </div>
                         </fieldset>
                     </t>
-                    <div t-if="ocd" class="o_ocd_product_qty">
+                    <t t-if="holiday">
+                        <t t-call="ocd_live_shop.holiday_box" holiday_known="alert_partner" holiday_form="'ocd-holiday-alert'"
+                           dial_rows="alert_dial_rows"/>
+                    </t>
+                    <div t-if="ocd and not holiday" class="o_ocd_product_qty">
                         <div>
                             <span id="qty-label" class="o_ocd_label">Quantity</span>
                             <span class="o_ocd_variant_stock" role="status"/>
@@ -259,7 +294,8 @@
                         <span><t t-call="ocd_live.icon" icon.f="chat"/><span t-out="direct_line"/></span>
                     </div>
                     <div class="o_ocd_actions o_ocd_product_actions">
-                        <t t-if="ocd">
+                        <button t-if="holiday" type="button" class="o_ocd_cta o_ocd_cta_paused" disabled="disabled" t-out="holiday['paused']"/>
+                        <t t-elif="ocd">
                             <button type="submit" class="o_ocd_cta o_ocd_variant_add" t-out="add_label"/>
                         </t>
                         <t t-else="">
@@ -273,6 +309,12 @@
                     </div>
                 </form>
                 <form t-if="not alerted" id="ocd-stock-alert" action="/ocd/produit/prevenir" method="post" class="d-none"/>
+                <!-- « Tell me when they are back »: its fields are in the form of the product (holiday_box) -->
+                <form t-if="holiday and not holiday['noted']" id="ocd-holiday-alert" t-attf-action="/ocd/boutique/#{vendor.id}/retour"
+                      method="post" class="d-none">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="produit" t-att-value="template.id"/>
+                </form>
                 <section t-if="same_vendor" class="o_ocd_same_vendor">
                     <div class="o_ocd_section_head">
                         <h2>From the same vendor</h2>
@@ -1121,6 +1163,52 @@
         </xpath>
     </template>
 
+    <!-- === HOLIDAY MODE (design VacancesProximite, chantier 20) === -->
+
+    <template id="vendor_holiday" name="OCD Live: holiday mode">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Holiday mode</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_vendor_holiday">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Holiday mode</h1>
+                    <t t-if="on_holiday">
+                        <div t-if="request.params.get('parti')" class="o_ocd_ok" role="status">Good holiday! Your boutique stays visible, the orders are paused.</div>
+                        <div class="o_ocd_holiday">
+                            <b>On holiday until <t t-out="back_text"/></b>
+                            <span t-if="waiting == 1">1 customer waits for your return.</span>
+                            <span t-elif="waiting">
+                                <t t-out="waiting"/> customers wait for your return.</span>
+                            <span>The orders start again on <t t-out="back_text"/> in the morning, and the customers who asked are told on WhatsApp.</span>
+                            <small t-if="vendor.ocd_holiday_note">« <t t-out="vendor.ocd_holiday_note"/> »</small>
+                            <form action="/ocd/espace/moi/vacances/fin" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_button">Come back now</button>
+                            </form>
+                        </div>
+                    </t>
+                    <form t-else="" action="/ocd/espace/moi/vacances" method="post" class="o_ocd_form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <p class="o_ocd_parcel_hint">You leave for a few days? Your boutique stays visible, the orders are paused, and your customers can ask to be told when you are back.</p>
+                        <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                        <div class="o_ocd_field">
+                            <label for="hd-day" class="o_ocd_label">Back on</label>
+                            <input id="hd-day" type="date" name="retour_le" class="o_ocd_input" required="required"
+                                   t-att-min="day_min" t-att-max="day_max" t-att-value="values.get('retour_le')"/>
+                            <small class="o_ocd_parcel_hint" t-out="longest_line"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="hd-word" class="o_ocd_label">A word for your customers (if you want)</label>
+                            <input id="hd-word" name="mot" class="o_ocd_input" maxlength="160" t-att-value="values.get('mot')"
+                                   placeholder="Happy holidays! A new collection on my return."/>
+                        </div>
+                        <button type="submit" class="o_ocd_cta">Go on holiday</button>
+                    </form>
+                </main>
+            </div>
+        </t>
+    </template>
+
     <template id="space" inherit_id="ocd_live.space" name="OCD Live: products and parcels in the space">
         <xpath expr="//div[hasclass('o_ocd_space_shop')]" position="inside">
             <!-- The first steps of the vendor, until all are done (1.8 of the plan) -->
@@ -1141,11 +1229,18 @@
                 </ol>
             </div>
             <h2 class="o_ocd_section">My shop</h2>
+            <!-- On holiday (chantier 20): until when, the customers who wait, come back now -->
+            <div t-if="request.params.get('revenu')" class="o_ocd_ok" role="status">Welcome back: the orders start again.</div>
+            <a t-if="vendor._ocd_on_holiday()" href="/ocd/espace/moi/vacances" class="o_ocd_holiday o_ocd_holiday_link">
+                <b>On holiday until <t t-out="vendor._ocd_holiday_back_text()"/></b>
+                <span>The orders are paused. Come back now or change it.</span>
+            </a>
             <div class="o_ocd_space_links">
                 <a href="/ocd/espace/moi/produits" class="o_ocd_button o_ocd_button_dark">My products</a>
                 <a t-if="vendor.ocd_sale_mode == 'ocd'" href="/ocd/livrer/moi" class="o_ocd_button o_ocd_button_line">My parcels</a>
                 <a t-if="vendor.ocd_sale_mode == 'ocd'" href="/ocd/espace/moi/livraison" class="o_ocd_button o_ocd_button_line">My delivery prices</a>
                 <a t-if="vendor.ocd_vendor_state == 'approved'" t-attf-href="/ocd/boutique/#{vendor.id}" class="o_ocd_button">My boutique</a>
+                <a t-if="not vendor._ocd_on_holiday()" href="/ocd/espace/moi/vacances" class="o_ocd_button o_ocd_button_line">Holiday mode</a>
             </div>
         </xpath>
     </template>

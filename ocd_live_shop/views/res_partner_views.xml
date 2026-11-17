@@ -23,6 +23,11 @@
                         <field name="ocd_prep_hours" invisible="ocd_delivery_mode == 'stock'"/>
                         <field name="ocd_late_count"/>
                     </group>
+                    <!-- The holiday mode (chantier 20): the orders are paused until this day -->
+                    <group string="Holiday">
+                        <field name="ocd_holiday_until"/>
+                        <field name="ocd_holiday_note" invisible="not ocd_holiday_until"/>
+                    </group>
                 </group>
                 <group string="Courier">
                     <group>

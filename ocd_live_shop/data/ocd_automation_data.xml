@@ -113,6 +113,21 @@ Tell the customer.</field>
         <field name="tools">Scheduled task.</field>
     </record>
 
+    <record id="automation_holiday_back" model="ocd.automation">
+        <field name="code">holiday_back</field>
+        <field name="name">Vendor back from holiday: tell the customers who asked</field>
+        <field name="sequence">72</field>
+        <field name="group">shop</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="model_ocd_boutique_alert"/>
+        <field name="cron_id" ref="ir_cron_holiday_back"/>
+        <field name="when">On the day the vendor is back, or when they come back sooner</field>
+        <field name="trigger">Every hour, and when the vendor taps « Come back now ».</field>
+        <field name="scope">The customers who asked « Tell me when they are back » on the boutique or a product.</field>
+        <field name="actions">Tell them that the vendor takes orders again, with the link of the boutique.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
     <record id="automation_stock_alert" model="ocd.automation">
         <field name="code">stock_alert</field>
         <field name="name">Product back: tell the customers who asked</field>
