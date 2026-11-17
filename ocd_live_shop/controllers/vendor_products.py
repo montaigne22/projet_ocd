@@ -126,6 +126,8 @@ class OcdVendorProducts(http.Controller):
         if product.ocd_review_state == "refused":
             return "refused", env._("Refused")
         if not product.is_published:
+            if product.ocd_vendor_retired:
+                return "retired", env._("Taken off sale")
             return "hidden", env._("Not shown")
         if tracked_qty is not None and tracked_qty <= 0:
             return "out", env._("Sold out")
@@ -194,6 +196,7 @@ class OcdVendorProducts(http.Controller):
                 "status_label": status_label,
                 "refusal": product._ocd_refusal_text(),
                 "can_correct": product._ocd_vendor_can_correct(),
+                "can_retire": product._ocd_vendor_can_retire(),
                 "less_aria": env._("One %s less", product.name),
                 "more_aria": env._("One %s more", product.name),
                 "more_label": env._("More for %s", product.name),
@@ -224,7 +227,7 @@ class OcdVendorProducts(http.Controller):
         if len(rows) < FILTER_FROM or len(counts) < 2:
             return []
         labels = [("on", env._("On sale")), ("out", env._("Sold out")), ("check", env._("To check")),
-                  ("refused", env._("Refused")), ("hidden", env._("Not shown"))]
+                  ("refused", env._("Refused")), ("retired", env._("Off sale")), ("hidden", env._("Not shown"))]
         return [("all", env._("All"), len(rows))] + [
             (key, label, counts[key]) for key, label in labels if counts[key] or key == current
         ]
@@ -495,6 +498,30 @@ class OcdVendorProducts(http.Controller):
         if ou in MOVES:
             product._ocd_move_in_boutique(ou)
         return request.redirect(f"/ocd/espace/moi/produits?ouvert={product.id}#produit-{product.id}")
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/retirer", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def product_retire(self, product_id, **post):
+        """Take a product off sale (2.2 of the plan): never deleted, put back with one tap."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        product = self._own_product(vendor, product_id)
+        if product._ocd_vendor_can_retire():
+            product._ocd_vendor_retire()
+        return request.redirect(f"/ocd/espace/moi/produits?retire=1#produit-{product.id}")
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/remettre", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def product_put_back(self, product_id, **post):
+        """Put back on sale a product the vendor took off."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        product = self._own_product(vendor, product_id)
+        if product.ocd_vendor_retired and product.ocd_review_state == "approved":
+            product._ocd_vendor_put_back()
+        return request.redirect(f"/ocd/espace/moi/produits?remis=1#produit-{product.id}")
 
     @http.route("/ocd/espace/moi/produits/<int:product_id>/dupliquer", type="http", auth="public", website=True,
                 methods=["POST"], sitemap=False)

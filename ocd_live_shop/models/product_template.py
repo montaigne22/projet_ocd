@@ -59,6 +59,13 @@ class ProductTemplate(models.Model):
         "unique(ocd_vendor_id, ocd_form_token)",
         "This product was already added from this form.",
     )
+    ocd_vendor_retired = fields.Boolean(
+        string="Taken Off Sale By The Vendor",
+        copy=False,
+        tracking=True,
+        help="The vendor took the product off sale from « My products »: not shown, never deleted "
+        "(the past orders keep it), and the vendor can put it back on sale.",
+    )
     ocd_moment_ids = fields.One2many(
         comodel_name="ocd.live.moment", inverse_name="product_tmpl_id", string="Live Moments"
     )
@@ -145,6 +152,33 @@ class ProductTemplate(models.Model):
             ))
         else:
             self.write(values)
+        return True
+
+    # === TAKE OFF SALE, PUT BACK (2.2 of the plan of « My products ») === #
+
+    def _ocd_vendor_can_retire(self):
+        """A product the vendor can take off sale: checked and shown by the team."""
+        self.ensure_one()
+        return self.ocd_review_state == "approved" and self.is_published and not self.ocd_vendor_retired
+
+    def _ocd_vendor_retire(self):
+        """The vendor takes the product off sale: no longer shown, never deleted (the past
+        orders keep it). The customers waiting for it are told when it is back on sale."""
+        for product in self:
+            if not product._ocd_vendor_can_retire():
+                raise UserError(self.env._("The product %s is not on sale.", product.name))
+            product.sudo().write({"is_published": False, "ocd_vendor_retired": True})
+            product.sudo().message_post(body=self.env._("Taken off sale by the vendor."))
+        return True
+
+    def _ocd_vendor_put_back(self):
+        """The vendor puts back on sale a product they took off: shown again at once (it was
+        checked before)."""
+        for product in self:
+            if not product.ocd_vendor_retired or product.ocd_review_state != "approved":
+                raise UserError(self.env._("The product %s cannot be put back on sale.", product.name))
+            product.sudo().write({"is_published": True, "ocd_vendor_retired": False})
+            product.sudo().message_post(body=self.env._("Put back on sale by the vendor."))
         return True
 
     def action_ocd_show_on_live(self):

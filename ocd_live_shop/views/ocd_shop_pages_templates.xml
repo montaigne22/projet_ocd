@@ -679,6 +679,8 @@
                         <h2>My boutique</h2>
                         <span t-out="count_line"/>
                     </div>
+                    <div t-if="request.params.get('retire')" class="o_ocd_ok" role="status">Taken off sale: it no longer shows in your boutique. Put it back on sale when you want.</div>
+                    <div t-if="request.params.get('remis')" class="o_ocd_ok" role="status">Back on sale: it shows again in your boutique.</div>
                     <!-- Filters by state when the catalogue grows: links (the page without
                          JavaScript), shown at once by OcdProductFilters -->
                     <nav t-if="filters" class="o_ocd_chips o_ocd_my_products_filters" aria-label="Filter my products">
@@ -710,7 +712,14 @@
                                     <small t-if="row['contacts_line']" class="o_ocd_my_product_fact" t-out="row['contacts_line']"/>
                                     <small t-if="row['waiting_line']" class="o_ocd_my_product_fact o_ocd_my_product_waiting" t-out="row['waiting_line']"/>
                                     <small t-if="row['places_line']" class="o_ocd_my_product_fact" t-out="row['places_line']"/>
+                                    <small t-if="row['status'] == 'retired'" class="o_ocd_my_product_fact">No longer shown in your boutique</small>
                                 </span>
+                                <!-- Taken off sale by the vendor: put back with one tap (2.2 of the plan) -->
+                                <form t-if="row['status'] == 'retired'" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/remettre"
+                                      method="post" class="o_ocd_my_product_put_back">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button class="o_ocd_button">Put back on sale</button>
+                                </form>
                                 <!-- The stock: − and + here for one size in one place, else « My stock » (chantier 18) -->
                                 <a t-if="row['stock_url']" t-att-href="row['stock_url']" class="o_ocd_button o_ocd_my_product_stock">
                                     <t t-if="row['per_place']">My stock by store</t>
@@ -766,6 +775,10 @@
                                         <form t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/dupliquer" method="post">
                                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                             <button class="o_ocd_button">Make a copy</button>
+                                        </form>
+                                        <form t-if="row['can_retire']" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/retirer" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button class="o_ocd_button">Take off sale</button>
                                         </form>
                                         <form t-if="len(rows) &gt; 1" t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/ordre"
                                               method="post" class="o_ocd_my_product_order">

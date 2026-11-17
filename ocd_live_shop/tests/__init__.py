@@ -15,3 +15,4 @@ from . import test_vendor_places
 from . import test_place_stock
 from . import test_vendor_stock_page
 from . import test_store_availability
+from . import test_manage_products
