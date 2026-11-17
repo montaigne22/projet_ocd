@@ -3161,6 +3161,176 @@
         display: none;
     }
 }
+// Sizes and colours from the creation (design TaillesCouleurs)
+.o_ocd_with_variants .o_ocd_qty_simple {
+    display: none;
+}
+.o_ocd_variants {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.o_ocd_variants_switch {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    border: 2px solid $ocd-line;
+    border-radius: 16px;
+    padding: 12px 14px;
+    cursor: pointer;
+    span {
+        display: flex;
+        flex-direction: column;
+    }
+    small {
+        font-size: 13px;
+        color: $ocd-muted;
+    }
+    input {
+        appearance: none;
+        width: 52px;
+        height: 30px;
+        margin: 0;
+        border-radius: 99px;
+        background: #C9C3BC;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.15s;
+        &::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            transition: left 0.15s;
+        }
+        &:checked {
+            background: $ocd-orange;
+            &::after {
+                left: 25px;
+            }
+        }
+    }
+    &:has(input:checked) {
+        border-color: $ocd-ink;
+        background: $ocd-orange-pale;
+    }
+}
+.o_ocd_variants_body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    &[hidden] {
+        display: none;
+    }
+}
+.o_ocd_variant_values {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+.o_ocd_variant_chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.o_ocd_variant_chip {
+    cursor: pointer;
+    input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+    span {
+        min-width: 44px;
+        min-height: 44px;
+        box-sizing: border-box;
+        padding: 0 12px;
+        border-radius: 12px;
+        border: 2px solid $ocd-line;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-weight: 700;
+        background: #FFFFFF;
+    }
+    input:checked + span {
+        border-color: $ocd-ink;
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
+    input:focus-visible + span {
+        outline: 3px solid $ocd-orange;
+        outline-offset: 2px;
+    }
+    &.o_ocd_variant_chip_colour input:checked + span {
+        background: $ocd-orange-pale;
+        color: $ocd-ink;
+    }
+}
+.o_ocd_variant_swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    flex: none;
+}
+.o_ocd_product_sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.o_ocd_sizes_add {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 2px solid $ocd-line;
+    border-radius: 18px;
+    padding: 12px 14px;
+}
+.o_ocd_variant_grid {
+    display: grid;
+    gap: 6px;
+    align-items: center;
+    overflow-x: auto;
+}
+.o_ocd_variant_col {
+    text-align: center;
+    font-size: 13.5px;
+}
+.o_ocd_variant_row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+.o_ocd_variant_qty {
+    text-align: center;
+    font-weight: 800;
+    min-width: 0;
+}
+.o_ocd_variant_line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 90px;
+    gap: 10px;
+    align-items: center;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.o_ocd_variant_total {
+    font-size: 13.5px;
+    font-weight: 700;
+    &:empty {
+        display: none;
+    }
+}
 .o_ocd_my_product_low {
     align-self: flex-start;
     border-radius: 8px;

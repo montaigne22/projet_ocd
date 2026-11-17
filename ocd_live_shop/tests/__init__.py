@@ -22,3 +22,4 @@ from . import test_store_pickup
 from . import test_product_hold
 from . import test_low_stock
 from . import test_live_prepare
+from . import test_vendor_variants

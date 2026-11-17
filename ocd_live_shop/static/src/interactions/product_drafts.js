@@ -68,6 +68,9 @@ export const productDrafts = {
             name: data.get("name") || "",
             price: data.get("price") || "",
             quantity: data.get("quantity") || "",
+            // Sizes and colours (chantier 21): the switch, the values ticked, the stock of each choice
+            extra: [...data.entries()].filter(([key, value]) => typeof value === "string"
+                && (key === "variantes" || key === "valeurs" || key.startsWith("stock_"))),
             photo: photo instanceof Blob && photo.size ? photo : null,
             photoName: photo?.name || "photo.jpg",
             created: Date.now(),
@@ -208,6 +211,9 @@ export class OcdProductDrafts extends Interaction {
         data.append("price", draft.price);
         if (draft.quantity !== "") {
             data.append("quantity", draft.quantity);
+        }
+        for (const [key, value] of draft.extra || []) {
+            data.append(key, value);
         }
         if (draft.photo) {
             data.append("photo", draft.photo, draft.photoName);

@@ -1240,6 +1240,114 @@ export class OcdLivePrepare extends Interaction {
     }
 }
 
+/**
+ * Sizes and colours of a new product (design TaillesCouleurs): « Several sizes or colours »
+ * shows the values offered by the team; each value ticked redraws the stock of each choice (the
+ * colours in rows, the sizes in columns), keeping what was typed, with the total. Without
+ * JavaScript, the server draws the grid after a first sending.
+ */
+export class OcdVariantsForm extends Interaction {
+    static selector = ".o_ocd_variants";
+    dynamicContent = {
+        ".o_ocd_variants_toggle": { "t-on-change": this.toggle },
+        ".o_ocd_variant_chip input": { "t-on-change": this.draw },
+        ".o_ocd_variant_qty": { "t-on-input": this.total },
+    };
+
+    setup() {
+        this.total();
+    }
+
+    toggle(ev) {
+        const on = ev.currentTarget.checked;
+        this.el.querySelector(".o_ocd_variants_body").hidden = !on;
+        this.el.closest("form").classList.toggle("o_ocd_with_variants", on);
+    }
+
+    chosen() {
+        // [{colour, values: [{id, name, swatch}]}] of the attributes with a value ticked
+        return [...this.el.querySelectorAll(".o_ocd_variant_values")].map((set) => ({
+            colour: !!set.dataset.colour,
+            values: [...set.querySelectorAll("input:checked")].map((input) => ({
+                id: parseInt(input.value), name: input.dataset.name, swatch: input.dataset.swatch,
+            })),
+        })).filter((attribute) => attribute.values.length);
+    }
+
+    draw() {
+        const box = this.el.querySelector(".o_ocd_variant_stock");
+        const typed = {};
+        for (const input of box.querySelectorAll(".o_ocd_variant_qty")) {
+            typed[input.name] = input.value;
+        }
+        const chosen = this.chosen();
+        const keyOf = (values) => "stock_" + values.map((value) => value.id).sort((a, b) => a - b).join("-");
+        const field = (values) => {
+            const input = document.createElement("input");
+            Object.assign(input, { type: "number", min: 0, inputMode: "numeric", name: keyOf(values) });
+            input.className = "o_ocd_input o_ocd_variant_qty";
+            input.value = typed[input.name] ?? "";
+            input.setAttribute("aria-label", values.map((value) => value.name).join(", "));
+            return input;
+        };
+        const label = (value) => {
+            const span = document.createElement("span");
+            span.className = "o_ocd_variant_row";
+            if (value.swatch) {
+                const swatch = document.createElement("i");
+                swatch.className = "o_ocd_variant_swatch";
+                swatch.style.background = value.swatch;
+                span.append(swatch);
+            }
+            span.append(value.name);
+            return span;
+        };
+        box.replaceChildren();
+        if (chosen.length === 2) {
+            // The colours in rows (else the first attribute), the other in columns
+            const [rows, cols] = chosen[1].colour && !chosen[0].colour ? [chosen[1], chosen[0]] : [chosen[0], chosen[1]];
+            const grid = document.createElement("div");
+            grid.className = "o_ocd_variant_grid";
+            grid.style.gridTemplateColumns = `minmax(84px, auto) repeat(${cols.values.length}, minmax(56px, 1fr))`;
+            grid.append(document.createElement("span"));
+            for (const col of cols.values) {
+                const head = document.createElement("b");
+                head.className = "o_ocd_variant_col";
+                head.textContent = col.name;
+                grid.append(head);
+            }
+            for (const row of rows.values) {
+                grid.append(label(row), ...cols.values.map((col) => field([row, col])));
+            }
+            box.append(grid);
+        } else if (chosen.length) {
+            // One attribute, or more than two: a line per choice
+            const combos = chosen.reduce((all, attribute) => all.flatMap((combo) => attribute.values.map((value) => [...combo, value])), [[]]);
+            for (const combo of combos) {
+                const line = document.createElement("label");
+                line.className = "o_ocd_variant_line";
+                const name = document.createElement("span");
+                name.textContent = combo.map((value) => value.name).join(", ");
+                line.append(name, field(combo));
+                box.append(line);
+            }
+        }
+        this.total();
+    }
+
+    total() {
+        // « 6 pieces · 4 choices »
+        const inputs = [...this.el.querySelectorAll(".o_ocd_variant_qty")];
+        const pieces = inputs.reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
+        const out = this.el.querySelector(".o_ocd_variant_total");
+        if (out) {
+            out.textContent = inputs.length
+                ? (this.el.dataset.total || "").replace("%(pieces)s", pieces).replace("%(choices)s", inputs.length)
+                : "";
+        }
+    }
+}
+
 registry
     .category("public.interactions")
     .add("ocd_live_shop.colour_photo", OcdColourPhoto)
@@ -1255,4 +1363,5 @@ registry
     .add("ocd_live_shop.vendor_rates_form", OcdVendorRatesForm)
     .add("ocd_live_shop.near_me", OcdNearMe)
     .add("ocd_live_shop.autosubmit", OcdAutoSubmit)
-    .add("ocd_live_shop.live_prepare", OcdLivePrepare);
+    .add("ocd_live_shop.live_prepare", OcdLivePrepare)
+    .add("ocd_live_shop.variants_form", OcdVariantsForm);

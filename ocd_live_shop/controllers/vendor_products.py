@@ -1,6 +1,7 @@
 import re
 import uuid
 from collections import defaultdict
+from urllib.parse import urlencode
 
 from odoo import http
 from odoo.exceptions import UserError, ValidationError
@@ -203,6 +204,11 @@ class OcdVendorProducts(http.Controller):
                 # Low on stock (chantier 21): the pieces left of the colours and sizes concerned
                 "low": bool(low_line),
                 "low_line": low_line,
+                # « M, L · Blue, Red »: its sizes and colours (chantier 21)
+                "variants_line": " · ".join(
+                    ", ".join(line.value_ids.sorted(lambda value: (value.sequence, value.id)).mapped("name"))
+                    for line in product.attribute_line_ids if line.attribute_id.create_variant == "always"
+                ) if len(product.product_variant_ids) > 1 else False,
                 "refusal": product._ocd_refusal_text(),
                 "can_correct": product._ocd_vendor_can_correct(),
                 "can_change": product._ocd_vendor_can_change(),
@@ -303,6 +309,8 @@ class OcdVendorProducts(http.Controller):
             "photo_gallery": company.ocd_vendor_photo_gallery,
             "photo_px": company.ocd_vendor_photo_px or 0,
             "photo_max_mb": max_mb,
+            # Sizes and colours from the creation (chantier 21)
+            **(self._variant_values(values or {}) if not product else {}),
             "form_messages": {
                 "name": env._("Write the name of the product."),
                 "price": env._("Write one price, without cents or dash, for example 3000."),
@@ -312,6 +320,89 @@ class OcdVendorProducts(http.Controller):
                 "sending": env._("Sending…"),
             },
         }
+
+    # === SIZES AND COLOURS (chantier 21, design TaillesCouleurs) === #
+
+    def _variant_values(self, values):
+        """The attributes offered to the vendors, the values ticked and the grid of the stock of
+        each choice (a size and a colour) for the form of a new product."""
+        env = request.env
+        attributes = env["product.attribute"]._ocd_vendor_attributes()
+        if not attributes:
+            return {"vendor_attributes": [], "variant_grid": False, "team_url": False, "variant_total": ""}
+        ticked = set(values.get("valeurs") or [])
+        rows = [{
+            "id": attribute.id,
+            "name": attribute.name,
+            "colour": attribute.display_type == "color",
+            "values": [{
+                "id": value.id,
+                "name": value.name,
+                "swatch": value.html_color or "#FFFFFF",
+                "checked": value.id in ticked,
+            } for value in attribute.value_ids.sorted(lambda value: (value.sequence, value.id))],
+        } for attribute in attributes]
+        grid = False
+        Product = env["product.template"]
+        chosen = Product._ocd_read_chosen_values(list(ticked)) if ticked else {}
+        if chosen:
+            try:
+                combos = Product._ocd_combinations(chosen)
+            except UserError:
+                combos = []
+            stock = values.get("stock") or {}
+            cells = {key: {"key": key, "value": stock.get(key, ""), "label": ", ".join(v.name for v in combo)}
+                     for combo, key in combos}
+            if len(chosen) == 2:
+                # Two attributes: the colours in rows (else the first), the other in columns
+                first, second = list(chosen)
+                rows_attr, cols_attr = (second, first) if second.display_type == "color" else (first, second)
+                grid = {
+                    "table": True,
+                    "cols": [value.name for value in chosen[cols_attr]],
+                    "rows": [{
+                        "name": row.name,
+                        "swatch": row.html_color if rows_attr.display_type == "color" else False,
+                        "cells": [cells["-".join(str(i) for i in sorted((row.id, col.id)))] for col in chosen[cols_attr]],
+                    } for row in chosen[rows_attr]],
+                }
+            else:
+                grid = {"table": False, "cells": list(cells.values())}
+        digits = re.sub(r"\D", "", common.company().phone or "")
+        return {
+            "vendor_attributes": rows,
+            "variant_grid": grid,
+            "variant_total": env._("%(pieces)s pieces · %(choices)s choices (a size and a colour each)"),
+            "team_url": f"https://wa.me/{digits}?{urlencode({'text': env._('Hello, a size or a colour is missing for my products: ')})}"
+            if len(digits) >= 8 else False,
+        }
+
+    def _read_variants(self, post):
+        """The sizes and colours ticked ({attribute: values}), the stock of each choice and the
+        error to show, for a new product."""
+        env = request.env
+        form = request.httprequest.form
+        ticked = [int(value) for value in form.getlist("valeurs") if str(value).isdigit()]
+        stock = {}
+        for key, value in post.items():
+            if key.startswith("stock_") and re.fullmatch(r"[0-9-]+", key[6:]):
+                try:
+                    stock[key[6:]] = min(max(int(value or 0), 0), MAX_STOCK)
+                except ValueError:
+                    stock[key[6:]] = 0
+        if not post.get("variantes"):
+            return {}, {}, ticked, stock, None
+        chosen = env["product.template"]._ocd_read_chosen_values(ticked)
+        if not chosen:
+            return chosen, {}, ticked, stock, env._("Tick at least one size or one colour.")
+        try:
+            combos = env["product.template"]._ocd_combinations(chosen)
+        except UserError as exc:
+            return chosen, {}, ticked, stock, exc.args[0]
+        if not any(key in stock for _combo, key in combos):
+            # Sent without the grid (no JavaScript): the grid shows now, to fill in
+            return chosen, {}, ticked, stock, env._("Write how many you have of each choice.")
+        return chosen, stock, ticked, stock, None
 
     def _render(self, vendor, values=None, errors=None, sent=False, kept=None, form_token=None, state=None):
         env = request.env
@@ -385,8 +476,38 @@ class OcdVendorProducts(http.Controller):
             photos_error=request.params.get("photo_erreur"),
             stock_url=f"/ocd/espace/moi/produits/{product.id}/mon-stock" if on_sale and (
                 vendor._ocd_stock_per_place() or len(product.product_variant_ids) > 1) else False,
+            # Its sizes and colours, and the ones the vendor may add (chantier 21)
+            variant_lines=[{
+                "name": line.attribute_id.name,
+                "values": line.value_ids.sorted(lambda value: (value.sequence, value.id)).mapped("name"),
+            } for line in product.sudo().attribute_line_ids] if on_sale else [],
+            addable=[{
+                "name": attribute.name,
+                "colour": attribute.display_type == "color",
+                "values": values_to_add,
+            } for attribute, values_to_add in product._ocd_vendor_addable_values().items()] if on_sale else [],
+            added=request.params.get("ajoute"),
+            variants_error=request.params.get("tailles_erreur"),
             **self._form_values(values, errors, kept, product=product),
         ))
+
+    @http.route("/ocd/espace/moi/produits/<int:product_id>/tailles", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def product_add_values(self, product_id, **post):
+        """Add sizes or colours to a product on sale (chantier 21): new choices without stock."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        product = self._own_product(vendor, product_id)
+        if not product._ocd_vendor_can_change():
+            raise request.not_found()
+        ticked = [int(value) for value in request.httprequest.form.getlist("valeurs") if str(value).isdigit()]
+        base = f"/ocd/espace/moi/produits/{product.id}/modifier"
+        try:
+            added = product._ocd_vendor_add_values(request.env["product.attribute.value"].sudo().browse(ticked).exists())
+        except UserError as exc:
+            return request.redirect(f"{base}?{urlencode({'tailles_erreur': exc.args[0]})}#tailles")
+        return request.redirect(f"{base}?{urlencode({'ajoute': ', '.join(added.mapped('name'))})}#tailles")
 
     def _photos(self, product):
         """The photos of a product on sale for its page of change (design GererProduits): the
@@ -499,7 +620,11 @@ class OcdVendorProducts(http.Controller):
             data, filename = kept.raw, kept.name
         elif data is None:
             errors["photo"] = env._("Add a photo of your product.")
-        values = {"name": name, "price": price, "quantity": qty}
+        chosen, quantities, ticked, stock, variant_error = self._read_variants(post)
+        if variant_error:
+            errors["variants"] = variant_error
+        values = {"name": name, "price": price, "quantity": qty, "variantes": bool(post.get("variantes")),
+                  "valeurs": ticked, "stock": {key: str(value) for key, value in stock.items()}}
         if errors:
             if data is not None and not kept:
                 kept = self._keep_photo(vendor, data, filename)
@@ -525,11 +650,17 @@ class OcdVendorProducts(http.Controller):
                     "ocd_form_token": token,
                     **({"website_sequence": first} if first is not None else {}),
                 })
-                product._ocd_set_stock(qty)
+                if chosen:
+                    product._ocd_vendor_set_variants(chosen, quantities)
+                else:
+                    product._ocd_set_stock(qty)
         except (UserError, ValidationError) as exc:
             # Not an image Odoo can read: no photo to keep
             return self._render(vendor, values=values, errors={"photo": exc.args[0]}, form_token=token)
         self._pending_photos(vendor).unlink()
+        if any(attribute.display_type == "color" for attribute in chosen):
+            # Its colours: their photos come next (the row opens on them)
+            return request.redirect(f"{sent}&couleurs={product.id}#produit-{product.id}")
         return request.redirect(sent)
 
     # === CORRECT A PRODUCT (refused, or waiting for the check) === #

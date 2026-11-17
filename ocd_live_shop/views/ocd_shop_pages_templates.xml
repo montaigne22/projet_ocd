@@ -833,7 +833,7 @@
              reduces the photo, and sends it once: data-* below -->
         <form t-att-action="f'/ocd/espace/moi/produits/{product.id}/modifier' if product else '/ocd/espace/moi/produits'"
               method="post" enctype="multipart/form-data"
-              class="o_ocd_form o_ocd_my_products_form" novalidate="novalidate"
+              t-attf-class="o_ocd_form o_ocd_my_products_form #{'o_ocd_with_variants' if values.get('variantes') else ''}" novalidate="novalidate"
               t-att-data-max-px="photo_px" t-att-data-max-bytes="photo_max_mb * 1024 * 1024"
               t-att-data-decimals="currency_decimals" t-att-data-messages="json.dumps(form_messages)"
               t-att-data-has-photo="'1' if current_photo else None"
@@ -886,7 +886,7 @@
                         <span t-out="currency_symbol"/>
                     </div>
                 </div>
-                <div t-if="not product" class="o_ocd_field">
+                <div t-if="not product" class="o_ocd_field o_ocd_qty_simple">
                     <span id="mp-qty" class="o_ocd_label">How many do you have?</span>
                     <div class="o_ocd_stepper o_ocd_stepper_js" role="group" aria-labelledby="mp-qty">
                         <button type="button" class="o_ocd_stepper_less" aria-label="One less" data-available-offline="1">−</button>
@@ -897,6 +897,68 @@
                 </div>
             </div>
             <span id="mp-price-error" class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('price') else 'hidden'"><t t-out="errors.get('price')"/></span>
+            <!-- Sizes and colours from the creation (TaillesCouleurs, chantier 21): the values the
+                 team offers, then the stock of each choice (the phone draws the grid at once) -->
+            <div t-if="not product and vendor_attributes" class="o_ocd_variants" t-att-data-total="variant_total">
+                <label class="o_ocd_variants_switch">
+                    <span><b>Several sizes or colours</b><small>The same price for all</small></span>
+                    <input type="checkbox" name="variantes" value="1" class="o_ocd_variants_toggle" role="switch"
+                           t-att-checked="'checked' if values.get('variantes') else None"/>
+                </label>
+                <div class="o_ocd_variants_body" t-att-hidden="None if values.get('variantes') else 'hidden'">
+                    <t t-foreach="vendor_attributes" t-as="attribute">
+                        <fieldset class="o_ocd_variant_values" t-att-data-attribute="attribute['id']"
+                                  t-att-data-colour="'1' if attribute['colour'] else None">
+                            <legend class="o_ocd_label" t-out="attribute['name']"/>
+                            <div class="o_ocd_variant_chips">
+                                <t t-foreach="attribute['values']" t-as="value">
+                                    <label t-attf-class="o_ocd_variant_chip #{'o_ocd_variant_chip_colour' if attribute['colour'] else ''}">
+                                        <input type="checkbox" name="valeurs" t-att-value="value['id']" t-att-data-name="value['name']"
+                                               t-att-data-swatch="value['swatch'] if attribute['colour'] else None"
+                                               t-att-checked="'checked' if value['checked'] else None"/>
+                                        <span>
+                                            <i t-if="attribute['colour']" class="o_ocd_variant_swatch" aria-hidden="true"
+                                               t-attf-style="background: #{value['swatch']}"/>
+                                            <t t-out="value['name']"/>
+                                        </span>
+                                    </label>
+                                </t>
+                            </div>
+                        </fieldset>
+                    </t>
+                    <small t-if="team_url" class="o_ocd_parcel_hint">A size or a colour is missing?
+                        <a t-att-href="team_url" target="_blank" rel="noopener" class="o_ocd_link">Write to the team</a>.</small>
+                    <div class="o_ocd_field o_ocd_variant_stock_box">
+                        <span class="o_ocd_label">How many do you have?</span>
+                        <div class="o_ocd_variant_stock">
+                            <t t-if="variant_grid and variant_grid['table']">
+                                <div class="o_ocd_variant_grid" t-attf-style="grid-template-columns: minmax(84px, auto) repeat(#{len(variant_grid['cols'])}, minmax(56px, 1fr))">
+                                    <span/>
+                                    <t t-foreach="variant_grid['cols']" t-as="col"><b class="o_ocd_variant_col" t-out="col"/></t>
+                                    <t t-foreach="variant_grid['rows']" t-as="row">
+                                        <span class="o_ocd_variant_row"><i t-if="row['swatch']" class="o_ocd_variant_swatch" t-attf-style="background: #{row['swatch']}"/><t t-out="row['name']"/></span>
+                                        <t t-foreach="row['cells']" t-as="cell">
+                                            <input type="number" min="0" inputmode="numeric" class="o_ocd_input o_ocd_variant_qty"
+                                                   t-attf-name="stock_#{cell['key']}" t-att-value="cell['value']" t-att-aria-label="cell['label']"/>
+                                        </t>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-elif="variant_grid">
+                                <t t-foreach="variant_grid['cells']" t-as="cell">
+                                    <label class="o_ocd_variant_line"><span t-out="cell['label']"/>
+                                        <input type="number" min="0" inputmode="numeric" class="o_ocd_input o_ocd_variant_qty"
+                                               t-attf-name="stock_#{cell['key']}" t-att-value="cell['value']"/>
+                                    </label>
+                                </t>
+                            </t>
+                            <small t-else="" class="o_ocd_parcel_hint">Tick the sizes and the colours: the stock of each comes here.</small>
+                        </div>
+                        <small class="o_ocd_variant_total" aria-live="polite"/>
+                    </div>
+                    <span class="o_ocd_error" role="alert" t-att-hidden="None if errors.get('variants') else 'hidden'"><t t-out="errors.get('variants')"/></span>
+                </div>
+            </div>
             <!-- A big change of the price is confirmed (2.1 of the plan): « Yes » sends the
                  price it confirms, « Correct » goes back to the price -->
             <div t-if="price_question" class="o_ocd_price_question" role="alert">
@@ -909,7 +971,7 @@
             </div>
             <small t-if="on_sale" class="o_ocd_parcel_hint">The price changes at once, without a check. The stock is changed
                 <a t-if="stock_url" t-att-href="stock_url" class="o_ocd_link">in My stock</a><a t-else="" href="/ocd/espace/moi/produits" class="o_ocd_link">from My products</a>.</small>
-            <div t-if="sent" class="o_ocd_ok" role="status">Sent. The team checks the photo, then your product shows in your boutique.</div>
+            <div t-if="sent" class="o_ocd_ok" role="status">Sent. The team checks the photo, then your product shows in your boutique.<t t-if="request.params.get('couleurs')"> Add the photo of each colour: the customer sees the right colour when they choose it.</t></div>
             <!-- A product added without network: kept in the phone (2.7 of the plan) -->
             <div t-if="not product" class="o_ocd_ok o_ocd_draft_kept" role="status" hidden="hidden">No network: your product is kept in your phone, with its photo. It leaves by itself when the network is back. You can add another one.</div>
             <!-- Not disabled by Odoo without network: a new product is then kept in the phone -->
@@ -984,6 +1046,7 @@
                                         <span t-out="row['price']"/>
                                         <span t-attf-class="o_ocd_step_pill o_ocd_my_status_#{row['status']}" t-out="row['status_label']"/>
                                     </span>
+                                    <small t-if="row['variants_line']" class="o_ocd_my_product_fact" t-out="row['variants_line']"/>
                                     <span t-if="row['low_line']" class="o_ocd_my_product_low" t-out="row['low_line']"/>
                                     <small t-if="row['refusal']" class="o_ocd_error o_ocd_my_product_refusal" t-out="row['refusal']"/>
                                     <small t-if="row['change_line']" t-attf-class="o_ocd_my_product_fact #{'o_ocd_my_product_change_refused' if row['change_refused'] else 'o_ocd_my_product_change'}"
@@ -1018,7 +1081,7 @@
                                     <button name="delta" value="1" t-att-aria-label="row['more_aria']">+</button>
                                 </form>
                                 <details t-if="row['colours']" class="o_ocd_colour_photos"
-                                         t-att-open="'open' if photo_error == str(row['product'].id) else None">
+                                         t-att-open="'open' if photo_error == str(row['product'].id) or request.params.get('couleurs') == str(row['product'].id) else None">
                                     <summary class="o_ocd_link">
                                         Photos of the colours · <t t-out="row['colours_done']"/>/<t t-out="len(row['colours'])"/>
                                     </summary>
@@ -1145,6 +1208,43 @@
                             <span t-elif="photos_error == 'garder'" class="o_ocd_error" role="alert">Add another photo before you remove this one: a product keeps one photo.</span>
                             <small t-if="any(photo['state'] != 'approved' for photo in photos)" class="o_ocd_parcel_hint">The new photos show once the team checked them. ← moves a photo one place earlier.</small>
                             <small t-else="" class="o_ocd_parcel_hint">← moves a photo one place earlier: the first one is the photo of the cards.</small>
+                        </section>
+                        <!-- Its sizes and colours, and the ones to add (TaillesCouleurs, chantier 21) -->
+                        <section t-if="variant_lines or addable" id="tailles" class="o_ocd_product_sizes">
+                            <span class="o_ocd_label">Sizes and colours</span>
+                            <div class="o_ocd_chips">
+                                <t t-foreach="variant_lines" t-as="line">
+                                    <t t-foreach="line['values']" t-as="name"><span class="o_ocd_chip" t-out="name"/></t>
+                                </t>
+                            </div>
+                            <div t-if="added" class="o_ocd_ok" role="status">
+                                Added: <t t-out="added"/>, without stock: put it in <a t-if="stock_url" t-att-href="stock_url" class="o_ocd_link">My stock</a><t t-else="">My stock</t>.
+                            </div>
+                            <div t-if="variants_error" class="o_ocd_alert" role="alert" t-out="variants_error"/>
+                            <form t-if="addable" t-attf-action="/ocd/espace/moi/produits/#{product.id}/tailles" method="post"
+                                  class="o_ocd_sizes_add">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <b>Add a size or a colour</b>
+                                <t t-foreach="addable" t-as="attribute">
+                                    <fieldset class="o_ocd_variant_values">
+                                        <legend class="visually-hidden" t-out="attribute['name']"/>
+                                        <div class="o_ocd_variant_chips">
+                                            <t t-foreach="attribute['values']" t-as="value">
+                                                <label t-attf-class="o_ocd_variant_chip #{'o_ocd_variant_chip_colour' if attribute['colour'] else ''}">
+                                                    <input type="checkbox" name="valeurs" t-att-value="value.id"/>
+                                                    <span>
+                                                        <i t-if="attribute['colour']" class="o_ocd_variant_swatch" aria-hidden="true"
+                                                           t-attf-style="background: #{value.html_color or '#FFFFFF'}"/>
+                                                        <t t-out="value.name"/>
+                                                    </span>
+                                                </label>
+                                            </t>
+                                        </div>
+                                    </fieldset>
+                                </t>
+                                <button type="submit" class="o_ocd_cta">Add</button>
+                            </form>
+                            <small class="o_ocd_parcel_hint">A size or a colour is not removed: at 0 piece, it shows « Sold out ». A colour added waits for its photo.</small>
                         </section>
                     </t>
                     <t t-call="ocd_live_shop.vendor_product_form"/>

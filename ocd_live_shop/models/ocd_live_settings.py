@@ -112,6 +112,11 @@ class OcdLiveSettings(models.AbstractModel):
                 item("number", "ocd_collect_days", _("Days to pick up a parcel"),
                      _("Until the closing of the store on the last day; a reminder the day before, then cancelled."),
                      suffix=_("days"), min=1, max=30, width=70),
+                item("chips", "ocd_vendor_attributes", _("Sizes and colours of the vendors"),
+                     _("Offered when a vendor adds a product: « Offered to the vendors » on an attribute, and its values."),
+                     chips=[f"{attribute.name} · {len(attribute.value_ids)}"
+                            for attribute in self.env["product.attribute"]._ocd_vendor_attributes()],
+                     link={"label": _("Attributes"), "action": "product.attribute_action"}),
                 item("number", "ocd_low_stock_threshold", _("Low stock alert"),
                      _("A WhatsApp to the vendor when a sale leaves this number of pieces or less (changed on the "
                        "form of each vendor). 0: no alert."),

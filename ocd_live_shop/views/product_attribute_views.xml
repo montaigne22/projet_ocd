@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The sizes and the colours offered to the vendors when they add a product (chantier 21) -->
+    <record id="attribute_tree_view" model="ir.ui.view">
+        <field name="name">product.attribute.list.inherit.ocd.live.shop</field>
+        <field name="model">product.attribute</field>
+        <field name="inherit_id" ref="product.attribute_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="ocd_for_vendors" widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="product_attribute_view_form" model="ir.ui.view">
+        <field name="name">product.attribute.form.inherit.ocd.live.shop</field>
+        <field name="model">product.attribute</field>
+        <field name="inherit_id" ref="product.product_attribute_view_form"/>
+        <field name="arch" type="xml">
+            <field name="display_type" position="after">
+                <field name="ocd_for_vendors" invisible="create_variant != 'always'"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

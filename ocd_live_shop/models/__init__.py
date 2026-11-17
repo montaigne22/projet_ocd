@@ -28,6 +28,7 @@ from . import store_pickup
 from . import product_hold
 from . import low_stock
 from . import live_prepare
+from . import vendor_variants
 from . import delivery_carrier
 from . import payment_provider
 from . import ocd_live_booking
