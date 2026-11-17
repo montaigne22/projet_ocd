@@ -196,7 +196,11 @@ class OcdVendorProducts(http.Controller):
                 "status_label": status_label,
                 "refusal": product._ocd_refusal_text(),
                 "can_correct": product._ocd_vendor_can_correct(),
+                "can_change": product._ocd_vendor_can_change(),
                 "can_retire": product._ocd_vendor_can_retire(),
+                # A change waiting for the check, or refused (the product stays on sale as it was)
+                "change_line": self._change_line(product),
+                "change_refused": product.ocd_change_state == "refused",
                 "less_aria": env._("One %s less", product.name),
                 "more_aria": env._("One %s more", product.name),
                 "more_label": env._("More for %s", product.name),
@@ -216,6 +220,22 @@ class OcdVendorProducts(http.Controller):
                 "last": index == len(products) - 1,
             })
         return rows
+
+    def _change_line(self, product):
+        env = request.env
+        if not product._ocd_vendor_can_change():
+            return False
+        if product.ocd_change_state == "to_check":
+            return env._("Change being checked: %s. The version of today stays on sale.",
+                         ", ".join(self._waiting_labels(product)) or env._("new name"))
+        if product.ocd_change_state == "refused":
+            return env._("Change refused: « %s ». The version before stays on sale.", product._ocd_change_refusal_text())
+        return False
+
+    def _waiting_labels(self, product):
+        env = request.env
+        labels = {"name": env._("new name")}
+        return [labels[part] for part in product._ocd_change_waiting() if part in labels]
 
     def _filters(self, rows, current):
         """The filters by state (1.4 of the plan), when the catalogue grows: [(key, label,
@@ -288,16 +308,33 @@ class OcdVendorProducts(http.Controller):
             **self._form_values(values, errors, kept, form_token),
         ))
 
-    def _render_correct(self, vendor, product, values=None, errors=None, kept=None):
+    def _price_text(self, product, price):
+        """The price as the vendor types it: 3000, or 3000.50 for a currency with cents."""
+        currency = product.currency_id
+        return str(int(price)) if currency.decimal_places == 0 or price == int(price) \
+            else f"{price:.{currency.decimal_places}f}"
+
+    def _price_question(self, product, amount):
+        """« You go from 15,000 F to 1,500 F, is that right? »: a big change of the price is
+        confirmed by the vendor (2.1 of the plan)."""
+        env = request.env
+        currency = product.currency_id
+        return {
+            "text": env._("You go from %(before)s to %(after)s, is that right?",
+                          before=common.money(product.list_price, currency), after=common.money(amount, currency)),
+            "yes": env._("Yes, %s", common.money(amount, currency)),
+            "value": self._price_text(product, amount),
+        }
+
+    def _render_correct(self, vendor, product, values=None, errors=None, kept=None, price_question=None):
         env = request.env
         if values is None:
-            currency = product.currency_id
-            price = product.list_price
             values = {
-                "name": product.name,
-                "price": str(int(price)) if currency.decimal_places == 0 or price == int(price)
-                else f"{price:.{currency.decimal_places}f}",
+                # A change waiting for the check, or refused: the vendor sees it to correct it
+                "name": product.ocd_change_name or product.name,
+                "price": self._price_text(product, product.list_price),
             }
+        on_sale = product._ocd_vendor_can_change()
         return request.render("ocd_live_shop.vendor_product_edit", common.page_values(
             "mes_produits",
             space_page="products",
@@ -306,6 +343,12 @@ class OcdVendorProducts(http.Controller):
             header_title=env._("My products"),
             vendor=vendor,
             sent=False,
+            on_sale=on_sale,
+            change_refusal=product._ocd_change_refusal_text() if on_sale else False,
+            price_question=price_question,
+            can_retire=product._ocd_vendor_can_retire(),
+            stock_url=f"/ocd/espace/moi/produits/{product.id}/mon-stock" if on_sale and (
+                vendor._ocd_stock_per_place() or len(product.product_variant_ids) > 1) else False,
             **self._form_values(values, errors, kept, product=product),
         ))
 
@@ -451,6 +494,8 @@ class OcdVendorProducts(http.Controller):
         if not product or product.ocd_vendor_id != vendor:
             raise request.not_found()
         back = f"/ocd/espace/moi/produits#produit-{product.id}"
+        if product._ocd_vendor_can_change():
+            return self._change_on_sale(vendor, product, name, price, post)
         if not product._ocd_vendor_can_correct():
             return request.redirect(back)
         if request.httprequest.method != "POST":
@@ -463,21 +508,46 @@ class OcdVendorProducts(http.Controller):
         elif data is None and kept:
             data, filename = kept.raw, kept.name
         values = {"name": name, "price": price}
-        if errors:
+        # A big change of the price is confirmed first (2.1 of the plan)
+        question = None
+        if not errors and product._ocd_price_needs_confirm(amount) \
+                and post.get("prix_confirme") != self._price_text(product, amount):
+            question = self._price_question(product, amount)
+        if errors or question:
             if data is not None and not kept:
                 kept = self._keep_photo(vendor, data, filename)
-            return self._render_correct(vendor, product, values, errors, kept)
+            return self._render_correct(vendor, product, values, errors, kept, price_question=question)
         changes = {"name": name, "list_price": amount}
         if data is not None:
             changes["image_1920"] = BinaryBytes(data, filename=filename)
         resent = product.ocd_review_state == "refused"
         try:
             with env.cr.savepoint():
-                product._ocd_vendor_correct(changes)
+                product.with_context(
+                    ocd_price_source="vendor", ocd_price_confirmed=bool(post.get("prix_confirme"))
+                )._ocd_vendor_correct(changes)
         except (UserError, ValidationError) as exc:
             return self._render_correct(vendor, product, values, {"photo": exc.args[0]})
         self._pending_photos(vendor).unlink()
         return request.redirect(f"/ocd/espace/moi/produits?envoye=1#produit-{product.id}" if resent else back)
+
+    def _change_on_sale(self, vendor, product, name, price, post):
+        """Change a product on sale (2.1 of the plan, design GererProduits): the price at once
+        (a big change confirmed first), the name checked by the team while the product stays
+        on sale as it was."""
+        if request.httprequest.method != "POST":
+            return self._render_correct(vendor, product)
+        errors, name, amount = self._check_fields(name, price)
+        values = {"name": name, "price": price}
+        if errors:
+            return self._render_correct(vendor, product, values, errors)
+        confirmed = post.get("prix_confirme") == self._price_text(product, amount)
+        if product._ocd_price_needs_confirm(amount) and not confirmed:
+            return self._render_correct(vendor, product, values, price_question=self._price_question(product, amount))
+        price_changed = bool(product.currency_id.compare_amounts(amount, product.list_price))
+        waiting = product._ocd_vendor_change(name, amount, confirmed=confirmed)
+        done = ("verification" if waiting else "1") + ("&prix=1" if price_changed else "")
+        return request.redirect(f"/ocd/espace/moi/produits?modifie={done}#produit-{product.id}")
 
     # === ORDER OF THE BOUTIQUE, COPY === #
 

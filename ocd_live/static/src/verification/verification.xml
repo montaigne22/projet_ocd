@@ -28,8 +28,31 @@
                         <div t-foreach="column.items" t-as="item" t-key="item.key" class="o_ocd_verification_card">
                             <img t-if="item.photo" t-att-src="item.photo" alt="" loading="lazy" class="o_ocd_verification_photo"/>
                             <b t-out="item.title"/>
+                            <span t-if="item.tag" class="o_ocd_verification_tag" t-out="item.tag"/>
                             <span t-if="item.sub" class="o_ocd_verification_sub" t-out="item.sub"/>
                             <span t-if="item.detail" class="o_ocd_verification_detail" t-out="item.detail"/>
+                            <!-- A change of a record already shown: before and now, side by side -->
+                            <div t-if="item.changes and item.changes.length" class="o_ocd_verification_changes">
+                                <div class="o_ocd_verification_change o_ocd_verification_change_head">
+                                    <span/><span>Before (shown)</span><span>Now</span>
+                                </div>
+                                <div t-foreach="item.changes" t-as="change" t-key="change_index" class="o_ocd_verification_change">
+                                    <span class="o_ocd_verification_change_label" t-out="change.label"/>
+                                    <span>
+                                        <t t-out="change.before or ''"/>
+                                        <span t-if="change.before_photos and change.before_photos.length" class="o_ocd_verification_thumbs">
+                                            <img t-foreach="change.before_photos" t-as="src" t-key="src_index" t-att-src="src" alt="" loading="lazy"/>
+                                        </span>
+                                    </span>
+                                    <span>
+                                        <b t-out="change.now or ''"/>
+                                        <span t-if="change.now_photos and change.now_photos.length" class="o_ocd_verification_thumbs">
+                                            <img t-foreach="change.now_photos" t-as="photo" t-key="photo_index" t-att-src="photo.src" alt=""
+                                                 loading="lazy" t-att-class="photo.new ? 'o_ocd_new' : ''"/>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
                             <t t-if="column.done">
                                 <span t-attf-class="o_ocd_verification_result #{item.ok ? 'o_ocd_ok' : 'o_ocd_ko'}" t-out="item.result"/>
                             </t>

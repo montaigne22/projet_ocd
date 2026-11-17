@@ -13,9 +13,9 @@ class OcdLiveVerification(models.AbstractModel):
         columns = super()._ocd_columns()
         columns.insert(1, {
             "key": "product",
-            "label": self.env._("New products"),
+            "label": self.env._("New products and changes"),
             "empty": self.env._("No product waiting."),
-            "items": self._ocd_product_items(),
+            "items": self._ocd_product_items() + self._ocd_change_items(),
         })
         columns.insert(2, {
             "key": "store",
@@ -103,6 +103,40 @@ class OcdLiveVerification(models.AbstractModel):
         return items
 
     @api.model
+    def _ocd_change_items(self):
+        """The changes of products on sale (2.1 of the plan, design GererProduits): before
+        (still on sale) and now, side by side; accepted, the change shows at once."""
+        _ = self.env._
+        products = self.env["product.template"].search(
+            [("ocd_vendor_id", "!=", False), ("ocd_change_state", "=", "to_check")], order="ocd_change_date"
+        )
+        reasons = self._ocd_reasons("product")
+        items = []
+        for product in products:
+            items.append({
+                "key": f"product_change_{product.id}",
+                "kind": "product_change",
+                "id": product.id,
+                "tag": _("Change"),
+                "title": product.name,
+                "sub": " · ".join(part for part in (
+                    product.ocd_vendor_id.name,
+                    _("on sale during the check"),
+                    _("sent %s", self._ocd_ago(product.ocd_change_date)),
+                ) if part),
+                "changes": product._ocd_change_rows(),
+                "photo": f"/web/image/product.template/{product.id}/image_256" if product.image_128 else "",
+                "open_label": _("Open the product"),
+                "open_action": {
+                    "type": "ir.actions.act_window", "res_model": "product.template", "res_id": product.id,
+                    "views": [[False, "form"]], "target": "current",
+                },
+                "ok_label": _("Accept the change"),
+                "reasons": reasons,
+            })
+        return items
+
+    @api.model
     def _ocd_vendor_choices(self, vendor):
         choices = super()._ocd_vendor_choices(vendor)
         modes = vendor._fields["ocd_sale_mode"]._description_selection(self.env)
@@ -127,6 +161,17 @@ class OcdLiveVerification(models.AbstractModel):
                 self.env._("Product put online") if approved else self.env._("Product refused"),
                 approved,
             ))
+        for product in self.env["product.template"].search([
+            ("ocd_vendor_id", "!=", False), ("ocd_change_review_date", ">=", since),
+            ("ocd_change_state", "in", ("approved", "refused")),
+        ]):
+            approved = product.ocd_change_state == "approved"
+            rows.append(self._ocd_history_row(
+                product.ocd_change_review_date,
+                product.name,
+                self.env._("Change put online") if approved else self.env._("Change refused"),
+                approved,
+            ))
         for place in self.env["ocd.vendor.place"].search([("kind", "=", "store"), ("review_date", ">=", since)]):
             approved = place.state == "approved"
             rows.append(self._ocd_history_row(
@@ -139,10 +184,13 @@ class OcdLiveVerification(models.AbstractModel):
 
     @api.model
     def _ocd_models(self):
-        return {**super()._ocd_models(), "product": "product.template", "store": "ocd.vendor.place"}
+        return {**super()._ocd_models(), "product": "product.template", "product_change": "product.template",
+                "store": "ocd.vendor.place"}
 
     @api.model
     def ocd_approve(self, kind, record_id, values=None):
+        if kind == "product_change":
+            return self._ocd_record(kind, record_id).action_ocd_approve_change()
         if kind == "store":
             return self._ocd_record(kind, record_id).action_ocd_approve()
         if kind != "product":
@@ -154,6 +202,11 @@ class OcdLiveVerification(models.AbstractModel):
 
     @api.model
     def ocd_refuse(self, kind, record_id, reason_id):
+        if kind == "product_change":
+            reason = self.env["ocd.listing.refuse.reason"].browse(reason_id).exists()
+            if not reason:
+                raise UserError(self.env._("Choose the reason sent to the vendor."))
+            return self._ocd_record(kind, record_id).action_ocd_refuse_change(reason)
         if kind == "store":
             reason = self.env["ocd.listing.refuse.reason"].browse(reason_id).exists()
             if not reason:

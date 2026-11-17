@@ -111,6 +111,51 @@
     line-height: 1.35;
     color: $ocd-bo-muted;
 }
+.o_ocd_verification_tag {
+    align-self: flex-start;
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #FFF0E3;
+    color: #B84F00;
+}
+// A change of a record already shown: before and now (design GererProduits)
+.o_ocd_verification_changes {
+    display: flex;
+    flex-direction: column;
+    font-size: 12.5px;
+    line-height: 1.35;
+    border-top: 1px solid $ocd-bo-line;
+}
+.o_ocd_verification_change {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid $ocd-bo-line;
+    overflow-wrap: anywhere;
+}
+.o_ocd_verification_change_head,
+.o_ocd_verification_change_label {
+    font-weight: 700;
+    color: $ocd-bo-muted;
+}
+.o_ocd_verification_thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+    img {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        object-fit: cover;
+        &.o_ocd_new {
+            outline: 2px solid $ocd-yellow-line;
+        }
+    }
+}
 .o_ocd_verification_detail {
     font-size: 12.5px;
     line-height: 1.35;

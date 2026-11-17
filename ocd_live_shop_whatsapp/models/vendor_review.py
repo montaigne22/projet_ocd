@@ -1,5 +1,7 @@
 from odoo import models
 
+CHANGE_REFUSED = "ocd_live_shop_whatsapp.template_product_change_refused"
+
 
 def first_of_each(records, key):
     """The first record of each `key` in `records`, in their order."""
@@ -29,6 +31,23 @@ class ProductTemplate(models.Model):
         )
         Partner = self.env["res.partner"]
         return any([Partner._ocd_whatsapp_send(templates[p.ocd_review_state], p) for p in products])
+
+
+    def _ocd_tell_vendor_change(self):
+        """Override of `ocd_live_shop`: the vendor learns on WhatsApp that the team accepted the
+        change of a product on sale (the message of a product accepted), or refused it with its
+        reason: that message says the product stays on sale as before, and leaves once Meta
+        approved it (the message of a product refused would say it is not online)."""
+        super()._ocd_tell_vendor_change()
+        Partner = self.env["res.partner"]
+        templates = {"approved": "ocd_live_shop_whatsapp.template_product_accepted"}
+        if Partner._ocd_template_approved(CHANGE_REFUSED):
+            templates["refused"] = CHANGE_REFUSED
+        products = first_of_each(
+            self.filtered(lambda p: p.ocd_vendor_id and p.ocd_change_state in templates),
+            lambda p: (p.ocd_vendor_id.id, p.ocd_change_state),
+        )
+        return any([Partner._ocd_whatsapp_send(templates[p.ocd_change_state], p) for p in products])
 
 
 class OcdVendorPlace(models.Model):

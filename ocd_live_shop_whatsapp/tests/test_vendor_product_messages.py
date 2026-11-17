@@ -139,3 +139,35 @@ class TestOcdVendorProductMessages(HttpCase, OcdShopCommon):
             self.dress._ocd_change_stock(1, home.location_id)
             Alert._ocd_send_back()
             self.assertEqual(calls[-1], "ocd_produit_de_retour")
+
+    def test_the_vendor_is_told_about_a_change(self):
+        """A change of a product on sale (chantier 19): accepted, the message of a product
+        accepted; refused, its own message once Meta approved it (the message of a product
+        refused would say it is not online)."""
+        self.brenda.write({"ocd_whatsapp_optin": True, "whatsapp_opt_in": True})
+        product = self.env["product.template"].create({
+            "name": "Pagne", "ocd_vendor_id": self.brenda.id, "ocd_review_state": "approved", "is_published": True,
+        })
+        calls = []
+
+        def fake_send(template, records):
+            calls.append(template.template_name)
+            return template.env["whatsapp.message"]
+
+        reason = self.env.ref("ocd_live_shop.refuse_reason_product_photo")
+        template = self.env.ref("ocd_live_shop_whatsapp.template_product_change_refused")
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            product._ocd_vendor_change("Pagne wax", product.list_price)
+            product.action_ocd_approve_change()
+            self.assertEqual(calls, ["ocd_produit_accepte"])
+            product._ocd_vendor_change("Pagne", product.list_price)
+            product.action_ocd_refuse_change(reason)
+            self.assertEqual(calls, ["ocd_produit_accepte"], "Nothing until Meta approves the message")
+            template.status = "approved"
+            product._ocd_vendor_change("Pagne bleu", product.list_price)
+            product.action_ocd_refuse_change(reason)
+            self.assertEqual(calls[-1], "ocd_modification_refusee")
+        for record in (template, self.env.ref("ocd_live_shop_whatsapp.template_product_change_refused_en")):
+            values = [record._render(variable.value, product)[product.id] for variable in record.variable_ids]
+            self.assertEqual(values[:2], ["Brenda Wax", "Pagne wax"])
+            self.assertTrue(values[2], "The reason, in the language of the vendor")

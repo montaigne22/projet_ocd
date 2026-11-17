@@ -25,7 +25,38 @@
                 <field name="ocd_previous_refusal" invisible="not ocd_previous_refusal"/>
                 <field name="ocd_vendor_retired" invisible="not ocd_vendor_retired"/>
                 <field name="ocd_stock_by_place" invisible="not ocd_stock_by_place"/>
+                <!-- A change of a product on sale (chantier 19): checked while the product stays on sale -->
+                <label for="ocd_change_state" invisible="not ocd_change_state"/>
+                <div class="d-flex gap-2 align-items-center" invisible="not ocd_change_state">
+                    <field name="ocd_change_state" readonly="1" class="oe_inline"/>
+                    <button name="action_ocd_approve_change" type="object" string="Accept the change" class="btn btn-sm btn-primary"
+                            invisible="ocd_change_state != 'to_check'" groups="ocd_live.group_ocd_live_user"/>
+                    <button name="action_ocd_refuse_change" type="object" string="Refuse the change" class="btn btn-sm btn-secondary"
+                            invisible="ocd_change_state != 'to_check'" groups="ocd_live.group_ocd_live_user"/>
+                </div>
+                <field name="ocd_change_name" invisible="ocd_change_state != 'to_check'" readonly="1"/>
+                <field name="ocd_change_reason_id" options="{'no_create': True}"
+                       invisible="ocd_change_state not in ('to_check', 'refused')"
+                       readonly="ocd_change_state != 'to_check'"
+                       placeholder="Reason sent to the vendor, to refuse the change"/>
             </field>
+            <!-- The prices of a product of a vendor: each change, the big gaps confirmed by the vendor -->
+            <notebook position="inside">
+                <page string="Prices" name="ocd_prices" invisible="not ocd_vendor_id">
+                    <field name="ocd_price_ids">
+                        <list create="0" delete="0" decoration-warning="big_gap">
+                            <field name="create_date" string="Date"/>
+                            <field name="price"/>
+                            <field name="previous_price"/>
+                            <field name="gap"/>
+                            <field name="source"/>
+                            <field name="confirmed"/>
+                            <field name="big_gap" column_invisible="1"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
         </field>
     </record>
 

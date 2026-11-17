@@ -66,6 +66,32 @@ class ProductTemplate(models.Model):
         help="The vendor took the product off sale from « My products »: not shown, never deleted "
         "(the past orders keep it), and the vendor can put it back on sale.",
     )
+    # A change of a product on sale (2.1 of the plan): checked by the team while the version of
+    # today stays on sale
+    ocd_change_state = fields.Selection(
+        selection=[("to_check", "To check"), ("approved", "Accepted"), ("refused", "Refused")],
+        string="Change Of The Vendor",
+        copy=False,
+        tracking=True,
+        index="btree_not_null",
+        help="The vendor changed the name (or the photos) of a product on sale: the team checks it while "
+        "the product stays on sale as it was.",
+    )
+    ocd_change_name = fields.Char(string="New Name To Check", copy=False, tracking=True)
+    ocd_change_date = fields.Datetime(string="Change Sent At", copy=False, readonly=True)
+    ocd_change_review_date = fields.Datetime(string="Change Checked At", copy=False, readonly=True)
+    ocd_change_reason_id = fields.Many2one(
+        comodel_name="ocd.listing.refuse.reason",
+        string="Reason Of The Refusal Of The Change",
+        copy=False,
+        tracking=True,
+        domain=[("applies_to", "=", "product")],
+        help="Shown to the vendor in « My products »: the product stays on sale as it was, the vendor "
+        "corrects the change and sends it again.",
+    )
+    ocd_price_ids = fields.One2many(
+        comodel_name="ocd.product.price", inverse_name="product_tmpl_id", string="Prices", readonly=True
+    )
     ocd_moment_ids = fields.One2many(
         comodel_name="ocd.live.moment", inverse_name="product_tmpl_id", string="Live Moments"
     )
@@ -75,6 +101,50 @@ class ProductTemplate(models.Model):
         readonly=True,
         help="Number of visitors who wrote to the vendor on WhatsApp from the boutique.",
     )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        products = super().create(vals_list)
+        products.filtered("ocd_vendor_id")._ocd_log_prices({}, source="creation")
+        return products
+
+    def write(self, vals):
+        if "list_price" not in vals:
+            return super().write(vals)
+        before = {product.id: product.list_price for product in self}
+        result = super().write(vals)
+        self.filtered("ocd_vendor_id")._ocd_log_prices(before)
+        return result
+
+    def _ocd_log_prices(self, before, source=None):
+        """A line in the history of the prices of each product whose price changed (`before`:
+        {product id: price before}). Its author: `source`, else the context of the change (the
+        vendor from their space), else the team."""
+        context = self.env.context
+        source = source or context.get("ocd_price_source") or "team"
+        lines = []
+        for product in self:
+            previous = before.get(product.id, 0.0)
+            if product.id in before and product.currency_id.compare_amounts(previous, product.list_price) == 0:
+                continue
+            lines.append({
+                "product_tmpl_id": product.id,
+                "price": product.list_price,
+                "previous_price": previous,
+                "gap": self.env["ocd.product.price"]._ocd_gap(previous, product.list_price),
+                "source": source,
+                "confirmed": bool(context.get("ocd_price_confirmed")),
+            })
+        if lines:
+            self.env["ocd.product.price"].sudo().create(lines)
+
+    def _ocd_price_needs_confirm(self, price):
+        """Whether the vendor confirms the new `price`: a change bigger than the setting (50 %
+        by default) of a price the product had."""
+        self.ensure_one()
+        limit = (self.company_id or self.env.company).ocd_price_gap_confirm
+        gap = self.env["ocd.product.price"]._ocd_gap(self.list_price, price)
+        return bool(limit) and abs(gap) > limit
 
     @api.constrains("is_published", "ocd_review_state")
     def _check_ocd_review_before_publication(self):
@@ -153,6 +223,120 @@ class ProductTemplate(models.Model):
         else:
             self.write(values)
         return True
+
+    # === CHANGE A PRODUCT ON SALE (2.1 of the plan of « My products ») === #
+
+    def _ocd_vendor_can_change(self):
+        """A product the vendor changes while it stays on sale: checked by the team before."""
+        self.ensure_one()
+        return self.ocd_review_state == "approved"
+
+    def _ocd_change_waiting(self):
+        """What of the change of the vendor the team still checks: ["name"] (the photos are
+        added by the photos of a product)."""
+        self.ensure_one()
+        return ["name"] if self.ocd_change_name and self.ocd_change_name != self.name else []
+
+    def _ocd_change_rows(self):
+        """The change of the vendor, before (on sale) and now, for the board of the checks:
+        [{label, before, now, before_photos, now_photos}]."""
+        self.ensure_one()
+        _ = self.env._
+        rows = []
+        if "name" in self._ocd_change_waiting():
+            rows.append({"label": _("Name"), "before": self.name, "now": self.ocd_change_name})
+        # The price changed with the change: already on sale, not checked
+        price = self.ocd_price_ids.filtered(
+            lambda line: line.source == "vendor" and self.ocd_change_date and line.create_date >= self.ocd_change_date
+        )[:1]
+        if price:
+            money = self.env["ocd.live.dashboard"]._ocd_money
+            rows.append({
+                "label": _("Price"),
+                "before": money(price.previous_price, self.currency_id),
+                "now": _("%(price)s (already on sale, confirmed by the vendor)", price=money(price.price, self.currency_id))
+                if price.confirmed else _("%s (already on sale)", money(price.price, self.currency_id)),
+            })
+        return rows
+
+    def _ocd_vendor_change(self, name, price, confirmed=False):
+        """The vendor changes a product on sale: the price at once (in the history of the
+        prices), the name checked by the team while the product stays on sale as it was. Return
+        whether something waits for the check."""
+        self.ensure_one()
+        if not self._ocd_vendor_can_change():
+            raise UserError(self.env._("This product cannot be changed here."))
+        product = self.sudo()
+        if product.currency_id.compare_amounts(price, product.list_price):
+            product.with_context(ocd_price_source="vendor", ocd_price_confirmed=confirmed).list_price = price
+        if name != product.name:
+            if name != product.ocd_change_name or product.ocd_change_state != "to_check":
+                product.write({"ocd_change_name": name})
+                product._ocd_change_sent()
+        elif product.ocd_change_name:
+            # Back to the name on sale: nothing left to check for the name
+            product.ocd_change_name = False
+            if not product._ocd_change_waiting():
+                product.write({"ocd_change_state": False, "ocd_change_reason_id": False})
+        return product.ocd_change_state == "to_check"
+
+    def _ocd_change_sent(self):
+        """Something new to check in the change of the vendor."""
+        for product in self.sudo():
+            refused = product.ocd_change_state == "refused" and product.ocd_change_reason_id.name
+            product.write({
+                "ocd_change_state": "to_check",
+                "ocd_change_date": self.env.cr.now(),
+                "ocd_change_reason_id": False,
+            })
+            body = (self.env._("The vendor sent a change again (refused for: %s).", refused) if refused
+                    else self.env._("The vendor sent a change to check."))
+            product.message_post(body=body)
+
+    def action_ocd_approve_change(self):
+        """The team accepts the change of the vendor: it shows at once."""
+        for product in self.filtered(lambda p: p.ocd_change_state == "to_check"):
+            values = {
+                "ocd_change_state": "approved",
+                "ocd_change_review_date": fields.Datetime.now(),
+                "ocd_change_reason_id": False,
+                "ocd_change_name": False,
+            }
+            if product.ocd_change_name:
+                values["name"] = product.ocd_change_name
+            product.write(values)
+            product.message_post(body=self.env._("Change accepted."))
+        self._ocd_tell_vendor_change()
+        return True
+
+    def action_ocd_refuse_change(self, reason=None):
+        """The team refuses the change of the vendor, with its reason: the product stays on
+        sale as it was; the vendor corrects the change and sends it again."""
+        for product in self.filtered(lambda p: p.ocd_change_state == "to_check"):
+            why = reason or product.ocd_change_reason_id
+            if not why:
+                raise UserError(self.env._("Choose the reason sent to the vendor."))
+            product.write({
+                "ocd_change_state": "refused",
+                "ocd_change_review_date": fields.Datetime.now(),
+                "ocd_change_reason_id": why.id,
+            })
+            product.message_post(body=self.env._("Change refused: %s", why.name))
+        self._ocd_tell_vendor_change()
+        return True
+
+    def _ocd_tell_vendor_change(self):
+        """Tell the vendors the answer of the team on the change of their products: sent on
+        WhatsApp by `ocd_live_shop_whatsapp`."""
+        return False
+
+    def _ocd_change_refusal_text(self):
+        """What the vendor reads about the refusal of the change, or False."""
+        self.ensure_one()
+        if self.ocd_change_state != "refused":
+            return False
+        reason = self.ocd_change_reason_id
+        return reason.message or reason.name or self.env._("Write to OCD Live to know why.")
 
     # === TAKE OFF SALE, PUT BACK (2.2 of the plan of « My products ») === #
 

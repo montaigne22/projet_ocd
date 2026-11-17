@@ -184,6 +184,24 @@
             ]"/>
         </record>
 
+        <!-- The change of a product on sale refused (chantier 19): the product stays on sale as
+             it was -->
+        <record id="template_product_change_refused" model="whatsapp.template">
+            <field name="name">OCD Live: change of a product refused</field>
+            <field name="template_name">ocd_modification_refusee</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="partner_field">ocd_vendor_id</field>
+            <field name="body">Bonjour {{1}}, la modification de votre produit {{2}} n'est pas acceptée, pour cette raison : {{3}}. Votre produit reste en vente comme avant. Touchez « Mes produits » pour la corriger et la renvoyer.</field>
+            <field name="button_url_value">{{ object._ocd_vendor_products_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes produits', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/produits'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Awa'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'Robe en wax'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_change_reason_id.name }}', 'sample_value': 'Nom qui ne décrit pas le produit'}),
+            ]"/>
+        </record>
+
         <!-- The check of a store by the team (M.5 of the plan), told to the vendor. The button
              opens « My stores » on the phone of the vendor. -->
         <record id="template_store_accepted" model="whatsapp.template">

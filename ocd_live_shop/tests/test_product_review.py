@@ -1,4 +1,3 @@
-import re
 
 from odoo.exceptions import UserError
 from odoo.tests import HttpCase, tagged
@@ -83,12 +82,12 @@ class TestOcdProductReview(HttpCase, OcdShopCommon):
         self.assertEqual(self.skirt.ocd_review_state, "to_check")
         self.assertEqual((self.skirt.name, self.skirt.list_price), ("Jupe wax rouge", 8500))
         self.assertTrue(self.skirt.image_128)
-        # Another vendor cannot open it; a product on sale is changed in another way
+        # Another vendor cannot open it; a product on sale is changed while it stays on sale (chantier 19)
         self.url_open(f"/ocd/espace/{self.fatou._ocd_get_space_token()}")
         self.assertEqual(self.url_open(url).status_code, 404)
         self.assertEqual(self.url_open(photo).status_code, 404, "Not the photo of another vendor")
         self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
         self.skirt.action_ocd_approve()
         response = self.url_open(url, allow_redirects=False)
-        self.assertEqual(response.status_code, 303)
-        self.assertTrue(re.search(rf"/ocd/espace/moi/produits#produit-{self.skirt.id}$", response.headers["Location"]))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("the product stays on sale as it is today", response.text)

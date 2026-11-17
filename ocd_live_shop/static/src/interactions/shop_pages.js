@@ -620,9 +620,10 @@ export class OcdProductForm extends Interaction {
     check() {
         const name = this.el.querySelector("#mp-name");
         const price = this.el.querySelector("#mp-price");
-        const file = this.input.files[0];
+        // A product on sale: its photos are changed apart (no photo field in the form)
+        const file = this.input?.files[0];
         let photo = "";
-        if (!file && !this.kept() && !this.el.dataset.hasPhoto) {
+        if (this.input && !file && !this.kept() && !this.el.dataset.hasPhoto) {
             photo = this.messages.photo; // a product corrected keeps its photo
         } else if (file && this.maxBytes && file.size > this.maxBytes) {
             photo = this.messages.photo_big;

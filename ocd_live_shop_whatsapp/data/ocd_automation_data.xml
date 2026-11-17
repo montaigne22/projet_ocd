@@ -25,7 +25,8 @@
     </record>
     <record id="ocd_live_shop.automation_vendor_review" model="ocd.automation">
         <field name="template_ids" eval="[Command.set([ref('template_product_accepted'), ref('template_product_refused'),
-                                                       ref('template_store_accepted'), ref('template_store_refused')])]"/>
+                                                       ref('template_store_accepted'), ref('template_store_refused'),
+                                                       ref('template_product_change_refused')])]"/>
     </record>
     <record id="ocd_live_whatsapp.automation_asked" model="ocd.automation">
         <field name="template_ids" eval="[Command.link(ref('template_delivery_link'))]"/>

@@ -180,6 +180,22 @@
             ]"/>
         </record>
 
+        <record id="template_product_change_refused_en" model="whatsapp.template">
+            <field name="name">OCD Live: change of a product refused (English)</field>
+            <field name="template_name">ocd_modification_refusee</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="partner_field">ocd_vendor_id</field>
+            <field name="body">Hello {{1}}, the change of your product {{2}} is not accepted, for this reason: {{3}}. Your product stays on sale as before. Tap "My products" to correct it and send it again.</field>
+            <field name="button_url_value">{{ object._ocd_vendor_products_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My products', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/produits'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'Wax dress'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_change_reason_id.name }}', 'sample_value': 'Name that does not describe the product'}),
+            ]"/>
+        </record>
+
         <record id="template_store_accepted_en" model="whatsapp.template">
             <field name="name">OCD Live: store accepted (English)</field>
             <field name="template_name">ocd_magasin_accepte</field>

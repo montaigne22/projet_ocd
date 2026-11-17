@@ -129,6 +129,12 @@ class ResCompany(models.Model):
         "less data. 0: sent as taken.",
     )
 
+    ocd_price_gap_confirm = fields.Integer(
+        string="Price Change To Confirm (%)",
+        default=50,
+        help="A vendor who changes a price by more than this confirms it (« You go from 15,000 to 1,500, "
+        "is that right? »); the team sees it in the history of the prices. 0: never asked.",
+    )
     ocd_vendor_catalogue_items = fields.Integer(
         string="Products Per Image Of The Catalogue",
         default=4,
