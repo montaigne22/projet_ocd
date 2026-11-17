@@ -161,6 +161,10 @@ class OcdVendorProducts(http.Controller):
         # The note of each product from the reviews of the buyers (chantier 2): one query
         Review = env["ocd.vendor.review"]
         review_stats = Review._ocd_product_stats(products)
+        # « Sold: 14 in 30 days · last sale yesterday » (3.3, for every vendor sold by OCD): the
+        # calculation of « My figures »
+        Figures = env["ocd.vendor.figures"]
+        sales = Figures._ocd_product_sales(vendor, products) if vendor.ocd_sale_mode == "ocd" else {}
         rows = []
         for index, product in enumerate(products):
             qty = sum(free[v.id] for v in product.product_variant_ids) if shop_common.tracked(product) else None
@@ -207,6 +211,7 @@ class OcdVendorProducts(http.Controller):
                 # Low on stock (chantier 21): the pieces left of the colours and sizes concerned
                 "low": bool(low_line),
                 "low_line": low_line,
+                "sold_line": Figures._ocd_sold_line(vendor, *sales[product.id]) if product.id in sales else False,
                 "review_line": (env._("★ %(note)s · 1 review", note=Review._ocd_note(review_stats[product.id][0]))
                                 if review_stats[product.id][1] == 1 else
                                 env._("★ %(note)s · %(count)s reviews", note=Review._ocd_note(review_stats[product.id][0]),

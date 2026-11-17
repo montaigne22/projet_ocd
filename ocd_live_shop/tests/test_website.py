@@ -132,7 +132,7 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
         return booking
 
     def test_boutique_shows_the_live_and_the_product_on_screen(self):
-        self._live_now(
+        live = self._live_now(
             self.brenda,
             live_url="https://www.tiktok.com/@brenda.wax/live",
             current_product_tmpl_id=self.dress.product_tmpl_id.id,
@@ -140,7 +140,10 @@ class TestOcdShopWebsite(HttpCase, OcdShopCommon):
         response = self.url_open(f"/ocd/boutique/{self.brenda.id}")
         self.assertIn("Live now", response.text)
         self.assertIn("For 18 min, on TikTok", response.text)
-        self.assertIn("https://www.tiktok.com/@brenda.wax/live", response.text)
+        # « Watch the live »: counted for the vendor (chantier 3), then the live
+        self.assertIn(f"/ocd/regarder/{live.id}?d=boutique", response.text)
+        watch = self.url_open(f"/ocd/regarder/{live.id}?d=boutique", allow_redirects=False)
+        self.assertEqual(watch.headers["Location"], "https://www.tiktok.com/@brenda.wax/live")
         self.assertIn("On screen now", response.text)
         self.assertIn("Sold and delivered by OCD Live", response.text)
 

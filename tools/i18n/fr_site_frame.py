@@ -112,3 +112,17 @@ SITE_FRAME.update({
     "Verified Vendor": "Vendeur vérifié",
     "Yes: « Verified vendor »": "Oui : « Vendeur vérifié »",
 })
+
+# Chantier 3: the figures of the vendors, counted day by day (ocd_live)
+SITE_FRAME.update({
+    "Boutique Visit": "Visite de la boutique",
+    "Count": "Nombre",
+    "Figures Of A Vendor, Day By Day": "Chiffres d'un vendeur, jour par jour",
+    "One count per vendor, day, kind and record.": "Un nombre par vendeur, jour, type et enregistrement.",
+    "Opened From OCD": "Ouvert depuis OCD",
+    "Record": "Enregistrement",
+    "The day at the hour of the vendor.": "Le jour, à l'heure du vendeur.",
+    "The live of a « Watch », the product of a WhatsApp contact; 0 otherwise.":
+        "Le live d'un « Regarder », le produit d'un contact WhatsApp ; 0 sinon.",
+    "WhatsApp Contact": "Contact WhatsApp",
+})

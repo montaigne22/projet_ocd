@@ -108,7 +108,7 @@ class OcdTrust(http.Controller):
             row.update({"review": review, "state": review.state})
         return request.render("ocd_live_shop.vendor_reviews", common.page_values(
             False,
-            space_page="space",
+            space_page="reviews",
             back="/ocd/espace/moi",
             back_label=env._("Back to my space"),
             header_title=env._("My reviews"),

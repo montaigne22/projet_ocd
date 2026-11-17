@@ -356,6 +356,38 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   - **signaler** : une fois par jour et par personne (ou par téléphone sans numéro, sous une signature,
     jamais l'adresse en clair) ; le vendeur ne sait jamais qui a signalé ; un produit retiré à la suite
     d'un signalement l'est comme un refus de l'équipe, avec sa raison envoyée au vendeur.
+- **Statistiques du vendeur, « Mes chiffres »** (chantier 3, avec 3.3 « Ventes par produit » ; maquette
+  `MesChiffres` validée le 17 novembre 2026) :
+  - **un seul calcul** (`ocd.vendor.figures`) pour la page, la carte « Mes chiffres » de Mon espace, la
+    ligne « Vendu » de Mes produits, les chiffres des magasins et le résumé du lundi ;
+  - **pour tous** : les ventes du mois dans Mon espace (comparées aux mêmes jours du mois d'avant) et la
+    ligne « Vendu : N en 30 jours · dernière vente … » ; **avec OCD Business** (offert pendant le
+    lancement) : la période (7 jours, 30 jours, 3 mois), les visites, les contacts WhatsApp, les lives, les
+    meilleures heures, les clients fidèles, les ventes par produit, les magasins. Sans la formule, le
+    détail est annoncé ;
+  - **ventes** : les commandes confirmées, sans les annulées ni les colis rendus (tous les colis de la
+    ligne revenus ou annulés), le prix payé des produits du vendeur (taxes comprises, sans la livraison),
+    converti dans la devise de la société ; l'évolution compare à la période d'avant de même durée ;
+  - **ventes d'un live** : le panier retient les lives dont le visiteur a vu la boutique pendant le live,
+    tant que le live compte (pendant, puis 3 heures après sa fin, réglable) ; à la confirmation, chaque
+    ligne d'un vendeur est notée avec son dernier live retenu. Une commande confirmée plus tard (Mobile
+    Money vérifié par l'équipe) compte donc encore pour le live ;
+  - **nouveaux comptages, jour par jour** (`ocd.vendor.count`, une ligne par vendeur, jour, type et
+    live ou produit, jamais une ligne par appui) : « Ouvert depuis OCD » (les « Regarder » passent par
+    `/ocd/regarder/…`, qui compte puis ouvre le live), les visites de la boutique (une par téléphone et par
+    jour, jamais celles du vendeur ; dites par la page une fois affichée, pour qu'elle reste la même pour
+    tous et gardée en mémoire pendant les foules d'un live), les contacts WhatsApp. Écrits comme les visites de la régie : en
+    mémoire, puis toutes les 5 secondes dans une transaction à part. Gardés 400 jours ;
+  - **meilleures heures** : les commandes des 3 derniers mois à l'heure du vendeur ; les tranches « Matin
+    jusqu'à 12 h · Midi 12 h à 15 h · Après-midi 15 h à 18 h · Soir dès 18 h » (aucune commande laissée
+    de côté, la nuit compte avec le soir ou le matin). « Réserver un live » ouvre la réservation sur le
+    prochain jour et l'heure du studio qui correspondent, sinon sur le jour ;
+  - **clients fidèles** : 2 commandes ou plus en 12 mois (réglable), le prénom et l'initiale, jamais le
+    numéro ;
+  - **résumé du lundi** : seulement si le vendeur l'a allumé (l'interrupteur vaut accord, STOP l'arrête),
+    le lundi dès 9 h à son heure (jour et heure réglables), rien quand rien ne s'est passé ;
+  - **l'équipe** voit la page comme le vendeur (bouton « Chiffres » de la fiche, comme « Voir son
+    espace »).
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- « My figures » of the vendor (chantier 3 of the roadmap, 3.3 of the plan of « My products »,
+     design MesChiffres). The sentences are built whole in Python (ocd.vendor.figures). -->
+<odoo>
+
+    <template id="vendor_figures" name="OCD Live: my figures">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My figures</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_figures">
+                    <div class="o_ocd_figures_head">
+                        <!-- The header says it on the phone (design) -->
+                        <h1 class="o_ocd_h1 o_ocd_h1_small o_ocd_figures_title">My figures</h1>
+                        <nav t-if="business" class="o_ocd_chips o_ocd_figures_periods" aria-label="Period">
+                            <a t-foreach="periods" t-as="period" t-att-href="period['url']" class="o_ocd_chip"
+                               t-att-aria-current="'true' if period['on'] else None" t-out="period['label']"/>
+                        </nav>
+                    </div>
+                    <t t-call="ocd_live.message_box"/>
+
+                    <!-- The essential: sales, pieces, visits, WhatsApp contacts -->
+                    <div t-attf-class="o_ocd_figures_tiles #{'' if business else 'o_ocd_figures_tiles_two'}">
+                        <t t-if="sold_by_ocd">
+                            <div class="o_ocd_figures_tile">
+                                <small><t t-if="business">Sales</t><t t-else="">Sales, 30 days</t></small>
+                                <b t-out="figures['amount']"/>
+                                <span t-if="business" t-attf-class="o_ocd_figures_trend o_ocd_figures_#{figures['amount_evolution']['cls']}"
+                                      t-out="figures['amount_evolution']['text']"/>
+                            </div>
+                            <div class="o_ocd_figures_tile">
+                                <small>Pieces sold</small>
+                                <b t-out="figures['pieces_text']"/>
+                                <small t-if="business" t-out="figures['pieces_line']"/>
+                            </div>
+                        </t>
+                        <t t-if="business">
+                            <div class="o_ocd_figures_tile">
+                                <small>Visits of your boutique</small>
+                                <b t-out="figures['visits_text']"/>
+                                <span t-attf-class="o_ocd_figures_trend o_ocd_figures_#{figures['visits_evolution']['cls']}"
+                                      t-out="figures['visits_evolution']['text']"/>
+                            </div>
+                            <div class="o_ocd_figures_tile">
+                                <small>WhatsApp contacts</small>
+                                <b t-out="figures['contacts_text']"/>
+                                <span t-attf-class="o_ocd_figures_trend o_ocd_figures_#{figures['contacts_evolution']['cls']}"
+                                      t-out="figures['contacts_evolution']['text']"/>
+                            </div>
+                        </t>
+                    </div>
+                    <p t-if="not sold_by_ocd" class="o_ocd_note">Your customers pay you directly: OCD Live does not see your sales. Here, what OCD Live brings you.</p>
+
+                    <!-- Without OCD Business: the detail announced -->
+                    <div t-if="not business" class="o_ocd_figures_lock">
+                        <b>The detail with OCD Business</b>
+                        <ul>
+                            <li>What each live brings</li>
+                            <li>Your best hours to book</li>
+                            <li>Your loyal customers</li>
+                            <li>The sales of each product and of each store</li>
+                        </ul>
+                        <span class="o_ocd_figures_gift">Offered during the launch</span>
+                    </div>
+
+                    <t t-if="business">
+                        <div t-if="figures['idea']" class="o_ocd_figures_idea" t-out="figures['idea']"/>
+
+                        <!-- My lives -->
+                        <section t-if="sold_by_ocd or figures['lives']" class="o_ocd_figures_card o_ocd_figures_lives" id="lives">
+                            <div class="o_ocd_figures_sec">
+                                <h2>My lives</h2>
+                                <small t-if="figures['lives']" t-out="lives_title"/>
+                            </div>
+                            <p t-if="not figures['lives']" class="o_ocd_note">No live on these days. A live shows your products to many more customers.</p>
+                            <!-- Cards on the phone and the tablet, a table on a computer -->
+                            <div t-foreach="figures['lives']" t-as="row" t-attf-class="o_ocd_figures_live #{'o_ocd_figures_best' if row['best'] else ''}">
+                                <span class="o_ocd_figures_live_when">
+                                    <b t-out="row['when']"/>
+                                    <span t-if="row['best']" class="o_ocd_figures_badge">Best live</span>
+                                </span>
+                                <span class="o_ocd_figures_kv">
+                                    <span>Opened from OCD <b t-out="row['opened']"/></span>
+                                    <span>Boutique visits <b t-out="row['visits']"/></span>
+                                    <span>Sold <b t-out="row['pieces_text']"/></span>
+                                    <span><b t-out="row['amount']"/></span>
+                                    <span>New followers <b t-out="row['followers']"/></span>
+                                    <span>Best seller <b t-out="row['star']"/></span>
+                                </span>
+                                <a t-if="row['replay']" t-att-href="row['replay']" class="o_ocd_link">Watch the replay</a>
+                            </div>
+                            <table t-if="figures['lives']" class="o_ocd_figures_table">
+                                <thead>
+                                    <tr>
+                                        <th>Live</th><th class="o_ocd_r">Opened from OCD</th><th class="o_ocd_r">Boutique visits</th>
+                                        <th class="o_ocd_r">Sold</th><th class="o_ocd_r">Sales</th><th class="o_ocd_r">Followers</th>
+                                        <th>Best seller</th><th><span class="visually-hidden">Replay</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="figures['lives']" t-as="row">
+                                        <td><b t-out="row['when']"/> <span t-if="row['best']" class="o_ocd_figures_badge">Best live</span></td>
+                                        <td class="o_ocd_r" t-out="row['opened']"/>
+                                        <td class="o_ocd_r" t-out="row['visits']"/>
+                                        <td class="o_ocd_r" t-out="row['pieces_text']"/>
+                                        <td class="o_ocd_r"><b t-out="row['amount']"/></td>
+                                        <td class="o_ocd_r" t-out="row['followers']"/>
+                                        <td t-out="row['star']"/>
+                                        <td><a t-if="row['replay']" t-att-href="row['replay']" class="o_ocd_link">Replay</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <div class="o_ocd_figures_grid">
+                            <!-- Sales per product (3.3) -->
+                            <section t-if="sold_by_ocd" class="o_ocd_figures_card o_ocd_figures_products" id="produits">
+                                <div class="o_ocd_figures_sec"><h2>Sales per product</h2></div>
+                                <nav class="o_ocd_chips" aria-label="Sales per product">
+                                    <a t-att-href="best_url" class="o_ocd_chip" t-att-aria-current="'true' if view == 'best' else None">Best sellers</a>
+                                    <a t-att-href="unsold_url" class="o_ocd_chip" t-att-aria-current="'true' if view == 'unsold' else None">Not sold<t t-if="unsold_count"> · <t t-out="unsold_count"/></t></a>
+                                </nav>
+                                <p t-if="not product_rows" class="o_ocd_note">
+                                    <t t-if="view == 'unsold'">Each of your products sold on these days.</t>
+                                    <t t-else="">No product on sale yet.</t>
+                                </p>
+                                <div t-foreach="product_rows" t-as="row" class="o_ocd_figures_product">
+                                    <span class="o_ocd_photo o_ocd_figures_product_photo">
+                                        <img t-if="row['image']" t-att-src="row['image']" alt="" loading="lazy"/>
+                                    </span>
+                                    <span class="o_ocd_figures_product_text">
+                                        <b t-out="row['product'].name"/>
+                                        <small t-out="row['line']"/>
+                                        <span t-if="row['pieces']" class="o_ocd_figures_bar" aria-hidden="true"><i t-attf-style="width: #{row['bar']}%"/></span>
+                                        <small t-if="row['facts']" class="o_ocd_figures_muted" t-out="row['facts']"/>
+                                        <span t-if="row['interest']" class="o_ocd_figures_hint">
+                                            <span>A lot of interest, no sale: check the price, or show it in your next live.</span>
+                                            <form t-attf-action="/ocd/espace/moi/chiffres/live/#{row['product'].id}" method="post">
+                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                <button type="submit" class="o_ocd_link">Add to my next live</button>
+                                            </form>
+                                        </span>
+                                    </span>
+                                </div>
+                            </section>
+
+                            <div class="o_ocd_figures_column">
+                                <!-- My best hours -->
+                                <section t-if="sold_by_ocd" class="o_ocd_figures_card o_ocd_figures_hours" id="heures">
+                                    <div class="o_ocd_figures_sec"><h2>My best hours</h2><small>Last 3 months</small></div>
+                                    <small class="o_ocd_figures_muted">When your customers order, at your hour.</small>
+                                    <div class="o_ocd_figures_heat" role="table" aria-label="When your customers order">
+                                        <i/>
+                                        <em t-foreach="figures['hours']['days']" t-as="day" t-out="day"/>
+                                        <t t-foreach="figures['hours']['rows']" t-as="hour_row">
+                                            <i t-out="hour_row['label']"/>
+                                            <span t-foreach="hour_row['cells']" t-as="cell" t-attf-class="o_ocd_heat_#{cell['level']}" t-att-title="cell['title']"/>
+                                        </t>
+                                    </div>
+                                    <small class="o_ocd_figures_muted" t-out="figures['hours']['legend']"/>
+                                    <div t-if="figures['hours']['line']" class="o_ocd_figures_idea">
+                                        <b t-out="figures['hours']['line']"/>
+                                        <span t-if="figures['hours']['lives_line']" t-out="figures['hours']['lives_line']"/>
+                                    </div>
+                                    <p t-else="" class="o_ocd_note">Not enough orders yet to see your best hours.</p>
+                                    <a t-if="book_url" t-att-href="book_url" class="o_ocd_cta" t-out="figures['hours']['book']['label']"/>
+                                </section>
+
+                                <!-- My loyal customers -->
+                                <section t-if="sold_by_ocd" class="o_ocd_figures_card o_ocd_figures_loyal" id="fideles">
+                                    <div class="o_ocd_figures_sec"><h2>My loyal customers</h2><small>Last 12 months</small></div>
+                                    <p class="o_ocd_figures_text" t-out="figures['loyal']['line']"/>
+                                    <div t-foreach="figures['loyal']['shown']" t-as="row" class="o_ocd_figures_customer">
+                                        <t t-call="ocd_live_shop.figures_customer"/>
+                                    </div>
+                                    <details t-if="figures['loyal']['more']" class="o_ocd_figures_more">
+                                        <summary class="o_ocd_link" t-out="figures['loyal']['see_all']"/>
+                                        <div t-foreach="figures['loyal']['more']" t-as="row" class="o_ocd_figures_customer">
+                                            <t t-call="ocd_live_shop.figures_customer"/>
+                                        </div>
+                                    </details>
+                                    <small class="o_ocd_figures_muted">
+                                        The first name and the initial only, like the reviews: never their number.
+                                        <t t-if="figures['loyal']['following']" t-out="figures['loyal']['following']"/>
+                                    </small>
+                                </section>
+                            </div>
+                        </div>
+
+                        <!-- My stores -->
+                        <section t-if="figures['stores']" class="o_ocd_figures_card o_ocd_figures_stores" id="magasins">
+                            <div class="o_ocd_figures_sec"><h2>My stores</h2><small t-out="period_label"/></div>
+                            <div class="o_ocd_figures_places">
+                                <div t-foreach="figures['stores']" t-as="row" class="o_ocd_figures_place">
+                                    <b t-out="row['place'].name"/>
+                                    <span t-out="row['taps']"/>
+                                    <span class="o_ocd_figures_muted" t-out="row['parcels']"/>
+                                </div>
+                            </div>
+                        </section>
+                    </t>
+
+                    <!-- The summary of the week on WhatsApp -->
+                    <section t-if="sold_by_ocd" class="o_ocd_figures_card o_ocd_figures_summary" id="resume">
+                        <div class="o_ocd_figures_sec"><h2>On Monday on WhatsApp</h2></div>
+                        <form action="/ocd/espace/moi/chiffres/resume" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <label class="o_ocd_figures_switch">
+                                <span>Receive the summary of my week</span>
+                                <input type="checkbox" name="actif" value="1" role="switch" class="o_ocd_autosubmit"
+                                       t-att-checked="'checked' if vendor.ocd_week_summary else None"/>
+                            </label>
+                            <noscript><button type="submit" class="o_ocd_button">Save</button></noscript>
+                        </form>
+                        <small class="o_ocd_figures_muted">Your sales, the visits of your boutique and your best seller of the week.</small>
+                    </section>
+
+                    <details class="o_ocd_figures_rules">
+                        <summary class="o_ocd_link">How it is counted</summary>
+                        <p><b>Sales</b>: the confirmed orders (paid, or to pay at the door), without the cancelled ones nor the parcels returned; the price of your products, without the delivery. An order of several vendors counts for each their part. The evolution compares with the period before of the same length.</p>
+                        <p><b>Lives</b>: « Opened from OCD » counts the taps on « Watch » of the cards of the lives, of your boutique and of the messages to your followers. The visits of the boutique: one per phone during the live. Sold: the orders of the visitors who came during the live, placed during it or in the hours after.</p>
+                        <p><b>The rest</b>: the visits of your boutique, one per phone and per day; the WhatsApp contacts and the stores, the taps counted under each product and store; the best hours, the hour of the orders at your hour; the loyal customers, 2 orders or more in 12 months.</p>
+                    </details>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="figures_customer" name="OCD Live: a loyal customer">
+        <span class="o_ocd_figures_avatar" aria-hidden="true" t-out="row['initials']"/>
+        <span><b t-out="row['name']"/><small t-out="row['line']"/></span>
+        <b t-out="row['amount']"/>
+    </template>
+
+    <!-- My space: « My figures », the sales of the month (for every vendor) -->
+    <template id="space_figures" inherit_id="ocd_live_shop.space" name="OCD Live: my figures in the space">
+        <xpath expr="//div[hasclass('o_ocd_space_links')]" position="after">
+            <t t-if="vendor.ocd_vendor_state == 'approved' and vendor.ocd_sale_mode == 'ocd'">
+                <t t-set="month" t-value="request.env['ocd.vendor.figures']._ocd_month(vendor)"/>
+                <a href="/ocd/espace/moi/chiffres" class="o_ocd_space_fans_box o_ocd_space_figures">
+                    <span class="o_ocd_space_figures_title"><b>My figures</b><span class="o_ocd_link">See</span></span>
+                    <span><t t-out="month['line']"/> <span t-attf-class="o_ocd_figures_trend o_ocd_figures_#{month['evolution']['cls']}" t-out="month['evolution']['text']"/></span>
+                </a>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- The menu of the space: « My figures » and « My reviews » after « My parcels » -->
+    <template id="space_menu_figures" inherit_id="ocd_live_shop.space_menu" name="OCD Live: my figures in the menu of the space">
+        <xpath expr="//a[@data-page='parcels']" position="after">
+            <a t-if="space_vendor.ocd_vendor_state == 'approved'" href="/ocd/espace/moi/chiffres" data-page="figures"
+               t-att-class="'o_ocd_on' if space_page == 'figures' else None" t-att-aria-current="'page' if space_page == 'figures' else None">
+                <t t-call="ocd_live.icon" icon.f="chart"/><span>My figures</span>
+            </a>
+            <a t-if="sold_by_ocd and space_vendor.ocd_vendor_state == 'approved'" href="/ocd/espace/moi/avis" data-page="reviews"
+               t-att-class="'o_ocd_on' if space_page == 'reviews' else None" t-att-aria-current="'page' if space_page == 'reviews' else None">
+                <span class="o_ocd_star o_ocd_icon" aria-hidden="true">★</span><span>My reviews</span>
+            </a>
+        </xpath>
+    </template>
+
+</odoo>

@@ -414,6 +414,13 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   (mise en file). Le traitement se fait dans une autre requête (`/payment/process`, appelée par la page
   d'attente) ou par la tâche planifiée, jamais par `_run_processing()` dans la même requête : il tourne
   avec son propre curseur et attendrait les verrous de la requête qui l'a lancé.
+- Chiffres des vendeurs (chantier 3) : un seul calcul, `ocd_live_shop/models/vendor_figures.py`
+  (`ocd.vendor.figures` : `_ocd_figures` pour la page, `_ocd_month` pour Mon espace,
+  `_ocd_product_sales` pour la ligne « Vendu » de Mes produits, `_ocd_week_summary` pour le résumé du
+  lundi) ; les comptages jour par jour dans `ocd_live/models/ocd_vendor_count.py` (`_ocd_add` : en
+  mémoire, écrits toutes les 5 secondes) ; « Regarder » compté par `/ocd/regarder/<live>` et
+  `/ocd/regarder/annonce/<annonce>` (`ocd_live/controllers/watch.py`). Une nouvelle façon d'ouvrir un
+  live depuis OCD passe par ces adresses.
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - Thème du site : `ocd_live/static/src/scss/ocd_app.scss` (pages sous `.o_ocd_app`).
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).

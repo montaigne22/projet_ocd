@@ -58,6 +58,7 @@ TRACKING_PARAMS = frozenset({
 SESSION_KEY_PARTS = ("website_sale_selected_pl_id",)
 SESSION_KEYS = frozenset(get_default_session()) | frozenset(SESSION_KEY_PARTS) | {
     "website_sale_current_pl", "fiscal_position_id", "website_sale_pricelist_time", "ocd_live_visits",
+    "ocd_shop_days",  # the boutiques visited today (ocd_live_shop, figures of the vendors)
     "_trace_disable",  # sessions of the tests of Odoo
 }
 # Cookies of a person known on this browser: the vendor (controllers/common.py), the courier

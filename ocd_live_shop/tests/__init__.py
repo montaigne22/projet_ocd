@@ -26,3 +26,4 @@ from . import test_vendor_variants
 from . import test_vendor_team
 from . import test_vendor_follow
 from . import test_trust
+from . import test_vendor_figures

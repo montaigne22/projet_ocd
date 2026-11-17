@@ -171,6 +171,21 @@ Tell the customer.</field>
         <field name="tools">Scheduled task.</field>
     </record>
 
+    <record id="automation_week_summary" model="ocd.automation">
+        <field name="code">week_summary</field>
+        <field name="name">Summary of the week to the vendors</field>
+        <field name="sequence">78</field>
+        <field name="group">shop</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="cron_id" ref="ir_cron_week_summary"/>
+        <field name="when">On Monday from 9:00 at the hour of the vendor (setting)</field>
+        <field name="trigger">Every hour.</field>
+        <field name="scope">The vendors who switched on « Receive the summary of my week » in « My figures »; nothing when nothing happened.</field>
+        <field name="actions">Send them their week: the pieces sold and the amount against the week before, the visits of their boutique, the best seller, with the link of « My figures ».</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
     <record id="automation_team" model="ocd.automation">
         <field name="code">team</field>
         <field name="name">Team of a vendor: her link, the news of her store</field>

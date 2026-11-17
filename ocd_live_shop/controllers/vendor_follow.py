@@ -9,7 +9,7 @@ that number; the button of a message (its secret) opens all of them on the phone
 it."""
 from urllib.parse import urlencode
 
-from odoo import http
+from odoo import fields, http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.tools import consteq
@@ -187,6 +187,15 @@ class OcdVendorFollow(http.Controller):
         if not common.current_vendor():
             common.remember_browser(FOLLOWER_COOKIE, follower.partner_id, "follower")
         remember_follow(follower)
+        if vers != "nouveautes":
+            # The message of a live: « Opened from OCD » for the live of the vendor (chantier 3)
+            now = fields.Datetime.now()
+            live = request.env["ocd.live.booking"].sudo().search([
+                ("partner_id", "=", follower.vendor_id.id), ("state", "=", "confirmed"),
+                ("start_datetime", "<=", now), ("end_datetime", ">", now),
+            ], limit=1)
+            if live:
+                request.env["ocd.vendor.count"]._ocd_add(follower.vendor_id, "watch", live.id)
         path = f"/ocd/boutique/{follower.vendor_id.id}"
         return request.redirect(f"{path}?nouveautes=1#produits" if vers == "nouveautes" else path)
 

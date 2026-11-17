@@ -437,5 +437,23 @@
             ]"/>
         </record>
 
+        <record id="template_week_summary_en" model="whatsapp.template">
+            <field name="name">OCD Live: summary of the week of a vendor (English)</field>
+            <field name="template_name">ocd_resume_semaine</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Hello {{1}}, here is your week on OCD Live: {{2}} pieces sold for a total of {{3}}, that is {{4}} compared with the week before, and {{5}} visits of your boutique. Your best seller: {{6}}. Tap « See my figures » for the detail.</field>
+            <field name="button_url_value">{{ 'ocd/espace/' + object._ocd_get_space_token() + '/chiffres' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'See my figures', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/chiffres'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ ctx.get(\'ocd_first_name\') or object.name }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ ctx.get(\'ocd_week_pieces\') }}', 'sample_value': '9'}),
+                (0, 0, {'sequence': 3, 'value': '{{ ctx.get(\'ocd_week_amount_en\') }}', 'sample_value': '64,500 F'}),
+                (0, 0, {'sequence': 4, 'value': '{{ ctx.get(\'ocd_week_trend_en\') }}', 'sample_value': 'up 12 %'}),
+                (0, 0, {'sequence': 5, 'value': '{{ ctx.get(\'ocd_week_visits\') }}', 'sample_value': '312'}),
+                (0, 0, {'sequence': 6, 'value': '{{ ctx.get(\'ocd_week_best_en\') }}', 'sample_value': 'Wax dress'}),
+            ]"/>
+        </record>
+
     </data>
 </odoo>

@@ -183,7 +183,8 @@ def _card(item, tz_name, now):
         card.update({
             "badge": env._("Live"),
             "when": env._("Live for %s min", minutes) if minutes < 120 else env._("Live for %s h", minutes // 60),
-            "watch_url": record.url,
+            # Counted for the vendor, then the live (chantier 3)
+            "watch_url": f"/ocd/regarder/annonce/{record.id}",
             "watch_label": env._("Watch on %s", platform) if platform else env._("Watch the live"),
         })
     elif kind == "studio":
@@ -192,7 +193,7 @@ def _card(item, tz_name, now):
         card.update({
             "badge": env._("Live"),
             "when": env._("Live at the OCD Live studio") if record.mode == "studio" else env._("Live from home, with OCD Live"),
-            "watch_url": watch_url or card["shop_url"],
+            "watch_url": f"/ocd/regarder/{record.id}?d=fil" if watch_url else card["shop_url"],
             "watch_label": env._("Watch on %s", platform) if platform else env._("Watch the live"),
             "external": bool(watch_url),
         })

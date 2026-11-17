@@ -14,6 +14,10 @@ SESSION_CARD_ERRORS = "ocd_card_errors"
 CARD_IMAGE_MAX_BYTES = 10 * 1024 * 1024
 
 
+# The pages of the space a button of the back office opens directly
+TEAM_VIEW_PAGES = {"chiffres": "/ocd/espace/moi/chiffres"}
+
+
 class OcdVendorSpace(http.Controller):
     """Space of the vendor: next lives, lives left to place, directory pass and WhatsApp
     messages. The vendor reaches it with the method chosen by the team: personal link sent on
@@ -185,7 +189,7 @@ class OcdVendorSpace(http.Controller):
     # === THE TEAM SEES THE SPACE OF A VENDOR === #
 
     @http.route("/ocd/espace/equipe/<int:vendor_id>", type="http", auth="user", website=True, methods=["GET"], sitemap=False)
-    def team_view(self, vendor_id, signature=None, **kwargs):
+    def team_view(self, vendor_id, signature=None, vers=None, **kwargs):
         """« See the space » of the back office: the link is signed for the person of the team
         who touched it, it opens nothing for anyone else."""
         user = request.env.user
@@ -198,7 +202,8 @@ class OcdVendorSpace(http.Controller):
         ):
             raise request.not_found()
         request.session[common.SESSION_TEAM_VIEW] = vendor.id
-        return request.redirect("/ocd/espace/moi")
+        # A page of the space opened directly (« Figures » of the back office)
+        return request.redirect(TEAM_VIEW_PAGES.get(vers, "/ocd/espace/moi"))
 
     @http.route("/ocd/espace/equipe/quitter", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
     def team_view_leave_page(self, **kwargs):

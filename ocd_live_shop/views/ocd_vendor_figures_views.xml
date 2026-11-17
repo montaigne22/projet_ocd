@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- « Figures » on the form of the vendor: their page « My figures », as they see it (chantier 3) -->
+    <record id="res_partner_view_form_ocd_vendor_figures" model="ir.ui.view">
+        <field name="name">res.partner.view.form.ocd.vendor.figures</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.res_partner_view_form_ocd_vendor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_ocd_view_figures" type="object" class="oe_stat_button" icon="bar_chart"
+                        string="Figures" groups="ocd_live.group_ocd_live_user"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

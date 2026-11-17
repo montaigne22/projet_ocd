@@ -39,6 +39,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Équipe du vendeur (chantier 22) : la personne qui tient un magasin a son espace « Mon magasin » (connexion par son numéro, lien ou code), le stock de son magasin sans les prix, ses colis, retraits au comptoir et pièces à essayer, sans les reversements ; « Mon équipe » du vendeur (5 au plus, OCD Business, en pause sans rien supprimer) ; onglet « Équipe » du back-office | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
 | Suivre un vendeur (chantier 1) et ses nouveautés (A.8) : « Suivre » sur la boutique, les cartes des lives, le replay et la fiche produit ; un WhatsApp à chaque live (2 par jour au plus) ; les nouveautés le vendredi (une fois par mois, chaque semaine avec OCD Business) ; « Mes vendeurs suivis » ; « Mes abonnés » du vendeur | ✅ fait, testé (1 modèle WhatsApp Marketing à faire approuver par Meta) |
 | Garantie OCD et avis (chantier 2) : la garantie montrée sur la fiche produit et la boutique (le vendeur payé après le code de livraison, pas livré : remboursé, retour possible), un avis par colis livré, la note du vendeur dès 3 avis, « Vendeur vérifié », « Signaler » un produit ou un vendeur vers « À vérifier » | ✅ fait, testé |
+| Statistiques du vendeur (chantier 3) et ventes par produit (3.3) : « Mes chiffres » (ventes, pièces, visites de la boutique, contacts WhatsApp et leur évolution sur 7 jours, 30 jours ou 3 mois ; ce que rapporte chaque live ; meilleures heures et « Réserver un live » ; clients fidèles ; ventes par produit avec « Pas vendus » ; magasins), la ligne « Vendu » de Mes produits, les ventes du mois dans Mon espace, le résumé du lundi sur WhatsApp ; nouveaux comptages jour par jour (« Regarder », visites, contacts) | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -93,7 +94,9 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    `ocd_magasin_accepte`, `ocd_magasin_refuse` (français et anglais), pour les messages aux vendeurs sur
    leurs produits et leurs magasins ; et `ocd_produit_de_retour_magasin` (français et anglais), pour
    « Préviens-moi » qui nomme les magasins où le produit est revenu (l'ancien message part jusque-là) ; et `ocd_modification_refusee` (français et anglais), pour une modification de produit
-   refusée par l'équipe (rien ne part avant).
+   refusée par l'équipe (rien ne part avant). **Depuis le 17 novembre**, aussi `ocd_resume_semaine`
+   (français et anglais, Utilitaire), pour le résumé de la semaine que le vendeur demande dans « Mes
+   chiffres » (rien ne part avant).
 3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
    back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
@@ -113,6 +116,51 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 17 novembre 2026 · Statistiques du vendeur, « Mes chiffres » (chantier 3, avec 3.3)
+Dessiné d'abord (maquette `MesChiffres`, validée), puis codé.
+- **Pour tous les vendeurs** : la carte « Mes chiffres » de Mon espace (« Ce mois : 186 500 F · 27 pièces
+  ▲ 18 % », comparé aux mêmes jours du mois d'avant) et, sous chaque produit de Mes produits, « Vendu : 14
+  en 30 jours · dernière vente hier ».
+- **« Mes chiffres »** (`/ocd/espace/moi/chiffres`, aussi dans le menu de l'espace, avec « Mes avis ») :
+  avec OCD Business (offert pendant le lancement), une période au choix (7 jours, 30 jours, 3 mois) ; les
+  ventes, les pièces, les visites de la boutique et les contacts WhatsApp, avec leur évolution ; une phrase
+  d'aide (« 76 % de tes ventes viennent de tes lives. Ton live du lundi 9 novembre a fait à lui seul 34 %
+  de ces 30 jours. ») ; **Mes lives** (ouvert depuis OCD, visites de la boutique, pièces et montant vendus,
+  nouveaux abonnés, produit phare, « Meilleur live », replay ; en tableau sur ordinateur) ; **Mes
+  meilleures heures** (jour × tranche, à l'heure du vendeur, sur 3 mois) et « Réserver un live samedi
+  19 h », qui ouvre la réservation sur ce créneau ; **Mes clients fidèles** (2 commandes ou plus en 12 mois,
+  prénom et initiale, jamais le numéro) ; **Ventes par produit** (« Plus vendus », « Pas vendus », le
+  conseil « Beaucoup d'intérêt, pas de vente » et « Ajouter à mon prochain live », qui met le produit dans
+  la préparation du live) ; **Mes magasins** (itinéraires, appels, WhatsApp, retraits au comptoir, colis
+  partis) ; l'interrupteur « Recevoir le résumé de ma semaine » ; « Comment c'est compté ». Sans OCD
+  Business : les ventes et les pièces sur 30 jours, puis le détail annoncé.
+- **Un seul calcul** (`ocd.vendor.figures`) pour la page, Mon espace, Mes produits, les magasins et le
+  résumé. Les ventes : commandes confirmées, sans les annulées ni les colis rendus, la part du vendeur
+  sans la livraison.
+- **Nouveaux comptages, jour par jour** (`ocd.vendor.count`, écrits toutes les 5 secondes comme les visites
+  de la régie) : « Ouvert depuis OCD » (les boutons « Regarder » des cartes du fil, de la boutique et le
+  message aux abonnés pendant un live passent par une adresse qui compte, puis ouvre le live), les visites
+  de la boutique (une par téléphone et par jour, jamais celles du vendeur ; la page les dit une fois
+  affichée, elle reste ainsi gardée en mémoire pour les foules), les contacts WhatsApp (produit et
+  boutique en vente directe).
+- **Ventes d'un live** : le panier retient les lives dont le visiteur a vu la boutique pendant le live
+  (pendant, puis 3 heures après, réglable) ; à la confirmation, les lignes du vendeur sont notées avec le
+  live.
+- **WhatsApp du lundi** : nouveau modèle `ocd_resume_semaine` (français et anglais, Utilitaire), le lundi
+  dès 9 h à l'heure du vendeur, seulement s'il l'a allumé (STOP l'arrête), rien quand rien ne s'est passé ;
+  son bouton ouvre « Mes chiffres ». Automatisation « Résumé de la semaine aux vendeurs ».
+- **Back-office** : bouton « Chiffres » sur la fiche du vendeur (ouvre sa page, comme « Voir son espace ») ;
+  réglages (Produits et magasins des vendeurs) : ventes d'un live (3 heures après sa fin), clients fidèles
+  (2 commandes), jour et heure du résumé.
+- Amélioré au passage : sur tablette, l'onglet de la page ouverte reste visible dans le menu de l'espace ;
+  « Regarder le live » de la boutique prend aussi le lien du compte d'OCD Live du live.
+- Tests : base neuve, tous les modules OCD : **450 sans échec** (9 nouveaux ; deux tests suivent les boutons « Regarder » comptés) ; contrôlé dans un navigateur en français en trois
+  tailles (390, 820, 1440 px) : Mes chiffres (30 jours, 7 jours et « Pas vendus »), Mon espace, Mes
+  produits, Mes avis, et le bouton « Chiffres » du back-office ; aucun débordement.
+- **À mettre à jour sur un serveur** : `ocd_live` 20.0.1.22.0, `ocd_live_shop` 20.0.1.39.0,
+  `ocd_live_shop_whatsapp` 20.0.1.28.0 (`-u ocd_live,ocd_live_shop,ocd_live_shop_whatsapp`), puis soumettre à
+  Meta le modèle `ocd_resume_semaine` (français et anglais).
 
 ### 17 novembre 2026 · Le bouton de langue garde le choix sur toutes les pages
 - **Le défaut** : sur certaines pages, « Français » rechargeait la page en anglais. Le lien vers `/fr/…`

@@ -1457,3 +1457,201 @@ VENDOR_SPACE.update({
     "Verified Vendor": "Vendeur vérifié",
     "Yes: « Verified vendor »": "Oui : « Vendeur vérifié »",
 })
+
+# Chantier 3: « My figures » of the vendor (design MesChiffres), with 3.3 « Sales per product »
+VENDOR_SPACE.update({
+    # The page
+    "My figures": "Mes chiffres",
+    "<span>My figures</span>": "<span>Mes chiffres</span>",
+    "Figures": "Chiffres",
+    "Period": "Période",
+    "7 days": "7 jours",
+    "30 days": "30 jours",
+    "3 months": "3 mois",
+    "Sales, 30 days": "Ventes, 30 jours",
+    "<small>Pieces sold</small>": "<small>Pièces vendues</small>",
+    "<small>Visits of your boutique</small>": "<small>Visites de ta boutique</small>",
+    "<small>WhatsApp contacts</small>": "<small>Contacts WhatsApp</small>",
+    "%s compared with the 7 days before": "%s par rapport aux 7 jours d'avant",
+    "%s compared with the 30 days before": "%s par rapport aux 30 jours d'avant",
+    "%s compared with the 3 months before": "%s par rapport aux 3 mois d'avant",
+    "= as before": "= comme avant",
+    "▲ new": "▲ nouveau",
+    "Your customers pay you directly: OCD Live does not see your sales. Here, what OCD Live brings you.":
+        "Tes clients te paient directement : OCD Live ne voit pas tes ventes. Ici, ce qu'OCD Live t'apporte.",
+    # Without OCD Business
+    "<b>The detail with OCD Business</b>": "<b>Le détail avec OCD Business</b>",
+    "What each live brings": "Ce que rapporte chaque live",
+    "Your best hours to book": "Tes meilleures heures pour réserver",
+    "Your loyal customers": "Tes clients fidèles",
+    "The sales of each product and of each store": "Les ventes de chaque produit et de chaque magasin",
+    "<span class=\"o_ocd_figures_gift\">Offered during the launch</span>":
+        "<span class=\"o_ocd_figures_gift\">Offert pendant le lancement</span>",
+    # The sentence of help
+    "%s %% of your sales come from your lives.": "%s %% de tes ventes viennent de tes lives.",
+    "Your live of %(day)s alone made %(share)s %% of these 7 days.":
+        "Ton live du %(day)s a fait à lui seul %(share)s %% de ces 7 jours.",
+    "Your live of %(day)s alone made %(share)s %% of these 30 days.":
+        "Ton live du %(day)s a fait à lui seul %(share)s %% de ces 30 jours.",
+    "Your live of %(day)s alone made %(share)s %% of these 3 months.":
+        "Ton live du %(day)s a fait à lui seul %(share)s %% de ces 3 mois.",
+    "No sale on these days yet: show your best products in your next live.":
+        "Pas encore de vente sur ces jours : montre tes meilleurs produits dans ton prochain live.",
+    "Your sales come from your boutique: a live shows your products to many more customers.":
+        "Tes ventes viennent de ta boutique : un live montre tes produits à beaucoup plus de clients.",
+    # My lives
+    "My lives": "Mes lives",
+    "1 these 7 days": "1 ces 7 jours",
+    "%s these 7 days": "%s ces 7 jours",
+    "1 these 30 days": "1 ces 30 jours",
+    "%s these 30 days": "%s ces 30 jours",
+    "1 these 3 months": "1 ces 3 mois",
+    "%s these 3 months": "%s ces 3 mois",
+    "No live on these days. A live shows your products to many more customers.":
+        "Pas de live sur ces jours. Un live montre tes produits à beaucoup plus de clients.",
+    "Best live": "Meilleur live",
+    "Opened from OCD": "Ouvert depuis OCD",
+    "Boutique visits": "Visites boutique",
+    "Sold": "Vendu",
+    "New followers": "Nouveaux abonnés",
+    "Best seller": "Produit phare",
+    "Watch the replay": "Voir le replay",
+    "<span class=\"visually-hidden\">Replay</span>": "<span class=\"visually-hidden\">Replay</span>",
+    # Sales per product (3.3)
+    "Sales per product": "Ventes par produit",
+    "Best sellers": "Plus vendus",
+    "Not sold": "Pas vendus",
+    "Each of your products sold on these days.": "Chacun de tes produits s'est vendu sur ces jours.",
+    "No product on sale yet.": "Pas encore de produit en vente.",
+    "1 sold": "1 vendu",
+    "%s sold": "%s vendus",
+    "last sale %s": "dernière vente %s",
+    "0 sold in 7 days": "0 vendu en 7 jours",
+    "0 sold in 30 days": "0 vendu en 30 jours",
+    "0 sold in 3 months": "0 vendu en 3 mois",
+    "1 WhatsApp contact": "1 contact WhatsApp",
+    "%s WhatsApp contacts": "%s contacts WhatsApp",
+    "%s sold during your lives": "%s vendus pendant tes lives",
+    "<span>A lot of interest, no sale: check the price, or show it in your next live.</span>":
+        "<span>Beaucoup d'intérêt, pas de vente : vérifie le prix, ou montre-le dans ton prochain live.</span>",
+    "Add to my next live": "Ajouter à mon prochain live",
+    "yesterday": "hier",
+    "on %s": "le %s",
+    # My best hours
+    "My best hours": "Mes meilleures heures",
+    "<small>Last 3 months</small>": "<small>3 derniers mois</small>",
+    "<small class=\"o_ocd_figures_muted\">When your customers order, at your hour.</small>":
+        "<small class=\"o_ocd_figures_muted\">Quand tes clients commandent, à ton heure.</small>",
+    "When your customers order": "Quand tes clients commandent",
+    "Morning": "Matin",
+    "Noon": "Midi",
+    "Afternoon": "Après-midi",
+    "Evening": "Soir",
+    "Sales": "Ventes",
+    "Morning until 12:00 · Noon 12:00 to 15:00 · Afternoon 15:00 to 18:00 · Evening from 18:00":
+        "Matin jusqu'à 12 h · Midi 12 h à 15 h · Après-midi 15 h à 18 h · Soir dès 18 h",
+    "Your customers buy mostly on %(day)s %(moment)s.": "Tes clients achètent surtout le %(day)s %(moment)s.",
+    "morning": "matin",
+    "at noon": "midi",
+    "afternoon": "après-midi",
+    "evening": "soir",
+    "Your lives on %(day)s at %(hour)s sell %(times)s times more than the others.":
+        "Tes lives du %(day)s %(hour)s vendent %(times)s fois plus que les autres.",
+    "Book a live on %(day)s at %(hour)s": "Réserver un live %(day)s %(hour)s",
+    "Not enough orders yet to see your best hours.": "Pas encore assez de commandes pour voir tes meilleures heures.",
+    # My loyal customers
+    "My loyal customers": "Mes clients fidèles",
+    "<small>Last 12 months</small>": "<small>12 derniers mois</small>",
+    "1 customer bought %(times)s times or more: %(share)s %% of your sales.":
+        "1 client a acheté %(times)s fois ou plus : %(share)s %% de tes ventes.",
+    "%(count)s customers bought %(times)s times or more: %(share)s %% of your sales.":
+        "%(count)s clients ont acheté %(times)s fois ou plus : %(share)s %% de tes ventes.",
+    "No customer has bought %s times from you yet: your followers come back more often.":
+        "Aucun client ne t'a encore acheté %s fois : tes abonnés reviennent plus souvent.",
+    "%(count)s orders · last on %(day)s": "%(count)s commandes · dernière le %(day)s",
+    "See the %s": "Voir les %s",
+    "The first name and the initial only, like the reviews: never their number.":
+        "Le prénom et l'initiale seulement, comme les avis : jamais leur numéro.",
+    "1 of them follows you and receives your news.": "1 de ces clients te suit et reçoit tes nouveautés.",
+    "%s of them follow you and receive your news.": "%s de ces clients te suivent et reçoivent tes nouveautés.",
+    # My stores
+    "%s WhatsApp": "%s WhatsApp",
+    "1 pick-up at the counter": "1 retrait au comptoir",
+    "%s pick-ups at the counter": "%s retraits au comptoir",
+    "1 parcel left from here": "1 colis parti d'ici",
+    "%s parcels left from here": "%s colis partis d'ici",
+    # The summary of the week
+    "On Monday on WhatsApp": "Le lundi sur WhatsApp",
+    "<span>Receive the summary of my week</span>": "<span>Recevoir le résumé de ma semaine</span>",
+    "<small class=\"o_ocd_figures_muted\">Your sales, the visits of your boutique and your best seller of the week.</small>":
+        "<small class=\"o_ocd_figures_muted\">Tes ventes, les visites de ta boutique et ton produit le plus vendu de la semaine.</small>",
+    "Done: your week arrives on WhatsApp on Monday morning.": "C'est fait : ta semaine arrive sur WhatsApp le lundi matin.",
+    "Done: no more summary on WhatsApp.": "C'est fait : plus de résumé sur WhatsApp.",
+    "up": "en hausse",
+    "up %s %%": "en hausse de %s %%",
+    "down %s %%": "en baisse de %s %%",
+    "stable": "stable",
+    "none this week": "aucun cette semaine",
+    # How it is counted
+    "How it is counted": "Comment c'est compté",
+    "<b>Sales</b>: the confirmed orders (paid, or to pay at the door), without the cancelled ones nor the parcels returned; the price of your products, without the delivery. An order of several vendors counts for each their part. The evolution compares with the period before of the same length.":
+        "<b>Ventes</b> : les commandes confirmées (payées, ou à payer à la livraison), sans les annulées ni les colis rendus ; le prix de tes produits, sans la livraison. Une commande de plusieurs vendeurs compte pour chacun sa part. L'évolution compare à la période d'avant de même durée.",
+    "<b>Lives</b>: « Opened from OCD » counts the taps on « Watch » of the cards of the lives, of your boutique and of the messages to your followers. The visits of the boutique: one per phone during the live. Sold: the orders of the visitors who came during the live, placed during it or in the hours after.":
+        "<b>Lives</b> : « Ouvert depuis OCD » compte les appuis sur « Regarder » des cartes des lives, de ta boutique et des messages à tes abonnés. Les visites de la boutique : une par téléphone pendant le live. Vendu : les commandes des visiteurs venus pendant le live, passées pendant le live ou dans les heures qui suivent.",
+    "<b>The rest</b>: the visits of your boutique, one per phone and per day; the WhatsApp contacts and the stores, the taps counted under each product and store; the best hours, the hour of the orders at your hour; the loyal customers, 2 orders or more in 12 months.":
+        "<b>Le reste</b> : les visites de ta boutique, une par téléphone et par jour ; les contacts WhatsApp et les magasins, les appuis comptés sous chaque produit et magasin ; les meilleures heures, l'heure des commandes à ton heure ; les clients fidèles, 2 commandes ou plus en 12 mois.",
+    # My space, My products, the menu
+    "<span class=\"o_ocd_space_figures_title\"><b>My figures</b><span class=\"o_ocd_link\">See</span></span>":
+        "<span class=\"o_ocd_space_figures_title\"><b>Mes chiffres</b><span class=\"o_ocd_link\">Voir</span></span>",
+    "This month: %(amount)s · %(pieces)s": "Ce mois : %(amount)s · %(pieces)s",
+    "Sold: 1 in 30 days · last sale %s": "Vendu : 1 en 30 jours · dernière vente %s",
+    "Sold: %(count)s in 30 days · last sale %(when)s": "Vendu : %(count)s en 30 jours · dernière vente %(when)s",
+    "<span class=\"o_ocd_star o_ocd_icon\" aria-hidden=\"true\">★</span><span>My reviews</span>":
+        "<span class=\"o_ocd_star o_ocd_icon\" aria-hidden=\"true\">★</span><span>Mes avis</span>",
+    # Back office: the fields, the settings, the automation
+    "Lives Seen": "Lives vus",
+    "The lives whose boutique the customer visited during the live, while the cart was open: the lines of their vendor count for the live (figures of the vendor).":
+        "Les lives dont le client a visité la boutique pendant le live, panier ouvert : les lignes de leur vendeur comptent pour le live (chiffres du vendeur).",
+    "Sold During The Live": "Vendu pendant le live",
+    "The customer came to the boutique during this live and ordered during it or in the hours after.":
+        "Le client est venu sur la boutique pendant ce live et a commandé pendant le live ou dans les heures qui suivent.",
+    "Sales Of A Live": "Ventes d'un live",
+    "The orders of the visitors of a live count for it when placed during the live or until this many hours after its end.":
+        "Les commandes des visiteurs d'un live comptent pour lui si elles sont passées pendant le live ou jusqu'à ce nombre d'heures après sa fin.",
+    "Loyal Customers": "Clients fidèles",
+    "A customer who ordered this many times or more in 12 months is a loyal customer of the vendor.":
+        "Un client qui a commandé ce nombre de fois ou plus en 12 mois est un client fidèle du vendeur.",
+    "Day Of The Summary Of The Week": "Jour du résumé de la semaine",
+    "The vendors who asked for it receive their week on WhatsApp on this day, at their hour.":
+        "Les vendeurs qui l'ont demandé reçoivent leur semaine sur WhatsApp ce jour-là, à leur heure.",
+    "Hour Of The Summary Of The Week": "Heure du résumé de la semaine",
+    "At the hour of the vendor.": "À l'heure du vendeur.",
+    "Summary Of The Week On WhatsApp": "Résumé de la semaine sur WhatsApp",
+    "The vendor asked for their week on WhatsApp (« My figures »): sales, visits, the best seller.":
+        "Le vendeur a demandé sa semaine sur WhatsApp (« Mes chiffres ») : ventes, visites, produit le plus vendu.",
+    "Summary Sent At": "Résumé envoyé le",
+    "Figures Of A Vendor": "Chiffres d'un vendeur",
+    "Sales of a live": "Ventes d'un live",
+    "« My figures »: the orders of the visitors of a live count for it until this long after its end.":
+        "« Mes chiffres » : les commandes des visiteurs d'un live comptent pour lui jusqu'à ce délai après sa fin.",
+    "hours after its end": "heures après sa fin",
+    "Loyal customers": "Clients fidèles",
+    "« My figures »: a customer who ordered this many times in 12 months.":
+        "« Mes chiffres » : un client qui a commandé ce nombre de fois en 12 mois.",
+    "orders or more": "commandes ou plus",
+    "Summary of the week on WhatsApp": "Résumé de la semaine sur WhatsApp",
+    "To the vendors who asked for it in « My figures », at their hour.":
+        "Aux vendeurs qui l'ont demandé dans « Mes chiffres », à leur heure.",
+    "on": "le",
+    "h": "h",
+    "OCD Live: the summary of the week to the vendors": "OCD Live : le résumé de la semaine aux vendeurs",
+    "Summary of the week to the vendors": "Résumé de la semaine aux vendeurs",
+    "On Monday from 9:00 at the hour of the vendor (setting)": "Le lundi dès 9 h, à l'heure du vendeur (réglage)",
+    "The vendors who switched on « Receive the summary of my week » in « My figures »; nothing when nothing happened.":
+        "Les vendeurs qui ont allumé « Recevoir le résumé de ma semaine » dans « Mes chiffres » ; rien quand rien ne s'est passé.",
+    "Send them their week: the pieces sold and the amount against the week before, the visits of their boutique, the best seller, with the link of « My figures ».":
+        "Leur envoyer leur semaine : les pièces vendues et le montant comparés à la semaine d'avant, les visites de leur boutique, le produit le plus vendu, avec le lien de « Mes chiffres ».",
+    # WhatsApp (ocd_live_shop_whatsapp)
+    "OCD Live: summary of the week of a vendor": "OCD Live : résumé de la semaine d'un vendeur",
+    "OCD Live: summary of the week of a vendor (English)": "OCD Live : résumé de la semaine d'un vendeur (anglais)",
+})

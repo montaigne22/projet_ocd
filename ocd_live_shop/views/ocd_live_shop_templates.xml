@@ -26,7 +26,7 @@
             <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
                 <!-- On a computer: the vendor, their live and the contact on the left; their
                      products and their stores on the right (design RespListes) -->
-                <main class="o_ocd_main o_ocd_vitrine">
+                <main class="o_ocd_main o_ocd_vitrine" t-att-data-visit="vendor.id">
                     <div class="o_ocd_vitrine_side">
                     <div class="o_ocd_vendor_head">
                         <span class="o_ocd_avatar o_ocd_avatar_big" aria-hidden="true">
@@ -83,7 +83,7 @@
                                 <b>Live now</b>
                                 <small t-out="live['line']"/>
                             </span>
-                            <a t-if="live['booking'].live_url" t-att-href="live['booking'].live_url" target="_blank"
+                            <a t-if="live['booking']._ocd_watch_url()" t-attf-href="/ocd/regarder/#{live['booking'].id}?d=boutique" target="_blank"
                                rel="noopener noreferrer" class="o_ocd_onair_watch">
                                 <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="o_ocd_icon"><path d="M6 3l14 9-14 9z"/></svg>
                                 <span>Watch the live</span>

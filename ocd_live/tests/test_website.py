@@ -403,7 +403,13 @@ class TestOcdLiveWebsite(HttpCase):
         with freeze_time(booking.start_datetime + timedelta(minutes=10)):
             response = self.url_open(path)
         self.assertIn("o_ocd_feed_watch", response.text)
-        self.assertIn("https://www.tiktok.com/@ocdlive/live", response.text)
+        self.assertIn(f"/ocd/regarder/{booking.id}", response.text, "Counted for the vendor (chantier 3)")
+        with freeze_time(booking.start_datetime + timedelta(minutes=10)):
+            response = self.url_open(f"/ocd/regarder/{booking.id}?d=fil", allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        self.assertEqual(response.headers["Location"], "https://www.tiktok.com/@ocdlive/live")
+        self.assertEqual(self.env["ocd.vendor.count"]._ocd_record_totals(self.vendor, "watch", [booking.id]),
+                         {booking.id: 1}, "Opened from OCD")
         # A live that does not take place any more: the lives of the country
         booking.state = "cancelled"
         response = self.url_open(path, allow_redirects=False)

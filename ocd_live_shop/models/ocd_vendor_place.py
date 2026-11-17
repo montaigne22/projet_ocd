@@ -333,13 +333,18 @@ class OcdVendorPlace(models.Model):
 
     def _ocd_week_taps(self):
         """{place id: {kind: count}} of the last 7 days, for the places of `self`, in one query."""
+        return self._ocd_taps(fields.Datetime.now() - timedelta(days=7))
+
+    def _ocd_taps(self, since, until=None):
+        """{place id: {kind: count}} from `since` to `until` (now), for the places of `self`, in
+        one query: « My stores » and the figures of the vendor (chantier 3) count the same."""
         counts = {place.id: {"itinerary": 0, "call": 0, "whatsapp": 0} for place in self}
         if not self:
             return counts
-        since = fields.Datetime.now() - timedelta(days=7)
-        groups = self.env["ocd.vendor.place.tap"].sudo()._read_group(
-            [("place_id", "in", self.ids), ("create_date", ">=", since)], ["place_id", "kind"], ["__count"]
-        )
+        domain = [("place_id", "in", self.ids), ("create_date", ">=", since)]
+        if until:
+            domain.append(("create_date", "<", until))
+        groups = self.env["ocd.vendor.place.tap"].sudo()._read_group(domain, ["place_id", "kind"], ["__count"])
         for place, kind, count in groups:
             counts[place.id][kind] = count
         return counts

@@ -53,7 +53,7 @@ décisions), car leur approbation ne dépend pas de nous.
 |---|---|---|---|---|
 | 3.1 | **Prix promo** | Prix barré et nouveau prix, jusqu'à une date ; affiché dans la boutique, la fiche et le panier | Prix barré du site d'Odoo, à confirmer sur la version utilisée | ~1 semaine |
 | 3.2 | **Préparer son prochain live** | Cocher les produits à montrer : la régie les a sous la main | Produits montrés pendant un live (`_ocd_show_product`), aujourd'hui choisis seulement par l'équipe | 3 à 4 jours ; **fait le 17 novembre 2026 (chantier 21)** |
-| 3.3 | **Ventes par produit** | Pièces vendues, dernière vente | Commandes ; à faire avec le chantier 3 « Statistiques du vendeur » de la feuille de route | 2 à 3 jours |
+| 3.3 | **Ventes par produit** | Pièces vendues, dernière vente | Commandes ; à faire avec le chantier 3 « Statistiques du vendeur » de la feuille de route | 2 à 3 jours ; **fait le 17 novembre 2026 (chantier 3)** : la ligne « Vendu » sous chaque produit, « Plus vendus » et « Pas vendus » dans « Mes chiffres » |
 | 3.4 | **Alerte de stock bas** | WhatsApp au vendeur quand il reste peu de pièces (2 par défaut) | Messages WhatsApp aux vendeurs, stock | 1 à 2 jours, plus l'approbation du modèle par Meta ; **fait le 17 novembre 2026 (chantier 21)** |
 | 3.5 | **Tailles et couleurs dès la création** | Le vendeur choisit les tailles et les couleurs en ajoutant le produit, au lieu de l'équipe | Attributs et variantes d'Odoo, photos des couleurs | 1 à 2 semaines ; **fait le 17 novembre 2026 (chantier 21)** |
 

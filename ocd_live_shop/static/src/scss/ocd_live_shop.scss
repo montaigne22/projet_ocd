@@ -4745,3 +4745,483 @@
         column-gap: 20px;
     }
 }
+
+// === MY FIGURES (chantier 3, design MesChiffres) === //
+.o_ocd_app {
+    .o_ocd_figures {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+    .o_ocd_figures_head {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        .o_ocd_h1 {
+            margin: 0;
+        }
+    }
+    .o_ocd_figures .o_ocd_chips {
+        margin: 0;
+        padding: 0 0 2px;
+    }
+    .o_ocd_figures .o_ocd_chip {
+        color: $ocd-ink;
+        text-decoration: none;
+        &[aria-current="true"] {
+            border-color: $ocd-ink;
+            background: $ocd-ink;
+            color: #FFFFFF;
+        }
+    }
+    .o_ocd_figures_tiles {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .o_ocd_figures_tile {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 10px 12px;
+        small {
+            color: $ocd-muted;
+            font-size: 13.5px;
+        }
+        > b {
+            font-family: $ocd-display;
+            font-weight: 800;
+            font-size: 24px;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+            overflow-wrap: anywhere;
+        }
+    }
+    .o_ocd_figures_trend {
+        font-weight: 700;
+        font-size: 13px;
+    }
+    .o_ocd_figures_up {
+        color: #0A6A3A;
+    }
+    .o_ocd_figures_down {
+        color: $ocd-red-dark;
+    }
+    .o_ocd_figures_flat {
+        color: $ocd-muted;
+    }
+    .o_ocd_figures_idea {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 16px;
+        background: $ocd-orange-pale;
+        color: #6B3300;
+        padding: 12px 14px;
+        font-size: 14.5px;
+        font-weight: 700;
+        span {
+            font-weight: 400;
+        }
+    }
+    .o_ocd_figures_card {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .o_ocd_figures_sec {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 8px;
+        margin-top: 4px;
+        h2 {
+            margin: 0;
+            font-family: $ocd-display;
+            font-weight: 800;
+            font-size: 20px;
+        }
+        small {
+            color: $ocd-muted;
+            font-size: 13.5px;
+            text-align: right;
+        }
+    }
+    .o_ocd_figures_muted {
+        color: $ocd-muted;
+        font-size: 13.5px;
+    }
+    .o_ocd_figures_text {
+        margin: 0;
+    }
+    .o_ocd_figures_live {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 12px 14px;
+        &.o_ocd_figures_best {
+            border-color: $ocd-orange;
+        }
+        .o_ocd_link {
+            align-self: flex-start;
+            font-size: 13.5px;
+        }
+    }
+    .o_ocd_figures_live_when {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+    }
+    .o_ocd_figures_kv {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 12px;
+        font-size: 14px;
+        b {
+            font-weight: 800;
+        }
+    }
+    .o_ocd_figures_badge {
+        flex: none;
+        border-radius: 999px;
+        background: $ocd-orange;
+        color: $ocd-ink;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 2px 9px;
+        white-space: nowrap;
+    }
+    .o_ocd_figures_table {
+        display: none;
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14.5px;
+        th {
+            text-align: left;
+            font-size: 12.5px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: $ocd-muted;
+            padding: 8px 10px;
+            border-bottom: 2px solid $ocd-line;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid $ocd-line;
+            vertical-align: middle;
+        }
+        .o_ocd_r {
+            text-align: right;
+            white-space: nowrap;
+        }
+    }
+    .o_ocd_figures_grid,
+    .o_ocd_figures_column {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+    .o_ocd_figures_product {
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        padding: 10px 0;
+        border-bottom: 1px solid $ocd-line;
+    }
+    .o_ocd_figures_product_photo {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    .o_ocd_figures_product_text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+        small {
+            font-size: 13.5px;
+        }
+    }
+    .o_ocd_figures_bar {
+        display: block;
+        height: 8px;
+        border-radius: 99px;
+        background: $ocd-sand;
+        overflow: hidden;
+        i {
+            display: block;
+            height: 100%;
+            background: $ocd-orange;
+            border-radius: 99px;
+        }
+    }
+    .o_ocd_figures_hint {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 12px;
+        background: #FFF8E6;
+        border: 1px dashed $ocd-yellow-line;
+        padding: 10px 12px;
+        font-size: 13.5px;
+        color: $ocd-yellow-text;
+        form {
+            margin: 0;
+        }
+        .o_ocd_link {
+            padding: 0;
+            border: 0;
+            background: none;
+            color: inherit;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+    }
+    .o_ocd_figures_heat {
+        display: grid;
+        grid-template-columns: 76px repeat(7, minmax(0, 1fr));
+        gap: 4px;
+        font-size: 12px;
+        align-items: center;
+        span {
+            height: 30px;
+            border-radius: 7px;
+            background: $ocd-sand;
+        }
+        em,
+        i {
+            font-style: normal;
+            font-weight: 700;
+            color: $ocd-muted;
+        }
+        em {
+            text-align: center;
+        }
+        .o_ocd_heat_1 {
+            background: $ocd-orange-soft;
+        }
+        .o_ocd_heat_2 {
+            background: #FFC999;
+        }
+        .o_ocd_heat_3 {
+            background: #F7964A;
+        }
+        .o_ocd_heat_4 {
+            background: $ocd-orange;
+        }
+    }
+    .o_ocd_figures_customer {
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid $ocd-line;
+        font-size: 14.5px;
+        > span:nth-child(2) {
+            display: flex;
+            flex-direction: column;
+            small {
+                color: $ocd-muted;
+                font-size: 13.5px;
+            }
+        }
+    }
+    .o_ocd_figures_avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: $ocd-orange-soft;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        color: $ocd-orange-dark;
+        font-size: 14px;
+    }
+    .o_ocd_figures_more summary {
+        list-style: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 6px 0;
+    }
+    .o_ocd_figures_places {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .o_ocd_figures_place {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    .o_ocd_figures_switch {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        font-size: 14.5px;
+        font-weight: 600;
+        cursor: pointer;
+        input {
+            appearance: none;
+            width: 46px;
+            height: 28px;
+            margin: 0;
+            border-radius: 999px;
+            background: #D9D3CC;
+            position: relative;
+            cursor: pointer;
+            flex: none;
+            &::after {
+                content: "";
+                position: absolute;
+                left: 3px;
+                top: 3px;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                background: #FFFFFF;
+                transition: left .15s;
+            }
+            &:checked {
+                background: $ocd-ink;
+                &::after {
+                    left: 21px;
+                }
+            }
+            &:focus-visible {
+                outline: 3px solid $ocd-orange;
+                outline-offset: 2px;
+            }
+        }
+    }
+    .o_ocd_figures_lock {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border-radius: 16px;
+        background: $ocd-sand;
+        padding: 14px;
+        ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 14px;
+        }
+    }
+    .o_ocd_figures_gift {
+        align-self: flex-start;
+        border-radius: 999px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        font-weight: 800;
+        font-size: 12.5px;
+        padding: 2px 10px;
+    }
+    .o_ocd_figures_rules {
+        border-radius: 14px;
+        background: $ocd-sand;
+        padding: 12px 14px;
+        font-size: 14px;
+        summary {
+            cursor: pointer;
+        }
+        p {
+            margin: 8px 0 0;
+        }
+    }
+    // « My figures » in « My space »
+    .o_ocd_space_figures {
+        color: $ocd-ink;
+        text-decoration: none;
+        margin-top: 12px;
+    }
+    .o_ocd_space_figures_title {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        .o_ocd_link {
+            font-size: 13.5px;
+        }
+    }
+    .o_ocd_my_product_sold {
+        color: $ocd-ink;
+    }
+}
+// On the phone the header says « My figures » (design MesChiffres)
+@media (max-width: $ocd-tablet - 1px) {
+    .o_ocd_app .o_ocd_figures_title {
+        display: none;
+    }
+}
+// On a tablet: the four tiles on one line; on a computer, the tables and the two columns
+@media (min-width: $ocd-tablet) {
+    .o_ocd_app {
+        .o_ocd_figures_tile > b {
+            font-size: 21px;
+        }
+        .o_ocd_figures_summary form {
+            max-width: 480px;
+        }
+        .o_ocd_figures_head {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .o_ocd_figures_tiles {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .o_ocd_figures_tiles_two {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .o_ocd_figures_places {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+}
+@media (min-width: $ocd-desktop) {
+    .o_ocd_app {
+        .o_ocd_figures {
+            gap: 18px;
+        }
+        .o_ocd_figures_tile > b {
+            font-size: 24px;
+        }
+        .o_ocd_figures_idea {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+        }
+        .o_ocd_figures_live {
+            display: none;
+        }
+        .o_ocd_figures_table {
+            display: table;
+        }
+        .o_ocd_figures_grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .o_ocd_figures_places {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+}

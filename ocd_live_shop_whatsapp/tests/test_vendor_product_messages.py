@@ -191,3 +191,38 @@ class TestOcdVendorProductMessages(HttpCase, OcdShopCommon):
             self.brenda._ocd_end_holiday()
         self.assertEqual(calls, ["ocd_vendeur_de_retour"])
         self.assertEqual(alert.state, "sent")
+
+    def test_the_summary_of_the_week_renders_and_opens_my_figures(self):
+        """« My figures » (chantier 3): the summary of the week, to the vendor who asked for it."""
+        self.company.ocd_vendor_login = "link"
+        self.brenda.write({"ocd_week_summary": True, "phone": "+237 690000002"})
+        summary = {
+            "pieces": 9, "amount": 64500.0, "currency": self.company.currency_id, "percent": 12, "visits": 312,
+            "evolution": {}, "best": self.dress.product_tmpl_id,
+        }
+        sent = []
+        with patch.object(WhatsappTemplate, "_send", lambda template, records: sent.append(
+            (template, [template._render(variable.value, record)[record.id] for variable in template.variable_ids
+                        for record in records],
+             template._render(template.button_url_value, records)[records.id])
+        ) or self.env["whatsapp.message"]):
+            self.brenda._ocd_tell_week_summary(summary)
+        template, values, path = sent[0]
+        self.assertEqual(template, self.env.ref("ocd_live_shop_whatsapp.template_week_summary"))
+        self.assertEqual(values[0], "Brenda")
+        self.assertEqual(values[1], "9")
+        self.assertIn("12", values[3])
+        self.assertEqual(values[4], "312")
+        self.assertEqual(values[5], "Robe en wax")
+        self.assertEqual(path, f"ocd/espace/{self.brenda.ocd_space_token}/chiffres")
+        english = self.env.ref("ocd_live_shop_whatsapp.template_week_summary_en")
+        context = {"ocd_week_trend_en": "up 12 %", "ocd_week_amount_en": "64,500 F", "ocd_week_best_en": "Wax dress"}
+        rendered = [english.with_context(**context)._render(variable.value, self.brenda)[self.brenda.id]
+                    for variable in english.variable_ids]
+        self.assertEqual(rendered[3], "up 12 %")
+        # STOP on WhatsApp: nothing
+        sent.clear()
+        self.brenda.whatsapp_opt_out = True
+        with patch.object(WhatsappTemplate, "_send", lambda template, records: sent.append(records)):
+            self.brenda._ocd_tell_week_summary(summary)
+        self.assertEqual(sent, [])

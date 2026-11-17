@@ -6,6 +6,7 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 
 from odoo.addons.ocd_live import tools
+from odoo.addons.website_sale.models.website import CART_SESSION_CACHE_KEY
 from odoo.addons.ocd_live.controllers import common
 
 from . import shop_common
@@ -75,13 +76,33 @@ class OcdBoutique(http.Controller):
     def _count_live_visit(self, vendor_id, **kwargs):
         """One visit per browser and per live, shown in the control room: also for a boutique
         given from memory (ocd_cache_hit). Return the live of the vendor now."""
-        live = self._current_live(self._vendor(vendor_id))
+        vendor = self._vendor(vendor_id)
+        live = self._current_live(vendor)
         if live:
             seen = request.session.get("ocd_live_visits", [])
             if live.id not in seen:
                 live._ocd_count_visit()
                 request.session["ocd_live_visits"] = (seen + [live.id])[-20:]
+            # The sales of the live (chantier 3): the cart of the visitor remembers the live
+            cart_id = request.session.get(CART_SESSION_CACHE_KEY)
+            if cart_id:
+                request.env["sale.order"].sudo().browse(cart_id).exists()._ocd_note_lives(live)
         return live
+
+    @http.route("/ocd/boutique/<int:vendor_id>/vu", type="http", auth="public", website=True, methods=["POST"], csrf=False,
+                sitemap=False)
+    def boutique_seen(self, vendor_id, **kwargs):
+        """« Visits of your boutique » (chantier 3): told by the page once shown (boutique_visit.js),
+        so that the page stays the same for everyone; one per phone and per day, never the vendor's
+        own. Answers nothing."""
+        vendor = self._vendor(vendor_id)
+        today = fields.Date.today().isoformat()
+        days = request.session.get("ocd_shop_days") or {}
+        seen = days.get("v", []) if days.get("d") == today else []
+        if vendor.id not in seen and common.current_vendor() != vendor:
+            request.session["ocd_shop_days"] = {"d": today, "v": (seen + [vendor.id])[-50:]}
+            request.env["ocd.vendor.count"]._ocd_add(vendor, "visit")
+        return request.make_response("", status=204)
 
     def _next_live(self, vendor):
         return request.env["ocd.live.booking"].sudo().search([
@@ -397,6 +418,7 @@ class OcdBoutique(http.Controller):
         url = whatsapp_url(vendor.phone, request.env._("Hello, I saw your boutique on OCD Live."))
         if not url:
             raise request.not_found()
+        request.env["ocd.vendor.count"]._ocd_add(vendor, "contact")
         return request.redirect(url, local=False)
 
     @http.route("/ocd/boutique/<int:vendor_id>/live", type="jsonrpc", auth="public", website=True, ocd_cache=10)
@@ -531,4 +553,6 @@ class OcdBoutique(http.Controller):
         if not url:
             raise request.not_found()
         product.ocd_wa_clicks += 1
+        # Day by day, for the figures of the vendor (chantier 3)
+        request.env["ocd.vendor.count"]._ocd_add(product.ocd_vendor_id, "contact", product.id)
         return request.redirect(url, local=False)

@@ -46,6 +46,9 @@
         <field name="template_ids" eval="[Command.set([ref('template_team_link'), ref('template_team_parcel'),
                                                        ref('template_team_hold')])]"/>
     </record>
+    <record id="ocd_live_shop.automation_week_summary" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_week_summary')])]"/>
+    </record>
     <record id="ocd_live_shop.automation_low_stock" model="ocd.automation">
         <field name="template_ids" eval="[Command.set([ref('template_stock_low')])]"/>
     </record>

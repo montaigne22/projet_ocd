@@ -16,3 +16,4 @@ from . import vendor_team
 from . import member_space
 from . import vendor_follow
 from . import trust
+from . import vendor_figures

@@ -1089,6 +1089,7 @@
                                         <t t-if="row['status'] == 'refused' or row['change_refused']">Correct and send again</t>
                                         <t t-else="">Change</t>
                                     </a>
+                                    <small t-if="row['sold_line']" class="o_ocd_my_product_fact o_ocd_my_product_sold" t-out="row['sold_line']"/>
                                     <small t-if="row['review_line']" class="o_ocd_my_product_fact o_ocd_my_product_reviews" t-out="row['review_line']"/>
                                     <small t-if="row['contacts_line']" class="o_ocd_my_product_fact" t-out="row['contacts_line']"/>
                                     <small t-if="row['waiting_line']" class="o_ocd_my_product_fact o_ocd_my_product_waiting" t-out="row['waiting_line']"/>
