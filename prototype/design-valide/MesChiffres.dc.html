@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mes chiffres</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.muted{color:#665F58}
+.chips{display:flex;gap:8px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;gap:2px;border:2px solid #E7E2DC;border-radius:16px;padding:10px 12px}
+.tile b.n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;line-height:1.1}
+.up{color:#0A6A3A;font-weight:700;font-size:13px}
+.down{color:#8E1220;font-weight:700;font-size:13px}
+.flat{color:#665F58;font-weight:700;font-size:13px}
+.idea{display:flex;flex-direction:column;gap:4px;border-radius:16px;background:#FFF0E3;color:#6B3300;padding:12px 14px;font-size:14.5px}
+.sec{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:4px}
+.sec b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px}
+.live{display:flex;flex-direction:column;gap:6px;border:2px solid #E7E2DC;border-radius:16px;padding:12px 14px}
+.live .line{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:14px}
+.kv span b{font-weight:800}
+.best{border-color:#F46A00}
+.badge{border-radius:999px;background:#F46A00;color:#15130F;font-weight:800;font-size:12px;padding:2px 9px;white-space:nowrap}
+.heat{display:grid;grid-template-columns:76px repeat(7,1fr);gap:4px;font-size:12px;align-items:center}
+.heat span{height:30px;border-radius:7px;background:#F5F2EE}
+.heat em{font-style:normal;text-align:center;font-weight:700;color:#665F58}
+.heat i{font-style:normal;font-weight:700;color:#665F58}
+.h1{background:#FFE7D1!important}.h2{background:#FFC999!important}.h3{background:#F7964A!important}.h4{background:#F46A00!important}
+.cust{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC;font-size:14.5px}
+.av{width:40px;height:40px;border-radius:50%;background:#FFE7D1;display:grid;place-items:center;font-weight:800;color:#B84F00;flex:none;font-size:14px}
+.prod{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid #E7E2DC}
+.prod .ph{width:56px;height:56px;border-radius:12px;background:#FFE7D1}
+.bar{height:8px;border-radius:99px;background:#F5F2EE;overflow:hidden}
+.bar i{display:block;height:100%;background:#F46A00;border-radius:99px}
+.hint{display:flex;flex-direction:column;gap:6px;border-radius:12px;background:#FFF8E6;border:1px dashed #F0C987;padding:10px 12px;font-size:13.5px;color:#6B4500}
+.lnk{text-decoration:underline;font-weight:700}
+.place{display:flex;flex-direction:column;gap:4px;border:2px solid #E7E2DC;border-radius:16px;padding:10px 12px;font-size:14px}
+.lock{display:flex;flex-direction:column;gap:8px;border-radius:16px;background:#F5F2EE;padding:14px}
+.lock ul{margin:0;padding-left:18px;font-size:14px}
+.gift{align-self:flex-start;border-radius:999px;background:#DCF2E5;color:#0A5A31;font-weight:800;font-size:12.5px;padding:2px 10px}
+.wa{width:330px;border-radius:18px;background:#E8F7DF;padding:12px 14px;font-size:14.5px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.wa .btn2{background:#FFF;border-radius:10px;text-align:center;color:#1F7A4D;font-weight:700;padding:8px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule b{font-size:15px}
+.space-card{display:flex;flex-direction:column;gap:4px;border:2px solid #E7E2DC;border-radius:16px;padding:12px 14px}
+.toggle{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14.5px}
+.sw{width:46px;height:28px;border-radius:99px;background:#15130F;position:relative;flex:none}
+.sw::after{content:"";position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#FFF}
+/* computer */
+.pcbody{display:grid;grid-template-columns:250px 1fr;gap:28px;padding:24px 40px 32px}
+.side{display:flex;flex-direction:column;gap:2px}
+.tiles4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+table.t{width:100%;border-collapse:collapse;font-size:14.5px}
+table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
+table.t td{padding:10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
+table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
+.bo{background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.bobtn{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid #AEB4BA;font-weight:700;font-size:13.5px;background:#FFF}
+</style>
+</head>
+<body>
+<!-- Statistiques du vendeur (chantier 3 de la feuille de route, avec 3.3 « Ventes par produit » du plan
+     Mes produits) : « Mes chiffres » dans l'espace du vendeur. Ce que rapportent ses lives (ouverts depuis
+     OCD, visites de la boutique, ventes, abonnés), ses meilleures heures pour réserver le prochain, ses
+     clients fidèles, ses ventes par produit et par magasin. Un seul calcul : les chiffres sous chaque
+     produit (1.1) et sous chaque magasin (M.6) sont les mêmes. Le détail est pour OCD Business (offert
+     pendant le lancement) ; les ventes du mois et la ligne « Vendu » de chaque produit restent pour tous.
+     Données d'exemple : Brenda Wax, 30 derniers jours (18 octobre au 16 novembre). -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le vendeur : Mes chiffres</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. L'essentiel, puis les lives -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes chiffres</span></div>
+    <div class="chips"><span class="chip">7 jours</span><span class="chip on">30 jours</span><span class="chip">3 mois</span></div>
+    <div class="tiles">
+      <div class="tile"><span class="small muted">Ventes</span><b class="n">186 500 F</b><span class="up">▲ 18 % par rapport aux 30 jours d'avant</span></div>
+      <div class="tile"><span class="small muted">Pièces vendues</span><b class="n">27</b><span class="small muted">21 commandes</span></div>
+      <div class="tile"><span class="small muted">Visites de ta boutique</span><b class="n">1 240</b><span class="up">▲ 9 %</span></div>
+      <div class="tile"><span class="small muted">Contacts WhatsApp</span><b class="n">64</b><span class="flat">= comme avant</span></div>
+    </div>
+    <div class="idea">
+      <b>82 % de tes ventes viennent de tes lives.</b>
+      <span>Ton live du samedi 9 novembre a fait à lui seul 41 % du mois.</span>
+    </div>
+    <div class="sec"><b>Mes lives</b><span class="small muted">3 ce mois-ci</span></div>
+    <div class="live best">
+      <span class="line"><b>Sam. 9 nov. · 19 h · 1 h 10</b><span class="badge">Meilleur live</span></span>
+      <div class="kv">
+        <span>Ouvert depuis OCD <b>312</b></span>
+        <span>Visites boutique <b>486</b></span>
+        <span>Vendu <b>9 pièces</b></span>
+        <span><b>76 500 F</b></span>
+        <span>Nouveaux abonnés <b>+14</b></span>
+        <span>Produit phare <b>Robe en wax</b></span>
+      </div>
+      <span class="small lnk">Voir le replay</span>
+    </div>
+    <div class="live">
+      <span class="line"><b>Sam. 26 oct. · 19 h · 1 h</b></span>
+      <div class="kv">
+        <span>Ouvert depuis OCD <b>268</b></span><span>Visites boutique <b>401</b></span>
+        <span>Vendu <b>7 pièces</b></span><span><b>55 000 F</b></span>
+      </div>
+    </div>
+    <div class="live">
+      <span class="line"><b>Mer. 30 oct. · 13 h · 45 min</b></span>
+      <div class="kv">
+        <span>Ouvert depuis OCD <b>120</b></span><span>Visites boutique <b>198</b></span>
+        <span>Vendu <b>3 pièces</b></span><span><b>21 000 F</b></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Les meilleures heures, les clients fidèles -->
+  <div class="phone">
+    <div class="sec" style="margin:0"><b>Mes meilleures heures</b><span class="small muted">3 derniers mois</span></div>
+    <span class="small muted">Quand tes clients commandent, à ton heure (Douala).</span>
+    <div class="heat">
+      <i></i><em>L</em><em>M</em><em>M</em><em>J</em><em>V</em><em>S</em><em>D</em>
+      <i>Matin</i><span></span><span class="h1"></span><span></span><span></span><span class="h1"></span><span class="h1"></span><span></span>
+      <i>Midi</i><span class="h1"></span><span></span><span class="h2"></span><span class="h1"></span><span class="h1"></span><span class="h2"></span><span class="h1"></span>
+      <i>Après-midi</i><span></span><span class="h1"></span><span class="h1"></span><span class="h1"></span><span class="h2"></span><span class="h2"></span><span class="h1"></span>
+      <i>Soir</i><span class="h1"></span><span class="h1"></span><span class="h2"></span><span class="h2"></span><span class="h3"></span><span class="h4"></span><span class="h2"></span>
+    </div>
+    <span class="small muted">Matin 8 h à 12 h · Midi 12 h à 15 h · Après-midi 15 h à 18 h · Soir 18 h à 22 h</span>
+    <div class="idea">
+      <b>Tes clients achètent surtout le samedi soir.</b>
+      <span>Tes lives du samedi 19 h vendent 2 fois plus que les autres.</span>
+    </div>
+    <span class="cta">Réserver un live samedi 19 h</span>
+
+    <div class="sec"><b>Mes clients fidèles</b><span class="small muted">12 derniers mois</span></div>
+    <span><b>11 clients</b> ont acheté 2 fois ou plus : <b>38 %</b> de tes ventes.</span>
+    <div class="cust"><span class="av">EN</span><span><b>Estelle N.</b><br><span class="small muted">4 commandes · dernière le 12 nov.</span></span><b>52 000 F</b></div>
+    <div class="cust"><span class="av">HK</span><span><b>Hervé K.</b><br><span class="small muted">3 commandes · dernière le 2 nov.</span></span><b>31 500 F</b></div>
+    <div class="cust"><span class="av">RM</span><span><b>Ruth M.</b><br><span class="small muted">2 commandes · dernière le 28 oct.</span></span><b>18 000 F</b></div>
+    <span class="small lnk">Voir les 11</span>
+    <span class="small muted">Le prénom et l'initiale seulement, comme les avis : jamais leur numéro. 8 d'entre eux te suivent et reçoivent tes nouveautés.</span>
+  </div>
+
+  <!-- 3. Les ventes par produit (3.3), les magasins (M.6) -->
+  <div class="phone">
+    <div class="sec" style="margin:0"><b>Ventes par produit</b></div>
+    <div class="chips"><span class="chip on">Plus vendus</span><span class="chip">Pas vendus</span></div>
+    <div class="prod"><span class="ph"></span><span style="display:flex;flex-direction:column;gap:4px">
+      <b>Robe en wax</b>
+      <span class="small"><b>14 vendus</b> · 98 000 F · dernière vente hier</span>
+      <span class="bar"><i style="width:100%"></i></span>
+      <span class="small muted">23 contacts WhatsApp · 6 vendus pendant tes lives</span>
+    </span></div>
+    <div class="prod"><span class="ph"></span><span style="display:flex;flex-direction:column;gap:4px">
+      <b>Chemise wax homme</b>
+      <span class="small"><b>6 vendus</b> · 33 000 F · il y a 4 jours</span>
+      <span class="bar"><i style="width:43%"></i></span>
+    </span></div>
+    <div class="prod"><span class="ph"></span><span style="display:flex;flex-direction:column;gap:4px">
+      <b>Sac en raphia</b>
+      <span class="small"><b>4 vendus</b> · 22 000 F · il y a 9 jours</span>
+      <span class="bar"><i style="width:29%"></i></span>
+    </span></div>
+    <div class="prod"><span class="ph"></span><span style="display:flex;flex-direction:column;gap:6px">
+      <b>Pagne 6 yards</b>
+      <span class="small"><b>0 vendu</b> en 30 jours · 17 contacts WhatsApp · 3 clients attendent son retour</span>
+      <span class="hint"><span>Beaucoup d'intérêt, pas de vente : vérifie le prix, ou montre-le dans ton prochain live.</span><span class="lnk">Ajouter à mon prochain live</span></span>
+    </span></div>
+
+    <div class="sec"><b>Mes magasins</b><span class="small muted">30 jours</span></div>
+    <div class="place"><b>Brenda Wax Akwa</b><span>18 itinéraires · 7 appels · 12 WhatsApp</span><span class="muted">5 retraits au comptoir · 14 colis partis d'ici</span></div>
+    <div class="place"><b>Marché central</b><span>6 itinéraires · 2 appels · 4 WhatsApp</span><span class="muted">1 retrait au comptoir · 2 colis partis d'ici</span></div>
+
+    <div class="sec"><b>Le lundi sur WhatsApp</b></div>
+    <div class="toggle"><span>Recevoir le résumé de ma semaine</span><span class="sw"></span></div>
+  </div>
+
+  <!-- 4. Pour tous les vendeurs ; sans OCD Business ; le message du lundi -->
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <span class="cap" style="margin:0">Mon espace (tous les vendeurs)</span>
+    <div class="phone" style="gap:10px">
+      <div class="space-card">
+        <span class="line" style="display:flex;justify-content:space-between"><b>Mes chiffres</b><span class="lnk small">Voir</span></span>
+        <span>Ce mois : <b>186 500 F</b> · 27 pièces <span class="up">▲ 18 %</span></span>
+      </div>
+      <span class="cap" style="margin:6px 0 0">Mes produits : la ligne « Vendu » (3.3, pour tous)</span>
+      <div class="prod" style="border:2px solid #E7E2DC;border-radius:16px;padding:10px 12px"><span class="ph"></span><span style="display:flex;flex-direction:column;gap:3px">
+        <b>Robe en wax</b><span class="small">7 000 F · 8 en stock</span>
+        <span class="small"><b>Vendu : 14</b> en 30 jours · dernière vente hier</span>
+        <span class="small muted">23 personnes t'ont écrit sur WhatsApp</span>
+      </span></div>
+    </div>
+    <span class="cap" style="margin:0">Sans OCD Business</span>
+    <div class="phone" style="gap:10px">
+      <div class="tiles">
+        <div class="tile"><span class="small muted">Ventes, 30 jours</span><b class="n">186 500 F</b></div>
+        <div class="tile"><span class="small muted">Pièces vendues</span><b class="n">27</b></div>
+      </div>
+      <div class="lock">
+        <b>Le détail avec OCD Business</b>
+        <ul><li>Ce que rapporte chaque live</li><li>Tes meilleures heures pour réserver</li><li>Tes clients fidèles</li><li>Les ventes de chaque produit et de chaque magasin</li></ul>
+        <span class="gift">Offert pendant le lancement</span>
+      </div>
+    </div>
+    <span class="cap" style="margin:0">WhatsApp du lundi (nouveau modèle, à soumettre à Meta)</span>
+    <div class="wa">
+      <span>Ta semaine sur OCD Live, Brenda : <b>9 ventes, 64 500 F</b> (+12 %), 312 visites de ta boutique. Le plus vendu : Robe en wax.</span>
+      <span class="btn2">Voir mes chiffres</span>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Comment c'est compté</span>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1300px">
+  <div class="rule"><b>Ventes</b>
+    <span>Les commandes confirmées (payées, ou à payer à la livraison), sans les annulées ni les colis rendus ; le prix des produits du vendeur, sans la livraison. Une commande de plusieurs vendeurs compte pour chacun sa part.</span>
+    <span>L'évolution compare à la période d'avant de même durée.</span>
+  </div>
+  <div class="rule"><b>Les lives</b>
+    <span><b>Ouvert depuis OCD</b> : les appuis sur « Regarder » des cartes du fil, de la boutique et des messages aux abonnés (nouveau comptage). <b>Visites boutique</b> : une par téléphone pendant le live (déjà compté pour la régie).</span>
+    <span><b>Vendu</b> : les commandes des visiteurs venus pendant le live, passées pendant le live ou dans les 3 heures après.</span>
+  </div>
+  <div class="rule"><b>Le reste</b>
+    <span><b>Visites de ta boutique</b> : une par téléphone et par jour (nouveau comptage, gardé jour par jour). <b>Contacts WhatsApp</b> et <b>magasins</b> : les appuis déjà comptés sous chaque produit et magasin, le même calcul.</span>
+    <span><b>Meilleures heures</b> : l'heure des commandes, à l'heure du vendeur. <b>Clients fidèles</b> : 2 commandes ou plus en 12 mois.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · Mes chiffres dans l'espace du vendeur</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <div class="pcbody">
+    <div class="side">
+      <a>Mon espace</a><a>Mes produits</a><a>Mes magasins</a><a>Mes colis</a><a class="on">Mes chiffres</a><a>Mes avis</a><a>Mon équipe</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b class="d" style="font-size:30px">Mes chiffres</b><span class="chips"><span class="chip">7 jours</span><span class="chip on">30 jours</span><span class="chip">3 mois</span></span></div>
+      <div class="tiles4">
+        <div class="tile"><span class="small muted">Ventes</span><b class="n">186 500 F</b><span class="up">▲ 18 %</span></div>
+        <div class="tile"><span class="small muted">Pièces vendues</span><b class="n">27</b><span class="small muted">21 commandes</span></div>
+        <div class="tile"><span class="small muted">Visites de ta boutique</span><b class="n">1 240</b><span class="up">▲ 9 %</span></div>
+        <div class="tile"><span class="small muted">Contacts WhatsApp</span><b class="n">64</b><span class="flat">= comme avant</span></div>
+      </div>
+      <div class="idea" style="flex-direction:row;gap:8px"><b>82 % de tes ventes viennent de tes lives.</b><span>Ton live du samedi 9 novembre a fait à lui seul 41 % du mois.</span></div>
+      <div class="card" style="display:flex;flex-direction:column;gap:8px">
+        <b class="d" style="font-size:20px">Mes lives</b>
+        <table class="t">
+          <tr><th>Live</th><th class="r">Ouvert depuis OCD</th><th class="r">Visites boutique</th><th class="r">Vendu</th><th class="r">Ventes</th><th class="r">Abonnés</th><th>Produit phare</th><th></th></tr>
+          <tr><td><b>Sam. 9 nov. · 19 h</b> · 1 h 10 <span class="badge">Meilleur live</span></td><td class="r">312</td><td class="r">486</td><td class="r">9 pièces</td><td class="r"><b>76 500 F</b></td><td class="r">+14</td><td>Robe en wax</td><td class="lnk small">Replay</td></tr>
+          <tr><td><b>Mer. 30 oct. · 13 h</b> · 45 min</td><td class="r">120</td><td class="r">198</td><td class="r">3 pièces</td><td class="r"><b>21 000 F</b></td><td class="r">+5</td><td>Sac en raphia</td><td class="lnk small">Replay</td></tr>
+          <tr><td><b>Sam. 26 oct. · 19 h</b> · 1 h</td><td class="r">268</td><td class="r">401</td><td class="r">7 pièces</td><td class="r"><b>55 000 F</b></td><td class="r">+9</td><td>Robe en wax</td><td class="lnk small">Replay</td></tr>
+        </table>
+      </div>
+      <div class="grid2">
+        <div class="card" style="display:flex;flex-direction:column;gap:10px">
+          <b class="d" style="font-size:20px">Ventes par produit</b>
+          <table class="t">
+            <tr><th>Produit</th><th class="r">Vendus</th><th class="r">Ventes</th><th>Dernière vente</th><th class="r">WhatsApp</th></tr>
+            <tr><td><b>Robe en wax</b></td><td class="r">14</td><td class="r">98 000 F</td><td>hier</td><td class="r">23</td></tr>
+            <tr><td><b>Chemise wax homme</b></td><td class="r">6</td><td class="r">33 000 F</td><td>il y a 4 jours</td><td class="r">9</td></tr>
+            <tr><td><b>Sac en raphia</b></td><td class="r">4</td><td class="r">22 000 F</td><td>il y a 9 jours</td><td class="r">6</td></tr>
+            <tr><td><b>Pagne 6 yards</b> <span class="tag low">Pas vendu</span></td><td class="r">0</td><td class="r">0 F</td><td class="muted">aucune en 30 jours</td><td class="r">17</td></tr>
+          </table>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="card" style="display:flex;flex-direction:column;gap:8px">
+            <b class="d" style="font-size:20px">Mes meilleures heures</b>
+            <div class="heat">
+              <i></i><em>L</em><em>M</em><em>M</em><em>J</em><em>V</em><em>S</em><em>D</em>
+              <i>Midi</i><span class="h1"></span><span></span><span class="h2"></span><span class="h1"></span><span class="h1"></span><span class="h2"></span><span class="h1"></span>
+              <i>Soir</i><span class="h1"></span><span class="h1"></span><span class="h2"></span><span class="h2"></span><span class="h3"></span><span class="h4"></span><span class="h2"></span>
+            </div>
+            <span><b>Samedi soir</b> : tes lives du samedi 19 h vendent 2 fois plus. <span class="lnk">Réserver un live samedi 19 h</span></span>
+          </div>
+          <div class="card" style="display:flex;flex-direction:column;gap:4px">
+            <b class="d" style="font-size:20px">Mes clients fidèles</b>
+            <span><b>11 clients</b> ont acheté 2 fois ou plus : <b>38 %</b> de tes ventes.</span>
+            <span class="small muted">Estelle N. (4) · Hervé K. (3) · Ruth M. (2) · <span class="lnk">voir les 11</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · fiche du vendeur</span>
+<div class="screen" style="width:1100px;padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:18px">
+  <div class="bo">
+    <b>Brenda Wax</b>
+    <span>Boutons en haut de la fiche : … · Avis · Signalements · <b>Chiffres</b></span>
+    <span style="display:flex;gap:8px"><span class="bobtn">Chiffres</span></span>
+    <span style="color:#5A6068">« Chiffres » ouvre Mes chiffres du vendeur, comme « Voir son espace » : l'équipe voit ce que voit le vendeur, avec les numéros des clients en plus dans les commandes.</span>
+  </div>
+  <div class="bo">
+    <b>Réglages · Vendeurs</b>
+    <span>Ventes d'un live : les commandes passées jusqu'à <b>3 heures</b> après sa fin</span>
+    <span>Clients fidèles : <b>2 commandes</b> ou plus en 12 mois</span>
+    <span>Résumé de la semaine sur WhatsApp : le <b>lundi</b> à 9 h (heure du vendeur)</span>
+    <span>Automatisation : « Résumé de la semaine aux vendeurs » (interrupteur)</span>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
