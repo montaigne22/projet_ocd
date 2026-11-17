@@ -232,12 +232,17 @@ class OcdShop(WebsiteSale):
         A level is the pieces free in the store, cut at LOW_STOCK + 1: the customer reads
         « Available », « Available · only 2 left » or « Sold out », never the exact count of a
         store."""
-        if not vendor or not shop_common.tracked(template) or not vendor._ocd_stock_per_place():
+        if not vendor or not shop_common.tracked(template):
             return [], {}
         stores = request.env["ocd.vendor.place"]._ocd_shown_places(vendor).filtered(
             lambda place: place.kind == "store" and place.location_id
         )
         if not stores:
+            return [], {}
+        # « Hold it to try » (chantier 20, A.7): also in the one store of a vendor
+        Hold = request.env["ocd.product.hold"].sudo()
+        holding = {store.id for store in stores if Hold._ocd_offered(store)}
+        if not vendor._ocd_stock_per_place() and not holding:
             return [], {}
         variants = template.product_variant_ids
         free = variants._ocd_free_by_location(stores.location_id)
@@ -250,6 +255,7 @@ class OcdShop(WebsiteSale):
             "place": store,
             "address": store._ocd_address_line(),
             "open": store._ocd_open_state(),
+            "hold_base": f"/ocd/essayer/magasin/{store.id}" if store.id in holding else False,
         } for store in stores]
         return rows, levels
 
@@ -310,7 +316,10 @@ class OcdShop(WebsiteSale):
         money_currency = shop_common.currency()
         store_texts = self._ocd_store_texts()
         for index, row in enumerate(store_rows):
-            row["status"] = self._ocd_store_status((first.get("stores") or [0] * len(store_rows))[index], store_texts)
+            level = (first.get("stores") or [0] * len(store_rows))[index]
+            row["status"] = self._ocd_store_status(level, store_texts)
+            row["hold_url"] = f"{row['hold_base']}?produit={first['id']}" if row["hold_base"] and first.get("id") else False
+            row["hold_shown"] = level > 0
         lines = []
         for line in template_sudo.valid_product_template_attribute_line_ids:
             if line.attribute_id.create_variant == "no_variant":

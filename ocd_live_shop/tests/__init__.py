@@ -19,3 +19,4 @@ from . import test_manage_products
 from . import test_vendor_holiday
 from . import test_vendor_nearby
 from . import test_store_pickup
+from . import test_product_hold

@@ -51,6 +51,17 @@
         <field name="interval_type">hours</field>
     </record>
 
+    <!-- The pieces held to try past their time: on sale again -->
+    <record id="ir_cron_holds" model="ir.cron">
+        <field name="name">OCD Live: pieces held to try, past their time</field>
+        <field name="model_id" ref="model_ocd_product_hold"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_ocd_holds()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+    </record>
+
     <!-- The vendors back from holiday: the orders start again, the customers who asked are told -->
     <record id="ir_cron_holiday_back" model="ir.cron">
         <field name="name">OCD Live: vendors back from holiday</field>

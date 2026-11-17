@@ -10,3 +10,4 @@ from . import vendor_places
 from . import vendor_stock
 from . import vendor_holiday
 from . import directory_where
+from . import product_hold

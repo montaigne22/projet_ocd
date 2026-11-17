@@ -599,6 +599,25 @@
             border-color: $ocd-orange;
         }
     }
+    .o_ocd_hold_outcomes {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        .o_ocd_parcel_button {
+            padding-left: 4px;
+            padding-right: 4px;
+            font-size: 13.5px;
+        }
+    }
+    .o_ocd_hold_blocked {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .o_ocd_hold_banner {
+        font-weight: 700;
+        text-decoration: underline;
+    }
     .o_ocd_parcel_head {
         display: flex;
         align-items: center;
@@ -1660,6 +1679,89 @@
         margin-top: 6px;
         > a:only-child {
             grid-column: 1 / -1;
+        }
+    }
+    // Hold a piece to try (design MettreDeCote)
+    .o_ocd_hold {
+        gap: 14px;
+    }
+    .o_ocd_hold_product {
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        img {
+            width: 72px;
+            height: 72px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: $ocd-sand;
+        }
+        span {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+        b {
+            font-family: $ocd-display;
+            font-size: 20px;
+            line-height: 1.1;
+        }
+        small {
+            font-size: 14px;
+            color: $ocd-muted;
+        }
+    }
+    .o_ocd_hold_sheet {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        border-radius: 22px;
+        box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.12);
+        padding: 16px 18px;
+        background: #FFFFFF;
+        .o_ocd_h1 {
+            margin: 0;
+        }
+    }
+    .o_ocd_hold_promise {
+        margin: 0;
+        font-size: 15.5px;
+        line-height: 1.45;
+    }
+    .o_ocd_hold_store, .o_ocd_hold_card {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 12px 14px;
+        font-size: 14px;
+        small, > span {
+            color: $ocd-muted;
+            overflow-wrap: anywhere;
+        }
+        > strong {
+            font-weight: 800;
+        }
+    }
+    .o_ocd_hold_rules {
+        margin: 0;
+    }
+    .o_ocd_hold_cancel {
+        align-self: center;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+    .o_ocd_hold_buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 6px;
+        form, button {
+            width: 100%;
         }
     }
     .o_ocd_tracking_code {
@@ -2947,6 +3049,20 @@
     &.o_ocd_store_stock_out {
         background: #EEF0F2;
         color: $ocd-muted;
+    }
+}
+.o_ocd_store_stock_row .o_ocd_store_hold {
+    grid-column: 1 / -1;
+    justify-self: start;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: underline !important;
+    color: $ocd-ink !important;
+    &.d-none {
+        display: none !important;
     }
 }
 .o_ocd_store_stock_link {

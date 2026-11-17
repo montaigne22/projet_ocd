@@ -392,10 +392,68 @@
                            t-att-aria-current="'page' if tab == 'todo' else None" t-out="todo_label"/>
                         <a t-if="store_label" t-attf-href="#{base}?vue=magasin" t-att-class="'o_ocd_on' if tab == 'store' else None"
                            t-att-aria-current="'page' if tab == 'store' else None" t-out="store_label"/>
+                        <a t-if="hold_label" t-attf-href="#{base}?vue=essayer" t-att-class="'o_ocd_on' if tab == 'try' else None"
+                           t-att-aria-current="'page' if tab == 'try' else None" t-out="hold_label"/>
                         <a t-attf-href="#{base}?vue=livres" t-att-class="'o_ocd_on' if tab == 'done' else None"
                            t-att-aria-current="'page' if tab == 'done' else None" t-out="done_label"/>
                     </nav>
-                    <t t-if="tab in ('todo', 'store')">
+                    <!-- Pieces held to try (MettreDeCote, chantier 20): OK or refuse, then how it went -->
+                    <t t-if="tab == 'try'">
+                        <div t-if="blocked_hold" class="o_ocd_parcel_note o_ocd_parcel_note_warn o_ocd_hold_blocked" role="status">
+                            <span t-out="blocked_line"/>
+                            <form t-attf-action="#{base}/essai/#{blocked_hold.id}/unblock" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button class="o_ocd_parcel_button">Unblock</button>
+                            </form>
+                        </div>
+                        <t t-foreach="hold_cards" t-as="row">
+                            <t t-set="hold" t-value="row['hold']"/>
+                            <div t-attf-class="o_ocd_parcel #{'' if row['new'] else 'o_ocd_parcel_on'} o_ocd_hold_parcel" t-attf-id="essai-#{hold.id}">
+                                <div class="o_ocd_parcel_head">
+                                    <b t-out="row['title']"/>
+                                    <span t-attf-class="o_ocd_step_pill #{'o_ocd_step_pill_prep' if row['new'] else 'o_ocd_step_pill_ready'}" t-out="row['pill_label']"/>
+                                </div>
+                                <span class="o_ocd_parcel_items" t-out="row['items']"/>
+                                <span class="o_ocd_parcel_when" t-out="row['until']"/>
+                                <div t-if="row['new']" class="o_ocd_parcel_pair">
+                                    <form t-attf-action="#{base}/essai/#{hold.id}/accept" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button class="o_ocd_parcel_go o_ocd_parcel_wide">OK</button>
+                                    </form>
+                                    <form t-attf-action="#{base}/essai/#{hold.id}/refuse" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button class="o_ocd_parcel_button o_ocd_parcel_wide">Refuse</button>
+                                    </form>
+                                </div>
+                                <t t-else="">
+                                    <span class="o_ocd_parcel_label">How did it go?</span>
+                                    <div class="o_ocd_hold_outcomes">
+                                        <form t-attf-action="#{base}/essai/#{hold.id}/taken" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button class="o_ocd_parcel_button o_ocd_parcel_wide">Bought</button>
+                                        </form>
+                                        <form t-attf-action="#{base}/essai/#{hold.id}/not_taken" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button class="o_ocd_parcel_button o_ocd_parcel_wide">Not bought</button>
+                                        </form>
+                                        <form t-attf-action="#{base}/essai/#{hold.id}/no_show" method="post">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button class="o_ocd_parcel_button o_ocd_parcel_wide">Did not come</button>
+                                        </form>
+                                    </div>
+                                </t>
+                                <span class="o_ocd_parcel_hint" t-out="row['hint']"/>
+                                <div t-if="row['phone']" class="o_ocd_parcel_contact">
+                                    <a t-attf-href="tel:+#{row['phone']}" class="o_ocd_parcel_button">Call</a>
+                                    <a t-if="row['whatsapp']" t-att-href="row['whatsapp']" target="_blank" rel="noopener" class="o_ocd_parcel_button">WhatsApp</a>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="not hold_cards and not blocked_hold" class="o_ocd_info">No piece held to try.</div>
+                    </t>
+                    <t t-elif="tab in ('todo', 'store')">
+                        <a t-if="tab == 'todo' and hold_banner" t-attf-href="#{base}?vue=essayer" class="o_ocd_parcel_note o_ocd_hold_banner"
+                           t-out="hold_banner"/>
                         <t t-foreach="cards" t-as="card">
                             <t t-set="parcel" t-value="card['parcel']"/>
                             <!-- At the counter: a parcel picked up at the store, ready, is handed over like at the door -->

@@ -212,3 +212,41 @@ class TestOcdCollectMessages(OcdRatesCommon):
         english = self.env.ref("ocd_live_shop_whatsapp.template_parcel_collect_ready_en")
         self.assertRegex(english._render(english.variable_ids.sorted("sequence")[3].value, parcel)[parcel.id],
                          r"^[A-Z][a-z]+day \d+ [A-Z][a-z]+ at \d\d:\d\d$")
+
+
+@tagged("post_install", "-at_install")
+class TestOcdHoldMessages(OcdShopCommon):
+    """Hold a piece to try (chantier 20): the vendor is told, then the customer gets the answer."""
+
+    def test_messages_of_a_piece_held(self):
+        self.company.write({"ocd_business_offered_all": True, "ocd_vendor_places_max": 5, "ocd_place_check": False,
+                            "ocd_place_proof_required": False, "ocd_hold_enabled": True})
+        self.brenda.country_id = self.env.ref("base.cm")
+        self.dress.is_storable = True
+        self.dress.product_tmpl_id.write({"is_published": True, "ocd_review_state": "approved"})
+        store = self.env["ocd.vendor.place"]._ocd_vendor_create(self.brenda, {
+            "name": "Brenda Wax Akwa", "kind": "store", "district_id": self.akwa.id, "city_id": self.akwa.city_id.id,
+        })
+        store._ocd_set_hours(self.company._ocd_place_default_intervals())
+        self.dress._ocd_change_stock(2)
+        calls = []
+
+        def fake_send(template, records):
+            calls.append((template.template_name, records))
+            return template.env["whatsapp.message"]
+
+        Hold = self.env["ocd.product.hold"]
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            hold = Hold._ocd_request(store, self.dress, self.estelle)
+            hold.action_ocd_accept()
+            hold.action_ocd_outcome("not_taken")
+            Hold._ocd_request(store, self.dress, self.estelle).action_ocd_refuse()
+        self.assertEqual([name for name, _records in calls],
+                         ["ocd_essai_demande", "ocd_essai_garde", "ocd_essai_demande", "ocd_essai_refuse"])
+        template = self.env.ref("ocd_live_shop_whatsapp.template_hold_requested")
+        values = [template._render(variable.value, hold)[hold.id] for variable in template.variable_ids.sorted("sequence")]
+        self.assertEqual(values[3], "Brenda Wax Akwa")
+        self.assertEqual(values[4], hold.with_context(lang="fr_FR")._ocd_deadline_text(), "In French, the language of the template")
+        self.assertIn("?vue=essayer", template._render(template.button_url_value, hold)[hold.id])
+        accepted = self.env.ref("ocd_live_shop_whatsapp.template_hold_accepted")
+        self.assertEqual(accepted._render(accepted.button_url_value, hold)[hold.id], hold._ocd_page_path())

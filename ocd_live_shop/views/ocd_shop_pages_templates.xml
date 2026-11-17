@@ -294,6 +294,9 @@
                                     </small>
                                 </span>
                                 <span t-attf-class="o_ocd_store_stock_pill #{row['status'][0]}" t-out="row['status'][1]"/>
+                                <!-- Hold it to try (MettreDeCote, chantier 20): where the piece chosen is -->
+                                <a t-if="row['hold_url']" t-att-href="row['hold_url']" t-att-data-base="row['hold_base']"
+                                   t-attf-class="o_ocd_store_hold #{'' if row['hold_shown'] else 'd-none'}" rel="nofollow">Hold it to try</a>
                             </div>
                             <a t-attf-href="/ocd/boutique/#{vendor.id}#magasins" class="o_ocd_store_stock_link">Directions and hours</a>
                         </div>
@@ -643,6 +646,78 @@
                         <b t-out="total"/>
                     </div>
                     </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === HOLD A PIECE TO TRY (chantier 20, design MettreDeCote) === -->
+
+    <!-- The piece, the store and until when; the WhatsApp of the customer when unknown -->
+    <template id="hold_request" name="OCD Live: hold a piece to try">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Hold it to try</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_hold">
+                    <div class="o_ocd_hold_product">
+                        <img t-if="photo" t-att-src="photo" alt="" width="72" height="72" loading="lazy"/>
+                        <span>
+                            <b t-out="product.product_tmpl_id.name"/>
+                            <small><t t-if="variant_label"><t t-out="variant_label"/> · </t><t t-out="price_text"/></small>
+                        </span>
+                    </div>
+                    <form t-attf-action="/ocd/essayer/magasin/#{place.id}" method="post" class="o_ocd_hold_sheet o_ocd_form" novalidate="novalidate">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="product_id" t-att-value="product.id"/>
+                        <input type="text" name="website_url" class="o_ocd_hp" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">Hold it to try</h1>
+                        <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                        <p class="o_ocd_hold_promise" t-out="promise"/>
+                        <div class="o_ocd_hold_store">
+                            <b t-out="place.name"/>
+                            <small t-out="store_line"/>
+                        </div>
+                        <div t-if="not known" class="o_ocd_field">
+                            <label for="h-phone" class="o_ocd_label">Your WhatsApp</label>
+                            <t t-call="ocd_live.phone_field" field_id.f="h-phone"/>
+                        </div>
+                        <button type="submit" class="o_ocd_cta">Hold it</button>
+                        <p class="o_ocd_note o_ocd_hold_rules">
+                            The store can refuse: we write to you right away.
+                            One piece held at a time at a vendor; after several absences, it is no longer possible there.
+                        </p>
+                        <a t-att-href="back" class="o_ocd_link o_ocd_hold_cancel">Cancel</a>
+                    </form>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The hold: where, until when, the itinerary, « I no longer come » -->
+    <template id="hold_page" name="OCD Live: a piece held to try">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Held to try</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_hold">
+                    <div t-attf-class="#{'o_ocd_ok' if status_ok else 'o_ocd_info'} o_ocd_hold_status" role="status" t-out="status"/>
+                    <div class="o_ocd_hold_card">
+                        <b t-out="hold.product_id.display_name"/>
+                        <span t-out="' · '.join(part for part in (hold.place_id.name, store_line) if part)"/>
+                        <strong t-if="until_line" t-out="until_line"/>
+                        <div t-if="active" class="o_ocd_hold_buttons">
+                            <a t-att-href="directions" target="_blank" rel="noopener" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">Itinerary</a>
+                            <form t-attf-action="#{base}/annuler?#{token_query}" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">I no longer come</button>
+                            </form>
+                        </div>
+                        <a t-if="active and phone" t-attf-href="tel:+#{phone}" class="o_ocd_link">Call the store</a>
+                        <a t-if="hold.state in ('refused', 'expired', 'cancelled', 'not_taken', 'no_show')" t-att-href="product_url"
+                           class="o_ocd_cta o_ocd_cta_small">See the product</a>
+                    </div>
+                    <p t-if="active" class="o_ocd_note">Without a visit by then, the piece is on sale again for everyone.</p>
                 </main>
             </div>
         </t>

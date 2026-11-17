@@ -195,6 +195,14 @@ export class OcdProductPage extends Interaction {
             pill.classList.toggle("o_ocd_store_stock_in", level > 0);
             pill.classList.toggle("o_ocd_store_stock_out", level <= 0);
         });
+        // « Hold it to try »: in the stores that have the piece chosen
+        box.querySelectorAll(".o_ocd_store_stock_row").forEach((row, index) => {
+            const link = row.querySelector(".o_ocd_store_hold");
+            if (link) {
+                link.classList.toggle("d-none", (variant.stores[index] || 0) <= 0);
+                link.href = `${link.dataset.base}?produit=${variant.id}`;
+            }
+        });
     }
 
     keepInAddress(values) {

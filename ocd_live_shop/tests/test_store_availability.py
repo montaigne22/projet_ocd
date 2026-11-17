@@ -93,10 +93,17 @@ class TestOcdStoreAvailability(HttpCase, OcdShopCommon):
     def test_one_place_the_stores_without_their_stock(self):
         self._place("Brenda Wax Akwa", self.akwa)
         self._variant("Bleu", "M")._ocd_change_stock(2)
+        self.company.ocd_hold_enabled = False
         page = self._page(self._variant("Bleu", "M"))
         self.assertIn("Also in store: Akwa", page, "One place: as before (chantier 17)")
         self.assertNotIn("o_ocd_product_store_stock", page)
         self.assertIsNone(self._data(page)["variants"][0]["stores"])
+        # A piece can be held there to try (chantier 20): the store shows the stock of the choice
+        self.company.ocd_hold_enabled = True
+        page = self._page(self._variant("Bleu", "M"))
+        self.assertIn("o_ocd_product_store_stock", page)
+        self.assertIn("Hold it to try", page)
+        self.assertNotIn("Also in store: Akwa", page)
 
     def test_tell_me_where_it_came_back(self):
         akwa = self._place("Brenda Wax Akwa", self.akwa)

@@ -128,6 +128,20 @@ Tell the customer.</field>
         <field name="tools">Scheduled task.</field>
     </record>
 
+    <record id="automation_hold" model="ocd.automation">
+        <field name="code">hold</field>
+        <field name="name">Piece held to try: the vendor, then the customer</field>
+        <field name="sequence">74</field>
+        <field name="group">shop</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_product_hold"/>
+        <field name="when">When a customer holds a piece, when the vendor answers</field>
+        <field name="trigger">« Hold it to try » on the page of a product, « OK » or « Refuse » in « My parcels ».</field>
+        <field name="scope">The vendors of the stores, the customers who hold a piece.</field>
+        <field name="actions">Tell the vendor a piece is held for a customer; tell the customer the store keeps it for them, or cannot (with the link to order it).</field>
+        <field name="tools">Code of OCD Live.</field>
+    </record>
+
     <record id="automation_holiday_back" model="ocd.automation">
         <field name="code">holiday_back</field>
         <field name="name">Vendor back from holiday: tell the customers who asked</field>

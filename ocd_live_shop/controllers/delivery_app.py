@@ -311,7 +311,81 @@ class OcdDeliveryApp(http.Controller):
             step["number"] = number
         return steps
 
-    def _render(self, token, partner, message=None, error=None, parcel_id=None, tab=None):
+    # === PIECES HELD TO TRY (chantier 20, design MettreDeCote) === #
+
+    def _customer_name(self, partner):
+        """The first name of the customer; their number when it is all we know."""
+        name = partner.name or ""
+        return name if name.startswith("+") else (name.split()[0] if name else "")
+
+    def _hold_cards(self, partner):
+        if partner.ocd_is_courier or not partner.ocd_is_vendor:
+            return []
+        holds = request.env["ocd.product.hold"].sudo().search(
+            [("vendor_id", "=", partner.id), ("state", "in", ("requested", "accepted"))], order="deadline, id"
+        )
+        return [self._hold_card(hold) for hold in holds]
+
+    def _hold_card(self, hold):
+        env = request.env
+        customer = self._customer_name(hold.partner_id)
+        until = hold._ocd_deadline_text()
+        new = hold.state == "requested"
+        phone = re.sub(r"\D", "", hold.partner_id.phone or "")
+        return {
+            "hold": hold,
+            "new": new,
+            "title": env._("%s wants to try it", customer) if new else env._("%s comes to try it", customer),
+            "pill_label": env._("New") if new else env._("Held"),
+            "items": " · ".join((hold.product_id.display_name, hold.place_id.name)),
+            "until": env._("Held until %s", until),
+            "hint": env._("Without an answer, the piece stays held until %s.", until) if new else env._(
+                "« Bought »: paid at the store, the piece leaves the stock of %s. « Not bought »: it is on sale again.",
+                hold.place_id.name,
+            ),
+            "phone": phone,
+            "whatsapp": f"https://wa.me/{phone}" if len(phone) >= 8 else False,
+        }
+
+    @http.route(
+        "/ocd/livrer/<string:token>/essai/<int:hold_id>/<string:action>",
+        type="http", auth="public", website=True, methods=["POST"], sitemap=False,
+    )
+    def act_hold(self, token, hold_id, action, **post):
+        """The answer of the vendor to a piece held, then how it went at the store."""
+        partner = self._partner(token)
+        hold = request.env["ocd.product.hold"].sudo().browse(hold_id).exists()
+        if not hold or hold.vendor_id != partner:
+            raise request.not_found()
+        env = request.env
+        customer = self._customer_name(hold.partner_id)
+        blocked = None
+        try:
+            if action == "accept":
+                hold.action_ocd_accept()
+                message = env._("OK: %s is told the piece waits for them.", customer)
+            elif action == "refuse":
+                hold.action_ocd_refuse()
+                message = env._("Refused: the piece is on sale again, %s is told.", customer)
+            elif action in ("taken", "not_taken", "no_show"):
+                hold.action_ocd_outcome(action)
+                message = {
+                    "taken": env._("Sold: the piece left the stock of %s.", hold.place_id.name),
+                    "not_taken": env._("Noted: the piece is on sale again."),
+                    "no_show": env._("Noted: the piece is on sale again."),
+                }[action]
+                if action == "no_show" and env["ocd.product.hold"].sudo()._ocd_blocked(hold.partner_id, partner):
+                    blocked = hold
+            elif action == "unblock":
+                hold.action_ocd_unblock()
+                message = env._("%s can hold pieces at your stores again.", customer)
+            else:
+                raise request.not_found()
+        except UserError as exc:
+            return self._render(token, partner, error=exc.args[0], tab="essayer")
+        return self._render(token, partner, message=message, tab="essayer", blocked_hold=blocked)
+
+    def _render(self, token, partner, message=None, error=None, parcel_id=None, tab=None, blocked_hold=None):
         mine, done = self._parcels(partner)
         cards = [self._card(parcel, partner) for parcel in mine]
         if parcel_id and parcel_id not in mine.ids:
@@ -331,7 +405,7 @@ class OcdDeliveryApp(http.Controller):
             "card_message": message if parcel_id else None,
             "card_error": error if parcel_id else None,
             "card_id": parcel_id,
-            "tab": {"livres": "done", "magasin": "store"}.get(tab, "todo"),
+            "tab": {"livres": "done", "magasin": "store", "essayer": "try"}.get(tab, "todo"),
             "header_name": request.env._("OCD courier") if partner.ocd_is_courier else request.env._("My parcels"),
             "header_link": self._header_link(partner),
             "nav": False if partner.ocd_is_courier else "me",
@@ -369,7 +443,18 @@ class OcdDeliveryApp(http.Controller):
             template = "ocd_live_shop.delivery_tour"
         else:
             store_cards = [card for card in cards if card["collect"]]
+            hold_cards = self._hold_cards(partner)
+            customer = self._customer_name(blocked_hold.partner_id) if blocked_hold else ""
             values.update({
+                "hold_cards": hold_cards,
+                "hold_label": request.env._("To try · %s", len(hold_cards)) if hold_cards else "",
+                "hold_banner": request.env._("%s pieces held to try", len(hold_cards)) if len(hold_cards) > 1
+                else request.env._("1 piece held to try") if hold_cards else "",
+                "blocked_hold": blocked_hold,
+                "blocked_line": request.env._(
+                    "%(count)s absences: %(customer)s can no longer hold pieces at your stores. You can unblock them.",
+                    count=blocked_hold.company_id.ocd_hold_max_absences, customer=customer,
+                ) if blocked_hold else "",
                 "hello": request.env._("Hello %s", self._first_name(partner)),
                 "payout_line": self._payout_line(partner),
                 "todo_label": request.env._("To do · %s", len(cards)),

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Pieces held to try in a store (chantier 20, A.7): what the vendors answered, what the
+         customers did -->
+    <record id="ocd_product_hold_view_list" model="ir.ui.view">
+        <field name="name">ocd.product.hold.list</field>
+        <field name="model">ocd.product.hold</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-muted="state in ('cancelled', 'expired', 'refused')"
+                  decoration-success="state == 'taken'" decoration-warning="state == 'no_show'">
+                <field name="create_date" string="Held at"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="place_id"/>
+                <field name="vendor_id" optional="hide"/>
+                <field name="deadline"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('requested', 'accepted')" decoration-success="state == 'taken'"
+                       decoration-warning="state == 'no_show'"/>
+                <field name="forgiven" optional="hide"/>
+                <field name="picking_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_product_hold_view_search" model="ir.ui.view">
+        <field name="name">ocd.product.hold.search</field>
+        <field name="model">ocd.product.hold</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="vendor_id"/>
+                <field name="place_id"/>
+                <filter name="active_holds" string="Held now" domain="[('state', 'in', ('requested', 'accepted'))]"/>
+                <filter name="no_show" string="Did not come" domain="[('state', '=', 'no_show')]"/>
+                <filter name="taken" string="Bought" domain="[('state', '=', 'taken')]"/>
+                <separator/>
+                <filter name="group_vendor" string="Vendor" context="{'group_by': 'vendor_id'}"/>
+                <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_product_hold_action" model="ir.actions.act_window">
+        <field name="name">Pieces held to try</field>
+        <field name="res_model">ocd.product.hold</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_active_holds': 1}</field>
+        <field name="help" type="html">
+            <p>The pieces the customers hold in a store to come and try them. The vendor answers in « My parcels »; past the time, the piece is on sale again.</p>
+        </field>
+    </record>
+
+</odoo>
