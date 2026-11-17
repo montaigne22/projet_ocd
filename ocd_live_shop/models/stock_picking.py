@@ -269,11 +269,15 @@ class StockPicking(models.Model):
                 mode, courier, note = picking._ocd_parcel_from_delivery(line)
             else:
                 mode, courier, note = picking._ocd_parcel_from_zones()
+            # Picked up by the customer in a store (chantier 20): the vendor hands it over there
+            collect = bool(line) and line.operator == "store" and bool(line.pickup_place_id)
             picking.write({
                 "ocd_is_parcel": True,
                 "ocd_delivery_mode": mode,
                 "ocd_courier_id": courier.id,
-                "ocd_pickup_place_id": (picking.ocd_pickup_place_id or vendor.sudo()._ocd_departure_place()).id
+                "ocd_collect": collect,
+                "ocd_pickup_place_id": line.pickup_place_id.id if collect else (
+                    picking.ocd_pickup_place_id or vendor.sudo()._ocd_departure_place()).id
                 if vendor and mode != "stock" else False,
                 "ocd_stage": "to_prepare",
                 "ocd_goods_amount": picking._ocd_compute_goods_amount(),
@@ -290,6 +294,8 @@ class StockPicking(models.Model):
         self.ensure_one()
         Partner = self.env["res.partner"]
         vendor = self.ocd_vendor_id
+        if line.operator == "store" and vendor:
+            return "vendor", vendor, self.env._("The customer picks the parcel up at %s.", line.pickup_place_id.name or "-")
         if line.operator == "vendor" and vendor:
             return "vendor", vendor, False
         mode = "stock" if not vendor or vendor.ocd_delivery_mode == "stock" else "pickup"
@@ -401,10 +407,15 @@ class StockPicking(models.Model):
             picking_sudo = picking.sudo()
             vals = {"ocd_stage": "on_the_way", "ocd_left_at": now, "ocd_code_sent_at": now}
             if not picking_sudo.ocd_delivery_code:
-                vals.update({"ocd_delivery_code": f"{secrets.randbelow(10000):04d}", "ocd_code_attempts": 0})
+                vals.update({"ocd_delivery_code": picking._ocd_new_code(), "ocd_code_attempts": 0})
             picking_sudo.write(vals)
             picking._ocd_send_code()
         return True
+
+    @api.model
+    def _ocd_new_code(self):
+        """A code of 4 digits, given by the customer at the handover."""
+        return f"{secrets.randbelow(10000):04d}"
 
     def action_ocd_resend_code(self):
         self._ocd_check_stage(("on_the_way",))
@@ -413,9 +424,12 @@ class StockPicking(models.Model):
         return True
 
     def _ocd_check_code(self, code):
-        """Check the code given by the customer. Return a tuple (delivered, attempts left)."""
+        """Check the code given by the customer. Return a tuple (delivered, attempts left). A
+        parcel picked up at the store is handed over once ready, and paid."""
         self.ensure_one()
-        self._ocd_check_stage(("on_the_way",))
+        self._ocd_check_stage(("on_the_way", "ready") if self.ocd_collect else ("on_the_way",))
+        if self.ocd_collect and self.ocd_cod_state == "to_collect":
+            raise UserError(self.env._("Collect the payment first, then type the code of the customer."))
         if self.ocd_code_locked:
             raise UserError(self.env._("This parcel is locked after too many wrong codes. Call the team."))
         expected = self.sudo().ocd_delivery_code or ""
@@ -520,7 +534,8 @@ class StockPicking(models.Model):
         self._ocd_return()
         return True
 
-    def _ocd_return(self):
+    def _ocd_return(self, event="returned"):
+        """The parcel goes back (`event`: the message to the customer)."""
         for picking in self:
             picking.write({"ocd_stage": "returned"})
             if picking.state not in ("done", "cancel"):
@@ -535,7 +550,7 @@ class StockPicking(models.Model):
                     ),
                     ACTIVITY_REFUND,
                 )
-            picking._ocd_notify_customer("returned")
+            picking._ocd_notify_customer(event)
 
     def _ocd_assign_courier(self, courier):
         self._ocd_check_stage(OPEN_STAGES)
@@ -780,11 +795,11 @@ class StockPicking(models.Model):
                     picking._ocd_remind_vendor()
             elif picking.ocd_reminded_at + timedelta(hours=company.ocd_escalation_hours) <= now:
                 picking.ocd_escalated_at = now
-                picking._ocd_alert(
-                    self.env._(
-                        "%(vendor)s has not prepared the parcel %(parcel)s yet: give it to an OCD courier?",
-                        vendor=picking.ocd_vendor_id.name or "-",
-                        parcel=picking.name,
-                    ),
-                    ACTIVITY_LATE,
+                message = self.env._(
+                    "%(vendor)s has not prepared the parcel %(parcel)s yet: the customer picks it up at the store.",
+                    vendor=picking.ocd_vendor_id.name or "-", parcel=picking.name,
+                ) if picking.ocd_collect else self.env._(
+                    "%(vendor)s has not prepared the parcel %(parcel)s yet: give it to an OCD courier?",
+                    vendor=picking.ocd_vendor_id.name or "-", parcel=picking.name,
                 )
+                picking._ocd_alert(message, ACTIVITY_LATE)

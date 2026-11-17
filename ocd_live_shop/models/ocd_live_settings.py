@@ -106,6 +106,12 @@ class OcdLiveSettings(models.AbstractModel):
                 item("number", "ocd_max_failed_attempts", _("Failed attempts before the return"),
                      _("After the last one: back to the vendor, and a credit note when the customer paid online."),
                      suffix=_("attempts"), min=1, max=10, width=70),
+                item("check", "ocd_store_pickup", _("Pick up in a store"),
+                     _("The customer picks the parcel of a vendor up in one of their stores that has it, without "
+                       "delivery fee; paid online or at the counter.")),
+                item("number", "ocd_collect_days", _("Days to pick up a parcel"),
+                     _("Until the closing of the store on the last day; a reminder the day before, then cancelled."),
+                     suffix=_("days"), min=1, max=30, width=70),
                 item("time", "ocd_cash_deadline", _("Cash handed over by the couriers"),
                      _("After this hour, the manager is alerted."), suffix=_("every evening")),
                 item("number", "ocd_return_days", _("Return asked by the customer"),

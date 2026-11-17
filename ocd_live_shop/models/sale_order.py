@@ -101,9 +101,10 @@ class SaleOrder(models.Model):
             groups[vendor] = groups.get(vendor, 0.0) + line.price_total
         return groups
 
-    def _ocd_delivery_quotes(self, partner=None):
+    def _ocd_delivery_quotes(self, partner=None, collect=None):
         """The delivery of each parcel of the order to `partner` (the delivery address by
-        default), as `ocd.delivery.rate._ocd_quote` gives it."""
+        default), as `ocd.delivery.rate._ocd_quote` gives it; free for a parcel picked up in a
+        store (`collect`: {vendor: store} being chosen, else the stores chosen on the order)."""
         self.ensure_one()
         partner = partner if partner is not None else self.partner_shipping_id
         Rate = self.env["ocd.delivery.rate"]
@@ -114,11 +115,20 @@ class SaleOrder(models.Model):
         for line in self.order_line.filtered(lambda l: not l.is_delivery and not l.display_type and l.product_id):
             pieces = quantities.setdefault(line.ocd_vendor_id, {})
             pieces[line.product_id] = pieces.get(line.product_id, 0) + line.product_uom_qty
-        return [
-            Rate._ocd_quote(vendor, partner, amount, self.currency_id, self.company_id, date=date, rates=rates,
-                            quantities=quantities.get(vendor))
-            for vendor, amount in self._ocd_delivery_groups().items()
-        ]
+        quotes = []
+        for vendor, amount in self._ocd_delivery_groups().items():
+            if collect is not None:
+                store = collect.get(vendor) if vendor else False
+                if store and (store, True) not in self._ocd_collect_options(vendor):
+                    store = False
+            else:
+                store = self._ocd_collect_place(vendor) if vendor else False
+            if store:
+                quotes.append(Rate._ocd_collect_quote(vendor, store))
+                continue
+            quotes.append(Rate._ocd_quote(vendor, partner, amount, self.currency_id, self.company_id, date=date,
+                                          rates=rates, quantities=quantities.get(vendor)))
+        return quotes
 
     def _ocd_store_delivery_quotes(self):
         """Keep the delivery of each parcel as it is priced now: the parcels take their exact
@@ -139,6 +149,7 @@ class SaleOrder(models.Model):
                 "amount": quote["price"],
                 "allow_cod": quote["allow_cod"],
                 "description": quote["description"] or False,
+                "pickup_place_id": quote["place"].id if quote.get("place") else False,
             } for quote in quotes])
 
     def set_delivery_line(self, carrier, amount):

@@ -358,7 +358,9 @@
             </div>
         </form>
         <t t-call="ocd_live_shop.parcel_feedback"/>
-        <details class="o_ocd_parcel_problem">
+        <span t-if="card.get('counter_note')" class="o_ocd_parcel_hint" t-out="card['counter_note']"/>
+        <!-- At the counter of the store: no delivery problem to report -->
+        <details t-if="not card.get('collect')" class="o_ocd_parcel_problem">
             <summary>A problem?</summary>
             <form t-attf-action="#{base}/colis/#{parcel.id}/problem" method="post" class="o_ocd_parcel_reasons">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -388,13 +390,17 @@
                     <nav class="o_ocd_tabs" aria-label="My parcels">
                         <a t-att-href="base" t-att-class="'o_ocd_on' if tab == 'todo' else None"
                            t-att-aria-current="'page' if tab == 'todo' else None" t-out="todo_label"/>
+                        <a t-if="store_label" t-attf-href="#{base}?vue=magasin" t-att-class="'o_ocd_on' if tab == 'store' else None"
+                           t-att-aria-current="'page' if tab == 'store' else None" t-out="store_label"/>
                         <a t-attf-href="#{base}?vue=livres" t-att-class="'o_ocd_on' if tab == 'done' else None"
                            t-att-aria-current="'page' if tab == 'done' else None" t-out="done_label"/>
                     </nav>
-                    <t t-if="tab == 'todo'">
+                    <t t-if="tab in ('todo', 'store')">
                         <t t-foreach="cards" t-as="card">
                             <t t-set="parcel" t-value="card['parcel']"/>
-                            <div t-attf-class="o_ocd_parcel #{'o_ocd_parcel_on' if parcel.ocd_stage == 'on_the_way' and card['delivers'] else ''} o_ocd_live_shop_parcel"
+                            <!-- At the counter: a parcel picked up at the store, ready, is handed over like at the door -->
+                            <t t-set="at_counter" t-value="card['collect'] and card['delivers'] and parcel.ocd_stage == 'ready'"/>
+                            <div t-attf-class="o_ocd_parcel #{'o_ocd_parcel_on' if (parcel.ocd_stage == 'on_the_way' and card['delivers']) or at_counter else ''} o_ocd_live_shop_parcel"
                                  t-attf-id="colis-#{parcel.id}">
                                 <div class="o_ocd_parcel_head">
                                     <b t-out="card['for_title']"/>
@@ -422,7 +428,9 @@
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         <button class="o_ocd_parcel_go o_ocd_parcel_wide">It is ready</button>
                                     </form>
+                                    <span t-if="card['collect']" class="o_ocd_parcel_hint" t-out="card['collect_note']"/>
                                 </t>
+                                <t t-elif="at_counter" t-call="ocd_live_shop.parcel_on_the_way"/>
                                 <t t-elif="card['delivers'] and parcel.ocd_stage in ('ready', 'picked') and not card['to_pick']">
                                     <span t-if="parcel.ocd_cod_state == 'to_collect' and card['methods']" class="o_ocd_parcel_note">
                                         Ready. At the door, tap “Mobile Money” for the customer to pay on their phone, or take the cash.
@@ -449,7 +457,7 @@
                                 <t t-elif="card['prepares'] and parcel.ocd_stage in ('picked', 'on_the_way') and card['picked_line']">
                                     <span class="o_ocd_parcel_note o_ocd_parcel_note_ok" role="status" t-out="card['picked_line']"/>
                                 </t>
-                                <t t-if="parcel.ocd_stage != 'on_the_way' or not card['delivers']" t-call="ocd_live_shop.parcel_feedback"/>
+                                <t t-if="(parcel.ocd_stage != 'on_the_way' or not card['delivers']) and not at_counter" t-call="ocd_live_shop.parcel_feedback"/>
                             </div>
                         </t>
                         <div t-if="not cards" class="o_ocd_info">No parcel to prepare or to deliver.</div>

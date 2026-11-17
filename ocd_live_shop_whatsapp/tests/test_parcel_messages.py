@@ -6,6 +6,7 @@ from odoo.modules.module import load_script
 from odoo.tests import tagged
 
 from odoo.addons.ocd_live_shop.tests.common import OcdShopCommon
+from odoo.addons.ocd_live_shop.tests.test_delivery_rates import OcdRatesCommon
 from odoo.addons.whatsapp_cloud.models.whatsapp_template import AUTHENTICATION_RE, WhatsappTemplate
 
 
@@ -166,3 +167,48 @@ class TestOcdParcelMessages(OcdShopCommon):
         self.assertEqual(parcels._ocd_whatsapp_keep(feedback), second)
         other = Template.new({"template_name": "ocd_colis_livre"})
         self.assertEqual(parcels._ocd_whatsapp_keep(other), parcels)
+
+
+@tagged("post_install", "-at_install")
+class TestOcdCollectMessages(OcdRatesCommon):
+    """Pick up in a store (chantier 20): the customer is told when it is ready, the day before
+    the end, and when it is cancelled; the code stays behind the button."""
+
+    def test_messages_of_a_parcel_picked_up_at_the_store(self):
+        self.company.write({"ocd_business_offered_all": True, "ocd_vendor_places_max": 5, "ocd_place_check": False,
+                            "ocd_place_proof_required": False, "ocd_store_pickup": True, "ocd_collect_days": 3})
+        self.dress.is_storable = True
+        store = self.env["ocd.vendor.place"]._ocd_vendor_create(self.brenda, {
+            "name": "Brenda Wax Akwa", "kind": "store", "district_id": self.akwa.id, "city_id": self.douala.id,
+        })
+        store._ocd_set_hours(self.company._ocd_place_default_intervals())
+        self.dress._ocd_change_stock(3)
+        calls = []
+
+        def fake_send(template, records):
+            calls.append((template.template_name, records))
+            return template.env["whatsapp.message"]
+
+        with patch.object(WhatsappTemplate, "_send", fake_send):
+            order = self._cart(self.estelle, [(self.dress, 1)])
+            order._ocd_set_collect_places(store)
+            order.set_delivery_line(self.carrier_ocd, self.carrier_ocd.rate_shipment(order)["price"])
+            order.action_confirm()
+            parcel = order.picking_ids.filtered("ocd_is_parcel")
+            parcel.action_ocd_collect_ready()
+            parcel.ocd_collect_deadline = fields.Datetime.now() + timedelta(hours=5)
+            self.env["stock.picking"]._cron_ocd_collect()
+            parcel.ocd_collect_deadline = fields.Datetime.now() - timedelta(minutes=5)
+            self.env["stock.picking"]._cron_ocd_collect()
+        names = [name for name, _records in calls if name.startswith("ocd_")]
+        self.assertEqual(names, ["ocd_colis_a_preparer_magasin", "ocd_colis_pret_magasin", "ocd_colis_rappel_magasin",
+                                 "ocd_colis_non_retire"])
+        template = self.env.ref("ocd_live_shop_whatsapp.template_parcel_collect_ready")
+        values = [template._render(variable.value, parcel)[parcel.id] for variable in template.variable_ids.sorted("sequence")]
+        self.assertEqual(values[2], "Brenda Wax Akwa")
+        self.assertRegex(values[3], r"^(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche) \d+ \w+ \S+ \d\d:\d\d$")
+        self.assertNotIn(parcel.sudo().ocd_delivery_code, values)
+        self.assertEqual(template.button_ids.name, "Voir mon code")
+        english = self.env.ref("ocd_live_shop_whatsapp.template_parcel_collect_ready_en")
+        self.assertRegex(english._render(english.variable_ids.sorted("sequence")[3].value, parcel)[parcel.id],
+                         r"^[A-Z][a-z]+day \d+ [A-Z][a-z]+ at \d\d:\d\d$")

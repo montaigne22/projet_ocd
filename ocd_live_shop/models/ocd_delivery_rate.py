@@ -17,6 +17,7 @@ OPERATORS = [
     ("vendor", "The vendor delivers"),
     ("courier", "An OCD courier delivers"),
     ("agency", "Sent through a travel agency"),
+    ("store", "The customer picks it up at the store"),
 ]
 
 
@@ -40,7 +41,7 @@ class OcdDeliveryRate(models.Model):
         domain=[("ocd_is_vendor", "=", True)],
         help="Empty: a rate of OCD Live, for its couriers or for a travel agency.",
     )
-    operator = fields.Selection(selection=OPERATORS, string="Who Delivers", required=True, default="courier")
+    operator = fields.Selection(selection=OPERATORS[:3], string="Who Delivers", required=True, default="courier")
     origin_country_id = fields.Many2one(
         comodel_name="res.country",
         string="From Country",

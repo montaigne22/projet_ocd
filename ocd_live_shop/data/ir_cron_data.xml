@@ -40,6 +40,17 @@
         <field name="interval_type">minutes</field>
     </record>
 
+    <!-- The parcels waiting in a store: a reminder the day before the end, then cancelled -->
+    <record id="ir_cron_collect" model="ir.cron">
+        <field name="name">OCD Live: parcels to pick up in a store</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_ocd_collect()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+    </record>
+
     <!-- The vendors back from holiday: the orders start again, the customers who asked are told -->
     <record id="ir_cron_holiday_back" model="ir.cron">
         <field name="name">OCD Live: vendors back from holiday</field>

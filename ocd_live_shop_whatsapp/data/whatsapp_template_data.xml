@@ -32,6 +32,24 @@
             ]"/>
         </record>
 
+        <!-- Pick up in a store (chantier 20): the vendor prepares the parcel for the counter -->
+        <record id="template_parcel_collect_to_prepare" model="whatsapp.template">
+            <field name="name">OCD Live: parcel to prepare for the store</field>
+            <field name="template_name">ocd_colis_a_preparer_magasin</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">ocd_vendor_id</field>
+            <field name="body">Bonjour {{1}}, {{2}} passe chercher sa commande au magasin {{3}}. Contenu : {{4}}. Préparez-la et touchez le bouton quand elle est prête : le client reçoit alors son code.</field>
+            <field name="button_url_value">{{ 'ocd/livrer/' + object.ocd_vendor_id._ocd_get_space_token() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes colis', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/livrer/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Brenda'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_pickup_place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
+                (0, 0, {'sequence': 4, 'value': '{{ \', \'.join(object.move_ids.mapped(\'product_id.name\')) }}', 'sample_value': 'Robe en wax'}),
+            ]"/>
+        </record>
+
         <record id="template_parcel_reminder" model="whatsapp.template">
             <field name="name">OCD Live: parcel not ready</field>
             <field name="template_name">ocd_colis_rappel</field>
@@ -262,6 +280,57 @@
                 (0, 0, {'sequence': 1, 'value': '{{ object.ocd_vendor_id.name }}', 'sample_value': 'Awa'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object._ocd_free_total() }}', 'sample_value': '2'}),
                 (0, 0, {'sequence': 3, 'value': '{{ object.name }}', 'sample_value': 'Robe en wax'}),
+            ]"/>
+        </record>
+
+        <!-- Pick up in a store (chantier 20): the code is not in the message (Meta takes a code
+             in a Utility template for an authentication), the button opens the page of the order
+             with the code and the itinerary -->
+        <record id="template_parcel_collect_ready" model="whatsapp.template">
+            <field name="name">OCD Live: parcel ready at the store</field>
+            <field name="template_name">ocd_colis_pret_magasin</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} est prête au magasin {{3}}. Vous avez jusqu'au {{4}} pour la retirer. Touchez « Voir mon code » pour votre code de retrait et l'itinéraire.</field>
+            <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir mon code', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin or object.name }}', 'sample_value': 'S00042'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_pickup_place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.with_context(lang=\'fr_FR\')._ocd_collect_deadline_text() }}', 'sample_value': 'jeudi 20 novembre à 19:00'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_collect_reminder" model="whatsapp.template">
+            <field name="name">OCD Live: parcel to pick up before the end</field>
+            <field name="template_name">ocd_colis_rappel_magasin</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} vous attend au magasin {{3}} jusqu'au {{4}}. Passé ce délai, elle sera annulée. Touchez « Voir mon code » pour votre code de retrait et l'itinéraire.</field>
+            <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir mon code', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin or object.name }}', 'sample_value': 'S00042'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_pickup_place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.with_context(lang=\'fr_FR\')._ocd_collect_deadline_text() }}', 'sample_value': 'jeudi 20 novembre à 19:00'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_collect_expired" model="whatsapp.template">
+            <field name="name">OCD Live: parcel not picked up, cancelled</field>
+            <field name="template_name">ocd_colis_non_retire</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} n'a pas été retirée à temps au magasin {{3}} : elle est annulée. Si vous l'aviez payée en ligne, l'équipe OCD Live vous rembourse.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin or object.name }}', 'sample_value': 'S00042'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_pickup_place_id.name }}', 'sample_value': 'Brenda Wax Akwa'}),
             ]"/>
         </record>
 

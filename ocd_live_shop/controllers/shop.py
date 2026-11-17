@@ -507,7 +507,14 @@ class OcdShop(WebsiteSale):
         lines = order.order_line.filtered(lambda line: not line.is_delivery)
         count = int(sum(lines.mapped("product_uom_qty")))
         goods = common.money(sum(lines.mapped("price_total")), order.currency_id)
-        method = self._ocd_rate_preview(order, country, city, districts.filtered(lambda d: d.id == district_id)[:1])
+        district = districts.filtered(lambda d: d.id == district_id)[:1]
+        blocks = self._ocd_collect_blocks(order, values)
+        collect = self._ocd_collect_choice(blocks)
+        method = self._ocd_rate_preview(order, country, city, district, collect=collect)
+        home = self._ocd_home_fees(order, country, city, district, [block["vendor"] for block in blocks])
+        for block in blocks:
+            block.update(home.get(block["vendor"].id, {}))
+        collect_only = self._ocd_is_collect_only(order, collect)
         phone_country = env["res.country"].sudo().browse(int(values["country_id"])).exists() if str(
             values.get("country_id") or "").isdigit() else (partner.country_id or country)
         phone = values.get("phone") if "phone" in values else common.local_digits(phone_country, partner.phone or "")
@@ -519,6 +526,13 @@ class OcdShop(WebsiteSale):
             step_total=3,
             step_label=env._("Step %(step)s of %(total)s", step=1, total=3),
             order=order,
+            title=env._("How do you get your order?") if blocks else env._("Where do we deliver?"),
+            blocks=blocks,
+            collect_only=collect_only,
+            collect_note=env._(
+                "The store writes to you on WhatsApp when it is ready, with your code. You have %s days to come.",
+                max(order.company_id.ocd_collect_days or 3, 1),
+            ),
             name=values.get("name", partner.name or ""),
             phone_value=phone,
             optin=values.get("optin", "1" if (not partner or partner.ocd_whatsapp_optin) else ""),
@@ -546,6 +560,92 @@ class OcdShop(WebsiteSale):
         carrier = carrier.sudo() if carrier else carrier
         return carrier if carrier and carrier.active and carrier.is_published else False
 
+    # === PICK UP IN A STORE (design: RetraitMagasin) === #
+
+    def _ocd_collect_blocks(self, order, values=None):
+        """The vendors of the cart who offer the pickup in one of their stores: their stores
+        (the ones without the whole parcel shown, not chosen), and the choice of the customer
+        (sent with the form, else kept on the cart)."""
+        env = request.env
+        values = values or {}
+        blocks = []
+        for vendor in order._ocd_delivery_groups():
+            options = order._ocd_collect_options(vendor) if vendor else []
+            if not options:
+                continue
+            key = str(vendor.id)
+            if f"recevoir_{key}" in values:
+                collect = values.get(f"recevoir_{key}") == "retrait"
+                chosen_id = int(values[f"magasin_{key}"]) if str(values.get(f"magasin_{key}") or "").isdigit() else 0
+            else:
+                saved = order.ocd_collect_place_ids.filtered(lambda place, vendor=vendor: place.vendor_id == vendor)[:1]
+                collect, chosen_id = bool(saved), saved.id
+            served = [store for store, ok in options if ok]
+            if not chosen_id and len(served) == 1:
+                chosen_id = served[0].id
+            chosen = next((store for store in served if store.id == chosen_id), False)
+            names = order.order_line.filtered(
+                lambda line, vendor=vendor: not line.is_delivery and line.product_id and line.ocd_vendor_id == vendor
+            ).product_id.mapped("display_name")
+            blocks.append({
+                "vendor": vendor,
+                "key": key,
+                "title": env._("Parcel of %s", vendor.name),
+                "items": ", ".join(names[:3]) + (", ..." if len(names) > 3 else ""),
+                "collect": collect and bool(served),
+                "store": chosen,
+                "served": bool(served),
+                "stores": [{
+                    "id": store.id,
+                    "name": store.name,
+                    "line": " · ".join(part for part in (
+                        store.landmark or store._ocd_area(), store._ocd_open_state()["label"],
+                    ) if part),
+                    "ok": ok,
+                    "checked": bool(chosen) and store == chosen,
+                } for store, ok in options],
+                "home_fee": "",
+                "home_note": "",
+            })
+        return blocks
+
+    def _ocd_collect_choice(self, blocks):
+        """{vendor: store} of the parcels picked up in a store."""
+        return {block["vendor"]: block["store"] for block in blocks if block["collect"] and block["store"]}
+
+    def _ocd_is_collect_only(self, order, collect):
+        """Whether every parcel is picked up in a store: no address to give."""
+        groups = order._ocd_delivery_groups()
+        return bool(collect) and bool(groups) and all(vendor in collect for vendor in groups)
+
+    def _ocd_preview_partner(self, country, city, district):
+        return request.env["res.partner"].sudo().new({
+            "country_id": country.id, "city_id": city.id, "district_id": district.id, "city": city.name,
+        })
+
+    def _ocd_home_fees(self, order, country, city, district, vendors):
+        """The price of « Delivered to me » for the parcels that could also be picked up in a
+        store: {vendor id: {"home_fee", "home_note"}}."""
+        if not vendors or not self._ocd_carrier():
+            return {}
+        if not city:
+            note = request.env._("Choose your city: the price shows here.")
+            return {vendor.id: {"home_fee": "", "home_note": note} for vendor in vendors}
+        quotes = order._ocd_delivery_quotes(partner=self._ocd_preview_partner(country, city, district), collect={})
+        fees = {}
+        for quote in quotes:
+            if quote["vendor"] not in vendors:
+                continue
+            if quote["error"]:
+                fees[quote["vendor"].id] = {"home_fee": "", "home_note": quote["error"]}
+                continue
+            area = district.name or city.name
+            fees[quote["vendor"].id] = {
+                "home_fee": common.money(quote["price"], order.currency_id) if quote["price"] else request.env._("Free"),
+                "home_note": request.env._("At your place, in %s", area) if area else "",
+            }
+        return fees
+
     def _ocd_parcel_rows(self, order, quotes):
         """One line per parcel for the pages Livraison and Payer."""
         env = request.env
@@ -553,6 +653,15 @@ class OcdShop(WebsiteSale):
         for quote in quotes:
             vendor = quote["vendor"]
             title = env._("Parcel of %s", vendor.name) if vendor else env._("Parcel of OCD Live")
+            if quote["operator"] == "store":
+                rows.append({
+                    "vendor_id": vendor.id or 0,
+                    "title": title,
+                    "sub": quote["description"],
+                    "fee": env._("Free"),
+                    "error": False,
+                })
+                continue
             sub = " · ".join(part for part in (
                 env._("from %s", quote["origin"].name) if quote["origin"] else "",
                 {
@@ -572,24 +681,24 @@ class OcdShop(WebsiteSale):
             })
         return rows
 
-    def _ocd_rate_preview(self, order, country, city, district):
-        """The delivery and its price for the address being typed (the price is checked again by
-        Odoo when the address is saved)."""
-        partner = request.env["res.partner"].sudo().new({
-            "country_id": country.id, "city_id": city.id, "district_id": district.id, "city": city.name,
-        })
+    def _ocd_rate_preview(self, order, country, city, district, collect=None):
+        """The delivery and its price for the address being typed and the parcels picked up in a
+        store (`collect`: {vendor: store}); the price is checked again by Odoo when the address is
+        saved."""
+        partner = self._ocd_preview_partner(country, city, district)
         goods = order._compute_amount_total_without_delivery()
         carrier_ocd = self._ocd_carrier()
         if carrier_ocd:
-            quotes = order._ocd_delivery_quotes(partner=partner)
+            quotes = order._ocd_delivery_quotes(partner=partner, collect=collect or {})
             rows = self._ocd_parcel_rows(order, quotes)
-            if not city:
+            collect_only = bool(quotes) and all(quote["operator"] == "store" for quote in quotes)
+            if not city and not collect_only:
                 return False
             ok = bool(quotes) and not any(quote["error"] for quote in quotes)
             fee = sum(quote["price"] for quote in quotes) if ok else 0.0
             return {
                 "carrier": carrier_ocd,
-                "name": carrier_ocd.name,
+                "name": request.env._("Picked up at the store") if collect_only else carrier_ocd.name,
                 "note": request.env._("One price per parcel: each vendor delivers from their city.")
                 if len(quotes) > 1 else (rows[0]["sub"] if rows else ""),
                 "fee": (common.money(fee, order.currency_id) if fee else request.env._("Free")) if ok else "",
@@ -619,7 +728,9 @@ class OcdShop(WebsiteSale):
         }
 
     @http.route("/ocd/livraison/tarif", type="jsonrpc", auth="public", website=True)
-    def ocd_delivery_rate(self, country_id=None, city_id=None, district_id=None):
+    def ocd_delivery_rate(self, country_id=None, city_id=None, district_id=None, collect=None):
+        """The price of the delivery while the customer types the address or chooses to pick a
+        parcel up (`collect`: {vendor id: store id, 0 for delivered})."""
         order = request.cart
         if not order:
             return {}
@@ -628,10 +739,20 @@ class OcdShop(WebsiteSale):
         city = env["res.city"].sudo().browse(int(city_id or 0)).exists()
         district = env["res.city.district"].sudo().browse(int(district_id or 0)).exists()
         districts = env["res.city.district"].sudo().search([("city_id", "=", city.id)], order="name") if city else []
-        method = self._ocd_rate_preview(order, country, city, district)
+        values = {}
+        for vendor_id, store_id in (collect or {}).items() if isinstance(collect, dict) else ():
+            if str(vendor_id).isdigit():
+                values[f"recevoir_{vendor_id}"] = "retrait" if str(store_id or "").isdigit() and int(store_id) else "livraison"
+                values[f"magasin_{vendor_id}"] = str(store_id or "")
+        blocks = self._ocd_collect_blocks(order, values)
+        chosen = self._ocd_collect_choice(blocks)
+        method = self._ocd_rate_preview(order, country, city, district, collect=chosen)
         return {
             "districts": [{"id": d.id, "name": d.name} for d in districts],
             "method": {key: method[key] for key in ("name", "note", "fee", "total", "rows", "ok")} if method else False,
+            "home": {str(key): value for key, value in self._ocd_home_fees(
+                order, country, city, district, [block["vendor"] for block in blocks]).items()},
+            "collect_only": self._ocd_is_collect_only(order, chosen),
             "none": env._("No delivery for this address yet: write to OCD Live on WhatsApp."),
             "remove_label": env._("Remove their products"),
         }
@@ -668,20 +789,35 @@ class OcdShop(WebsiteSale):
         number = common.normalize_phone(phone_country, post.get("phone"))
         if not number:
             errors["phone"] = common.phone_error(phone_country)
+        # The parcels picked up in a store: one store each, that has the whole parcel
+        blocks = self._ocd_collect_blocks(order, post)
+        for block in blocks:
+            if f"recevoir_{block['key']}" in post and post[f"recevoir_{block['key']}"] == "retrait" and not block["store"]:
+                errors[f"magasin_{block['key']}"] = env._("Choose the store where you pick it up.")
+        collect = self._ocd_collect_choice(blocks)
+        collect_only = self._ocd_is_collect_only(order, collect)
         landmark = common.clean_text(post.get("delivery_landmark"), 200)
-        if not landmark:
+        if not landmark and not collect_only:
             errors["delivery_landmark"] = env._("Give a well-known place near your home: the courier uses it.")
         if errors:
             return self._ocd_render_delivery(order, values=post, errors=errors)
+        try:
+            order._ocd_set_collect_places(env["ocd.vendor.place"].sudo().union(*collect.values()))
+        except UserError as exc:
+            return self._ocd_render_delivery(order, values=post, error=exc.args[0])
         form_data = {
             "name": name,
             "phone": number,
             "country_id": str(country.id),
-            "city_id": post.get("city_id") or "",
-            "district_id": post.get("district_id") or "",
-            "delivery_landmark": landmark,
-            "street": landmark,
         }
+        if not collect_only:
+            # Picked up in a store: no address asked, the one known is kept
+            form_data.update({
+                "city_id": post.get("city_id") or "",
+                "district_id": post.get("district_id") or "",
+                "delivery_landmark": landmark,
+                "street": landmark,
+            })
         partner_sudo, _address_type = self._prepare_address_update(
             order, partner_id=None if order._is_anonymous_cart() else order.partner_id.id, address_type="billing",
         )
@@ -747,11 +883,16 @@ class OcdShop(WebsiteSale):
             items_amount=common.money(sum(lines.mapped("price_total")), order.currency_id),
             delivery_label=env._("Delivery to %s", place) if place else env._("Delivery"),
             parcel_lines=[{
+                "label": env._("Picked up at %s", line.pickup_place_id.name),
+                "sub": line.pickup_place_id._ocd_address_line(),
+                "amount": env._("Free"),
+            } if line.operator == "store" and line.pickup_place_id else {
                 "label": env._("Delivery of the parcel of %s", line.vendor_id.name) if line.vendor_id
                 else env._("Delivery of the parcel of OCD Live"),
                 "sub": env._("from %s", line.origin_city_id.name) if line.origin_city_id else "",
                 "amount": common.money(line.amount, order.currency_id) if line.amount else env._("Free"),
             } for line in order.ocd_delivery_line_ids],
+            **self._ocd_counter_values(order),
             delivery_amount=common.money(order.amount_delivery, order.currency_id) if order.amount_delivery else env._("Free"),
             total=common.money(order.amount_total, order.currency_id),
             country=shipping.country_id,
@@ -759,6 +900,26 @@ class OcdShop(WebsiteSale):
             payment_error=post.get("error") or False,
             display_submit_button=True,
         )
+
+    def _ocd_counter_values(self, order):
+        """The payment at the door, named for the parcels picked up in a store: paid at the
+        counter, on the phone of the customer or in cash where the vendor takes it."""
+        env = request.env
+        lines = order.ocd_delivery_line_ids
+        stores = lines.filtered(lambda line: line.operator == "store")
+        if not stores:
+            return {"counter_label": False, "counter_help": False}
+        if stores == lines:
+            label = env._("Pay at the counter")
+        else:
+            label = env._("Pay at the delivery or at the counter")
+        return {
+            "counter_label": label,
+            "counter_help": env._(
+                "At the store: on your phone with Mobile Money, or in cash where the vendor takes it. "
+                "Your code is accepted once the money is received."
+            ),
+        }
 
     # === CONFIRMATION AND TRACKING (design: Suivi) === #
 
@@ -788,17 +949,21 @@ class OcdShop(WebsiteSale):
             title = env._("Delivered. Thank you %s!", first_name)
         elif parcels.filtered(lambda p: p.ocd_stage == "on_the_way"):
             title = env._("Your order is on the way")
+        elif open_parcels and not open_parcels.filtered(lambda p: not (p.ocd_collect and p.ocd_stage == "ready")):
+            title = env._("Ready at the store")
         else:
             title = env._("Thank you %s, your order is confirmed", first_name)
         paid = order.transaction_ids.filtered(lambda tx: tx.state == "done").sorted("id")[-1:]
         if paid:
             pay_line = env._("paid with %s", paid.payment_method_id.name or paid.provider_id.name)
         elif parcels.filtered(lambda p: p.ocd_cod_state == "to_collect"):
-            pay_line = env._("to pay at the delivery")
+            to_pay = parcels.filtered(lambda p: p.ocd_cod_state == "to_collect")
+            pay_line = env._("to pay at the counter") if all(to_pay.mapped("ocd_collect")) else env._("to pay at the delivery")
         else:
             pay_line = ""
         shipping = order.partner_shipping_id
         delivered_all = bool(parcels) and not open_parcels
+        collect_only = bool(parcels) and all(parcels.mapped("ocd_collect"))
         return {
             "order": order,
             "access_token": access_token,
@@ -818,7 +983,7 @@ class OcdShop(WebsiteSale):
             "return_label": env._("Ask for a return (%s days)", order.company_id.ocd_return_days),
             "return_requested": bool(order.ocd_return_requested_at),
             "address_name": shipping.name,
-            "address_line": " · ".join(part for part in (
+            "address_line": env._("Picked up at the store, with your code") if collect_only else " · ".join(part for part in (
                 ", ".join(part for part in (shipping.district_id.name, shipping.city_id.name or shipping.city) if part),
                 shipping.delivery_landmark,
             ) if part),
@@ -828,6 +993,8 @@ class OcdShop(WebsiteSale):
         }
 
     def _ocd_parcel_row(self, parcel):
+        if parcel.ocd_collect:
+            return self._ocd_collect_row(parcel)
         env = request.env
         stage = parcel.ocd_stage
         steps = [
@@ -878,6 +1045,60 @@ class OcdShop(WebsiteSale):
             "call_aria": env._("Call %s", courier.name) if courier else "",
             "code": parcel.sudo().ocd_delivery_code if stage == "on_the_way" else False,
             "done_line": done_line,
+        }
+
+    def _ocd_collect_row(self, parcel):
+        """A parcel picked up in a store: received, ready (the code, the store, the day it waits
+        until), picked up."""
+        env = request.env
+        stage = parcel.ocd_stage
+        place = parcel.sudo().ocd_pickup_place_id
+        vendor = parcel.ocd_vendor_id
+        pills = {
+            "to_prepare": ("prep", env._("Being prepared")),
+            "ready": ("ready", env._("Ready at the store")),
+            "delivered": ("done", env._("Picked up")),
+            "returned": ("problem", env._("Not picked up: cancelled")),
+            "cancelled": ("problem", env._("Cancelled")),
+        }
+        pill, pill_label = pills.get(stage, ("prep", env._("Being prepared")))
+        items = ", ".join(
+            f"{move.product_id.name} × {int(move.product_uom_qty)}" if move.product_uom_qty != 1 else move.product_id.name
+            for move in parcel.move_ids
+        )
+        done_line = ""
+        if stage == "delivered" and parcel.ocd_delivered_at:
+            done_line = env._("Picked up at %s. Code checked.", common.to_viewer(parcel.ocd_delivered_at).strftime("%H:%M"))
+        elif stage == "returned":
+            done_line = env._("Not picked up in time: the order is cancelled. Paid online, OCD Live refunds you.")
+        phone = re.sub(r"\D", "", place._ocd_phone() if place else (vendor.phone or ""))
+        return {
+            "parcel": parcel,
+            "collect": True,
+            "title": env._("Parcel of %s", vendor.name) if vendor else env._("Parcel of OCD Live"),
+            "sub": items,
+            "pill": pill,
+            "pill_label": pill_label,
+            "steps": [
+                {"key": "received", "label": env._("Received"), "on": True},
+                {"key": "ready", "label": env._("Ready"), "on": stage in ("ready", "delivered")},
+                {"key": "done", "label": env._("Picked up"), "on": stage == "delivered"},
+            ],
+            "initials": common.initials(vendor.name) if vendor else "OCD",
+            "who": "",
+            "phone": "",
+            "call_aria": "",
+            "code": parcel.sudo().ocd_delivery_code if stage == "ready" else False,
+            "done_line": done_line,
+            "store": {
+                "name": place.name,
+                "line": " · ".join(part for part in (place._ocd_address_line(), place._ocd_open_state()["label"]) if part),
+                "deadline": env._("Pick it up before %s", parcel._ocd_collect_deadline_text())
+                if stage == "ready" and parcel.ocd_collect_deadline else
+                env._("The store writes to you on WhatsApp when it is ready.") if stage == "to_prepare" else "",
+                "directions": place._ocd_directions_url(),
+                "phone": phone if len(phone) >= 8 else "",
+            } if place and stage in ("to_prepare", "ready") else False,
         }
 
     @http.route("/ocd/suivi/<int:order_id>/note", type="http", auth="public", website=True, methods=["POST"], sitemap=False)

@@ -113,6 +113,21 @@ Tell the customer.</field>
         <field name="tools">Scheduled task.</field>
     </record>
 
+    <record id="automation_collect" model="ocd.automation">
+        <field name="code">collect</field>
+        <field name="name">Parcel in a store: ready, reminder, cancelled</field>
+        <field name="sequence">73</field>
+        <field name="group">shop</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="cron_id" ref="ir_cron_collect"/>
+        <field name="when">When the vendor taps « It is ready », the day before the end, at the end</field>
+        <field name="trigger">« It is ready » in « My parcels », then every hour.</field>
+        <field name="scope">The customers who pick their parcel up in a store.</field>
+        <field name="actions">Tell them it waits for them and until when; remind them the day before; cancel it at the end (the pieces back in the store, a refund when paid online).</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
     <record id="automation_holiday_back" model="ocd.automation">
         <field name="code">holiday_back</field>
         <field name="name">Vendor back from holiday: tell the customers who asked</field>

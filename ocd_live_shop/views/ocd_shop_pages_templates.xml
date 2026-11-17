@@ -435,14 +435,63 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Delivery</t>
         <t t-call="ocd_live.app">
-            <form action="/ocd/livraison" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_wide o_ocd_delivery_form" novalidate="novalidate">
+            <form action="/ocd/livraison" method="post" t-attf-class="o_ocd_frame o_ocd_narrow o_ocd_wide o_ocd_delivery_form #{'o_ocd_collect_only' if collect_only else ''}" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <input t-if="len(countries) &lt; 2" type="hidden" name="delivery_country_id" t-att-value="country.id"/>
                 <!-- On a tablet and a computer: the address on the left, the delivery and the total on the right -->
                 <main class="o_ocd_main o_ocd_form o_ocd_panes o_ocd_panes_tablet">
-                    <h1 class="o_ocd_h1">Where do we deliver?</h1>
+                    <h1 class="o_ocd_h1" t-out="title"/>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
                     <div class="o_ocd_pane_main o_ocd_delivery_address">
+                    <!-- Pick up in a store (design RetraitMagasin): per vendor who has a store,
+                         « Delivered to me » or « I come and get it » in one of their stores that
+                         has the whole parcel (the others shown, not chosen) -->
+                    <t t-foreach="blocks" t-as="block">
+                        <fieldset class="o_ocd_collect" t-att-data-vendor-id="block['key']">
+                            <legend class="o_ocd_label"><t t-out="block['title']"/><small t-if="block['items']" t-out="block['items']"/></legend>
+                            <div class="o_ocd_collect_modes">
+                            <label class="o_ocd_collect_opt">
+                                <input type="radio" t-attf-name="recevoir_#{block['key']}" value="livraison" class="o_ocd_collect_mode"
+                                       t-att-checked="None if block['collect'] else 'checked'"/>
+                                <span class="o_ocd_collect_text">
+                                    <b>Delivered to me</b>
+                                    <small class="o_ocd_collect_home_note" t-out="block['home_note']"/>
+                                </span>
+                                <b class="o_ocd_collect_fee o_ocd_collect_home_fee" t-out="block['home_fee']"/>
+                            </label>
+                            <label t-attf-class="o_ocd_collect_opt #{'' if block['served'] else 'o_ocd_collect_off'}">
+                                <input type="radio" t-attf-name="recevoir_#{block['key']}" value="retrait" class="o_ocd_collect_mode"
+                                       t-att-checked="'checked' if block['collect'] else None"
+                                       t-att-disabled="None if block['served'] else 'disabled'"/>
+                                <span class="o_ocd_collect_text">
+                                    <b>I come and get it</b>
+                                    <small t-if="block['served']">In one of their stores</small>
+                                    <small t-else="">None of their stores has your whole order</small>
+                                </span>
+                                <b t-if="block['served']" class="o_ocd_collect_fee">Free</b>
+                            </label>
+                            </div>
+                            <div t-if="block['served']" class="o_ocd_collect_stores" t-att-hidden="None if block['collect'] else 'hidden'">
+                                <div class="o_ocd_collect_list">
+                                <t t-foreach="block['stores']" t-as="store">
+                                    <label t-attf-class="o_ocd_collect_opt o_ocd_collect_store #{'' if store['ok'] else 'o_ocd_collect_off'}">
+                                        <input type="radio" t-attf-name="magasin_#{block['key']}" t-att-value="store['id']" class="o_ocd_collect_place"
+                                               t-att-checked="'checked' if store['checked'] else None"
+                                               t-att-disabled="None if store['ok'] else 'disabled'"/>
+                                        <span class="o_ocd_collect_text">
+                                            <b t-out="store['name']"/>
+                                            <small t-out="store['line']"/>
+                                            <span t-if="store['ok']" class="o_ocd_badge_ok">Has your whole order</span>
+                                            <span t-else="" class="o_ocd_badge_off">Not your whole order here</span>
+                                        </span>
+                                    </label>
+                                </t>
+                                </div>
+                                <span t-if="errors.get('magasin_' + block['key'])" class="o_ocd_error" role="alert" t-out="errors['magasin_' + block['key']]"/>
+                                <p class="o_ocd_note o_ocd_collect_note" t-out="collect_note"/>
+                            </div>
+                        </fieldset>
+                    </t>
                     <div t-if="len(countries) &gt; 1" class="o_ocd_field o_ocd_field_wide">
                         <label for="d-country" class="o_ocd_label">Country</label>
                         <select id="d-country" name="delivery_country_id" class="o_ocd_input o_ocd_delivery_country">
@@ -466,6 +515,7 @@
                             <span>Receive the tracking of my order on WhatsApp</span>
                         </label>
                     </div>
+                    <div class="o_ocd_delivery_where">
                     <div class="o_ocd_name_city">
                         <div class="o_ocd_field">
                             <label for="d-city" class="o_ocd_label">City</label>
@@ -494,6 +544,7 @@
                                placeholder="e.g. opposite the pharmacy" required="required"
                                t-att-aria-invalid="'true' if errors.get('delivery_landmark') else None"/>
                         <span t-if="errors.get('delivery_landmark')" class="o_ocd_error" role="alert" t-out="errors['delivery_landmark']"/>
+                    </div>
                     </div>
                     </div>
                     <div class="o_ocd_pane_side">
@@ -597,6 +648,17 @@
         </t>
     </template>
 
+    <!-- The payment at the door named for the parcels picked up in a store (design
+         RetraitMagasin): paid at the counter, on the phone or in cash -->
+    <template id="payment_method_counter" inherit_id="payment.method_form" name="OCD Live: the payment at the counter">
+        <xpath expr="//label[hasclass('o_payment_option_label')]" position="attributes">
+            <attribute name="t-out">counter_label if counter_label and pm_sudo.code == 'cash_on_delivery' else pm_sudo.name</attribute>
+        </xpath>
+        <xpath expr="//div[@t-if='not is_html_empty(provider_sudo.pre_msg)']" position="before">
+            <div t-if="counter_help and pm_sudo.code == 'cash_on_delivery'" class="w-100 mb-0 ms-4 small text-600 o_ocd_counter_help" t-out="counter_help"/>
+        </xpath>
+    </template>
+
     <!-- === TRACKING OF THE ORDER === -->
 
     <template id="tracking" name="OCD Live: my order">
@@ -623,16 +685,31 @@
                                     <li t-att-class="'o_ocd_on' if step['on'] else None"><i aria-hidden="true"/><span t-out="step['label']"/></li>
                                 </t>
                             </ol>
-                            <div class="o_ocd_parcel_courier">
+                            <div t-if="not row.get('collect')" class="o_ocd_parcel_courier">
                                 <span class="o_ocd_parcel_initials" aria-hidden="true" t-out="row['initials']"/>
                                 <span t-out="row['who']"/>
                                 <a t-if="row['phone']" t-attf-href="tel:+#{row['phone']}" class="o_ocd_link o_ocd_tracking_call"
                                    t-att-aria-label="row['call_aria']">Call</a>
                             </div>
-                            <div t-if="row['code']" class="o_ocd_tracking_code">
+                            <div t-if="row['code'] and row.get('collect')" class="o_ocd_tracking_code">
+                                <span>Your pickup code</span>
+                                <b t-out="row['code']"/>
+                                <small>Give it at the counter.</small>
+                            </div>
+                            <div t-elif="row['code']" class="o_ocd_tracking_code">
                                 <span>Your code for this parcel</span>
                                 <b t-out="row['code']"/>
                                 <small>Give it only when you have the parcel in your hands.</small>
+                            </div>
+                            <!-- Picked up in a store: where, until when, the way there -->
+                            <div t-if="row.get('store')" class="o_ocd_tracking_store">
+                                <b t-out="row['store']['name']"/>
+                                <span t-out="row['store']['line']"/>
+                                <strong t-if="row['store']['deadline']" t-out="row['store']['deadline']"/>
+                                <div class="o_ocd_tracking_store_buttons">
+                                    <a t-att-href="row['store']['directions']" target="_blank" rel="noopener" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">Itinerary</a>
+                                    <a t-if="row['store']['phone']" t-attf-href="tel:+#{row['store']['phone']}" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">Call</a>
+                                </div>
                             </div>
                             <span t-if="row['done_line']" t-attf-class="o_ocd_parcel_note #{'o_ocd_parcel_note_ok' if row['parcel'].ocd_stage == 'delivered' else 'o_ocd_parcel_note_warn'}"
                                   role="status" t-out="row['done_line']"/>

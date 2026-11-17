@@ -11,6 +11,10 @@ EVENT_TEMPLATES = {
     "failed": "ocd_live_shop_whatsapp.template_parcel_failed",
     "delivered": "ocd_live_shop_whatsapp.template_parcel_delivered",
     "returned": "ocd_live_shop_whatsapp.template_parcel_returned",
+    # Picked up in a store (chantier 20)
+    "collect_ready": "ocd_live_shop_whatsapp.template_parcel_collect_ready",
+    "collect_reminder": "ocd_live_shop_whatsapp.template_parcel_collect_reminder",
+    "collect_expired": "ocd_live_shop_whatsapp.template_parcel_collect_expired",
 }
 
 
@@ -23,7 +27,10 @@ class StockPicking(models.Model):
     def _ocd_notify_new_parcel(self):
         """Override of `ocd_live_shop`: the vendor prepares the parcel, except from the stock."""
         super()._ocd_notify_new_parcel()
-        if self.ocd_vendor_id and self.ocd_delivery_mode in ("vendor", "pickup"):
+        if self.ocd_vendor_id and self.ocd_collect and self.ocd_pickup_place_id:
+            # Picked up at the store: prepared for the counter, no address to deliver
+            self._ocd_send("ocd_live_shop_whatsapp.template_parcel_collect_to_prepare")
+        elif self.ocd_vendor_id and self.ocd_delivery_mode in ("vendor", "pickup"):
             self._ocd_send("ocd_live_shop_whatsapp.template_parcel_to_prepare")
 
     def _ocd_send_code(self):

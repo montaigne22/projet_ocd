@@ -3,7 +3,7 @@
 <odoo>
 
     <record id="ocd_live_shop.automation_parcel_split" model="ocd.automation">
-        <field name="template_ids" eval="[Command.set([ref('template_parcel_to_prepare')])]"/>
+        <field name="template_ids" eval="[Command.set([ref('template_parcel_to_prepare'), ref('template_parcel_collect_to_prepare')])]"/>
     </record>
     <record id="ocd_live_shop.automation_parcel_escalation" model="ocd.automation">
         <field name="template_ids" eval="[Command.set([ref('template_parcel_reminder')])]"/>
@@ -30,6 +30,10 @@
         <field name="template_ids" eval="[Command.set([ref('template_product_accepted'), ref('template_product_refused'),
                                                        ref('template_store_accepted'), ref('template_store_refused'),
                                                        ref('template_product_change_refused')])]"/>
+    </record>
+    <record id="ocd_live_shop.automation_collect" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_parcel_collect_ready'), ref('template_parcel_collect_reminder'),
+                                                       ref('template_parcel_collect_expired')])]"/>
     </record>
     <record id="ocd_live_whatsapp.automation_asked" model="ocd.automation">
         <field name="template_ids" eval="[Command.link(ref('template_delivery_link'))]"/>

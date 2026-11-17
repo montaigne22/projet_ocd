@@ -24,6 +24,7 @@ from . import place_stock
 from . import vendor_nearby
 from . import ocd_delivery_rate
 from . import ocd_order_delivery
+from . import store_pickup
 from . import delivery_carrier
 from . import payment_provider
 from . import ocd_live_booking

@@ -438,11 +438,18 @@
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: 14px 18px;
             align-content: start;
-            > .o_ocd_name_city,
             > .o_ocd_field_wide,
-            > .o_ocd_field:has(#d-landmark) {
+            > .o_ocd_collect,
+            .o_ocd_delivery_where > .o_ocd_name_city,
+            .o_ocd_delivery_where > .o_ocd_field:has(#d-landmark) {
                 grid-column: 1 / -1;
             }
+        }
+        // Pick up in a store: the two ways side by side, the stores side by side
+        .o_ocd_collect .o_ocd_collect_modes, .o_ocd_collect .o_ocd_collect_list {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 14px;
         }
     }
 }

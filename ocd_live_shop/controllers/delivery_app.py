@@ -97,6 +97,11 @@ class OcdDeliveryApp(http.Controller):
         return ", ".join(rows)
 
     def _place(self, parcel):
+        if parcel.ocd_collect:
+            # Picked up at the store: which store, until when
+            place = parcel.sudo().ocd_pickup_place_id
+            until = request.env._("before %s", parcel._ocd_collect_deadline_text()) if parcel.ocd_collect_deadline else ""
+            return " · ".join(part for part in (place.name, until) if part)
         return " · ".join(part for part in (parcel.ocd_district_id.name or parcel.partner_id.city, parcel.ocd_landmark) if part)
 
     def _pill(self, parcel):
@@ -117,6 +122,8 @@ class OcdDeliveryApp(http.Controller):
         """Chip of the payment: paid online (green) or the money to collect (yellow)."""
         if parcel.ocd_cod_state == "to_collect":
             amount = common.money(parcel.ocd_cod_amount, parcel.ocd_currency_id)
+            if parcel.ocd_collect:
+                return "collect", request.env._("To collect at the counter: %s", amount)
             if parcel.ocd_fee_amount:
                 return "collect", request.env._("To collect: %s, delivery included", amount)
             return "collect", request.env._("To collect: %s", amount)
@@ -159,6 +166,7 @@ class OcdDeliveryApp(http.Controller):
         phone = re.sub(r"\D", "", parcel.ocd_customer_phone or "")
         return {
             "parcel": parcel,
+            "collect": parcel.ocd_collect,
             "prepares": prepares,
             "delivers": delivers,
             "to_pick": to_pick,
@@ -206,9 +214,26 @@ class OcdDeliveryApp(http.Controller):
                 city=parcel.partner_id.city_id.name or parcel.partner_id.city or "-",
                 customer=parcel.partner_id.name,
             ) if parcel.ocd_by_agency else "",
-            "for_title": request.env._("For %s", parcel.partner_id.name),
+            "for_title": request.env._("%s comes to pick it up", customer or parcel.partner_id.name)
+            if parcel.ocd_collect else request.env._("For %s", parcel.partner_id.name),
+            "collect_note": request.env._("%s receives the code on WhatsApp when you tap « It is ready ».", customer),
+            "counter_note": request.env._(
+                "Not picked up before %s: the parcel is cancelled and its pieces go back to the stock of the store.",
+                parcel._ocd_collect_deadline_text(),
+            ) if parcel.ocd_collect and parcel.ocd_collect_deadline else "",
             "first_pick": request.env._("First pick the parcel up at %s.", parcel.ocd_vendor_id.name or request.env._("the OCD stock")),
         }
+
+    def _handed_over(self, parcel):
+        """The message once a parcel is handed over at the counter."""
+        customer = self._first_name(parcel.partner_id)
+        if parcel.ocd_cod_state in ("collected", "remitted") and parcel.ocd_cod_method == "cash":
+            return request.env._(
+                "Handed over to %(customer)s. You collected %(amount)s in cash: the commission of OCD is "
+                "withheld from your next payout.",
+                customer=customer, amount=common.money(parcel.ocd_cod_collected_amount, parcel.ocd_currency_id),
+            )
+        return request.env._("Handed over to %s. Thank you!", customer)
 
     def _methods(self, parcel, partner):
         """Payment methods at the door. A vendor who does not take the money can still show the
@@ -306,7 +331,7 @@ class OcdDeliveryApp(http.Controller):
             "card_message": message if parcel_id else None,
             "card_error": error if parcel_id else None,
             "card_id": parcel_id,
-            "tab": "done" if tab == "livres" else "todo",
+            "tab": {"livres": "done", "magasin": "store"}.get(tab, "todo"),
             "header_name": request.env._("OCD courier") if partner.ocd_is_courier else request.env._("My parcels"),
             "header_link": self._header_link(partner),
             "nav": False if partner.ocd_is_courier else "me",
@@ -343,12 +368,16 @@ class OcdDeliveryApp(http.Controller):
             })
             template = "ocd_live_shop.delivery_tour"
         else:
+            store_cards = [card for card in cards if card["collect"]]
             values.update({
                 "hello": request.env._("Hello %s", self._first_name(partner)),
                 "payout_line": self._payout_line(partner),
                 "todo_label": request.env._("To do · %s", len(cards)),
                 "done_label": request.env._("Delivered · %s", len(done)),
+                "store_label": request.env._("Picked up at the store · %s", len(store_cards)) if store_cards else "",
             })
+            if values["tab"] == "store":
+                values["cards"] = store_cards
             template = "ocd_live_shop.delivery_app"
         if partner.ocd_is_vendor and not partner.ocd_is_courier:
             # « My parcels » of a vendor: a page of their space, with its menu on a large screen
@@ -382,7 +411,10 @@ class OcdDeliveryApp(http.Controller):
             raise request.not_found()
         message = None
         try:
-            if action == "ready" and prepares:
+            if action == "ready" and prepares and parcel.ocd_collect:
+                parcel.action_ocd_collect_ready()
+                message = request.env._("Thank you: %s receives the code on WhatsApp.", self._first_name(parcel.partner_id))
+            elif action == "ready" and prepares:
                 parcel.action_ocd_ready()
                 message = request.env._("Thank you: the parcel is ready.")
             elif action == "pickup" and delivers:
@@ -396,7 +428,9 @@ class OcdDeliveryApp(http.Controller):
                     # The money is never left behind: paid first, then the code
                     raise UserError(request.env._("Collect the payment first, then type the code of the customer."))
                 delivered, left = parcel._ocd_check_code(post.get("code"))
-                if delivered:
+                if delivered and parcel.ocd_collect:
+                    message = self._handed_over(parcel)
+                elif delivered:
                     message = request.env._("Delivered. Thank you!")
                 elif left:
                     raise UserError(request.env._("This is not the right code. Attempts left: %s.", left))

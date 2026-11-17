@@ -142,11 +142,13 @@
                     <group>
                         <group string="Who delivers">
                             <field name="ocd_vendor_id" readonly="1"/>
-                            <field name="ocd_delivery_mode" readonly="ocd_stage in ('delivered', 'returned', 'cancelled')"/>
-                            <field name="ocd_courier_id" readonly="ocd_stage in ('delivered', 'returned', 'cancelled')"
+                            <field name="ocd_delivery_mode" readonly="ocd_collect or ocd_stage in ('delivered', 'returned', 'cancelled')"/>
+                            <field name="ocd_courier_id" readonly="ocd_collect or ocd_stage in ('delivered', 'returned', 'cancelled')"
                                    domain="['|', ('ocd_is_courier', '=', True), ('id', '=', ocd_vendor_id)]"/>
                             <field name="ocd_pickup_place_id" invisible="ocd_delivery_mode == 'stock'"
-                                   readonly="ocd_stage not in ('to_prepare', 'ready', 'problem')"/>
+                                   readonly="ocd_collect or ocd_stage not in ('to_prepare', 'ready', 'problem')"/>
+                            <field name="ocd_collect" readonly="1" invisible="not ocd_collect"/>
+                            <field name="ocd_collect_deadline" readonly="1" invisible="not ocd_collect"/>
                             <field name="ocd_district_id"/>
                             <field name="ocd_landmark"/>
                             <field name="ocd_customer_phone" widget="phone"/>
@@ -243,12 +245,14 @@
                         </group>
                         <group string="Delivery">
                             <field name="ocd_vendor_id" readonly="1"/>
-                            <field name="ocd_delivery_mode" readonly="ocd_stage in ('delivered', 'returned', 'cancelled')"/>
+                            <field name="ocd_delivery_mode" readonly="ocd_collect or ocd_stage in ('delivered', 'returned', 'cancelled')"/>
                             <field name="ocd_courier_id" string="Delivered by"
-                                   readonly="ocd_stage in ('delivered', 'returned', 'cancelled')"
+                                   readonly="ocd_collect or ocd_stage in ('delivered', 'returned', 'cancelled')"
                                    domain="['|', ('ocd_is_courier', '=', True), ('id', '=', ocd_vendor_id)]"/>
                             <field name="ocd_pickup_place_id" invisible="ocd_delivery_mode == 'stock'"
-                                   readonly="ocd_stage not in ('to_prepare', 'ready', 'problem')"/>
+                                   readonly="ocd_collect or ocd_stage not in ('to_prepare', 'ready', 'problem')"/>
+                            <field name="ocd_collect" readonly="1" invisible="not ocd_collect"/>
+                            <field name="ocd_collect_deadline" readonly="1" invisible="not ocd_collect"/>
                             <field name="ocd_picked_at" invisible="not ocd_picked_at"/>
                             <field name="ocd_currency_id" invisible="1"/>
                             <field name="ocd_cod_state" readonly="1"/>

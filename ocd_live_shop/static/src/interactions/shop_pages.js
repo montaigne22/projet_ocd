@@ -345,7 +345,9 @@ export class OcdProductPage extends Interaction {
 
 /**
  * Where do we deliver: the districts of the city, then the delivery method of the address and
- * its price, as soon as the city or the district changes.
+ * its price, as soon as the city or the district changes. A parcel picked up in a store (design
+ * RetraitMagasin): its stores show, the price follows, and the address goes away when every
+ * parcel is picked up.
  */
 export class OcdDeliveryForm extends Interaction {
     static selector = ".o_ocd_delivery_form";
@@ -354,7 +356,29 @@ export class OcdDeliveryForm extends Interaction {
         ".o_ocd_delivery_district": { "t-on-change": () => this.refresh(false) },
         ".o_ocd_input": { "t-on-input": this.clearError },
         ".o_ocd_delivery_country": { "t-on-change": this.changeCountry },
+        ".o_ocd_collect_mode": { "t-on-change": this.changeCollect },
+        ".o_ocd_collect_place": { "t-on-change": () => this.refresh(false) },
     };
+
+    changeCollect(ev) {
+        const block = ev.currentTarget.closest(".o_ocd_collect");
+        const stores = block.querySelector(".o_ocd_collect_stores");
+        if (stores) {
+            stores.hidden = ev.currentTarget.value !== "retrait";
+        }
+        this.refresh(false);
+    }
+
+    collectChoice() {
+        // {vendor id: store id, 0 when delivered}
+        const choice = {};
+        for (const block of this.el.querySelectorAll(".o_ocd_collect")) {
+            const mode = block.querySelector(".o_ocd_collect_mode:checked");
+            const store = block.querySelector(".o_ocd_collect_place:checked");
+            choice[block.dataset.vendorId] = mode && mode.value === "retrait" && store ? parseInt(store.value) : 0;
+        }
+        return choice;
+    }
 
     changeCountry(ev) {
         // The cities and the districts are those of the country
@@ -377,6 +401,7 @@ export class OcdDeliveryForm extends Interaction {
                 country_id: parseInt(this.el.querySelector("[name=delivery_country_id]").value),
                 city_id: parseInt(city.value) || false,
                 district_id: cityChanged ? false : parseInt(district.value) || false,
+                collect: this.collectChoice(),
             }));
         } catch {
             return; // Network hiccup: the price is checked again when the form is sent
@@ -391,6 +416,12 @@ export class OcdDeliveryForm extends Interaction {
             district.classList.toggle("d-none", none);
             this.el.querySelector(".o_ocd_delivery_no_district").classList.toggle("d-none", !none);
         }
+        for (const block of this.el.querySelectorAll(".o_ocd_collect")) {
+            const home = (result.home || {})[block.dataset.vendorId] || {};
+            block.querySelector(".o_ocd_collect_home_fee").textContent = home.home_fee || "";
+            block.querySelector(".o_ocd_collect_home_note").textContent = home.home_note || "";
+        }
+        this.el.classList.toggle("o_ocd_collect_only", !!result.collect_only);
         const method = result.method;
         this.el.querySelector(".o_ocd_delivery_name").textContent = method ? method.name : "";
         this.el.querySelector(".o_ocd_delivery_note").textContent = method ? method.note : result.none;

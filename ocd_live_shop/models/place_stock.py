@@ -238,7 +238,13 @@ class StockPicking(models.Model):
             for move in moves:
                 quantities[move.product_id] += move.product_uom_qty
             customer = picking.partner_id
-            plan = vendor._ocd_serving_plan(quantities, customer.city_id or customer.district_id.city_id)
+            # Picked up in a store chosen by the customer (chantier 20): it serves the whole parcel
+            line, _amount = picking.sale_id._ocd_parcel_delivery(vendor)
+            store = line.pickup_place_id if line and line.operator == "store" else False
+            if store and store.location_id and vendor._ocd_stock_per_place():
+                plan = {store: quantities}
+            else:
+                plan = vendor._ocd_serving_plan(quantities, customer.city_id or customer.district_id.city_id)
             if not plan:
                 result |= picking
                 continue
