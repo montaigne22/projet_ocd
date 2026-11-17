@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Préparer mon prochain live</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.livecard{display:flex;flex-direction:column;gap:6px;border-radius:20px;background:#15130F;color:#FFF;padding:14px 16px}
+.livecard .h{color:#D9D3CC}
+.livecard .cta{background:#F46A00;color:#15130F}
+.prow{display:grid;grid-template-columns:24px 52px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC}
+.prow:last-child{border-bottom:0}
+.ph52{width:52px;height:52px;border-radius:12px;background:#FFE7D1;display:grid;place-items:center;font-size:11px;color:#B84F00}
+.box{width:22px;height:22px;border-radius:7px;border:2px solid #15130F;box-sizing:border-box;display:grid;place-items:center;font-weight:900;font-size:14px}
+.box.on{background:#F46A00;border-color:#F46A00;color:#15130F}
+.prow.off{opacity:.5}
+.order{display:grid;grid-template-columns:30px 44px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:14px;background:#FFF0E3}
+.num{width:30px;height:30px;border-radius:50%;background:#15130F;color:#FFF;display:grid;place-items:center;font-weight:800}
+.ph44{width:44px;height:44px;border-radius:10px;background:#FFE7D1}
+.arrows{display:flex;gap:4px}
+.arrows span{width:40px;height:40px;border-radius:12px;background:#FFFFFF;border:2px solid #E7E2DC;display:grid;place-items:center;font-weight:800}
+.search{border:2px solid #E7E2DC;border-radius:14px;padding:10px 12px;color:#736D66}
+.tile{position:relative;display:flex;flex-direction:column;gap:6px;border:2px solid #E7E2DC;border-radius:16px;padding:10px}
+.tile.on{border-color:#F46A00;background:#FFF0E3}
+.tile .ph{height:96px}
+.tile .n{position:absolute;top:8px;left:8px;width:28px;height:28px;border-radius:50%;background:#15130F;color:#FFF;display:grid;place-items:center;font-weight:800;font-size:13px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.grid6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.word{border-radius:14px;background:#FFF0CC;color:#6B4500;padding:10px 12px;font-weight:600;font-size:14.5px}
+</style>
+</head>
+<body>
+<!-- Préparer son prochain live (chantier 21, 3.2 du plan de « Mes produits ») : le vendeur coche
+     les produits qu'il va montrer et les met dans l'ordre ; la régie les a sous la main, dans cet
+     ordre, avant ses autres produits. Un mot pour l'animatrice, si le vendeur veut. Pas de numéros
+     de produits ni de page « Je prends » (écarté le 14 novembre). Données d'exemple : Brenda Wax,
+     live du jeudi 19 novembre à 19:00. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le vendeur : Mon espace, puis « Préparer mon live »</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. Mon espace : le prochain live -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <h1 class="d" style="margin:0;font-size:28px;line-height:1.05">Bonjour Brenda</h1>
+    <div class="livecard">
+      <span class="small" style="color:#FF9A4D;font-weight:800">TON PROCHAIN LIVE</span>
+      <b class="d" style="font-size:22px">Jeudi 19 nov. · 19:00 – 20:00</b>
+      <span class="h">À distance · avec Dzifa, animatrice</span>
+      <span class="small">Aucun produit préparé : l'animatrice ne sait pas encore quoi montrer.</span>
+      <span class="cta">Préparer mon live</span>
+    </div>
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center"><b>Mes produits</b><span class="h">12 en vente</span></div>
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center"><b>Mes colis</b><span class="h">2 à préparer</span></div>
+    <span class="h">Préparé : la carte dit « 4 produits prêts · Modifier ».</span>
+  </div>
+
+  <!-- 2. Préparer mon live -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Mon live de jeudi 19:00</h1>
+    <span class="h">Coche ce que tu vas montrer. L'animatrice les a sous la main, dans cet ordre.</span>
+    <b>Dans mon live · 3</b>
+    <div class="order"><span class="num">1</span><span class="ph44"></span><span><b>Robe en wax</b><br><span class="h">12 000 F · 7 en stock</span></span><span class="arrows"><span>↓</span></span></div>
+    <div class="order"><span class="num">2</span><span class="ph44"></span><span><b>Pagne wax 6 yards</b><br><span class="h">15 000 F · 4 en stock</span></span><span class="arrows"><span>↑</span><span>↓</span></span></div>
+    <div class="order"><span class="num">3</span><span class="ph44"></span><span><b>Chemise wax homme</b><br><span class="h">9 500 F · 6 en stock</span></span><span class="arrows"><span>↑</span></span></div>
+    <b style="margin-top:4px">Mes produits</b>
+    <div class="search">Chercher un produit</div>
+    <div>
+      <div class="prow"><span class="box on">✓</span><span class="ph52">Photo</span><span><b>Robe en wax</b><br><span class="h">12 000 F · 7 en stock</span></span><span></span></div>
+      <div class="prow"><span class="box"></span><span class="ph52">Photo</span><span><b>Sac en raphia</b><br><span class="h">8 000 F · 3 en stock</span></span><span></span></div>
+      <div class="prow off"><span class="box"></span><span class="ph52">Photo</span><span><b>Foulard soie</b><br><span class="h">6 500 F</span></span><span class="tag" style="background:#EEF0F2;color:#665F58">Épuisé</span></div>
+    </div>
+    <div><div class="lab">Un mot pour l'animatrice (si tu veux)</div><div class="in">Je commence par les robes, promo sur les pagnes</div></div>
+    <span class="cta">Enregistrer</span>
+    <span class="h">Tu peux changer jusqu'à la fin du live. Un produit épuisé se coche aussi : remets du stock avant.</span>
+  </div>
+
+  <!-- 3. Enregistré, et sans live réservé -->
+  <div class="phone">
+    <div class="ok" style="border-radius:14px;padding:12px 14px;font-weight:600;font-size:14.5px">C'est prêt : 3 produits pour jeudi. Dzifa les voit dans la régie.</div>
+    <div class="livecard">
+      <span class="small" style="color:#FF9A4D;font-weight:800">TON PROCHAIN LIVE</span>
+      <b class="d" style="font-size:22px">Jeudi 19 nov. · 19:00 – 20:00</b>
+      <span class="small">3 produits prêts : Robe en wax, Pagne wax 6 yards, Chemise wax homme</span>
+      <span class="btn" style="background:#FFFFFF;color:#15130F">Modifier</span>
+    </div>
+    <span class="cap" style="margin:8px 0 0">Sans live réservé</span>
+    <div class="card" style="display:flex;flex-direction:column;gap:8px">
+      <b>Pas de live réservé</b>
+      <span class="h">Réserve un live : tu prépares ensuite tes produits ici.</span>
+      <span class="btn">Réserver un live</span>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · la régie : les produits préparés d'abord, dans l'ordre du vendeur</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Tableau de bord</a><a>Réservations</a><a class="on">Régie</a><a>À vérifier</a><a>Commandes</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <main style="display:flex;flex-direction:column;gap:16px;padding:24px 40px 36px">
+    <div style="display:flex;align-items:center;gap:12px"><span class="tag" style="background:#FCE4E4;color:#B01522">● En direct</span><b class="d" style="font-size:26px">Brenda Wax</b><span class="h">Habits · à distance, Douala · Dzifa A.</span></div>
+    <div class="word">Mot de Brenda : « Je commence par les robes, promo sur les pagnes »</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><b class="d" style="font-size:20px">Préparés par Brenda · 3</b><span class="h">Touche celui que Brenda montre : sa boutique l'affiche aussitôt</span></div>
+    <div class="grid4">
+      <div class="tile on"><span class="n">1</span><span class="ph">Photo</span><b>Robe en wax</b><span class="h">12 000 F · 7 en stock</span><span class="tag ok" style="align-self:flex-start">À l'écran</span></div>
+      <div class="tile"><span class="n">2</span><span class="ph">Photo</span><b>Pagne wax 6 yards</b><span class="h">15 000 F · 4 en stock</span></div>
+      <div class="tile"><span class="n">3</span><span class="ph">Photo</span><b>Chemise wax homme</b><span class="h">9 500 F · 6 en stock</span></div>
+    </div>
+    <b class="d" style="font-size:18px;margin-top:6px">Ses autres produits · 9</b>
+    <div class="grid6">
+      <div class="tile"><span class="ph" style="height:70px">Photo</span><b class="small">Sac en raphia</b><span class="h small">8 000 F · 3 en stock</span></div>
+      <div class="tile"><span class="ph" style="height:70px">Photo</span><b class="small">Foulard soie</b><span class="h small">6 500 F · épuisé</span></div>
+      <div class="tile"><span class="ph" style="height:70px">Photo</span><b class="small">Boubou brodé</b><span class="h small">18 000 F · 2 en stock</span></div>
+      <div class="tile"><span class="ph" style="height:70px">Photo</span><b class="small">Jupe wax</b><span class="h small">7 000 F · 5 en stock</span></div>
+      <div class="tile"><span class="ph" style="height:70px">Photo</span><b class="small">Sandales cuir</b><span class="h small">11 000 F · 4 en stock</span></div>
+      <div class="tile"><span class="ph" style="height:70px">Photo</span><b class="small">Turban</b><span class="h small">3 500 F · 9 en stock</span></div>
+    </div>
+    <span class="h">Rien de préparé : la régie montre tous ses produits, comme aujourd'hui.</span>
+  </main>
+</div>
+
+<span class="cap" style="margin-top:18px">Tablette · 820 px · « Préparer mon live » : l'ordre à gauche, les produits à droite</span>
+<div class="screen tab"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <main style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;padding:22px 24px 28px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <b class="d" style="font-size:24px">Mon live de jeudi 19:00</b>
+      <b>Dans mon live · 3</b>
+      <div class="order"><span class="num">1</span><span class="ph44"></span><span><b>Robe en wax</b></span><span class="arrows"><span>↓</span></span></div>
+      <div class="order"><span class="num">2</span><span class="ph44"></span><span><b>Pagne wax 6 yards</b></span><span class="arrows"><span>↑</span><span>↓</span></span></div>
+      <div class="order"><span class="num">3</span><span class="ph44"></span><span><b>Chemise wax homme</b></span><span class="arrows"><span>↑</span></span></div>
+      <div><div class="lab">Un mot pour l'animatrice (si tu veux)</div><div class="in">Je commence par les robes</div></div>
+      <span class="cta">Enregistrer</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <b>Mes produits</b>
+      <div class="search">Chercher un produit</div>
+      <div class="prow"><span class="box on">✓</span><span class="ph52">Photo</span><span><b>Robe en wax</b><br><span class="h">12 000 F</span></span><span></span></div>
+      <div class="prow"><span class="box"></span><span class="ph52">Photo</span><span><b>Sac en raphia</b><br><span class="h">8 000 F</span></span><span></span></div>
+      <div class="prow"><span class="box"></span><span class="ph52">Photo</span><span><b>Boubou brodé</b><br><span class="h">18 000 F</span></span><span></span></div>
+    </div>
+  </main>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Alerte de stock bas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.wa{align-self:flex-start;max-width:320px;background:#DCF8C6;border-radius:12px;padding:8px 10px;font-size:14px}
+.wabtn{align-self:flex-start;max-width:320px;width:320px;box-sizing:border-box;background:#FFFFFF;border-radius:12px;padding:8px 10px;text-align:center;color:#0A7CFF;font-weight:700;font-size:14px;margin-top:-8px}
+.prow{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid #E7E2DC}
+.ph56{width:56px;height:56px;border-radius:12px;background:#FFE7D1}
+.low{background:#FFF0CC;color:#6B4500}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.setting{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border-bottom:1px solid #E3E6E9;padding:12px 0}
+</style>
+</head>
+<body>
+<!-- Alerte de stock bas (chantier 21, 3.4 du plan de « Mes produits ») : quand une vente fait passer
+     un produit (une taille, une couleur) à 2 pièces ou moins, le vendeur reçoit un WhatsApp
+     (Utility, sans promotion). Une fois par passage sous le seuil : il revient quand le stock
+     remonte au-dessus. Seuil réglable par l'équipe (2 par défaut) et sur la fiche du vendeur.
+     « Mes produits » le dit aussi, avec un filtre. Données d'exemple : Brenda Wax. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le vendeur : le WhatsApp, puis Mes produits</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <div class="phone">
+    <span class="cap" style="margin:0">WhatsApp au vendeur</span>
+    <span class="wa">Bonjour Brenda, il ne reste que 2 pièces de Robe en wax (Bleu, M) en stock après une vente. Touchez « Mes produits » pour en remettre quand vous en avez.</span>
+    <span class="wabtn">Mes produits</span>
+    <span class="h">Une fois par passage sous le seuil. À 0 pièce, « Épuisé » s'affiche déjà dans la boutique, et les clients peuvent demander « Préviens-moi ».</span>
+  </div>
+
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <h1 class="d" style="margin:0;font-size:26px;line-height:1.05">Mes produits</h1>
+    <div class="chips"><span class="chip">Tous · 12</span><span class="chip">En vente · 9</span><span class="chip on">Stock bas · 2</span><span class="chip">Épuisés · 1</span></div>
+    <div class="prow"><span class="ph56"></span><span style="display:flex;flex-direction:column;gap:4px"><b>Robe en wax</b><span class="h">12 000 F · 7 en stock</span><span class="tag low" style="align-self:flex-start">Stock bas : Bleu, M · plus que 2</span><span class="btn" style="align-self:flex-start">Mon stock</span></span></div>
+    <div class="prow"><span class="ph56"></span><span style="display:flex;flex-direction:column;gap:4px"><b>Sac en raphia</b><span class="h">8 000 F</span><span class="tag low" style="align-self:flex-start">Stock bas · plus que 1</span><span style="display:flex;gap:6px"><span class="btn">−</span><span class="btn">1</span><span class="btn">+</span></span></span></div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · back-office : le réglage, et sur la fiche du vendeur</span>
+<div class="screen pc" style="width:1100px"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Tableau de bord</a><a>Commandes</a><a class="on">Paramètres</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <main style="display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:24px 40px 36px">
+    <div>
+      <b class="d" style="font-size:20px">Paramètres · Shop et livraisons</b>
+      <div class="setting"><span><b>Alerte de stock bas</b><br><span class="h small">Un WhatsApp au vendeur quand une vente laisse ce nombre de pièces ou moins. 0 : pas d'alerte.</span></span><span><span class="in" style="display:inline-block;width:60px;text-align:center">2</span> pièces</span></div>
+    </div>
+    <div>
+      <b class="d" style="font-size:20px">Fiche du vendeur · Brenda Wax</b>
+      <div class="setting"><span><b>Alerte de stock bas</b><br><span class="h small">Vide : le réglage d'OCD Live (2 pièces).</span></span><span><span class="in" style="display:inline-block;width:60px;text-align:center">5</span> pièces</span></div>
+      <span class="h small">Automatisations : « Stock bas : prévenir le vendeur » s'éteint comme les autres.</span>
+    </div>
+  </main>
+</div>
+
+</div>
+</body>
+</html>
