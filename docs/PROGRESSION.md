@@ -130,7 +130,8 @@ Dessiné d'abord (maquettes `PreparerLive`, `TaillesCouleurs`, `StockBas`, valid
   stock, vérifié comme avant ; sa ligne s'ouvre ensuite sur les photos des couleurs. Un produit gardé
   dans le téléphone sans réseau garde ses tailles et couleurs. Sur un produit en vente : « Ajouter une
   taille ou une couleur » (sans stock, à remplir dans Mon stock).
-- Tests : en cours sur base neuve ; contrôlé dans un navigateur en français en trois tailles (390, 820,
+- Tests : base neuve, tous les modules OCD : **413 sans échec** (9 nouveaux) ; contrôlé dans un navigateur
+  en français en trois tailles (390, 820,
   1440 px) : formulaire avec tailles et couleurs, préparer mon live, Mon espace, Mes produits (stock bas),
   et la régie sur ordinateur.
 - **À mettre à jour sur un serveur** : `ocd_live_shop` 20.0.1.31.0, `ocd_live_shop_whatsapp` 20.0.1.21.0
