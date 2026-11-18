@@ -166,7 +166,7 @@ Dessiné d'abord (maquette `ProgrammeSoirees`, validée avec ses choix), puis co
   les anciennes adresses `/soirees` mènent à `/evenements` ; « jours » traduit dans les réglages du shop
   (c'était « days »).
 - Tests : base neuve, tous les modules OCD avec `ocd_soirees`, `ocd_soirees_whatsapp` et
-  `payment_cinetpay` : **@@TESTS@@** ; contrôlé dans un navigateur en français en trois tailles (390,
+  `payment_cinetpay` : **499 sans échec** (18 nouveaux) ; contrôlé dans un navigateur en français en trois tailles (390,
   820, 1440 px) : le programme, les grands événements, une soirée, un événement de six jours, le shop et
   son filtre « En promo », une fiche en promo, le panier, la boutique, Mes produits, « Mettre en promo »,
   Mon espace et « Participer » ; aucun débordement.
