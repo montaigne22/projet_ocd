@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Clips automatiques</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.muted{color:#665F58}
+.lnk{text-decoration:underline;font-weight:700}
+.chips{display:flex;gap:8px;overflow:hidden;flex-wrap:wrap}
+.prow{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC}
+.prow .img{width:56px;height:56px;border-radius:12px;background:#F5F2EE}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:8px;background:#15130F;color:#FFF;font-weight:800;font-size:12.5px;padding:3px 8px}
+.badge.soft{background:#FFF0E3;color:#B84F00}
+/* a clip: 9:16 */
+.clips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.clip{position:relative;aspect-ratio:9/16;border-radius:14px;background:linear-gradient(180deg,#3A332C,#15130F);overflow:hidden;color:#FFF}
+.clip .play{position:absolute;inset:0;display:grid;place-items:center;font-size:26px;opacity:.9}
+.clip .dur{position:absolute;right:6px;top:6px;border-radius:6px;background:rgba(0,0,0,.55);font-size:11.5px;font-weight:700;padding:1px 6px}
+.clip .cap2{position:absolute;left:0;right:0;bottom:0;padding:6px 7px;background:linear-gradient(transparent,rgba(0,0,0,.75));font-size:11.5px;font-weight:700;line-height:1.2}
+.clip.hidden{opacity:.45}
+.stat{font-size:12.5px;color:#665F58;line-height:1.3}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn2{display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px;border-radius:14px;border:2px solid #E7E2DC;font-weight:800;font-size:15px}
+.btn2.dark{background:#15130F;border-color:#15130F;color:#FFF}
+/* the clip itself, as people see it on TikTok or a WhatsApp status */
+.frame{position:relative;width:300px;aspect-ratio:9/16;border-radius:22px;overflow:hidden;background:linear-gradient(170deg,#6B5A4A,#2A231D 60%,#15130F);color:#FFF;box-shadow:0 2px 14px rgba(0,0,0,.2)}
+.frame .logo2{position:absolute;left:12px;top:12px;display:flex;align-items:center;gap:6px;border-radius:99px;background:rgba(21,19,15,.7);padding:5px 10px;font-weight:800;font-size:13px}
+.frame .logo2 b{background:#F46A00;border-radius:6px;padding:1px 6px;font-size:11px}
+.frame .person{position:absolute;left:50%;top:22%;transform:translateX(-50%);width:150px;height:230px;border-radius:80px 80px 20px 20px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:12px;color:rgba(255,255,255,.7)}
+.frame .bandb{position:absolute;left:10px;right:10px;bottom:12px;border-radius:16px;background:#FFF;color:#15130F;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.frame .bandb .t{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;line-height:1.1}
+.frame .bandb .u{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;color:#B84F00}
+.frame.end{background:#15130F;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;box-sizing:border-box}
+.qr{width:120px;height:120px;border-radius:12px;background:repeating-linear-gradient(90deg,#FFF 0 8px,#15130F 8px 12px),#FFF;border:8px solid #FFF}
+.sheet{display:flex;flex-direction:column;gap:10px;border-radius:22px 22px 0 0;box-shadow:0 -2px 14px rgba(0,0,0,.12);padding:16px;margin:0 -18px -20px}
+.apps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;font-size:12.5px;font-weight:700}
+.apps span i{display:block;width:52px;height:52px;margin:0 auto 4px;border-radius:16px;background:#F5F2EE;font-style:normal;display:grid;place-items:center;font-size:18px}
+.text{border-radius:14px;background:#F5F2EE;padding:10px 12px;font-size:14px}
+.card2{display:flex;flex-direction:column;gap:8px;border-radius:18px;background:#15130F;color:#FFF;padding:14px}
+.pp{display:flex;flex-direction:column;gap:6px;border-radius:18px;border:2px solid #E7E2DC;padding:14px}
+.pp .big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px}
+.seen{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;border-radius:18px;background:#F5F2EE;padding:10px}
+.seen .clip{border-radius:12px}
+.moment{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC}
+.moment .clip{width:56px;border-radius:10px}
+.wa{width:330px;border-radius:18px;background:#E5DDD5;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.wa .bot{align-self:flex-start;background:#FFF;border-radius:12px 12px 12px 2px;padding:8px 10px;max-width:92%}
+.wa .bt{background:#FFF;border-radius:10px;text-align:center;color:#1F7A4D;font-weight:700;padding:8px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule b{font-size:15px}
+.bo{background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.bobtn{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid #AEB4BA;font-weight:700;font-size:13.5px;background:#FFF}
+.bobtn.p{background:#F46A00;border-color:#F46A00;color:#FFF}
+.drop{display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;border:2px dashed #AEB4BA;border-radius:12px;padding:16px;text-align:center}
+.bar{height:10px;border-radius:99px;background:#E7E2DC;overflow:hidden}
+.bar i{display:block;height:100%;background:#F46A00}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
+table.t td{padding:9px 10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
+table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
+table.t td:last-child{white-space:nowrap}
+table.t td b{white-space:nowrap}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#FFF8E6;border:1px dashed #F0C987;padding:12px 14px;font-size:14px;color:#6B4500}
+.q b{color:#15130F}
+</style>
+</head>
+<body>
+<!-- Clips automatiques (chantier 8 de la feuille de route) : chaque moment produit d'un live, noté
+     par la régie, devient un clip vertical de 30 secondes avec le lien du produit, à partager sur
+     les statuts WhatsApp, TikTok, Reels et Facebook ; les clips de chaque produit dans « Mes
+     produits ». On réutilise les moments du replay (la régie), ffmpeg (déjà là pour les vidéos des
+     cartes), le CDN des vidéos, le partage d'un produit (chantier 16) et les chiffres du vendeur
+     (chantier 3). Les choix proposés sont en bas.
+     Données d'exemple : le live d'Awa Mode du mardi 17 novembre au studio de Lomé, 6 produits
+     montrés ; la Robe wax Kaba montrée à 04:12. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le vendeur : ses clips, les partager</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. Mon espace : les clips sont prêts -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <div class="card2">
+      <span class="small" style="opacity:.8">Live du mardi 17 novembre · studio de Lomé</span>
+      <b class="d" style="font-size:22px">Tes 6 clips sont prêts</b>
+      <div class="clips">
+        <span class="clip"><span class="dur">0:28</span><span class="play">▶</span><span class="cap2">Robe wax Kaba</span></span>
+        <span class="clip"><span class="dur">0:30</span><span class="play">▶</span><span class="cap2">Pagne 6 yards</span></span>
+        <span class="clip"><span class="dur">0:19</span><span class="play">▶</span><span class="cap2">Sac en raphia</span></span>
+      </div>
+      <span class="small">Un clip de 30 secondes pour chaque produit montré, avec son lien. Partage-les sur ton statut, TikTok et Reels : chaque clip ramène des clients vers le produit.</span>
+      <span class="cta" style="min-height:48px;font-size:16px">Voir mes clips</span>
+    </div>
+    <b class="d" style="font-size:19px">Mes clips</b>
+    <div class="chips"><span class="chip on">Tous</span><span class="chip">Live du 17 nov.</span><span class="chip">Live du 10 nov.</span></div>
+    <div class="clips">
+      <span class="clip"><span class="dur">0:28</span><span class="play">▶</span><span class="cap2">Robe wax Kaba</span></span>
+      <span class="clip"><span class="dur">0:30</span><span class="play">▶</span><span class="cap2">Pagne 6 yards</span></span>
+      <span class="clip"><span class="dur">0:19</span><span class="play">▶</span><span class="cap2">Sac en raphia</span></span>
+      <span class="clip"><span class="dur">0:30</span><span class="play">▶</span><span class="cap2">Boubou bazin</span></span>
+      <span class="clip"><span class="dur">0:24</span><span class="play">▶</span><span class="cap2">Foulard</span></span>
+      <span class="clip hidden"><span class="dur">0:12</span><span class="play">▶</span><span class="cap2">Ceinture · masqué</span></span>
+    </div>
+    <span class="small muted">Rangés du plus récent au plus ancien. Un clip masqué ne s'affiche plus sur le site ; tu peux le remettre.</span>
+  </div>
+
+  <!-- 2. Un clip : partager -->
+  <div class="phone" style="overflow:hidden">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Robe wax Kaba</span></div>
+    <div style="display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:start">
+      <span class="clip" style="width:150px"><span class="dur">0:28</span><span class="play">▶</span><span class="cap2">Live du 17 nov. · à 04:12</span></span>
+      <span style="display:flex;flex-direction:column;gap:6px">
+        <b>Live du mardi 17 novembre</b>
+        <span class="stat">412 lectures sur le site<br>23 visites par son lien<br><b style="color:#0A5A31">2 ventes · 24 000 F</b></span>
+        <span class="small lnk">Masquer ce clip</span>
+        <span class="small lnk">Vidéo de ma carte du fil</span>
+      </span>
+    </div>
+    <div class="sheet">
+      <b class="d" style="font-size:22px">Partager le clip</b>
+      <div class="apps">
+        <span><i>◯</i>Statut WhatsApp</span><span><i>♪</i>TikTok</span><span><i>▣</i>Reels</span><span><i>f</i>Facebook</span>
+      </div>
+      <div class="lab">Le texte, copié avec le clip</div>
+      <div class="text">Robe wax Kaba, 12 000 F chez Awa Mode. Commande ici : <b>ocdlive.com/p/K7Q2</b> · Livraison avec code, tu paies à la porte. #OCDLive</div>
+      <div class="row2"><span class="btn2 dark">Partager</span><span class="btn2">Enregistrer</span></div>
+      <span class="small muted">« Partager » envoie la vidéo elle-même, avec le texte : tu choisis le statut, TikTok, Reels ou Facebook. Sur TikTok et Reels, un lien ne se touche pas : il est écrit dans la vidéo et dans le texte. Le prix du texte est celui du moment (promo comprise).</span>
+    </div>
+  </div>
+
+  <!-- 3. Mes produits : les clips d'un produit -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes produits</span></div>
+    <div class="prow"><span class="img"></span><span><b>Robe wax Kaba</b><br><span class="small muted">12 000 F · 8 en stock · 5 vendus</span></span><span class="badge">▶ 3 clips</span></div>
+    <div class="prow"><span class="img"></span><span><b>Pagne 6 yards</b><br><span class="small muted">18 000 F · 3 en stock</span></span><span class="badge">▶ 1 clip</span></div>
+    <div class="prow"><span class="img"></span><span><b>Sac en raphia</b><br><span class="small muted">9 500 F · 12 en stock</span></span><span class="badge soft">Pas de clip</span></div>
+    <b class="d" style="font-size:19px;margin-top:4px">Robe wax Kaba · 3 clips</b>
+    <div class="clips">
+      <span class="clip"><span class="dur">0:28</span><span class="play">▶</span><span class="cap2">17 nov.</span></span>
+      <span class="clip"><span class="dur">0:30</span><span class="play">▶</span><span class="cap2">10 nov.</span></span>
+      <span class="clip"><span class="dur">0:22</span><span class="play">▶</span><span class="cap2">3 nov.</span></span>
+    </div>
+    <span class="small muted">Dans le menu « Plus » du produit : « Mes clips ». Un produit sans clip : « Montre-le dans ton prochain live : son clip se fait tout seul. »</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Le clip lui-même · 720 × 1280 · tel qu'on le voit sur un statut ou sur TikTok</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div class="frame">
+    <span class="logo2">OCD <b>● LIVE</b> Vu en live</span>
+    <span class="person">La vidéo du live</span>
+    <span class="bandb"><span class="t">Robe wax Kaba</span><span class="small muted">Awa Mode · Lomé</span><span class="u">ocdlive.com/p/K7Q2</span></span>
+  </div>
+  <div class="frame end">
+    <span class="logo2" style="position:static">OCD <b>● LIVE</b></span>
+    <b class="d" style="font-size:24px;line-height:1.1">Robe wax Kaba</b>
+    <span class="qr"></span>
+    <b class="d" style="font-size:20px;color:#FFC999">ocdlive.com/p/K7Q2</b>
+    <span class="small" style="opacity:.85">Livraison avec code, tu paies à la porte</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px;width:430px">
+    <div class="rule"><b>Le début et la fin</b><span>3 secondes avant le moment noté par la régie (le temps de présenter le produit), 30 secondes au plus ; coupé avant le produit suivant, 12 secondes au moins. Les 2 dernières secondes : le nom, le QR et le lien.</span></div>
+    <div class="rule"><b>L'image</b><span>Verticale (720 × 1280). Une vidéo de live déjà verticale (TikTok) est gardée telle quelle ; une vidéo horizontale est posée sur un fond flou : rien n'est coupé.</span></div>
+    <div class="rule"><b>Le son</b><span>Le son du live, la voix de l'animatrice et du vendeur. Pas de musique ajoutée (les droits).</span></div>
+    <div class="rule"><b>Ce qui est écrit</b><span>Le logo « Vu en live », le nom du produit, le vendeur et sa ville, le lien court. Pas de prix dans la vidéo : un prix change (promo, hausse), le clip reste ; le prix du moment est dans le texte du partage.</span></div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · le public : la fiche du produit, le replay ; WhatsApp</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 4. La fiche du produit : « Vu en live » -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Robe wax Kaba</span></div>
+    <div class="ph" style="height:200px">Photo</div>
+    <div class="pp"><span class="big">12 000 F</span><span class="small muted">Par Awa Mode · Livré par OCD</span></div>
+    <div class="seen">
+      <span class="clip" style="width:96px"><span class="dur">0:28</span><span class="play">▶</span></span>
+      <span style="display:flex;flex-direction:column;gap:4px"><b>Vu en live</b><span class="small muted">Awa Mode la montre pendant son live du 17 novembre. Sans le son ; touche pour le son.</span><span class="small lnk">Le replay à ce moment</span></span>
+    </div>
+    <span class="cta">Ajouter au panier</span>
+  </div>
+
+  <!-- 5. Le replay : chaque moment a son clip -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Replay · Awa Mode</span></div>
+    <div class="ph" style="height:180px">Le replay (YouTube, TikTok, Facebook)</div>
+    <b class="d" style="font-size:19px">Les produits du live</b>
+    <div class="moment"><span class="clip"><span class="play" style="font-size:16px">▶</span></span><span><b>Robe wax Kaba</b><br><span class="small muted">À 04:12 · 12 000 F</span></span><span class="pill">Voir</span></div>
+    <div class="moment"><span class="clip"><span class="play" style="font-size:16px">▶</span></span><span><b>Pagne 6 yards</b><br><span class="small muted">À 11:40 · 18 000 F</span></span><span class="pill">Voir</span></div>
+    <div class="moment"><span class="clip"><span class="play" style="font-size:16px">▶</span></span><span><b>Sac en raphia</b><br><span class="small muted">À 19:05 · 9 500 F</span></span><span class="pill">Voir</span></div>
+    <span class="small muted">Toucher un clip le joue dans la page ; « Voir » ouvre le produit, avec la couleur montrée.</span>
+  </div>
+
+  <!-- 6. WhatsApp -->
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <span class="cap" style="margin:0">WhatsApp (nouveau modèle, à soumettre à Meta)</span>
+    <div class="wa">
+      <div class="bot">Bonjour, les <b>6 clips</b> de ton live du mardi 17 novembre sont prêts. Partage-les sur ton statut, TikTok et Reels : touche « Voir mes clips ».</div>
+      <span class="bt">Voir mes clips</span>
+    </div>
+    <span class="small muted" style="width:330px">Au vendeur, une fois par live, quand ses clips sont prêts. Rien aux clients.</span>
+    <span class="cap" style="margin:6px 0 0">Le lien du clip</span>
+    <span class="small" style="width:330px"><b>ocdlive.com/p/K7Q2</b> ouvre la fiche du produit (avec la couleur montrée). Chaque clip a son lien : ses visites et ses ventes sont comptées dans « Mes chiffres » (« Venus des clips »).</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · l'équipe : la vidéo du live, ses clips</span>
+<div class="screen" style="width:1300px;padding:20px 24px;display:grid;grid-template-columns:1.25fr 1fr;gap:18px">
+  <div class="bo">
+    <b>OCD Live › Lives › Réservations › Awa Mode · mar. 17 nov. · 10:00 – 11:30 · onglet « Clips »</b>
+    <div class="drop">
+      <b>Envoyer la vidéo du live</b>
+      <span class="small muted">L'enregistrement du studio, ou la vidéo téléchargée du compte d'OCD Live (TikTok, Facebook et YouTube la proposent à leur propriétaire). MP4 ou MOV, 4 Go au plus. Envoyée par morceaux : si le réseau coupe, elle reprend où elle s'est arrêtée.</span>
+      <span class="bobtn p">Choisir la vidéo</span>
+    </div>
+    <span style="display:flex;align-items:center;gap:10px"><b>Envoyée</b><span class="bar" style="flex:1"><i style="width:100%"></i></span><span class="small muted">1,6 Go · 1 h 31</span></span>
+    <span style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><b>L'enregistrement commence</b><span class="bobtn">− 5 s</span><span class="in" style="min-height:34px;padding:0 10px;display:inline-flex;align-items:center">12 s</span><span class="bobtn">+ 5 s</span><span class="small muted">après le début du live · l'aperçu du premier moment (Robe wax Kaba) se rejoue à chaque réglage</span></span>
+    <table class="t">
+      <tr><th>Produit</th><th>Moment</th><th>Durée</th><th>État</th><th class="r">Lectures</th><th class="r">Visites</th><th class="r">Ventes</th><th></th></tr>
+      <tr><td><b>Robe wax Kaba</b></td><td>04:12</td><td>0:28</td><td><span class="tag ok">Prêt</span></td><td class="r">412</td><td class="r">23</td><td class="r">2</td><td><span class="bobtn">Voir</span> <span class="bobtn">Refaire</span></td></tr>
+      <tr><td><b>Pagne 6 yards</b></td><td>11:40</td><td>0:30</td><td><span class="tag ok">Prêt</span></td><td class="r">96</td><td class="r">7</td><td class="r">0</td><td><span class="bobtn">Voir</span> <span class="bobtn">Refaire</span></td></tr>
+      <tr><td><b>Sac en raphia</b></td><td>19:05</td><td>0:19</td><td><span class="tag low">En préparation</span></td><td class="r">-</td><td class="r">-</td><td class="r">-</td><td></td></tr>
+      <tr><td><b>Ceinture</b></td><td>52:30</td><td>0:12</td><td><span class="tag">Masqué par le vendeur</span></td><td class="r">-</td><td class="r">-</td><td class="r">-</td><td><span class="bobtn">Voir</span></td></tr>
+    </table>
+    <span class="small muted">Les clips se font sur le serveur, un live à la fois (quelques minutes pour un live). La vidéo du live est effacée après 7 jours ; les clips restent.</span>
+  </div>
+  <div class="bo">
+    <b>La régie, à la fin du live</b>
+    <span>« Envoyer la vidéo du live » à côté de « Publier le replay » ; la liste des lives sans vidéo dans « À faire » le lendemain.</span>
+    <b style="margin-top:6px">Lives › Clips</b>
+    <span>Tous les clips : le vendeur, le produit, le live, l'état, les lectures, les visites et les ventes ; « Masquer » pour l'équipe (un clip qui montre autre chose).</span>
+    <b style="margin-top:6px">Réglages · Clips</b>
+    <span>Durée au plus (<b>30 s</b>), avant le moment (<b>3 s</b>), durée au moins (<b>12 s</b>), garder la vidéo du live (<b>7 jours</b>), qualité (<b>720 × 1280</b>).</span>
+    <b style="margin-top:6px">Automatisations</b>
+    <span>« Clips prêts : prévenir le vendeur » ; « Vidéo du live pas envoyée : dans À faire ».</span>
+    <b style="margin-top:6px">Ordinateur (vendeur)</b>
+    <span>« Mes clips » en grille de 5, « Enregistrer » ouvre le téléchargement du clip.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Choix proposés, à valider</span>
+<div class="q" style="max-width:1300px">
+  <span><b>1. D'où vient la vidéo :</b> l'équipe envoie la vidéo de chaque live depuis la fiche du live ou la régie : l'enregistrement du studio, ou la vidéo téléchargée du compte d'OCD Live (TikTok, Facebook et YouTube la proposent à leur propriétaire). Pas de téléchargement automatique depuis les plateformes : leurs règles l'interdisent et il casse souvent. Sans vidéo, pas de clips (le replay reste comme aujourd'hui).</span>
+  <span><b>2. Quels lives :</b> ceux qui ont une régie (studio et à distance sur les comptes d'OCD Live), car la régie note les moments des produits. Les lives des vendeurs sur leurs propres comptes n'ont pas de moments : pas de clips pour eux pour l'instant.</span>
+  <span><b>3. Le clip :</b> 3 secondes avant le moment noté, 30 secondes au plus, coupé avant le produit suivant (12 secondes au moins) ; vertical 720 × 1280 ; le son du live, sans musique ajoutée ; une vidéo horizontale est posée sur un fond flou, rien n'est coupé ; les 2 dernières secondes avec le nom, le QR et le lien.</span>
+  <span><b>4. Ce qui est écrit dans la vidéo :</b> le logo « Vu en live », le nom du produit, le vendeur et sa ville, le lien court. Pas de prix dans la vidéo (il change) : le prix du moment est dans le texte du partage, refait à chaque partage.</span>
+  <span><b>5. Le lien court :</b> un lien par clip (l'adresse du site suivie de /p/K7Q2 ; « ocdlive.com » ici n'est qu'un exemple) vers la fiche du produit, avec la couleur montrée ; les visites et les ventes venues de chaque clip sont comptées dans « Mes chiffres ».</span>
+  <span><b>6. Le vendeur :</b> un WhatsApp quand les clips d'un live sont prêts ; « Mes clips » dans Mon espace, et les clips de chaque produit dans « Mes produits » ; « Partager » envoie la vidéo elle-même avec son texte (statut WhatsApp, TikTok, Reels, Facebook), « Enregistrer » la garde dans le téléphone ; « Masquer » un clip raté ; un clip peut devenir la vidéo de sa carte du fil. Pour tous les vendeurs qui font un live avec OCD (pas réservé à OCD Business), compris dans le prix du live.</span>
+  <span><b>7. Le public :</b> sur la fiche du produit, « Vu en live » joue le clip le plus récent (sans le son, toucher pour le son) ; sur la page du replay, chaque produit a son clip.</span>
+  <span><b>8. L'équipe :</b> la vidéo s'envoie par morceaux (elle reprend après une coupure), 4 Go au plus ; le décalage de l'enregistrement se règle avec un aperçu ; les clips se font sur le serveur, un live à la fois ; la vidéo du live est effacée après 7 jours, les clips restent ; « Refaire » ou « Masquer » un clip.</span>
+  <span><b>9. WhatsApp :</b> un nouveau modèle, <b>ocd_clips_prets</b> (Utilitaire, français et anglais), une fois par live. Rien aux clients.</span>
+  <span><b>10. Serveur :</b> ffmpeg, déjà là pour les vidéos des cartes ; environ 8 Mo par clip, servis par le CDN comme les autres vidéos ; prévoir la place de quelques vidéos de lives (1 à 3 Go chacune) pendant 7 jours.</span>
+</div>
+
+</div>
+</body>
+</html>
