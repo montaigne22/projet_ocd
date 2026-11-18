@@ -162,7 +162,7 @@ Dessiné d'abord (maquette `OcdTickets`, validée avec ses choix), puis codé da
   envoyer », « La veille : rappel aux acheteurs », « Événement annulé ou déplacé : prévenir les
   acheteurs », « Après l'événement : reversement à l'organisateur ».
 - Tests : base neuve, tous les modules OCD avec `ocd_tickets`, `ocd_tickets_whatsapp` et
-  `payment_cinetpay` : suite complète en cours (15 nouveaux tests, tous passés seuls) ; contrôlé dans un navigateur en français
+  `payment_cinetpay` : **481 sans échec** (15 nouveaux) ; contrôlé dans un navigateur en français
   en trois tailles (390, 820, 1440 px) : les événements, un événement, acheter, le paiement, Mes billets,
   un billet, l'entrée, la vente à l'entrée, l'espace de l'organisateur et ses contrôleurs ; aucun
   débordement ; la fiche de l'événement dans le back-office.
