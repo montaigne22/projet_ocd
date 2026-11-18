@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Programme et soirées</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.muted{color:#665F58}
+.lnk{text-decoration:underline;font-weight:700}
+.chips{display:flex;gap:8px;overflow:hidden}
+.days{display:flex;gap:6px;overflow:hidden}
+.day{display:flex;flex-direction:column;align-items:center;min-width:44px;padding:8px 6px;border-radius:14px;border:2px solid #E7E2DC;font-size:12.5px;font-weight:700}
+.day b{font-family:'Bricolage Grotesque',sans-serif;font-size:19px;line-height:1.1}
+.day.on{background:#15130F;color:#FFF;border-color:#15130F}
+.day.party{border-color:#F46A00}
+.band{display:flex;flex-direction:column;gap:4px;border-radius:18px;background:linear-gradient(135deg,#15130F,#3A1A06 55%,#F46A00);color:#FFF;padding:14px 16px}
+.band .t{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;line-height:1.05}
+.now{display:flex;align-items:center;gap:8px;font-weight:800}
+.dot{width:10px;height:10px;border-radius:50%;background:#FF4D5A;display:inline-block}
+.slot{display:grid;grid-template-columns:54px 44px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #E7E2DC}
+.slot .h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;color:#15130F}
+.slot.live .h{color:#C4162A}
+.av{width:44px;height:44px;border-radius:50%;background:#FFE7D1;display:grid;place-items:center;font-weight:800;color:#B84F00}
+.bell{min-width:40px;height:40px;border-radius:12px;background:#F5F2EE;display:grid;place-items:center;font-size:13px;font-weight:800;padding:0 8px}
+.bell.on{background:#DCF2E5;color:#0A5A31}
+.hero{display:flex;flex-direction:column;gap:6px;border-radius:22px;background:linear-gradient(160deg,#15130F,#15130F 45%,#F46A00);color:#FFF;padding:18px 16px}
+.hero .t{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:32px;line-height:1}
+.count{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.count div{background:rgba(255,255,255,.12);border-radius:12px;padding:8px;text-align:center}
+.count b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:22px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prod{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.prod .img{position:relative;height:150px;border-radius:16px;background:#F5F2EE}
+.off{position:absolute;top:8px;left:8px;border-radius:8px;background:#C4162A;color:#FFF;font-weight:800;font-size:13px;padding:2px 8px}
+.price b{font-family:'Bricolage Grotesque',sans-serif;font-size:17px}
+.price s{color:#665F58;margin-left:6px;font-size:13.5px}
+.pp{display:flex;flex-direction:column;gap:6px;border-radius:18px;border:2px solid #E7E2DC;padding:14px}
+.pp .big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px}
+.until{border-radius:10px;background:#FCE4E4;color:#8E1220;font-weight:700;font-size:13.5px;padding:6px 10px}
+.wa{width:330px;border-radius:18px;background:#E5DDD5;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.wa .bot{align-self:flex-start;background:#FFF;border-radius:12px 12px 12px 2px;padding:8px 10px;max-width:92%}
+.wa .bt{background:#FFF;border-radius:10px;text-align:center;color:#1F7A4D;font-weight:700;padding:8px}
+.sheet{display:flex;flex-direction:column;gap:10px;border-radius:22px 22px 0 0;box-shadow:0 -2px 14px rgba(0,0,0,.12);padding:16px;margin:0 -18px -20px}
+.prow{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center}
+.prow .img{width:56px;height:56px;border-radius:12px;background:#F5F2EE}
+.preview{display:flex;flex-direction:column;gap:4px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule b{font-size:15px}
+.invite{display:flex;flex-direction:column;gap:6px;border-radius:18px;background:#15130F;color:#FFF;padding:14px}
+.step{display:flex;flex-direction:column;gap:8px;border:2px solid #E7E2DC;border-radius:18px;padding:12px 14px}
+.toggle{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #E7E2DC;font-size:14px}
+.toggle .img{width:44px;height:44px;border-radius:10px;background:#F5F2EE}
+.sw{width:42px;height:24px;border-radius:99px;background:#E7E2DC;position:relative}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#FFF}
+.sw.on{background:#0F7A43}.sw.on::after{left:21px}
+/* computer: the guide */
+.guide{display:grid;grid-template-columns:220px repeat(15,1fr);font-size:13px;border-top:1px solid #E7E2DC}
+.guide .ch{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:10px 14px;border-bottom:1px solid #E7E2DC;border-right:1px solid #E7E2DC;font-weight:700;height:64px;box-sizing:border-box}
+.guide .ch span{font-weight:500;color:#665F58;font-size:12px}
+.guide .hr{padding:8px 6px;color:#665F58;font-weight:700;border-bottom:1px solid #E7E2DC;border-right:1px dashed #EFEAE4}
+.guide .cell{border-bottom:1px solid #E7E2DC;border-right:1px dashed #EFEAE4;height:64px;box-sizing:border-box}
+.blk{margin:6px 3px;border-radius:10px;background:#FFF0E3;padding:6px 8px;display:flex;flex-direction:column;gap:1px;overflow:hidden;white-space:nowrap}
+.blk b{font-size:13px;overflow:hidden;text-overflow:ellipsis}
+.blk span{font-size:11.5px;color:#665F58}
+.blk.live{background:#FCE4E4;box-shadow:inset 3px 0 0 #C4162A}
+.blk.party{background:#15130F;color:#FFF}.blk.party span{color:#FFC999}
+.bo{background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.bobtn{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid #AEB4BA;font-weight:700;font-size:13.5px;background:#FFF}
+table.t{width:100%;border-collapse:collapse;font-size:14.5px}
+table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
+table.t td{padding:10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
+table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#FFF8E6;border:1px dashed #F0C987;padding:12px 14px;font-size:14px;color:#6B4500}
+.q b{color:#15130F}
+</style>
+</head>
+<body>
+<!-- Programme et événements (chantier 7 de la feuille de route), avec le prix promo (plan, 3.1) :
+     le programme des lives des 7 prochains jours façon guide télé ; les grandes soirées d'OCD Live
+     à plusieurs vendeurs (Vendredi noir, Noël, Saint-Valentin, Tabaski), où chaque vendeur fait un
+     live et met ses promos pour la soirée ; le prix promo de chaque produit, toute l'année.
+     On réutilise le fil des lives, la page d'un live, les comptes de live d'OCD Live (les
+     « chaînes » du programme), « Suivre » (chantier 1), les réservations et l'historique des prix
+     (chantier 19). Les choix proposés sont en bas.
+     Données d'exemple : le Vendredi noir, vendredi 27 novembre, de 18 h à 23 h, au Togo, au
+     Cameroun et en Côte d'Ivoire ; Awa Mode, Rose Délices, Kofi Électro. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le public : le programme, une grande soirée, une promo</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. Le programme -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Programme</span><span class="pill" style="margin-left:auto">🇹🇬 Togo</span></div>
+    <div class="days">
+      <span class="day on">Auj.<b>18</b></span><span class="day">Jeu.<b>19</b></span><span class="day">Ven.<b>20</b></span><span class="day">Sam.<b>21</b></span><span class="day party">Ven.<b>27</b></span>
+    </div>
+    <a class="band" href="#soiree">
+      <span class="small" style="opacity:.85">Grande soirée · OCD Live</span>
+      <span class="t">Vendredi noir</span>
+      <span class="small">Ven. 27 nov. · 18 h – 23 h · 23 vendeurs en live · jusqu'à -50 %</span>
+    </a>
+    <span class="now"><i class="dot"></i>En direct maintenant</span>
+    <div class="slot live"><span class="h">10:00</span><span class="av">AM</span><span><b>Awa Mode</b><br><span class="small muted">Robes et pagnes · TikTok OCD Live Togo · au studio</span></span><span class="bell on">✓</span></div>
+    <b class="d" style="font-size:19px;margin-top:4px">Plus tard aujourd'hui</b>
+    <div class="slot"><span class="h">11:30</span><span class="av">RD</span><span><b>Rose Délices</b><br><span class="small muted">Gâteaux · Facebook OCD Live Togo · à distance</span></span><span class="bell">🔔</span></div>
+    <div class="slot"><span class="h">18:00</span><span class="av">KE</span><span><b>Kofi Électro</b><br><span class="small muted">Téléphones · TikTok OCD Live Togo · au studio</span></span><span class="bell">🔔</span></div>
+    <div class="slot"><span class="h">19:30</span><span class="av">BW</span><span><b>Brenda Wax</b><br><span class="small muted">Wax · TikTok OCD Live Cameroun · au studio</span></span><span class="bell">🔔</span></div>
+    <span class="small muted">Heures de ton téléphone (heure de Lomé). 🔔 : un WhatsApp au début de chaque live du vendeur (comme « Suivre »).</span>
+    <span class="small muted">Les lives des vendeurs sur leurs propres comptes s'ajoutent quand ils commencent.</span>
+  </div>
+
+  <!-- 2. La grande soirée -->
+  <div class="phone" id="soiree">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Vendredi noir</span><span class="pill" style="margin-left:auto">Partager</span></div>
+    <div class="hero">
+      <span class="small" style="opacity:.85">Grande soirée · OCD Live</span>
+      <span class="t">Vendredi noir</span>
+      <span class="small">Vendredi 27 novembre · 18 h – 23 h (heure de Lomé)</span>
+      <span class="small">Togo · Cameroun · Côte d'Ivoire</span>
+      <div class="count"><div><b>9 j</b>avant</div><div><b>23</b>vendeurs</div><div><b>140</b>promos</div></div>
+    </div>
+    <span class="cta" style="background:#15130F;color:#FFF">🔔 Me prévenir sur WhatsApp</span>
+    <b class="d" style="font-size:20px">Le programme de la soirée</b>
+    <div class="slot"><span class="h">18:00</span><span class="av">AM</span><span><b>Awa Mode</b><br><span class="small muted">Robes · jusqu'à -40 %</span></span><span class="bell">🔔</span></div>
+    <div class="slot"><span class="h">18:45</span><span class="av">KE</span><span><b>Kofi Électro</b><br><span class="small muted">Téléphones · jusqu'à -20 %</span></span><span class="bell">🔔</span></div>
+    <span class="small lnk">Les 23 lives de la soirée</span>
+    <b class="d" style="font-size:20px">Les promos de la soirée</b>
+    <div class="chips"><span class="chip on">Tout</span><span class="chip">Mode</span><span class="chip">Beauté</span><span class="chip">Maison</span></div>
+    <div class="grid2">
+      <div class="prod"><span class="img"><span class="off">-40 %</span></span><b>Robe wax Kaba</b><span class="price"><b>7 200 F</b><s>12 000 F</s></span><span class="small muted">Awa Mode</span></div>
+      <div class="prod"><span class="img"><span class="off">-20 %</span></span><b>Écouteurs sans fil</b><span class="price"><b>12 000 F</b><s>15 000 F</s></span><span class="small muted">Kofi Électro</span></div>
+    </div>
+    <span class="small muted">Les promos de la soirée valent de 18 h à 23 h ce soir-là. Avant : « Bientôt ».</span>
+  </div>
+
+  <!-- 3. Une promo toute l'année : la carte, la fiche, le panier -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Robe wax Kaba</span></div>
+    <div class="ph" style="height:220px;position:relative"><span class="off" style="position:absolute;top:10px;left:10px;border-radius:8px;background:#C4162A;color:#FFF;font-weight:800;font-size:14px;padding:3px 9px">-25 %</span>Photo</div>
+    <div class="pp">
+      <span><span class="big">9 000 F</span> <s class="muted" style="font-size:16px">12 000 F</s></span>
+      <span class="until">Promo jusqu'au dimanche 29 novembre</span>
+      <span class="small muted">Par Awa Mode · Livré par OCD</span>
+    </div>
+    <span class="cta">Ajouter au panier</span>
+    <b class="d" style="font-size:19px;margin-top:6px">Dans le panier</b>
+    <div class="prow"><span class="img"></span><span><b>Robe wax Kaba</b> · taille M<br><span class="price"><b>9 000 F</b><s>12 000 F</s></span></span></div>
+    <span class="small muted">Le prix promo est gardé tant que la commande est payée avant la fin de la promo. Sur les cartes du shop, de la boutique et du live : « -25 % » et le prix barré ; « En promo » dans les filtres du shop.</span>
+  </div>
+
+  <!-- 4. WhatsApp -->
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <span class="cap" style="margin:0">WhatsApp (nouveaux modèles, à soumettre à Meta)</span>
+    <div class="wa">
+      <div class="bot">Le <b>Vendredi noir</b> d'OCD Live commence à 18 h : 23 vendeurs en live et leurs promos jusqu'à 23 h. Touchez « Voir la soirée » pour le programme.</div>
+      <span class="bt">Voir la soirée</span>
+    </div>
+    <span class="small muted" style="width:330px">À ceux qui ont touché « Me prévenir » sur la page de la soirée, 15 minutes avant. Les abonnés d'un vendeur reçoivent l'alerte habituelle de son live (chantier 1), rien de plus.</span>
+    <div class="wa">
+      <div class="bot">Bonjour, OCD Live organise le <b>Vendredi noir</b> le vendredi 27 novembre de 18 h à 23 h. Un live dans la soirée et vos promos : touchez « Participer » avant le mardi 24 novembre.</div>
+      <span class="bt">Participer</span>
+    </div>
+    <span class="small muted" style="width:330px">Aux vendeurs vérifiés des pays de la soirée, une fois, à l'ouverture des inscriptions.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · le vendeur : sa promo, sa soirée</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 5. Mettre en promo (Mes produits, menu « Plus ») -->
+  <div class="phone" style="overflow:hidden">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes produits</span></div>
+    <div class="prow"><span class="img"></span><span><b>Robe wax Kaba</b><br><span class="small muted">12 000 F · 8 en stock</span></span></div>
+    <div class="sheet">
+      <b class="d" style="font-size:22px">Mettre en promo</b>
+      <div class="chips"><span class="chip">-10 %</span><span class="chip">-20 %</span><span class="chip on">-25 %</span><span class="chip">Autre prix</span></div>
+      <div><div class="lab">Nouveau prix</div><div class="in">9 000 F</div></div>
+      <div><div class="lab">Jusqu'au</div><div class="chips"><span class="chip">7 jours</span><span class="chip on">14 jours</span><span class="chip">30 jours</span></div></div>
+      <div class="preview"><b>Les clients voient : 9 000 F au lieu de 12 000 F</b><span>-25 % jusqu'au dimanche 29 novembre, dans ta boutique, le shop, tes lives et le panier.</span></div>
+      <span class="cta">Mettre en promo</span>
+      <span class="small muted">50 % de remise au plus, 30 jours au plus. Le prix barré est ton prix des 14 derniers jours : un prix monté juste avant ne fait pas une promo. La commission d'OCD se calcule sur le prix réduit.</span>
+    </div>
+  </div>
+
+  <!-- 6. L'invitation et « Participer » -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <div class="invite">
+      <span class="small" style="opacity:.8">Grande soirée · ven. 27 nov. · 18 h – 23 h</span>
+      <b class="d" style="font-size:22px">Vendredi noir : participe</b>
+      <span class="small">Un live dans la soirée et tes promos de la soirée. Inscriptions jusqu'au mardi 24 novembre.</span>
+      <span class="cta" style="min-height:48px;font-size:16px">Participer</span>
+    </div>
+    <b class="d" style="font-size:20px">Participer au Vendredi noir</b>
+    <div class="step">
+      <b>1. Ton live dans la soirée</b>
+      <div class="chips"><span class="chip">18:00</span><span class="chip on">18:45</span><span class="chip">19:30</span><span class="chip">21:00</span></div>
+      <span class="small muted">Au studio ou à distance, au prix habituel d'un live ; la réservation habituelle, avec ton ticket.</span>
+    </div>
+    <div class="step">
+      <b>2. Tes promos de la soirée</b>
+      <div class="toggle"><span class="img"></span><span><b>Robe wax Kaba</b><br>12 000 F → <b>7 200 F</b> (-40 %)</span><span class="sw on"></span></div>
+      <div class="toggle"><span class="img"></span><span><b>Pagne 6 yards</b><br>18 000 F → <b>14 400 F</b> (-20 %)</span><span class="sw on"></span></div>
+      <div class="toggle"><span class="img"></span><span><b>Sac en raphia</b><br>9 500 F</span><span class="sw"></span></div>
+    </div>
+    <span class="cta">Envoyer ma participation</span>
+    <span class="small muted">L'équipe vérifie ta participation et te répond sur WhatsApp. Tes promos valent de 18 h à 23 h ce soir-là.</span>
+  </div>
+
+  <!-- 7. Comment c'est compté -->
+  <div style="display:flex;flex-direction:column;gap:14px;width:360px">
+    <span class="cap" style="margin:0">Comment c'est compté</span>
+    <div class="rule"><b>Une vraie promo</b><span>Le prix barré est le prix du produit des 14 derniers jours (l'historique des prix du chantier 19). 50 % de remise au plus, 30 jours au plus (réglables). Une promo à la fois par produit.</span></div>
+    <div class="rule"><b>Le prix payé</b><span>Le prix promo s'applique à toutes les tailles et couleurs du produit. Une commande commencée pendant la promo garde son prix jusqu'à son paiement (le temps habituel pour payer).</span></div>
+    <div class="rule"><b>La commission</b><span>Calculée sur le prix réduit, comme aujourd'hui sur le prix payé : le reversement du vendeur suit.</span></div>
+    <div class="rule"><b>Pendant une soirée</b><span>Une promo de soirée remplace la promo du moment pendant les heures de la soirée, puis le produit reprend son prix (ou sa promo si elle court encore).</span></div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · le programme façon guide télé (une ligne par compte de live d'OCD Live)</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a class="on">Lives</a><a>Shop</a><a>Billets</a><a>Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <div style="display:flex;align-items:center;gap:12px;padding:20px 40px 14px">
+    <b class="d" style="font-size:30px">Programme</b>
+    <span class="chip on">Aujourd'hui, mer. 18</span><span class="chip">Jeu. 19</span><span class="chip">Ven. 20</span><span class="chip">Sam. 21</span><span class="chip">Dim. 22</span><span class="chip" style="border-color:#F46A00">Ven. 27 · Vendredi noir</span>
+    <span class="right"><span class="chip">Tous les pays</span><span class="chip">Toutes les catégories</span></span>
+  </div>
+  <div class="guide" style="margin:0 40px 28px;border:1px solid #E7E2DC;border-radius:14px;overflow:hidden">
+    <div class="hr" style="border-right:1px solid #E7E2DC"></div>
+    <div class="hr">08 h</div><div class="hr">09 h</div><div class="hr" style="color:#C4162A">10 h ●</div><div class="hr">11 h</div><div class="hr">12 h</div><div class="hr">13 h</div><div class="hr">14 h</div><div class="hr">15 h</div><div class="hr">16 h</div><div class="hr">17 h</div><div class="hr">18 h</div><div class="hr">19 h</div><div class="hr">20 h</div><div class="hr">21 h</div><div class="hr">22 h</div>
+
+    <div class="ch">OCD Live Togo<span>TikTok · studio de Lomé</span></div>
+    <div class="cell"></div><div class="cell"></div>
+    <div class="cell" style="grid-column:span 2"><div class="blk live"><b>● Awa Mode</b><span>10:00 – 11:30 · Robes et pagnes</span></div></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell" style="grid-column:span 2"><div class="blk"><b>Kofi Électro</b><span>18:00 – 19:30 · Téléphones</span></div></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+
+    <div class="ch">OCD Live Togo<span>Facebook · à distance</span></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell" style="grid-column:span 2"><div class="blk"><b>Rose Délices</b><span>11:30 – 13:00 · Gâteaux</span></div></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+
+    <div class="ch">OCD Live Cameroun<span>TikTok · studio de Douala</span></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell" style="grid-column:span 2"><div class="blk"><b>Brenda Wax</b><span>19:30 – 21:00 · Wax</span></div></div>
+    <div class="cell"></div><div class="cell"></div>
+
+    <div class="ch">OCD Live Côte d'Ivoire<span>TikTok · à distance</span></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell" style="grid-column:span 2"><div class="blk"><b>Mariam Beauté</b><span>14:00 – 15:30 · Beauté</span></div></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+  </div>
+  <div style="display:flex;gap:16px;padding:0 40px 28px;align-items:center">
+    <span class="small muted">Survoler un live : le vendeur, sa catégorie, le compte où le regarder, 🔔 « Me prévenir ». Un jour de grande soirée, ses heures sont en noir sur toute la grille.</span>
+    <span class="blk party" style="margin:0;width:220px"><b>Vendredi noir · ven. 27</b><span>18 h – 23 h · 23 vendeurs</span></span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · l'équipe</span>
+<div class="screen" style="width:1300px;padding:20px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
+  <div class="bo">
+    <b>OCD Live › Lives › Grandes soirées</b>
+    <table class="t">
+      <tr><th>Soirée</th><th>Date</th><th>Pays</th><th>État</th><th class="r">Vendeurs</th><th class="r">Promos</th><th class="r">Ventes</th></tr>
+      <tr><td><b>Vendredi noir</b></td><td>27 nov. · 18 h – 23 h</td><td>TG, CM, CI</td><td><span class="tag low">Inscriptions ouvertes</span></td><td class="r">23</td><td class="r">140</td><td class="r">-</td></tr>
+      <tr><td><b>Noël d'OCD Live</b></td><td>19 déc. · 17 h – 22 h</td><td>Tous</td><td><span class="tag">En préparation</span></td><td class="r">0</td><td class="r">0</td><td class="r">-</td></tr>
+      <tr><td><b>Saint-Valentin</b></td><td>13 févr. · 18 h – 22 h</td><td>Tous</td><td><span class="tag">En préparation</span></td><td class="r">0</td><td class="r">0</td><td class="r">-</td></tr>
+    </table>
+    <span>Fiche : le nom, la date et les heures, les pays, l'image, la remise au plus, la date limite des inscriptions ; les participations (le live réservé, les promos) ; les ventes de la soirée.</span>
+    <span style="display:flex;gap:8px;flex-wrap:wrap"><span class="bobtn">Ouvrir les inscriptions</span><span class="bobtn">Participations</span><span class="bobtn">Promos</span><span class="bobtn">Page</span><span class="bobtn">Annuler</span></span>
+  </div>
+  <div class="bo">
+    <b>Shop › Promos</b>
+    <span>Les produits en promo : le prix barré, le prix promo, la remise, jusqu'à quand, toute l'année ou d'une soirée ; « Arrêter la promo » pour l'équipe.</span>
+    <b style="margin-top:6px">À vérifier</b>
+    <span>Les participations aux soirées (le live et les promos), comme les produits ; une promo hors des règles est refusée avant, jamais après.</span>
+    <b style="margin-top:6px">Réglages · Promos et soirées</b>
+    <span>Remise au plus (<b>50 %</b>), durée au plus (<b>30 jours</b>), prix de référence (<b>14 derniers jours</b>), « Me prévenir » d'une soirée (<b>15 min avant</b>).</span>
+    <b style="margin-top:6px">Automatisations</b>
+    <span>« Soirée : inviter les vendeurs » ; « Soirée : prévenir ceux qui l'ont demandé » ; « Fin des promos : remettre les prix ».</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Choix proposés, à valider</span>
+<div class="q" style="max-width:1300px">
+  <span><b>1. Le programme :</b> les 7 prochains jours, les lives connus à l'avance (réservés au studio ou à distance, sur les comptes d'OCD Live) ; les lives des vendeurs sur leurs propres comptes s'ajoutent quand ils commencent. Les heures du téléphone de la personne ; son pays d'abord. Sur ordinateur, une ligne par compte de live d'OCD Live, comme les chaînes d'un guide télé.</span>
+  <span><b>2. « Me prévenir » sur le programme :</b> c'est « Suivre » le vendeur pour ses lives (chantier 1) : un WhatsApp au début de chacun de ses lives, 2 par jour au plus ; pas de nouveau message.</span>
+  <span><b>3. Les grandes soirées :</b> créées par l'équipe (nom, date, heures, pays, image) ; les vendeurs vérifiés de ces pays sont invités sur WhatsApp et dans Mon espace ; ils participent avec un live dans la soirée (réservation habituelle, prix habituel) et leurs promos de la soirée ; l'équipe vérifie chaque participation.</span>
+  <span><b>4. Le prix promo, toute l'année :</b> pour tous les vendeurs (pas réservé à OCD Business), dans « Mes produits » : une remise ou un nouveau prix, jusqu'à une date ; 50 % et 30 jours au plus ; le prix barré est le prix des 14 derniers jours ; toutes les tailles et couleurs ; montré tout de suite, sans vérification de l'équipe (le prix ne l'est pas aujourd'hui).</span>
+  <span><b>5. Où on le voit :</b> les cartes du shop, de la boutique, du fil et du produit à l'écran pendant un live (« -25 % », prix barré), la fiche (jusqu'à quand), le panier, la régie, le catalogue pour le statut ; un filtre « En promo » dans le shop.</span>
+  <span><b>6. Commission et reversements :</b> sur le prix réduit (le prix payé), comme aujourd'hui.</span>
+  <span><b>7. WhatsApp :</b> deux nouveaux modèles : l'invitation des vendeurs à une soirée (une fois) et « la soirée commence » à ceux qui l'ont demandé (15 minutes avant). Pas de message à chaque promo.</span>
+  <span><b>8. Pays :</b> une soirée choisit ses pays (Togo, Cameroun, l'UEMOA…) ; ses heures sont celles du premier pays, montrées à l'heure de chacun.</span>
+</div>
+
+</div>
+</body>
+</html>
