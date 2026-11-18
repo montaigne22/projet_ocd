@@ -16,6 +16,7 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `ocd_tickets_whatsapp` | OCD Tickets sur WhatsApp : billets prêts, rappel la veille, événement annulé ou déplacé, contrôleur ajouté |
 | `ocd_soirees` | Grands événements d'OCD Live (Vendredi noir, Noël, Saint-Valentin, Tabaski), d'une soirée ou de plusieurs jours : les vendeurs des pays invités participent avec un live et leurs promos de l'événement, vérifiées par l'équipe ; page de l'événement (compte à rebours, programme jour par jour, promos, « Me prévenir sur WhatsApp »), l'événement sur le programme des lives |
 | `ocd_soirees_whatsapp` | Grands événements sur WhatsApp : l'invitation des vendeurs, le début annoncé à ceux qui l'ont demandé |
+| `attachment_s3` | Les fichiers d'Odoo sur un stockage S3 (Cloudflare R2, AWS S3, Backblaze B2, MinIO), module générique utilisable sur tout Odoo 20 : on saisit les clés dans les Paramètres, chaque fichier est copié et vérifié sur le bucket, les fichiers déjà là partent en arrière-plan, un fichier qui manque sur le serveur revient du bucket |
 | `ocd_live_recruitment` | Offre « Animatrice live · Lomé » sur le site, 5 étapes de recrutement, l'embauchée devient animatrice |
 | `ocd_delivery_togo` | Régions, villes et quartiers du Togo, point de repère, modes de livraison pour Lomé et le reste du Togo |
 | `ocd_debranding` | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients : site, connexion, portail, back-office, fenêtres d'erreur, e-mails |

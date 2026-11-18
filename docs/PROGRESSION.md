@@ -131,6 +131,22 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 18 novembre 2026 · Fichiers sur Cloudflare R2 (module `attachment_s3`)
+Demandé par l'équipe pendant le chantier 8 : les fichiers de toute la plateforme sur un stockage objet,
+en saisissant seulement les clés, dans un module à part utilisable ailleurs.
+- Nouveau module générique `attachment_s3` (Cloudflare R2, AWS S3, Backblaze B2, MinIO) : Paramètres ›
+  Paramètres généraux › Fichiers sur un stockage S3 ; « Tester la connexion » ; chaque nouveau fichier
+  copié sur le bucket juste après son enregistrement et vérifié (taille, MD5), renvoyé plus tard si le
+  réseau coupe ; les fichiers déjà là envoyés en arrière-plan avec leur progression ; un fichier qui
+  manque sur le serveur repris du bucket à la lecture ; « Garder sur le serveur » (tout, ou les fichiers
+  lus récemment jusqu'à une taille) ; un fichier supprimé dans Odoo supprimé du bucket un jour après ;
+  « Rapatrier les fichiers sur ce serveur ». Marche à suivre dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md).
+- Tests : 7 sans échec (bucket en mémoire), et un essai de bout en bout avec le vrai client boto3 contre
+  un serveur S3 de test (envoi vérifié, reprise, test de connexion, suppression) ; écran des paramètres
+  contrôlé en français.
+- **À installer sur un serveur** : `pip install boto3`, puis `-i attachment_s3` ; rien ne change tant que
+  le stockage n'est pas activé dans les paramètres.
+
 ### 18 novembre 2026 · Programme et événements (chantier 7), prix promo (3.1)
 Dessiné d'abord (maquette `ProgrammeSoirees`, validée avec ses choix), puis codé dans `ocd_live_shop`
 (prix promo, programme des lives) et deux nouveaux modules, `ocd_soirees` et `ocd_soirees_whatsapp`.

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.attachment.s3</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='integration']" position="after">
+                <block title="Files on an S3 storage" name="attachment_s3_setting_container" groups="base.group_system">
+                    <setting id="attachment_s3_setting" string="Files on an S3 storage"
+                             help="The files are copied on the bucket and read from it when the server misses them: give the keys, test, then turn on and save. The files already there leave a little at a time.">
+                        <field name="attachment_s3_active"/>
+                        <div class="mt8" invisible="not attachment_s3_active">
+                            <field name="attachment_s3_status" readonly="1" class="text-muted"/>
+                            <div invisible="not attachment_s3_last_error" class="text-warning">
+                                <field name="attachment_s3_last_error" readonly="1"/>
+                            </div>
+                        </div>
+                    </setting>
+                    <setting id="attachment_s3_keys_setting" string="The bucket"
+                             help="Cloudflare R2: R2 › Manage API tokens › Create a token « Object Read and Write » for the bucket; the Account ID is on the page R2 › Overview.">
+                        <div class="content-group">
+                            <div invisible="not attachment_s3_from_file" class="text-muted mb8">
+                                <field name="attachment_s3_from_file" readonly="1"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="attachment_s3_provider" class="col-lg-4 o_light_label"/>
+                                <field name="attachment_s3_provider" class="col-lg-8"/>
+                            </div>
+                            <div class="row" invisible="attachment_s3_provider != 'r2'">
+                                <label for="attachment_s3_account" class="col-lg-4 o_light_label"/>
+                                <field name="attachment_s3_account" class="col-lg-8"/>
+                            </div>
+                            <div class="row" invisible="attachment_s3_provider == 'r2'">
+                                <label for="attachment_s3_endpoint" class="col-lg-4 o_light_label"/>
+                                <field name="attachment_s3_endpoint" class="col-lg-8" placeholder="https://"/>
+                            </div>
+                            <div class="row" invisible="attachment_s3_provider == 'r2'">
+                                <label for="attachment_s3_region" class="col-lg-4 o_light_label"/>
+                                <field name="attachment_s3_region" class="col-lg-8"/>
+                            </div>
+                            <div class="row">
+                                <label for="attachment_s3_bucket" class="col-lg-4 o_light_label"/>
+                                <field name="attachment_s3_bucket" class="col-lg-8"/>
+                            </div>
+                            <div class="row">
+                                <label for="attachment_s3_access_key" class="col-lg-4 o_light_label"/>
+                                <field name="attachment_s3_access_key" class="col-lg-8"/>
+                            </div>
+                            <div class="row">
+                                <label for="attachment_s3_secret_key" class="col-lg-4 o_light_label"/>
+                                <field name="attachment_s3_secret_key" class="col-lg-8" password="True"/>
+                            </div>
+                            <div class="row">
+                                <label for="attachment_s3_prefix" class="col-lg-4 o_light_label"/>
+                                <field name="attachment_s3_prefix" class="col-lg-8"/>
+                            </div>
+                            <div class="mt8 d-flex flex-wrap gap-2">
+                                <button name="action_attachment_s3_test" type="object" string="Test the connection"
+                                        class="btn-secondary" icon="cloud_done"/>
+                                <button name="action_attachment_s3_send_all" type="object" string="Send the files now"
+                                        class="btn-link" invisible="not attachment_s3_active"/>
+                                <button name="action_attachment_s3_bring_back" type="object" string="Bring the files back on this server"
+                                        class="btn-link"
+                                        confirm="Every file missing on this server is taken back from the bucket (the disk must have the room). Go on?"/>
+                            </div>
+                        </div>
+                    </setting>
+                    <setting id="attachment_s3_cache_setting" string="Keep on the server"
+                             help="All the files: the disk keeps a copy (the safest). The files read lately: the server keeps only this size, the others come back from the bucket when they are read."
+                             invisible="not attachment_s3_active">
+                        <field name="attachment_s3_keep_local"/>
+                        <div class="mt8" invisible="attachment_s3_keep_local != 'cache'">
+                            <field name="attachment_s3_cache_gb" class="oe_inline"/> GB
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

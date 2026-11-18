@@ -1,0 +1,436 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 11:57+0000\n"
+"PO-Revision-Date: 2026-11-18 11:57+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: attachment_s3
+#: model:ir.module.module,description:base.module_attachment_s3
+msgid ""
+"\n"
+"Files on an S3 storage\n"
+"======================\n"
+"\n"
+"The files of Odoo (photos, videos, PDF, attachments) are kept on an S3 bucket:\n"
+"Cloudflare R2, AWS S3, Backblaze B2, Wasabi, MinIO or any S3 storage.\n"
+"\n"
+"- Settings › General Settings › Files on an S3 storage: the provider, the\n"
+"  bucket and its keys (or in the configuration file of the server), « Test\n"
+"  the connection », then on.\n"
+"- Each new file is copied on the bucket just after it is saved, checked\n"
+"  (size and MD5), and tried again later when the network cuts. The files\n"
+"  already there are sent in the background, a little at a time, with their\n"
+"  progress on the settings.\n"
+"- Odoo keeps working as before on the disk of the server: a file missing on\n"
+"  the disk (another server, a new server, a disk lost) is taken back from\n"
+"  the bucket when it is read. The copy on the server can stay (the safest),\n"
+"  or the server keeps only the files read lately (a size in GB).\n"
+"- A file deleted in Odoo is deleted on the bucket a day later; « Bring the\n"
+"  files back on this server » before leaving the bucket.\n"
+"- One bucket for several databases and several servers: a folder per database.\n"
+msgstr ""
+"\n"
+"Fichiers sur un stockage S3\n"
+"===========================\n"
+"\n"
+"Les fichiers d'Odoo (photos, vidéos, PDF, pièces jointes) sont gardés sur un\n"
+"bucket S3 : Cloudflare R2, AWS S3, Backblaze B2, Wasabi, MinIO ou tout\n"
+"stockage S3.\n"
+"\n"
+"- Paramètres › Paramètres généraux › Fichiers sur un stockage S3 : le\n"
+"  fournisseur, le bucket et ses clés (ou dans le fichier de configuration du\n"
+"  serveur), « Tester la connexion », puis activer.\n"
+"- Chaque nouveau fichier est copié sur le bucket juste après son\n"
+"  enregistrement, vérifié (taille et MD5), et renvoyé plus tard quand le\n"
+"  réseau coupe. Les fichiers déjà là partent en arrière-plan, petit à petit,\n"
+"  avec leur progression dans les paramètres.\n"
+"- Odoo continue de travailler comme avant sur le disque du serveur : un\n"
+"  fichier qui manque sur le disque (un autre serveur, un nouveau serveur, un\n"
+"  disque perdu) est repris du bucket quand on le lit. La copie sur le\n"
+"  serveur peut rester (le plus sûr), ou le serveur ne garde que les fichiers\n"
+"  lus récemment (une taille en Go).\n"
+"- Un fichier supprimé dans Odoo est supprimé du bucket un jour plus tard ;\n"
+"  « Rapatrier les fichiers sur ce serveur » avant de quitter le bucket.\n"
+"- Un bucket pour plusieurs bases et plusieurs serveurs : un dossier par base.\n"
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "%(synced)s files on the bucket (%(size)s GB) · %(pending)s to send · %(error)s not sent yet"
+msgstr "%(synced)s fichiers sur le bucket (%(size)s Go) · %(pending)s à envoyer · %(error)s pas encore envoyés"
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "%s files noted to send: they leave a little at a time, the progress shows here."
+msgstr "%s fichiers notés à envoyer : ils partent petit à petit, la progression s'affiche ici."
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__res_config_settings__attachment_s3_provider__aws
+msgid "AWS S3"
+msgstr "AWS S3"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_access_key
+msgid "Access Key ID"
+msgstr "ID de la clé d'accès"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_account
+msgid "Account ID"
+msgstr "ID du compte"
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__res_config_settings__attachment_s3_keep_local__all
+msgid "All the files (the safest)"
+msgstr "Tous les fichiers (le plus sûr)"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "All the files: the disk keeps a copy (the safest). The files read lately: the server keeps only this size, the others come back from the bucket when they are read."
+msgstr "Tous les fichiers : le disque garde une copie (le plus sûr). Les fichiers lus récemment : le serveur ne garde que cette taille, les autres reviennent du bucket quand on les lit."
+
+#. module: attachment_s3
+#: model:ir.model,name:attachment_s3.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__res_config_settings__attachment_s3_provider__b2
+msgid "Backblaze B2"
+msgstr "Backblaze B2"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "Bring the files back on this server"
+msgstr "Rapatrier les fichiers sur ce serveur"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_bucket
+msgid "Bucket"
+msgstr "Bucket"
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__res_config_settings__attachment_s3_provider__r2
+msgid "Cloudflare R2"
+msgstr "Cloudflare R2"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "Cloudflare R2: R2 › Manage API tokens › Create a token « Object Read and Write » for the bucket; the Account ID is on the page R2 › Overview."
+msgstr "Cloudflare R2 : R2 › Gérer les jetons d'API › Créer un jeton « Lecture et écriture d'objets » pour le bucket ; l'ID du compte est sur la page R2 › Vue d'ensemble."
+
+#. module: attachment_s3
+#: model:ir.model.fields,help:attachment_s3.field_res_config_settings__attachment_s3_account
+msgid "Cloudflare R2: the Account ID (Cloudflare › R2 › Overview)."
+msgstr "Cloudflare R2 : l'ID du compte (Cloudflare › R2 › Vue d'ensemble)."
+
+#. module: attachment_s3
+#: model:ir.model,name:attachment_s3.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__display_name
+#: model:ir.model.fields,field_description:attachment_s3.field_ir_attachment__display_name
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: attachment_s3
+#: model:ir.model.fields,help:attachment_s3.field_res_config_settings__attachment_s3_endpoint
+msgid "Empty for Cloudflare R2 (made from the Account ID) and AWS S3."
+msgstr "Vide pour Cloudflare R2 (fait à partir de l'ID du compte) et AWS S3."
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_endpoint
+msgid "Endpoint"
+msgstr "Adresse du service"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "Every file missing on this server is taken back from the bucket (the disk must have the room). Go on?"
+msgstr "Chaque fichier qui manque sur ce serveur est repris du bucket (le disque doit avoir la place). Continuer ?"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__fname
+msgid "File"
+msgstr "Fichier"
+
+#. module: attachment_s3
+#: model:ir.model,name:attachment_s3.model_attachment_s3_object
+msgid "File On The S3 Storage"
+msgstr "Fichier sur le stockage S3"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_active
+msgid "Files On An S3 Storage"
+msgstr "Fichiers sur un stockage S3"
+
+#. module: attachment_s3
+#: model:ir.module.module,shortdesc:base.module_attachment_s3
+msgid "Files On An S3 Storage (Cloudflare R2, AWS S3, Backblaze B2, MinIO)"
+msgstr "Fichiers sur un stockage S3 (Cloudflare R2, AWS S3, Backblaze B2, MinIO)"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "Files on an S3 storage"
+msgstr "Fichiers sur un stockage S3"
+
+#. module: attachment_s3
+#: model:ir.actions.server,name:attachment_s3.ir_cron_attachment_s3_ir_actions_server
+msgid "Files on an S3 storage: send, check, clean"
+msgstr "Fichiers sur un stockage S3 : envoyer, vérifier, nettoyer"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_prefix
+msgid "Folder"
+msgstr "Dossier"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_from_file
+msgid "From The Configuration File"
+msgstr "Depuis le fichier de configuration"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "GB"
+msgstr "Go"
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "Give the bucket and its two keys first."
+msgstr "Donne d'abord le bucket et ses deux clés."
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "Given by the configuration file of the server (they win): %s."
+msgstr "Donnés par le fichier de configuration du serveur (ils l'emportent) : %s."
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__id
+#: model:ir.model.fields,field_description:attachment_s3.field_ir_attachment__id
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__id
+msgid "ID"
+msgstr "ID"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_keep_local
+msgid "Keep On The Server"
+msgstr "Garder sur le serveur"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "Keep on the server"
+msgstr "Garder sur le serveur"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_last_error
+msgid "Last Error"
+msgstr "Dernière erreur"
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__res_config_settings__attachment_s3_provider__minio
+msgid "MinIO"
+msgstr "MinIO"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__next_try
+msgid "Next Try"
+msgstr "Prochain essai"
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__attachment_s3_object__state__error
+msgid "Not Sent"
+msgstr "Pas envoyé"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__noted_at
+msgid "Noted At"
+msgstr "Noté le"
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__attachment_s3_object__state__synced
+msgid "On The Bucket"
+msgstr "Sur le bucket"
+
+#. module: attachment_s3
+#: model:ir.model.constraint,message:attachment_s3.constraint_attachment_s3_object_unique_fname
+msgid "One row per file."
+msgstr "Une ligne par fichier."
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__res_config_settings__attachment_s3_provider__other
+msgid "Other S3 storage"
+msgstr "Autre stockage S3"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_status
+msgid "Progress"
+msgstr "Progression"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_region
+msgid "Region"
+msgstr "Région"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_secret_key
+msgid "Secret Access Key"
+msgstr "Clé d'accès secrète"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "Send the files now"
+msgstr "Envoyer les fichiers maintenant"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__size
+msgid "Size"
+msgstr "Taille"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_cache_gb
+msgid "Size On The Server (GB)"
+msgstr "Taille sur le serveur (Go)"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__state
+msgid "State"
+msgstr "État"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_res_config_settings__attachment_s3_provider
+msgid "Storage"
+msgstr "Stockage"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__synced_at
+msgid "Synced At"
+msgstr "Envoyé le"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "Test the connection"
+msgstr "Tester la connexion"
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "The bucket"
+msgstr "Le bucket"
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "The bucket answers: a file was written, read and deleted."
+msgstr "Le bucket répond : un fichier a été écrit, lu et supprimé."
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "The bucket does not answer: %s"
+msgstr "Le bucket ne répond pas : %s"
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/attachment_s3_object.py:0
+msgid "The copy on the bucket does not have the size of the file."
+msgstr "La copie sur le bucket n'a pas la taille du fichier."
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/attachment_s3_object.py:0
+msgid "The copy on the bucket is not the same file (MD5)."
+msgstr "La copie sur le bucket n'est pas le même fichier (MD5)."
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/attachment_s3_object.py:0
+msgid "The file is not on the disk of this server."
+msgstr "Le fichier n'est pas sur le disque de ce serveur."
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "The file read back is not the one written."
+msgstr "Le fichier relu n'est pas celui écrit."
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "The files are copied on the bucket and read from it when the server misses them: give the keys, test, then turn on and save. The files already there leave a little at a time."
+msgstr "Les fichiers sont copiés sur le bucket et relus depuis lui quand le serveur ne les a plus : donne les clés, teste, puis active et enregistre. Les fichiers déjà là partent petit à petit."
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "The files missing on this server are taken back from the bucket by the scheduled task."
+msgstr "Les fichiers qui manquent sur ce serveur sont repris du bucket par la tâche planifiée."
+
+#. module: attachment_s3
+#: model:ir.module.module,summary:base.module_attachment_s3
+msgid "The files of Odoo copied on an S3 bucket and read from it: give the keys, the files already there are sent by themselves"
+msgstr "Les fichiers d'Odoo copiés sur un bucket S3 et relus depuis lui : donne les clés, les fichiers déjà là partent tout seuls"
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__res_config_settings__attachment_s3_keep_local__cache
+msgid "The files read lately"
+msgstr "Les fichiers lus récemment"
+
+#. module: attachment_s3
+#: model:ir.model.fields,help:attachment_s3.field_res_config_settings__attachment_s3_keep_local
+msgid "The files stay on the disk of the server too, or only the files read lately up to a size: the others are taken back from the bucket when they are read."
+msgstr "Les fichiers restent aussi sur le disque du serveur, ou seulement les fichiers lus récemment jusqu'à une taille : les autres sont repris du bucket quand on les lit."
+
+#. module: attachment_s3
+#: model:ir.model.fields,help:attachment_s3.field_res_config_settings__attachment_s3_prefix
+msgid "The folder of this database in the bucket. Empty: the name of the database."
+msgstr "Le dossier de cette base dans le bucket. Vide : le nom de la base."
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/attachment_s3_object.py:0
+msgid "The server needs boto3: pip install boto3."
+msgstr "Le serveur a besoin de boto3 : pip install boto3."
+
+#. module: attachment_s3
+#: model:ir.model.fields.selection,name:attachment_s3.selection__attachment_s3_object__state__pending
+msgid "To Send"
+msgstr "À envoyer"
+
+#. module: attachment_s3
+#: model:ir.model.fields,field_description:attachment_s3.field_attachment_s3_object__tries
+msgid "Tries"
+msgstr "Essais"
+
+#. module: attachment_s3
+#. odoo-python
+#: code:addons/attachment_s3/models/res_config_settings.py:0
+msgid "Turn on « Files on an S3 storage » and save first."
+msgstr "Active d'abord « Fichiers sur un stockage S3 » et enregistre."
+
+#. module: attachment_s3
+#: model_terms:ir.ui.view,arch_db:attachment_s3.res_config_settings_view_form
+msgid "https://"
+msgstr "https://"
+
+#. module: attachment_s3
+#: model:ir.model.fields,help:attachment_s3.field_res_config_settings__attachment_s3_region
+msgid "« auto » for Cloudflare R2; e.g. eu-west-3 for AWS S3."
+msgstr "« auto » pour Cloudflare R2 ; ex. eu-west-3 pour AWS S3."

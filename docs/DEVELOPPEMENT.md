@@ -246,6 +246,36 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
 - Mesurer avant d'ouvrir : [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md), outil
   `tools/charge/charge.py`.
 
+## Fichiers sur Cloudflare R2 (module `attachment_s3`)
+
+Module générique (aucune dépendance à OCD Live), utilisable sur tout Odoo 20. Odoo garde ses fichiers
+sur le disque comme avant ; chaque fichier est aussi copié sur un bucket S3 et vérifié (taille et MD5),
+et un fichier qui manque sur le disque d'un serveur est repris du bucket quand il est lu.
+
+1. `pip install boto3` (dans `requirements.txt`), puis `-i attachment_s3`.
+2. Cloudflare › R2 › Créer un bucket (ex. `ocd-live-fichiers`, emplacement automatique). Ne pas le
+   rendre public : Odoo sert les fichiers (droits d'accès gardés) et le CDN les garde.
+3. R2 › Gérer les jetons d'API › Créer un jeton d'API : « Lecture et écriture d'objets », limité à ce
+   bucket. Noter l'ID de la clé d'accès et la clé secrète (montrée une seule fois). L'ID du compte est
+   sur la page R2 › Vue d'ensemble.
+4. Paramètres › Paramètres généraux › Fichiers sur un stockage S3 : Stockage « Cloudflare R2 », l'ID du
+   compte, le bucket, les deux clés ; « Tester la connexion » ; puis activer et enregistrer.
+   Les clés peuvent être dans `odoo.conf` plutôt qu'en base (elles l'emportent) :
+   `attachment_s3_endpoint`, `attachment_s3_bucket`, `attachment_s3_access_key`,
+   `attachment_s3_secret_key`, `attachment_s3_region`, `attachment_s3_prefix`.
+5. Les fichiers déjà là partent tout seuls, petit à petit (tâche planifiée toutes les 10 minutes) ; la
+   progression est sur la même page (« 12 340 fichiers sur le bucket · 2 100 à envoyer »).
+   « Envoyer les fichiers maintenant » les note tous à nouveau (sans danger : un fichier déjà envoyé
+   n'est pas renvoyé).
+6. « Garder sur le serveur » : tous les fichiers (par défaut, le plus sûr) ou les fichiers lus récemment
+   jusqu'à une taille en Go (les autres reviennent du bucket quand on les lit).
+
+Plusieurs serveurs Odoo peuvent partager le même bucket (un dossier par base). Pour quitter le bucket :
+« Rapatrier les fichiers sur ce serveur », attendre la fin, puis désactiver. La base de données reste à
+sauvegarder à part (elle n'est pas sur le bucket). Code : `attachment_s3/models/attachment_s3_object.py`
+(envoi, reprise, nettoyage), `ir_attachment.py` (branchement sur `_file_write`, `_file_read`,
+`_to_http_stream`) ; tests avec un bucket en mémoire (`tests/`).
+
 ## Tests
 
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
