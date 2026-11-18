@@ -41,6 +41,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Garantie OCD et avis (chantier 2) : la garantie montrée sur la fiche produit et la boutique (le vendeur payé après le code de livraison, pas livré : remboursé, retour possible), un avis par colis livré, la note du vendeur dès 3 avis, « Vendeur vérifié », « Signaler » un produit ou un vendeur vers « À vérifier » | ✅ fait, testé |
 | Statistiques du vendeur (chantier 3) et ventes par produit (3.3) : « Mes chiffres » (ventes, pièces, visites de la boutique, contacts WhatsApp et leur évolution sur 7 jours, 30 jours ou 3 mois ; ce que rapporte chaque live ; meilleures heures et « Réserver un live » ; clients fidèles ; ventes par produit avec « Pas vendus » ; magasins), la ligne « Vendu » de Mes produits, les ventes du mois dans Mon espace, le résumé du lundi sur WhatsApp ; nouveaux comptages jour par jour (« Regarder », visites, contacts) | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | OCD Vote (chantier 4) : concours avec candidats numérotés, voix payées en Mobile Money (seules les voix payées comptent, chacune liée à son paiement), vote sur la page ou par WhatsApp « VOTE 12 », classement en direct, bandeau de la finale, résultats certifiés, espace de l'organisateur, reversement | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
+| OCD Tickets (chantier 6) : billets de concerts et d'événements (application Événements d'Odoo), page de l'événement, achat (places gardées pendant le paiement), « Mes billets » (un QR signé par personne, PDF, « Donner ce billet »), contrôle à l'entrée avec le téléphone (même hors réseau), vente à l'entrée, billet à l'écran pendant un live avec son prix du live, annulé ou déplacé, espace de l'organisateur et ses contrôleurs, reversement | ✅ fait, testé (5 modèles WhatsApp à faire approuver par Meta) |
 | Paiement automatique dans l'UEMOA (chantier 5) : CinetPay (module `payment_cinetpay` : Mobile Money, Wave, carte ; UEMOA, Cameroun, Guinée, RD Congo) et Flutterwave (module d'Odoo) ; l'état lu chez CinetPay, revérifié toutes les 10 minutes ; le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production ; clés manquantes et mode test dits dans les Paramètres | ✅ fait, testé (clés des comptes à saisir) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
@@ -100,6 +101,9 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    (français et anglais, Utilitaire), pour le résumé de la semaine que le vendeur demande dans « Mes
    chiffres » (rien ne part avant). **Avec OCD Vote**, aussi `ocd_vote_comptee` et `ocd_vote_finale`
    (français et anglais, Utilitaire) : les voix comptées au votant, la finale à ceux qui l'ont demandé.
+   **Avec OCD Tickets**, aussi `ocd_billets_prets`, `ocd_billets_rappel`, `ocd_billets_annule`,
+   `ocd_billets_deplace` et `ocd_billets_controleur` (français et anglais, Utilitaire) : les billets
+   payés ou donnés, le rappel la veille, l'événement annulé ou déplacé, le contrôleur ajouté.
 3. **Paiement dans l'UEMOA** (équipe) : ouvrir les comptes CinetPay et Flutterwave (documents de
    l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
    pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
@@ -123,6 +127,48 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 18 novembre 2026 · OCD Tickets (chantier 6)
+Dessiné d'abord (maquette `OcdTickets`, validée avec ses choix), puis codé dans deux nouveaux modules,
+`ocd_tickets` et `ocd_tickets_whatsapp`, sur l'application Événements d'Odoo (gratuite).
+- **Les événements** (`/billets`, « Billets » dans le menu des grands écrans quand un événement est en
+  vente) et **la page d'un événement** (`/billets/<événement>`) : l'affiche, « Organisateur vérifié »,
+  la date et l'ouverture des portes à l'heure du lieu, le lieu et l'itinéraire, les billets vendus et ce
+  qui reste, les types de billets (« Plus que 12 », « Épuisé »), la garantie, « Signaler » ; sur
+  ordinateur, les − / + et le total à droite.
+- **Acheter** (`/billets/<événement>/acheter`) : un nombre par type (10 au plus par commande), le nom sur
+  les billets, le WhatsApp, « Payer 10 000 F », puis le formulaire de paiement d'OCD Live ; les places
+  sont gardées 10 minutes, puis remises en vente.
+- **Mes billets** : l'attente du paiement (« J'ai payé » pour le Mobile Money vérifié par l'équipe),
+  puis « C'est payé : 2 billets », un billet par personne (QR signé, code « NAF-7K2Q-41 »), le PDF,
+  « Donner ce billet » (nouveau QR, l'ancien ne marche plus) ; après un report, « Je ne peux pas venir :
+  me rembourser » pendant 7 jours.
+- **L'entrée** (`/billets/entree`, connexion des contrôleurs par numéro et code) : la caméra du
+  téléphone lit les QR, ou le code tapé ; « Entrée OK », « Déjà entré » (heure, porte, contrôleur), « Pas
+  pour ce soir », « Billet inconnu » ; le compteur des entrés ; hors réseau, la liste reste dans le
+  téléphone et les entrées partent au retour du réseau ; « Vendre à l'entrée » (espèces ou Mobile Money).
+- **Pendant un live** : la régie met un type de billet à l'écran comme un produit ; la boutique mène à
+  l'achat, au prix du live jusqu'à la fin du live.
+- **L'organisateur** (le même espace que pour OCD Vote) : ses billets vendus, l'encaissé (dont pendant les
+  lives), sa part (90 %), les entrés, les ventes par type, partager, « Vendre pendant un live », les
+  étapes, « Envoyer mon événement à OCD Live » ; ses contrôleurs (ajouter avec leur porte, vend à
+  l'entrée ou non, retirer).
+- **WhatsApp** : billets prêts (aussi pour un billet donné), rappel la veille, événement annulé ou déplacé,
+  contrôleur ajouté ; les messages des commandes du shop ne partent pas pour des billets.
+- **Back-office** : OCD Live › Billets (Événements, Billets vendus, Contrôleurs, Organisateurs) ; la fiche
+  d'un événement d'Odoo avec l'onglet « OCD Live » et les boutons « Vérifier et mettre en vente »,
+  « Déplacer », « Annuler et rembourser », « Reversement versé », les billets et les entrées ; « À
+  vérifier » : les événements envoyés ; réglages « Billets » ; automatisations « Billets payés : les
+  envoyer », « La veille : rappel aux acheteurs », « Événement annulé ou déplacé : prévenir les
+  acheteurs », « Après l'événement : reversement à l'organisateur ».
+- Tests : base neuve, tous les modules OCD avec `ocd_tickets`, `ocd_tickets_whatsapp` et
+  `payment_cinetpay` : suite complète en cours (15 nouveaux tests, tous passés seuls) ; contrôlé dans un navigateur en français
+  en trois tailles (390, 820, 1440 px) : les événements, un événement, acheter, le paiement, Mes billets,
+  un billet, l'entrée, la vente à l'entrée, l'espace de l'organisateur et ses contrôleurs ; aucun
+  débordement ; la fiche de l'événement dans le back-office.
+- **À installer sur un serveur** : `-i ocd_tickets,ocd_tickets_whatsapp` (nouveaux modules, avec
+  l'application Événements d'Odoo et `event_sale`), et `-u ocd_live_whatsapp` (20.0.1.9.2, un test
+  seulement). Puis soumettre à Meta les 5 modèles `ocd_billets_*` (Utilitaire, français et anglais).
 
 ### 18 novembre 2026 · Paiement automatique dans l'UEMOA (chantier 5)
 CinetPay et Flutterwave, choisis par l'équipe. Le code est prêt avant les contrats : chaque fournisseur

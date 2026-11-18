@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The tickets in PDF: one page per person, with their QR (design OcdTickets, « Download (PDF) ») -->
+    <record id="action_report_tickets" model="ir.actions.report">
+        <field name="name">Tickets</field>
+        <field name="model">event.registration</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ocd_tickets.report_tickets</field>
+        <field name="print_report_name">'Tickets %s' % (object.event_id.name)</field>
+        <field name="binding_model_id" ref="event.model_event_registration"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_tickets">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="ticket">
+                <t t-set="event" t-value="ticket.event_id"/>
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family: sans-serif; font-size: 15px; page-break-after: always;">
+                        <div style="border: 3px solid #15130F; border-radius: 18px; overflow: hidden; max-width: 520px; margin: 10px auto;">
+                            <div style="padding: 18px 20px 14px;">
+                                <div style="color: #665F58; font-size: 13px;"><t t-out="ticket._ocd_index_text()"/></div>
+                                <div style="font-size: 26px; font-weight: 800; margin: 4px 0;"><t t-out="event.name"/></div>
+                                <div style="font-weight: 700;"><t t-out="event._ocd_short_when()"/><t t-if="event._ocd_doors_hour()"> · <t t-out="event._ocd_doors_short()"/></t></div>
+                                <div><t t-out="event._ocd_place_text()"/></div>
+                                <div style="color: #665F58; font-size: 13px; margin-top: 4px;"><t t-out="ticket.name"/></div>
+                            </div>
+                            <div style="border-top: 3px dashed #15130F; padding: 16px 20px;">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 170px;"><img t-att-src="ticket._ocd_qr()" style="width: 160px; height: 160px;" alt=""/></td>
+                                        <td style="vertical-align: middle;">
+                                            <div style="font-size: 22px; font-weight: 800; letter-spacing: .06em;"><t t-out="ticket.ocd_code"/></div>
+                                            <div style="color: #665F58; font-size: 13px;">Valid only once. Keep it for yourself: a screenshot is enough to enter.</div>
+                                            <div style="color: #665F58; font-size: 13px; margin-top: 6px;"><t t-out="event._ocd_organizer_line()"/> · OCD Tickets</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

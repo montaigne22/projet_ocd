@@ -1,0 +1,16 @@
+from . import (
+    event_event,
+    event_ticket,
+    event_registration,
+    ir_http,
+    ocd_automation,
+    ocd_listing_refuse_reason,
+    ocd_live_booking,
+    ocd_live_settings,
+    ocd_live_verification,
+    ocd_ticket_controller,
+    ocd_ticket_move,
+    res_company,
+    res_partner,
+    sale_order,
+)

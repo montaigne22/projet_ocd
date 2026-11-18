@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The entrance of an event (design OcdTickets): the controller scans the tickets with the camera
+     of their phone, types a code, sells at the door -->
+<odoo>
+
+    <!-- The login of the controllers: the same pages as the vendors, with their words -->
+    <template id="space_login_controller" inherit_id="ocd_live.space_login" name="OCD Tickets: login of a controller">
+        <xpath expr="//h1[@t-else='']" position="before">
+            <h1 t-elif="target == 'billets'" class="o_ocd_h1">The entrance of your event.</h1>
+        </xpath>
+        <xpath expr="//div[@t-elif=&quot;target == 'livrer'&quot;]" position="before">
+            <div t-elif="target == 'billets'" class="o_ocd_info">For the controllers added by the organiser: give the number the organiser gave.</div>
+        </xpath>
+    </template>
+
+    <template id="space_login_code_controller" inherit_id="ocd_live.space_login_code" name="OCD Tickets: code of a controller">
+        <xpath expr="//button[@t-else='']" position="before">
+            <button t-elif="target == 'billets'" type="submit" class="o_ocd_cta">Open the entrance</button>
+        </xpath>
+    </template>
+
+    <template id="entrance_home" name="OCD Tickets: my entrances">
+        <t t-set="additional_title">Entrance</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_tk">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Entrance</h1>
+                    <a t-foreach="controls" t-as="control" t-attf-href="/billets/entree/#{control.event_id.id}" class="o_ocd_tk_place">
+                        <b t-out="control.event_id.name"/>
+                        <span class="o_ocd_tk_muted"><t t-out="control.event_id._ocd_when_text()"/> · <t t-out="control._ocd_line()"/></span>
+                    </a>
+                    <div t-if="not controls" class="o_ocd_info">No event to control for now.</div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="entrance_scanner" name="OCD Tickets: the entrance">
+        <t t-set="additional_title">Entrance</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_tk o_ocd_tk_scanner" t-att-data-scan-url="'/billets/entree/%s/scan' % event.id"
+                      t-att-data-list-url="'/billets/entree/%s/liste' % event.id" t-att-data-event="event.id">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="event.name"/>
+                    <div class="o_ocd_tk_counter"><span>Entered</span><b class="o_ocd_tk_counter_value" t-out="counter"/></div>
+                    <div class="o_ocd_tk_camera">
+                        <video class="o_ocd_tk_video" playsinline="playsinline" muted="muted" hidden="hidden"/>
+                        <span class="o_ocd_tk_frame" aria-hidden="true"/>
+                        <span class="o_ocd_tk_hint">Put the QR of the ticket in the frame</span>
+                        <button type="button" class="o_ocd_cta o_ocd_tk_camera_start" hidden="hidden">
+                            <t t-call="ocd_live.icon" icon.f="scan"/><span>Open the camera</span>
+                        </button>
+                    </div>
+                    <div t-attf-class="o_ocd_tk_result #{'o_ocd_tk_result_%s' % result['kind'] if result else ''}" role="status"
+                         aria-live="assertive" t-att-hidden="None if result else 'hidden'">
+                        <b class="o_ocd_tk_result_title" t-out="result['title'] if result else ''"/>
+                        <span class="o_ocd_tk_result_lines"><t t-if="result"><span t-foreach="result['lines']" t-as="line" t-out="line"/></t></span>
+                    </div>
+                    <form class="o_ocd_tk_typed o_ocd_form" method="post" t-attf-action="/billets/entree/#{event.id}">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <label for="tk-code" class="o_ocd_label">Type the code of the ticket</label>
+                        <input id="tk-code" name="code" class="o_ocd_input o_ocd_tk_code" autocomplete="off" autocapitalize="characters"
+                               maxlength="14" placeholder="NAB-7K2Q-41"/>
+                        <button type="submit" class="o_ocd_button o_ocd_button_dark">Check</button>
+                    </form>
+                    <small class="o_ocd_tk_muted o_ocd_tk_offline">Without the network: the list of the tickets stays in the phone, the entries leave as soon as the network is back.</small>
+                    <small class="o_ocd_tk_muted o_ocd_tk_pending" hidden="hidden"/>
+                    <a t-if="can_sell" t-attf-href="/billets/entree/#{event.id}/vendre" class="o_ocd_button">Sell at the door</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="entrance_sell" name="OCD Tickets: sell at the door">
+        <t t-set="additional_title">Sell at the door</t>
+        <t t-call="ocd_live.app">
+            <form method="post" class="o_ocd_frame o_ocd_narrow o_ocd_tk_form" t-att-data-symbol="currency_symbol"
+                  t-att-data-position="event.ocd_currency_id.position">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <main class="o_ocd_main o_ocd_tk">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Sell at the door</h1>
+                    <t t-call="ocd_live.message_box"/>
+                    <small class="o_ocd_tk_muted">Allowed by the organiser: you sell on the spot.</small>
+                    <div class="o_ocd_tk_kinds">
+                        <t t-foreach="kinds" t-as="kind">
+                            <t t-set="kind" t-value="dict(kind, each_text=kind['price_text'], usual_text=False, low=False, note='')"/>
+                            <t t-set="steppers" t-value="True"/>
+                            <t t-call="ocd_tickets.kind_row"/>
+                        </t>
+                    </div>
+                    <div class="o_ocd_field">
+                        <label for="tk-door-phone" class="o_ocd_label">WhatsApp of the customer</label>
+                        <t t-call="ocd_live.phone_field" field_id.f="tk-door-phone"/>
+                    </div>
+                    <div class="o_ocd_tk_total"><span class="o_ocd_tk_muted o_ocd_tk_total_what"/><b class="o_ocd_tk_total_amount"/></div>
+                    <div class="o_ocd_tk_two">
+                        <button type="submit" name="method" value="cash" class="o_ocd_button o_ocd_button_dark">Cash</button>
+                        <button type="submit" name="method" value="momo" class="o_ocd_button o_ocd_button_dark">Mobile Money</button>
+                    </div>
+                    <small class="o_ocd_tk_muted">The ticket leaves on the WhatsApp of the customer and enters at once. The cash is counted with you at the end of the evening, like the cash of the couriers.</small>
+                </main>
+            </form>
+        </t>
+    </template>
+
+</odoo>

@@ -439,6 +439,44 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   - **à vérifier avant d'ouvrir dans un pays** : le cadre légal des votes payants (pas de tirage au sort,
     rien à gagner pour les votants : le règlement de chaque concours le dit) ; d'abord le Cameroun avec
     CamPay, l'UEMOA avec CinetPay ou Flutterwave (chantier 5).
+- **OCD Tickets** (chantier 6 ; maquette `OcdTickets` validée le 18 novembre 2026, avec ses choix) :
+  - **l'événement est celui de l'application Événements d'Odoo** (gratuite) : sa date, son fuseau, son
+    lieu, ses types de billets et leurs places ; l'onglet « OCD Live » ajoute l'organisateur, sa part,
+    l'affiche, la vente à l'entrée, les lives qui vendent les billets et leurs prix du live, les
+    contrôleurs. Un billet est une inscription d'Odoo, créée quand son paiement est confirmé ; les e-mails
+    de l'application Événements sont coupés (tout part sur WhatsApp) ;
+  - **qui vend** : des organisateurs vérifiés par l'équipe (le même compte et le même espace que pour OCD
+    Vote) et OCD Live ; l'équipe crée l'événement avec l'organisateur, qui l'envoie à vérifier depuis son
+    espace ; l'équipe le vérifie et le met en vente (« À vérifier », colonne « Événements ») ;
+  - **partage** : 90 % pour l'organisateur, 10 % pour OCD Live (frais du Mobile Money compris), aucun frais
+    en plus pour l'acheteur ; noté « à verser » 3 jours après l'événement, versé avec la référence du
+    transfert, comme pour OCD Vote ;
+  - **billets** : un QR par personne, au nom de l'acheteur, signé par le serveur (comme le ticket du live) et
+    un code à taper (« NAF-7K2Q-41 ») ; 10 billets au plus par commande (réglable) ; « Donner ce billet » à
+    un ami : un nouveau QR et un nouveau code, l'ancien ne marche plus. Un billet « table » est un QR pour la
+    table : le groupe entre ensemble ;
+  - **places** : gardées 10 minutes pendant le paiement (réglable), plus longtemps si un paiement est en
+    route (Mobile Money vérifié par l'équipe) ; puis remises en vente. Deux acheteurs qui paient la dernière
+    place en même temps ont tous les deux leur billet : l'argent est reçu, l'équipe le voit ;
+  - **contrôle** : les contrôleurs ajoutés par l'organisateur (nom, WhatsApp, porte) se connectent avec leur
+    numéro et un code WhatsApp, et scannent avec la caméra de leur téléphone sur une page d'OCD Live (le
+    lecteur de QR du navigateur ; sans lui, ils tapent le code). La réponse : « Entrée OK », « Déjà entré »
+    (heure, porte, contrôleur), « Pas pour ce soir », « Billet inconnu ». Hors réseau, la liste des billets
+    reste dans le téléphone et les entrées partent au retour du réseau avec leur heure (risque accepté :
+    deux portes hors réseau pourraient laisser entrer la même copie une fois chacune) ;
+  - **en live** : un billet passe à l'écran comme un produit (régie, boutique du vendeur du live) ; un prix
+    du live possible, jusqu'à la fin du live ; les billets vendus pendant un live sont comptés à part ;
+  - **vente à l'entrée** : si l'organisateur l'autorise, ses contrôleurs vendent sur place, en espèces
+    (comptées avec eux à la fin, comme la caisse des livreurs) ou en Mobile Money (le formulaire de
+    paiement d'OCD Live) ; le billet part sur le WhatsApp du client et entre aussitôt ;
+  - **annulé ou déplacé** : annulé, chaque billet payé est à rembourser et les acheteurs sont prévenus ;
+    déplacé (« Déplacer », jamais en changeant la date à la main une fois des billets vendus), les billets
+    restent valables et l'acheteur demande le remboursement depuis « Mes billets » pendant 7 jours
+    (réglable) ; pas de remboursement pour un acheteur qui ne vient pas ;
+  - **ventes en ligne** : jusqu'à l'heure du début (réglable : quelques heures avant) ; la vente à l'entrée
+    continue jusqu'à la fin ;
+  - **pays** : le formulaire de paiement d'OCD Live, donc CamPay au Cameroun, CinetPay et Flutterwave dans
+    l'UEMOA (chantier 5), la carte partout.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

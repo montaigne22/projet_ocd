@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_ticket_controller_view_list" model="ir.ui.view">
+        <field name="name">ocd.ticket.controller.list</field>
+        <field name="model">ocd.ticket.controller</field>
+        <field name="arch" type="xml">
+            <list string="Controllers" editable="bottom">
+                <field name="event_id"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="phone" optional="show"/>
+                <field name="gate"/>
+                <field name="can_sell"/>
+                <field name="entered_count"/>
+                <field name="cash_amount" sum="Cash"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="active" column_invisible="True"/>
+                <button name="action_ocd_cash_collected" type="object" string="Cash collected" invisible="not cash_amount"
+                        confirm="The cash of the door is counted with this controller?"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_ticket_controller_action" model="ir.actions.act_window">
+        <field name="name">Controllers</field>
+        <field name="res_model">ocd.ticket.controller</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">The controllers of the events</p>
+            <p>Added by the organisers in their space, or here: they scan the tickets with their phone.</p>
+        </field>
+    </record>
+
+</odoo>

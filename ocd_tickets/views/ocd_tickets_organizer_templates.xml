@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The events of an organiser in their space (design OcdTickets): the same space as their
+     contests of OCD Vote -->
+<odoo>
+
+    <template id="organizer_home_events" inherit_id="ocd_vote.organizer_home" name="OCD Tickets: my events">
+        <xpath expr="//h1" position="replace">
+            <h1 t-if="events" class="o_ocd_h1 o_ocd_h1_small">My contests and events</h1>
+            <h1 t-else="" class="o_ocd_h1 o_ocd_h1_small">My contests</h1>
+        </xpath>
+        <xpath expr="//div[hasclass('o_ocd_info')]" position="attributes">
+            <attribute name="t-if">not contests and not events</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_ocd_info')]" position="before">
+            <a t-foreach="events or []" t-as="event" t-attf-href="/vote/organisateur/evenement/#{event.id}" class="o_ocd_vote_place">
+                <b><t t-out="event.name"/> · Tickets</b>
+                <span class="o_ocd_vote_muted" t-out="event._ocd_when_text()"/>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="organizer_event" name="OCD Tickets: my event">
+        <t t-set="additional_title" t-value="event.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_vote o_ocd_tk">
+                    <div class="o_ocd_vote_name">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="event.name"/>
+                        <span class="o_ocd_vote_badge" t-out="state_label"/>
+                    </div>
+                    <t t-call="ocd_live.message_box"/>
+                    <div class="o_ocd_vote_tiles">
+                        <div t-foreach="tiles" t-as="tile" class="o_ocd_vote_tile">
+                            <small t-out="tile[0]"/>
+                            <b t-out="tile[1]"/>
+                            <small t-out="tile[2]"/>
+                        </div>
+                    </div>
+                    <div class="o_ocd_vote_columns">
+                        <section class="o_ocd_vote_card">
+                            <h2 class="o_ocd_vote_h2">By ticket</h2>
+                            <div t-foreach="rows" t-as="row" class="o_ocd_tk_row">
+                                <span>
+                                    <b t-out="row['ticket'].name"/> · <t t-out="row['count']"/>
+                                    <span t-if="row['ticket'].seats_max" class="o_ocd_tk_bar"><i t-attf-style="width: #{row['width']}%"/></span>
+                                </span>
+                                <b t-out="row['amount']"/>
+                            </div>
+                            <button t-if="event._ocd_public()" type="button" class="o_ocd_button o_ocd_share" t-att-data-url="share_url">
+                                <t t-call="ocd_live.icon" icon.f="share"/><span>Share the event</span>
+                            </button>
+                            <a t-if="live_url" t-att-href="live_url" target="_blank" rel="noopener" class="o_ocd_button">Sell during a live</a>
+                        </section>
+                        <section class="o_ocd_vote_card">
+                            <h2 class="o_ocd_vote_h2">The steps</h2>
+                            <span t-foreach="steps" t-as="step" class="o_ocd_vote_step">
+                                <i t-attf-class="#{'' if step['done'] else 'o_ocd_vote_step_wait'}" aria-hidden="true">
+                                    <t t-if="step['done']">✓</t><t t-else="" t-out="step['index']"/>
+                                </i>
+                                <span t-out="step['label']"/>
+                            </span>
+                            <form t-if="event.ocd_state == 'draft'" t-attf-action="/vote/organisateur/evenement/#{event.id}/envoyer" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_cta">Send my event to OCD Live</button>
+                            </form>
+                            <a t-attf-href="/vote/organisateur/evenement/#{event.id}/controleurs" class="o_ocd_button o_ocd_button_dark">My controllers</a>
+                            <div class="o_ocd_note">Once on sale, the date and the prices change only with the team: the buyers are told on WhatsApp.</div>
+                        </section>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="organizer_controllers" name="OCD Tickets: my controllers">
+        <t t-set="additional_title">My controllers</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_vote o_ocd_tk o_ocd_panes">
+                    <div class="o_ocd_pane_main">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">My controllers</h1>
+                        <t t-call="ocd_live.message_box"/>
+                        <div t-foreach="rows" t-as="row" class="o_ocd_tk_row">
+                            <span>
+                                <b t-out="row['control'].name"/>
+                                <small class="o_ocd_vote_muted d-block" t-out="row['line']"/>
+                            </span>
+                            <form t-attf-action="/vote/organisateur/evenement/#{event.id}/controleurs/#{row['control'].id}/retirer" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_link o_ocd_tk_link_button">Remove</button>
+                            </form>
+                        </div>
+                        <div t-if="not rows" class="o_ocd_info">No controller yet: add the people who check the tickets at the doors.</div>
+                    </div>
+                    <div class="o_ocd_pane_side">
+                        <form t-attf-action="/vote/organisateur/evenement/#{event.id}/controleurs" method="post" class="o_ocd_form o_ocd_vote_card">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <h2 class="o_ocd_vote_h2">Add a controller</h2>
+                            <div class="o_ocd_field">
+                                <label for="ct-name" class="o_ocd_label">Name</label>
+                                <input id="ct-name" name="name" class="o_ocd_input" maxlength="60" required="required" t-att-value="values.get('name')"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="ct-phone" class="o_ocd_label">Their WhatsApp</label>
+                                <t t-call="ocd_live.phone_field" field_id.f="ct-phone" phone_value="values.get('phone') or ''"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="ct-gate" class="o_ocd_label">Their gate (if you want)</label>
+                                <input id="ct-gate" name="gate" class="o_ocd_input" maxlength="30" placeholder="e.g. Gate 1" t-att-value="values.get('gate')"/>
+                            </div>
+                            <label t-if="event.ocd_door_sale" class="o_ocd_check">
+                                <input type="checkbox" name="can_sell" value="1" t-att-checked="'checked' if values.get('can_sell') else None"/>
+                                <span>Sells at the door</span>
+                            </label>
+                            <button type="submit" class="o_ocd_cta">Add a controller</button>
+                            <small class="o_ocd_vote_muted">Their name, their WhatsApp, their gate: a message leaves on their WhatsApp. The evening of the event, they open « Entrance » and scan with the camera of their phone.</small>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

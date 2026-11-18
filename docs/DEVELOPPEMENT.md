@@ -50,7 +50,7 @@ En deux temps : les modules d'abord (Odoo met en place la comptabilité), puis l
 régler la société pendant qu'aucune écriture n'existe encore (pays, devise en franc CFA).
 
 ```bash
-odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp --load-language=fr_FR --stop-after-init
+odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp --load-language=fr_FR --stop-after-init
 ```
 
 Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**, téléphone et e-mail : ils s'affichent
@@ -91,7 +91,7 @@ Après un `git pull` du dépôt : redémarrer Odoo, puis mettre à jour les modu
 module › Mettre à jour, ou en ligne de commande) :
 
 ```bash
-odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp --stop-after-init
+odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp --stop-after-init
 ```
 
 **À chaque récupération du code, mettre à jour les modules.** Sans cela, le code appelle des pages qui
@@ -251,8 +251,8 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/payment_cinetpay --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/payment_cinetpay --stop-after-init
 ```
 
 Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Avec OCD, un test de
@@ -462,6 +462,23 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   le pays et la devise : `ocd_live/models/payment_provider.py` (`_find_available_providers`,
   `_ocd_takes_mobile_money`). Les clés manquantes et le mode test sont dits dans les Paramètres
   (`ocd_live_shop/models/ocd_live_settings.py`, `_ocd_provider_text`).
+- OCD Tickets (chantier 6) : l'événement est `event.event` (application Événements d'Odoo, avec
+  `event_sale`), complété par `ocd_tickets/models/event_event.py` (états `ocd_state`, places restantes
+  `_ocd_left` moins les places gardées `_ocd_held`, annuler `action_ocd_cancel`, déplacer `_ocd_move`,
+  tâche planifiée `_cron_ocd_tickets` : places non payées remises en vente, rappel la veille, reversement) ;
+  un type de billet a son propre produit (`event_ticket.py`, `_ocd_ensure_product`) pour la régie et son
+  prix du live (`_ocd_price`) ; une commande de billets se crée par `sale.order._ocd_ticket_create`, et
+  ses billets (`event.registration`) naissent à la confirmation par le paiement (`action_confirm` :
+  ouverts même si les dernières places sont parties entre-temps, codes, entrée immédiate pour une vente
+  à l'entrée). Le billet : code `_ocd_new_code`, QR signé `_ocd_signature` (la page
+  `/billets/billet/<id>/<signature>` est aussi l'adresse lue par le scanner), `_ocd_find` (QR ou code
+  tapé), `_ocd_let_in`, `_ocd_give`. Pages : `controllers/tickets.py` (public), `entrance.py`
+  (contrôleurs : connexion cible `billets`, scan en JSON `/billets/entree/<id>/scan`, liste pour le hors
+  réseau `/liste`, vente à l'entrée), `organizer.py` (dans l'espace de l'organisateur d'OCD Vote),
+  `boutique.py` (le billet à l'écran pendant un live). Le scanner et le hors réseau :
+  `static/src/interactions/tickets.js` (`BarcodeDetector`, `localStorage`).
+- Dans Odoo 20, une variable posée dans le corps d'un `t-call` (`<t t-call="x"><t t-set="a" .../></t>`)
+  n'arrive pas au gabarit appelé : la poser avant le `t-call`.
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - Thème du site : `ocd_live/static/src/scss/ocd_app.scss` (pages sous `.o_ocd_app`).
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).

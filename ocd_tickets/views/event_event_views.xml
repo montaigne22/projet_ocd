@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OCD Tickets in the back office (design OcdTickets): the events of the Events application of
+     Odoo, with the tab « OCD Live » -->
+<odoo>
+
+    <record id="event_event_view_list_ocd" model="ir.ui.view">
+        <field name="name">event.event.list.ocd</field>
+        <field name="model">event.event</field>
+        <field name="priority">40</field>
+        <field name="arch" type="xml">
+            <list string="Events" decoration-muted="ocd_state == 'cancelled'" decoration-warning="ocd_state == 'to_check'">
+                <field name="name"/>
+                <field name="ocd_organizer_id" optional="show"/>
+                <field name="date_begin"/>
+                <field name="ocd_state" widget="badge" decoration-success="ocd_state == 'approved'" decoration-warning="ocd_state == 'to_check'"/>
+                <field name="ocd_sold_count" sum="Sold"/>
+                <field name="ocd_amount_total" sum="Collected"/>
+                <field name="ocd_organizer_amount" optional="show"/>
+                <field name="ocd_payout_state" optional="show"/>
+                <field name="ocd_currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="event_event_view_search_ocd" model="ir.ui.view">
+        <field name="name">event.event.search.ocd</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="ocd_organizer_id"/>
+                <filter string="On sale" name="ocd_on_sale" domain="[('ocd_state', '=', 'approved')]"/>
+                <filter string="To check" name="ocd_to_check" domain="[('ocd_state', '=', 'to_check')]"/>
+                <filter string="Payout to pay" name="ocd_payout" domain="[('ocd_payout_state', '=', 'to_pay')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="event_event_view_form_ocd" model="ir.ui.view">
+        <field name="name">event.event.form.ocd</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_ocd_send_to_check" type="object" string="Send to check"
+                        invisible="not ocd_ticketing or ocd_state != 'draft'"/>
+                <button name="action_ocd_approve" type="object" string="Check and put on sale" class="btn-primary"
+                        invisible="not ocd_ticketing or ocd_state not in ('draft', 'to_check')"/>
+                <button name="action_ocd_open_move" type="object" string="Move"
+                        invisible="not ocd_ticketing or ocd_state != 'approved'"/>
+                <button name="action_ocd_cancel" type="object" string="Cancel and refund"
+                        invisible="not ocd_ticketing or ocd_state == 'cancelled'"
+                        confirm="Every ticket paid is to refund and the buyers are told. Cancel this event?"/>
+                <button name="action_ocd_payout_paid" type="object" string="Payout paid" class="btn-primary"
+                        invisible="ocd_payout_state != 'to_pay'"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_ocd_view_tickets" type="object" class="oe_stat_button" icon="confirmation_number"
+                        invisible="not ocd_ticketing">
+                    <field name="ocd_sold_count" widget="statinfo" string="Tickets"/>
+                </button>
+                <button name="action_ocd_view_entries" type="object" class="oe_stat_button" icon="how_to_reg"
+                        invisible="not ocd_ticketing">
+                    <field name="ocd_entered_count" widget="statinfo" string="Entries"/>
+                </button>
+                <button name="action_ocd_open_page" type="object" class="oe_stat_button" icon="public" string="Page"
+                        invisible="not ocd_ticketing or not ocd_slug"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="OCD Live" name="ocd_live">
+                    <group>
+                        <group string="OCD Tickets">
+                            <field name="ocd_ticketing"/>
+                            <field name="ocd_state" invisible="not ocd_ticketing"/>
+                            <field name="ocd_organizer_id" invisible="not ocd_ticketing"
+                                   context="{'default_ocd_vote_organizer': True}"/>
+                            <field name="ocd_organizer_verified" invisible="not ocd_organizer_id"/>
+                            <field name="ocd_slug" invisible="not ocd_ticketing"/>
+                            <field name="ocd_kind" invisible="not ocd_ticketing" placeholder="e.g. Concert"/>
+                            <field name="ocd_doors_at" invisible="not ocd_ticketing"/>
+                            <field name="ocd_poster" widget="image" invisible="not ocd_ticketing" options="{'size': [120, 120]}"/>
+                        </group>
+                        <group string="Sale" invisible="not ocd_ticketing">
+                            <field name="ocd_organizer_share"/>
+                            <field name="ocd_door_sale"/>
+                            <field name="ocd_booking_ids" widget="many2many_tags"/>
+                            <field name="ocd_moved_from" invisible="not ocd_moved_from"/>
+                            <field name="ocd_moved_at" invisible="not ocd_moved_at"/>
+                        </group>
+                    </group>
+                    <group invisible="not ocd_ticketing">
+                        <field name="ocd_about" placeholder="Six artists, two stages, from 20:00 until dawn."/>
+                    </group>
+                    <group string="Live prices" invisible="not ocd_ticketing">
+                        <field name="event_ticket_ids" nolabel="1" colspan="2">
+                            <list editable="bottom" create="0" delete="0">
+                                <field name="name" readonly="1"/>
+                                <field name="price" readonly="1"/>
+                                <field name="ocd_live_price"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Controllers" invisible="not ocd_ticketing">
+                        <field name="ocd_controller_ids" nolabel="1" colspan="2" context="{'default_event_id': id}">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="partner_id"/>
+                                <field name="gate"/>
+                                <field name="can_sell"/>
+                                <field name="entered_count"/>
+                                <field name="cash_amount"/>
+                                <field name="currency_id" column_invisible="True"/>
+                                <button name="action_ocd_cash_collected" type="object" string="Cash collected"
+                                        invisible="not cash_amount"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group invisible="not ocd_ticketing">
+                        <group string="Money">
+                            <field name="ocd_amount_total"/>
+                            <field name="ocd_live_amount"/>
+                            <field name="ocd_organizer_amount"/>
+                            <field name="ocd_currency_id" invisible="True"/>
+                        </group>
+                        <group string="Payout">
+                            <field name="ocd_payout_state"/>
+                            <field name="ocd_payout_due"/>
+                            <field name="ocd_payout_momo"/>
+                            <field name="ocd_payout_reference"/>
+                            <field name="ocd_payout_date"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="event_event_action_ocd" model="ir.actions.act_window">
+        <field name="name">Events</field>
+        <field name="res_model">event.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('ocd_ticketing', '=', True)]</field>
+        <field name="context">{'default_ocd_ticketing': True}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('event_event_view_list_ocd')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('event.view_event_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">A first event</p>
+            <p>Its date, its place and its kinds of tickets; the tab « OCD Live »: the organiser, their share, the
+                poster, the sale at the door and the controllers. Then « Check and put on sale ».</p>
+        </field>
+    </record>
+
+    <record id="ocd_ticket_move_view_form" model="ir.ui.view">
+        <field name="name">ocd.ticket.move.form</field>
+        <field name="model">ocd.ticket.move</field>
+        <field name="arch" type="xml">
+            <form string="Move the event">
+                <p>The tickets stay valid at the new date. The buyers are told on WhatsApp and may ask for a refund for a
+                    few days (Settings › Tickets).</p>
+                <group>
+                    <field name="event_id" readonly="1"/>
+                    <field name="date_begin"/>
+                    <field name="date_end"/>
+                    <field name="doors_at"/>
+                </group>
+                <footer>
+                    <button name="action_move" type="object" string="Move" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

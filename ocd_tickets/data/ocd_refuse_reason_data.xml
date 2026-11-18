@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Reasons sent to the organiser when an event is sent back -->
+    <record id="refuse_reason_ticket_place" model="ocd.listing.refuse.reason">
+        <field name="name">Place or date unclear</field>
+        <field name="message">The place or the date of the event is missing or unclear: write the hall, the city and the hours, then send it again.</field>
+        <field name="applies_to">ticket</field>
+        <field name="sequence">510</field>
+    </record>
+    <record id="refuse_reason_ticket_poster" model="ocd.listing.refuse.reason">
+        <field name="name">Poster not suitable</field>
+        <field name="message">The poster of the event is blurry or not suitable. Send another poster.</field>
+        <field name="applies_to">ticket</field>
+        <field name="sequence">520</field>
+    </record>
+    <record id="refuse_reason_ticket_proof" model="ocd.listing.refuse.reason">
+        <field name="name">Proof of the event missing</field>
+        <field name="message">The team needs a proof that the event takes place (contract of the hall, artists): send it on WhatsApp.</field>
+        <field name="applies_to">ticket</field>
+        <field name="sequence">530</field>
+    </record>
+
+</odoo>

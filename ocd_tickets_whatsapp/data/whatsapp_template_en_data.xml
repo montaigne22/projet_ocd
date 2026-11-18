@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The English versions of the templates of OCD Tickets (same names at Meta, language en) -->
+    <data noupdate="1">
+
+        <record id="template_tickets_ready_en" model="whatsapp.template">
+            <field name="name">OCD Tickets: tickets ready (English)</field>
+            <field name="template_name">ocd_billets_prets</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Your tickets for {{1}} are ready: see you {{2}} at {{3}}. Tap « My tickets » to show them at the entrance.</field>
+            <field name="button_url_value">{{ object._ocd_whatsapp_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My tickets', 'url': '{base_url}/{{1}}', 'url_example': 'billets/commande/42?t=AbCdEf123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.event_id.name }}', 'sample_value': 'Afrobeat Night'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.event_id._ocd_when_sentence() }}', 'sample_value': 'Saturday 12 December at 20:00'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.event_id._ocd_place_text() }}', 'sample_value': 'Palais des Sports, Douala'}),
+            ]"/>
+        </record>
+
+        <record id="template_tickets_reminder_en" model="whatsapp.template">
+            <field name="name">OCD Tickets: reminder the day before (English)</field>
+            <field name="template_name">ocd_billets_rappel</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Reminder: {{1}} tomorrow at {{2}}, doors at {{3}}, at {{4}}. Tap « My tickets » for your QR and the route.</field>
+            <field name="button_url_value">{{ object._ocd_whatsapp_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My tickets', 'url': '{base_url}/{{1}}', 'url_example': 'billets/commande/42?t=AbCdEf123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.event_id.name }}', 'sample_value': 'Afrobeat Night'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.event_id._ocd_hour(object.event_id._ocd_local(object.event_id.date_begin)) }}', 'sample_value': '20:00'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.event_id._ocd_doors_hour() or object.event_id._ocd_hour(object.event_id._ocd_local(object.event_id.date_begin)) }}', 'sample_value': '18:30'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.event_id._ocd_place_text() }}', 'sample_value': 'Palais des Sports, Douala'}),
+            ]"/>
+        </record>
+
+        <record id="template_tickets_cancelled_en" model="whatsapp.template">
+            <field name="name">OCD Tickets: event cancelled (English)</field>
+            <field name="template_name">ocd_billets_annule</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">The event {{1}} of {{2}} is cancelled: OCD Live refunds you on this number. Tap « My tickets » for the details.</field>
+            <field name="button_url_value">{{ object._ocd_whatsapp_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My tickets', 'url': '{base_url}/{{1}}', 'url_example': 'billets/commande/42?t=AbCdEf123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.event_id.name }}', 'sample_value': 'Afrobeat Night'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.event_id._ocd_when_sentence() }}', 'sample_value': 'Saturday 12 December at 20:00'}),
+            ]"/>
+        </record>
+
+        <record id="template_tickets_moved_en" model="whatsapp.template">
+            <field name="name">OCD Tickets: event moved (English)</field>
+            <field name="template_name">ocd_billets_deplace</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">The event {{1}} is moved to {{2}}, at {{3}}: your tickets stay valid. You cannot come? Tap « My tickets » before {{4}} to ask for the refund.</field>
+            <field name="button_url_value">{{ object._ocd_whatsapp_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My tickets', 'url': '{base_url}/{{1}}', 'url_example': 'billets/commande/42?t=AbCdEf123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.event_id.name }}', 'sample_value': 'Afrobeat Night'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.event_id._ocd_when_sentence() }}', 'sample_value': 'Saturday 19 December at 20:00'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.event_id._ocd_place_text() }}', 'sample_value': 'Palais des Sports, Douala'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_whatsapp_refund_day() }}', 'sample_value': 'Wednesday 25 November'}),
+            ]"/>
+        </record>
+
+        <record id="template_tickets_controller_en" model="whatsapp.template">
+            <field name="name">OCD Tickets: controller added (English)</field>
+            <field name="template_name">ocd_billets_controleur</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_tickets.model_ocd_ticket_controller"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello, {{1}} gives you the control of the entrances of {{2}}, on {{3}}. That evening, tap « Entrance » and scan the tickets with your phone.</field>
+            <field name="button_url_value">{{ 'billets/entree' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Entrance', 'url': '{base_url}/{{1}}', 'url_example': 'billets/entree'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object._ocd_whatsapp_organizer() }}', 'sample_value': 'Etoile Events'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.event_id.name }}', 'sample_value': 'Afrobeat Night'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.event_id._ocd_when_sentence() }}', 'sample_value': 'Saturday 12 December at 20:00'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

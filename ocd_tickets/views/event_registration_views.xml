@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The tickets sold (registrations of Odoo): one per person -->
+<odoo>
+
+    <record id="event_registration_view_list_ocd" model="ir.ui.view">
+        <field name="name">event.registration.list.ocd</field>
+        <field name="model">event.registration</field>
+        <field name="priority">40</field>
+        <field name="arch" type="xml">
+            <list string="Tickets" create="0" decoration-muted="ocd_refund_state == 'refunded' or state == 'cancel'"
+                  decoration-success="state == 'done'" decoration-warning="ocd_refund_state == 'to_refund'">
+                <field name="ocd_code"/>
+                <field name="event_id" optional="show"/>
+                <field name="event_ticket_id"/>
+                <field name="name"/>
+                <field name="phone" optional="show"/>
+                <field name="ocd_source" optional="show"/>
+                <field name="ocd_amount_company" sum="Paid" optional="show"/>
+                <field name="ocd_payment_method" optional="hide"/>
+                <field name="ocd_payment_reference" optional="hide"/>
+                <field name="sale_order_id" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="ocd_entered_at" optional="show"/>
+                <field name="ocd_controller_id" optional="show"/>
+                <field name="ocd_gate" optional="hide"/>
+                <field name="ocd_given_by_id" optional="hide"/>
+                <field name="ocd_refund_state" optional="show"/>
+                <field name="ocd_currency_id" column_invisible="True"/>
+                <button name="action_ocd_refunded" type="object" string="Refunded" invisible="ocd_refund_state != 'to_refund'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="event_registration_view_form_ocd" model="ir.ui.view">
+        <field name="name">event.registration.form.ocd</field>
+        <field name="model">event.registration</field>
+        <field name="inherit_id" ref="event.view_event_registration_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_ocd_to_refund" type="object" string="To refund"
+                        invisible="not ocd_code or ocd_refund_state != 'none' or state == 'done'"
+                        confirm="This ticket no longer lets in, and is refunded by the team. Go on?"/>
+                <button name="action_ocd_refunded" type="object" string="Refunded" class="btn-primary"
+                        invisible="ocd_refund_state != 'to_refund'"/>
+            </xpath>
+            <xpath expr="//sheet/group" position="after">
+                <group string="OCD Tickets" invisible="not ocd_code">
+                    <group>
+                        <field name="ocd_code"/>
+                        <field name="ocd_source"/>
+                        <field name="ocd_amount_company"/>
+                        <field name="ocd_payment_method"/>
+                        <field name="ocd_payment_reference"/>
+                        <field name="ocd_currency_id" invisible="True"/>
+                    </group>
+                    <group>
+                        <field name="ocd_entered_at"/>
+                        <field name="ocd_controller_id"/>
+                        <field name="ocd_gate"/>
+                        <field name="ocd_given_by_id" invisible="not ocd_given_by_id"/>
+                        <field name="ocd_refund_state"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="event_registration_view_search_ocd" model="ir.ui.view">
+        <field name="name">event.registration.search.ocd</field>
+        <field name="model">event.registration</field>
+        <field name="inherit_id" ref="event.view_registration_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="ocd_code"/>
+                <filter string="To refund" name="ocd_to_refund" domain="[('ocd_refund_state', '=', 'to_refund')]"/>
+                <filter string="Entered" name="ocd_entered" domain="[('state', '=', 'done')]"/>
+                <filter string="Sold at the door" name="ocd_door" domain="[('ocd_source', '=', 'door')]"/>
+                <filter string="Sold during a live" name="ocd_live" domain="[('ocd_source', '=', 'live')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="event_registration_action_ocd" model="ir.actions.act_window">
+        <field name="name">Tickets sold</field>
+        <field name="res_model">event.registration</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('event_id.ocd_ticketing', '=', True), ('ocd_code', '!=', False)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('event_registration_view_list_ocd')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('event.view_event_registration_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">No ticket sold yet</p>
+            <p>A ticket exists when its payment is confirmed: one per person, with its QR.</p>
+        </field>
+    </record>
+
+</odoo>

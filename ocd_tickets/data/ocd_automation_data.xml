@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of OCD Tickets in the catalogue of the team (OCD Live › Automations) -->
+<odoo>
+
+    <record id="automation_tickets_paid" model="ocd.automation">
+        <field name="code">tickets_paid</field>
+        <field name="name">Tickets paid: send them</field>
+        <field name="sequence">95</field>
+        <field name="group">tickets</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="event.model_event_registration"/>
+        <field name="when">When the payment of tickets is confirmed, or a ticket is given to a friend</field>
+        <field name="trigger">The payment provider (Mobile Money, card), the team that checks the payment, the sale at the door.</field>
+        <field name="scope">The buyers, and the friends who received a ticket.</field>
+        <field name="actions">Send the tickets on WhatsApp, with the button « My tickets ».</field>
+        <field name="tools">Code of OCD Live.</field>
+    </record>
+
+    <record id="automation_tickets_reminder" model="ocd.automation">
+        <field name="code">tickets_reminder</field>
+        <field name="name">The day before: reminder to the buyers</field>
+        <field name="sequence">96</field>
+        <field name="group">tickets</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="event.model_event_event"/>
+        <field name="when">24 hours before the start of an event</field>
+        <field name="trigger">Every 5 minutes.</field>
+        <field name="scope">The holders of the tickets paid.</field>
+        <field name="actions">Remind them of the hour, the doors and the place, with the button « My tickets ».</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_tickets_changed" model="ocd.automation">
+        <field name="code">tickets_changed</field>
+        <field name="name">Event cancelled or moved: tell the buyers</field>
+        <field name="sequence">97</field>
+        <field name="group">tickets</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="event.model_event_event"/>
+        <field name="when">When the team cancels or moves an event</field>
+        <field name="trigger">« Cancel and refund », « Move » on the event.</field>
+        <field name="scope">The holders of the tickets paid.</field>
+        <field name="actions">Cancelled: they are refunded on their number. Moved: their tickets stay valid, refund on request for a few days.</field>
+        <field name="tools">Code of OCD Live.</field>
+    </record>
+
+    <record id="automation_tickets_payout" model="ocd.automation">
+        <field name="code">tickets_payout</field>
+        <field name="name">After the event: payout to the organiser</field>
+        <field name="sequence">98</field>
+        <field name="group">tickets</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="event.model_event_event"/>
+        <field name="when">At the end of an event</field>
+        <field name="trigger">Every 5 minutes.</field>
+        <field name="scope">The events of an organiser with tickets sold.</field>
+        <field name="actions">Note the share of the organiser to pay within 3 days, like the payouts of the vendors.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,2335 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 06:10+0000\n"
+"PO-Revision-Date: 2026-11-18 06:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: ocd_tickets
+#: model:ir.module.module,description:base.module_ocd_tickets
+msgid ""
+"\n"
+"OCD Tickets\n"
+"===========\n"
+"\n"
+"- An event of an organiser (checked by the team, the same account as for OCD\n"
+"  Vote) or of OCD Live, made with the Events application of Odoo: its date,\n"
+"  its place, its kinds of tickets and their seats.\n"
+"- The public buys on the page of the event: a number per kind of ticket, the\n"
+"  name on the tickets, the WhatsApp number, then the payment form of OCD Live\n"
+"  (Mobile Money, card...). The seats are held while the payment is made, then\n"
+"  given back. A ticket exists once its payment is confirmed.\n"
+"- « My tickets »: one QR per person, signed by the server, valid once; the\n"
+"  PDF; « Give this ticket » to a friend (a new QR, the old one no longer\n"
+"  works).\n"
+"- The controllers of the organiser log in with their number and scan the\n"
+"  tickets with the camera of their phone, without an application; the list of\n"
+"  the tickets stays in the phone when the network is gone. They may sell at\n"
+"  the door (cash or Mobile Money) when the organiser allows it.\n"
+"- During a live, the control room shows a ticket like a product, with a live\n"
+"  price if the organiser wants one.\n"
+"- Cancelled: every buyer is refunded; moved: the tickets stay valid, refund on\n"
+"  request for a few days. The organiser is paid a few days after the event.\n"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "%(day)s at %(hour)s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "%(day)s · %(hour)s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "%(kind)s ticket · %(event)s · %(when)s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/boutique.py:0
+msgid "%(price)s · price of the live"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "%s a ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_registration.py:0
+msgid "%s already entered: no refund."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "%s entries noted without the network, sent when it is back."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "%s has tickets sold: use « Move » so that the buyers are told and may ask for a refund."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "%s left"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "%s tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "%s tickets at most per order."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "%s tickets created by the payment."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "%s tickets sold"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.actions.report,print_report_name:ocd_tickets.action_report_tickets
+msgid "'Tickets %s' % (object.event_id.name)"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "1 entry noted without the network, sent when it is back."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "1 left"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "1 ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "1 ticket refunded or to refund on your number."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "1 ticket sold"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,when:ocd_tickets.automation_tickets_reminder
+msgid "24 hours before the start of an event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.guarantee
+msgid ""
+"<b>OCD Live guarantee</b>\n"
+"            <span>Event cancelled: refunded. The organiser is paid after the event.</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "<b>Paying online is not open yet in your country.</b>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid ""
+"<b>Payment not received: no ticket.</b>\n"
+"                                <span>Nothing was taken; the seats went back on sale.</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid ""
+"<b>Thank you: the team checks your payment.</b>\n"
+"                                    <span>Your seats stay held; your tickets arrive once it is checked.</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid ""
+"<b>The payment did not go through.</b>\n"
+"                            <span>Refused or cancelled on the phone, or not enough money. Nothing was taken.</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event
+msgid ""
+"<i class=\"o_ocd_onair_dot\" aria-hidden=\"true\"/>\n"
+"                            <b>Live now</b>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+msgid ""
+"<small class=\"o_ocd_tk_muted o_ocd_tk_offline\">Without the network: the list of the tickets stays in the phone, the entries leave as soon as the network is back.</small>\n"
+"                    <small class=\"o_ocd_tk_muted o_ocd_tk_pending\" hidden=\"hidden\"/>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_sell
+msgid "<small class=\"o_ocd_tk_muted\">Allowed by the organiser: you sell on the spot.</small>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ticket_page
+msgid "<small class=\"o_ocd_tk_muted\">Reminder on WhatsApp the day before, with the route.</small>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_sell
+msgid "<small class=\"o_ocd_tk_muted\">The ticket leaves on the WhatsApp of the customer and enters at once. The cash is counted with you at the end of the evening, like the cash of the couriers.</small>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.give_form
+msgid "<small class=\"o_ocd_tk_muted\">The ticket leaves on their WhatsApp with a new QR; the old one no longer works.</small>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.buy
+msgid "<small class=\"o_ocd_tk_muted\">Then the payment of OCD Live: Mobile Money on your phone, or card. Your tickets arrive on WhatsApp as soon as the money is received, and stay in « My tickets ».</small>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "<small class=\"o_ocd_vote_muted\">Their name, their WhatsApp, their gate: a message leaves on their WhatsApp. The evening of the event, they open « Entrance » and scan with the camera of their phone.</small>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "<small>Type your secret code on your phone only, never here. This page updates by itself.</small>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid ""
+"<span class=\"o_ocd_spinner\" aria-hidden=\"true\"/>\n"
+"                                    <b>We wait for your payment…</b>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+msgid ""
+"<span class=\"o_ocd_tk_frame\" aria-hidden=\"true\"/>\n"
+"                        <span class=\"o_ocd_tk_hint\">Put the QR of the ticket in the frame</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event
+msgid "<span class=\"o_ocd_tk_muted o_ocd_tk_total_what\">Total</span><b class=\"o_ocd_tk_total_amount\"/>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+msgid "<span>Entered</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+msgid "<span>Open the camera</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "<span>Sells at the door</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "<span>Sent on your WhatsApp. Show one QR per person at the entrance.</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_event
+msgid "<span>Share the event</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.nav_links
+msgid "<span>Tickets</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "<span>Write to OCD Live on WhatsApp</span>"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "A buyer who cannot come at the new date asks for a refund during these days. No refund for a buyer who does not come."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.actions.act_window,help:ocd_tickets.event_event_action_ocd
+msgid "A first event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.actions.act_window,help:ocd_tickets.event_registration_action_ocd
+msgid "A ticket exists when its payment is confirmed: one per person, with its QR."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_about
+msgid "About The Event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__active
+msgid "Active"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "Add a controller"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Add the kinds of tickets first (Standard, VIP...)."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.actions.act_window,help:ocd_tickets.ocd_ticket_controller_action
+msgid "Added by the organisers in their space, or here: they scan the tickets with their phone."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Added: %s receives the news on WhatsApp."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_slug
+msgid "Address Of The Page"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,name:ocd_tickets.automation_tickets_payout
+msgid "After the event: payout to the organiser"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "Already entered"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_amount_company
+msgid "Amount Of The Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.constraint,message:ocd_tickets.constraint_event_event_unique_ocd_slug
+msgid "Another event has this address."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.constraint,message:ocd_tickets.constraint_event_registration_unique_ocd_code
+msgid "Another ticket has this code."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "At %(hour)s, %(gate)s, by %(who)s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "At most, all kinds together."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_registration__ocd_source__door
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__sale_order__ocd_ticket_source__door
+msgid "At the door"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,when:ocd_tickets.automation_tickets_payout
+msgid "At the end of an event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_ocd_automation
+msgid "Automation Of OCD Live"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_event__ocd_state__draft
+msgid "Being prepared"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "By %s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "By OCD Live"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_event
+msgid "By ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ocd_ticket_move_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Cancel and refund"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_event__ocd_state__cancelled
+msgid "Cancelled"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Cancelled by %(user)s: %(count)s tickets to refund."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,actions:ocd_tickets.automation_tickets_changed
+msgid "Cancelled: they are refunded on their number. Moved: their tickets stay valid, refund on request for a few days."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_sell
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ocd_ticket_controller_view_list
+msgid "Cash"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_cash_state
+msgid "Cash At The Door"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__cash_amount
+msgid "Cash To Collect"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_registration.py:0
+msgid "Cash at the door"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__sale_order__ocd_ticket_cash_state__collected
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ocd_ticket_controller_view_list
+msgid "Cash collected"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_ticket_controller.py:0
+msgid "Cash collected by %s."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__sale_order__ocd_ticket_cash_state__lost
+msgid "Cash not received"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__sale_order__ocd_ticket_cash_state__to_collect
+msgid "Cash to collect"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "Change the number or the method"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+msgid "Check"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Check and put on sale"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Checked by %s: on sale."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Checked by OCD Live"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "Choose at least one ticket."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "Choose my tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_code
+msgid "Code Of The Ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,tools:ocd_tickets.automation_tickets_changed
+#: model:ocd.automation,tools:ocd_tickets.automation_tickets_paid
+msgid "Code of OCD Live."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_amount_total
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_list_ocd
+msgid "Collected"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_live_amount
+msgid "Collected During The Lives"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_res_company
+msgid "Company"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.events
+msgid "Concerts and events: pay with Mobile Money, your tickets arrive on WhatsApp."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_res_partner
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__partner_id
+msgid "Contact"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_ocd_ticket_controller
+msgid "Controller Of An Event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.actions.act_window,name:ocd_tickets.ocd_ticket_controller_action
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_controller_ids
+#: model:ir.ui.menu,name:ocd_tickets.ocd_tickets_controller_menu
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ocd_ticket_controller_view_list
+msgid "Controllers"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_partner__ocd_ticket_controller_ids
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_users__ocd_ticket_controller_ids
+msgid "Controls Of Events"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__create_uid
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__create_date
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_currency_id
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_currency_id
+msgid "Currency Of OCD Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_currency_id
+msgid "Currency Of The Company"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_res_company__ocd_ticket_refund_days
+msgid "Days after an event is moved during which a buyer who cannot come asks for a refund."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_ocd_listing_refuse_reason
+msgid "Directory Link Refusal Reason"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event_ticket__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_ir_http__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_automation__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_listing_refuse_reason__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_live_booking__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_live_verification__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_company__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "Do not let in."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Do not let in. A ticket given to a friend has a new QR: the old one is refused."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_doors_at
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__doors_at
+msgid "Doors Open At"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Doors open at %(hour)s (time of %(city)s)"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ticket_page
+msgid "Download (PDF)"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_registration__ocd_source__live
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__sale_order__ocd_ticket_source__live
+msgid "During a live"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event_ticket__ocd_live_price
+msgid "During the lives selling the tickets, until the end of the live only. 0: the usual price."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event__ocd_booking_ids
+msgid "During these lives, the control room shows the tickets like products, at their live price if any."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Each kind of ticket has a price: OCD Tickets sells no free ticket."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event__ocd_organizer_id
+msgid "Empty: an event of OCD Live. The organiser logs in with their number, like for OCD Vote."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_company__ocd_ticket_sale_end_hours
+msgid "End Of The Online Sales"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "End of the online sales"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_entered_count
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_search_ocd
+msgid "Entered"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_entered_at
+msgid "Entered At"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Entered at %s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_home
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+msgid "Entrance"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Entrance · %s"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Entries"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Entries of %s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "Entry OK"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_event_event
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__event_id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__event_id
+msgid "Event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_event_id
+msgid "Event Of The Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_event_registration
+msgid "Event Registration"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_event_event_ticket
+msgid "Event Ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,name:ocd_tickets.automation_tickets_changed
+msgid "Event cancelled or moved: tell the buyers"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Event passed: the share of the organiser is to pay."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Event sent"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_verification.py:0
+#: model:ir.actions.act_window,name:ocd_tickets.event_event_action_ocd
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_partner__ocd_ticket_event_ids
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_users__ocd_ticket_event_ids
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__ocd_listing_refuse_reason__applies_to__ticket
+#: model:ir.ui.menu,name:ocd_tickets.ocd_tickets_event_menu
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_list_ocd
+msgid "Events"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_live_booking__ocd_ticket_event_ids
+msgid "Events Whose Tickets Are Sold"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,trigger:ocd_tickets.automation_tickets_payout
+#: model:ocd.automation,trigger:ocd_tickets.automation_tickets_reminder
+msgid "Every 5 minutes."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Every ticket paid is to refund and the buyers are told. Cancel this event?"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_listing_refuse_reason__applies_to
+msgid "For"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.space_login_controller
+msgid "For the controllers added by the organiser: give the number the organiser gave."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "From %s"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_gate
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__gate
+msgid "Gate"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.give_form
+msgid "Give the ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.give_form
+msgid "Give this ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_given_by_id
+msgid "Given By"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ticket_page
+msgid "Given by"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_registration.py:0
+msgid "Given by %(before)s to %(after)s: a new QR, the old one no longer works."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Given: the ticket left on the WhatsApp of %s with a new QR."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_automation__group
+msgid "Group"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_ir_http
+msgid "HTTP Routing"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Hello, I report the event %s on OCD Tickets."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Hello, I want to pay my tickets %(order)s (%(total)s) from %(country)s."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Hello, I want to sell the tickets of %s during a live of OCD Live."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_res_company__ocd_ticket_sale_end_hours
+msgid "Hours before the start of the event; 0: at the start. The sale at the door goes on."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Hours before the start; 0: at the start. The sale at the door goes on."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.buy
+msgid "How many tickets?"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "I cannot come: refund me"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "I paid"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event_ticket__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ir_http__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_automation__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_listing_refuse_reason__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_live_booking__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_live_verification__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_company__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_partner__id
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__id
+msgid "ID"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_sale_order__ocd_ticket_amount_company
+msgid "In the currency of the company."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "It is paid: %s tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "It is paid: 1 ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.actions.act_window,help:ocd_tickets.event_event_action_ocd
+msgid ""
+"Its date, its place and its kinds of tickets; the tab « OCD Live »: the organiser, their share, the\n"
+"                poster, the sale at the door and the controllers. Then « Check and put on sale »."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event__ocd_ticketing
+msgid "Its tickets are sold on the site of OCD Live, paid like the rest of OCD Live, checked at the entrance by the controllers."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_kind
+msgid "Kind"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__write_uid
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__write_date
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__entered_count
+msgid "Let In"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_controller_id
+msgid "Let In By"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_ocd_live_booking
+msgid "Live Booking"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event_ticket__ocd_live_price
+msgid "Live Price"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Live price until the end of the live."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Live prices"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_booking_ids
+msgid "Lives Selling The Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Log in again"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Log out"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_res_partner__ocd_vote_organizer
+#: model:ir.model.fields,help:ocd_tickets.field_res_users__ocd_vote_organizer
+msgid "Logs in with their number on /vote/organisateur, like the vendors: their contests and their events."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_res_company__ocd_ticket_hold_minutes
+msgid "Minutes; past them, the tickets not paid are given back for sale (a payment checked by the team keeps them)."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_sell
+msgid "Mobile Money"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_payout_momo
+msgid "Mobile Money Of The Organiser"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Money"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "Money sent? The number that paid, or the reference of the transfer"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ocd_ticket_move_view_form
+msgid "Move"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Move %s"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_ocd_ticket_move
+msgid "Move An Event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ocd_ticket_move_view_form
+msgid "Move the event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_moved_at
+msgid "Moved On"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Moved by %(user)s to %(when)s."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Moved to %(when)s. You cannot come? Ask for the refund before %(day)s."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Moved: the tickets bought before stay valid."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_home_events
+msgid "My contests"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_home_events
+msgid "My contests and events"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_event
+msgid "My controllers"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "My event"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ticket_page
+msgid "My ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "My tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+msgid "NAB-7K2Q-41"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__name
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "Name"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_holder_name
+msgid "Name On The Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.give_form
+msgid "Name of your friend"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__date_end
+msgid "New End"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_move__date_begin
+msgid "New Start"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_verification.py:0
+msgid "New event"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_registration__ocd_refund_state__none
+msgid "No"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__sale_order__ocd_ticket_cash_state__none
+msgid "No cash"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "No controller yet: add the people who check the tickets at the doors."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.events
+msgid "No event on sale for now."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_home
+msgid "No event to control for now."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_verification.py:0
+msgid "No event waiting."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.actions.act_window,help:ocd_tickets.event_registration_action_ocd
+msgid "No ticket sold yet"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "Not enough seats left for %s tickets."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Not for tonight"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "Not in the list of the phone: refuse, or check again with the network."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_event__ocd_payout_state__none
+msgid "Not yet"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,actions:ocd_tickets.automation_tickets_payout
+msgid "Note the share of the organiser to pay within 3 days, like the payouts of the vendors."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "Noted: the team refunds your tickets on your number."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "OCD Live"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_ocd_live_verification
+msgid "OCD Live Checks"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_form_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.events
+msgid "OCD Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.module.module,shortdesc:base.module_ocd_tickets
+msgid "OCD Tickets: Tickets For Concerts And Events"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.actions.server,name:ocd_tickets.ir_cron_tickets_ir_actions_server
+msgid "OCD Tickets: seats not paid back on sale, reminders, payouts"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Of the tickets sold, paid after the event; the rest for OCD Live (with the fees of the Mobile Money). No fee added for the buyer."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_event__ocd_state__approved
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_search_ocd
+msgid "On sale"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_event
+msgid "Once on sale, the date and the prices change only with the team: the buyers are told on WhatsApp."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.kind_row
+msgid "One less"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.kind_row
+msgid "One more"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "Only %(left)s « %(kind)s » tickets left."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Only %s left"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.space_login_code_controller
+msgid "Open the entrance"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_order_ids
+msgid "Orders"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_partner__ocd_vote_organizer
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_users__ocd_vote_organizer
+msgid "Organiser (Contests And Events)"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_organizer_verified
+msgid "Organiser Checked"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_organizer_id
+msgid "Organiser On OCD Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.poster
+msgid "Organiser checked"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.ui.menu,name:ocd_tickets.ocd_tickets_organizer_menu
+msgid "Organisers"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_registration__ocd_source__page
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__sale_order__ocd_ticket_source__page
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Page"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_amount_company
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_event__ocd_payout_state__paid
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_list_ocd
+msgid "Paid"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_payout_date
+msgid "Paid On"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_payment_method
+msgid "Paid With"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Passed"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Past this time, the tickets not paid go back on sale; a payment checked by the team keeps them."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.buy
+msgid "Pay"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "Pay %s"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_payment_reference
+msgid "Payment Reference"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_payout_state
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Payout"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_payout_due
+msgid "Payout Before"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Payout paid"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_search_ocd
+msgid "Payout to pay"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.listing.refuse.reason,name:ocd_tickets.refuse_reason_ticket_place
+msgid "Place or date unclear"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_moved_from
+msgid "Planned Before At"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_poster
+msgid "Poster"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.listing.refuse.reason,name:ocd_tickets.refuse_reason_ticket_poster
+msgid "Poster not suitable"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.listing.refuse.reason,name:ocd_tickets.refuse_reason_ticket_proof
+msgid "Proof of the event missing"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ticket_card
+msgid "QR of the ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_refund_state
+msgid "Refund"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_company__ocd_ticket_refund_days
+msgid "Refund On Request After A Move"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Refund on request after a move"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_registration__ocd_refund_state__refunded
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_form_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_list_ocd
+msgid "Refunded"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_registration.py:0
+msgid "Refunded by %s."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Refunded or cancelled: refuse."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,actions:ocd_tickets.automation_tickets_reminder
+msgid "Remind them of the hour, the doors and the place, with the button « My tickets »."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_reminded_at
+msgid "Reminder Sent At"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "Remove"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event
+msgid "Report"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.facts
+msgid "Route"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Sale"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_door_sale
+msgid "Sale At The Door"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,tools:ocd_tickets.automation_tickets_payout
+#: model:ocd.automation,tools:ocd_tickets.automation_tickets_reminder
+msgid "Scheduled task."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_company__ocd_ticket_hold_minutes
+msgid "Seats Held During The Payment"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_hold_until
+msgid "Seats Held Until"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Seats held during the payment"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_token
+msgid "Secret Of My Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_verification.py:0
+msgid "See the event"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_sell
+msgid "Sell at the door"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_event
+msgid "Sell during a live"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__can_sell
+msgid "Sells At The Door"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_event
+msgid "Send my event to OCD Live"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,actions:ocd_tickets.automation_tickets_paid
+msgid "Send the tickets on WhatsApp, with the button « My tickets »."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Send to check"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Sent back to the organiser: %s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Sent to OCD Live to check."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Sent: the team checks your event and writes to you on WhatsApp."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model,name:ocd_tickets.model_ocd_live_settings
+msgid "Settings Page Of OCD Live"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_organizer_amount
+msgid "Share Of The Organiser"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_organizer_share
+msgid "Share Of The Organiser (%)"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_company__ocd_ticket_organizer_share
+msgid "Share Of The Organiser Of An Event (%)"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Share of the organiser"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Shown again without the network at %(hour)s by %(who)s."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "Six artists, two stages, from 20:00 until dawn."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_source
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_list_ocd
+msgid "Sold"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_controller_id
+msgid "Sold At The Door By"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_live_id
+msgid "Sold During The Live"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_ticketing
+msgid "Sold On OCD Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_search_ocd
+msgid "Sold at the door"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_search_ocd
+msgid "Sold during a live"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.kind_row
+msgid "Sold out"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Sold: the ticket left on the WhatsApp of the customer and entered."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_state
+msgid "State On OCD Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_registration__ocd_source__team
+msgid "Team"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "The buyer cannot come at the new date: %s tickets to refund."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,scope:ocd_tickets.automation_tickets_paid
+msgid "The buyers, and the friends who received a ticket."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "The camera did not open: allow it in the browser, or type the code below."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ocd_ticket_controller_view_list
+msgid "The cash of the door is counted with this controller?"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.actions.act_window,help:ocd_tickets.ocd_ticket_controller_action
+msgid "The controllers of the events"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event__ocd_door_sale
+msgid "The controllers who may sell sell tickets at the entrance (cash or Mobile Money)."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,name:ocd_tickets.automation_tickets_reminder
+msgid "The day before: reminder to the buyers"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event__ocd_slug
+msgid "The end of the address of its page: /billets/<address>."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.space_login_controller
+msgid "The entrance of your event."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "The evening: the entries"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "The event ends after it starts."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_registration.py:0
+msgid "The event is over."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,scope:ocd_tickets.automation_tickets_payout
+msgid "The events of an organiser with tickets sold."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,scope:ocd_tickets.automation_tickets_changed
+#: model:ocd.automation,scope:ocd_tickets.automation_tickets_reminder
+msgid "The holders of the tickets paid."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_booking.py:0
+msgid "The live is not confirmed."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,trigger:ocd_tickets.automation_tickets_paid
+msgid "The payment provider (Mobile Money, card), the team that checks the payment, the sale at the door."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.listing.refuse.reason,message:ocd_tickets.refuse_reason_ticket_place
+msgid "The place or the date of the event is missing or unclear: write the hall, the city and the hours, then send it again."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.listing.refuse.reason,message:ocd_tickets.refuse_reason_ticket_poster
+msgid "The poster of the event is blurry or not suitable. Send another poster."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_registration__ocd_amount_company
+msgid "The price of the ticket, in the currency of the company."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "The sale at the door is not open for this event."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "The sale on the site is over."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "The sale on the site is over: tickets at the door, if there are any left."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "The share of the organiser is between 0 and 100 %."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_event
+msgid "The steps"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event__ocd_organizer_verified
+msgid "The team checked the identity and the number of the organiser: « Checked organiser » on their contests."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.listing.refuse.reason,message:ocd_tickets.refuse_reason_ticket_proof
+msgid "The team needs a proof that the event takes place (contract of the hall, artists): send it on WhatsApp."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event
+msgid "The tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "The tickets of %s are not on sale."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ocd_ticket_move_view_form
+msgid ""
+"The tickets stay valid at the new date. The buyers are told on WhatsApp and may ask for a refund for a\n"
+"                    few days (Settings › Tickets)."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.give_form
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "Their WhatsApp"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "Their gate (if you want)"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.constraint,message:ocd_tickets.constraint_ocd_ticket_controller_unique_controller
+msgid "This contact already controls this event."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "This event is cancelled: every buyer is refunded on their number."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "This event is over."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_registration.py:0
+msgid "This ticket can no longer be given."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_registration.py:0
+msgid "This ticket is already in this name."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "This ticket is not for this event."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_form_ocd
+msgid "This ticket no longer lets in, and is refunded by the team. Go on?"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ticket_card
+msgid "This ticket no longer lets in."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_registration.py:0
+msgid "Ticket %(index)s of %(count)s · %(kind)s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Ticket not valid"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/boutique.py:0
+msgid "Ticket of OCD Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Ticket of « %(event)s », on %(day)s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+#: model:ir.actions.report,name:ocd_tickets.action_report_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_registration_ids
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__ocd_automation__group__tickets
+#: model:ir.ui.menu,name:ocd_tickets.ocd_tickets_menu
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_list_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.events
+msgid "Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Tickets (OCD Tickets)"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_res_company__ocd_ticket_max_per_order
+msgid "Tickets Per Order"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_sold_count
+#: model:ir.model.fields,field_description:ocd_tickets.field_sale_order__ocd_ticket_source
+msgid "Tickets Sold"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Tickets of %s"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.module.module,summary:base.module_ocd_tickets
+msgid "Tickets of concerts and events sold on their page and during the lives, paid like the rest of OCD Live, one signed QR per person checked once at the entrance, payout to the organiser"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Tickets of the events"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,name:ocd_tickets.automation_tickets_paid
+msgid "Tickets paid: send them"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "Tickets per order"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+#: model:ir.actions.act_window,name:ocd_tickets.event_registration_action_ocd
+#: model:ir.ui.menu,name:ocd_tickets.ocd_tickets_registration_menu
+msgid "Tickets sold"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Time of %s"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_event__ocd_state__to_check
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_search_ocd
+msgid "To check"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_event__ocd_payout_state__to_pay
+msgid "To pay"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields.selection,name:ocd_tickets.selection__event_registration__ocd_refund_state__to_refund
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_form_ocd
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_registration_view_search_ocd
+msgid "To refund"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_event__ocd_payout_reference
+msgid "Transfer Reference"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_scanner
+msgid "Type the code of the ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "Type the code of the ticket below."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "Unknown ticket"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.report_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.ticket_card
+msgid "Valid only once. Keep it for yourself: a screenshot is enough to enter."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_event_registration__ocd_version
+msgid "Version Of The QR"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event__ocd_about
+msgid "What the event is, in a few sentences."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,field_description:ocd_tickets.field_ocd_ticket_controller__phone
+msgid "WhatsApp"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.entrance_sell
+msgid "WhatsApp of the customer"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_ocd_ticket_controller__can_sell
+msgid "When the organiser allows the sale at the door."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,when:ocd_tickets.automation_tickets_paid
+msgid "When the payment of tickets is confirmed, or a ticket is given to a friend"
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,when:ocd_tickets.automation_tickets_changed
+msgid "When the team cancels or moves an event"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-javascript
+#: code:addons/ocd_tickets/static/src/interactions/tickets.js:0
+msgid "Without the network: noted in the phone."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Write the name."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Write the place of the event."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "Write the reference of the transfer first."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Write your name: it is on the tickets."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/entrance.py:0
+msgid "Wrong code or changed copy: refuse."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.buy
+msgid "Your WhatsApp (the tickets arrive there)"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.buy
+msgid "Your name (on the tickets)"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/tickets.py:0
+msgid "Your seats are held %s minutes."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Your share (%s %%)"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Your share paid 3 days after the event"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "Your share paid: %s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_ticket_controller.py:0
+msgid "control only"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "days"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/event_event.py:0
+msgid "doors %s"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.event_event_view_form_ocd
+msgid "e.g. Concert"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_controllers
+msgid "e.g. Gate 1"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "hours before"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_live_settings.py:0
+msgid "minutes"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "of %s"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "of which %s during the lives"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "paid"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "paid after the event"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/ocd_ticket_controller.py:0
+msgid "sells at the door"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "the evening itself"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.order_page
+msgid "tickets refunded or to refund on your number."
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/controllers/organizer.py:0
+msgid "with the payment of OCD Live"
+msgstr ""
+
+#. module: ocd_tickets
+#. odoo-python
+#: code:addons/ocd_tickets/models/sale_order.py:0
+msgid "« %s » is sold out."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ocd.automation,trigger:ocd_tickets.automation_tickets_changed
+msgid "« Cancel and refund », « Move » on the event."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_event_event__ocd_kind
+msgid "« Concert », « Gala », « Festival »: shown above the name."
+msgstr ""
+
+#. module: ocd_tickets
+#: model:ir.model.fields,help:ocd_tickets.field_ocd_ticket_controller__gate
+msgid "« Gate 1 »: shown on the entries let in."
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.report_tickets
+msgid "· OCD Tickets"
+msgstr ""
+
+#. module: ocd_tickets
+#: model_terms:ir.ui.view,arch_db:ocd_tickets.organizer_home_events
+msgid "· Tickets"
+msgstr ""

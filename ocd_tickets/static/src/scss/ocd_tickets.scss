@@ -1,0 +1,538 @@
+// The pages of OCD Tickets (chantier 6, design OcdTickets). Colours and fonts ($ocd-*) come from
+// ocd_live/static/src/scss/ocd_tokens.scss.
+
+$ocd-tk-poster: linear-gradient(160deg, $ocd-ink, #7A2E0B 60%, $ocd-orange);
+
+.o_ocd_app {
+    // « Tickets » in the menu at the top of the larger screens only (the phone keeps its 4 buttons)
+    .o_ocd_nav .o_ocd_nav_tickets {
+        display: none;
+    }
+    .o_ocd_tk {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+    .o_ocd_tk_event_main,
+    .o_ocd_tk_event_side {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+    .o_ocd_tk_small {
+        font-size: 13.5px;
+    }
+    .o_ocd_tk_muted {
+        color: $ocd-muted;
+        font-size: 13.5px;
+    }
+    .o_ocd_tk_h2 {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 20px;
+        overflow-wrap: anywhere;
+    }
+    // The poster
+    .o_ocd_tk_poster {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        min-height: 220px;
+        border-radius: 20px;
+        background: $ocd-tk-poster;
+        color: #FFFFFF;
+        padding: 16px;
+        overflow: hidden;
+        text-decoration: none;
+    }
+    a.o_ocd_tk_poster {
+        color: #FFFFFF !important;
+    }
+    .o_ocd_tk_poster_img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .o_ocd_tk_poster_img + .o_ocd_tk_poster_text {
+        // Readable on any poster
+        background: linear-gradient(transparent, rgba(21, 19, 15, .82) 40%);
+        margin: 0 -16px -16px;
+        padding: 40px 16px 16px;
+    }
+    .o_ocd_tk_poster_text {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+        .o_ocd_tk_small {
+            opacity: .9;
+        }
+    }
+    .o_ocd_tk_title {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 28px;
+        line-height: 1.05;
+        overflow-wrap: anywhere;
+        color: inherit;
+    }
+    .o_ocd_tk_badge {
+        display: inline-block;
+        border-radius: 999px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 2px 9px;
+        white-space: nowrap;
+        margin-left: 4px;
+    }
+    .o_ocd_tk_list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_tk_item {
+        min-height: 180px;
+    }
+    .o_ocd_tk_live {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        border-radius: 16px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+    // The facts
+    .o_ocd_tk_facts {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .o_ocd_tk_fact {
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        .o_ocd_icon {
+            width: 20px;
+            height: 20px;
+            color: $ocd-orange;
+        }
+        b, small {
+            display: block;
+        }
+        small {
+            color: $ocd-muted;
+            font-size: 13.5px;
+        }
+    }
+    .o_ocd_tk_about {
+        margin: 0;
+        white-space: pre-line;
+    }
+    // The kinds of tickets
+    .o_ocd_tk_card {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 14px 16px;
+        min-width: 0;
+    }
+    .o_ocd_tk_card > .o_ocd_button,
+    .o_ocd_tk_card > form > .o_ocd_cta {
+        align-self: stretch;
+        justify-content: center;
+        margin: 0;
+    }
+    .o_ocd_tk_kinds {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        > .o_ocd_cta {
+            margin: 0;
+        }
+    }
+    .o_ocd_tk_wide_only {
+        display: none;
+    }
+    .o_ocd_tk_kind {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4px 10px;
+        align-items: center;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 12px 14px;
+        b {
+            overflow-wrap: anywhere;
+        }
+    }
+    .o_ocd_tk_kind_out {
+        opacity: .7;
+    }
+    .o_ocd_tk_kind_text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        s {
+            margin-left: 4px;
+        }
+    }
+    .o_ocd_tk_price {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        b {
+            font-family: $ocd-display;
+            font-size: 18px;
+            white-space: nowrap;
+        }
+    }
+    .o_ocd_tk_low,
+    .o_ocd_tk_out {
+        display: inline-block;
+        border-radius: 6px;
+        padding: 1px 7px;
+        font-size: 12px;
+        font-weight: 700;
+        background: $ocd-orange-pale;
+        color: $ocd-orange-dark;
+        margin-left: 4px;
+        white-space: nowrap;
+    }
+    .o_ocd_tk_out {
+        background: $ocd-red-soft;
+        color: $ocd-red-dark;
+    }
+    .o_ocd_tk_kind .o_ocd_stepper {
+        flex: none;
+    }
+    .o_ocd_tk_total {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        b {
+            font-family: $ocd-display;
+            font-size: 26px;
+            white-space: nowrap;
+        }
+    }
+    .o_ocd_tk_guarantee {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 16px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    // The tickets
+    .o_ocd_tk_paid {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 16px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        padding: 14px;
+    }
+    .o_ocd_tk_tickets {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+    }
+    .o_ocd_tk_track {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+    .o_ocd_tk_slide {
+        flex: 0 0 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        scroll-snap-align: start;
+        min-width: 0;
+    }
+    .o_ocd_tk_ticket {
+        border: 2px solid $ocd-ink;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #FFFFFF;
+    }
+    .o_ocd_tk_ticket_off {
+        opacity: .6;
+    }
+    .o_ocd_tk_ticket_top {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 16px 16px 14px;
+    }
+    .o_ocd_tk_ticket_bottom {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+        border-top: 2px dashed $ocd-ink;
+        padding: 14px 16px;
+    }
+    .o_ocd_tk_qr {
+        width: 112px;
+        height: 112px;
+        border-radius: 10px;
+        image-rendering: pixelated;
+    }
+    .o_ocd_tk_ticket_code {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+    .o_ocd_tk_code {
+        font-family: $ocd-display;
+        font-weight: 800;
+        letter-spacing: .06em;
+        overflow-wrap: anywhere;
+    }
+    .o_ocd_tk_dots {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        i {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: $ocd-line;
+        }
+        .o_ocd_on {
+            background: $ocd-ink;
+        }
+    }
+    .o_ocd_tk_give {
+        summary {
+            list-style: none;
+            cursor: pointer;
+            justify-content: center;
+            margin: 0;
+            width: 100%;
+        }
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        form {
+            margin-top: 10px;
+        }
+    }
+    // The entrance
+    .o_ocd_tk_place {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 12px 14px;
+        color: $ocd-ink;
+        text-decoration: none;
+    }
+    .o_ocd_tk_counter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 14px;
+        background: $ocd-sand;
+        padding: 10px 14px;
+        font-weight: 700;
+    }
+    .o_ocd_tk_camera {
+        position: relative;
+        height: 300px;
+        border-radius: 20px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+    }
+    .o_ocd_tk_video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .o_ocd_tk_frame {
+        position: relative;
+        width: 190px;
+        height: 190px;
+        border: 4px solid $ocd-orange;
+        border-radius: 22px;
+    }
+    .o_ocd_tk_hint {
+        position: absolute;
+        bottom: 14px;
+        left: 12px;
+        right: 12px;
+        text-align: center;
+        font-size: 14px;
+        opacity: .9;
+    }
+    .o_ocd_tk_camera_start {
+        position: absolute;
+        margin: 0;
+    }
+    .o_ocd_tk_result {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 20px;
+        padding: 18px;
+        text-align: center;
+        background: $ocd-sand;
+        .o_ocd_tk_result_title {
+            font-family: $ocd-display;
+            font-weight: 800;
+            font-size: 30px;
+            line-height: 1.05;
+        }
+        .o_ocd_tk_result_lines {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+    }
+    .o_ocd_tk_result_ok {
+        background: $ocd-green;
+        color: #FFFFFF;
+    }
+    .o_ocd_tk_result_already {
+        background: $ocd-red-badge;
+        color: #FFFFFF;
+    }
+    .o_ocd_tk_result_other {
+        background: $ocd-orange;
+        color: $ocd-ink;
+    }
+    .o_ocd_tk_typed {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        .o_ocd_button {
+            align-self: stretch;
+            justify-content: center;
+            margin: 0;
+        }
+    }
+    .o_ocd_tk_two {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        .o_ocd_button {
+            justify-content: center;
+            margin: 0;
+        }
+    }
+    // The organiser
+    .o_ocd_tk_row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid $ocd-line;
+        font-size: 14.5px;
+        b {
+            overflow-wrap: anywhere;
+        }
+    }
+    .o_ocd_tk_bar {
+        display: block;
+        height: 8px;
+        border-radius: 99px;
+        background: $ocd-sand;
+        overflow: hidden;
+        margin-top: 4px;
+        i {
+            display: block;
+            height: 100%;
+            background: $ocd-orange;
+            border-radius: 99px;
+        }
+    }
+    .o_ocd_tk_link_button {
+        border: 0;
+        background: none;
+        padding: 0;
+        font-size: 13.5px;
+    }
+}
+@media (min-width: $ocd-tablet) {
+    .o_ocd_app {
+        .o_ocd_tk_list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .o_ocd_tk_poster {
+            min-height: 280px;
+        }
+        .o_ocd_tk_facts {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .o_ocd_tk_slide {
+            flex-basis: 380px;
+        }
+    }
+}
+@media (min-width: $ocd-desktop) {
+    .o_ocd_app {
+        .o_ocd_tk_list {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .o_ocd_tk.o_ocd_tk_event {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 400px;
+            gap: 32px;
+            align-items: start;
+        }
+        .o_ocd_tk_event .o_ocd_tk_poster {
+            min-height: 360px;
+        }
+        .o_ocd_tk_event .o_ocd_tk_title {
+            font-size: 44px;
+        }
+        .o_ocd_tk_phone_only {
+            display: none;
+        }
+        .o_ocd_tk_wide_only {
+            display: flex;
+        }
+        .o_ocd_tk.o_ocd_panes {
+            display: grid;
+        }
+    }
+}
