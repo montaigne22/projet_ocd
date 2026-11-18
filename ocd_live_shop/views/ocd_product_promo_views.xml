@@ -6,7 +6,8 @@
         <field name="name">ocd.product.promo.list</field>
         <field name="model">ocd.product.promo</field>
         <field name="arch" type="xml">
-            <list string="Promos" create="0" decoration-muted="state in ('ended', 'stopped')" decoration-success="state == 'running'">
+            <list string="Promos" create="0" decoration-muted="state in ('ended', 'stopped')" decoration-success="state == 'running'"
+                  decoration-warning="state == 'waiting'">
                 <field name="product_tmpl_id"/>
                 <field name="vendor_id"/>
                 <field name="reference_price"/>
@@ -33,7 +34,7 @@
                 <field name="vendor_id"/>
                 <filter string="Running" name="running"
                         domain="[('date_start', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59')), ('date_end', '&gt;', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
-                <filter string="Stopped" name="stopped" domain="[('active', '=', False)]"/>
+                <filter string="Stopped" name="stopped" domain="[('stopped_at', '!=', False)]"/>
                 <separator/>
                 <filter string="Vendor" name="by_vendor" context="{'group_by': 'vendor_id'}"/>
             </search>

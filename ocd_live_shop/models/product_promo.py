@@ -46,7 +46,8 @@ class OcdProductPromo(models.Model):
     stopped_by_id = fields.Many2one(comodel_name="res.users", string="Stopped By", readonly=True, copy=False)
     stop_reason = fields.Char(string="Why It Stopped", readonly=True, copy=False)
     state = fields.Selection(
-        selection=[("scheduled", "To come"), ("running", "Running"), ("ended", "Ended"), ("stopped", "Stopped")],
+        selection=[("waiting", "Waiting for the check"), ("scheduled", "To come"), ("running", "Running"),
+                   ("ended", "Ended"), ("stopped", "Stopped")],
         compute="_compute_state", string="State",
     )
 
@@ -56,12 +57,14 @@ class OcdProductPromo(models.Model):
             reference = promo.reference_price
             promo.discount = round((reference - promo.price) * 100 / reference) if reference else 0
 
-    @api.depends("date_start", "date_end", "active")
+    @api.depends("date_start", "date_end", "active", "stopped_at")
     def _compute_state(self):
         now = fields.Datetime.now()
         for promo in self:
-            if not promo.active:
+            if promo.stopped_at:
                 promo.state = "stopped"
+            elif not promo.active:
+                promo.state = "waiting"
             elif promo.date_start and promo.date_start > now:
                 promo.state = "scheduled"
             elif promo.date_end and promo.date_end <= now:
@@ -88,9 +91,9 @@ class OcdProductPromo(models.Model):
 
     @api.model
     def _ocd_priority(self, promo):
-        """The promo that wins when two run at once on a product: the one of an evening, then the
-        newest (extended by ocd_soirees)."""
-        return (0, -promo.id)
+        """The promo that wins when two run at once on a product (a promo of the vendor and the one
+        of a big evening): the lowest price, never a price going up; then the newest."""
+        return (promo.price, -promo.id)
 
     @api.model
     def _ocd_running(self, templates, at=None, order_date=None):
@@ -160,9 +163,9 @@ class OcdProductPromo(models.Model):
             raise UserError(env._("Choose until when."))
         if source != "evening" and date_end - date_start > timedelta(days=limits["days"], minutes=1):
             raise UserError(env._("%s days at most.", limits["days"]))
-        same = self.sudo().search([
+        same = self.sudo().with_context(active_test=False).search([
             ("product_tmpl_id", "=", product.id), ("source", "=", source), ("date_end", ">", now),
-            *(self._ocd_same_domain(values)),
+            ("stopped_at", "=", False), *(self._ocd_same_domain(values)),
         ])
         if same:
             same._ocd_stop(env._("Replaced by a new promo."))
@@ -184,7 +187,7 @@ class OcdProductPromo(models.Model):
 
     def _ocd_stop(self, reason=None):
         now = fields.Datetime.now()
-        for promo in self.sudo().filtered("active"):
+        for promo in self.sudo().filtered(lambda promo: not promo.stopped_at):
             values = {"active": False, "stopped_at": now, "stop_reason": reason or False}
             if not self.env.user._is_public():
                 values["stopped_by_id"] = self.env.uid
@@ -222,8 +225,8 @@ class ProductTemplate(models.Model):
         result = super().write(vals)
         if "list_price" in vals:
             now = fields.Datetime.now()
-            promos = self.env["ocd.product.promo"].sudo().search([
-                ("product_tmpl_id", "in", self.ids), ("date_end", ">", now),
+            promos = self.env["ocd.product.promo"].sudo().with_context(active_test=False).search([
+                ("product_tmpl_id", "in", self.ids), ("date_end", ">", now), ("stopped_at", "=", False),
             ])
             promos.filtered(
                 lambda promo: promo.currency_id.compare_amounts(promo.price, promo.product_tmpl_id.list_price) >= 0

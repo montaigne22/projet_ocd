@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The big evenings (chantier 7, design ProgrammeSoirees). The sentences with values are built
+     whole in Python (controllers/evening.py, models). -->
+<odoo>
+
+    <!-- A live of the evening (the programme of the evening) -->
+    <template id="evening_row" name="OCD Live: a live of a big evening">
+        <div t-attf-class="o_ocd_programme_row #{'o_ocd_programme_live' if row['live'] else ''}">
+            <span class="o_ocd_programme_hour" t-out="row['hour']"/>
+            <a t-att-href="row['boutique_url']" class="o_ocd_avatar o_ocd_avatar_mid" t-att-aria-label="row['name']" t-out="row['initials']"/>
+            <a t-att-href="row['boutique_url']" class="o_ocd_programme_text">
+                <b t-out="row['name']"/>
+                <small t-out="row['line']"/>
+            </a>
+            <span t-if="row['followed']" class="o_ocd_programme_bell o_ocd_on" role="img" t-att-aria-label="row['bell_label']">
+                <t t-call="ocd_live.icon" icon.f="check"/>
+            </span>
+            <a t-else="" t-att-href="row['follow_url']" class="o_ocd_programme_bell" t-att-aria-label="row['bell_label']" t-att-title="row['bell_label']">
+                <t t-call="ocd_live.icon" icon.f="bell"/>
+            </a>
+        </div>
+    </template>
+
+    <template id="evenings" name="OCD Live: the big evenings">
+        <t t-set="additional_title">Big evenings</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_evening">
+                    <h1 class="o_ocd_h1">Big evenings</h1>
+                    <p class="o_ocd_note">Evenings of OCD Live with many vendors in live, and their promos of the evening.</p>
+                    <div class="o_ocd_evening_list">
+                        <a t-foreach="rows" t-as="row" t-att-href="row['evening']._ocd_public_path()" class="o_ocd_evening_hero">
+                            <img t-if="row['image']" t-att-src="row['image']" alt="" class="o_ocd_evening_img" loading="lazy"/>
+                            <span class="o_ocd_evening_hero_text">
+                                <small>Big evening · OCD Live</small>
+                                <b class="o_ocd_evening_title" t-out="row['evening'].name"/>
+                                <small t-out="row['when']"/>
+                                <small t-if="row['running']" class="o_ocd_evening_now"><i class="o_ocd_onair_dot" aria-hidden="true"/>Now</small>
+                            </span>
+                        </a>
+                    </div>
+                    <div t-if="not rows" class="o_ocd_info">No big evening planned for now.</div>
+                    <a href="/lives/programme" class="o_ocd_link">The programme of the lives</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="evening" name="OCD Live: a big evening">
+        <t t-set="additional_title" t-value="evening.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_evening o_ocd_evening_page">
+                    <div class="o_ocd_evening_main">
+                        <div class="o_ocd_evening_hero">
+                            <img t-if="image" t-att-src="image" alt="" class="o_ocd_evening_img"/>
+                            <span class="o_ocd_evening_hero_text">
+                                <small>Big evening · OCD Live</small>
+                                <h1 class="o_ocd_evening_title" t-out="evening.name"/>
+                                <small><t t-out="when"/> (<t t-out="zone"/>)</small>
+                                <small t-out="countries"/>
+                                <span class="o_ocd_evening_tiles">
+                                    <span t-foreach="tiles" t-as="tile"><b t-out="tile[0]"/><t t-out="tile[1]"/></span>
+                                </span>
+                            </span>
+                        </div>
+                        <div t-if="state_line" class="o_ocd_info" t-out="state_line"/>
+                        <p t-if="evening.description" class="o_ocd_evening_about" t-out="evening.description"/>
+                        <section id="prevenir" t-if="not passed" class="o_ocd_evening_alert">
+                            <div t-if="alert_noted" class="o_ocd_ok" role="status">Noted: we write to you on WhatsApp a little before the start.</div>
+                            <form t-else="" t-attf-action="#{evening._ocd_public_path()}/prevenir" method="post" class="o_ocd_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="text" name="website_url" class="d-none" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+                                <div t-if="not alert_known" class="o_ocd_field">
+                                    <label for="evening-phone" class="o_ocd_label">Your WhatsApp</label>
+                                    <t t-call="ocd_live.phone_field" field_id.f="evening-phone" phone_value.f=""/>
+                                </div>
+                                <button type="submit" class="o_ocd_cta o_ocd_cta_dark">
+                                    <t t-call="ocd_live.icon" icon.f="bell"/><span>Tell me on WhatsApp</span>
+                                </button>
+                            </form>
+                        </section>
+                        <section class="o_ocd_evening_section">
+                            <h2 class="o_ocd_programme_h2">The programme of the evening</h2>
+                            <t t-foreach="rows" t-as="row" t-call="ocd_soirees.evening_row"/>
+                            <div t-if="not rows" class="o_ocd_info">The lives of the evening come soon: the vendors are joining.</div>
+                            <a t-if="rows" t-att-href="lives_url" class="o_ocd_link">All the lives of that day</a>
+                        </section>
+                    </div>
+                    <div class="o_ocd_evening_side">
+                        <section class="o_ocd_evening_section">
+                            <h2 class="o_ocd_programme_h2">The promos of the evening</h2>
+                            <nav t-if="len(categories) &gt; 2" class="o_ocd_chips o_ocd_programme_categories" aria-label="Categories">
+                                <a t-foreach="categories" t-as="chip" t-att-href="chip['href']"
+                                   t-att-class="'o_ocd_chip o_ocd_on' if chip['on'] else 'o_ocd_chip'" t-out="chip['label']"/>
+                            </nav>
+                            <div t-if="cards" class="o_ocd_products o_ocd_evening_products">
+                                <t t-foreach="cards" t-as="card">
+                                    <a t-att-href="card['url']" class="o_ocd_product">
+                                        <span class="o_ocd_photo o_ocd_product_photo">
+                                            <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
+                                            <span class="o_ocd_product_flag o_ocd_product_flag_promo" t-out="card['off']"/>
+                                            <span t-if="card['soon']" class="o_ocd_product_flag" t-out="soon_line"/>
+                                        </span>
+                                        <span class="o_ocd_product_text">
+                                            <b t-out="card['product'].name"/>
+                                            <small class="o_ocd_product_by" t-out="card['by']"/>
+                                            <span class="o_ocd_product_price" t-out="card['price']"/>
+                                            <s class="o_ocd_product_was" t-out="card['was']"/>
+                                        </span>
+                                    </a>
+                                </t>
+                            </div>
+                            <div t-else="" class="o_ocd_info">The promos of the evening come soon.</div>
+                            <small class="o_ocd_programme_note">The promos of the evening are valid during its hours only.</small>
+                        </section>
+                        <button type="button" class="o_ocd_button o_ocd_share" t-att-data-url="header_share">
+                            <t t-call="ocd_live.icon" icon.f="share"/><span>Share the evening</span>
+                        </button>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The vendor: their invitation in their space -->
+    <template id="space_evening" inherit_id="ocd_live.space" name="OCD Live: the big evenings in the space">
+        <xpath expr="//div[hasclass('o_ocd_space_shop')]" position="before">
+            <t t-set="invitations" t-value="request.env['ocd.evening.participation']._ocd_invitations(vendor)"/>
+            <a t-foreach="invitations" t-as="invitation" t-attf-href="/ocd/espace/moi/soirees/#{invitation['evening'].id}"
+               class="o_ocd_evening_invite">
+                <small t-out="invitation['kicker']"/>
+                <b t-out="invitation['title']"/>
+                <small t-out="invitation['line']"/>
+                <span class="o_ocd_cta" t-out="invitation['button']"/>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="join" name="OCD Live: join a big evening">
+        <t t-set="additional_title" t-value="evening.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_evening">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small"><t t-out="evening.name"/></h1>
+                    <span class="o_ocd_programme_note"><t t-out="when"/> · <t t-out="until_line"/></span>
+                    <t t-call="ocd_live.message_box"/>
+                    <div t-if="state_line" t-attf-class="#{'o_ocd_ok' if participation.state == 'approved' else 'o_ocd_alert' if participation.state == 'refused' else 'o_ocd_info'}"
+                         role="status" t-out="state_line"/>
+                    <form method="post" class="o_ocd_form o_ocd_evening_join">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <section class="o_ocd_evening_step">
+                            <b>1. Your live during the evening</b>
+                            <div t-if="live_line" class="o_ocd_ok" role="status" t-out="live_line"/>
+                            <t t-elif="open">
+                                <span class="o_ocd_programme_note">Between <t t-out="hours"/>, at the studio or remote, at the usual price of a live: the usual booking, with your ticket.</span>
+                                <div class="o_ocd_evening_two">
+                                    <a t-att-href="studio_url" class="o_ocd_button">Book at the studio</a>
+                                    <a t-att-href="remote_url" class="o_ocd_button">Book remote</a>
+                                </div>
+                            </t>
+                        </section>
+                        <section class="o_ocd_evening_step">
+                            <b>2. Your promos of the evening</b>
+                            <span class="o_ocd_programme_note" t-out="max_line"/>
+                            <div t-foreach="rows" t-as="row" class="o_ocd_evening_product">
+                                <span class="o_ocd_photo o_ocd_cart_photo"><img t-att-src="row['image']" alt="" loading="lazy"/></span>
+                                <span class="o_ocd_evening_product_text">
+                                    <b t-out="row['product'].name"/>
+                                    <small t-out="row['price']"/>
+                                </span>
+                                <select t-attf-name="p_#{row['product'].id}" class="o_ocd_input o_ocd_evening_select"
+                                        t-att-aria-label="row['product'].name" t-att-disabled="None if open else 'disabled'">
+                                    <option value="0">No promo</option>
+                                    <option t-foreach="row['options']" t-as="option" t-att-value="option['value']"
+                                            t-att-selected="'selected' if option['selected'] else None" t-out="option['label']"/>
+                                </select>
+                            </div>
+                            <div t-if="not rows" class="o_ocd_info">No product on sale yet: add your products in « My products ».</div>
+                        </section>
+                        <button t-if="open" type="submit" class="o_ocd_cta">
+                            <t t-if="participation">Send my participation again</t><t t-else="">Send my participation</t>
+                        </button>
+                        <div t-else="" class="o_ocd_info">The registrations are closed.</div>
+                        <small class="o_ocd_programme_note">The team checks your participation and answers you on WhatsApp. Your promos are valid during the hours of the evening only.</small>
+                    </form>
+                    <a t-att-href="evening._ocd_public_path()" class="o_ocd_link">The page of the evening</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

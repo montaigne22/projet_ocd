@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The big evenings in the back office (chantier 7, design ProgrammeSoirees) -->
+<odoo>
+
+    <record id="ocd_evening_view_list" model="ir.ui.view">
+        <field name="name">ocd.evening.list</field>
+        <field name="model">ocd.evening</field>
+        <field name="arch" type="xml">
+            <list string="Big evenings" decoration-muted="state == 'cancelled'" decoration-success="state == 'open'">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="country_ids" widget="many2many_tags"/>
+                <field name="state" widget="badge" decoration-success="state == 'open'"/>
+                <field name="vendor_count"/>
+                <field name="promo_count"/>
+                <field name="to_check_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_evening_view_form" model="ir.ui.view">
+        <field name="name">ocd.evening.form</field>
+        <field name="model">ocd.evening</field>
+        <field name="arch" type="xml">
+            <form string="Big evening">
+                <header>
+                    <button name="action_ocd_open" type="object" string="Open the registrations" class="btn-primary"
+                            invisible="state != 'draft'"
+                            confirm="The page of the evening opens and the vendors of its countries are invited on WhatsApp. Go on?"/>
+                    <button name="action_ocd_cancel" type="object" string="Cancel" invisible="state == 'cancelled'"
+                            confirm="The promos of the evening stop. Cancel this evening?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_ocd_view_participations" type="object" class="oe_stat_button" icon="groups">
+                            <field name="vendor_count" widget="statinfo" string="Vendors"/>
+                        </button>
+                        <button name="action_ocd_view_promos" type="object" class="oe_stat_button" icon="sell">
+                            <field name="promo_count" widget="statinfo" string="Promos"/>
+                        </button>
+                        <button name="action_ocd_open_page" type="object" class="oe_stat_button" icon="public" string="Page"/>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Black Friday"/></h1>
+                    </div>
+                    <group>
+                        <group string="The evening">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="country_ids" widget="many2many_tags"/>
+                            <field name="tz"/>
+                            <field name="slug"/>
+                        </group>
+                        <group string="The vendors">
+                            <field name="registration_end"/>
+                            <field name="max_discount"/>
+                            <field name="invited_at"/>
+                            <field name="told_at"/>
+                            <field name="alert_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="The evening of the big promos of the year, with the vendors in live from 18:00."/>
+                    </group>
+                    <notebook>
+                        <page string="Participations" name="participations">
+                            <field name="participation_ids">
+                                <list decoration-warning="state == 'to_check'" decoration-muted="state == 'refused'">
+                                    <field name="vendor_id"/>
+                                    <field name="booking_id"/>
+                                    <field name="promo_count"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_ocd_approve" type="object" string="Accept" invisible="state == 'approved'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_evening_action" model="ir.actions.act_window">
+        <field name="name">Big evenings</field>
+        <field name="res_model">ocd.evening</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">A first big evening</p>
+            <p>Black Friday, Christmas, Valentine's Day, Tabaski: its day, its hours and its countries; then « Open the
+                registrations » invites the vendors of its countries.</p>
+        </field>
+    </record>
+
+    <record id="ocd_evening_participation_view_list" model="ir.ui.view">
+        <field name="name">ocd.evening.participation.list</field>
+        <field name="model">ocd.evening.participation</field>
+        <field name="arch" type="xml">
+            <list string="Participations" create="0" decoration-warning="state == 'to_check'" decoration-muted="state == 'refused'">
+                <field name="evening_id"/>
+                <field name="vendor_id"/>
+                <field name="booking_id"/>
+                <field name="promo_count"/>
+                <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'to_check'"/>
+                <field name="refuse_reason" optional="show"/>
+                <button name="action_ocd_approve" type="object" string="Accept" invisible="state == 'approved'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_evening_participation_view_form" model="ir.ui.view">
+        <field name="name">ocd.evening.participation.form</field>
+        <field name="model">ocd.evening.participation</field>
+        <field name="arch" type="xml">
+            <form string="Participation" create="0">
+                <header>
+                    <button name="action_ocd_approve" type="object" string="Accept" class="btn-primary" invisible="state == 'approved'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="evening_id" readonly="1"/>
+                        <field name="vendor_id" readonly="1"/>
+                        <field name="booking_id"/>
+                        <field name="refuse_reason" invisible="state != 'refused'"/>
+                    </group>
+                    <field name="promo_ids" readonly="1">
+                        <list>
+                            <field name="product_tmpl_id"/>
+                            <field name="reference_price"/>
+                            <field name="price"/>
+                            <field name="discount"/>
+                            <field name="state"/>
+                            <field name="currency_id" column_invisible="True"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_evening_participation_action" model="ir.actions.act_window">
+        <field name="name">Participations</field>
+        <field name="res_model">ocd.evening.participation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_check': 1}</field>
+    </record>
+
+    <record id="ocd_evening_participation_view_search" model="ir.ui.view">
+        <field name="name">ocd.evening.participation.search</field>
+        <field name="model">ocd.evening.participation</field>
+        <field name="arch" type="xml">
+            <search string="Participations">
+                <field name="evening_id"/>
+                <field name="vendor_id"/>
+                <filter string="To check" name="to_check" domain="[('state', '=', 'to_check')]"/>
+                <filter string="Accepted" name="approved" domain="[('state', '=', 'approved')]"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

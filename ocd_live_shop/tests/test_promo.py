@@ -1,15 +1,11 @@
 from datetime import timedelta
 
-from unittest.mock import patch
-
 from freezegun import freeze_time
 
 from odoo import fields
 from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tests import HttpCase, tagged
-
-from odoo.addons.ocd_live.controllers import common
 
 from .common import OcdShopCommon
 
@@ -139,30 +135,28 @@ class TestOcdPromo(HttpCase, OcdShopCommon):
 
     def test_the_vendor_puts_a_product_in_promo(self):
         self.authenticate(None, None)
-        with self.patch_current_vendor(self.brenda):
-            page = self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/promo").text
-            self.assertIn("Put in promo", page)
-            self.assertIn("-25 %", page)
-            response = self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/promo", data={
-                "csrf_token": self.csrf_token(), "percent": "25", "days": "7",
-            })
-            self.assertIn("Done: your promo is shown at once.", response.text)
-            promo = self.Promo._ocd_running(self.robe)[self.robe.id]
-            self.assertEqual((promo.price, promo.source), (9000, "vendor"))
-            self.assertGreater(promo.date_end, fields.Datetime.now() + timedelta(days=5))
-            self.assertLessEqual(promo.date_end, fields.Datetime.now() + timedelta(days=7))
-            self.assertIn("In promo now", response.text)
-            page = self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/promo", data={
-                "csrf_token": self.csrf_token(), "percent": "autre", "price": "4 000", "days": "7",
-            }).text
-            self.assertIn("50 % of discount at most", page)
-            self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/promo/arreter", data={"csrf_token": self.csrf_token()})
-            self.assertFalse(promo.active)
-            page = self.url_open("/ocd/espace/moi/produits").text
-            self.assertIn(f"/ocd/espace/moi/produits/{self.robe.id}/promo", page)
-            # Another vendor does not reach it
-            self.assertEqual(self.url_open(
-                f"/ocd/espace/moi/produits/{self.butter.product_tmpl_id.id}/promo").status_code, 404)
+        self.url_open(f"/ocd/espace/{self.brenda._ocd_get_space_token()}")
+        page = self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/promo").text
+        self.assertIn("Put in promo", page)
+        self.assertIn("-25 %", page)
+        response = self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/promo", data={
+            "csrf_token": self.csrf_token(), "percent": "25", "days": "7",
+        })
+        self.assertIn("Done: your promo is shown at once.", response.text)
+        promo = self.Promo._ocd_running(self.robe)[self.robe.id]
+        self.assertEqual((promo.price, promo.source), (9000, "vendor"))
+        self.assertGreater(promo.date_end, fields.Datetime.now() + timedelta(days=5))
+        self.assertLessEqual(promo.date_end, fields.Datetime.now() + timedelta(days=7))
+        self.assertIn("In promo now", response.text)
+        page = self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/promo", data={
+            "csrf_token": self.csrf_token(), "percent": "autre", "price": "4 000", "days": "7",
+        }).text
+        self.assertIn("50 % of discount at most", page)
+        self.url_open(f"/ocd/espace/moi/produits/{self.robe.id}/promo/arreter", data={"csrf_token": self.csrf_token()})
+        self.assertFalse(promo.active)
+        page = self.url_open("/ocd/espace/moi/produits").text
+        self.assertIn(f"/ocd/espace/moi/produits/{self.robe.id}/promo", page)
+        # Another vendor does not reach it
+        self.assertEqual(self.url_open(
+            f"/ocd/espace/moi/produits/{self.butter.product_tmpl_id.id}/promo").status_code, 404)
 
-    def patch_current_vendor(self, vendor):
-        return patch.object(common, "current_vendor", lambda token=None: vendor.sudo())

@@ -1,0 +1,235 @@
+// The big evenings (chantier 7, design ProgrammeSoirees). Colours and fonts ($ocd-*) come from
+// ocd_live/static/src/scss/ocd_tokens.scss; the rows of the programme from ocd_live_shop.
+
+$ocd-evening-hero: linear-gradient(160deg, $ocd-ink, $ocd-ink 45%, $ocd-orange);
+
+.o_ocd_app {
+    .o_ocd_evening {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+    .o_ocd_evening_main,
+    .o_ocd_evening_side,
+    .o_ocd_evening_section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+    .o_ocd_evening_section {
+        gap: 0;
+        > .o_ocd_chips,
+        > .o_ocd_products,
+        > .o_ocd_info,
+        > .o_ocd_link,
+        > .o_ocd_programme_note {
+            margin-top: 10px;
+        }
+    }
+    .o_ocd_evening_list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_evening_hero {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        min-height: 200px;
+        border-radius: 22px;
+        background: $ocd-evening-hero;
+        color: #FFFFFF;
+        padding: 18px 16px;
+        overflow: hidden;
+        text-decoration: none;
+    }
+    a.o_ocd_evening_hero {
+        color: #FFFFFF !important;
+    }
+    .o_ocd_evening_img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .o_ocd_evening_img + .o_ocd_evening_hero_text {
+        background: linear-gradient(transparent, rgba(21, 19, 15, .85) 35%);
+        margin: 0 -16px -18px;
+        padding: 40px 16px 18px;
+    }
+    .o_ocd_evening_hero_text {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+        small {
+            font-size: 13.5px;
+            opacity: .9;
+        }
+    }
+    .o_ocd_evening_title {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 32px;
+        line-height: 1;
+        overflow-wrap: anywhere;
+        color: inherit;
+    }
+    .o_ocd_evening_now {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 800;
+    }
+    .o_ocd_evening_tiles {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 6px;
+        > span {
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .14);
+            padding: 8px;
+            text-align: center;
+            font-size: 13.5px;
+            min-width: 0;
+        }
+        b {
+            display: block;
+            font-family: $ocd-display;
+            font-size: 22px;
+            overflow-wrap: anywhere;
+        }
+    }
+    .o_ocd_evening_about {
+        margin: 0;
+        white-space: pre-line;
+    }
+    .o_ocd_evening_alert .o_ocd_cta {
+        margin: 0;
+        gap: 8px;
+        .o_ocd_icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+    .o_ocd_evening_invite {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 18px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        padding: 14px;
+        text-decoration: none;
+        b {
+            font-family: $ocd-display;
+            font-weight: 800;
+            font-size: 22px;
+            line-height: 1.1;
+        }
+        small {
+            opacity: .85;
+            font-size: 13.5px;
+        }
+        .o_ocd_cta {
+            margin: 4px 0 0;
+            min-height: 48px;
+            font-size: 16px;
+        }
+    }
+    a.o_ocd_evening_invite {
+        color: #FFFFFF !important;
+    }
+    .o_ocd_evening_join {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_evening_step {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 12px 14px;
+        min-width: 0;
+    }
+    .o_ocd_evening_two {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        .o_ocd_button {
+            justify-content: center;
+            margin: 0;
+        }
+    }
+    .o_ocd_evening_product {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 6px 10px;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid $ocd-line;
+        .o_ocd_cart_photo {
+            width: 44px;
+            height: 44px;
+        }
+        .o_ocd_evening_select {
+            grid-column: 1 / -1;
+        }
+    }
+    .o_ocd_evening_product_text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        b {
+            overflow-wrap: anywhere;
+        }
+        small {
+            color: $ocd-muted;
+        }
+    }
+}
+@media (min-width: $ocd-tablet) {
+    .o_ocd_app {
+        .o_ocd_evening_list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .o_ocd_evening_hero {
+            min-height: 260px;
+        }
+        .o_ocd_evening_product {
+            grid-template-columns: 44px minmax(0, 1fr) 240px;
+            .o_ocd_evening_select {
+                grid-column: auto;
+            }
+        }
+    }
+}
+@media (min-width: $ocd-desktop) {
+    .o_ocd_app {
+        .o_ocd_evening.o_ocd_evening_page {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 440px;
+            gap: 32px;
+            align-items: start;
+        }
+        .o_ocd_evening_page .o_ocd_evening_hero {
+            min-height: 340px;
+        }
+        .o_ocd_evening_page .o_ocd_evening_title {
+            font-size: 44px;
+        }
+        .o_ocd_evening_list {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+}

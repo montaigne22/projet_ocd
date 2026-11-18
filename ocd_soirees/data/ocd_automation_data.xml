@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of the big evenings in the catalogue of the team (OCD Live › Automations) -->
+<odoo>
+
+    <record id="automation_evening_invite" model="ocd.automation">
+        <field name="code">evening_invite</field>
+        <field name="name">Big evening: invite the vendors</field>
+        <field name="sequence">40</field>
+        <field name="group">evenings</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_evening"/>
+        <field name="when">When the team opens the registrations of a big evening</field>
+        <field name="trigger">« Open the registrations » on the evening.</field>
+        <field name="scope">The checked vendors of the countries of the evening, once.</field>
+        <field name="actions">Invite them on WhatsApp: a live during the evening and their promos, before the end of the registrations.</field>
+        <field name="tools">Code of OCD Live.</field>
+    </record>
+
+    <record id="automation_evening_alert" model="ocd.automation">
+        <field name="code">evening_alert</field>
+        <field name="name">Big evening: tell the people who asked</field>
+        <field name="sequence">41</field>
+        <field name="group">evenings</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_evening"/>
+        <field name="when">A little before the start of a big evening (setting)</field>
+        <field name="trigger">Every 5 minutes.</field>
+        <field name="scope">The people who touched « Tell me on WhatsApp » on the page of the evening.</field>
+        <field name="actions">Tell them the evening starts, with the number of vendors in live and the link of its programme.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+</odoo>

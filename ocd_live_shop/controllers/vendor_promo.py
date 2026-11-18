@@ -20,6 +20,16 @@ PERCENTS = (10, 20, 25, 30)
 DURATIONS = (7, 14, 30)
 
 
+def promo_amount(reference, percent, currency):
+    """The price of a discount of `percent` % on `reference`; a round price in francs (8,975 F
+    becomes 9,000 F), never more than the discount chosen."""
+    amount = currency.round(reference * (100 - percent) / 100)
+    if currency.decimal_places == 0 and amount >= 1000:
+        rounded = math.ceil(amount / 50) * 50
+        amount = rounded if rounded < reference else amount
+    return amount
+
+
 def until_end_of_day(vendor, days):
     """The end of the `days`-th day, today included, at the hour of the vendor (UTC, naive)."""
     tz_name = vendor._ocd_tz_name() or "Africa/Lome"
@@ -122,11 +132,7 @@ class OcdVendorPromo(http.Controller):
             if percent and percent != "autre":
                 if not str(percent).isdigit():
                     raise UserError(env._("Choose the discount."))
-                amount = currency.round(reference * (100 - int(percent)) / 100)
-                if currency.decimal_places == 0 and amount >= 1000:
-                    # A round price in francs: 8,975 F becomes 9,000 F, never more than the discount chosen
-                    rounded = math.ceil(amount / 50) * 50
-                    amount = rounded if rounded < reference else amount
+                amount = promo_amount(reference, int(percent), currency)
             else:
                 amount = tools.parse_amount(price or "", currency.decimal_places, currency.symbol)
                 if amount is None:

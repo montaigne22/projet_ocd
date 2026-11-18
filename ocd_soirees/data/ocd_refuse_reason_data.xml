@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Reasons sent to the vendor when a participation to a big evening is refused -->
+    <record id="refuse_reason_evening_promo" model="ocd.listing.refuse.reason">
+        <field name="name">Promos not real</field>
+        <field name="message">Your promos of the evening are not real discounts: choose lower prices, then send again.</field>
+        <field name="applies_to">evening</field>
+        <field name="sequence">610</field>
+    </record>
+    <record id="refuse_reason_evening_live" model="ocd.listing.refuse.reason">
+        <field name="name">No live in the evening</field>
+        <field name="message">Book your live during the hours of the evening, then send your participation again.</field>
+        <field name="applies_to">evening</field>
+        <field name="sequence">620</field>
+    </record>
+    <record id="refuse_reason_evening_full" model="ocd.listing.refuse.reason">
+        <field name="name">Evening full</field>
+        <field name="message">The evening is full for your category: the team writes to you for the next one.</field>
+        <field name="applies_to">evening</field>
+        <field name="sequence">630</field>
+    </record>
+
+</odoo>
