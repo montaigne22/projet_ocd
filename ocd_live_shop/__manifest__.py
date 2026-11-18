@@ -76,6 +76,7 @@ OCD Live shop and deliveries
         "views/ocd_live_shop_templates.xml",
         "views/ocd_shop_pages_templates.xml",
         "views/ocd_vendor_promo_templates.xml",
+        "views/ocd_programme_templates.xml",
         "views/ocd_vendor_place_templates.xml",
         "views/ocd_vendor_stock_templates.xml",
         "views/ocd_vendor_team_templates.xml",

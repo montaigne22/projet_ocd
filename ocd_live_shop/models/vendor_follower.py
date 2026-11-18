@@ -54,6 +54,7 @@ class OcdVendorFollower(models.Model):
     source = fields.Selection(
         selection=[
             ("boutique", "Boutique"), ("feed", "Lives"), ("product", "Product"), ("replay", "Replay"),
+            ("programme", "Programme"), ("evening", "Big evening"),
             ("alert", "Tell me (before)"), ("team", "OCD Live team"),
         ],
         string="Followed From", default="boutique",

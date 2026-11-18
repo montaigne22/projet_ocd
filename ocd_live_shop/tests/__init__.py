@@ -28,3 +28,4 @@ from . import test_vendor_follow
 from . import test_trust
 from . import test_vendor_figures
 from . import test_promo
+from . import test_programme

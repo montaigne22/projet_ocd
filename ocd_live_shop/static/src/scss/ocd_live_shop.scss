@@ -5345,3 +5345,264 @@
         font-weight: 700;
     }
 }
+
+// The programme of the lives (chantier 7, design ProgrammeSoirees): by hour on a phone, a TV
+// guide on a computer
+.o_ocd_app {
+    .o_ocd_programme_link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+        font-size: 14px;
+        color: $ocd-ink;
+        text-decoration: underline;
+        .o_ocd_icon {
+            width: 18px;
+            height: 18px;
+            color: $ocd-orange;
+        }
+    }
+    .o_ocd_programme {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+    .o_ocd_programme_head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        .o_ocd_programme_country {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+    }
+    .o_ocd_programme_days {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+    .o_ocd_programme_day {
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 48px;
+        padding: 8px 6px;
+        border-radius: 14px;
+        border: 2px solid $ocd-line;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: $ocd-ink;
+        text-decoration: none;
+        b {
+            font-family: $ocd-display;
+            font-size: 19px;
+            line-height: 1.1;
+        }
+        &.o_ocd_on {
+            background: $ocd-ink;
+            border-color: $ocd-ink;
+            color: #FFFFFF;
+        }
+        &.o_ocd_programme_day_evening {
+            border-color: $ocd-orange;
+        }
+    }
+    .o_ocd_programme_categories {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        .o_ocd_chip {
+            flex: none;
+        }
+    }
+    .o_ocd_programme_band {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, $ocd-ink, #3A1A06 55%, $ocd-orange);
+        color: #FFFFFF;
+        padding: 14px 16px;
+        text-decoration: none;
+        b {
+            font-family: $ocd-display;
+            font-weight: 800;
+            font-size: 22px;
+            line-height: 1.05;
+        }
+        small {
+            font-size: 13.5px;
+            opacity: .9;
+        }
+    }
+    a.o_ocd_programme_band {
+        color: #FFFFFF !important;
+    }
+    .o_ocd_programme_list {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+    .o_ocd_programme_now {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 800;
+    }
+    .o_ocd_programme_h2 {
+        margin: 12px 0 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 19px;
+    }
+    .o_ocd_programme_row {
+        display: grid;
+        grid-template-columns: 52px 44px minmax(0, 1fr) 44px;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid $ocd-line;
+        color: $ocd-ink;
+        text-decoration: none;
+    }
+    .o_ocd_programme_hour {
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 17px;
+        font-variant-numeric: tabular-nums;
+    }
+    .o_ocd_programme_live .o_ocd_programme_hour {
+        color: $ocd-red-badge;
+    }
+    .o_ocd_programme_text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        color: $ocd-ink;
+        text-decoration: none;
+        b {
+            overflow-wrap: anywhere;
+        }
+        small {
+            color: $ocd-muted;
+            font-size: 13.5px;
+        }
+    }
+    .o_ocd_programme_bell {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: $ocd-sand;
+        display: grid;
+        place-items: center;
+        color: $ocd-ink;
+        .o_ocd_icon {
+            width: 20px;
+            height: 20px;
+        }
+        &.o_ocd_on {
+            background: $ocd-green-soft;
+            color: $ocd-green-text;
+        }
+    }
+    .o_ocd_programme_note {
+        color: $ocd-muted;
+        font-size: 13.5px;
+    }
+    .o_ocd_guide {
+        display: none;
+    }
+}
+@media (min-width: $ocd-desktop) {
+    .o_ocd_app {
+        .o_ocd_programme_has_guide .o_ocd_programme_list {
+            display: none;
+        }
+        .o_ocd_guide {
+            display: grid;
+            grid-auto-rows: 64px;
+            border: 1px solid $ocd-line;
+            border-radius: 14px;
+            overflow: hidden;
+            font-size: 13px;
+        }
+        .o_ocd_guide_corner,
+        .o_ocd_guide_hour {
+            grid-row: 1;
+            height: 36px;
+            padding: 8px 6px;
+            color: $ocd-muted;
+            font-weight: 700;
+            border-bottom: 1px solid $ocd-line;
+            border-left: 1px dashed $ocd-line;
+            box-sizing: border-box;
+        }
+        .o_ocd_guide_corner {
+            grid-column: 1;
+            border-left: 0;
+        }
+        .o_ocd_guide_channel {
+            grid-column: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2px;
+            padding: 8px 14px;
+            border-bottom: 1px solid $ocd-line;
+            border-right: 1px solid $ocd-line;
+            min-width: 0;
+            b {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            small {
+                color: $ocd-muted;
+                font-size: 12px;
+            }
+        }
+        .o_ocd_guide_line {
+            border-bottom: 1px solid $ocd-line;
+        }
+        .o_ocd_guide_block {
+            z-index: 1;
+            margin: 6px 3px;
+            border-radius: 10px;
+            background: $ocd-orange-pale;
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            overflow: hidden;
+            white-space: nowrap;
+            color: $ocd-ink;
+            text-decoration: none;
+            min-width: 0;
+            b, small {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            small {
+                color: $ocd-muted;
+                font-size: 11.5px;
+            }
+            &.o_ocd_guide_live {
+                background: $ocd-red-soft;
+                box-shadow: inset 3px 0 0 $ocd-red-badge;
+            }
+        }
+    }
+}

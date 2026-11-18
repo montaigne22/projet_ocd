@@ -25,7 +25,7 @@ FOLLOWS_COOKIE = "ocd_follows"
 FOLLOWS_KEPT = 30
 # The pages of a person known on this browser are built for them (ocd_live.page_cache)
 page_cache.PERSONAL_COOKIES.update({FOLLOWER_COOKIE, FOLLOWS_COOKIE})
-SOURCES = ("boutique", "feed", "product", "replay")
+SOURCES = ("boutique", "feed", "product", "replay", "programme", "evening")
 
 
 def _follows_signature(ids):

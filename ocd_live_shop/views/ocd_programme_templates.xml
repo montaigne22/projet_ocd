@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The programme of the lives (chantier 7, design ProgrammeSoirees). The sentences with values are
+     built whole in Python (controllers/programme.py). -->
+<odoo>
+
+    <!-- « Programme » from the feed of the lives -->
+    <template id="lives_programme_link" inherit_id="ocd_live.lives" name="OCD Live: the programme from the lives">
+        <xpath expr="//div[hasclass('o_ocd_feed_state')]" position="inside">
+            <a href="/lives/programme" class="o_ocd_programme_link">
+                <t t-call="ocd_live.icon" icon.f="calendar"/><span>Programme of the lives</span>
+            </a>
+        </xpath>
+    </template>
+
+    <!-- One live of the programme: its hour, its vendor, where, « Tell me » -->
+    <template id="programme_row" name="OCD Live: a live of the programme">
+        <div t-attf-class="o_ocd_programme_row #{'o_ocd_programme_live' if row['live'] else ''}">
+            <span class="o_ocd_programme_hour" t-out="row['hour']"/>
+            <a t-att-href="row['boutique_url']" class="o_ocd_avatar o_ocd_avatar_mid" t-att-aria-label="row['name']" t-out="row['initials']"/>
+            <a t-att-href="row['watch_url'] or row['boutique_url']" class="o_ocd_programme_text"
+               t-att-target="'_blank' if row['watch_url'] and row['live'] else None" t-att-rel="'noopener' if row['watch_url'] else None">
+                <b t-out="row['name']"/>
+                <small t-out="row['line']"/>
+            </a>
+            <span t-if="row['followed']" class="o_ocd_programme_bell o_ocd_on" role="img" t-att-aria-label="row['bell_label']">
+                <t t-call="ocd_live.icon" icon.f="check"/>
+            </span>
+            <a t-else="" t-att-href="row['follow_url']" class="o_ocd_programme_bell" t-att-aria-label="row['bell_label']" t-att-title="row['bell_label']">
+                <t t-call="ocd_live.icon" icon.f="bell"/>
+            </a>
+        </div>
+    </template>
+
+    <template id="programme" name="OCD Live: the programme of the lives">
+        <t t-set="additional_title">Programme</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main t-attf-class="o_ocd_main o_ocd_programme #{'o_ocd_programme_has_guide' if guide else ''}">
+                    <div class="o_ocd_programme_head">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">Programme</h1>
+                        <a t-if="country" t-att-href="all_href" class="o_ocd_chip o_ocd_programme_country">
+                            <span t-attf-class="o_ocd_flag o_ocd_flag_#{country_flag}"/><span t-out="country.name"/>
+                        </a>
+                        <a t-else="" t-att-href="mine_href" class="o_ocd_chip o_ocd_on o_ocd_programme_country">All the countries</a>
+                    </div>
+                    <nav class="o_ocd_programme_days" aria-label="Days">
+                        <a t-foreach="days" t-as="day" t-att-href="day['href']"
+                           t-attf-class="o_ocd_programme_day #{'o_ocd_on' if day['on'] else ''} #{'o_ocd_programme_day_evening' if day['evening'] else ''}"
+                           t-att-aria-current="'date' if day['on'] else None" t-att-title="day['evening'] or None">
+                            <span t-out="day['label']"/>
+                            <b t-out="day['number']"/>
+                        </a>
+                    </nav>
+                    <nav class="o_ocd_chips o_ocd_programme_categories" aria-label="Categories">
+                        <a t-foreach="categories" t-as="chip" t-att-href="chip['href']"
+                           t-att-class="'o_ocd_chip o_ocd_on' if chip['on'] else 'o_ocd_chip'" t-out="chip['label']"/>
+                    </nav>
+                    <a t-if="evening" t-att-href="evening['url']" class="o_ocd_programme_band">
+                        <small t-out="evening['kicker']"/>
+                        <b t-out="evening['name']"/>
+                        <small t-out="evening['line']"/>
+                    </a>
+                    <!-- Phone and tablet: by hour -->
+                    <div class="o_ocd_programme_list">
+                        <t t-if="live_rows or directory">
+                            <span class="o_ocd_programme_now"><i class="o_ocd_onair_dot" aria-hidden="true"/>Live now</span>
+                            <t t-foreach="live_rows" t-as="row" t-call="ocd_live_shop.programme_row"/>
+                            <a t-foreach="directory" t-as="item" t-att-href="item['url']" class="o_ocd_programme_row o_ocd_programme_live">
+                                <span class="o_ocd_programme_hour">●</span>
+                                <span class="o_ocd_avatar o_ocd_avatar_mid" t-out="item['initials']"/>
+                                <span class="o_ocd_programme_text"><b t-out="item['name']"/><small t-out="item['line']"/></span>
+                                <span/>
+                            </a>
+                        </t>
+                        <h2 t-if="later" class="o_ocd_programme_h2">
+                            <t t-if="is_today">Later today</t><t t-else="" t-out="day_title"/>
+                        </h2>
+                        <t t-foreach="later" t-as="row" t-call="ocd_live_shop.programme_row"/>
+                        <div t-if="not later and not live_rows and not directory" class="o_ocd_info">
+                            No live planned this day for now. The vendors book their lives until the last minute: come back later.
+                        </div>
+                    </div>
+                    <!-- Computer: the TV guide, one line per account of OCD Live -->
+                    <div t-if="guide" class="o_ocd_guide" role="table" aria-label="Programme of the day"
+                         t-attf-style="grid-template-columns: 220px repeat(#{guide['columns']}, minmax(0, 1fr));">
+                        <span class="o_ocd_guide_corner" role="columnheader"/>
+                        <span t-foreach="guide['hours']" t-as="hour" class="o_ocd_guide_hour" role="columnheader"
+                              t-attf-style="grid-column: #{hour['column']} / span 4;" t-out="hour['label']"/>
+                        <t t-foreach="guide['channels']" t-as="channel">
+                            <t t-set="row_index" t-value="channel_index + 2"/>
+                            <span class="o_ocd_guide_channel" role="rowheader" t-attf-style="grid-row: #{row_index};">
+                                <b t-out="channel['name']"/><small t-out="channel['sub']"/>
+                            </span>
+                            <span class="o_ocd_guide_line" t-attf-style="grid-row: #{row_index}; grid-column: 2 / span #{guide['columns']};"/>
+                            <a t-foreach="channel['blocks']" t-as="block" t-att-href="block['watch_url'] or block['boutique_url']"
+                               t-attf-class="o_ocd_guide_block #{'o_ocd_guide_live' if block['live'] else ''}" role="cell"
+                               t-attf-style="grid-row: #{row_index}; grid-column: #{block['column']} / span #{block['span']};"
+                               t-att-title="'%s · %s – %s' % (block['name'], block['hour'], block['end'])">
+                                <b><t t-if="block['live']">● </t><t t-out="block['name']"/></b>
+                                <small><t t-out="block['hour']"/> – <t t-out="block['end']"/><t t-if="block['vendor'].ocd_category_id"> · <t t-out="block['vendor'].ocd_category_id.name"/></t></small>
+                            </a>
+                        </t>
+                    </div>
+                    <small class="o_ocd_programme_note"><t t-out="zone_line"/> The bell: a WhatsApp at each live of the vendor, as « Follow ».</small>
+                    <small class="o_ocd_programme_note">The lives of the vendors on their own accounts are added when they start.</small>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>
