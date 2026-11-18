@@ -328,7 +328,7 @@ class TestOcdTemplatesForMeta(TransactionCase):
         data = self.env["ir.model.data"].search([
             ("model", "=", "whatsapp.template"),
             ("module", "in", ("whatsapp_cloud", "whatsapp_cloud_sale", "ocd_live_whatsapp", "ocd_live_shop_whatsapp",
-                            "ocd_vote_whatsapp", "ocd_tickets_whatsapp")),
+                            "ocd_vote_whatsapp", "ocd_tickets_whatsapp", "ocd_soirees_whatsapp")),
         ])
         templates = self.env["whatsapp.template"].with_context(active_test=False).browse(data.mapped("res_id"))
         self.assertTrue(all(templates.mapped("active")), "The English versions are active too")
