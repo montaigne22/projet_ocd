@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>OCD Tickets</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.muted{color:#665F58}
+.lnk{text-decoration:underline;font-weight:700}
+.poster{height:220px;border-radius:20px;background:linear-gradient(160deg,#15130F,#7A2E0B 60%,#F46A00);color:#FFF;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:16px}
+.poster .t{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:28px;line-height:1.05}
+.badge{border-radius:999px;background:#DCF2E5;color:#0A5A31;font-weight:800;font-size:12px;padding:2px 9px;white-space:nowrap}
+.live{border-radius:999px;background:#FF4D5A;color:#FFF;font-weight:800;font-size:12px;padding:2px 9px;white-space:nowrap}
+.facts{display:flex;flex-direction:column;gap:8px}
+.fact{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
+.fact i{font-style:normal;font-size:17px}
+.fact b{display:block}
+.type{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;border:2px solid #E7E2DC;border-radius:16px;padding:12px 14px}
+.type.on{border-color:#15130F;box-shadow:inset 0 0 0 1px #15130F}
+.type b.p{font-family:'Bricolage Grotesque',sans-serif;font-size:18px}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper i{width:38px;height:38px;border-radius:12px;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.low{border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;background:#FFF0E3;color:#B84F00}
+.out{border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;background:#FCE4E4;color:#8E1220}
+.guar{display:flex;flex-direction:column;gap:4px;border-radius:16px;background:#DCF2E5;color:#0A5A31;padding:12px 14px;font-size:14px}
+.total{display:flex;justify-content:space-between;align-items:baseline}
+.total b{font-family:'Bricolage Grotesque',sans-serif;font-size:26px}
+.tk{border:2px solid #15130F;border-radius:22px;overflow:hidden}
+.tk .top{display:flex;flex-direction:column;gap:6px;padding:16px 16px 14px;height:auto;border:0}
+.tk .bot{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;border-top:2px dashed #15130F;padding:14px 16px}
+.qr{width:96px;height:96px;border-radius:10px;background:repeating-conic-gradient(#15130F 0 25%,#FFF 0 50%) 0 0/16px 16px;border:6px solid #FFF;box-shadow:0 0 0 2px #15130F}
+.code{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:.06em}
+.dots{display:flex;gap:6px;justify-content:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:#E7E2DC}
+.dots i.on{background:#15130F}
+.ok2{display:flex;flex-direction:column;gap:6px;border-radius:16px;background:#DCF2E5;color:#0A5A31;padding:14px}
+.scan{height:300px;border-radius:20px;background:#15130F;display:grid;place-items:center;color:#FFF;position:relative}
+.scan .frame{width:190px;height:190px;border:4px solid #F46A00;border-radius:22px}
+.scan .hint{position:absolute;bottom:14px;font-size:14px;opacity:.9}
+.res{display:flex;flex-direction:column;gap:6px;border-radius:20px;padding:18px;text-align:center}
+.res b.big{font-family:'Bricolage Grotesque',sans-serif;font-size:30px;line-height:1.05}
+.green{background:#0F7A43;color:#FFF}
+.red{background:#C4162A;color:#FFF}
+.orange{background:#F46A00;color:#15130F}
+.counter{display:flex;justify-content:space-between;align-items:center;border-radius:14px;background:#F5F2EE;padding:10px 14px;font-weight:700}
+.wa{width:330px;border-radius:18px;background:#E5DDD5;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.wa .bot{align-self:flex-start;background:#FFF;border-radius:12px 12px 12px 2px;padding:8px 10px;max-width:92%;display:flex;flex-direction:column;gap:6px}
+.wa .bt{background:#FFF;border-radius:10px;text-align:center;color:#1F7A4D;font-weight:700;padding:8px}
+.onair{display:flex;flex-direction:column;gap:8px;border-radius:18px;background:#15130F;color:#FFF;padding:12px}
+.onair .bar{display:flex;align-items:center;gap:8px}
+.onair .dot{width:10px;height:10px;border-radius:50%;background:#FF4D5A}
+.onair .card{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center;border-radius:14px;background:#FFF;color:#15130F;padding:8px}
+.onair .card .ph2{width:56px;height:56px;border-radius:10px;background:linear-gradient(160deg,#15130F,#F46A00)}
+.tile{display:flex;flex-direction:column;gap:2px;border:2px solid #E7E2DC;border-radius:16px;padding:10px 12px}
+.tile b.n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;line-height:1.1}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC;font-size:14.5px}
+.bar2{height:8px;border-radius:99px;background:#F5F2EE;overflow:hidden;margin-top:4px}
+.bar2 i{display:block;height:100%;background:#F46A00;border-radius:99px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule b{font-size:15px}
+/* computer */
+.pcbody{display:grid;grid-template-columns:1fr 400px;gap:32px;padding:24px 40px 32px}
+.bo{background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.bobtn{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid #AEB4BA;font-weight:700;font-size:13.5px;background:#FFF}
+table.t{width:100%;border-collapse:collapse;font-size:14.5px}
+table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
+table.t td{padding:10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
+table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#FFF8E6;border:1px dashed #F0C987;padding:12px 14px;font-size:14px;color:#6B4500}
+.q b{color:#15130F}
+</style>
+</head>
+<body>
+<!-- OCD Tickets (chantier 6 de la feuille de route) : des billets de concerts et d'événements,
+     vendus sur la page de l'événement et pendant les lives, payés comme le reste d'OCD Live ; un QR
+     par personne, vérifié une seule fois à l'entrée par les contrôleurs de l'organisateur (leur
+     téléphone, sans application à installer) ; le reversement à l'organisateur après l'événement.
+     On réutilise le ticket signé du live et son contrôle à l'entrée, l'application Événements
+     d'Odoo (gratuite) et l'espace de l'organisateur d'OCD Vote. Les choix proposés sont en bas.
+     Données d'exemple : « Nuit de l'Afrobeat », samedi 12 décembre, Palais des Sports de Douala,
+     organisé par Étoile Events. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le public : l'événement, acheter, mes billets</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. La page de l'événement -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Billets</span><span class="pill" style="margin-left:auto">Partager</span></div>
+    <div class="poster">
+      <span class="small" style="opacity:.85">OCD Tickets · Concert</span>
+      <span class="t">Nuit de l'Afrobeat</span>
+      <span class="small">Par Étoile Events <span class="badge">Organisateur vérifié</span></span>
+    </div>
+    <div class="facts">
+      <div class="fact"><i>📅</i><span><b>Samedi 12 décembre · 20 h</b><span class="small muted">Ouverture des portes 18 h 30 (heure de Douala)</span></span></div>
+      <div class="fact"><i>📍</i><span><b>Palais des Sports, Douala</b><span class="small muted">Warda · <span class="lnk">Itinéraire</span></span></span></div>
+      <div class="fact"><i>🎟️</i><span><b>1 264 billets vendus</b><span class="small muted">Il en reste 336</span></span></div>
+    </div>
+    <b class="d" style="font-size:20px">Les billets</b>
+    <div class="type on"><span><b>Standard</b><br><span class="small muted">Debout, fosse</span></span><b class="p">5 000 F</b></div>
+    <div class="type"><span><b>VIP</b> <span class="low">Plus que 12</span><br><span class="small muted">Places assises, boisson offerte</span></span><b class="p">15 000 F</b></div>
+    <div class="type"><span><b>Table de 6</b> <span class="out">Épuisé</span><br><span class="small muted">6 billets, une table réservée</span></span><b class="p muted">80 000 F</b></div>
+    <span class="cta">Choisir mes billets</span>
+    <div class="guar"><b>Garantie OCD Live</b><span>Événement annulé : remboursé. L'organisateur est payé après l'événement.</span></div>
+    <span class="small muted">Six artistes, deux scènes, de 20 h à l'aube. <span class="lnk">Tout lire</span> · <span class="lnk">Signaler</span></span>
+  </div>
+
+  <!-- 2. Acheter -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Nuit de l'Afrobeat</span></div>
+    <b class="d" style="font-size:22px">Combien de billets ?</b>
+    <div class="type on"><span><b>Standard</b><br><span class="small muted">5 000 F le billet</span></span><span class="stepper"><i>−</i><b>2</b><i>+</i></span></div>
+    <div class="type"><span><b>VIP</b> <span class="low">Plus que 12</span><br><span class="small muted">15 000 F le billet</span></span><span class="stepper"><i>−</i><b>0</b><i>+</i></span></div>
+    <span class="small muted">10 billets au plus par commande.</span>
+    <div><div class="lab">Ton nom (sur les billets)</div><div class="in">Estelle Ngono</div></div>
+    <div><div class="lab">Ton WhatsApp (les billets y arrivent)</div><div class="in">🇨🇲 +237 &nbsp;6 70 00 00 00</div></div>
+    <div class="total"><span class="muted">2 billets Standard</span><b>10 000 F</b></div>
+    <span class="cta">Payer 10 000 F</span>
+    <span class="small muted">Puis le paiement d'OCD Live : Mobile Money sur ton téléphone, ou carte. Tes billets arrivent sur WhatsApp dès que l'argent est reçu, et restent dans « Mes billets ».</span>
+  </div>
+
+  <!-- 3. Mes billets -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes billets</span></div>
+    <div class="ok2"><b class="d" style="font-size:20px">C'est payé : 2 billets</b><span>Envoyés sur ton WhatsApp. Montre un QR par personne à l'entrée.</span></div>
+    <div class="tk">
+      <div class="top">
+        <span class="small muted">Billet 1 sur 2 · Standard</span>
+        <b class="d" style="font-size:22px">Nuit de l'Afrobeat</b>
+        <span><b>Sam. 12 déc. · 20 h</b> · portes 18 h 30</span>
+        <span>Palais des Sports, Douala</span>
+        <span class="small muted">Estelle Ngono</span>
+      </div>
+      <div class="bot">
+        <span class="qr" role="img" aria-label="Code du billet, exemple"></span>
+        <span style="display:flex;flex-direction:column;gap:4px"><span class="code">NAB-7K2Q-41</span><span class="small muted">Valable une seule fois. Garde-le pour toi : une capture d'écran suffit à entrer.</span></span>
+      </div>
+    </div>
+    <div class="dots"><i class="on"></i><i></i></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span class="btn">Télécharger (PDF)</span><span class="btn">Donner ce billet</span></div>
+    <span class="small muted">« Donner ce billet » : le numéro WhatsApp d'un ami, le billet part chez lui avec un nouveau QR ; l'ancien ne marche plus.</span>
+    <span class="small muted">Rappel sur WhatsApp la veille, avec l'itinéraire.</span>
+  </div>
+
+  <!-- 4. WhatsApp, vendu en live -->
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <span class="cap" style="margin:0">WhatsApp (nouveaux modèles, à soumettre à Meta)</span>
+    <div class="wa">
+      <div class="bot"><span>Vos 2 billets pour <b>Nuit de l'Afrobeat</b>, samedi 12 décembre à 20 h au Palais des Sports, Douala, sont prêts. Touchez « Mes billets » pour les montrer à l'entrée.</span></div>
+      <span class="bt">Mes billets</span>
+      <div class="bot"><span>Rappel : <b>Nuit de l'Afrobeat</b> demain à 20 h, portes à 18 h 30, au Palais des Sports, Douala. Touchez « Mes billets » pour vos QR et l'itinéraire.</span></div>
+      <span class="bt">Mes billets</span>
+    </div>
+    <span class="small muted" style="width:330px">Aussi : « Événement annulé : vous êtes remboursé sur ce numéro », « Événement déplacé au … : vos billets restent valables ». Un billet donné arrive chez l'ami avec le même message.</span>
+    <span class="cap" style="margin:6px 0 0">Vendu pendant le live (boutique de l'organisateur ou d'un vendeur)</span>
+    <div class="phone" style="gap:10px">
+      <div class="onair">
+        <span class="bar"><i class="dot"></i><b>En live maintenant</b><span class="small" style="opacity:.8;margin-left:auto">depuis 18 min, sur TikTok</span></span>
+        <div class="card"><span class="ph2"></span><span><span class="small muted">À l'écran maintenant</span><br><b>Billet Standard · Nuit de l'Afrobeat</b><br><span class="small"><b>4 000 F</b> <s class="muted">5 000 F</s> · prix du live</span></span></div>
+        <span class="cta" style="min-height:48px;font-size:16px">Acheter mon billet</span>
+      </div>
+      <span class="small muted">La régie met le billet à l'écran comme un produit. Prix du live (si l'organisateur le veut) : jusqu'à la fin du live seulement.</span>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · le contrôleur à l'entrée (connexion par son numéro, sans application à installer)</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Entrée · Porte 2</span></div>
+    <div class="counter"><span>Entrés</span><span>412 / 1 264</span></div>
+    <div class="scan"><span class="frame"></span><span class="hint">Mets le QR du billet dans le cadre</span></div>
+    <span class="btn">Taper le code du billet</span>
+    <span class="small muted">Hors réseau : la liste des billets reste dans le téléphone, les entrées partent dès que le réseau revient.</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;width:390px">
+    <div class="res green"><b class="big">Entrée OK</b><span>Standard · Estelle Ngono · billet 1 sur 2</span></div>
+    <div class="res red"><b class="big">Déjà entré</b><span>À 20 h 14, porte 1, par Junior</span><span class="small">Ne pas laisser entrer. Un billet donné à un ami a un nouveau QR : l'ancien est refusé.</span></div>
+    <div class="res orange"><b class="big">Pas pour ce soir</b><span>Billet de « Gospel Live Yaoundé », le 19 décembre</span></div>
+    <div class="res" style="background:#F5F2EE"><b class="big" style="font-size:24px">Billet inconnu</b><span class="small">Code faux ou copie modifiée : refuser.</span></div>
+  </div>
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Vendre à l'entrée</span></div>
+    <span class="small muted">Si l'organisateur l'autorise : le contrôleur vend sur place.</span>
+    <div class="type on"><span><b>Standard</b><br><span class="small muted">5 000 F</span></span><span class="stepper"><i>−</i><b>1</b><i>+</i></span></div>
+    <div><div class="lab">WhatsApp du client</div><div class="in">🇨🇲 +237 &nbsp;6 99 00 00 00</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span class="btn">Espèces</span><span class="btn">Mobile Money</span></div>
+    <span class="small muted">Le billet part sur le WhatsApp du client et entre aussitôt. Les espèces sont comptées avec le contrôleur à la fin de la soirée, comme la caisse des livreurs.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · l'organisateur : son événement (le même espace que ses concours d'OCD Vote)</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon événement</span></div>
+    <span style="display:flex;justify-content:space-between;align-items:center"><b class="d" style="font-size:22px">Nuit de l'Afrobeat</b><span class="badge">En vente</span></span>
+    <div class="tiles">
+      <div class="tile"><span class="small muted">Billets vendus</span><b class="n">1 264</b><span class="small muted">sur 1 600</span></div>
+      <div class="tile"><span class="small muted">Encaissé</span><b class="n">7 940 000 F</b><span class="small muted">dont 640 000 F en live</span></div>
+      <div class="tile"><span class="small muted">Ta part (90 %)</span><b class="n">7 146 000 F</b><span class="small muted">versée après l'événement</span></div>
+      <div class="tile"><span class="small muted">Entrés</span><b class="n">0</b><span class="small muted">le soir même</span></div>
+    </div>
+    <b class="d" style="font-size:20px">Par billet</b>
+    <div class="row"><span><b>Standard</b> · 1 080 / 1 400<div class="bar2"><i style="width:77%"></i></div></span><b>5 240 000 F</b></div>
+    <div class="row"><span><b>VIP</b> · 148 / 160<div class="bar2"><i style="width:92%"></i></div></span><b>2 220 000 F</b></div>
+    <div class="row"><span><b>Table de 6</b> · 6 / 6<div class="bar2"><i style="width:100%"></i></div></span><b>480 000 F</b></div>
+    <span class="btn">Partager l'événement</span>
+    <span class="btn">Vendre pendant un live</span>
+  </div>
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes contrôleurs</span></div>
+    <div class="row"><span><b>Junior</b><br><span class="small muted">Porte 1 · peut vendre à l'entrée</span></span><span class="lnk small">Retirer</span></div>
+    <div class="row"><span><b>Aïcha</b><br><span class="small muted">Porte 2 · contrôle seulement</span></span><span class="lnk small">Retirer</span></div>
+    <span class="cta">Ajouter un contrôleur</span>
+    <span class="small muted">Son nom, son WhatsApp, sa porte ; un lien part sur son WhatsApp. Le soir de l'événement, il ouvre « Entrée » et scanne avec la caméra de son téléphone.</span>
+    <b class="d" style="font-size:20px;margin-top:6px">Les étapes</b>
+    <span class="small">✓ Événement envoyé · ✓ Vérifié par OCD Live · ✓ En vente · 4. Le soir : les entrées · 5. Ta part versée 3 jours après l'événement</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;width:360px">
+    <span class="cap" style="margin:0">Comment c'est compté</span>
+    <div class="rule"><b>Un QR par personne, valable une fois</b><span>Chaque billet porte un code signé par le serveur, comme le ticket du live : une copie modifiée est refusée, un billet déjà entré aussi (avec l'heure, la porte et le contrôleur).</span></div>
+    <div class="rule"><b>Les billets payés seulement</b><span>Un billet existe quand son paiement est confirmé. Les places sont gardées 10 minutes pendant le paiement, puis remises en vente.</span></div>
+    <div class="rule"><b>Annulé ou déplacé</b><span>Annulé : chaque acheteur est remboursé sur son numéro. Déplacé : les billets restent valables à la nouvelle date ; remboursement sur demande pendant 7 jours.</span></div>
+    <div class="rule"><b>Le reversement</b><span>90 % des billets pour l'organisateur, 10 % pour OCD Live (frais du Mobile Money compris), versés 3 jours après l'événement, comme les reversements des vendeurs.</span></div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Ordinateur · 1440 px · la page de l'événement</span>
+<div class="screen pc"><div class="top"><span class="logo"><i></i>OCD <b>● LIVE</b></span><nav class="nav"><a>Accueil</a><a>Lives</a><a>Shop</a><a class="on">Billets</a><a>Moi</a></nav><span class="right"><span class="round">FR</span></span></div>
+  <div class="pcbody">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="poster" style="height:360px"><span class="small" style="opacity:.85">OCD Tickets · Concert</span><span class="t" style="font-size:44px">Nuit de l'Afrobeat</span><span class="small">Par Étoile Events <span class="badge">Organisateur vérifié</span></span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+        <div class="fact"><i>📅</i><span><b>Samedi 12 décembre · 20 h</b><span class="small muted">Portes 18 h 30</span></span></div>
+        <div class="fact"><i>📍</i><span><b>Palais des Sports, Douala</b><span class="small muted">Warda · <span class="lnk">Itinéraire</span></span></span></div>
+        <div class="fact"><i>🎟️</i><span><b>1 264 billets vendus</b><span class="small muted">Il en reste 336</span></span></div>
+      </div>
+      <span>Six artistes, deux scènes, de 20 h à l'aube. Restauration sur place. Les enfants de moins de 12 ans entrent avec un adulte. <span class="lnk">Tout lire</span></span>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <b class="d" style="font-size:22px">Les billets</b>
+      <div class="type on"><span><b>Standard</b><br><span class="small muted">5 000 F</span></span><span class="stepper"><i>−</i><b>2</b><i>+</i></span></div>
+      <div class="type"><span><b>VIP</b> <span class="low">Plus que 12</span><br><span class="small muted">15 000 F</span></span><span class="stepper"><i>−</i><b>0</b><i>+</i></span></div>
+      <div class="type"><span><b>Table de 6</b> <span class="out">Épuisé</span><br><span class="small muted">80 000 F</span></span><span class="muted small">Épuisé</span></div>
+      <div class="total"><span class="muted">2 billets</span><b>10 000 F</b></div>
+      <span class="cta">Choisir mes billets</span>
+      <div class="guar"><b>Garantie OCD Live</b><span>Événement annulé : remboursé. L'organisateur est payé après l'événement.</span></div>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · l'équipe (l'application Événements d'Odoo, avec l'onglet OCD Live)</span>
+<div class="screen" style="width:1300px;padding:20px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
+  <div class="bo">
+    <b>OCD Live › Billets › Événements</b>
+    <table class="t">
+      <tr><th>Événement</th><th>Organisateur</th><th>Date</th><th>État</th><th class="r">Vendus</th><th class="r">Encaissé</th><th class="r">Part organisateur</th></tr>
+      <tr><td><b>Nuit de l'Afrobeat</b></td><td>Étoile Events</td><td>12 déc.</td><td><span class="tag ok">En vente</span></td><td class="r">1 264</td><td class="r">7 940 000 F</td><td class="r">7 146 000 F</td></tr>
+      <tr><td><b>Gospel Live Yaoundé</b></td><td>Chœur Béthel</td><td>19 déc.</td><td><span class="tag low">À vérifier</span></td><td class="r">0</td><td class="r">0 F</td><td class="r">-</td></tr>
+      <tr><td><b>Gala des Talents Joss</b></td><td>Lycée Joss</td><td>28 nov.</td><td><span class="tag">Passé</span></td><td class="r">612</td><td class="r">1 836 000 F</td><td class="r">Versé</td></tr>
+    </table>
+    <span>Fiche : l'événement d'Odoo (dates, lieu, types de billets et places), et l'onglet OCD Live : organisateur, part, prix du live, vente à l'entrée, contrôleurs, affiche, garantie.</span>
+    <span style="display:flex;gap:8px;flex-wrap:wrap"><span class="bobtn">Vérifier et mettre en vente</span><span class="bobtn">Annuler et rembourser</span><span class="bobtn">Déplacer</span><span class="bobtn">Billets</span><span class="bobtn">Entrées</span><span class="bobtn">Reversement</span></span>
+  </div>
+  <div class="bo">
+    <b>Billets › Billets vendus (inscriptions d'Odoo)</b>
+    <span>Un billet par personne : type, acheteur, téléphone (vu par l'équipe), paiement et sa référence, page, live ou entrée, état (valable, entré à quelle heure, par qui, à quelle porte ; donné ; remboursé).</span>
+    <b style="margin-top:6px">À vérifier</b>
+    <span>Un nouvel événement (affiche, lieu, date, règles), comme les concours d'OCD Vote.</span>
+    <b style="margin-top:6px">Réglages · Billets</b>
+    <span>Part de l'organisateur (<b>90 %</b>), billets par commande (<b>10</b>), places gardées pendant le paiement (<b>10 min</b>), fin des ventes en ligne (<b>à l'heure du début</b>), remboursement sur demande après un report (<b>7 jours</b>).</span>
+    <b style="margin-top:6px">Automatisations</b>
+    <span>« Billets payés : les envoyer » ; « La veille : rappel aux acheteurs » ; « Événement annulé ou déplacé : prévenir les acheteurs » ; « Après l'événement : reversement à l'organisateur ».</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Choix proposés, à valider</span>
+<div class="q" style="max-width:1300px">
+  <span><b>1. Qui vend des billets ?</b> Des organisateurs vérifiés par l'équipe (le même compte et le même espace que pour OCD Vote) et OCD Live. Chaque événement est vérifié avant d'être en vente.</span>
+  <span><b>2. Partage :</b> 90 % pour l'organisateur, 10 % pour OCD Live (frais du Mobile Money compris), aucun frais en plus pour l'acheteur ; versé 3 jours après l'événement (l'acheteur est protégé si l'événement est annulé).</span>
+  <span><b>3. Billets :</b> un QR par personne, au nom de l'acheteur ; 10 billets au plus par commande ; « Donner ce billet » à un ami (nouveau QR, l'ancien ne marche plus).</span>
+  <span><b>4. Contrôle :</b> les contrôleurs de l'organisateur scannent avec la caméra de leur téléphone sur une page d'OCD Live (connexion par leur numéro) ; hors réseau, la liste reste dans le téléphone et les entrées partent au retour du réseau (risque accepté : deux portes hors réseau pourraient laisser entrer la même copie une fois chacune).</span>
+  <span><b>5. En live :</b> le billet passe à l'écran comme un produit (régie) ; un prix du live possible, jusqu'à la fin du live.</span>
+  <span><b>6. Vente à l'entrée :</b> si l'organisateur l'autorise, ses contrôleurs vendent sur place (espèces ou Mobile Money) ; les espèces comptées avec eux à la fin, comme la caisse des livreurs.</span>
+  <span><b>7. Annulé ou déplacé :</b> annulé, tout le monde est remboursé ; déplacé, les billets restent valables, remboursement sur demande pendant 7 jours ; pas de remboursement pour un acheteur qui ne vient pas.</span>
+  <span><b>8. Pays :</b> d'abord le Cameroun (CamPay, automatique), l'UEMOA avec le paiement automatique du chantier 5.</span>
+</div>
+
+</div>
+</body>
+</html>
