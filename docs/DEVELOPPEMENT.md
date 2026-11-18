@@ -57,7 +57,7 @@ En deux temps : les modules d'abord (Odoo met en place la comptabilité), puis l
 régler la société pendant qu'aucune écriture n'existe encore (pays, devise en franc CFA).
 
 ```bash
-odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp --load-language=fr_FR --stop-after-init
+odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp --load-language=fr_FR --stop-after-init
 ```
 
 Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**, téléphone et e-mail : ils s'affichent
@@ -98,7 +98,7 @@ Après un `git pull` du dépôt : redémarrer Odoo, puis mettre à jour les modu
 module › Mettre à jour, ou en ligne de commande) :
 
 ```bash
-odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp --stop-after-init
+odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp --stop-after-init
 ```
 
 **À chaque récupération du code, mettre à jour les modules.** Sans cela, le code appelle des pages qui
@@ -325,13 +325,64 @@ live en clips), `models/ocd_live_clip.py` (la file d'attente, le lien, le texte 
 `models/sale_order.py` (les ventes venues d'un clip), `controllers/` (envoi, médias, lien court, pages
 du vendeur), `static/src/screen/` (l'écran de l'équipe).
 
+## OCD Express (modules `ocd_express` et `ocd_express_whatsapp`)
+
+La livraison avec code d'OCD Live pour tous les vendeurs des réseaux (décisions dans
+[`DECISIONS.md`](DECISIONS.md), Shop et livraisons). Un colis Express est un colis du shop
+(`stock.picking`, `ocd_is_parcel`) **sans commande** : type d'opération « OCD Express » (numéros
+`EX-0001`), un produit non stocké « Colis OCD Express », l'expéditeur dans `ocd_express_sender_id`. Le
+dispatch, la tournée, le code, le paiement à la porte, les problèmes et la caisse du soir sont ceux du shop.
+
+Mise en route (avant d'inviter les premiers expéditeurs) :
+
+1. **La société** (Paramètres › Sociétés, onglet de la société) : les **villes ouvertes à OCD Express**
+   (Douala d'abord).
+2. **OCD Live › Livraisons › Tarifs de livraison** : un tarif « livreur OCD » de la ville (il donne le prix,
+   1 000 F dans Douala), un tarif « agence » vers les autres villes (payé d'avance par l'expéditeur).
+3. **Les livreurs** : leurs quartiers (le livreur du quartier de l'expéditeur fait le passage et livre ses
+   colis ; le dispatch peut donner un passage entier à un autre livreur).
+4. **OCD Live › Paramètres › OCD Express** : ouvert à (invités, puis tout le monde), prix, plafonds, vagues,
+   capacité, délais, **point OCD** (adresse du studio) et **Mobile Money d'OCD** (où un expéditeur envoie ce
+   qu'il doit, avec la référence `EXD-<numéro>` de sa page).
+5. **WhatsApp** : un numéro à part pour OCD Express (WhatsApp › Comptes : un second compte), choisi dans le
+   champ « Compte » des 12 modèles d'OCD Express (6 en français, 6 en anglais), puis « Soumettre à Meta ».
+6. **Inviter** : un expéditeur demande sur `/express/demande` ; l'équipe ouvre son compte dans « À
+   vérifier » (colonne OCD Express) ou sur sa fiche (onglet OCD Express).
+
+Les pages : `/express` (prix, trois étapes), `/express/demande`, `/express/connexion` (numéro et code sur
+WhatsApp), `/express/envois`, `/express/colis/nouveau`, `/express/colis/<id>` (étiquette avec QR,
+`/etiquette` pour l'imprimer), `/express/argent` (et `/express/argent/regler` pour payer ce qu'on doit
+avec le formulaire de paiement d'OCD Live) ; le client : `/express/suivi/<id>/<jeton>` ; le livreur : sa
+tournée `/ocd/livrer/<jeton>` (le passage chez l'expéditeur, les livraisons, les retours). Un vendeur
+d'OCD Live dont le compte Express est ouvert retrouve « Envoyer un colis » dans Mon espace.
+
+L'argent : un colis livré compte pour son expéditeur **une fois l'argent chez OCD** (espèces remises à la
+caisse du soir, ou paiement sur le téléphone confirmé par le fournisseur) : une facture d'achat de
+l'argent encaissé pour lui (`ocd_express_kind` = `collected`), un avoir de la livraison qu'il paie et de
+l'encaissement (`fees`). Les retours, les petits ramassages, un souci donné au client sont des avoirs ;
+un colis perdu par OCD et ce que l'expéditeur a payé sont des factures. Les reversements du shop les
+rassemblent (même écran) : chaque jour ouvré (lundi à samedi), sans l'argent d'un colis avec un souci
+ouvert, ni après un nouveau numéro de versement (48 h), et jamais pour un solde négatif (il attend les
+colis suivants). Un vendeur qui est aussi expéditeur est versé chaque jour ouvré.
+
+Le manque de caisse d'un livreur (`ocd_live_shop`) : un écart négatif à la caisse devient une dette du
+livreur (fiche du livreur, écran Livreurs et caisse) jusqu'à « Manque réglé » sur la remise.
+
+Code : `ocd_express/models/stock_picking.py` (création, vérifications, plan des vagues, retour, souci,
+argent, effacement), `ocd_express_pickup.py` (les passages), `res_company.py` (réglages, vagues,
+capacité), `res_partner.py` (l'expéditeur, son solde, ses retours), `ocd_payout.py` (les reversements) ;
+`controllers/sender.py`, `tracking.py`, `courier.py` ; dans `ocd_live_shop`, les points d'accroche
+`_ocd_cash_remitted`, `_ocd_prepare_domain`, `_ocd_payable_moves`, `_ocd_may_pay`, `_ocd_after_paid`,
+`_tour_step_list` (une étape avec son propre gabarit) ; dans `ocd_live`, `_login_pages` (les pages de
+connexion de tous les modules réunies).
+
 ## Tests
 
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,attachment_s3 \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp,attachment_s3 \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/ocd_express,/ocd_express_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud --stop-after-init
 ```
 
 Les tests des clips font de vraies vidéos avec ffmpeg (sources `lavfi`, quelques secondes). Ajouter

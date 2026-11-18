@@ -619,7 +619,25 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     de 2024 sur les données personnelles vérifiées avec un juriste ; seuls les frais sont le chiffre
     d'affaires d'OCD (facture des frais chaque mois avec le relevé) ;
   - **plus tard** : les points relais (chantier 10), plusieurs colis d'un coup, un lien pour les boutiques en
-    ligne, l'assurance d'un colis de valeur, la tournée gardée dans le téléphone.
+    ligne, l'assurance d'un colis de valeur, la tournée gardée dans le téléphone ;
+  - **fait avec le code (18 novembre 2026)** : un colis Express est un colis du shop sans commande (numéros
+    `EX-0001`), dans le même dispatch, la même tournée et la même caisse ; un passage de ramassage par
+    expéditeur et par moment de la journée, fait par le livreur du quartier de l'expéditeur, qui livre aussi
+    ses colis (le dispatch donne le passage entier à un autre livreur) ; un colis pas pris part au passage
+    suivant ; le premier passage réussi marque le lieu de l'expéditeur vérifié ; la capacité compte tous les
+    livreurs × 20 colis, moins la part du shop, et un colis va à la vague suivante quand la journée est
+    pleine ; pas de ramassage le dimanche. L'argent passe par des factures et des avoirs d'achat, réunis
+    dans les reversements du shop ; un vendeur qui est aussi expéditeur est versé chaque jour ouvré. Une
+    vérification de l'équipe aussi au-delà de 300 000 F à encaisser en un jour sans pièce d'identité vue,
+    et au-delà de 10 colis le premier jour (réglables). Un code de retour à 6 chiffres, 3 essais. « Ce
+    n'est pas pour moi » avant le ramassage annule le colis (sans frais), après il retourne (500 F).
+    L'accord du client coché par l'expéditeur vaut accord WhatsApp pour les messages de son colis ; « Ce
+    n'est pas pour moi » arrête tous les messages vers ce numéro. Un **sixième modèle**
+    (`ocd_express_numero`) prévient le numéro du compte quand le numéro de versement change. Les villes
+    ouvertes se choisissent sur la société, le reste dans les Paramètres d'OCD Live ;
+  - **manque de caisse d'un livreur** (pour tous les colis, pas seulement Express) : un écart négatif à la
+    caisse du soir devient une dette du livreur, avec une activité pour le responsable, jusqu'à « Manque
+    réglé ».
 
 ## WhatsApp
 

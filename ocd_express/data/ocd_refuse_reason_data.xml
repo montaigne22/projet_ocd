@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Reasons sent to the sender when the team refuses their request or a parcel held -->
+    <record id="refuse_reason_express_unknown" model="ocd.listing.refuse.reason">
+        <field name="name">Sender not reachable</field>
+        <field name="message">We could not reach you to open your account of OCD Express. Write to OCD Live on WhatsApp.</field>
+        <field name="applies_to">express</field>
+        <field name="sequence">510</field>
+    </record>
+    <record id="refuse_reason_express_content" model="ocd.listing.refuse.reason">
+        <field name="name">Content not allowed</field>
+        <field name="message">OCD Express does not carry this content (money, medicines, forbidden objects, fresh food, more than 10 kg).</field>
+        <field name="applies_to">express</field>
+        <field name="sequence">520</field>
+    </record>
+    <record id="refuse_reason_express_identity" model="ocd.listing.refuse.reason">
+        <field name="name">Identity to check</field>
+        <field name="message">Show an identity document to the team of OCD Live, then send the parcel again.</field>
+        <field name="applies_to">express</field>
+        <field name="sequence">530</field>
+    </record>
+
+</odoo>

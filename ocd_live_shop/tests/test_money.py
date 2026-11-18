@@ -63,6 +63,28 @@ class TestOcdMoney(OcdShopCommon):
         self.assertEqual(set((first | second).mapped("ocd_cod_state")), {"remitted"})
         self.assertEqual(self.courier.ocd_cash_on_hand, 0)
 
+    def test_missing_cash_is_a_debt_of_the_courier(self):
+        parcel = self._order(self.estelle, [(self.dress, 1)]).picking_ids
+        parcel._ocd_collect("cash", self.courier)
+        remittance = self.env["ocd.cash.remittance"]._ocd_open_for(self.courier)
+        remittance.amount_received = 10000
+        remittance.action_done()
+        self.assertEqual(remittance.shortfall, 2000)
+        self.assertEqual(self.courier.ocd_cash_debt, 2000)
+        self.assertTrue(remittance.activity_ids, "The manager is told")
+        rows = self.env["ocd.live.couriers"].get_couriers_data()["cash_rows"]
+        self.assertEqual(next(row for row in rows if row["id"] == self.courier.id)["debt"], 2000)
+        remittance.action_ocd_settle_shortfall()
+        self.courier.invalidate_recordset(["ocd_cash_debt"])
+        self.assertEqual(self.courier.ocd_cash_debt, 0)
+        # Too much handed over is no debt
+        other = self._order(self.estelle, [(self.dress, 1)]).picking_ids
+        other._ocd_collect("cash", self.courier)
+        extra = self.env["ocd.cash.remittance"]._ocd_open_for(self.courier)
+        extra.amount_received = 13000
+        extra.action_done()
+        self.assertEqual(extra.shortfall, 0)
+
     def test_vendor_who_collects_pays_the_commission_back(self):
         self.fatou.ocd_vendor_collects = True
         order = self._order(self.estelle, [(self.butter, 2)])

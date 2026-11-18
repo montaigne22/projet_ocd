@@ -292,7 +292,7 @@ plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
 | 5. Paiement automatique dans l'UEMOA | Le paiement sur le téléphone au comptoir (A.1) | Automatique au Cameroun (CamPay) et, depuis le chantier 5, dans l'UEMOA (CinetPay, Flutterwave) dès que leurs clés sont saisies ; ailleurs, Mobile Money vérifié par l'équipe, donc plus lent au comptoir |
 | 7. Programme et événements | Le prix promo (3.1) | Un grand événement (Vendredi noir, Tabaski…), d'une soirée ou de plusieurs jours, invite ses vendeurs à mettre une promo pour l'événement (fait le 18 novembre 2026) |
 | 8. Clips automatiques | Partager un produit, catalogue (1.3, 1.7) | Les clips d'un produit s'affichent dans « Mes produits » (« ▶ 3 clips » sous le produit, « Mes clips » dans son menu « Plus »), prêts à partager avec leur texte au prix du moment (fait le 18 novembre 2026) |
-| 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur reprend la fiche « lieu » |
+| 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur : son quartier et son point de repère (ceux de sa fiche, vérifiés au premier passage) ; fait le 18 novembre 2026 |
 | 10. Points relais | Les lieux (M), A.6 | Un point relais est un lieu ; A.6 se fait avec le chantier 10 |
 | 11. Ambassadeurs | Partager un produit (1.3) | Le lien de partage reçoit ensuite le lien personnel de l'ambassadeur |
 | 12. OCD Business | Plusieurs lieux, stock par magasin, équipe du vendeur, statistiques | Ce qui est réservé à la formule est décidé (section OCD Business) ; l'interrupteur (B.1) est déjà fait quand le chantier 12 commence |

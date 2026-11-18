@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Where the parcels of the senders come from: nothing is stocked there -->
+    <record id="location_express_senders" model="stock.location">
+        <field name="name">OCD Express senders</field>
+        <field name="usage">supplier</field>
+        <field name="company_id"></field>
+    </record>
+
+    <record id="picking_type_express" model="stock.picking.type">
+        <field name="name">OCD Express</field>
+        <field name="code">outgoing</field>
+        <field name="sequence_code">EX-</field>
+        <field name="sequence_id" ref="sequence_express_parcel"/>
+        <field name="warehouse_id" ref="stock.warehouse0"/>
+        <field name="default_location_src_id" ref="location_express_senders"/>
+        <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
+        <field name="create_backorder">never</field>
+        <field name="reservation_method">at_confirm</field>
+    </record>
+
+</odoo>

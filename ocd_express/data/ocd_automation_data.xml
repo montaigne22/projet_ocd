@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of OCD Express in the catalogue of the team (OCD Live › Automations) -->
+<odoo>
+
+    <record id="automation_express_created" model="ocd.automation">
+        <field name="code">express_created</field>
+        <field name="name">Parcel created: tell the customer</field>
+        <field name="sequence">60</field>
+        <field name="group">express</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">When a sender creates a parcel</field>
+        <field name="trigger">The page « New parcel » of the sender.</field>
+        <field name="scope">The customer of the parcel, who agreed through the sender.</field>
+        <field name="actions">Send the customer the parcel announced, with the amount to pay and their page (confirm, another time, not for me).</field>
+        <field name="tools">WhatsApp, code of OCD Live.</field>
+    </record>
+
+    <record id="automation_express_picked" model="ocd.automation">
+        <field name="code">express_picked</field>
+        <field name="name">Parcels picked up: tell the sender</field>
+        <field name="sequence">61</field>
+        <field name="group">express</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_express_pickup"/>
+        <field name="when">When the courier took the parcels at the sender</field>
+        <field name="trigger">The tour of the courier.</field>
+        <field name="scope">The sender.</field>
+        <field name="actions">Send the parcels taken, the hour and the courier: if it is not them, they report it.</field>
+        <field name="tools">WhatsApp, code of OCD Live.</field>
+    </record>
+
+    <record id="automation_express_leave" model="ocd.automation">
+        <field name="code">express_leave</field>
+        <field name="name">On the way: tell the customer</field>
+        <field name="sequence">62</field>
+        <field name="group">express</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">When the courier leaves to deliver</field>
+        <field name="trigger">The tour of the courier.</field>
+        <field name="scope">The customer of the parcel.</field>
+        <field name="actions">Send the page of the parcel, where the code is (never in the message).</field>
+        <field name="tools">WhatsApp, code of OCD Live.</field>
+    </record>
+
+    <record id="automation_express_state" model="ocd.automation">
+        <field name="code">express_state</field>
+        <field name="name">Delivered or problem: tell the sender</field>
+        <field name="sequence">63</field>
+        <field name="group">express</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">When a parcel is delivered, has a problem, goes back or is given back</field>
+        <field name="trigger">The tour of the courier and the page of the customer.</field>
+        <field name="scope">The sender.</field>
+        <field name="actions">Send what happened to the parcel.</field>
+        <field name="tools">WhatsApp, code of OCD Live.</field>
+    </record>
+
+    <record id="automation_express_money" model="ocd.automation">
+        <field name="code">express_money</field>
+        <field name="name">Money of the senders: counted once it reached OCD</field>
+        <field name="sequence">64</field>
+        <field name="group">express</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">When a parcel is delivered with its code and its money is at OCD</field>
+        <field name="trigger">The code of the customer, the cash desk, the payment provider.</field>
+        <field name="scope">The parcels of OCD Express.</field>
+        <field name="actions">Count the money collected for the sender, minus the delivery they pay and the collecting.
+Never an advance: cash counts once counted at the cash desk.</field>
+        <field name="tools">Bills and credit notes of the accounting.</field>
+    </record>
+
+    <record id="automation_express_payout" model="ocd.automation">
+        <field name="code">express_payout</field>
+        <field name="name">Payouts of the senders every working day</field>
+        <field name="sequence">65</field>
+        <field name="group">express</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="ocd_live_shop.model_ocd_payout"/>
+        <field name="when">Every morning, Monday to Saturday</field>
+        <field name="trigger">The preparation of the payouts.</field>
+        <field name="scope">The senders with money that reached OCD.</field>
+        <field name="actions">Gather the money and the fees in one payout per sender.
+The money of a parcel with a problem reported waits; a new payout number waits; what a sender owes waits for their next parcels.</field>
+        <field name="tools">Payouts of OCD Live.</field>
+    </record>
+
+    <record id="automation_express_paid" model="ocd.automation">
+        <field name="code">express_paid</field>
+        <field name="name">Payout paid: tell the sender</field>
+        <field name="sequence">66</field>
+        <field name="group">express</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="ocd_live_shop.model_ocd_payout"/>
+        <field name="when">When the team pays the payout of a sender</field>
+        <field name="trigger">The payouts of OCD Live.</field>
+        <field name="scope">The sender.</field>
+        <field name="actions">Send the amount, the number and the reference of the transfer.</field>
+        <field name="tools">WhatsApp, code of OCD Live.</field>
+    </record>
+
+    <record id="automation_express_erase" model="ocd.automation">
+        <field name="code">express_erase</field>
+        <field name="name">Customers erased after 6 months</field>
+        <field name="sequence">67</field>
+        <field name="group">express</field>
+        <field name="kind">cron</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">Every day</field>
+        <field name="trigger">Scheduled task.</field>
+        <field name="scope">The parcels of OCD Express over for the months of the settings.</field>
+        <field name="actions">Erase the name, the number and the address of the customer; the amounts and the dates stay for the accounts.</field>
+        <field name="tools">Scheduled task.</field>
+        <field name="cron_id" ref="ir_cron_express_erase"/>
+    </record>
+
+</odoo>

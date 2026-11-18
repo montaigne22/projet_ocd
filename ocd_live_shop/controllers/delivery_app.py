@@ -359,15 +359,21 @@ class OcdDeliveryApp(http.Controller):
             day=tools.day_text(request.env, day, "EEEE", capital=True), amount=money,
         )
 
-    def _tour_steps(self, cards):
+    def _tour_steps(self, cards, partner=None):
         """Steps of the tour of the courier: pick up, then deliver, numbered."""
+        steps = self._tour_step_list(cards, partner)
+        for number, step in enumerate(steps, start=1):
+            step["number"] = number
+        return steps
+
+    def _tour_step_list(self, cards, partner=None):
+        """The steps, in their order. A step of another module gives its own `template` (OCD
+        Express: a pick-up of several parcels at a sender, a return)."""
         steps = []
         for card in cards:
             if card["to_pick"]:
                 steps.append({"kind": "pickup", "card": card})
             steps.append({"kind": "deliver", "card": card})
-        for number, step in enumerate(steps, start=1):
-            step["number"] = number
         return steps
 
     # === PIECES HELD TO TRY (chantier 20, design MettreDeCote) === #
@@ -491,7 +497,7 @@ class OcdDeliveryApp(http.Controller):
             delivered_today = done.filtered(
                 lambda p: p.ocd_delivered_at and common.to_viewer(p.ocd_delivered_at).date() == today
             )
-            steps = self._tour_steps(cards)
+            steps = self._tour_steps(cards, partner)
             phone = re.sub(r"\D", "", company.phone or "")
             values.update({
                 "steps": steps,

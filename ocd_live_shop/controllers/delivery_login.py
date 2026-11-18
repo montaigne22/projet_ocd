@@ -107,7 +107,7 @@ class OcdDeliveryLogin(OcdVendorSpace):
     def _ocd_open_session(self, partner, target):
         if partner.ocd_is_courier and (target == "livrer" or not partner.ocd_is_vendor):
             remember_courier(partner)
-            return self.LOGIN_PAGES["livrer"]["home"]
+            return self._login_pages()["livrer"]["home"]
         return super()._ocd_open_session(partner, target)
 
     @http.route("/ocd/livrer", type="http", auth="public", website=True, methods=["GET"], sitemap=False)

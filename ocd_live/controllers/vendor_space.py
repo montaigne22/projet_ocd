@@ -32,6 +32,15 @@ class OcdVendorSpace(http.Controller):
         "space": {"form": "/ocd/connexion", "code": "/ocd/connexion/code", "home": "/ocd/espace/moi"},
     }
 
+    def _login_pages(self):
+        """The login pages of all the modules: each module adds its own to LOGIN_PAGES, and the
+        classes of the modules that extend this one sit side by side (OCD Vote, OCD Express): their
+        pages are merged, whatever their order."""
+        pages = {}
+        for cls in reversed(type(self).__mro__):
+            pages.update(cls.__dict__.get("LOGIN_PAGES") or {})
+        return pages
+
     def _login_page_mode(self, target):
         """What the login page asks after the number: "link" (a link arrives), "whatsapp_code"
         (a code to type) or "password" (the login of Odoo). The same for every number, known
@@ -53,7 +62,7 @@ class OcdVendorSpace(http.Controller):
     def _ocd_open_session(self, partner, target):
         """This browser now opens the pages of `partner`; return the page to show."""
         common.remember_vendor(partner)
-        return self.LOGIN_PAGES[target]["home"]
+        return self._login_pages()[target]["home"]
 
     @http.route("/ocd/connexion", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
     def login(self, **kwargs):
@@ -83,7 +92,7 @@ class OcdVendorSpace(http.Controller):
             countries = common.directory_countries()
             country = customer.country_id if customer.country_id in countries else common.default_country()
             phone = common.local_digits(country, customer.phone) if common.normalize_phone(country, customer.phone) else ""
-        page = self.LOGIN_PAGES[target]
+        page = self._login_pages()[target]
         return request.render("ocd_live.space_login", common.page_values(
             False,
             back="/ocd",
@@ -153,7 +162,7 @@ class OcdVendorSpace(http.Controller):
         ))
 
     def _render_code(self, error=None, target="space"):
-        page = self.LOGIN_PAGES[target]
+        page = self._login_pages()[target]
         return request.render("ocd_live.space_login_code", common.page_values(
             False, back=page["form"], header_brand=True, error=error,
             target=target, form_action=page["form"], code_action=page["code"],

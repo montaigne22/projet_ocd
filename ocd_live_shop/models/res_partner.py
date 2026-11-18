@@ -131,6 +131,12 @@ class ResPartner(models.Model):
         compute="_compute_ocd_cash_on_hand",
         currency_field="currency_id",
     )
+    ocd_cash_debt = fields.Monetary(
+        string="Cash Missing To Settle",
+        compute="_compute_ocd_cash_debt",
+        currency_field="currency_id",
+        help="Cash missing at the cash desk and not settled yet: a debt of the courier.",
+    )
     def _compute_ocd_late_count(self):
         since = fields.Datetime.now() - timedelta(days=30)
         counts = {
@@ -393,6 +399,19 @@ class ResPartner(models.Model):
         }
         for partner in self:
             partner.ocd_cash_on_hand = totals.get(partner.id, 0.0)
+
+    def _compute_ocd_cash_debt(self):
+        totals = {
+            courier.id: amount
+            for courier, amount in self.env["ocd.cash.remittance"].sudo()._read_group(
+                [("courier_id", "in", self.ids), ("state", "=", "done"), ("shortfall", ">", 0),
+                 ("shortfall_settled", "=", False)],
+                ["courier_id"],
+                ["shortfall:sum"],
+            )
+        }
+        for partner in self:
+            partner.ocd_cash_debt = totals.get(partner.id, 0.0)
 
     @api.model
     def _ocd_find_courier(self, district, company=None):

@@ -57,7 +57,10 @@
                             <span>To hand over</span><span>Amount handed over</span><span>Difference</span><span/>
                         </div>
                         <div t-foreach="data.cash_rows" t-as="row" t-key="row.id" class="o_ocd_cash_row">
-                            <span class="o_ocd_cash_name" t-out="row.name"/>
+                            <span class="o_ocd_cash_name">
+                                <t t-out="row.name"/>
+                                <small t-if="row.debt" class="d-block o_ocd_alert_text">Missing to settle: <t t-out="this.money(row.debt)"/></small>
+                            </span>
                             <span t-out="this.money(row.cash)"/>
                             <span t-out="this.money(row.momo)"/>
                             <b t-out="this.money(row.due)"/>

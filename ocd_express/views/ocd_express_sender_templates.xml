@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The space of a sender (design OcdExpress): my parcels, new parcel, the parcel, my money -->
+<odoo>
+
+    <template id="sender_menu" name="OCD Express: menu of the sender">
+        <nav class="o_ocd_ex_tabs" aria-label="OCD Express">
+            <a href="/express/envois" t-attf-class="o_ocd_chip #{'o_ocd_on' if active == 'parcels' else ''}">My parcels</a>
+            <a href="/express/argent" t-attf-class="o_ocd_chip #{'o_ocd_on' if active == 'money' else ''}">My money</a>
+            <a t-if="sender.ocd_express_state == 'active'" href="/express/colis/nouveau"
+               t-attf-class="o_ocd_chip #{'o_ocd_on' if active == 'new' else ''}">New parcel</a>
+        </nav>
+    </template>
+
+    <template id="parcel_row" name="OCD Express: a parcel of the sender">
+        <a t-attf-href="/express/colis/#{row['parcel'].id}"
+           t-attf-class="o_ocd_ex_parcel #{'o_ocd_ex_parcel_go' if row['parcel'].ocd_stage == 'on_the_way' else ''}">
+            <span class="o_ocd_ex_parcel_head">
+                <b t-out="row['title']"/>
+                <span t-attf-class="o_ocd_ex_state o_ocd_ex_state_#{row['css']}" t-out="row['label']"/>
+            </span>
+            <small class="o_ocd_ex_muted" t-out="row['line']"/>
+            <small t-if="row['detail']" class="o_ocd_ex_detail" t-out="row['detail']"/>
+            <span t-if="row['steps']" class="o_ocd_ex_steps">
+                <span t-foreach="row['steps']" t-as="step"><i t-attf-class="o_ocd_ex_bar #{'o_ocd_ex_bar_' + step['state'] if step['state'] else ''}"/><t t-out="step['label']"/></span>
+            </span>
+        </a>
+    </template>
+
+    <template id="sender_parcels" name="OCD Express: my parcels">
+        <t t-set="additional_title">My parcels</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_ex">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">My parcels</h1>
+                    <t t-call="ocd_express.sender_menu" active="'parcels'"/>
+                    <div t-if="suspended" class="o_ocd_note">Your account of OCD Express is paused: write to OCD Live on WhatsApp. Your parcels on their way go on.</div>
+                    <div class="o_ocd_ex_tiles">
+                        <div class="o_ocd_ex_tile"><small>Today</small><b t-out="today_label"/><small t-out="today_line"/></div>
+                        <div class="o_ocd_ex_tile"><small>Collected today</small><b t-out="collected"/><small>paid the next working day</small></div>
+                    </div>
+                    <div class="o_ocd_chips o_ocd_chips_wrap">
+                        <a t-foreach="tabs" t-as="item" t-attf-href="/express/envois?vue=#{item[0]}"
+                           t-attf-class="o_ocd_chip #{'o_ocd_on' if item[1] == tab else ''}" t-out="item[2]"/>
+                    </div>
+                    <div class="o_ocd_ex_list">
+                        <t t-foreach="rows" t-as="row" t-call="ocd_express.parcel_row"/>
+                    </div>
+                    <div t-if="not rows" class="o_ocd_info">No parcel here.</div>
+                    <a t-if="sender.ocd_express_state == 'active'" href="/express/colis/nouveau" class="o_ocd_cta">New parcel</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="sender_form" name="OCD Express: new parcel">
+        <t t-set="additional_title" t-value="'Change the parcel' if parcel else 'New parcel'"/>
+        <t t-call="ocd_live.app">
+            <form t-att-action="'/express/colis/%s/modifier' % parcel.id if parcel else '/express/colis/nouveau'" method="post"
+                  class="o_ocd_frame o_ocd_narrow o_ocd_wide o_ocd_ex_form" novalidate="novalidate"
+                  t-att-data-fee="fee" t-att-data-rate="cod_rate" t-att-data-min="cod_min"
+                  t-att-data-symbol="currency.symbol" t-att-data-position="currency.position">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <main class="o_ocd_main o_ocd_ex">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">
+                        <t t-if="parcel" t-out="change_title"/>
+                        <t t-else="">New parcel</t>
+                    </h1>
+                    <t t-if="not parcel" t-call="ocd_express.sender_menu" active="'new'"/>
+                    <div t-if="error" class="o_ocd_error" role="alert" t-out="error"/>
+                    <div t-if="debt_over" class="o_ocd_note">You owe OCD more than the limit: let your customer pay the delivery, or pay it on « My money ».</div>
+                    <div class="o_ocd_ex_columns">
+                    <div class="o_ocd_ex_col o_ocd_form">
+                        <div class="o_ocd_field">
+                            <label for="p-name" class="o_ocd_label">For whom?</label>
+                            <input id="p-name" name="name" class="o_ocd_input" maxlength="60" required="required" t-att-value="values.get('name')"
+                                   placeholder="The name of your customer"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="p-phone" class="o_ocd_label">Their WhatsApp</label>
+                            <t t-call="ocd_live.phone_field" field_id.f="p-phone"/>
+                        </div>
+                        <label class="o_ocd_ex_check">
+                            <input type="checkbox" name="consent" value="1" t-att-checked="values.get('consent') or None" required="required"/>
+                            <span>My customer agrees to receive the messages of OCD Express about their delivery (and nothing else).</span>
+                        </label>
+                        <div class="o_ocd_field">
+                            <label for="p-place" class="o_ocd_label">District</label>
+                            <select id="p-place" name="place" class="o_ocd_input" required="required">
+                                <option value="">Choose</option>
+                                <optgroup t-foreach="districts.city_id" t-as="city" t-att-label="city.name">
+                                    <option t-foreach="districts.filtered(lambda d: d.city_id == city)" t-as="district"
+                                            t-att-value="'d%s' % district.id" t-att-selected="district.id == values.get('district_id')"
+                                            t-out="district.name"/>
+                                </optgroup>
+                                <optgroup t-if="other_cities" label="Another city (travel agency, paid in advance)">
+                                    <option t-foreach="other_cities" t-as="city" t-att-value="'c%s' % city.id"
+                                            t-att-selected="city.id == values.get('city_id') and not values.get('district_id')" t-out="city.name"/>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="p-landmark" class="o_ocd_label">Landmark</label>
+                            <input id="p-landmark" name="landmark" class="o_ocd_input" maxlength="120" t-att-value="values.get('landmark')"
+                                   placeholder="e.g. opposite the football ground"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="p-content" class="o_ocd_label">In the parcel</label>
+                            <input id="p-content" name="content" class="o_ocd_input" maxlength="120" required="required"
+                                   t-att-value="values.get('content')" placeholder="e.g. 2 wax dresses"/>
+                            <small class="o_ocd_ex_muted">10 kg at most, packed, closed, and fitting in the bag of the courier (50 × 40 × 40 cm).</small>
+                        </div>
+                    </div>
+                    <div class="o_ocd_ex_col o_ocd_form">
+                        <fieldset class="o_ocd_field">
+                            <legend class="o_ocd_label">Your customer pays at the door</legend>
+                            <div class="o_ocd_ex_choice">
+                                <label><input type="radio" name="prepaid" value="0" t-att-checked="None if values.get('prepaid') else 'checked'"/><span>An amount</span></label>
+                                <label><input type="radio" name="prepaid" value="1" t-att-checked="'checked' if values.get('prepaid') else None"/><span>Already paid</span></label>
+                            </div>
+                            <div class="o_ocd_ex_amount">
+                                <label for="p-amount" class="o_ocd_label">Amount to collect</label>
+                                <input id="p-amount" name="amount" class="o_ocd_input" inputmode="numeric" t-att-value="values.get('amount')"
+                                       placeholder="e.g. 15000"/>
+                                <small class="o_ocd_ex_muted" t-out="max_line"/>
+                            </div>
+                            <div class="o_ocd_ex_value">
+                                <label for="p-value" class="o_ocd_label">Its value</label>
+                                <input id="p-value" name="value" class="o_ocd_input" inputmode="numeric" t-att-value="values.get('value')"
+                                       placeholder="e.g. 8000"/>
+                                <small class="o_ocd_ex_muted">What OCD pays you back if it loses it.</small>
+                            </div>
+                        </fieldset>
+                        <fieldset class="o_ocd_field">
+                            <legend class="o_ocd_label">The delivery</legend>
+                            <div class="o_ocd_ex_choice">
+                                <label><input type="radio" name="fee_by" value="sender" t-att-checked="None if values.get('fee_by') == 'customer' else 'checked'"/><span>I pay it</span></label>
+                                <label><input type="radio" name="fee_by" value="customer" t-att-checked="'checked' if values.get('fee_by') == 'customer' else None"/><span>My customer pays it</span></label>
+                            </div>
+                        </fieldset>
+                        <label class="o_ocd_ex_check">
+                            <input type="checkbox" name="can_open" value="1" t-att-checked="values.get('can_open') or None"/>
+                            <span>My customer may open the parcel in front of the courier before paying.</span>
+                        </label>
+                        <fieldset class="o_ocd_field">
+                            <legend class="o_ocd_label">The courier takes the parcel</legend>
+                            <div class="o_ocd_ex_choice">
+                                <label><input type="radio" name="dropoff" value="0" t-att-checked="None if values.get('dropoff') else 'checked'"/><span>At my place</span></label>
+                                <label><input type="radio" name="dropoff" value="1" t-att-checked="'checked' if values.get('dropoff') else None"/><span>At the OCD point</span></label>
+                            </div>
+                            <small t-if="place_line" class="o_ocd_ex_muted" t-out="place_line"/>
+                            <small class="o_ocd_ex_muted" t-out="slot_line"/>
+                            <small t-if="point_line" class="o_ocd_ex_muted" t-out="point_line"/>
+                        </fieldset>
+                        <div class="o_ocd_ex_sum" aria-live="polite">
+                            <span><span>Collected at the door</span><b class="o_ocd_ex_sum_cod">-</b></span>
+                            <span><span>Delivery</span><span class="o_ocd_ex_sum_fee">-</span></span>
+                            <span><span>Collecting</span><span class="o_ocd_ex_sum_rate">-</span></span>
+                            <span class="o_ocd_ex_sum_total"><span>You receive</span><b class="o_ocd_ex_sum_net">-</b></span>
+                            <small class="o_ocd_ex_muted">The exact price of the delivery is shown on the parcel once created.</small>
+                        </div>
+                        <button type="submit" class="o_ocd_cta">
+                            <t t-if="parcel">Save the parcel</t>
+                            <t t-else="">Create the parcel</t>
+                        </button>
+                    </div>
+                    </div>
+                </main>
+            </form>
+        </t>
+    </template>
+
+    <template id="sender_parcel" name="OCD Express: the parcel">
+        <t t-set="additional_title" t-value="parcel.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_ex">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
+                    <div t-if="created" class="o_ocd_ok" role="status"><b>Parcel created.</b></div>
+                    <div t-if="error" class="o_ocd_error" role="alert" t-out="error"/>
+                    <div class="o_ocd_ex_columns">
+                        <div class="o_ocd_ex_col">
+                            <div class="o_ocd_ex_label">
+                                <img t-att-src="qr" alt="" class="o_ocd_ex_qr"/>
+                                <span>
+                                    <b class="o_ocd_ex_label_ref" t-out="parcel.name"/>
+                                    <b t-out="customer.name"/>
+                                    <span t-out="' · '.join(part for part in (customer.district_id.name or customer.city_id.name, customer.delivery_landmark) if part)"/>
+                                    <span t-out="amount_label"/>
+                                    <small class="o_ocd_ex_muted" t-out="from_line"/>
+                                </span>
+                            </div>
+                            <small t-out="write_line"/>
+                            <t t-call="ocd_express.parcel_row"/>
+                        </div>
+                        <div class="o_ocd_ex_col">
+                            <div t-if="return_code" class="o_ocd_ex_rule o_ocd_ex_rule_bad">
+                                <b>The parcel comes back to you</b>
+                                <span>Give your return code to the courier only when you have the parcel in your hands.</span>
+                                <span class="o_ocd_ex_code" t-out="return_code"/>
+                            </div>
+                            <div t-if="pickup_line and parcel.ocd_stage in ('ready', 'to_prepare')" class="o_ocd_ex_rule">
+                                <b t-out="pickup_line"/>
+                                <span>The courier calls you first and takes a photo of your parcels closed. You receive a WhatsApp when they took them: not them? Report it.</span>
+                            </div>
+                            <div t-if="parcel.ocd_stage in ('ready', 'to_prepare', 'picked')" class="o_ocd_ex_rule">
+                                <b t-out="told_line"/>
+                                <span>They confirm they are there or choose another time. When the parcel leaves, they receive their page, with the delivery code.</span>
+                            </div>
+                            <div class="o_ocd_ex_buttons">
+                                <a href="/express/colis/nouveau" t-if="sender.ocd_express_state == 'active'" class="o_ocd_button o_ocd_button_dark">New parcel</a>
+                                <a t-attf-href="/express/colis/#{parcel.id}/etiquette" class="o_ocd_button">Print the label</a>
+                                <a t-if="share_url" t-att-href="share_url" target="_blank" rel="noopener" class="o_ocd_button" t-out="share_label"/>
+                                <a t-if="row['editable']" t-attf-href="/express/colis/#{parcel.id}/modifier" class="o_ocd_button">Change</a>
+                                <form t-if="row['editable']" t-attf-action="/express/colis/#{parcel.id}/annuler" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="o_ocd_button o_ocd_ex_cancel">Cancel the parcel</button>
+                                </form>
+                            </div>
+                            <small class="o_ocd_ex_muted">« New parcel » keeps the same pick-up: several parcels leave with the same passage of the courier.</small>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="sender_label" name="OCD Express: the label to print">
+        <t t-set="additional_title" t-value="parcel.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_ex o_ocd_ex_print">
+                    <div class="o_ocd_ex_label o_ocd_ex_label_big">
+                        <img t-att-src="qr" alt="" class="o_ocd_ex_qr"/>
+                        <span>
+                            <b class="o_ocd_ex_label_ref" t-out="parcel.name"/>
+                            <b t-out="customer.name"/>
+                            <span t-out="' · '.join(part for part in (customer.district_id.name or customer.city_id.name, customer.delivery_landmark) if part)"/>
+                            <span t-out="amount_label"/>
+                            <small t-out="from_line"/>
+                        </span>
+                    </div>
+                    <button type="button" class="o_ocd_cta o_ocd_ex_print_button" onclick="window.print()">Print</button>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="sender_money" name="OCD Express: my money">
+        <t t-set="additional_title">My money</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_ex">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">My money</h1>
+                    <t t-call="ocd_express.sender_menu" active="'money'"/>
+                    <t t-call="ocd_live.message_box"/>
+                    <div class="o_ocd_ex_columns">
+                        <div class="o_ocd_ex_col">
+                            <section t-if="positive" class="o_ocd_ex_money">
+                                <small><b t-out="paid_line"/></small>
+                                <b class="o_ocd_ex_money_total" t-out="total"/>
+                                <small>The parcels delivered with their code. The cash leaves once handed over at the cash desk of OCD; the money paid on the phone of the customer, once confirmed.</small>
+                            </section>
+                            <section t-elif="debt" class="o_ocd_ex_money o_ocd_ex_money_debt">
+                                <small><b>You owe OCD</b></small>
+                                <b class="o_ocd_ex_money_total" t-out="debt"/>
+                                <small>The fees of parcels without money to collect (already paid, returns). It is withheld from your next payout.</small>
+                                <a t-if="can_pay_online" href="/express/argent/regler" class="o_ocd_cta o_ocd_cta_small">Pay it now</a>
+                                <small t-if="send_line" t-out="send_line"/>
+                            </section>
+                            <section t-else="" class="o_ocd_ex_money">
+                                <small><b>Nothing to receive for now</b></small>
+                                <b class="o_ocd_ex_money_total" t-out="total"/>
+                            </section>
+                            <div t-if="rows" class="o_ocd_ex_sum">
+                                <span t-foreach="rows" t-as="row"><span t-out="row['label']"/><span t-out="row['amount']"/></span>
+                            </div>
+                            <div t-if="waiting" class="o_ocd_ex_rule">
+                                <b t-out="waiting"/>
+                                <span>Cash collected by the couriers, counted at the cash desk this evening.</span>
+                            </div>
+                            <div t-foreach="held" t-as="row" class="o_ocd_ex_rule">
+                                <b t-out="row['label']"/>
+                                <span>Your customer reported a problem. Its amount waits for the answer of the team; the rest of your money does not wait.</span>
+                            </div>
+                        </div>
+                        <div class="o_ocd_ex_col">
+                            <h2 class="o_ocd_ex_h2">Last payouts</h2>
+                            <div t-foreach="payouts" t-as="row" class="o_ocd_ex_price"><span t-out="row['label']"/><b t-out="row['amount']"/></div>
+                            <div t-if="not payouts" class="o_ocd_info">No payout yet.</div>
+                            <h2 class="o_ocd_ex_h2">My payout number</h2>
+                            <div t-if="held_momo" class="o_ocd_note">New number: the next payout waits 48 hours, your old number was told.</div>
+                            <form action="/express/argent/numero" method="post" class="o_ocd_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <t t-if="ask_code">
+                                    <div class="o_ocd_field">
+                                        <label for="m-code" class="o_ocd_label" t-out="code_label"/>
+                                        <input id="m-code" name="code" class="o_ocd_input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required="required"/>
+                                    </div>
+                                    <button type="submit" class="o_ocd_button o_ocd_button_dark">Confirm the new number</button>
+                                </t>
+                                <t t-else="">
+                                    <div class="o_ocd_field">
+                                        <label for="m-phone" class="o_ocd_label" t-out="number_label"/>
+                                        <t t-call="ocd_live.phone_field" field_id.f="m-phone"/>
+                                    </div>
+                                    <button type="submit" class="o_ocd_button">Change the number</button>
+                                </t>
+                            </form>
+                            <small class="o_ocd_ex_muted">OCD only pays the money really collected: a parcel delivered with its code, and its money arrived. Nothing is advanced. The number changes with a code sent on your WhatsApp.</small>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="sender_pay" name="OCD Express: pay what I owe">
+        <t t-set="additional_title">Pay what I owe</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_focus o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_pay">
+                    <div class="o_ocd_focus_side">
+                        <h1 class="o_ocd_h1">Pay what I owe</h1>
+                        <div class="o_ocd_recap"><b t-out="sender.name"/><span>OCD Express</span></div>
+                    </div>
+                    <div class="o_ocd_focus_main">
+                        <t t-if="state == 'form'">
+                            <div class="o_ocd_payment"><t t-call="payment.form"/></div>
+                            <div class="o_ocd_total"><span>Total</span><b t-out="total"/></div>
+                        </t>
+                        <div t-else="" class="o_ocd_ok o_ocd_ok_big" role="status"><b>You owe nothing to OCD.</b></div>
+                        <a href="/express/argent" class="o_ocd_button">Back to my money</a>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- « Send a parcel » in the space of a vendor of OCD Live: their sales made out of the shop -->
+    <template id="space_express" inherit_id="ocd_live_shop.space" name="OCD Express: in the space of a vendor">
+        <xpath expr="//div[hasclass('o_ocd_space_links')]" position="inside">
+            <a t-if="vendor.ocd_express_state == 'active'" href="/express/colis/nouveau" class="o_ocd_button o_ocd_button_line">Send a parcel (OCD Express)</a>
+            <a t-elif="not vendor.ocd_express_state" href="/express/demande" class="o_ocd_button o_ocd_button_line">OCD Express: deliver my sales of WhatsApp</a>
+        </xpath>
+    </template>
+
+</odoo>

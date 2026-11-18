@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The page of OCD Express and the request of a vendor (design OcdExpress) -->
+<odoo>
+
+    <template id="landing_page" name="OCD Express: the page">
+        <t t-set="additional_title">OCD Express</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_ex o_ocd_ex_landing">
+                    <div class="o_ocd_ex_columns">
+                        <div class="o_ocd_ex_col">
+                            <section class="o_ocd_ex_hero">
+                                <span class="o_ocd_ex_kicker">For the vendors of the social networks</span>
+                                <h1 class="o_ocd_ex_hero_title">You sell on WhatsApp, TikTok or Instagram? We deliver your parcels.</h1>
+                                <span class="o_ocd_ex_hero_text">Your customer gives a code to the courier and pays at the door. You receive your money on your Mobile Money, the next working day.</span>
+                            </section>
+                            <div class="o_ocd_ex_step">
+                                <b class="o_ocd_ex_step_n">1</b>
+                                <span><b>You create the parcel</b><small>The name and the WhatsApp of your customer, their district, the amount to collect. One minute.</small></span>
+                            </div>
+                            <div class="o_ocd_ex_step">
+                                <b class="o_ocd_ex_step_n">2</b>
+                                <span><b>An OCD courier picks it up</b><small>At your home or your store, in the morning or the afternoon. Or you drop it at the OCD point.</small></span>
+                            </div>
+                            <div class="o_ocd_ex_step">
+                                <b class="o_ocd_ex_step_n">3</b>
+                                <span><b>Your customer receives their parcel with a code</b><small>They confirm the time on WhatsApp. No code, no parcel: nothing gets lost. The money collected is paid to you.</small></span>
+                            </div>
+                        </div>
+                        <div class="o_ocd_ex_col">
+                            <section class="o_ocd_ex_card">
+                                <b t-out="prices_title"/>
+                                <div t-foreach="prices" t-as="price" class="o_ocd_ex_price">
+                                    <span t-out="price[0]"/>
+                                    <b t-out="price[1]"/>
+                                </div>
+                            </section>
+                            <small class="o_ocd_ex_muted">The drop-off at the OCD point is always free. The second passage at your customer too.</small>
+                            <a t-if="sender" href="/express/envois" class="o_ocd_cta">My parcels</a>
+                            <a t-else="" href="/express/demande" class="o_ocd_cta">
+                                <t t-if="open_to_all">Send my first parcel</t>
+                                <t t-else="">Ask to send my parcels</t>
+                            </a>
+                            <a t-if="not sender" href="/express/connexion" class="o_ocd_button">I already have an account</a>
+                            <small t-if="not open_to_all" class="o_ocd_ex_muted">For the launch, OCD Express opens to a few vendors: the team answers you on WhatsApp.</small>
+                            <small class="o_ocd_ex_muted">No subscription, no shop on OCD Live needed: you log in with your WhatsApp number, like the vendors of OCD Live. With OCD Business, the delivery costs less.</small>
+                            <details class="o_ocd_ex_rules">
+                                <summary>What we deliver</summary>
+                                <span>Clothes, shoes, cosmetics, accessories, phones, small objects: 10 kg at most, in the bag of the courier (50 × 40 × 40 cm), packed and closed. No money, medicines, forbidden objects or fresh food. What is in the parcel stays your responsibility: OCD carries it, it does not sell it.</span>
+                            </details>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="request_page" name="OCD Express: the request of a vendor">
+        <t t-set="additional_title">Send my parcels</t>
+        <t t-call="ocd_live.app">
+            <form action="/express/demande" method="post" class="o_ocd_frame o_ocd_focus o_ocd_narrow" novalidate="novalidate">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <main class="o_ocd_main o_ocd_ex">
+                    <div class="o_ocd_focus_side">
+                        <h1 class="o_ocd_h1">Send your parcels with OCD Express.</h1>
+                        <p class="o_ocd_intro" t-if="open_to_all">Your account opens with a code on your WhatsApp.</p>
+                        <p class="o_ocd_intro" t-else="">The team opens your account and tells you on WhatsApp.</p>
+                    </div>
+                    <div class="o_ocd_focus_main o_ocd_form">
+                        <div t-if="error" class="o_ocd_error" role="alert" t-out="error"/>
+                        <div class="o_ocd_field">
+                            <label for="x-name" class="o_ocd_label">Your name or the name of your shop</label>
+                            <input id="x-name" name="name" class="o_ocd_input" maxlength="60" required="required"
+                                   t-att-value="values.get('name') or (vendor.name if vendor else '')"/>
+                        </div>
+                        <div t-if="not vendor" class="o_ocd_field">
+                            <label for="x-phone" class="o_ocd_label">Your WhatsApp number</label>
+                            <t t-call="ocd_live.phone_field" field_id.f="x-phone"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="x-district" class="o_ocd_label">Where the courier picks your parcels up</label>
+                            <select id="x-district" name="district_id" class="o_ocd_input" required="required">
+                                <option value="">Your district</option>
+                                <option t-foreach="districts" t-as="district" t-att-value="district.id"
+                                        t-att-selected="district.id == values.get('district_id')"
+                                        t-out="'%s · %s' % (district.city_id.name, district.name)"/>
+                            </select>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="x-landmark" class="o_ocd_label">Landmark</label>
+                            <input id="x-landmark" name="landmark" class="o_ocd_input" maxlength="120"
+                                   placeholder="e.g. Rue Joss, opposite the bakery" t-att-value="values.get('landmark')"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="x-social" class="o_ocd_label">Where you sell (if you want)</label>
+                            <input id="x-social" name="social" class="o_ocd_input" maxlength="80"
+                                   placeholder="e.g. Instagram @mode.afi" t-att-value="values.get('social')"/>
+                        </div>
+                    </div>
+                </main>
+                <div class="o_ocd_actions">
+                    <button type="submit" class="o_ocd_cta">
+                        <t t-if="open_to_all">Receive my code</t>
+                        <t t-else="">Send my request</t>
+                    </button>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="request_done" name="OCD Express: request sent">
+        <t t-set="additional_title">Request sent</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_ex">
+                    <div class="o_ocd_ok o_ocd_ok_big" role="status">
+                        <b>Request sent. Thank you!</b>
+                        <span t-if="sender.ocd_express_state == 'refused'">The team already answered your request: write to OCD Live on WhatsApp.</span>
+                        <span t-else="">The team of OCD Live opens your account and tells you on WhatsApp. Then you log in with your number.</span>
+                    </div>
+                    <a href="/express" class="o_ocd_button">Back to OCD Express</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The login of the senders: the same pages as the vendors, with their words -->
+    <template id="space_login_express" inherit_id="ocd_live.space_login" name="OCD Express: login of a sender">
+        <xpath expr="//h1[@t-else='']" position="before">
+            <h1 t-elif="target == 'express'" class="o_ocd_h1">Your parcels of OCD Express.</h1>
+        </xpath>
+        <xpath expr="//div[@t-elif=&quot;target == 'livrer'&quot;]" position="before">
+            <div t-elif="target == 'express'" class="o_ocd_info">
+                For the senders of OCD Express: give the number of your account. No account yet? <a href="/express/demande">Ask for one</a>.
+            </div>
+        </xpath>
+    </template>
+
+    <template id="space_login_code_express" inherit_id="ocd_live.space_login_code" name="OCD Express: code of a sender">
+        <xpath expr="//button[@t-else='']" position="before">
+            <button t-elif="target == 'express'" type="submit" class="o_ocd_cta">Open my parcels</button>
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The page of the customer who receives a parcel of OCD Express (design OcdExpress, « My parcel ») -->
+<odoo>
+
+    <template id="tracking_page" name="OCD Express: my parcel">
+        <t t-set="additional_title">My parcel</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_ex o_ocd_ex_tracking" t-att-data-base="base">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
+                    <small class="o_ocd_ex_muted" t-out="sub_line"/>
+                    <t t-call="ocd_live.message_box"/>
+                    <div class="o_ocd_ex_columns">
+                        <div class="o_ocd_ex_col">
+                            <span class="o_ocd_ex_steps">
+                                <span t-foreach="steps" t-as="step"><i t-attf-class="o_ocd_ex_bar #{'o_ocd_ex_bar_' + step['state'] if step['state'] else ''}"/><t t-out="step['label']"/></span>
+                            </span>
+                            <b t-if="when_line" t-out="when_line"/>
+                            <div t-if="to_pay" class="o_ocd_ex_sum">
+                                <span><span>To pay at the door</span><b t-out="to_pay"/></span>
+                                <small class="o_ocd_ex_muted">In cash to the courier, or on your phone (Mobile Money): the courier shows you the payment. Never on the personal number of the courier.</small>
+                            </div>
+                            <div t-elif="paid" class="o_ocd_ok" role="status"><b>Paid. Thank you!</b></div>
+                            <a t-if="pay_url" t-att-href="pay_url" class="o_ocd_button o_ocd_button_dark">Pay on my phone</a>
+                            <small t-if="parcel.ocd_express_can_open and parcel.ocd_stage not in ('delivered', 'returned', 'cancelled')">You may open the parcel in front of the courier before paying.</small>
+                            <t t-if="code">
+                                <span class="o_ocd_label">Your code for this parcel</span>
+                                <span class="o_ocd_ex_code" t-out="code"/>
+                                <small class="o_ocd_ex_muted">Give it only when you have the parcel in your hands and you paid.</small>
+                            </t>
+                            <small t-elif="can_answer" class="o_ocd_ex_muted">Your code appears here when the courier leaves to deliver.</small>
+                        </div>
+                        <div class="o_ocd_ex_col">
+                            <form t-if="can_confirm" t-attf-action="#{base}/confirmer" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_cta">I confirm, I will be there</button>
+                            </form>
+                            <div class="o_ocd_ex_buttons">
+                                <a t-if="call_label" t-attf-href="tel:+#{courier_phone}" class="o_ocd_button o_ocd_button_dark" t-out="call_label"/>
+                                <form t-if="can_answer" t-attf-action="#{base}/position" method="post" class="o_ocd_ex_position">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="latitude"/>
+                                    <input type="hidden" name="longitude"/>
+                                    <button type="submit" class="o_ocd_button" hidden="">Send my position</button>
+                                </form>
+                            </div>
+                            <details t-if="moments" class="o_ocd_ex_rules">
+                                <summary>Not there?</summary>
+                                <form t-attf-action="#{base}/moment" method="post" class="o_ocd_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <span class="o_ocd_label">Choose another time</span>
+                                    <label t-foreach="moments" t-as="moment" class="o_ocd_ex_check">
+                                        <input type="radio" name="moment" t-att-value="moment['value']" t-att-checked="'checked' if moment_first else None"/>
+                                        <span t-out="moment['label']"/>
+                                    </label>
+                                    <small class="o_ocd_ex_muted">Someone else may receive it for you: give them your code.</small>
+                                    <button type="submit" class="o_ocd_button o_ocd_button_dark">Choose this time</button>
+                                </form>
+                            </details>
+                            <details t-if="claim_open" class="o_ocd_ex_rules">
+                                <summary>A problem with my parcel?</summary>
+                                <form t-attf-action="#{base}/souci" method="post" class="o_ocd_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <label for="t-note" class="o_ocd_label">What is wrong?</label>
+                                    <textarea id="t-note" name="note" class="o_ocd_input" maxlength="500" rows="3" required="required"/>
+                                    <small class="o_ocd_ex_muted" t-out="claim_line"/>
+                                    <button type="submit" class="o_ocd_button o_ocd_button_dark">Report the problem</button>
+                                </form>
+                            </details>
+                            <form t-if="can_answer and parcel.ocd_stage != 'on_the_way'" t-attf-action="#{base}/pas_pour_moi" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_ex_link">This parcel is not for me</button>
+                            </form>
+                            <small class="o_ocd_ex_muted">The vendor stays your contact for the product itself: OCD carries the parcel. You receive no other message from OCD Express.</small>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

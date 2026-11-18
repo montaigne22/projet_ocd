@@ -44,6 +44,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | OCD Tickets (chantier 6) : billets de concerts et d'événements (application Événements d'Odoo), page de l'événement, achat (places gardées pendant le paiement), « Mes billets » (un QR signé par personne, PDF, « Donner ce billet »), contrôle à l'entrée avec le téléphone (même hors réseau), vente à l'entrée, billet à l'écran pendant un live avec son prix du live, annulé ou déplacé, espace de l'organisateur et ses contrôleurs, reversement | ✅ fait, testé (5 modèles WhatsApp à faire approuver par Meta) |
 | Programme et événements (chantier 7) et prix promo (3.1) : « Mettre en promo » dans Mes produits (prix barré = le plus bas des 14 derniers jours, jusqu'à une date, partout le même prix) ; le programme des lives des 7 prochains jours (guide télé sur ordinateur) ; les grands événements d'une soirée ou de plusieurs jours (Vendredi noir, Tabaski…) où les vendeurs invités participent avec un live et leurs promos, vérifiées par l'équipe, « Me prévenir sur WhatsApp » | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | Clips automatiques (chantier 8) : chaque produit montré dans un live devient un clip vertical de 30 secondes avec son lien court, à partager sur les statuts, TikTok et Reels ; la vidéo du live envoyée par l'équipe par morceaux, vérifiée ; « Mes clips » du vendeur, « Vu en live » sur la fiche produit et le replay, visites et ventes de chaque clip | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
+| OCD Express (chantier 9) : la livraison avec code pour tous les vendeurs des réseaux, sans boutique ; connexion par numéro, « Nouveau colis » (accord du client, montant ou valeur, qui paie la livraison, ouvrir avant de payer, ramassage ou point OCD), deux vagues et capacité, un passage de ramassage par expéditeur (photo, « pas pris », expéditeur absent), page de suivi du client (code, « Je confirme », « Pas là ? », position, souci 48 h, « Ce n'est pas pour moi »), retours rendus contre un code, « Mon argent » (versé le jour ouvré suivant une fois l'argent chez OCD, dettes plafonnées, nouveau numéro retenu 48 h), plafonds et vérifications dans « À vérifier », clients effacés après 6 mois ; manque de caisse des livreurs en dette | ✅ fait, testé (6 modèles WhatsApp à faire approuver par Meta, sur un numéro à part) |
 | Paiement automatique dans l'UEMOA (chantier 5) : CinetPay (module `payment_cinetpay` : Mobile Money, Wave, carte ; UEMOA, Cameroun, Guinée, RD Congo) et Flutterwave (module d'Odoo) ; l'état lu chez CinetPay, revérifié toutes les 10 minutes ; le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production ; clés manquantes et mode test dits dans les Paramètres | ✅ fait, testé (clés des comptes à saisir) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
@@ -110,7 +111,11 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    anglais, Utilitaire) : l'invitation des vendeurs, le début annoncé à ceux qui l'ont demandé.
    **Avec les clips automatiques**, aussi `ocd_clips_prets` et `ocd_clip_video` (français et anglais,
    Utilitaire) : les clips d'un live prêts, le clip lui-même avec la vidéo en tête (à soumettre une fois
-   un premier clip fait : Meta reçoit sa vidéo en exemple).
+   un premier clip fait : Meta reçoit sa vidéo en exemple). **Avec OCD Express**, sur le numéro à part
+   d'OCD Express (choisi dans le champ « Compte » des modèles), `ocd_express_annonce`,
+   `ocd_express_en_route`, `ocd_express_pris`, `ocd_express_etat`, `ocd_express_versement` et
+   `ocd_express_numero` (français et anglais, Utilitaire) : le colis annoncé et en route au client, les
+   colis pris, les nouvelles d'un colis, le versement fait et le numéro de versement changé à l'expéditeur.
 3. **Paiement dans l'UEMOA** (équipe) : ouvrir les comptes CinetPay et Flutterwave (documents de
    l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
    pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
@@ -134,6 +139,44 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 18 novembre 2026 · OCD Express (chantier 9)
+Maquette `OcdExpress` validée, codée dans deux nouveaux modules, `ocd_express` et
+`ocd_express_whatsapp`, avec des points d'accroche dans `ocd_live_shop` et `ocd_live`.
+- **L'expéditeur** : `/express` (prix réglés par l'équipe), la demande (invités au lancement, puis tout le
+  monde), la connexion par numéro et code WhatsApp (un vendeur d'OCD Live garde son espace, avec « Envoyer
+  un colis »), « Nouveau colis » (récapitulatif « Tu reçois » en direct), le colis et son étiquette avec QR,
+  modifier ou annuler avant le ramassage, « Mes colis », « Mon argent » (versé le jour ouvré suivant, ce
+  qui attend, ce qu'on doit et le régler, changer le numéro avec un code, retenu 48 h).
+- **Le client** : un WhatsApp dès la création puis au départ, sa page de suivi (code, montant, payer sur
+  son téléphone, « Je confirme », « Pas là ? », « Envoyer ma position », souci dans les 48 h, « Ce n'est
+  pas pour moi » qui arrête tous les messages vers ce numéro).
+- **Le livreur** : dans sa tournée, un passage par expéditeur (cocher les colis pris, photo, « pas pris »
+  avec la raison, « l'expéditeur est absent »), les livraisons comme celles du shop sans Mobile Money
+  « déclaré » et sur le téléphone seulement au-delà de 100 000 F, espèces plafonnées, les retours rendus
+  contre le code de retour de l'expéditeur.
+- **L'équipe** : les colis Express dans le dispatch (le passage entier donné à un livreur), un menu OCD
+  Express (colis, ramassages, expéditeurs), la fiche de l'expéditeur (solde, retours, « A payé ce qu'il
+  doit »), « À vérifier » (demandes, colis retenus, soucis), « Reçu au point OCD », « Perdu ou abîmé par
+  OCD », la section OCD Express des Paramètres, 8 automatisations.
+- **L'argent** : compté une fois chez OCD (caisse ou fournisseur), en factures et avoirs dans les
+  reversements du shop ; jamais d'avance ; souci ouvert, nouveau numéro et solde négatif retenus.
+- `ocd_live_shop` : le manque de caisse d'un livreur devient une dette (migration : les écarts déjà comptés
+  sont notés réglés) ; un colis sans commande a la devise de la société ; points d'accroche des
+  reversements et de la tournée. `ocd_live` : les pages de connexion des modules réunies (OCD Vote et OCD
+  Express installés ensemble).
+- Contrôlé dans le navigateur en français à 390, 820 et 1440 px, sans débordement.
+- **La suite complète** sur une base neuve (tous les modules OCD avec `ocd_express`, `ocd_express_whatsapp`,
+  `attachment_s3`, et les tests de `payment_cinetpay` et `whatsapp_cloud`) : **654 tests sans échec** (49
+  nouveaux : 39 pour les règles d'OCD Express, 4 pour ses pages, 5 pour ses messages WhatsApp, 1 pour le
+  manque de caisse). Le test des modèles WhatsApp de `ocd_live_whatsapp` a trouvé deux variables séparées
+  par une seule ponctuation : textes corrigés avant de les soumettre. Démo sur une autre base neuve : 19
+  tests, 18 sans échec ; `test_a_day_of_the_shop` (pas de reversement du lendemain quand la démo est
+  installée avec les modules en une fois) échoue aussi sur le code d'avant ce chantier : connu, à regarder.
+- Pas fait : des colis Express dans les données de démonstration ; le versement automatique par Mobile
+  Money (comme les reversements des vendeurs, il est payé par l'équipe avec la référence du transfert).
+- Aucun WhatsApp ne part sans l'approbation de Meta : 6 modèles (français et anglais) à soumettre, sur le
+  numéro d'OCD Express.
 
 ### 18 novembre 2026 · OCD Express (chantier 9) : la maquette validée
 Maquette `OcdExpress` relue avec ce qui existe (colis du shop, code, paiement à la porte, dispatch,

@@ -140,17 +140,34 @@ class OcdPayout(models.Model):
         return False
 
     @api.model
-    def _ocd_prepare(self, vendors=None, day=None, force=False):
-        """Gather the posted and unpaid bills and credit notes of the parcels of each vendor
-        whose payout is due on `day`, in one draft payout per vendor."""
-        day = day or fields.Date.context_today(self)
-        domain = [
+    def _ocd_prepare_domain(self):
+        """The bills and credit notes a payout gathers (extended by OCD Express)."""
+        return [
             ("move_type", "in", ("in_invoice", "in_refund")),
             ("state", "=", "posted"),
             ("payment_state", "in", ("not_paid", "partial")),
             ("ocd_picking_id", "!=", False),
             ("ocd_payout_id", "=", False),
         ]
+
+    @api.model
+    def _ocd_payable_moves(self, vendor, moves, day, force=False):
+        """The `moves` of `vendor` paid on `day` (extended by OCD Express: the money of a parcel
+        with a problem reported waits)."""
+        return moves
+
+    @api.model
+    def _ocd_may_pay(self, vendor, net, company, force=False):
+        """Whether a payout of `net` is made for `vendor` (extended by OCD Express: what a sender
+        owes waits for the money of their next parcels)."""
+        return force or company.currency_id.compare_amounts(abs(net), company.ocd_payout_min_amount) >= 0
+
+    @api.model
+    def _ocd_prepare(self, vendors=None, day=None, force=False):
+        """Gather the posted and unpaid bills and credit notes of the parcels of each vendor
+        whose payout is due on `day`, in one draft payout per vendor."""
+        day = day or fields.Date.context_today(self)
+        domain = self._ocd_prepare_domain()
         if vendors is not None:
             domain.append(("partner_id", "in", vendors.ids))
         moves = self.env["account.move"].search(domain)
@@ -158,11 +175,14 @@ class OcdPayout(models.Model):
         for vendor, vendor_moves in moves.grouped("partner_id").items():
             if not force and not self._ocd_is_due(vendor, day):
                 continue
+            vendor_moves = self._ocd_payable_moves(vendor, vendor_moves, day, force=force)
+            if not vendor_moves:
+                continue
             company = vendor_moves[:1].company_id
             net = sum(
                 m.amount_total if m.move_type == "in_invoice" else -m.amount_total for m in vendor_moves
             )
-            if not force and company.currency_id.compare_amounts(abs(net), company.ocd_payout_min_amount) < 0:
+            if not self._ocd_may_pay(vendor, net, company, force=force):
                 continue
             payout = self.create({"vendor_id": vendor.id, "company_id": company.id, "date": day})
             vendor_moves.write({"ocd_payout_id": payout.id})
@@ -193,6 +213,7 @@ class OcdPayout(models.Model):
             moves = payout.move_ids.filtered(lambda m: m.payment_state in ("not_paid", "partial"))
             if not moves:
                 payout.state = "paid"
+                payout._ocd_after_paid()
                 continue
             journal = payout.company_id.ocd_payout_journal_id or self.env["account.journal"].search(
                 [("type", "=", "bank"), ("company_id", "=", payout.company_id.id)], limit=1
@@ -210,7 +231,11 @@ class OcdPayout(models.Model):
             })
             payments = wizard._create_payments()
             payout.write({"state": "paid", "payment_ids": [fields.Command.set(payments.ids)]})
+            payout._ocd_after_paid()
         return True
+
+    def _ocd_after_paid(self):
+        """The payout was paid (extended by OCD Express: the sender is told on WhatsApp)."""
 
     def action_cancel(self):
         self._ocd_check_manager()

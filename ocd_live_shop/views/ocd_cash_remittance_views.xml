@@ -12,6 +12,8 @@
                 <field name="amount_expected" sum="Total"/>
                 <field name="amount_received" sum="Total"/>
                 <field name="difference" sum="Total"/>
+                <field name="shortfall" sum="Total" optional="show"/>
+                <field name="shortfall_settled" optional="show" widget="boolean_toggle" readonly="1"/>
                 <field name="currency_id" column_invisible="True"/>
                 <field name="state" widget="badge" decoration-warning="state == 'draft'" decoration-success="state == 'done'"/>
             </list>
@@ -25,6 +27,9 @@
             <form string="Cash handed over">
                 <header>
                     <button name="action_done" type="object" string="Cash counted" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_ocd_settle_shortfall" type="object" string="Missing cash settled"
+                            invisible="shortfall == 0 or shortfall_settled" groups="ocd_live.group_ocd_live_manager"
+                            confirm="The courier paid back the cash missing, or it was withheld?"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -39,6 +44,9 @@
                             <field name="amount_expected"/>
                             <field name="amount_received" readonly="state == 'done'"/>
                             <field name="difference" decoration-danger="difference != 0"/>
+                            <field name="shortfall" invisible="shortfall == 0" decoration-danger="not shortfall_settled"/>
+                            <field name="shortfall_settled" invisible="shortfall == 0" readonly="1"/>
+                            <field name="shortfall_note" invisible="shortfall == 0"/>
                         </group>
                     </group>
                     <field name="picking_ids" readonly="1">

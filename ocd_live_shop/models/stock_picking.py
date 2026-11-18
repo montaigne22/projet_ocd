@@ -86,7 +86,10 @@ class StockPicking(models.Model):
     ocd_escalated_at = fields.Datetime(string="Dispatch Alerted At", copy=False)
     ocd_is_late = fields.Boolean(string="Late", compute="_compute_ocd_is_late")
     ocd_parcel_label = fields.Char(string="Parcel Of The Order", compute="_compute_ocd_parcel_label")
-    ocd_currency_id = fields.Many2one(related="sale_id.currency_id", string="Order Currency")
+    ocd_currency_id = fields.Many2one(
+        comodel_name="res.currency", string="Order Currency", compute="_compute_ocd_currency_id",
+        help="The currency of the order; the one of the company for a parcel without an order (OCD Express).",
+    )
     ocd_goods_amount = fields.Monetary(
         string="Goods", copy=False, currency_field="ocd_currency_id"
     )
@@ -165,6 +168,11 @@ class StockPicking(models.Model):
     ocd_customer_phone = fields.Char(related="partner_id.phone", string="Customer Phone")
     ocd_district_id = fields.Many2one(related="partner_id.district_id", string="District")
     ocd_landmark = fields.Char(related="partner_id.delivery_landmark", string="Landmark")
+
+    @api.depends("sale_id.currency_id", "company_id.currency_id")
+    def _compute_ocd_currency_id(self):
+        for picking in self:
+            picking.ocd_currency_id = picking.sale_id.currency_id or picking.company_id.currency_id
 
     @api.depends("ocd_stage", "ocd_escalated_at")
     def _compute_ocd_is_late(self):
@@ -733,6 +741,10 @@ class StockPicking(models.Model):
                 })],
             })
             refund.action_post()
+
+    def _ocd_cash_remitted(self):
+        """The cash of these parcels was counted at the cash desk (extended by OCD Express: the
+        money of a sender is paid once it is there)."""
 
     # === NOTIFICATIONS (extended by ocd_live_whatsapp) === #
 

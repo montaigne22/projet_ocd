@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates to create at Meta (category Utility, language French) with the same names and texts,
+         on the WhatsApp number of OCD Express (account set on the templates), then synchronised. -->
+    <data noupdate="1">
+
+        <!-- The parcel announced to the customer as soon as the sender creates it: they confirm or choose another time on their page -->
+        <record id="template_express_announced" model="whatsapp.template">
+            <field name="name">OCD Express: parcel announced</field>
+            <field name="template_name">ocd_express_annonce</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, ton vendeur {{2}} t'envoie un colis avec OCD Express : {{3}}, à payer à la porte : {{4}}. Il arrive {{5}}. Touche « Voir mon colis » pour confirmer ou changer le moment.</field>
+            <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir mon colis', 'url': '{base_url}/{{1}}', 'url_example': 'express/suivi/42/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.partner_id.name or \'\').split(\' \')[0] }}', 'sample_value': 'Grâce'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.ocd_express_sender_id.name }}', 'sample_value': 'Mode Afi'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_express_content }}', 'sample_value': '2 robes wax'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_express_amount_text() }}', 'sample_value': '15 000 F, en espèces ou par Mobile Money'}),
+                (0, 0, {'sequence': 5, 'value': '{{ object._ocd_express_when_text() }}', 'sample_value': 'cet après-midi'}),
+            ]"/>
+        </record>
+
+        <!-- The parcel leaves: the code is on the page of the customer, never in the message (Meta takes a code in a Utility template for an authentication) -->
+        <record id="template_express_on_the_way" model="whatsapp.template">
+            <field name="name">OCD Express: parcel on the way</field>
+            <field name="template_name">ocd_express_en_route</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, ton colis de {{2}} est en route avec {{3}}, livreur OCD. À payer à la porte : {{4}}. Touche « Suivre mon colis » pour le suivre.</field>
+            <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Suivre mon colis', 'url': '{base_url}/{{1}}', 'url_example': 'express/suivi/42/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.partner_id.name or \'\').split(\' \')[0] }}', 'sample_value': 'Grâce'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.ocd_express_sender_id.name }}', 'sample_value': 'Mode Afi'}),
+                (0, 0, {'sequence': 3, 'value': '{{ (object.ocd_courier_id.name or \'\').split(\' \')[0] }}', 'sample_value': 'Junior'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_express_amount_text() }}', 'sample_value': '15 000 F, en espèces ou par Mobile Money'}),
+            ]"/>
+        </record>
+
+        <!-- The parcels the courier took at the sender: a courier who is not the one of the message is reported -->
+        <record id="template_express_picked" model="whatsapp.template">
+            <field name="name">OCD Express: parcels picked up</field>
+            <field name="template_name">ocd_express_pris</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_express.model_ocd_express_pickup"/>
+            <field name="partner_field">sender_id</field>
+            <field name="body">Bonjour, {{1}}, livreur OCD, a pris {{2}} chez toi à {{3}}. Les numéros : {{4}}. Ce n'est pas lui ? Touche « Mes envois » pour le signaler.</field>
+            <field name="button_url_value">{{ 'express/envois' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes envois', 'url': '{base_url}/{{1}}', 'url_example': 'express/envois'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.courier_id.name or \'\').split(\' \')[0] }}', 'sample_value': 'Junior'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_count_text() }}', 'sample_value': '4 colis'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object._ocd_hour_text() }}', 'sample_value': '14:20'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_taken_text() }}', 'sample_value': 'EX-0427, EX-0428, EX-0429 et EX-0430'}),
+            ]"/>
+        </record>
+
+        <!-- What happened to a parcel, to its sender (delivered, problem, returned, given back, refused) -->
+        <record id="template_express_state" model="whatsapp.template">
+            <field name="name">OCD Express: news of a parcel</field>
+            <field name="template_name">ocd_express_etat</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">ocd_express_sender_id</field>
+            <field name="body">Bonjour, ton colis {{1}} pour {{2}} a des nouvelles : {{3}}. Touche « Mes envois » pour le détail.</field>
+            <field name="button_url_value">{{ 'express/colis/%s' % object.id }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mes envois', 'url': '{base_url}/{{1}}', 'url_example': 'express/colis/42'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'EX-0427'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Grâce Mbia'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object._ocd_express_state_text() }}', 'sample_value': 'livré, 15 000 F encaissés'}),
+            ]"/>
+        </record>
+
+        <!-- The payout of the sender left -->
+        <record id="template_express_paid" model="whatsapp.template">
+            <field name="name">OCD Express: payout made</field>
+            <field name="template_name">ocd_express_versement</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_payout"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="body">Bonjour, ton versement OCD Express de {{1}} est parti sur ton Mobile Money {{2}}, référence {{3}}. Touche « Mon argent » pour le détail.</field>
+            <field name="button_url_value">{{ 'express/argent' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon argent', 'url': '{base_url}/{{1}}', 'url_example': 'express/argent'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object._ocd_amount_text() }}', 'sample_value': '54 230 F'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.momo or \'\' }}', 'sample_value': '+237 6 70 11 22 33'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.payment_reference or object.name }}', 'sample_value': 'OM-88213'}),
+            ]"/>
+        </record>
+
+        <!-- The payout number changed: the number of the account is told before the payout leaves -->
+        <record id="template_express_number" model="whatsapp.template">
+            <field name="name">OCD Express: payout number changed</field>
+            <field name="template_name">ocd_express_numero</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, le numéro de tes versements OCD Express est maintenant {{2}}. Ce n'est pas toi ? Touche « Mon argent » et écris à OCD Live avant le prochain versement.</field>
+            <field name="button_url_value">{{ 'express/argent' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon argent', 'url': '{base_url}/{{1}}', 'url_example': 'express/argent'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.name }}', 'sample_value': 'Mode Afi'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.ocd_payout_momo or \'\' }}', 'sample_value': '+237 6 90 00 09 99'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

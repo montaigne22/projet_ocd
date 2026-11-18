@@ -1,0 +1,4064 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 16:58+0000\n"
+"PO-Revision-Date: 2026-11-18 16:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: ocd_express
+#: model:ir.module.module,description:base.module_ocd_express
+msgid ""
+"\n"
+"OCD Express\n"
+"===========\n"
+"\n"
+"- A sender (any vendor with a WhatsApp number, even without a shop on OCD Live)\n"
+"  logs in with their number and a code on WhatsApp. First invited by the team,\n"
+"  then open to all (setting).\n"
+"- « New parcel »: the customer (name, WhatsApp, district, landmark) and their\n"
+"  consent to the messages, the content, the money to collect or the value of a\n"
+"  parcel already paid, who pays the delivery, opening before paying, pick-up at\n"
+"  the sender or drop-off at the OCD point. The price is the rate « OCD courier »\n"
+"  of the city; collecting at the door costs a share (1.5 %, 150 F at least).\n"
+"- Two waves (created before 10 h: delivered in the afternoon; before 15 h: the\n"
+"  next morning), the capacity of the couriers, a pick-up passage for all the\n"
+"  parcels of a sender (free from 3 parcels).\n"
+"- The courier picks up (photo of the parcels closed), delivers against the\n"
+"  money and the code (no Mobile Money « declared »), gives a return back against\n"
+"  the return code of the sender. Cash capped on a courier.\n"
+"- The money of the sender: paid the next working day, once it reached OCD (cash\n"
+"  counted at the cash desk, or the payment confirmed by the provider), minus\n"
+"  the fees; what the sender owes is withheld, capped; a problem reported by the\n"
+"  customer within 48 h holds the money of the parcel; a new payout number waits\n"
+"  48 h. Never an advance.\n"
+"- Caps per parcel, team checks, return rate alert, data of the customers erased\n"
+"  after 6 months.\n"
+msgstr ""
+"\n"
+"OCD Express\n"
+"===========\n"
+"\n"
+"- Un expéditeur (tout vendeur avec un numéro WhatsApp, même sans boutique sur OCD\n"
+"  Live) se connecte avec son numéro et un code sur WhatsApp. D'abord sur invitation\n"
+"  de l'équipe, puis ouvert à tous (réglage).\n"
+"- « Nouveau colis » : le client (nom, WhatsApp, quartier, point de repère) et son\n"
+"  accord pour les messages, le contenu, l'argent à encaisser ou la valeur d'un colis\n"
+"  déjà payé, qui paie la livraison, ouvrir avant de payer, ramassage chez\n"
+"  l'expéditeur ou dépôt au point OCD. Le prix est le tarif « livreur OCD » de la\n"
+"  ville ; encaisser à la porte coûte une part (1,5 %, 150 F au moins).\n"
+"- Deux vagues (créé avant 10 h : livré l'après-midi ; avant 15 h : le lendemain\n"
+"  matin), la capacité des livreurs, un passage de ramassage pour tous les colis d'un\n"
+"  expéditeur (gratuit dès 3 colis).\n"
+"- Le livreur ramasse (photo des colis fermés), livre contre l'argent et le code (pas\n"
+"  de Mobile Money « déclaré »), rend un retour contre le code de retour de\n"
+"  l'expéditeur. Espèces plafonnées sur un livreur.\n"
+"- L'argent de l'expéditeur : versé le jour ouvré suivant, une fois arrivé chez OCD\n"
+"  (espèces comptées à la caisse, ou paiement confirmé par le fournisseur), moins les\n"
+"  frais ; ce qu'il doit est retenu, plafonné ; un souci signalé par le client dans\n"
+"  les 48 h garde l'argent du colis ; un nouveau numéro de versement attend 48 h.\n"
+"  Jamais d'avance.\n"
+"- Plafonds par colis, vérifications de l'équipe, alerte sur les retours, données des\n"
+"  clients effacées après 6 mois.\n"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%(amount)s collected at %(hour)s"
+msgstr "%(amount)s encaissés à %(hour)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%(courier)s picks it up %(when)s"
+msgstr "%(courier)s le prend %(when)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%(customer)s chose %(when)s for the second passage (free)."
+msgstr "%(customer)s a choisi %(when)s pour le second passage (gratuit)."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "%(customer)s reports a problem with the parcel %(parcel)s of %(sender)s: %(note)s"
+msgstr "%(customer)s signale un souci avec le colis %(parcel)s de %(sender)s : %(note)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%(day)s, %(part)s"
+msgstr "%(day)s, %(part)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%(delivered)s delivered · %(route)s on the way"
+msgstr "%(delivered)s livrés · %(route)s en route"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "%(name)s asks to send parcels with OCD Express (%(social)s)."
+msgstr "%(name)s demande à envoyer des colis avec OCD Express (%(social)s)."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "%(parcel)s · %(customer)s: return code"
+msgstr "%(parcel)s · %(customer)s : code de retour"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%(parcel)s · for %(customer)s"
+msgstr "%(parcel)s · pour %(customer)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%(parcel)s · problem reported · %(amount)s"
+msgstr "%(parcel)s · souci signalé · %(amount)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%(rate)s %% · %(min)s at least"
+msgstr "%(rate)s %% · %(min)s au moins"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "%(reason)s, a second passage is planned"
+msgstr "%(reason)s, un second passage est prévu"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "%(sender)s is suspended: still %(rate)s %% of returns a week after the warning."
+msgstr "%(sender)s est suspendu : encore %(rate)s %% de retours une semaine après l'avertissement."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "%(sender)s: %(rate)s %% of their parcels came back in 30 days. They are warned."
+msgstr "%(sender)s : %(rate)s %% de ses colis sont revenus en 30 jours. L'expéditeur est averti."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "%s has no WhatsApp number: add it first."
+msgstr "%s n'a pas de numéro WhatsApp : ajoute-le d'abord."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%s is told on WhatsApp"
+msgstr "%s est prévenu sur WhatsApp"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "%s parcels"
+msgstr "%s colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "%s, in cash or by Mobile Money"
+msgstr "%s, en espèces ou par Mobile Money"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "1 parcel"
+msgstr "1 colis"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid ""
+"<b class=\"o_ocd_ex_step_n\">1</b>\n"
+"                                <span><b>You create the parcel</b><small>The name and the WhatsApp of your customer, their district, the amount to collect. One minute.</small></span>"
+msgstr ""
+"<b class=\"o_ocd_ex_step_n\">1</b>\n"
+"                                <span><b>Tu crées le colis</b><small>Le nom et le WhatsApp de ton client, son quartier, le montant à encaisser. Une minute.</small></span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid ""
+"<b class=\"o_ocd_ex_step_n\">2</b>\n"
+"                                <span><b>An OCD courier picks it up</b><small>At your home or your store, in the morning or the afternoon. Or you drop it at the OCD point.</small></span>"
+msgstr ""
+"<b class=\"o_ocd_ex_step_n\">2</b>\n"
+"                                <span><b>Un livreur OCD passe le prendre</b><small>Chez toi ou à ton magasin, le matin ou l'après-midi. Ou tu le déposes au point OCD.</small></span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid ""
+"<b class=\"o_ocd_ex_step_n\">3</b>\n"
+"                                <span><b>Your customer receives their parcel with a code</b><small>They confirm the time on WhatsApp. No code, no parcel: nothing gets lost. The money collected is paid to you.</small></span>"
+msgstr ""
+"<b class=\"o_ocd_ex_step_n\">3</b>\n"
+"                                <span><b>Ton client reçoit son colis avec un code</b><small>Il confirme le moment sur WhatsApp. Pas de code, pas de colis : rien ne se perd. L'argent encaissé t'est versé.</small></span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<b>Paid. Thank you!</b>"
+msgstr "<b>Payé. Merci !</b>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+msgid "<b>Parcel created.</b>"
+msgstr "<b>Colis créé.</b>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_done
+msgid "<b>Request sent. Thank you!</b>"
+msgstr "<b>Demande envoyée. Merci !</b>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+msgid ""
+"<b>The parcel comes back to you</b>\n"
+"                                <span>Give your return code to the courier only when you have the parcel in your hands.</span>"
+msgstr ""
+"<b>Le colis te revient</b>\n"
+"                                <span>Donne ton code de retour au livreur seulement quand tu as le colis en main.</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_pay
+msgid "<b>You owe nothing to OCD.</b>"
+msgstr "<b>Tu ne dois rien à OCD.</b>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<small class=\"o_ocd_ex_muted\">10 kg at most, packed, closed, and fitting in the bag of the courier (50 × 40 × 40 cm).</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">10 kg au plus, emballé, fermé, et qui tient dans le sac du livreur (50 × 40 × 40 cm).</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<small class=\"o_ocd_ex_muted\">Give it only when you have the parcel in your hands and you paid.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">Donne-le seulement quand tu as le colis en main et que tu as payé.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<small class=\"o_ocd_ex_muted\">In cash to the courier, or on your phone (Mobile Money): the courier shows you the payment. Never on the personal number of the courier.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">En espèces au livreur, ou sur ton téléphone (Mobile Money) : le livreur te montre le paiement. Jamais sur le numéro personnel du livreur.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "<small class=\"o_ocd_ex_muted\">No subscription, no shop on OCD Live needed: you log in with your WhatsApp number, like the vendors of OCD Live. With OCD Business, the delivery costs less.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">Sans abonnement, sans boutique sur OCD Live : tu te connectes avec ton numéro WhatsApp, comme les vendeurs d'OCD Live. Avec OCD Business, la livraison coûte moins cher.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "<small class=\"o_ocd_ex_muted\">OCD only pays the money really collected: a parcel delivered with its code, and its money arrived. Nothing is advanced. The number changes with a code sent on your WhatsApp.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">OCD ne verse que l'argent vraiment encaissé : un colis livré avec son code, et son argent arrivé. Rien n'est avancé. Le numéro se change avec un code envoyé sur ton WhatsApp.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<small class=\"o_ocd_ex_muted\">Someone else may receive it for you: give them your code.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">Une autre personne peut le recevoir pour toi : donne-lui ton code.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "<small class=\"o_ocd_ex_muted\">The drop-off at the OCD point is always free. The second passage at your customer too.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">Le dépôt au point OCD est toujours gratuit. Le second passage chez ton client aussi.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<small class=\"o_ocd_ex_muted\">The vendor stays your contact for the product itself: OCD carries the parcel. You receive no other message from OCD Express.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">Le vendeur reste ton contact pour le produit lui-même : OCD transporte le colis. Tu ne reçois aucun autre message d'OCD Express.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<small class=\"o_ocd_ex_muted\">What OCD pays you back if it loses it.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">Ce qu'OCD te rembourse s'il le perd.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+msgid "<small class=\"o_ocd_ex_muted\">« New parcel » keeps the same pick-up: several parcels leave with the same passage of the courier.</small>"
+msgstr "<small class=\"o_ocd_ex_muted\">« Nouveau colis » garde le même ramassage : plusieurs colis partent avec le même passage du livreur.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "<small><b>Nothing to receive for now</b></small>"
+msgstr "<small><b>Rien à recevoir pour l'instant</b></small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "<small><b>You owe OCD</b></small>"
+msgstr "<small><b>Tu dois à OCD</b></small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcels
+msgid "<small>Collected today</small>"
+msgstr "<small>Encaissé aujourd'hui</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "<small>The fees of parcels without money to collect (already paid, returns). It is withheld from your next payout.</small>"
+msgstr "<small>Les frais de colis sans argent à encaisser (déjà payés, retours). C'est retiré de ton prochain versement.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "<small>The parcels delivered with their code. The cash leaves once handed over at the cash desk of OCD; the money paid on the phone of the customer, once confirmed.</small>"
+msgstr "<small>Les colis livrés avec leur code. Les espèces partent une fois remises à la caisse d'OCD ; l'argent payé sur le téléphone du client, une fois confirmé.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcels
+msgid "<small>Today</small>"
+msgstr "<small>Aujourd'hui</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcels
+msgid "<small>paid the next working day</small>"
+msgstr "<small>versé le jour ouvré suivant</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_return
+msgid "<span class=\"o_ocd_ex_badge o_ocd_ex_badge_grey\">Return</span>"
+msgstr "<span class=\"o_ocd_ex_badge o_ocd_ex_badge_grey\">Retour</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.delivery_tour_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_pickup
+msgid "<span class=\"o_ocd_ex_badge\">Express</span>"
+msgstr "<span class=\"o_ocd_ex_badge\">Express</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "<span class=\"o_ocd_ex_hero_text\">Your customer gives a code to the courier and pays at the door. You receive your money on your Mobile Money, the next working day.</span>"
+msgstr "<span class=\"o_ocd_ex_hero_text\">Ton client donne un code au livreur et paie à la porte. Tu reçois ton argent sur ton Mobile Money, le jour ouvré suivant.</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "<span class=\"o_ocd_ex_kicker\">For the vendors of the social networks</span>"
+msgstr "<span class=\"o_ocd_ex_kicker\">Pour les vendeurs des réseaux</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<span class=\"o_ocd_label\">Choose another time</span>"
+msgstr "<span class=\"o_ocd_label\">Choisis un autre moment</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<span class=\"o_ocd_label\">Your code for this parcel</span>"
+msgstr "<span class=\"o_ocd_label\">Ton code pour ce colis</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_pickup
+msgid "<span class=\"o_ocd_parcel_hint\">The sender receives a WhatsApp with the parcels taken: if it is not you, they report it.</span>"
+msgstr "<span class=\"o_ocd_parcel_hint\">L'expéditeur reçoit un WhatsApp avec les colis pris : si ce n'est pas toi, il le signale.</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid ""
+"<span><span>Collected at the door</span><b class=\"o_ocd_ex_sum_cod\">-</b></span>\n"
+"                            <span><span>Delivery</span><span class=\"o_ocd_ex_sum_fee\">-</span></span>\n"
+"                            <span><span>Collecting</span><span class=\"o_ocd_ex_sum_rate\">-</span></span>\n"
+"                            <span class=\"o_ocd_ex_sum_total\"><span>You receive</span><b class=\"o_ocd_ex_sum_net\">-</b></span>\n"
+"                            <small class=\"o_ocd_ex_muted\">The exact price of the delivery is shown on the parcel once created.</small>"
+msgstr ""
+"<span><span>Encaissé à la porte</span><b class=\"o_ocd_ex_sum_cod\">-</b></span>\n"
+"                            <span><span>Livraison</span><span class=\"o_ocd_ex_sum_fee\">-</span></span>\n"
+"                            <span><span>Encaissement</span><span class=\"o_ocd_ex_sum_rate\">-</span></span>\n"
+"                            <span class=\"o_ocd_ex_sum_total\"><span>Tu reçois</span><b class=\"o_ocd_ex_sum_net\">-</b></span>\n"
+"                            <small class=\"o_ocd_ex_muted\">Le prix exact de la livraison est sur le colis une fois créé.</small>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<span>Already paid</span>"
+msgstr "<span>Déjà payé</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<span>An amount</span>"
+msgstr "<span>Un montant</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<span>At my place</span>"
+msgstr "<span>Chez moi</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<span>At the OCD point</span>"
+msgstr "<span>Au point OCD</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "<span>Cash collected by the couriers, counted at the cash desk this evening.</span>"
+msgstr "<span>Espèces encaissées par les livreurs, comptées à la caisse ce soir.</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "<span>Clothes, shoes, cosmetics, accessories, phones, small objects: 10 kg at most, in the bag of the courier (50 × 40 × 40 cm), packed and closed. No money, medicines, forbidden objects or fresh food. What is in the parcel stays your responsibility: OCD carries it, it does not sell it.</span>"
+msgstr "<span>Vêtements, chaussures, cosmétiques, accessoires, téléphones, petits objets : 10 kg au plus, dans le sac du livreur (50 × 40 × 40 cm), emballé et fermé. Pas d'argent, de médicaments, d'objets interdits ni de nourriture fraîche. Ce qu'il y a dans le colis reste ta responsabilité : OCD le transporte, ne le vend pas.</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<span>I pay it</span>"
+msgstr "<span>Je la paie</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<span>My customer agrees to receive the messages of OCD Express about their delivery (and nothing else).</span>"
+msgstr "<span>Mon client est d'accord pour recevoir les messages d'OCD Express sur sa livraison (et rien d'autre).</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<span>My customer may open the parcel in front of the courier before paying.</span>"
+msgstr "<span>Mon client peut ouvrir le colis devant le livreur avant de payer.</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "<span>My customer pays it</span>"
+msgstr "<span>Mon client la paie</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_pay
+msgid "<span>OCD Express</span>"
+msgstr "<span>OCD Express</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+msgid "<span>The courier calls you first and takes a photo of your parcels closed. You receive a WhatsApp when they took them: not them? Report it.</span>"
+msgstr "<span>Le livreur t'appelle avant et prend une photo de tes colis fermés. Tu reçois un WhatsApp quand il les a pris : ce n'est pas lui ? Signale-le.</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+msgid "<span>They confirm they are there or choose another time. When the parcel leaves, they receive their page, with the delivery code.</span>"
+msgstr "<span>Il confirme qu'il sera là ou choisit un autre moment. Quand le colis part, il reçoit sa page, avec le code de livraison.</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<span>To pay at the door</span>"
+msgstr "<span>À payer à la porte</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_pay
+msgid "<span>Total</span>"
+msgstr "<span>Total</span>"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "<span>Your customer reported a problem. Its amount waits for the answer of the team; the rest of your money does not wait.</span>"
+msgstr "<span>Ton client a signalé un souci. Son montant attend la réponse de l'équipe ; le reste de ton argent n'attend pas.</span>"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "A code arrives on your WhatsApp: type it to confirm."
+msgstr "Un code arrive sur ton WhatsApp : tape-le pour confirmer."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_partner__ocd_express_place_checked
+#: model:ir.model.fields,help:ocd_express.field_res_users__ocd_express_place_checked
+msgid "A courier picked parcels up there: the place exists."
+msgstr "Un livreur y a pris des colis : le lieu existe."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "A courier picks it up %s"
+msgstr "Un livreur le prend %s"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_first_day_max
+msgid "A new sender who sends more parcels on their first day: the next ones wait for the team. 0: never."
+msgstr "Un nouvel expéditeur qui envoie plus de colis le premier jour : les suivants attendent l'équipe. 0 : jamais."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_wave2_hour
+msgid "A parcel created before this hour is picked up in the afternoon and delivered the next morning. Later: picked up the next morning."
+msgstr "Un colis créé avant cette heure est pris l'après-midi et livré le lendemain matin. Plus tard : pris le lendemain matin."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_wave1_hour
+msgid "A parcel created before this hour is picked up in the morning and delivered in the afternoon."
+msgstr "Un colis créé avant cette heure est pris le matin et livré l'après-midi."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "A problem is reported within %s hours of the delivery."
+msgstr "Un souci se signale dans les %s heures après la livraison."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "A problem with my parcel?"
+msgstr "Un souci avec mon colis ?"
+
+#. module: ocd_express
+#: model:mail.activity.type,summary:ocd_express.mail_activity_type_express_check
+msgid "A sender, a parcel held or a problem reported"
+msgstr "Un expéditeur, un colis retenu ou un souci signalé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Above the limit of the sender (%s)"
+msgstr "Au-dessus du plafond de l'expéditeur (%s)"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_online_above
+msgid "Above this amount, the customer pays on their phone, never in cash. 0: never."
+msgstr "Au-dessus de ce montant, le client paie sur son téléphone, jamais en espèces. 0 : jamais."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_cash_max
+msgid "Above, the courier drops the cash at the OCD point before collecting more in cash. 0: no limit."
+msgstr "Au-dessus, le livreur dépose les espèces au point OCD avant d'en encaisser d'autres. 0 : sans limite."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_debt_max
+msgid "Above, the sender pays what they owe before a new parcel, or the customer pays the delivery."
+msgstr "Au-dessus, l'expéditeur règle ce qu'il doit avant un nouveau colis, ou le client paie la livraison."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Above, the team checks the parcel before it leaves."
+msgstr "Au-dessus, l'équipe vérifie le colis avant son départ."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Above, they drop their cash at the OCD point first. 0: no limit."
+msgstr "Au-dessus, il dépose d'abord ses espèces au point OCD. 0 : sans limite."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Above, they pay it before a new parcel, or their customer pays the delivery."
+msgstr "Au-dessus, il le règle avant un nouveau colis, ou son client paie la livraison."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__res_partner__ocd_express_state__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "After %(count)s passages, the parcel comes back to you."
+msgstr "Après %(count)s passages, le colis te revient."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "After the delivery"
+msgstr "Après la livraison"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_claim_hours
+msgid "After the delivery, the customer reports a problem from their page: the money of the parcel waits."
+msgstr "Après la livraison, le client signale un souci depuis sa page : l'argent du colis attend."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "After the delivery: the money of the parcel waits for the answer of the team."
+msgstr "Après la livraison : l'argent du colis attend la réponse de l'équipe."
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_express_pickup__part__afternoon
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_deliver_part__afternoon
+msgid "Afternoon"
+msgstr "Après-midi"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_wave2_hour
+msgid "Afternoon Wave Before"
+msgstr "Vague de l'après-midi avant"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+msgid "Already a vendor of OCD Live."
+msgstr "Déjà vendeur sur OCD Live."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Already paid"
+msgstr "Déjà payé"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__amount
+msgid "Amount"
+msgstr "Montant"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Amount to collect"
+msgstr "Montant à encaisser"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "An amount cannot be negative."
+msgstr "Un montant ne peut pas être négatif."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Another city (travel agency, paid in advance)"
+msgstr "Autre ville (agence de voyage, payé d'avance)"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Another courier gives this parcel back."
+msgstr "Un autre livreur rend ce colis."
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_confirm__moved
+msgid "Another time"
+msgstr "Un autre moment"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_confirm
+msgid "Answer Of The Customer"
+msgstr "Réponse du client"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Arrives %s."
+msgstr "Arrive %s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Ask %s for their return code of each parcel: without it, keep the parcel."
+msgstr "Demande à %s son code de retour pour chaque colis : sans lui, garde le colis."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.space_login_express
+msgid "Ask for one"
+msgstr "Demande-en un"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "Ask to send my parcels"
+msgstr "Demander à envoyer mes colis"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__res_partner__ocd_express_state__requested
+msgid "Asked"
+msgstr "Demandé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "At most %s per parcel; above, the team checks it first."
+msgstr "%s au plus par colis ; au-dessus, l'équipe le vérifie d'abord."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "At your door"
+msgstr "À ta porte"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ocd_automation
+msgid "Automation Of OCD Live"
+msgstr "Automatisation d'OCD Live"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_done
+msgid "Back to OCD Express"
+msgstr "Retour à OCD Express"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_pay
+msgid "Back to my money"
+msgstr "Retour à mon argent"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_balance
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_balance
+msgid "Balance Of The Sender"
+msgstr "Solde de l'expéditeur"
+
+#. module: ocd_express
+#: model:ocd.automation,tools:ocd_express.automation_express_money
+msgid "Bills and credit notes of the accounting."
+msgstr "Factures et avoirs de la comptabilité."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_pickup
+msgid "Call"
+msgstr "Appeler"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Call %s"
+msgstr "Appeler %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_debt_wizard_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+msgid "Cancel the parcel"
+msgstr "Annuler le colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_express_pickup__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Cancelled before the pick-up."
+msgstr "Annulé avant le ramassage."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Cancelled by the sender."
+msgstr "Annulé par l'expéditeur."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Capacity of the couriers"
+msgstr "Capacité des livreurs"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_cash_max
+msgid "Cash On A Courier At Most"
+msgstr "Espèces sur un livreur au plus"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Cash on a courier at most"
+msgstr "Espèces sur un livreur au plus"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+msgid "Change"
+msgstr "Modifier"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Change %s"
+msgstr "Modifier %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "Change the number"
+msgstr "Changer le numéro"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Changed by the sender."
+msgstr "Modifié par l'expéditeur."
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_check__ok
+msgid "Checked"
+msgstr "Vérifié"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Checked by %s."
+msgstr "Vérifié par %s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Checked by the team"
+msgstr "Vérification par l'équipe"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Choose"
+msgstr "Choisir"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Choose a time in the next days."
+msgstr "Choisis un moment dans les prochains jours."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Choose a time."
+msgstr "Choisis un moment."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Choose the city and the district of your customer."
+msgstr "Choisis la ville et le quartier de ton client."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Choose the district of your customer."
+msgstr "Choisis le quartier de ton client."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Choose the district where the courier picks your parcels up."
+msgstr "Choisis le quartier où le livreur prend tes colis."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Choose this time"
+msgstr "Choisir ce moment"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Chosen on the company (Settings › Companies); the price is the rate « OCD courier » of the city, elsewhere by travel agency, paid in advance."
+msgstr "Choisies sur la société (Paramètres › Sociétés) ; le prix est le tarif « livreur OCD » de la ville, ailleurs par agence de voyage, payé d'avance."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_city_ids
+msgid "Cities Open To OCD Express"
+msgstr "Villes ouvertes à OCD Express"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Cities open"
+msgstr "Villes ouvertes"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Code received on WhatsApp for %s"
+msgstr "Code reçu sur WhatsApp pour %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Collected for you"
+msgstr "Encaissé pour toi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Collecting %s at the door"
+msgstr "Encaissement de %s à la porte"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_cod_rate
+msgid "Collecting At The Door (%)"
+msgstr "Encaissement à la porte (%)"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_cod_min
+msgid "Collecting At The Door, At Least"
+msgstr "Encaissement à la porte, au moins"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Collecting at the door"
+msgstr "Encaisser à la porte"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Comes back to you"
+msgstr "Te revient"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_res_company
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "Confirm the new number"
+msgstr "Confirmer le nouveau numéro"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_confirm__confirmed
+msgid "Confirmed"
+msgstr "Confirmé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Confirmed by the customer"
+msgstr "Confirmé par le client"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: ocd_express
+#: model:ocd.listing.refuse.reason,name:ocd_express.refuse_reason_express_content
+msgid "Content not allowed"
+msgstr "Contenu refusé"
+
+#. module: ocd_express
+#: model:ocd.automation,actions:ocd_express.automation_express_money
+msgid ""
+"Count the money collected for the sender, minus the delivery they pay and the collecting.\n"
+"Never an advance: cash counts once counted at the cash desk."
+msgstr ""
+"Compter l'argent encaissé pour l'expéditeur, moins la livraison qu'il paie et l'encaissement.\n"
+"Jamais d'avance : les espèces comptent une fois comptées à la caisse."
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_money_state__counted
+msgid "Counted for the sender"
+msgstr "Compté pour l'expéditeur"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__courier_id
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_list_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "Courier"
+msgstr "Livreur"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Create the parcel"
+msgstr "Créer le colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_list_express
+msgid "Created"
+msgstr "Créé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Created before the first hour: delivered the afternoon; before the second: the next morning."
+msgstr "Créé avant la première heure : livré l'après-midi ; avant la seconde : le lendemain matin."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__create_uid
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Created now: picked up %(pickup)s, delivered %(deliver)s."
+msgstr "Créé maintenant : pris %(pickup)s, livré %(deliver)s."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__create_date
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__currency_id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_list_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "Customer"
+msgstr "Client"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_anonymized
+msgid "Customer Erased"
+msgstr "Client effacé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Customer erased"
+msgstr "Client effacé"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_retention_months
+msgid "Customers Erased After (Months)"
+msgstr "Clients effacés après (mois)"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Customers erased after"
+msgstr "Clients effacés après"
+
+#. module: ocd_express
+#: model:ocd.automation,name:ocd_express.automation_express_erase
+msgid "Customers erased after 6 months"
+msgstr "Clients effacés après 6 mois"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__date
+msgid "Date"
+msgstr "Date"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "Day"
+msgstr "Jour"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_value
+msgid "Declared Value"
+msgstr "Valeur déclarée"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/controllers/tracking.py:0
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_delivered_count
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_delivered_count
+msgid "Delivered"
+msgstr "Livré"
+
+#. module: ocd_express
+#: model:ocd.automation,name:ocd_express.automation_express_state
+msgid "Delivered or problem: tell the sender"
+msgstr "Livré ou problème : prévenir l'expéditeur"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_cap_after
+msgid "Delivered without a problem reported by the customer."
+msgstr "Livrés sans souci signalé par le client."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Delivered · %s"
+msgstr "Livrés · %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Delivered · code checked"
+msgstr "Livré · code vérifié"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Delivered. Thank you!"
+msgstr "Livré. Merci !"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Deliveries and collecting"
+msgstr "Livraisons et encaissement"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_fee_by
+msgid "Delivery Paid By"
+msgstr "Livraison payée par"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__account_move__ocd_express_kind__fees
+msgid "Delivery and collecting"
+msgstr "Livraison et encaissement"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Delivery in %s"
+msgstr "Livraison dans %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Delivery of %s"
+msgstr "Livraison de %s"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ocd_listing_refuse_reason
+msgid "Directory Link Refusal Reason"
+msgstr "Motif de refus"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_account_move__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ir_http__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_automation__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_listing_refuse_reason__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_live_dispatch__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_live_verification__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_payout__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_payment_transaction__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_list_express
+msgid "District"
+msgstr "Quartier"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_express_pickup__state__done
+msgid "Done"
+msgstr "Fait"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__done_at
+msgid "Done At"
+msgstr "Fait à"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_dropoff
+msgid "Dropped At The OCD Point"
+msgstr "Déposé au point OCD"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "Dropped at the OCD point"
+msgstr "Déposés au point OCD"
+
+#. module: ocd_express
+#: model:ocd.automation,actions:ocd_express.automation_express_erase
+msgid "Erase the name, the number and the address of the customer; the amounts and the dates stay for the accounts."
+msgstr "Effacer le nom, le numéro et l'adresse du client ; les montants et les dates restent pour les comptes."
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_express_pickup__part__evening
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_deliver_part__evening
+msgid "Evening"
+msgstr "Soir"
+
+#. module: ocd_express
+#: model:ocd.automation,when:ocd_express.automation_express_erase
+msgid "Every day"
+msgstr "Chaque jour"
+
+#. module: ocd_express
+#: model:ocd.automation,when:ocd_express.automation_express_payout
+msgid "Every morning, Monday to Saturday"
+msgstr "Chaque matin, du lundi au samedi"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__res_company__ocd_express_open_to__all
+msgid "Everybody"
+msgstr "Tout le monde"
+
+#. module: ocd_express
+#: model:ir.ui.menu,name:ocd_express.ocd_express_parcels_menu
+msgid "Express parcels"
+msgstr "Colis Express"
+
+#. module: ocd_express
+#: model:ir.ui.menu,name:ocd_express.ocd_express_pickups_menu
+msgid "Express pick-ups"
+msgstr "Ramassages Express"
+
+#. module: ocd_express
+#: model:ir.ui.menu,name:ocd_express.ocd_express_senders_menu
+msgid "Express senders"
+msgstr "Expéditeurs Express"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_dispatch.py:0
+msgid "Express · %s"
+msgstr "Express · %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "First pick-up at this sender: check the place exists."
+msgstr "Premier ramassage chez cet expéditeur : vérifie que le lieu existe."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "First the pick-up at %s."
+msgstr "D'abord le ramassage chez %s."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (contacts)"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_listing_refuse_reason__applies_to
+msgid "For"
+msgstr "Pour"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "For the launch, OCD Express opens to a few vendors: the team answers you on WhatsApp."
+msgstr "Pour le lancement, OCD Express ouvre à quelques vendeurs : l'équipe te répond sur WhatsApp."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.space_login_express
+msgid "For the senders of OCD Express: give the number of your account. No account yet?"
+msgstr "Pour les expéditeurs d'OCD Express : donne le numéro de ton compte. Pas encore de compte ?"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "For whom?"
+msgstr "Pour qui ?"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_pickup_free_from
+msgid "Free Pick-Up From"
+msgstr "Ramassage gratuit dès"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Free pick-up"
+msgstr "Ramassage gratuit"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "From %s · OCD Express"
+msgstr "De %s · OCD Express"
+
+#. module: ocd_express
+#: model:ocd.automation,actions:ocd_express.automation_express_payout
+msgid ""
+"Gather the money and the fees in one payout per sender.\n"
+"The money of a parcel with a problem reported waits; a new payout number waits; what a sender owes waits for their next parcels."
+msgstr ""
+"Rassembler l'argent et les frais en un versement par expéditeur.\n"
+"L'argent d'un colis avec un souci signalé attend ; un nouveau numéro de versement attend ; ce que doit un expéditeur attend ses prochains colis."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Give back to %s"
+msgstr "Rendre à %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Give the courier your return code: %s"
+msgstr "Donne au livreur ton code de retour : %s"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_returned_at
+msgid "Given Back At"
+msgstr "Rendu à"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_return_state__handed_back
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_return
+msgid "Given back"
+msgstr "Rendu"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Given back to %s. Thank you!"
+msgstr "Rendu à %s. Merci !"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Given back to the sender."
+msgstr "Rendu à l'expéditeur."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Goes back to the sender."
+msgstr "Retourne à l'expéditeur."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_automation__group
+msgid "Group"
+msgstr "Groupe"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ir_http
+msgid "HTTP Routing"
+msgstr "Routage HTTP"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Hello %(name)s, follow your parcel of %(sender)s here: %(url)s"
+msgstr "Bonjour %(name)s, suis ton colis de %(sender)s ici : %(url)s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "I already have an account"
+msgstr "J'ai déjà un compte"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "I confirm, I will be there"
+msgstr "Je confirme, je serai là"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_pickup
+msgid "I took the ticked parcels"
+msgstr "J'ai pris les colis cochés"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_account_move__id
+#: model:ir.model.fields,field_description:ocd_express.field_ir_http__id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_automation__id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_listing_refuse_reason__id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_live_dispatch__id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_live_verification__id
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_payout__id
+#: model:ir.model.fields,field_description:ocd_express.field_payment_transaction__id
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__id
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__id
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_id_checked
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_id_checked
+msgid "Identity Checked"
+msgstr "Identité vérifiée"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_id_daily
+msgid "Identity Checked Above (A Day)"
+msgstr "Identité vérifiée au-dessus de (par jour)"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Identity checked above"
+msgstr "Identité vérifiée au-dessus de"
+
+#. module: ocd_express
+#: model:ocd.listing.refuse.reason,name:ocd_express.refuse_reason_express_identity
+msgid "Identity to check"
+msgstr "Identité à vérifier"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_ocd_express_pickup__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_ocd_express_pickup__message_has_error
+#: model:ir.model.fields,help:ocd_express.field_ocd_express_pickup__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_content
+msgid "In The Parcel"
+msgstr "Dans le colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "In progress · %s"
+msgstr "En cours · %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "In the parcel"
+msgstr "Dans le colis"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__res_company__ocd_express_open_to__invited
+msgid "Invited senders"
+msgstr "Expéditeurs invités"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_open_to
+msgid "Invited: a request goes to the team, who opens the account. Everybody: the account opens with the number checked on WhatsApp."
+msgstr "Invités : une demande va à l'équipe, qui ouvre le compte. Tout le monde : le compte s'ouvre avec le numéro vérifié sur WhatsApp."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Invited: a request goes to the team. Everybody: the account opens with the number checked."
+msgstr "Invités : une demande va à l'équipe. Tout le monde : le compte s'ouvre avec le numéro vérifié."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Its value"
+msgstr "Sa valeur"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Landmark"
+msgstr "Point de repère"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__write_uid
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__write_date
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "Last payouts"
+msgstr "Derniers versements"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_latitude
+msgid "Latitude"
+msgstr "Latitude"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "Let it leave"
+msgstr "Le laisser partir"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Log in again."
+msgstr "Reconnecte-toi."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_longitude
+msgid "Longitude"
+msgstr "Longitude"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_lost
+msgid "Lost Or Damaged By OCD"
+msgstr "Perdu ou abîmé par OCD"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_lost_max
+msgid "Lost Or Damaged: Paid At Most"
+msgstr "Perdu ou abîmé : remboursé au plus"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__account_move__ocd_express_kind__lost
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "Lost or damaged by OCD"
+msgstr "Perdu ou abîmé par OCD"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Lost or damaged by OCD, paid back"
+msgstr "Perdu ou abîmé par OCD, remboursé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Lost or damaged by OCD: %(amount)s paid back to the sender. %(note)s"
+msgstr "Perdu ou abîmé par OCD : %(amount)s remboursés à l'expéditeur. %(note)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Lost or damaged by OCD: %s"
+msgstr "Perdu ou abîmé par OCD : %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Lost or damaged: paid at most"
+msgstr "Perdu ou abîmé : remboursé au plus"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_can_open
+msgid "May Open Before Paying"
+msgstr "Peut ouvrir avant de payer"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_momo_number
+msgid "Mobile Money Of OCD"
+msgstr "Mobile Money d'OCD"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Mobile Money number"
+msgstr "Numéro Mobile Money"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Mobile Money number (now %s)"
+msgstr "Numéro Mobile Money (aujourd'hui %s)"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Mobile Money of OCD"
+msgstr "Mobile Money d'OCD"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_partner__ocd_express_balance
+#: model:ir.model.fields,help:ocd_express.field_res_users__ocd_express_balance
+msgid "Money OCD owes the sender (positive) or the sender owes OCD (negative), not paid yet."
+msgstr "Ce qu'OCD doit à l'expéditeur (positif) ou ce que l'expéditeur doit à OCD (négatif), pas encore payé."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_money_state
+msgid "Money Of The Sender"
+msgstr "Argent de l'expéditeur"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__account_move__ocd_express_kind__collected
+msgid "Money collected for the sender"
+msgstr "Argent encaissé pour l'expéditeur"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Money of %(parcel)s collected for you (%(customer)s)"
+msgstr "Argent de %(parcel)s encaissé pour toi (%(customer)s)"
+
+#. module: ocd_express
+#: model:ocd.automation,name:ocd_express.automation_express_money
+msgid "Money of the senders: counted once it reached OCD"
+msgstr "Argent des expéditeurs : compté une fois arrivé chez OCD"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Money to collect in a day by a sender whose identity was not checked. 0: never."
+msgstr "Argent à encaisser en un jour par un expéditeur dont l'identité n'est pas vérifiée. 0 : jamais."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_id_daily
+msgid "Money to collect in one day by a sender whose identity the team did not check: the parcels above wait for the team. 0: never."
+msgstr "Argent à encaisser en un jour par un expéditeur dont l'équipe n'a pas vérifié l'identité : les colis au-delà attendent l'équipe. 0 : jamais."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "More than %s to collect today: check the identity of the sender"
+msgstr "Plus de %s à encaisser aujourd'hui : vérifier l'identité de l'expéditeur"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_express_pickup__part__morning
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_deliver_part__morning
+msgid "Morning"
+msgstr "Matin"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_wave1_hour
+msgid "Morning Wave Before"
+msgstr "Vague du matin avant"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_menu
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "My money"
+msgstr "Mon argent"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "My parcel"
+msgstr "Mon colis"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_menu
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcels
+msgid "My parcels"
+msgstr "Mes colis"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "My payout number"
+msgstr "Mon numéro de versement"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Name, number, address; the amounts stay. 0: never."
+msgstr "Nom, numéro, adresse ; les montants restent. 0 : jamais."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_momo_hold_hours
+msgid "New Payout Number: Wait (Hours)"
+msgstr "Nouveau numéro de versement : attente (heures)"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "New number: the next payout waits 48 hours, your old number was told."
+msgstr "Nouveau numéro : le prochain versement attend 48 heures, ton ancien numéro a été prévenu."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_menu
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcels
+msgid "New parcel"
+msgstr "Nouveau colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "New payout number: wait"
+msgstr "Nouveau numéro de versement : attente"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+msgid "New sender"
+msgstr "Nouvel expéditeur"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "New sender: more than %s parcels on the first day"
+msgstr "Nouvel expéditeur : plus de %s colis le premier jour"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_optout
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_optout
+msgid "No Message From OCD Express"
+msgstr "Aucun message d'OCD Express"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "No city yet"
+msgstr "Aucune ville pour l'instant"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcels
+msgid "No parcel here."
+msgstr "Aucun colis ici."
+
+#. module: ocd_express
+#: model_terms:ir.actions.act_window,help:ocd_express.stock_picking_action_express
+msgid "No parcel of OCD Express yet"
+msgstr "Aucun colis OCD Express pour l'instant"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "No payout yet."
+msgstr "Aucun versement pour l'instant."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_not_taken
+msgid "Not Taken At The Pick-Up"
+msgstr "Pas pris au ramassage"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_confirm__waiting
+msgid "Not answered"
+msgstr "Sans réponse"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_confirm__not_for_me
+msgid "Not for them"
+msgstr "Pas pour lui"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+#: code:addons/ocd_express/models/ocd_express_pickup.py:0
+msgid "Not given to the courier"
+msgstr "Pas donné au livreur"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_express_pickup.py:0
+msgid "Not taken at the pick-up: %s"
+msgstr "Pas pris au ramassage : %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Not taken: %s"
+msgstr "Pas pris : %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_pickup
+msgid "Not taken? Why (missing, badly closed)"
+msgstr "Pas pris ? Pourquoi (manquant, mal fermé)"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Not there?"
+msgstr "Pas là ?"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__note
+msgid "Note"
+msgstr "Note"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Noted: the courier comes at this time."
+msgstr "C'est noté : le livreur passe à ce moment."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Noted: the parcels wait for the next passage."
+msgstr "C'est noté : les colis attendent le prochain passage."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Noted: the team of OCD Live calls you back."
+msgstr "C'est noté : l'équipe d'OCD Live te rappelle."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Noted: you will receive no more message from OCD Express."
+msgstr "C'est noté : tu ne recevras plus de message d'OCD Express."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Nothing to pay to the sender for this parcel."
+msgstr "Rien à verser à l'expéditeur pour ce colis."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+msgid "Nothing waiting for OCD Express."
+msgstr "Rien en attente pour OCD Express."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__parcel_count
+msgid "Number Of Parcels"
+msgstr "Nombre de colis"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_ocd_express_pickup__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_ocd_express_pickup__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur d'envoi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+#: model:ir.model.fields,field_description:ocd_express.field_account_bank_statement_line__ocd_express_kind
+#: model:ir.model.fields,field_description:ocd_express.field_account_move__ocd_express_kind
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_state
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_state
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_automation__group__express
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_listing_refuse_reason__applies_to__express
+#: model:ir.ui.menu,name:ocd_express.ocd_express_menu
+#: model:stock.picking.type,name:ocd_express.picking_type_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_menu
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_company_form_ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_partner_form
+msgid "OCD Express"
+msgstr "OCD Express"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_open_to
+msgid "OCD Express Open To"
+msgstr "OCD Express ouvert à"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ocd_express_pickup
+msgid "OCD Express Pick-Up"
+msgstr "Ramassage OCD Express"
+
+#. module: ocd_express
+#: model:ocd.listing.refuse.reason,message:ocd_express.refuse_reason_express_content
+msgid "OCD Express does not carry this content (money, medicines, forbidden objects, fresh food, more than 10 kg)."
+msgstr "OCD Express ne transporte pas ce contenu (argent, médicaments, objets interdits, nourriture fraîche, plus de 10 kg)."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "OCD Express does not deliver to %s yet."
+msgstr "OCD Express ne livre pas encore à %s."
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_parcel
+msgid "OCD Express parcel"
+msgstr "Colis OCD Express"
+
+#. module: ocd_express
+#: model:mail.activity.type,name:ocd_express.mail_activity_type_express_check
+msgid "OCD Express to check"
+msgstr "OCD Express à vérifier"
+
+#. module: ocd_express
+#: model:ir.module.module,shortdesc:base.module_ocd_express
+msgid "OCD Express: Deliveries For The Vendors Of The Social Networks"
+msgstr "OCD Express : livraisons pour les vendeurs des réseaux"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ocd_express_debt_wizard
+#: model:ir.model.fields,field_description:ocd_express.field_payment_transaction__ocd_express_debt_partner_id
+msgid "OCD Express: Paid By The Sender"
+msgstr "OCD Express : payé par l'expéditeur"
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_collecting
+msgid "OCD Express: collecting at the door"
+msgstr "OCD Express : encaissement à la porte"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.space_express
+msgid "OCD Express: deliver my sales of WhatsApp"
+msgstr "OCD Express : livrer mes ventes de WhatsApp"
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_delivery
+msgid "OCD Express: delivery"
+msgstr "OCD Express : livraison"
+
+#. module: ocd_express
+#: model:ir.actions.server,name:ocd_express.ir_cron_express_erase_ir_actions_server
+msgid "OCD Express: erase the customers after the months of the settings"
+msgstr "OCD Express : effacer les clients après les mois des paramètres"
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_lost
+msgid "OCD Express: lost or damaged by OCD"
+msgstr "OCD Express : perdu ou abîmé par OCD"
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_collected
+msgid "OCD Express: money collected for the sender"
+msgstr "OCD Express : argent encaissé pour l'expéditeur"
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_claim
+msgid "OCD Express: paid back to the customer"
+msgstr "OCD Express : remboursé au client"
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_debt_paid
+msgid "OCD Express: paid by the sender"
+msgstr "OCD Express : payé par l'expéditeur"
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_pickup
+msgid "OCD Express: pick-up"
+msgstr "OCD Express : ramassage"
+
+#. module: ocd_express
+#: model:product.template,name:ocd_express.product_express_return
+msgid "OCD Express: return"
+msgstr "OCD Express : retour"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "OCD Express: the parcels of the vendors of the social networks"
+msgstr "OCD Express : les colis des vendeurs des réseaux"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ocd_live_verification
+msgid "OCD Live Checks"
+msgstr "Vérifications OCD Live"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ocd_live_dispatch
+msgid "OCD Live Dispatch"
+msgstr "Dispatch OCD Live"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_point
+msgid "OCD Point"
+msgstr "Point OCD"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "OCD pays the declared value back to the sender (at most the amount of the settings)."
+msgstr "OCD rembourse la valeur déclarée à l'expéditeur (au plus le montant des paramètres)."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "OCD point"
+msgstr "Point OCD"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "OCD point: %s"
+msgstr "Point OCD : %s"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_payment_transaction__ocd_express_debt_move_id
+msgid "Ocd Express Debt Move"
+msgstr "Écriture du paiement de l'expéditeur"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_shop_share
+msgid "Of the capacity of the couriers: kept for the parcels of the shop."
+msgstr "De la capacité des livreurs : gardée pour les colis du shop."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Of the money collected for the sender; nothing for a parcel already paid."
+msgstr "De l'argent encaissé pour l'expéditeur ; rien pour un colis déjà payé."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "On 30 days, from 10 parcels: a warning, then the suspension. 0: never."
+msgstr "Sur 30 jours, dès 10 colis : un avertissement, puis la suspension. 0 : jamais."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_online_above
+msgid "On The Phone Only Above"
+msgstr "Sur le téléphone seulement au-dessus de"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "On its way to OCD: %s"
+msgstr "En route vers OCD : %s"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_return_alert
+msgid "On the last 30 days, from 10 parcels: a warning, then the suspension. 0: never."
+msgstr "Sur les 30 derniers jours, dès 10 colis : un avertissement, puis la suspension. 0 : jamais."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "On the phone only above"
+msgstr "Sur le téléphone seulement au-dessus de"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "On the way"
+msgstr "En route"
+
+#. module: ocd_express
+#: model:ocd.automation,name:ocd_express.automation_express_leave
+msgid "On the way: tell the customer"
+msgstr "En route : prévenir le client"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "On their way"
+msgstr "En chemin"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Only a manager of OCD Live settles the money of OCD Express."
+msgstr "Seul un responsable d'OCD Live règle l'argent d'OCD Express."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Only the team of OCD Live checks the parcels of OCD Express."
+msgstr "Seule l'équipe d'OCD Live vérifie les colis d'OCD Express."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "Only the team of OCD Live opens the accounts of OCD Express."
+msgstr "Seule l'équipe d'OCD Live ouvre les comptes d'OCD Express."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.space_login_code_express
+msgid "Open my parcels"
+msgstr "Ouvrir mes colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_partner_form
+msgid "Open the account"
+msgstr "Ouvrir le compte"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Open to"
+msgstr "Ouvert à"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Or send it to the Mobile Money of OCD %(number)s with the reference %(ref)s: the team notes it."
+msgstr "Ou envoie-le au Mobile Money d'OCD %(number)s avec la référence %(ref)s : l'équipe le note."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_debt_max
+msgid "Owed By A Sender At Most"
+msgstr "Dû par un expéditeur au plus"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Owed by a sender at most"
+msgstr "Dû par un expéditeur au plus"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Paid back to your customers"
+msgstr "Remboursé à tes clients"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "Paid by %(sender)s, reference %(ref)s"
+msgstr "Payé par %(sender)s, référence %(ref)s"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__account_move__ocd_express_kind__debt_paid
+msgid "Paid by the sender"
+msgstr "Payé par l'expéditeur"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Paid by you"
+msgstr "Payé par toi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Paid on %(day)s · %(number)s"
+msgstr "Versé %(day)s · %(number)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Paid on %s"
+msgstr "Versé %s"
+
+#. module: ocd_express
+#: model:ir.actions.act_window,name:ocd_express.ocd_express_debt_wizard_action
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_debt_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_partner_form
+msgid "Paid what they owe"
+msgstr "A payé ce qu'il doit"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "Paid what they owed: %(amount)s, reference %(ref)s."
+msgstr "A payé ce qu'il devait : %(amount)s, référence %(ref)s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Parcel %(parcel)s changed, to check: %(reason)s."
+msgstr "Colis %(parcel)s modifié, à vérifier : %(reason)s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Parcel %(parcel)s of %(sender)s to check: %(reason)s."
+msgstr "Colis %(parcel)s de %(sender)s à vérifier : %(reason)s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Parcel %s lost or damaged by OCD"
+msgstr "Colis %s perdu ou abîmé par OCD"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Parcel already paid by your customer"
+msgstr "Colis déjà payé par ton client"
+
+#. module: ocd_express
+#: model:ocd.automation,name:ocd_express.automation_express_created
+msgid "Parcel created: tell the customer"
+msgstr "Colis créé : prévenir le client"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+msgid "Parcel held"
+msgstr "Colis retenu"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Parcel of %s"
+msgstr "Colis de %s"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__parcel_ids
+msgid "Parcels"
+msgstr "Colis"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_cap_after
+msgid "Parcels Delivered To Be Confirmed"
+msgstr "Colis livrés pour être confirmé"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_first_day_max
+msgid "Parcels Of The First Day Before A Check"
+msgstr "Colis du premier jour avant une vérification"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_per_courier
+msgid "Parcels Per Courier And Per Day"
+msgstr "Colis par livreur et par jour"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_parcel_ids
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_parcel_ids
+msgid "Parcels Sent"
+msgstr "Colis envoyés"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__taken_count
+msgid "Parcels Taken"
+msgstr "Colis pris"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "Parcels of %s"
+msgstr "Colis de %s"
+
+#. module: ocd_express
+#: model:ir.actions.act_window,name:ocd_express.stock_picking_action_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_list_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "Parcels of OCD Express"
+msgstr "Colis OCD Express"
+
+#. module: ocd_express
+#: model:ocd.automation,name:ocd_express.automation_express_picked
+msgid "Parcels picked up: tell the sender"
+msgstr "Colis pris : prévenir l'expéditeur"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_pickup_free_from
+msgid "Parcels taken in the same passage. Below, the pick-up is paid; the drop-off at the OCD point is free."
+msgstr "Colis pris au même passage. En dessous, le ramassage est payant ; le dépôt au point OCD est gratuit."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__part
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_deliver_part
+msgid "Part Of The Day"
+msgstr "Moment de la journée"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__partner_id
+msgid "Partner"
+msgstr "Contact"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Pay %(amount)s back to %(customer)s for the parcel %(parcel)s."
+msgstr "Rembourser %(amount)s à %(customer)s pour le colis %(parcel)s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Pay %s"
+msgstr "Payer %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_money
+msgid "Pay it now"
+msgstr "Le régler maintenant"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Pay on my phone"
+msgstr "Payer sur mon téléphone"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_pay
+msgid "Pay what I owe"
+msgstr "Régler ce que je dois"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_payment_transaction
+msgid "Payment Transaction"
+msgstr "Transaction de paiement"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_momo_changed_at
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_momo_changed_at
+msgid "Payout Number Changed At"
+msgstr "Numéro de versement changé le"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "Payout number changed from %(old)s to %(new)s: the next payout waits."
+msgstr "Numéro de versement changé de %(old)s à %(new)s : le prochain versement attend."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Payout number changed: %s."
+msgstr "Numéro de versement changé : %s."
+
+#. module: ocd_express
+#: model:ocd.automation,name:ocd_express.automation_express_paid
+msgid "Payout paid: tell the sender"
+msgstr "Versement fait : prévenir l'expéditeur"
+
+#. module: ocd_express
+#: model:ocd.automation,tools:ocd_express.automation_express_payout
+msgid "Payouts of OCD Live."
+msgstr "Reversements d'OCD Live."
+
+#. module: ocd_express
+#: model:ocd.automation,name:ocd_express.automation_express_payout
+msgid "Payouts of the senders every working day"
+msgstr "Versements aux expéditeurs chaque jour ouvré"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__photo
+msgid "Photo Of The Parcels Closed"
+msgstr "Photo des colis fermés"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_pickup
+msgid "Photo of the parcels closed"
+msgstr "Photo des colis fermés"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Pick the parcel %s up first."
+msgstr "Prends d'abord le colis %s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Pick up at %s"
+msgstr "Récupérer chez %s"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_pickup_id
+msgid "Pick-Up"
+msgstr "Ramassage"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_place_checked
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_place_checked
+msgid "Pick-Up Place Checked"
+msgstr "Lieu de ramassage vérifié"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__account_move__ocd_express_kind__pickup
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_form
+msgid "Pick-up"
+msgstr "Ramassage"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Pick-up at your place"
+msgstr "Ramassage chez toi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_express_pickup.py:0
+msgid "Pick-up of %(count)s parcels on %(day)s"
+msgstr "Ramassage de %(count)s colis le %(day)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Pick-up of %(count)s parcels: %(amount)s for the sender"
+msgstr "Ramassage de %(count)s colis : %(amount)s pour l'expéditeur"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Pick-up of fewer parcels"
+msgstr "Ramassage de moins de colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Pick-up, from %s parcels"
+msgstr "Ramassage, dès %s colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_list
+msgid "Pick-ups"
+msgstr "Ramassages"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_per_courier
+msgid "Pick-ups included. 0: no limit."
+msgstr "Ramassages compris. 0 : sans limite."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Pick-ups included; the share kept for the parcels of the shop. 0: no limit."
+msgstr "Ramassages compris ; la part gardée pour les colis du shop. 0 : sans limite."
+
+#. module: ocd_express
+#: model:ir.actions.act_window,name:ocd_express.ocd_express_pickup_action
+msgid "Pick-ups of OCD Express"
+msgstr "Ramassages OCD Express"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Picked up"
+msgstr "Récupéré"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Picked up at %(hour)s: %(count)s parcels."
+msgstr "Pris à %(hour)s : %(count)s colis."
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_express_pickup__state__planned
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_search
+msgid "Planned"
+msgstr "Prévu"
+
+#. module: ocd_express
+#. odoo-javascript
+#: code:addons/ocd_express/static/src/interactions/express.js:0
+msgid "Position refused: allow it in your browser"
+msgstr "Position refusée : autorise-la dans ton navigateur"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.delivery_tour_express
+msgid "Position sent by the customer"
+msgstr "Position envoyée par le client"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_return_fee
+msgid "Price Of A Return"
+msgstr "Prix d'un retour"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_pickup_fee
+msgid "Price Of A Small Pick-Up"
+msgstr "Prix d'un petit ramassage"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_fee
+msgid "Price Of The Delivery"
+msgstr "Prix de la livraison"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__fee
+msgid "Price Of The Pick-Up"
+msgstr "Prix du ramassage"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_label
+msgid "Print"
+msgstr "Imprimer"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
+msgid "Print the label"
+msgstr "Imprimer l'étiquette"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Problem"
+msgstr "Problème"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_claim_state
+msgid "Problem After The Delivery"
+msgstr "Souci après la livraison"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_claim_note
+msgid "Problem Reported"
+msgstr "Souci signalé"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_claim_hours
+msgid "Problem Reported Within (Hours)"
+msgstr "Souci signalé dans les (heures)"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_claim_state__open
+msgid "Problem reported"
+msgstr "Souci signalé"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__account_move__ocd_express_kind__claim
+msgid "Problem reported by the customer"
+msgstr "Souci signalé par le client"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "Problem reported by the customer:"
+msgstr "Souci signalé par le client :"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Problem reported within"
+msgstr "Souci signalé dans les"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Problem with %s: paid back to the customer"
+msgstr "Souci avec %s : remboursé au client"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_claim_count
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_claim_count
+msgid "Problems Open"
+msgstr "Soucis en cours"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "Problems reported"
+msgstr "Soucis signalés"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Problems · %s"
+msgstr "Problèmes · %s"
+
+#. module: ocd_express
+#. odoo-javascript
+#: code:addons/ocd_express/static/src/interactions/express.js:0
+msgid "Reading the position…"
+msgstr "Lecture de la position…"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Receive my code"
+msgstr "Recevoir mon code"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "Received at the OCD point"
+msgstr "Reçu au point OCD"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Received at the OCD point by %s."
+msgstr "Reçu au point OCD par %s."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_recipient
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_recipient
+msgid "Receives OCD Express Parcels"
+msgstr "Reçoit des colis OCD Express"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_debt_wizard__reference
+msgid "Reference"
+msgstr "Référence"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "Refuse the parcel"
+msgstr "Refuser le colis"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__res_partner__ocd_express_state__refused
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_check__refused
+msgid "Refused"
+msgstr "Refusé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Refused by the team."
+msgstr "Refusé par l'équipe."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Refused by the team: %s"
+msgstr "Refusé par l'équipe : %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Report the problem"
+msgstr "Signaler le souci"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_claim_at
+msgid "Reported At"
+msgstr "Signalé le"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "Request of OCD Express refused: %s"
+msgstr "Demande OCD Express refusée : %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_done
+msgid "Request sent"
+msgstr "Demande envoyée"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_return_state
+#: model:ir.model.fields.selection,name:ocd_express.selection__account_move__ocd_express_kind__return
+msgid "Return"
+msgstr "Retour"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_return_code
+msgid "Return Code"
+msgstr "Code de retour"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Return and small pick-up"
+msgstr "Retour et petit ramassage"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Return of %(parcel)s blocked after %(count)s wrong codes."
+msgstr "Retour de %(parcel)s bloqué après %(count)s codes faux."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Return of %s"
+msgstr "Retour de %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Return of a parcel"
+msgstr "Retour d'un colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_returned_count
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_returned_count
+msgid "Returned"
+msgstr "Retourné"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_return_rate
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_return_rate
+msgid "Returned (30 Days, %)"
+msgstr "Retournés (30 jours, %)"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Returned and cancelled"
+msgstr "Retournés et annulés"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Returns"
+msgstr "Retours"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_return_alert
+msgid "Returns Of A Sender: Alert At (%)"
+msgstr "Retours d'un expéditeur : alerte à (%)"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Returns: alert at"
+msgstr "Retours : alerte à"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_debt_wizard_view_form
+msgid "Save"
+msgstr "Enregistrer"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Save the parcel"
+msgstr "Enregistrer le colis"
+
+#. module: ocd_express
+#: model:ocd.automation,tools:ocd_express.automation_express_erase
+#: model:ocd.automation,trigger:ocd_express.automation_express_erase
+msgid "Scheduled task."
+msgstr "Tâche planifiée."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Second passage asked by the customer."
+msgstr "Second passage demandé par le client."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_express_pickup.py:0
+msgid "Second pick-up missed in a row on %s"
+msgstr "Second ramassage manqué de suite le %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+msgid "See the parcel"
+msgstr "Voir le colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+msgid "See the sender"
+msgstr "Voir l'expéditeur"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_partner_form
+msgid "See their parcels"
+msgstr "Voir ses colis"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.space_express
+msgid "Send a parcel (OCD Express)"
+msgstr "Envoyer un colis (OCD Express)"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "Send my first parcel"
+msgstr "Envoyer mon premier colis"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Send my parcels"
+msgstr "Envoyer mes colis"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Send my position"
+msgstr "Envoyer ma position"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Send my request"
+msgstr "Envoyer ma demande"
+
+#. module: ocd_express
+#: model:ocd.automation,actions:ocd_express.automation_express_paid
+msgid "Send the amount, the number and the reference of the transfer."
+msgstr "Envoyer le montant, le numéro et la référence du transfert."
+
+#. module: ocd_express
+#: model:ocd.automation,actions:ocd_express.automation_express_created
+msgid "Send the customer the parcel announced, with the amount to pay and their page (confirm, another time, not for me)."
+msgstr "Envoyer au client le colis annoncé, avec le montant à payer et sa page (confirmer, un autre moment, pas pour moi)."
+
+#. module: ocd_express
+#: model:ocd.automation,actions:ocd_express.automation_express_leave
+msgid "Send the page of the parcel, where the code is (never in the message)."
+msgstr "Envoyer la page du colis, où est le code (jamais dans le message)."
+
+#. module: ocd_express
+#: model:ocd.automation,actions:ocd_express.automation_express_picked
+msgid "Send the parcels taken, the hour and the courier: if it is not them, they report it."
+msgstr "Envoyer les colis pris, l'heure et le livreur : si ce n'est pas lui, l'expéditeur le signale."
+
+#. module: ocd_express
+#: model:ocd.automation,actions:ocd_express.automation_express_state
+msgid "Send what happened to the parcel."
+msgstr "Envoyer ce qui est arrivé au colis."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Send your parcels with OCD Express."
+msgstr "Envoie tes colis avec OCD Express."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__sender_id
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_sender_id
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "Sender"
+msgstr "Expéditeur"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_since
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_since
+msgid "Sender Since"
+msgstr "Expéditeur depuis"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__ocd_express_pickup__state__missed
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_search
+msgid "Sender absent"
+msgstr "Expéditeur absent"
+
+#. module: ocd_express
+#: model:ocd.listing.refuse.reason,name:ocd_express.refuse_reason_express_unknown
+msgid "Sender not reachable"
+msgstr "Expéditeur injoignable"
+
+#. module: ocd_express
+#: model:ir.actions.act_window,name:ocd_express.res_partner_action_ocd_express_sender
+#: model_terms:ir.ui.view,arch_db:ocd_express.res_partner_view_list_ocd_express_sender
+msgid "Senders of OCD Express"
+msgstr "Expéditeurs OCD Express"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ocd_live_settings
+msgid "Settings Page Of OCD Live"
+msgstr "Page des paramètres d'OCD Live"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_shop_share
+msgid "Share Kept For The Shop (%)"
+msgstr "Part gardée pour le shop (%)"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Share the tracking with %s"
+msgstr "Partager le suivi avec %s"
+
+#. module: ocd_express
+#: model:ocd.listing.refuse.reason,message:ocd_express.refuse_reason_express_identity
+msgid "Show an identity document to the team of OCD Live, then send the parcel again."
+msgstr "Montre une pièce d'identité à l'équipe d'OCD Live, puis renvoie le colis."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_social
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_social
+msgid "Social Networks"
+msgstr "Réseaux sociaux"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__state
+msgid "State"
+msgstr "État"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "Step"
+msgstr "Étape"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_partner_form
+msgid "Suspend"
+msgstr "Suspendre"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__res_partner__ocd_express_state__suspended
+msgid "Suspended"
+msgstr "Suspendu"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_check
+msgid "Team Check"
+msgstr "Vérification de l'équipe"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Thank you: the courier knows you are there."
+msgstr "Merci : le livreur sait que tu es là."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Thank you: the courier sees where you are."
+msgstr "Merci : le livreur voit où tu es."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "The afternoon wave comes after the morning wave."
+msgstr "La vague de l'après-midi vient après celle du matin."
+
+#. module: ocd_express
+#: model:ocd.automation,trigger:ocd_express.automation_express_money
+msgid "The code of the customer, the cash desk, the payment provider."
+msgstr "Le code du client, la caisse, le fournisseur de paiement."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "The courier is on the way."
+msgstr "Le livreur est en route."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The courier is on the way: call them."
+msgstr "Le livreur est en route : appelle-le."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "The courier takes the parcel"
+msgstr "Le livreur prend le colis"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_fee_by__customer
+msgid "The customer"
+msgstr "Le client"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "The customer is right"
+msgstr "Le client a raison"
+
+#. module: ocd_express
+#: model:ocd.automation,scope:ocd_express.automation_express_created
+msgid "The customer of the parcel, who agreed through the sender."
+msgstr "Le client du colis, d'accord par l'expéditeur."
+
+#. module: ocd_express
+#: model:ocd.automation,scope:ocd_express.automation_express_leave
+msgid "The customer of the parcel."
+msgstr "Le client du colis."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "The customer pays on their phone, never in cash. 0: never."
+msgstr "Le client paie sur son téléphone, jamais en espèces. 0 : jamais."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The customer said it is not for them."
+msgstr "Le client a dit que ce n'est pas pour lui."
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_claim_state__customer_right
+msgid "The customer was right"
+msgstr "Le client avait raison"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "The declared value; never the content."
+msgstr "La valeur déclarée ; jamais le contenu."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "The delivery"
+msgstr "La livraison"
+
+#. module: ocd_express
+#: model:ir.module.module,summary:base.module_ocd_express
+msgid "The delivery with a code and the payment at the door of OCD Live, for any vendor of WhatsApp, TikTok or Instagram: parcels without an order, pick-ups, money paid the next working day, returns, problems reported, tracking page for the customer"
+msgstr "La livraison avec code et le paiement à la porte d'OCD Live, pour tout vendeur de WhatsApp, TikTok ou Instagram : colis sans commande, ramassages, argent versé le jour ouvré suivant, retours, soucis signalés, page de suivi pour le client"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_momo_hold_hours
+msgid "The first payout towards a new Mobile Money number waits; the old number is told."
+msgstr "Le premier versement vers un nouveau numéro Mobile Money attend ; l'ancien numéro est prévenu."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "The goods amount is paid back to the customer and withheld from the sender."
+msgstr "Le montant des produits est remboursé au client et retenu à l'expéditeur."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "The name of your customer"
+msgstr "Le nom de ton client"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_retention_months
+msgid "The name, the number and the address of the customers of OCD Express; the amounts and the dates stay for the accounts. 0: never."
+msgstr "Le nom, le numéro et l'adresse des clients d'OCD Express ; les montants et les dates restent pour les comptes. 0 : jamais."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "The old number is told."
+msgstr "L'ancien numéro est prévenu."
+
+#. module: ocd_express
+#: model:ocd.automation,trigger:ocd_express.automation_express_created
+msgid "The page « New parcel » of the sender."
+msgstr "La page « Nouveau colis » de l'expéditeur."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "The parcel"
+msgstr "Le colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The parcel %(parcel)s goes back: pay %(amount)s back to %(customer)s."
+msgstr "Le colis %(parcel)s retourne : rembourser %(amount)s à %(customer)s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The parcel %s already left: it cannot be cancelled."
+msgstr "Le colis %s est déjà parti : il ne peut plus être annulé."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The parcel %s already left: it cannot be changed."
+msgstr "Le colis %s est déjà parti : il ne peut plus être modifié."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The parcel %s is not to give back."
+msgstr "Le colis %s n'est pas à rendre."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The parcel %s was delivered with its code."
+msgstr "Le colis %s a été livré avec son code."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "The parcel is cancelled and the sender is told."
+msgstr "Le colis est annulé et l'expéditeur est prévenu."
+
+#. module: ocd_express
+#: model:ocd.automation,scope:ocd_express.automation_express_erase
+msgid "The parcels of OCD Express over for the months of the settings."
+msgstr "Les colis OCD Express terminés depuis les mois des paramètres."
+
+#. module: ocd_express
+#: model:ocd.automation,scope:ocd_express.automation_express_money
+msgid "The parcels of OCD Express."
+msgstr "Les colis OCD Express."
+
+#. module: ocd_express
+#: model:ocd.automation,trigger:ocd_express.automation_express_paid
+msgid "The payouts of OCD Live."
+msgstr "Les reversements d'OCD Live."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "The photo is too big."
+msgstr "La photo est trop grande."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The position of the phone could not be read."
+msgstr "La position du téléphone n'a pas pu être lue."
+
+#. module: ocd_express
+#: model:ocd.automation,trigger:ocd_express.automation_express_payout
+msgid "The preparation of the payouts."
+msgstr "La préparation des reversements."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "The prices"
+msgstr "Les prix"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "The prices in %s"
+msgstr "Les prix à %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "The second passage at the customer is free; the drop-off at the OCD point too."
+msgstr "Le second passage chez le client est gratuit ; le dépôt au point OCD aussi."
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_fee_by__sender
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_partner_form
+msgid "The sender"
+msgstr "L'expéditeur"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "The sender asks not to open the parcel before paying."
+msgstr "L'expéditeur demande de ne pas ouvrir le colis avant de payer."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_partner_form
+msgid "The sender can no longer create parcels; their parcels on the way go on."
+msgstr "L'expéditeur ne peut plus créer de colis ; ses colis en route continuent."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_stock_picking__ocd_express_dropoff
+msgid "The sender drops the parcel at the OCD point: no pick-up."
+msgstr "L'expéditeur dépose le colis au point OCD : pas de ramassage."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tour_pickup
+msgid "The sender is absent"
+msgstr "L'expéditeur est absent"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "The sender is right"
+msgstr "L'expéditeur a raison"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_express_pickup.py:0
+msgid "The sender was not there: %s"
+msgstr "L'expéditeur n'était pas là : %s"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_claim_state__sender_right
+msgid "The sender was right"
+msgstr "L'expéditeur avait raison"
+
+#. module: ocd_express
+#: model:ocd.automation,scope:ocd_express.automation_express_paid
+#: model:ocd.automation,scope:ocd_express.automation_express_picked
+#: model:ocd.automation,scope:ocd_express.automation_express_state
+msgid "The sender."
+msgstr "L'expéditeur."
+
+#. module: ocd_express
+#: model_terms:ir.actions.act_window,help:ocd_express.stock_picking_action_express
+msgid "The senders create their parcels on their page /express."
+msgstr "Les expéditeurs créent leurs colis sur leur page /express."
+
+#. module: ocd_express
+#: model:ocd.automation,scope:ocd_express.automation_express_payout
+msgid "The senders with money that reached OCD."
+msgstr "Les expéditeurs dont l'argent est arrivé chez OCD."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_done
+msgid "The team already answered your request: write to OCD Live on WhatsApp."
+msgstr "L'équipe a déjà répondu à ta demande : écris à OCD Live sur WhatsApp."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "The team checks it before it leaves: %s"
+msgstr "L'équipe le vérifie avant son départ : %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The team checks the parcel %s first."
+msgstr "L'équipe vérifie d'abord le colis %s."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_done
+msgid "The team of OCD Live opens your account and tells you on WhatsApp. Then you log in with your number."
+msgstr "L'équipe d'OCD Live ouvre ton compte et te prévient sur WhatsApp. Ensuite tu te connectes avec ton numéro."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "The team opens your account and tells you on WhatsApp."
+msgstr "L'équipe ouvre ton compte et te prévient sur WhatsApp."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_partner__ocd_express_id_checked
+#: model:ir.model.fields,help:ocd_express.field_res_users__ocd_express_id_checked
+msgid "The team saw an identity document: no daily limit of money to collect."
+msgstr "L'équipe a vu une pièce d'identité : pas de limite d'argent à encaisser par jour."
+
+#. module: ocd_express
+#: model:ocd.automation,trigger:ocd_express.automation_express_state
+msgid "The tour of the courier and the page of the customer."
+msgstr "La tournée du livreur et la page du client."
+
+#. module: ocd_express
+#: model:ocd.automation,trigger:ocd_express.automation_express_leave
+#: model:ocd.automation,trigger:ocd_express.automation_express_picked
+msgid "The tour of the courier."
+msgstr "La tournée du livreur."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Their WhatsApp"
+msgstr "Son WhatsApp"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.view_partner_form
+msgid "Their parcels"
+msgstr "Ses colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "They may open the parcel before paying."
+msgstr "Le client peut ouvrir le colis avant de payer."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_partner__ocd_express_optout
+#: model:ir.model.fields,help:ocd_express.field_res_users__ocd_express_optout
+msgid "They said « Not for me » on a parcel: no message of OCD Express goes to this number any more."
+msgstr "« Pas pour moi » touché sur un colis : plus aucun message d'OCD Express ne part vers ce numéro."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "This is not the return code. Attempts left: %s."
+msgstr "Ce n'est pas le code de retour. Essais restants : %s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "This is your own number: write the number of your customer."
+msgstr "C'est ton propre numéro : écris celui de ton client."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "This parcel goes back to %s."
+msgstr "Ce colis retourne à %s."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "This parcel is no longer on its way."
+msgstr "Ce colis n'est plus en route."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "This parcel is not for me"
+msgstr "Ce colis n'est pas pour moi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_express_pickup.py:0
+msgid "This pick-up is already over."
+msgstr "Ce ramassage est déjà terminé."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Tick that your customer agrees to receive the messages of OCD Express."
+msgstr "Coche que ton client est d'accord pour recevoir les messages d'OCD Express."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_express_pickup.py:0
+msgid "Tick the parcels you took, or « The sender is absent »."
+msgstr "Coche les colis que tu as pris, ou « L'expéditeur est absent »."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_max_cod
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_max_cod
+msgid "To Collect At Most"
+msgstr "À encaisser au plus"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_cap_confirmed
+msgid "To Collect At Most (Confirmed Sender)"
+msgstr "À encaisser au plus (expéditeur confirmé)"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_company__ocd_express_cap_new
+msgid "To Collect At Most (New Sender)"
+msgstr "À encaisser au plus (nouvel expéditeur)"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_deliver_on
+msgid "To Deliver On"
+msgstr "À livrer le"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/ocd_live_dispatch.py:0
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_check__to_check
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "To check"
+msgstr "À vérifier"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_form_ocd_express
+msgid "To check before it leaves:"
+msgstr "À vérifier avant le départ :"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_list_express
+msgid "To collect"
+msgstr "À encaisser"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "To collect at most per parcel"
+msgstr "À encaisser au plus par colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "To collect: %s"
+msgstr "À encaisser : %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "To deliver today"
+msgstr "À livrer aujourd'hui"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "To drop at the OCD point: %s"
+msgstr "À déposer au point OCD : %s"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_return_state__to_return
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_search_express
+msgid "To give back"
+msgstr "À rendre"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "To pick up"
+msgstr "À prendre"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Too many wrong return codes: call the team."
+msgstr "Trop de codes de retour faux : appelle l'équipe."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_pickup_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_express.stock_picking_view_list_express
+msgid "Total"
+msgstr "Total"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Towards %s, the parcel goes by travel agency: paid in advance, nothing to collect at the door."
+msgstr "Vers %s, le colis part par agence de voyage : payé d'avance, rien à encaisser à la porte."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Towards another city (travel agency)"
+msgstr "Vers une autre ville (agence)"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_token
+msgid "Tracking Token"
+msgstr "Jeton de suivi"
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Type the amount in figures, e.g. 15000."
+msgstr "Tape le montant en chiffres, par exemple 15000."
+
+#. module: ocd_express
+#: model:ir.model,name:ocd_express.model_ocd_payout
+msgid "Vendor Payout"
+msgstr "Reversement au vendeur"
+
+#. module: ocd_express
+#: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_money_state__waiting
+msgid "Waits for the money"
+msgstr "Attend l'argent"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_warned_at
+#: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_warned_at
+msgid "Warned For The Returns At"
+msgstr "Averti pour les retours le"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Waves"
+msgstr "Vagues"
+
+#. module: ocd_express
+#: model:ocd.listing.refuse.reason,message:ocd_express.refuse_reason_express_unknown
+msgid "We could not reach you to open your account of OCD Express. Write to OCD Live on WhatsApp."
+msgstr "Nous n'avons pas pu te joindre pour ouvrir ton compte OCD Express. Écris à OCD Live sur WhatsApp."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_stock_picking__ocd_express_value
+msgid "What OCD pays back when it loses or damages the parcel: the money to collect, or the value written for a parcel already paid."
+msgstr "Ce qu'OCD rembourse s'il perd ou abîme le colis : l'argent à encaisser, ou la valeur écrite pour un colis déjà payé."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "What is wrong?"
+msgstr "Qu'est-ce qui ne va pas ?"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "What we deliver"
+msgstr "Ce qu'on livre"
+
+#. module: ocd_express
+#: model:ocd.automation,tools:ocd_express.automation_express_created
+#: model:ocd.automation,tools:ocd_express.automation_express_leave
+#: model:ocd.automation,tools:ocd_express.automation_express_paid
+#: model:ocd.automation,tools:ocd_express.automation_express_picked
+#: model:ocd.automation,tools:ocd_express.automation_express_state
+msgid "WhatsApp, code of OCD Live."
+msgstr "WhatsApp, code d'OCD Live."
+
+#. module: ocd_express
+#: model:ocd.automation,when:ocd_express.automation_express_money
+msgid "When a parcel is delivered with its code and its money is at OCD"
+msgstr "Quand un colis est livré avec son code et que son argent est chez OCD"
+
+#. module: ocd_express
+#: model:ocd.automation,when:ocd_express.automation_express_state
+msgid "When a parcel is delivered, has a problem, goes back or is given back"
+msgstr "Quand un colis est livré, a un problème, retourne ou est rendu"
+
+#. module: ocd_express
+#: model:ocd.automation,when:ocd_express.automation_express_created
+msgid "When a sender creates a parcel"
+msgstr "Quand un expéditeur crée un colis"
+
+#. module: ocd_express
+#: model:ocd.automation,when:ocd_express.automation_express_leave
+msgid "When the courier leaves to deliver"
+msgstr "Quand le livreur part livrer"
+
+#. module: ocd_express
+#: model:ocd.automation,when:ocd_express.automation_express_picked
+msgid "When the courier took the parcels at the sender"
+msgstr "Quand le livreur a pris les colis chez l'expéditeur"
+
+#. module: ocd_express
+#: model:ocd.automation,when:ocd_express.automation_express_paid
+msgid "When the team pays the payout of a sender"
+msgstr "Quand l'équipe paie le versement d'un expéditeur"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_city_ids
+msgid "Where OCD Express picks up and delivers with its couriers (the rate « OCD courier » of the city gives the price). Towards another city: by travel agency, paid in advance."
+msgstr "Où OCD Express ramasse et livre avec ses livreurs (le tarif « livreur OCD » de la ville donne le prix). Vers une autre ville : par agence de voyage, payé d'avance."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_momo_number
+msgid "Where a sender sends what they owe, with the reference given on their page."
+msgstr "Où un expéditeur envoie ce qu'il doit, avec la référence donnée sur sa page."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Where a sender sends what they owe, with their reference."
+msgstr "Où un expéditeur envoie ce qu'il doit, avec sa référence."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Where the courier picks your parcels up"
+msgstr "Où le livreur prend tes colis"
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_company__ocd_express_point
+msgid "Where the senders drop their parcels and the couriers their cash (the studio)."
+msgstr "Où les expéditeurs déposent leurs colis et les livreurs leurs espèces (le studio)."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "Where the senders drop their parcels and the couriers their cash."
+msgstr "Où les expéditeurs déposent leurs colis et les livreurs leurs espèces."
+
+#. module: ocd_express
+#: model:ir.model.fields,help:ocd_express.field_res_partner__ocd_express_social
+#: model:ir.model.fields,help:ocd_express.field_res_users__ocd_express_social
+msgid "Where they sell: Instagram, TikTok, WhatsApp…"
+msgstr "Où il vend : Instagram, TikTok, WhatsApp…"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Where you sell (if you want)"
+msgstr "Où tu vends (si tu veux)"
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_check_reason
+msgid "Why It Is Checked"
+msgstr "Pourquoi il est vérifié"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Within %s hours of the delivery. The team of OCD Live calls you back."
+msgstr "Dans les %s heures après la livraison. L'équipe d'OCD Live te rappelle."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Write %(parcel)s and the name of %(customer)s on the parcel, or show this label to the courier: they scan it."
+msgstr "Écris %(parcel)s et le nom de %(customer)s sur le colis, ou montre cette étiquette au livreur : il la scanne."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Write the WhatsApp number of your customer."
+msgstr "Écris le numéro WhatsApp de ton client."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "Write the amount the sender paid."
+msgstr "Écrire le montant payé par l'expéditeur."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Write the amount your customer pays at the door, or choose « Already paid »."
+msgstr "Écris le montant que ton client paie à la porte, ou choisis « Déjà payé »."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Write the name of your customer."
+msgstr "Écris le nom de ton client."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/res_partner.py:0
+msgid "Write the reference of the payment."
+msgstr "Écrire la référence du paiement."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Write what is in the parcel."
+msgstr "Écris ce qu'il y a dans le colis."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Write what is wrong with the parcel."
+msgstr "Écris ce qui ne va pas avec le colis."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Write your name or the name of your shop."
+msgstr "Écris ton nom ou celui de ta boutique."
+
+#. module: ocd_express
+#: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_return_attempts
+msgid "Wrong Return Codes"
+msgstr "Codes de retour faux"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Wrong or expired code. Ask for a new code."
+msgstr "Code faux ou expiré. Demande un nouveau code."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/courier.py:0
+msgid "Wrong return code: the return is blocked. Call the team."
+msgstr "Code de retour faux : le retour est bloqué. Appelle l'équipe."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "You already carry %(cash)s: drop your cash at the OCD point first, or let the customer pay on their phone."
+msgstr "Tu portes déjà %(cash)s : dépose d'abord tes espèces au point OCD, ou laisse le client payer sur son téléphone."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "You may open the parcel in front of the courier before paying."
+msgstr "Tu peux ouvrir le colis devant le livreur avant de payer."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "You owe %(amount)s to OCD: pay it on « My money », or let your customer pay the delivery."
+msgstr "Tu dois %(amount)s à OCD : règle-le sur « Mon argent », ou laisse ton client payer la livraison."
+
+#. module: ocd_express
+#. odoo-javascript
+#: code:addons/ocd_express/static/src/interactions/express.js:0
+msgid "You owe %s"
+msgstr "Tu dois %s"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "You owe OCD more than the limit: let your customer pay the delivery, or pay it on « My money »."
+msgstr "Tu dois à OCD plus que la limite : laisse ton client payer la livraison, ou règle-le sur « Mon argent »."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "You owe nothing to OCD."
+msgstr "Tu ne dois rien à OCD."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
+msgid "You sell on WhatsApp, TikTok or Instagram? We deliver your parcels."
+msgstr "Tu vends sur WhatsApp, TikTok ou Instagram ? On livre tes colis."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Your WhatsApp number"
+msgstr "Ton numéro WhatsApp"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "Your account of OCD Express is not open: write to OCD Live."
+msgstr "Ton compte OCD Express n'est pas ouvert : écris à OCD Live."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcels
+msgid "Your account of OCD Express is paused: write to OCD Live on WhatsApp. Your parcels on their way go on."
+msgstr "Ton compte OCD Express est en pause : écris à OCD Live sur WhatsApp. Tes colis en route continuent."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Your account opens with a code on your WhatsApp."
+msgstr "Ton compte s'ouvre avec un code sur ton WhatsApp."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Your code appears here when the courier leaves to deliver."
+msgstr "Ton code s'affiche ici quand le livreur part livrer."
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "Your customer pays at the door"
+msgstr "Ton client paie à la porte"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Your district"
+msgstr "Ton quartier"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "Your name or the name of your shop"
+msgstr "Ton nom ou celui de ta boutique"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.space_login_express
+msgid "Your parcels of OCD Express."
+msgstr "Tes colis OCD Express."
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "after"
+msgstr "after"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "afternoon"
+msgstr "après-midi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "afternoon before"
+msgstr "après-midi avant"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+msgid "already paid"
+msgstr "déjà payé"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "at least"
+msgstr "au moins"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "bad"
+msgstr "bad"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "delivered"
+msgstr "distribué"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "delivered, %s collected"
+msgstr "livré, %s encaissés"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "done"
+msgstr "done"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "e.g. 15000"
+msgstr "ex. 15000"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "e.g. 2 wax dresses"
+msgstr "ex. 2 robes wax"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "e.g. 8000"
+msgstr "ex. 8000"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "e.g. Instagram @mode.afi"
+msgstr "ex. Instagram @mode.afi"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.request_page
+msgid "e.g. Rue Joss, opposite the bakery"
+msgstr "ex. rue Joss, face à la boulangerie"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "e.g. opposite the football ground"
+msgstr "ex. face au terrain de foot"
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.ocd_express_debt_wizard_view_form
+msgid "e.g. the reference of the Mobile Money transfer"
+msgstr "ex. la référence du transfert Mobile Money"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "evening"
+msgstr "soir"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "for %(customer)s, %(district)s"
+msgstr "pour %(customer)s, %(district)s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "for %s"
+msgstr "pour %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "free from"
+msgstr "gratuit dès"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "from %s"
+msgstr "dès %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "given back to you"
+msgstr "il t'a été rendu"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "grey"
+msgstr "grey"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "hours"
+msgstr "heures"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "in the afternoon"
+msgstr "l'après-midi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "in the evening"
+msgstr "le soir"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "in the morning"
+msgstr "le matin"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "it comes back to you with the courier"
+msgstr "il te revient avec le livreur"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "kept for the shop"
+msgstr "gardé pour le shop"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "months"
+msgstr "months"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "morning"
+msgstr "matin"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "morning before"
+msgstr "matin avant"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "new sender"
+msgstr "nouvel expéditeur"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "no charge"
+msgstr "gratuit"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "not taken at the pick-up (%s), it leaves with the next passage"
+msgstr "pas pris au ramassage (%s), il part au prochain passage"
+
+#. module: ocd_express
+#. odoo-javascript
+#: code:addons/ocd_express/static/src/interactions/express.js:0
+msgid "nothing"
+msgstr "rien"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "nothing more"
+msgstr "rien de plus"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "nothing, it is already paid"
+msgstr "rien, c'est déjà payé"
+
+#. module: ocd_express
+#. odoo-javascript
+#: code:addons/ocd_express/static/src/interactions/express.js:0
+msgid "paid by your customer"
+msgstr "payée par ton client"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "parcels"
+msgstr "colis"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "parcels a day"
+msgstr "colis par jour"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "pick-up"
+msgstr "ramassage"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "refused by the team of OCD Live"
+msgstr "refusé par l'équipe d'OCD Live"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "return"
+msgstr "return"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "route"
+msgstr "route"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "soon"
+msgstr "soon"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "the studio"
+msgstr "le studio"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/ocd_live_settings.py:0
+msgid "then"
+msgstr "then"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "this %s"
+msgstr "ce %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "this afternoon"
+msgstr "cet après-midi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "this evening"
+msgstr "ce soir"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "this morning"
+msgstr "ce matin"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/ocd_live_verification.py:0
+msgid "to collect %s"
+msgstr "à encaisser %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "today"
+msgstr "aujourd'hui"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "tomorrow"
+msgstr "tomorrow"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "tomorrow %s"
+msgstr "demain %s"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "tomorrow afternoon"
+msgstr "demain après-midi"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "tomorrow evening"
+msgstr "demain soir"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "tomorrow morning"
+msgstr "demain matin"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "wait"
+msgstr "wait"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "your customer reports a problem, its money waits for the answer of the team"
+msgstr "ton client signale un souci, son argent attend la réponse de l'équipe"
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "your customer says it is not for them, the parcel stays with you"
+msgstr "ton client dit que ce n'est pas pour lui, le colis reste chez toi"

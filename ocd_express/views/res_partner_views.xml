@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_partner_view_list_ocd_express_sender" model="ir.ui.view">
+        <field name="name">res.partner.view.list.ocd.express.sender</field>
+        <field name="model">res.partner</field>
+        <field name="priority">95</field>
+        <field name="arch" type="xml">
+            <list string="Senders of OCD Express" decoration-warning="ocd_express_state == 'requested'"
+                  decoration-muted="ocd_express_state in ('suspended', 'refused')">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="ocd_express_social" optional="show"/>
+                <field name="district_id" optional="show"/>
+                <field name="ocd_express_since" optional="show"/>
+                <field name="ocd_express_delivered_count"/>
+                <field name="ocd_express_return_rate"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="ocd_express_balance"/>
+                <field name="ocd_express_state" widget="badge" decoration-success="ocd_express_state == 'active'"
+                       decoration-warning="ocd_express_state == 'requested'" decoration-danger="ocd_express_state == 'suspended'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="res_partner_action_ocd_express_sender" model="ir.actions.act_window">
+        <field name="name">Senders of OCD Express</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('ocd_express_state', '!=', False)]</field>
+        <field name="context">{'default_ocd_express_state': 'requested'}</field>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('res_partner_view_list_ocd_express_sender')})]"/>
+    </record>
+
+    <record id="ocd_express_debt_wizard_view_form" model="ir.ui.view">
+        <field name="name">ocd.express.debt.wizard.view.form</field>
+        <field name="model">ocd.express.debt.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Paid what they owe">
+                <group>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="amount"/>
+                    <field name="reference" placeholder="e.g. the reference of the Mobile Money transfer"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Save" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_express_debt_wizard_action" model="ir.actions.act_window">
+        <field name="name">Paid what they owe</field>
+        <field name="res_model">ocd.express.debt.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_partner_id': active_id}</field>
+    </record>
+
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit.ocd.express</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="ocd_express" string="OCD Express" groups="ocd_live.group_ocd_live_user"
+                      invisible="not ocd_express_state">
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button name="action_ocd_express_approve" type="object" string="Open the account" class="btn-primary"
+                                invisible="ocd_express_state not in ('requested', 'suspended', 'refused')"/>
+                        <button name="action_ocd_express_suspend" type="object" string="Suspend"
+                                invisible="ocd_express_state != 'active'"
+                                confirm="The sender can no longer create parcels; their parcels on the way go on."/>
+                        <button name="action_ocd_express_view_parcels" type="object" string="See their parcels"/>
+                        <button name="%(ocd_express.ocd_express_debt_wizard_action)d" type="action" string="Paid what they owe"
+                                invisible="ocd_express_balance &gt;= 0" groups="ocd_live.group_ocd_live_manager"/>
+                    </div>
+                    <group>
+                        <group string="The sender">
+                            <field name="ocd_express_state" readonly="1"/>
+                            <field name="ocd_express_since"/>
+                            <field name="ocd_express_social"/>
+                            <field name="ocd_payout_momo"/>
+                            <field name="ocd_express_momo_changed_at" invisible="not ocd_express_momo_changed_at"/>
+                            <field name="ocd_express_id_checked"/>
+                            <field name="ocd_express_place_checked"/>
+                        </group>
+                        <group string="Their parcels">
+                            <field name="ocd_express_delivered_count"/>
+                            <field name="ocd_express_returned_count"/>
+                            <field name="ocd_express_return_rate"/>
+                            <field name="ocd_express_claim_count"/>
+                            <field name="ocd_express_max_cod"/>
+                            <field name="ocd_express_balance" decoration-danger="ocd_express_balance &lt; 0"/>
+                            <field name="ocd_express_warned_at" invisible="not ocd_express_warned_at"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>

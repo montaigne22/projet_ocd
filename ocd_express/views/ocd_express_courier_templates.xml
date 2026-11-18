@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OCD Express in the tour of the courier (design OcdExpress, « My tour ») -->
+<odoo>
+
+    <template id="tour_pickup" name="OCD Express: a pick-up at a sender">
+        <div t-attf-class="o_ocd_parcel o_ocd_ex_tour #{'o_ocd_parcel_on' if step_first else ''}">
+            <div class="o_ocd_parcel_head">
+                <span class="o_ocd_step_number" t-out="step['number']"/>
+                <b t-out="step['title']"/>
+                <span class="o_ocd_ex_badge">Express</span>
+            </div>
+            <span t-if="step['place']" class="o_ocd_parcel_place" t-out="step['place']"/>
+            <span class="o_ocd_parcel_items"><t t-out="step['count_line']"/> · <t t-out="step['fee_line']"/></span>
+            <span t-if="step['check_line']" class="o_ocd_parcel_hint" t-out="step['check_line']"/>
+            <form t-attf-action="#{base}/express/ramassage/#{step['pickup'].id}/fait" method="post" enctype="multipart/form-data" class="o_ocd_ex_pick">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <t t-foreach="step['parcels']" t-as="item">
+                    <label class="o_ocd_ex_check">
+                        <input type="checkbox" name="taken" t-att-value="item.id" checked="checked"/>
+                        <span><b t-out="item.name"/> · <t t-out="item.partner_id.name"/></span>
+                    </label>
+                    <input type="text" t-attf-name="reason_#{item.id}" class="o_ocd_input o_ocd_ex_reason" maxlength="120"
+                           placeholder="Not taken? Why (missing, badly closed)"/>
+                </t>
+                <label class="o_ocd_label" t-attf-for="ph-#{step['pickup'].id}">Photo of the parcels closed</label>
+                <input type="file" name="photo" accept="image/*" capture="environment" class="o_ocd_input" t-attf-id="ph-#{step['pickup'].id}"/>
+                <button type="submit" class="o_ocd_parcel_go o_ocd_parcel_wide">I took the ticked parcels</button>
+            </form>
+            <div class="o_ocd_ex_buttons">
+                <a t-if="step['phone']" t-attf-href="tel:+#{step['phone']}" class="o_ocd_parcel_button">Call</a>
+                <form t-attf-action="#{base}/express/ramassage/#{step['pickup'].id}/absent" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <button type="submit" class="o_ocd_parcel_button">The sender is absent</button>
+                </form>
+            </div>
+            <span class="o_ocd_parcel_hint">The sender receives a WhatsApp with the parcels taken: if it is not you, they report it.</span>
+        </div>
+    </template>
+
+    <template id="tour_return" name="OCD Express: give back to a sender">
+        <div t-attf-class="o_ocd_parcel o_ocd_ex_tour #{'o_ocd_parcel_on' if step_first else ''}">
+            <div class="o_ocd_parcel_head">
+                <span class="o_ocd_step_number" t-out="step['number']"/>
+                <b t-out="step['title']"/>
+                <span class="o_ocd_ex_badge o_ocd_ex_badge_grey">Return</span>
+            </div>
+            <span t-if="step['place']" class="o_ocd_parcel_place" t-out="step['place']"/>
+            <form t-foreach="step['parcels']" t-as="item" t-attf-action="#{base}/express/retour/#{item.id}" method="post" class="o_ocd_ex_pick">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <label class="o_ocd_label" t-attf-for="rc-#{item.id}" t-out="step['labels'][item.id]"/>
+                <input type="text" name="code" t-attf-id="rc-#{item.id}" inputmode="numeric" maxlength="6" class="o_ocd_input" autocomplete="off" required="required"/>
+                <button type="submit" class="o_ocd_parcel_button o_ocd_parcel_wide">Given back</button>
+            </form>
+            <span class="o_ocd_parcel_hint" t-out="step['hint']"/>
+        </div>
+    </template>
+
+    <!-- The deliveries of OCD Express in the tour: open before paying, position, confirmed -->
+    <template id="delivery_tour_express" inherit_id="ocd_live_shop.delivery_tour" name="OCD Express: deliveries in the tour">
+        <xpath expr="//t[@t-call='ocd_live_shop.parcel_card_body']" position="after">
+            <t t-if="card.get('express')">
+                <span class="o_ocd_ex_badge">Express</span>
+                <span t-if="card['confirm_line']" class="o_ocd_parcel_hint" t-out="card['confirm_line']"/>
+                <span class="o_ocd_parcel_hint" t-out="card['open_line']"/>
+                <a t-if="card['position_url']" t-att-href="card['position_url']" target="_blank" rel="noopener"
+                   class="o_ocd_parcel_button o_ocd_parcel_wide">Position sent by the customer</a>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-18 12:01+0000\n"
-"PO-Revision-Date: 2026-11-18 12:01+0000\n"
+"POT-Creation-Date: 2026-11-18 16:58+0000\n"
+"PO-Revision-Date: 2026-11-18 16:58+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -49,6 +49,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "%(active)s rates in use, %(archived)s archived. Without a rate for an address, the shop refuses it before the payment."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_cash_remittance.py:0
+msgid "%(amount)s missing in the cash handed over by %(courier)s: a debt of the courier until it is settled."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -2589,7 +2595,28 @@ msgstr ""
 #. module: ocd_live_shop
 #. odoo-javascript
 #: code:addons/ocd_live_shop/static/src/dispatch/dispatch.xml:0
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_ids
 msgid "Activities"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_plans_ids
+msgid "Activity Plans"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_type_icon
+msgid "Activity Type Icon"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -3504,6 +3531,12 @@ msgid "Cash Handed Over By A Courier"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__ocd_cash_debt
+#: model:ir.model.fields,field_description:ocd_live_shop.field_res_users__ocd_cash_debt
+msgid "Cash Missing To Settle"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__ocd_cash_on_hand
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_users__ocd_cash_on_hand
 msgid "Cash To Hand Over"
@@ -3529,6 +3562,23 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_couriers.py:0
 msgid "Cash handed over every evening before %s."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_res_partner__ocd_cash_debt
+#: model:ir.model.fields,help:ocd_live_shop.field_res_users__ocd_cash_debt
+msgid "Cash missing at the cash desk and not settled yet: a debt of the courier."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_cash_remittance__shortfall
+msgid "Cash missing once counted: a debt of the courier until it is settled."
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_cash_remittance.py:0
+msgid "Cash missing: %s"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -6007,6 +6057,11 @@ msgid "Hours of your phone (%s)."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__shortfall_note
+msgid "How It Was Settled"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_partner__ocd_sale_mode
 #: model:ir.model.fields,field_description:ocd_live_shop.field_res_users__ocd_sale_mode
 msgid "How The Customers Buy"
@@ -6147,6 +6202,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__id
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_quant__id
 msgid "ID"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_cash_remittance__activity_exception_icon
+msgid "Icon to indicate an exception activity."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -6742,6 +6807,11 @@ msgid "Maps of the itinerary"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_cash_remittance__activity_type_icon
+msgid "Material Symbols icon e.g. checklist"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__message_has_error
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_payout__message_has_error
 #: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_vendor_place__message_has_error
@@ -6779,8 +6849,29 @@ msgid "Misleading price or description"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__shortfall
+msgid "Missing"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__shortfall_settled
+msgid "Missing Cash Settled"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_cash_remittance_view_form
+msgid "Missing cash settled"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model:ocd.listing.refuse.reason,name:ocd_live_shop.refuse_reason_product_price
 msgid "Missing or wrong price"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/couriers/couriers.xml:0
+msgid "Missing to settle:"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -6908,6 +6999,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.vendor_products
 msgid "Move up"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__my_activity_date_deadline
+msgid "My Activity Deadline"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -7215,6 +7311,21 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "News to the followers"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_type_id
+msgid "Next Activity Type"
 msgstr ""
 
 #. module: ocd_live_shop
@@ -8241,6 +8352,12 @@ msgstr ""
 #: code:addons/ocd_live_shop/controllers/shop.py:0
 #: code:addons/ocd_live_shop/controllers/shop_common.py:0
 msgid "Only %s left"
+msgstr ""
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_cash_remittance.py:0
+msgid "Only a manager can settle the cash missing of a courier."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -10109,6 +10226,11 @@ msgid "Reserves the piece in the store while it is held; done when the customer 
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_ocd_cash_remittance__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: ocd_live_shop
 #. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_couriers.py:0
 msgid "Rest"
@@ -11032,6 +11154,15 @@ msgid "Status"
 msgstr ""
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_cash_remittance__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.stock_picking_view_search_ocd_dispatch
 msgid "Step"
 msgstr ""
@@ -11505,6 +11636,11 @@ msgid "The courier could not deliver. OCD Live calls you to choose a new time."
 msgstr ""
 
 #. module: ocd_live_shop
+#: model_terms:ir.ui.view,arch_db:ocd_live_shop.ocd_cash_remittance_view_form
+msgid "The courier paid back the cash missing, or it was withheld?"
+msgstr ""
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "The courier shows a QR code; the customer pays with the payment methods offered in their country."
 msgstr ""
@@ -11512,6 +11648,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.view_partner_form
 msgid "The courier will need the new link: the old one stops working, and so do the phones where it was opened."
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_stock_picking__ocd_currency_id
+msgid "The currency of the order; the one of the company for a parcel without an order (OCD Express)."
 msgstr ""
 
 #. module: ocd_live_shop
@@ -13174,6 +13315,11 @@ msgstr ""
 #. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_ocd_parcel_code
 msgid "Type The Code Of The Customer"
+msgstr ""
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_ocd_cash_remittance__activity_exception_decoration
+msgid "Type of the exception activity on record."
 msgstr ""
 
 #. module: ocd_live_shop

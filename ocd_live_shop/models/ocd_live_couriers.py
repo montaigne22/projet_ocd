@@ -113,6 +113,7 @@ class OcdLiveCouriers(models.AbstractModel):
             "received": counted.amount_received if counted and not due else 0.0,
             "difference": counted.difference if counted and not due else 0.0,
             "state": state,
+            "debt": courier.ocd_cash_debt,
         }
 
     @api.model

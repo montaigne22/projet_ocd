@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The parcel of OCD Express (not stocked) and the lines of the bills and credit notes of the senders -->
+<odoo noupdate="1">
+
+    <record id="product_express_parcel" model="product.template">
+        <field name="name">OCD Express parcel</field>
+        <field name="type">consu</field>
+        <field name="is_storable" eval="False"/>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_express_collected" model="product.template">
+        <field name="name">OCD Express: money collected for the sender</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_express_delivery" model="product.template">
+        <field name="name">OCD Express: delivery</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_express_collecting" model="product.template">
+        <field name="name">OCD Express: collecting at the door</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_express_return" model="product.template">
+        <field name="name">OCD Express: return</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_express_pickup" model="product.template">
+        <field name="name">OCD Express: pick-up</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_express_claim" model="product.template">
+        <field name="name">OCD Express: paid back to the customer</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_express_lost" model="product.template">
+        <field name="name">OCD Express: lost or damaged by OCD</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_express_debt_paid" model="product.template">
+        <field name="name">OCD Express: paid by the sender</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="mail_activity_type_express_check" model="mail.activity.type">
+        <field name="name">OCD Express to check</field>
+        <field name="summary">A sender, a parcel held or a problem reported</field>
+        <field name="icon">search</field>
+        <field name="delay_count">0</field>
+    </record>
+
+</odoo>

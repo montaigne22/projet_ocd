@@ -1,0 +1,15 @@
+from . import (
+    account_move,
+    ir_http,
+    ocd_automation,
+    ocd_express_pickup,
+    ocd_listing_refuse_reason,
+    ocd_live_dispatch,
+    ocd_live_settings,
+    ocd_live_verification,
+    ocd_payout,
+    payment_transaction,
+    res_company,
+    res_partner,
+    stock_picking,
+)

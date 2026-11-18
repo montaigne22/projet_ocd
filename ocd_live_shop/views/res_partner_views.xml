@@ -42,6 +42,7 @@
                     <group invisible="not ocd_is_courier">
                         <field name="ocd_courier_zone_ids" widget="many2many_tags" options="{'no_create': True}"/>
                         <field name="ocd_cash_on_hand"/>
+                        <field name="ocd_cash_debt" invisible="not ocd_cash_debt" decoration-danger="1"/>
                     </group>
                 </group>
                 <button name="action_ocd_delivery_app_link" type="object" string="Link of the delivery app"

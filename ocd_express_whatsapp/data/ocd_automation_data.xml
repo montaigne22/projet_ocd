@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The templates sent by the automations of OCD Express (OCD Live › Automations) -->
+<odoo>
+
+    <record id="ocd_express.automation_express_created" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_express_announced'), ref('template_express_announced_en')])]"/>
+    </record>
+
+    <record id="ocd_express.automation_express_picked" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_express_picked'), ref('template_express_picked_en')])]"/>
+    </record>
+
+    <record id="ocd_express.automation_express_leave" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_express_on_the_way'), ref('template_express_on_the_way_en')])]"/>
+    </record>
+
+    <record id="ocd_express.automation_express_state" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_express_state'), ref('template_express_state_en')])]"/>
+    </record>
+
+    <record id="ocd_express.automation_express_paid" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_express_paid'), ref('template_express_paid_en')])]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The parcels of OCD Express in the form of a parcel: sender, check, return, problem, money -->
+    <record id="stock_picking_view_form_ocd_express" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.ocd.express</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="ocd_live_shop.stock_picking_view_form_ocd_parcel"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='ocd_stage']" position="before">
+                <field name="ocd_express" invisible="1"/>
+                <field name="ocd_express_check" invisible="1"/>
+                <field name="ocd_express_claim_state" invisible="1"/>
+                <field name="ocd_express_dropoff" invisible="1"/>
+                <field name="ocd_express_lost" invisible="1"/>
+                <button name="action_ocd_express_approve" type="object" string="Let it leave" class="btn-primary"
+                        invisible="not ocd_express or ocd_express_check != 'to_check'"/>
+                <button name="action_ocd_express_refuse" type="object" string="Refuse the parcel"
+                        invisible="not ocd_express or ocd_express_check != 'to_check'"
+                        confirm="The parcel is cancelled and the sender is told."/>
+                <button name="action_ocd_express_received" type="object" string="Received at the OCD point" class="btn-primary"
+                        invisible="not ocd_express or not ocd_express_dropoff or ocd_stage != 'ready'"/>
+                <button name="action_ocd_express_claim_sender" type="object" string="The sender is right"
+                        invisible="not ocd_express or ocd_express_claim_state != 'open'" groups="ocd_live.group_ocd_live_manager"/>
+                <button name="action_ocd_express_claim_customer" type="object" string="The customer is right"
+                        invisible="not ocd_express or ocd_express_claim_state != 'open'" groups="ocd_live.group_ocd_live_manager"
+                        confirm="The goods amount is paid back to the customer and withheld from the sender."/>
+                <button name="action_ocd_express_lost" type="object" string="Lost or damaged by OCD"
+                        invisible="not ocd_express or ocd_express_lost or ocd_stage == 'delivered'"
+                        groups="ocd_live.group_ocd_live_manager"
+                        confirm="OCD pays the declared value back to the sender (at most the amount of the settings)."/>
+            </xpath>
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="alert alert-warning" role="alert" invisible="not ocd_express or ocd_express_check != 'to_check'">
+                    To check before it leaves: <field name="ocd_express_check_reason" readonly="1" class="o_ocd_inline"/>
+                </div>
+                <div class="alert alert-danger" role="alert" invisible="not ocd_express or ocd_express_claim_state != 'open'">
+                    Problem reported by the customer: <field name="ocd_express_claim_note" readonly="1" class="o_ocd_inline"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='sale_id']" position="after">
+                <field name="ocd_express_confirm" invisible="not ocd_express" readonly="1"/>
+                <field name="ocd_express_deliver_on" invisible="not ocd_express"/>
+                <field name="ocd_express_deliver_part" invisible="not ocd_express"/>
+            </xpath>
+            <xpath expr="//field[@name='ocd_vendor_id']" position="attributes">
+                <attribute name="invisible">ocd_express</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ocd_pickup_place_id']" position="attributes">
+                <attribute name="invisible">ocd_delivery_mode == 'stock' or ocd_express</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sale_id']" position="attributes">
+                <attribute name="invisible">ocd_express</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ocd_vendor_id']" position="after">
+                <field name="ocd_express_sender_id" invisible="not ocd_express"/>
+                <field name="ocd_express_pickup_id" invisible="not ocd_express or ocd_express_dropoff"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="ocd_express" string="OCD Express" invisible="not ocd_express">
+                    <group>
+                        <group string="The parcel">
+                            <field name="ocd_express_content"/>
+                            <field name="ocd_express_value"/>
+                            <field name="ocd_express_fee"/>
+                            <field name="ocd_express_fee_by"/>
+                            <field name="ocd_express_can_open"/>
+                            <field name="ocd_by_agency" readonly="1"/>
+                            <field name="ocd_express_not_taken" invisible="not ocd_express_not_taken"/>
+                        </group>
+                        <group string="After the delivery">
+                            <field name="ocd_express_money_state"/>
+                            <field name="ocd_express_return_state" invisible="not ocd_express_return_state"/>
+                            <field name="ocd_express_returned_at" invisible="not ocd_express_returned_at"/>
+                            <field name="ocd_express_return_attempts" invisible="not ocd_express_return_attempts"/>
+                            <field name="ocd_express_claim_state" invisible="not ocd_express_claim_state"/>
+                            <field name="ocd_express_claim_at" invisible="not ocd_express_claim_at"/>
+                            <field name="ocd_express_latitude" invisible="not ocd_express_latitude"/>
+                            <field name="ocd_express_longitude" invisible="not ocd_express_latitude"/>
+                            <field name="ocd_express_anonymized" invisible="not ocd_express_anonymized"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_list_express" model="ir.ui.view">
+        <field name="name">stock.picking.view.list.ocd.express</field>
+        <field name="model">stock.picking</field>
+        <field name="priority">95</field>
+        <field name="arch" type="xml">
+            <list string="Parcels of OCD Express" create="false" decoration-danger="ocd_express_claim_state == 'open'"
+                  decoration-warning="ocd_express_check == 'to_check' or ocd_stage == 'problem'" decoration-muted="ocd_stage == 'cancelled'">
+                <field name="name"/>
+                <field name="create_date" string="Created" optional="show"/>
+                <field name="ocd_express_sender_id"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="ocd_district_id" string="District"/>
+                <field name="ocd_currency_id" column_invisible="True"/>
+                <field name="ocd_cod_amount" string="To collect" sum="Total"/>
+                <field name="ocd_express_fee" optional="hide"/>
+                <field name="ocd_courier_id" string="Courier"/>
+                <field name="ocd_express_deliver_on" optional="show"/>
+                <field name="ocd_express_deliver_part" optional="show"/>
+                <field name="ocd_express_confirm" optional="show"/>
+                <field name="ocd_express_check" column_invisible="True"/>
+                <field name="ocd_express_claim_state" optional="show"/>
+                <field name="ocd_express_return_state" optional="show"/>
+                <field name="ocd_stage" widget="badge" decoration-info="ocd_stage in ('ready', 'picked')"
+                       decoration-warning="ocd_stage in ('to_prepare', 'problem')" decoration-primary="ocd_stage == 'on_the_way'"
+                       decoration-success="ocd_stage == 'delivered'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_search_express" model="ir.ui.view">
+        <field name="name">stock.picking.view.search.ocd.express</field>
+        <field name="model">stock.picking</field>
+        <field name="priority">95</field>
+        <field name="arch" type="xml">
+            <search string="Parcels of OCD Express">
+                <field name="name"/>
+                <field name="ocd_express_sender_id"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="ocd_courier_id"/>
+                <filter name="open" string="On their way" domain="[('ocd_stage', 'in', ('to_prepare', 'ready', 'picked', 'on_the_way', 'problem'))]"/>
+                <filter name="to_check" string="To check" domain="[('ocd_express_check', '=', 'to_check')]"/>
+                <filter name="claims" string="Problems reported" domain="[('ocd_express_claim_state', '=', 'open')]"/>
+                <filter name="to_return" string="To give back" domain="[('ocd_express_return_state', '=', 'to_return')]"/>
+                <filter name="dropoff" string="Dropped at the OCD point" domain="[('ocd_express_dropoff', '=', True), ('ocd_stage', '=', 'ready')]"/>
+                <separator/>
+                <filter name="today" string="To deliver today" domain="[('ocd_express_deliver_on', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="by_sender" string="Sender" context="{'group_by': 'ocd_express_sender_id'}"/>
+                    <filter name="by_courier" string="Courier" context="{'group_by': 'ocd_courier_id'}"/>
+                    <filter name="by_stage" string="Step" context="{'group_by': 'ocd_stage'}"/>
+                    <filter name="by_day" string="Day" context="{'group_by': 'ocd_express_deliver_on:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="stock_picking_action_express" model="ir.actions.act_window">
+        <field name="name">Parcels of OCD Express</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form,activity</field>
+        <field name="domain">[('ocd_express', '=', True)]</field>
+        <field name="context">{'search_default_open': 1, 'create': False}</field>
+        <field name="search_view_id" ref="stock_picking_view_search_express"/>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('stock_picking_view_list_express')}),
+            Command.create({'view_mode': 'form', 'view_id': ref('ocd_live_shop.stock_picking_view_form_ocd_parcel')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No parcel of OCD Express yet</p>
+            <p>The senders create their parcels on their page /express.</p>
+        </field>
+    </record>
+
+</odoo>

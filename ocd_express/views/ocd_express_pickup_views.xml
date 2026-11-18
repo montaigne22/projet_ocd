@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ocd_express_pickup_view_list" model="ir.ui.view">
+        <field name="name">ocd.express.pickup.view.list</field>
+        <field name="model">ocd.express.pickup</field>
+        <field name="arch" type="xml">
+            <list string="Pick-ups" create="false" decoration-muted="state in ('cancelled', 'done')" decoration-danger="state == 'missed'">
+                <field name="date"/>
+                <field name="part"/>
+                <field name="sender_id"/>
+                <field name="courier_id"/>
+                <field name="parcel_count"/>
+                <field name="taken_count" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="fee" optional="show" sum="Total"/>
+                <field name="state" widget="badge" decoration-info="state == 'planned'" decoration-success="state == 'done'"
+                       decoration-danger="state == 'missed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_express_pickup_view_form" model="ir.ui.view">
+        <field name="name">ocd.express.pickup.view.form</field>
+        <field name="model">ocd.express.pickup</field>
+        <field name="arch" type="xml">
+            <form string="Pick-up" create="false">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="sender_id" readonly="1"/>
+                            <field name="date" readonly="state != 'planned'"/>
+                            <field name="part" readonly="state != 'planned'"/>
+                            <field name="courier_id" readonly="state != 'planned'" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="done_at" invisible="not done_at"/>
+                            <field name="taken_count" invisible="state != 'done'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="fee" invisible="not fee"/>
+                            <field name="note" invisible="not note"/>
+                            <field name="photo" widget="image" invisible="not photo"/>
+                        </group>
+                    </group>
+                    <field name="parcel_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="partner_id" string="Customer"/>
+                            <field name="ocd_district_id" string="District"/>
+                            <field name="ocd_currency_id" column_invisible="True"/>
+                            <field name="ocd_cod_amount" string="To collect"/>
+                            <field name="ocd_stage"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_express_pickup_view_search" model="ir.ui.view">
+        <field name="name">ocd.express.pickup.view.search</field>
+        <field name="model">ocd.express.pickup</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="sender_id"/>
+                <field name="courier_id"/>
+                <filter name="planned" string="Planned" domain="[('state', '=', 'planned')]"/>
+                <filter name="missed" string="Sender absent" domain="[('state', '=', 'missed')]"/>
+                <group>
+                    <filter name="by_courier" string="Courier" context="{'group_by': 'courier_id'}"/>
+                    <filter name="by_day" string="Day" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_express_pickup_action" model="ir.actions.act_window">
+        <field name="name">Pick-ups of OCD Express</field>
+        <field name="res_model">ocd.express.pickup</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_planned': 1}</field>
+    </record>
+
+</odoo>

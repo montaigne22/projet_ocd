@@ -602,6 +602,9 @@
                         </div>
                     </t>
                     <t t-foreach="steps" t-as="step">
+                        <!-- A step of another module (OCD Express: a pick-up of several parcels, a return) -->
+                        <t t-if="step.get('template')" t-call="{{step['template']}}"/>
+                        <t t-else="">
                         <t t-set="card" t-value="step['card']"/>
                         <t t-set="parcel" t-value="card['parcel']"/>
                         <div t-attf-class="o_ocd_parcel #{'o_ocd_parcel_on' if step_first else ''}">
@@ -651,6 +654,7 @@
                                 <t t-if="parcel.ocd_stage != 'on_the_way'" t-call="ocd_live_shop.parcel_feedback"/>
                             </t>
                         </div>
+                        </t>
                     </t>
                     <div t-if="not steps" class="o_ocd_info">No parcel in your tour for now.</div>
                     <div class="o_ocd_tour_end" t-out="end_line"/>
