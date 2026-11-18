@@ -1,4 +1,4 @@
-// The big evenings (chantier 7, design ProgrammeSoirees). Colours and fonts ($ocd-*) come from
+// The big events (chantier 7, design ProgrammeSoirees). Colours and fonts ($ocd-*) come from
 // ocd_live/static/src/scss/ocd_tokens.scss; the rows of the programme from ocd_live_shop.
 
 $ocd-evening-hero: linear-gradient(160deg, $ocd-ink, $ocd-ink 45%, $ocd-orange);
@@ -27,6 +27,23 @@ $ocd-evening-hero: linear-gradient(160deg, $ocd-ink, $ocd-ink 45%, $ocd-orange);
         > .o_ocd_programme_note {
             margin-top: 10px;
         }
+    }
+    // « From Fri 20 Nov »: under the discount, never over it
+    .o_ocd_product_flag.o_ocd_evening_soon {
+        top: auto;
+        bottom: 8px;
+        max-width: calc(100% - 16px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    // An event of several days: its lives by day
+    .o_ocd_evening_day {
+        margin: 14px 0 2px;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 15px;
+        color: $ocd-muted;
     }
     .o_ocd_evening_list {
         display: flex;

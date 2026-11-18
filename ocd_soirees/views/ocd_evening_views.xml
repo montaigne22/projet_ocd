@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The big evenings in the back office (chantier 7, design ProgrammeSoirees) -->
+<!-- The big events in the back office (chantier 7, design ProgrammeSoirees) -->
 <odoo>
 
     <record id="ocd_evening_view_list" model="ir.ui.view">
         <field name="name">ocd.evening.list</field>
         <field name="model">ocd.evening</field>
         <field name="arch" type="xml">
-            <list string="Big evenings" decoration-muted="state == 'cancelled'" decoration-success="state == 'open'">
+            <list string="Big events" decoration-muted="state == 'cancelled'" decoration-success="state == 'open'">
                 <field name="name"/>
+                <field name="kind_text"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
                 <field name="country_ids" widget="many2many_tags"/>
@@ -23,13 +24,13 @@
         <field name="name">ocd.evening.form</field>
         <field name="model">ocd.evening</field>
         <field name="arch" type="xml">
-            <form string="Big evening">
+            <form string="Big event">
                 <header>
                     <button name="action_ocd_open" type="object" string="Open the registrations" class="btn-primary"
                             invisible="state != 'draft'"
-                            confirm="The page of the evening opens and the vendors of its countries are invited on WhatsApp. Go on?"/>
+                            confirm="The page of the event opens and the vendors of its countries are invited on WhatsApp. Go on?"/>
                     <button name="action_ocd_cancel" type="object" string="Cancel" invisible="state == 'cancelled'"
-                            confirm="The promos of the evening stop. Cancel this evening?"/>
+                            confirm="The promos of the event stop. Cancel this event?"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,open"/>
                 </header>
                 <sheet>
@@ -45,9 +46,10 @@
                     <field name="image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="e.g. Black Friday"/></h1>
+                        <field name="kind_text" class="text-muted"/>
                     </div>
                     <group>
-                        <group string="The evening">
+                        <group string="The event">
                             <field name="date_start"/>
                             <field name="date_end"/>
                             <field name="country_ids" widget="many2many_tags"/>
@@ -63,7 +65,7 @@
                         </group>
                     </group>
                     <group>
-                        <field name="description" placeholder="The evening of the big promos of the year, with the vendors in live from 18:00."/>
+                        <field name="description" placeholder="The big promos of the year, with the vendors in live every evening."/>
                     </group>
                     <notebook>
                         <page string="Participations" name="participations">
@@ -85,13 +87,13 @@
     </record>
 
     <record id="ocd_evening_action" model="ir.actions.act_window">
-        <field name="name">Big evenings</field>
+        <field name="name">Big events</field>
         <field name="res_model">ocd.evening</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">A first big evening</p>
-            <p>Black Friday, Christmas, Valentine's Day, Tabaski: its day, its hours and its countries; then « Open the
-                registrations » invites the vendors of its countries.</p>
+            <p class="o_view_nocontent_smiling_face">A first big event</p>
+            <p>Black Friday, Christmas, Valentine's Day, Tabaski: an evening, a day or several days in a row, and its
+                countries; then « Open the registrations » invites the vendors of its countries.</p>
         </field>
     </record>
 

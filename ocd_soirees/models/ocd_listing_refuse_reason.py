@@ -4,4 +4,4 @@ from odoo import fields, models
 class OcdListingRefuseReason(models.Model):
     _inherit = "ocd.listing.refuse.reason"
 
-    applies_to = fields.Selection(selection_add=[("evening", "Big evenings")], ondelete={"evening": "cascade"})
+    applies_to = fields.Selection(selection_add=[("evening", "Big events")], ondelete={"evening": "cascade"})

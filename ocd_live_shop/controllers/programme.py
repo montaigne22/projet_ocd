@@ -49,7 +49,7 @@ class OcdProgramme(http.Controller):
             day = today + timedelta(days=index)
             rows.append({
                 "day": day,
-                "label": env._("Today") if index == 0 else tools.day_text(env, day, "EEE", capital=True),
+                "label": tools.day_text(env, day, "EEE", capital=True),
                 "number": day.day,
                 "on": day == chosen,
                 "evening": evenings.get(day),
@@ -138,10 +138,24 @@ class OcdProgramme(http.Controller):
             channel["blocks"].append({**row, "column": begin + 2, "span": max(finish - begin, 1)})
         hours = [{"label": hour_text(env, day_start.replace(hour=h)) if h < 24 else "", "column": (h - start_hour) * 4 + 2}
                  for h in range(start_hour, end_hour)]
+        # Two lives of one account at once (moved by the team, a test): one under the other
+        next_row = 2
+        ordered = sorted(channels.values(), key=lambda channel: channel["sequence"])
+        for channel in ordered:
+            lanes = []
+            for block in sorted(channel["blocks"], key=lambda block: block["column"]):
+                lane = next((index for index, end in enumerate(lanes) if end <= block["column"]), len(lanes))
+                if lane == len(lanes):
+                    lanes.append(0)
+                lanes[lane] = block["column"] + block["span"]
+                block["row"] = next_row + lane
+            channel["row"] = next_row
+            channel["lanes"] = max(len(lanes), 1)
+            next_row += channel["lanes"]
         return {
             "columns": columns,
             "hours": hours,
-            "channels": sorted(channels.values(), key=lambda channel: channel["sequence"]),
+            "channels": ordered,
         }
 
     @http.route("/lives/programme", type="http", auth="public", website=True, sitemap=True, methods=["GET"],

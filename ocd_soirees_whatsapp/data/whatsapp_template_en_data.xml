@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- The English versions of the templates of the big evenings (same names at Meta, language en) -->
+    <!-- The English versions of the templates of the big events (same names at Meta, language en) -->
     <data noupdate="1">
 
         <record id="template_evening_invite_en" model="whatsapp.template">
-            <field name="name">Big evening: invitation of the vendors (English)</field>
+            <field name="name">Big event: invitation of the vendors (English)</field>
             <field name="template_name">ocd_soiree_invitation</field>
             <field name="lang_code">en</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="body">Hello, OCD Live organises {{1}} on {{2}}. A live during the evening and your promos: tap « Join » before {{3}} to register.</field>
+            <field name="body">Hello, OCD Live organises {{1}}, which takes place {{2}}. A live during the event and your promos: tap « Join » before {{3}} to register.</field>
             <field name="button_url_value">{{ ctx.get('ocd_evening_path') }}</field>
-            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Join', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/moi/soirees/3'})]"/>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Join', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/moi/evenements/3'})]"/>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ ctx.get(\'ocd_evening_name\') }}', 'sample_value': 'Black Friday'}),
                 (0, 0, {'sequence': 2, 'value': '{{ ctx.get(\'ocd_evening_when\') }}', 'sample_value': 'Friday 27 November from 18:00 to 23:00'}),
@@ -19,19 +19,19 @@
         </record>
 
         <record id="template_evening_start_en" model="whatsapp.template">
-            <field name="name">Big evening: the evening starts (English)</field>
+            <field name="name">Big event: the event starts (English)</field>
             <field name="template_name">ocd_soiree_commence</field>
             <field name="lang_code">en</field>
             <field name="model_id" ref="ocd_soirees.model_ocd_evening_alert"/>
             <field name="partner_field">partner_id</field>
-            <field name="body">Good evening, {{1}} of OCD Live starts at {{2}}, with {{3}} vendors in live and their promos until {{4}}. Tap « See the evening » for the programme.</field>
+            <field name="body">Hello, {{1}} of OCD Live starts at {{2}}. Vendors in live: {{3}}, with their promos until {{4}}. Tap « See the event » for the programme.</field>
             <field name="button_url_value">{{ object.evening_id._ocd_public_path()[1:] }}</field>
-            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'See the evening', 'url': '{base_url}/{{1}}', 'url_example': 'soirees/vendredi-noir'})]"/>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'See the event', 'url': '{base_url}/{{1}}', 'url_example': 'evenements/vendredi-noir'})]"/>
             <field name="variable_ids" eval="[
                 (0, 0, {'sequence': 1, 'value': '{{ object.evening_id.name }}', 'sample_value': 'Black Friday'}),
                 (0, 0, {'sequence': 2, 'value': '{{ object._ocd_whatsapp_hour(object.evening_id.date_start) }}', 'sample_value': '18:00'}),
                 (0, 0, {'sequence': 3, 'value': '{{ object.evening_id.vendor_count }}', 'sample_value': '23'}),
-                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_whatsapp_hour(object.evening_id.date_end) }}', 'sample_value': '23:00'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_whatsapp_until() }}', 'sample_value': 'Sunday 7 December at 23:00'}),
             ]"/>
         </record>
 

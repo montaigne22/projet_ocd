@@ -87,14 +87,13 @@
                         <span t-foreach="guide['hours']" t-as="hour" class="o_ocd_guide_hour" role="columnheader"
                               t-attf-style="grid-column: #{hour['column']} / span 4;" t-out="hour['label']"/>
                         <t t-foreach="guide['channels']" t-as="channel">
-                            <t t-set="row_index" t-value="channel_index + 2"/>
-                            <span class="o_ocd_guide_channel" role="rowheader" t-attf-style="grid-row: #{row_index};">
+                            <span class="o_ocd_guide_channel" role="rowheader" t-attf-style="grid-row: #{channel['row']} / span #{channel['lanes']};">
                                 <b t-out="channel['name']"/><small t-out="channel['sub']"/>
                             </span>
-                            <span class="o_ocd_guide_line" t-attf-style="grid-row: #{row_index}; grid-column: 2 / span #{guide['columns']};"/>
+                            <span class="o_ocd_guide_line" t-attf-style="grid-row: #{channel['row']} / span #{channel['lanes']}; grid-column: 2 / span #{guide['columns']};"/>
                             <a t-foreach="channel['blocks']" t-as="block" t-att-href="block['watch_url'] or block['boutique_url']"
                                t-attf-class="o_ocd_guide_block #{'o_ocd_guide_live' if block['live'] else ''}" role="cell"
-                               t-attf-style="grid-row: #{row_index}; grid-column: #{block['column']} / span #{block['span']};"
+                               t-attf-style="grid-row: #{block['row']}; grid-column: #{block['column']} / span #{block['span']};"
                                t-att-title="'%s · %s – %s' % (block['name'], block['hour'], block['end'])">
                                 <b><t t-if="block['live']">● </t><t t-out="block['name']"/></b>
                                 <small><t t-out="block['hour']"/> – <t t-out="block['end']"/><t t-if="block['vendor'].ocd_category_id"> · <t t-out="block['vendor'].ocd_category_id.name"/></t></small>

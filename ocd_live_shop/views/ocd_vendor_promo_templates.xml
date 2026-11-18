@@ -10,7 +10,9 @@
                 <main class="o_ocd_main o_ocd_my_products o_ocd_promo_page">
                     <h1 class="o_ocd_h1 o_ocd_h1_small">Put in promo</h1>
                     <div class="o_ocd_promo_product">
-                        <span class="o_ocd_photo o_ocd_cart_photo"><img t-att-src="image" alt="" loading="lazy"/></span>
+                        <span class="o_ocd_photo o_ocd_cart_photo">
+                            <t t-call="ocd_live_shop.product_photo" image="image"/>
+                        </span>
                         <span>
                             <b t-out="product.name"/>
                             <small class="d-block" t-out="price_text"/>

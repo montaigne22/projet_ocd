@@ -14,6 +14,8 @@ from odoo.http import request
 from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
+from .vendor_products import vendor_photo_url
+
 # The discounts offered in one tap; « Another price » for the rest
 PERCENTS = (10, 20, 25, 30)
 # The durations offered in one tap, in days (cut at the duration allowed)
@@ -70,7 +72,7 @@ class OcdVendorPromo(http.Controller):
             header_title=env._("My products"),
             vendor=vendor,
             product=product,
-            image=f"/ocd/espace/moi/produits/{product.id}/photo/image_128",
+            image=vendor_photo_url(product, "image_128"),
             price_text=common.money(product.list_price, currency),
             reference=reference,
             reference_text=common.money(reference, currency),

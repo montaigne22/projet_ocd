@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-18 10:39+0000\n"
-"PO-Revision-Date: 2026-11-18 10:39+0000\n"
+"POT-Creation-Date: 2026-11-18 11:01+0000\n"
+"PO-Revision-Date: 2026-11-18 11:01+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,21 +18,30 @@ msgstr ""
 #: model:ir.module.module,description:base.module_ocd_soirees
 msgid ""
 "\n"
-"Big evenings of OCD Live\n"
-"========================\n"
+"Big events of OCD Live\n"
+"======================\n"
 "\n"
-"- The team creates an evening: its name, its day and its hours, its\n"
-"  countries, its image, the discount at most, the end of the registrations.\n"
+"- The team creates an event: its name, an evening, a day or several days in\n"
+"  a row (a setting caps the length), its countries, its image, the discount\n"
+"  at most, the end of the registrations.\n"
 "- Opening the registrations invites the checked vendors of these countries\n"
-"  (WhatsApp and their space). A vendor joins with a live during the evening\n"
-"  (the usual booking) and their promos of the evening; the team checks each\n"
+"  (WhatsApp and their space). A vendor joins with a live during the event\n"
+"  (the usual booking) and their promos of the event; the team checks each\n"
 "  participation.\n"
-"- The page of the evening: the countdown, the programme of the evening, the\n"
-"  promos of the evening by category, « Tell me on WhatsApp ». The programme\n"
-"  of the lives shows the evening on its day.\n"
-"- The promos of the evening are the promo prices of the products, valid only\n"
-"  during the hours of the evening; then the products take back their price\n"
-"  (or the promo running before).\n"
+"- The page of the event: the countdown, its programme day by day, its\n"
+"  promos by category, « Tell me on WhatsApp ». The programme of the lives\n"
+"  shows the event on each of its days.\n"
+"- The promos of the event are promo prices of the products, valid only\n"
+"  during its hours, without a break; then the products take back their\n"
+"  price (or the promo running before).\n"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/controllers/evening.py:0
+#: code:addons/ocd_soirees/models/ocd_evening.py:0
+#: code:addons/ocd_soirees/models/ocd_live_verification.py:0
+msgid "%(day)s at %(hour)s"
 msgstr ""
 
 #. module: ocd_soirees
@@ -51,6 +60,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening.py:0
 msgid "%(days)s d %(hours)s h"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/ocd_evening_participation.py:0
+msgid "%(kind)s · %(when)s"
 msgstr ""
 
 #. module: ocd_soirees
@@ -79,6 +94,18 @@ msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
+#: code:addons/ocd_soirees/models/ocd_evening.py:0
+msgid "%s · OCD Live"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/controllers/evening.py:0
+msgid "%s, at the studio or remote, at the usual price of a live: the usual booking, with your ticket."
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening_participation.py:0
 msgid "%s: join"
 msgstr ""
@@ -87,11 +114,6 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_soirees/controllers/evening.py:0
 msgid "%s: told at each live"
-msgstr ""
-
-#. module: ocd_soirees
-#: model_terms:ir.ui.view,arch_db:ocd_soirees.join
-msgid ", at the studio or remote, at the usual price of a live: the usual booking, with your ticket."
 msgstr ""
 
 #. module: ocd_soirees
@@ -107,13 +129,19 @@ msgid "1 promo"
 msgstr ""
 
 #. module: ocd_soirees
-#: model_terms:ir.ui.view,arch_db:ocd_soirees.join
-msgid "<b>1. Your live during the evening</b>"
+#. odoo-python
+#: code:addons/ocd_soirees/controllers/evening.py:0
+msgid "1 vendor in live"
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.join
-msgid "<b>2. Your promos of the evening</b>"
+msgid "<b>1. Your live during the event</b>"
+msgstr ""
+
+#. module: ocd_soirees
+#: model_terms:ir.ui.view,arch_db:ocd_soirees.join
+msgid "<b>2. Your promos of the event</b>"
 msgstr ""
 
 #. module: ocd_soirees
@@ -123,23 +151,17 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.evening
-msgid "<small class=\"o_ocd_programme_note\">The promos of the evening are valid during its hours only.</small>"
+msgid "<small class=\"o_ocd_programme_note\">The promos of the event are valid during its hours only.</small>"
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.join
-msgid "<small class=\"o_ocd_programme_note\">The team checks your participation and answers you on WhatsApp. Your promos are valid during the hours of the evening only.</small>"
+msgid "<small class=\"o_ocd_programme_note\">The team checks your participation and answers you on WhatsApp. Your promos are valid during the hours of the event only.</small>"
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.evening
-#: model_terms:ir.ui.view,arch_db:ocd_soirees.evenings
-msgid "<small>Big evening · OCD Live</small>"
-msgstr ""
-
-#. module: ocd_soirees
-#: model_terms:ir.ui.view,arch_db:ocd_soirees.evening
-msgid "<span>Share the evening</span>"
+msgid "<span>Share the event</span>"
 msgstr ""
 
 #. module: ocd_soirees
@@ -150,23 +172,29 @@ msgstr ""
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening.py:0
-msgid "A big evening lasts a day at most."
+msgid "A big event lasts %s days at most (setting)."
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/res_company.py:0
+msgid "A big event lasts between 1 and 60 days at most."
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.actions.act_window,help:ocd_soirees.ocd_evening_action
-msgid "A first big evening"
+msgid "A first big event"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,when:ocd_soirees.automation_evening_alert
-msgid "A little before the start of a big evening (setting)"
+msgid "A little before the start of a big event (setting)"
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening_participation.py:0
-msgid "A live during the evening and your promos of the evening. Registrations until %s."
+msgid "A live during the event and your promos of the event. Registrations until %s."
 msgstr ""
 
 #. module: ocd_soirees
@@ -193,7 +221,7 @@ msgstr ""
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening_participation.py:0
-msgid "Accepted: you are in the programme of the evening."
+msgid "Accepted: you are in the programme of the event."
 msgstr ""
 
 #. module: ocd_soirees
@@ -219,8 +247,14 @@ msgid "All the lives of that day"
 msgstr ""
 
 #. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/ocd_live_settings.py:0
+msgid "An evening, a day or several days in a row; its promos last as long."
+msgstr ""
+
+#. module: ocd_soirees
 #: model:ir.model.constraint,message:ocd_soirees.constraint_ocd_evening_unique_slug
-msgid "Another big evening has this address."
+msgid "Another big event has this address."
 msgstr ""
 
 #. module: ocd_soirees
@@ -246,61 +280,69 @@ msgid "Being prepared"
 msgstr ""
 
 #. module: ocd_soirees
-#: model_terms:ir.ui.view,arch_db:ocd_soirees.join
-msgid "Between"
-msgstr ""
-
-#. module: ocd_soirees
+#: model:ir.model.fields,field_description:ocd_soirees.field_ocd_evening_alert__evening_id
+#: model:ir.model.fields,field_description:ocd_soirees.field_ocd_evening_participation__evening_id
 #: model:ir.model.fields,field_description:ocd_soirees.field_ocd_product_promo__evening_id
-msgid "Big Evening"
+msgid "Big Event"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model,name:ocd_soirees.model_ocd_evening
-msgid "Big Evening Of OCD Live"
+msgid "Big Event Of OCD Live"
+msgstr ""
+
+#. module: ocd_soirees
+#: model:ir.model.fields,field_description:ocd_soirees.field_res_company__ocd_evening_max_days
+msgid "Big Event: Days At Most"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields,field_description:ocd_soirees.field_res_company__ocd_evening_registration_days
-msgid "Big Evening: Registrations Until"
+msgid "Big Event: Registrations Until"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model,name:ocd_soirees.model_ocd_evening_alert
-msgid "Big Evening: Tell Me"
+msgid "Big Event: Tell Me"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields,field_description:ocd_soirees.field_res_company__ocd_evening_alert_minutes
-msgid "Big Evening: Told Before"
+msgid "Big Event: Told Before"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/ocd_evening.py:0
+msgid "Big day"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/ocd_evening.py:0
+msgid "Big evening"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields.selection,name:ocd_soirees.selection__ocd_product_promo__source__evening
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.ocd_evening_view_form
-msgid "Big evening"
+msgid "Big event"
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
-#: code:addons/ocd_soirees/models/ocd_evening_participation.py:0
-msgid "Big evening · %s"
-msgstr ""
-
-#. module: ocd_soirees
-#. odoo-python
-#: code:addons/ocd_soirees/controllers/evening.py:0
-msgid "Big evening · OCD Live"
+#: code:addons/ocd_soirees/models/ocd_evening.py:0
+msgid "Big event · %s days"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,name:ocd_soirees.automation_evening_invite
-msgid "Big evening: invite the vendors"
+msgid "Big event: invite the vendors"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,name:ocd_soirees.automation_evening_alert
-msgid "Big evening: tell the people who asked"
+msgid "Big event: tell the people who asked"
 msgstr ""
 
 #. module: ocd_soirees
@@ -314,30 +356,30 @@ msgstr ""
 #: model:ir.ui.menu,name:ocd_soirees.ocd_evening_menu
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.evenings
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.ocd_evening_view_list
-msgid "Big evenings"
+msgid "Big events"
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_live_settings.py:0
-msgid "Big evenings of OCD Live"
+msgid "Big events of OCD Live"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.module.module,summary:base.module_ocd_soirees
-msgid "Big evenings of OCD Live (Black Friday, Christmas, Valentine's Day, Tabaski): the vendors of the countries invited do a live during the evening and put their promos of the evening"
+msgid "Big events of OCD Live (Black Friday, Christmas, Valentine's Day, Tabaski), an evening or several days: the vendors of the countries invited do a live during the event and put their promos of the event"
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.actions.server,name:ocd_soirees.ir_cron_evenings_ir_actions_server
-msgid "Big evenings: tell the people who asked"
+msgid "Big events: tell the people who asked"
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.actions.act_window,help:ocd_soirees.ocd_evening_action
 msgid ""
-"Black Friday, Christmas, Valentine's Day, Tabaski: its day, its hours and its countries; then « Open the\n"
-"                registrations » invites the vendors of its countries."
+"Black Friday, Christmas, Valentine's Day, Tabaski: an evening, a day or several days in a row, and its\n"
+"                countries; then « Open the registrations » invites the vendors of its countries."
 msgstr ""
 
 #. module: ocd_soirees
@@ -351,14 +393,14 @@ msgid "Book remote"
 msgstr ""
 
 #. module: ocd_soirees
-#: model:ocd.listing.refuse.reason,message:ocd_soirees.refuse_reason_evening_live
-msgid "Book your live during the hours of the evening, then send your participation again."
+#. odoo-python
+#: code:addons/ocd_soirees/controllers/evening.py:0
+msgid "Book your live during the event or choose at least one promo."
 msgstr ""
 
 #. module: ocd_soirees
-#. odoo-python
-#: code:addons/ocd_soirees/controllers/evening.py:0
-msgid "Book your live in the evening or choose at least one promo."
+#: model:ocd.listing.refuse.reason,message:ocd_soirees.refuse_reason_evening_live
+msgid "Book your live during the hours of the event, then send your participation again."
 msgstr ""
 
 #. module: ocd_soirees
@@ -415,7 +457,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields,help:ocd_soirees.field_res_company__ocd_evening_registration_days
-msgid "Days before a new big evening when the registrations of the vendors close."
+msgid "Days before a new big event when the registrations of the vendors close."
 msgstr ""
 
 #. module: ocd_soirees
@@ -452,19 +494,13 @@ msgid "Ends At"
 msgstr ""
 
 #. module: ocd_soirees
-#: model:ir.model.fields,field_description:ocd_soirees.field_ocd_evening_alert__evening_id
-#: model:ir.model.fields,field_description:ocd_soirees.field_ocd_evening_participation__evening_id
-msgid "Evening"
+#: model_terms:ir.ui.view,arch_db:ocd_soirees.evenings
+msgid "Evenings, days or weeks of OCD Live with many vendors in live, and their promos."
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.listing.refuse.reason,name:ocd_soirees.refuse_reason_evening_full
-msgid "Evening full"
-msgstr ""
-
-#. module: ocd_soirees
-#: model_terms:ir.ui.view,arch_db:ocd_soirees.evenings
-msgid "Evenings of OCD Live with many vendors in live, and their promos of the evening."
+msgid "Event full"
 msgstr ""
 
 #. module: ocd_soirees
@@ -498,13 +534,24 @@ msgstr ""
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_live_settings.py:0
-msgid "For a new evening: they close these days before it (changed on the evening)."
+msgid "For a new event: they close these days before it (changed on the event)."
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/ocd_evening.py:0
+msgid "From %(start)s to %(end)s"
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/controllers/evening.py:0
 msgid "From %s"
+msgstr ""
+
+#. module: ocd_soirees
+#: model:ir.model.fields,help:ocd_soirees.field_ocd_evening__kind_text
+msgid "From its hours: a big evening, a big day, or a big event of several days."
 msgstr ""
 
 #. module: ocd_soirees
@@ -521,7 +568,7 @@ msgstr ""
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/controllers/evening.py:0
-msgid "Hello, about the big evening %s of OCD Live."
+msgid "Hello, about the big event %s of OCD Live."
 msgstr ""
 
 #. module: ocd_soirees
@@ -558,7 +605,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,actions:ocd_soirees.automation_evening_invite
-msgid "Invite them on WhatsApp: a live during the evening and their promos, before the end of the registrations."
+msgid "Invite them on WhatsApp: a live during the event and their promos, before the end of the registrations."
 msgstr ""
 
 #. module: ocd_soirees
@@ -571,6 +618,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening_participation.py:0
 msgid "Join"
+msgstr ""
+
+#. module: ocd_soirees
+#: model:ir.model.fields,field_description:ocd_soirees.field_ocd_evening__kind_text
+msgid "Kind"
 msgstr ""
 
 #. module: ocd_soirees
@@ -588,14 +640,26 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/ocd_live_settings.py:0
+msgid "Length of an event"
+msgstr ""
+
+#. module: ocd_soirees
 #: model:ir.model.fields,field_description:ocd_soirees.field_ocd_evening_participation__booking_id
-msgid "Live In The Evening"
+msgid "Live During The Event"
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_live_verification.py:0
 msgid "Live at %s"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/ocd_live_verification.py:0
+msgid "Live on %s"
 msgstr ""
 
 #. module: ocd_soirees
@@ -612,7 +676,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields,help:ocd_soirees.field_res_company__ocd_evening_alert_minutes
-msgid "Minutes before the start of a big evening, to the people who asked « Tell me on WhatsApp »."
+msgid "Minutes before the start of a big event, to the people who asked « Tell me on WhatsApp »."
 msgstr ""
 
 #. module: ocd_soirees
@@ -634,14 +698,14 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.evenings
-msgid "No big evening planned for now."
+msgid "No big event planned for now."
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_live_verification.py:0
 #: model:ocd.listing.refuse.reason,name:ocd_soirees.refuse_reason_evening_live
-msgid "No live in the evening"
+msgid "No live during the event"
 msgstr ""
 
 #. module: ocd_soirees
@@ -708,7 +772,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.module.module,shortdesc:base.module_ocd_soirees
-msgid "OCD Live: Big Evenings Of Several Vendors"
+msgid "OCD Live: Big Events Of Several Vendors"
 msgstr ""
 
 #. module: ocd_soirees
@@ -734,7 +798,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model,name:ocd_soirees.model_ocd_evening_participation
-msgid "Participation In A Big Evening"
+msgid "Participation In A Big Event"
 msgstr ""
 
 #. module: ocd_soirees
@@ -748,7 +812,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.ui.menu,name:ocd_soirees.ocd_evening_participation_menu
-msgid "Participations in the evenings"
+msgid "Participations in the events"
 msgstr ""
 
 #. module: ocd_soirees
@@ -776,7 +840,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields,field_description:ocd_soirees.field_ocd_evening__promo_ids
-msgid "Promos Of The Evening"
+msgid "Promos Of The Event"
 msgstr ""
 
 #. module: ocd_soirees
@@ -918,18 +982,23 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,actions:ocd_soirees.automation_evening_alert
-msgid "Tell them the evening starts, with the number of vendors in live and the link of its programme."
+msgid "Tell them the event starts, with the number of vendors in live and the link of its programme."
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening.py:0
-msgid "The big evening is cancelled."
+msgid "The big event is cancelled."
+msgstr ""
+
+#. module: ocd_soirees
+#: model_terms:ir.ui.view,arch_db:ocd_soirees.ocd_evening_view_form
+msgid "The big promos of the year, with the vendors in live every evening."
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,scope:ocd_soirees.automation_evening_invite
-msgid "The checked vendors of the countries of the evening, once."
+msgid "The checked vendors of the countries of the event, once."
 msgstr ""
 
 #. module: ocd_soirees
@@ -940,43 +1009,43 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields,help:ocd_soirees.field_ocd_evening__slug
-msgid "The end of the address of its page: /soirees/<address>."
+msgid "The end of the address of its page: /evenements/<address>."
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.ocd_evening_view_form
-msgid "The evening"
+msgid "The event"
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening.py:0
-msgid "The evening ends after it starts."
+msgid "The event ends after it starts."
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.listing.refuse.reason,message:ocd_soirees.refuse_reason_evening_full
-msgid "The evening is full for your category: the team writes to you for the next one."
+msgid "The event is full for your category: the team writes to you for the next one."
 msgstr ""
 
 #. module: ocd_soirees
-#: model_terms:ir.ui.view,arch_db:ocd_soirees.ocd_evening_view_form
-msgid "The evening of the big promos of the year, with the vendors in live from 18:00."
+#: model:ir.model.fields,help:ocd_soirees.field_res_company__ocd_evening_max_days
+msgid "The length of a big event at most, in days: its promos last as long."
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.evening
-msgid "The lives of the evening come soon: the vendors are joining."
+msgid "The lives of the event come soon: the vendors are joining."
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.join
-msgid "The page of the evening"
+msgid "The page of the event"
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.ocd_evening_view_form
-msgid "The page of the evening opens and the vendors of its countries are invited on WhatsApp. Go on?"
+msgid "The page of the event opens and the vendors of its countries are invited on WhatsApp. Go on?"
 msgstr ""
 
 #. module: ocd_soirees
@@ -987,12 +1056,12 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,scope:ocd_soirees.automation_evening_alert
-msgid "The people who touched « Tell me on WhatsApp » on the page of the evening."
+msgid "The people who touched « Tell me on WhatsApp » on the page of the event."
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.evening
-msgid "The programme of the evening"
+msgid "The programme of the event"
 msgstr ""
 
 #. module: ocd_soirees
@@ -1002,17 +1071,17 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.evening
-msgid "The promos of the evening"
+msgid "The promos of the event"
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.evening
-msgid "The promos of the evening come soon."
+msgid "The promos of the event come soon."
 msgstr ""
 
 #. module: ocd_soirees
 #: model_terms:ir.ui.view,arch_db:ocd_soirees.ocd_evening_view_form
-msgid "The promos of the evening stop. Cancel this evening?"
+msgid "The promos of the event stop. Cancel this event?"
 msgstr ""
 
 #. module: ocd_soirees
@@ -1023,7 +1092,7 @@ msgstr ""
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening.py:0
-msgid "The registrations close before the evening."
+msgid "The registrations close before the end of the event."
 msgstr ""
 
 #. module: ocd_soirees
@@ -1039,7 +1108,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields,help:ocd_soirees.field_ocd_evening__registration_end
-msgid "The vendors join until then. Empty: a few days before the evening (setting)."
+msgid "The vendors join until then, at the latest before its end. Empty: a few days before the event (setting)."
 msgstr ""
 
 #. module: ocd_soirees
@@ -1049,25 +1118,25 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.constraint,message:ocd_soirees.constraint_ocd_evening_alert_unique_alert
-msgid "This contact is already told of this evening."
+msgid "This contact is already told of this event."
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening_participation.py:0
-msgid "This evening is for the vendors of %s."
+msgid "This event is for the vendors of %s."
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_evening.py:0
-msgid "This evening is over."
+msgid "This event is over."
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/controllers/evening.py:0
-msgid "This evening is over: see you at the next one."
+msgid "This event is over: see you at the next one."
 msgstr ""
 
 #. module: ocd_soirees
@@ -1078,7 +1147,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.constraint,message:ocd_soirees.constraint_ocd_evening_participation_unique_participation
-msgid "This vendor already joins this evening."
+msgid "This vendor already joins this event."
 msgstr ""
 
 #. module: ocd_soirees
@@ -1120,12 +1189,12 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ir.model.fields,help:ocd_soirees.field_ocd_evening__description
-msgid "What the evening is, in a sentence or two."
+msgid "What the event is, in a sentence or two."
 msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,when:ocd_soirees.automation_evening_invite
-msgid "When the team opens the registrations of a big evening"
+msgid "When the team opens the registrations of a big event"
 msgstr ""
 
 #. module: ocd_soirees
@@ -1146,7 +1215,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.listing.refuse.reason,message:ocd_soirees.refuse_reason_evening_promo
-msgid "Your promos of the evening are not real discounts: choose lower prices, then send again."
+msgid "Your promos of the event are not real discounts: choose lower prices, then send again."
 msgstr ""
 
 #. module: ocd_soirees
@@ -1164,6 +1233,12 @@ msgstr ""
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/models/ocd_live_settings.py:0
+msgid "days at most"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/models/ocd_live_settings.py:0
 msgid "days before"
 msgstr ""
 
@@ -1174,14 +1249,32 @@ msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
+#: code:addons/ocd_soirees/models/ocd_evening.py:0
+msgid "from %(start_day)s at %(start)s to %(end_day)s at %(end)s"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
 #: code:addons/ocd_soirees/controllers/evening.py:0
 msgid "live"
 msgstr ""
 
 #. module: ocd_soirees
 #. odoo-python
+#: code:addons/ocd_soirees/models/ocd_evening.py:0
+msgid "midnight"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
 #: code:addons/ocd_soirees/models/ocd_live_settings.py:0
 msgid "minutes before"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/controllers/evening.py:0
+msgid "promo"
 msgstr ""
 
 #. module: ocd_soirees
@@ -1205,6 +1298,12 @@ msgstr ""
 #. module: ocd_soirees
 #. odoo-python
 #: code:addons/ocd_soirees/controllers/evening.py:0
+msgid "vendor"
+msgstr ""
+
+#. module: ocd_soirees
+#. odoo-python
+#: code:addons/ocd_soirees/controllers/evening.py:0
 msgid "vendors"
 msgstr ""
 
@@ -1215,7 +1314,7 @@ msgstr ""
 
 #. module: ocd_soirees
 #: model:ocd.automation,trigger:ocd_soirees.automation_evening_invite
-msgid "« Open the registrations » on the evening."
+msgid "« Open the registrations » on the event."
 msgstr ""
 
 #. module: ocd_soirees

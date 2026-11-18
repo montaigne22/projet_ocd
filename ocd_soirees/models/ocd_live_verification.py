@@ -1,8 +1,10 @@
 from odoo import api, models
 
+from odoo.addons.ocd_live import tools
+
 
 class OcdLiveVerification(models.AbstractModel):
-    """The participations to the big evenings, on the board of the checks (« To check »)."""
+    """The participations to the big events, on the board of the checks (« To check »)."""
 
     _inherit = "ocd.live.verification"
 
@@ -11,7 +13,7 @@ class OcdLiveVerification(models.AbstractModel):
         columns = super()._ocd_columns()
         columns.append({
             "key": "evening",
-            "label": self.env._("Big evenings"),
+            "label": self.env._("Big events"),
             "empty": self.env._("No participation waiting."),
             "items": self._ocd_evening_items(),
         })
@@ -38,8 +40,7 @@ class OcdLiveVerification(models.AbstractModel):
                 "title": participation.vendor_id.name,
                 "photo": "",
                 "sub": " · ".join(part for part in (
-                    _("Live at %s", evening._ocd_hour(evening._ocd_local(live.start_datetime))) if live
-                    else _("No live in the evening"),
+                    self._ocd_evening_live_text(evening, live) if live else _("No live during the event"),
                     _("1 promo") if len(promos) == 1 else _("%s promos", len(promos)),
                 ) if part),
                 "detail": "\n".join(
@@ -53,6 +54,16 @@ class OcdLiveVerification(models.AbstractModel):
                 "reasons": reasons,
             })
         return items
+
+    @api.model
+    def _ocd_evening_live_text(self, evening, live):
+        """« Live at 18:00 », or « Live on Sat 5 Dec at 18:00 » for an event of several days."""
+        _ = self.env._
+        local = evening._ocd_local(live.start_datetime)
+        if evening._ocd_one_day():
+            return _("Live at %s", evening._ocd_hour(local))
+        return _("Live on %s", _("%(day)s at %(hour)s", day=tools.day_text(self.env, local.date(), "EEE d MMM"),
+                                 hour=evening._ocd_hour(local)))
 
     @api.model
     def _ocd_models(self):

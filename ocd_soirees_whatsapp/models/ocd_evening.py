@@ -18,11 +18,11 @@ class OcdEvening(models.Model):
                     ocd_evening_name=evening.name,
                     ocd_evening_when=local._ocd_when_sentence(tz_name),
                     ocd_evening_until=local._ocd_registration_day(tz_name),
-                    ocd_evening_path=f"ocd/espace/moi/soirees/{evening.id}",
+                    ocd_evening_path=f"ocd/espace/moi/evenements/{evening.id}",
                 )
 
     def _ocd_tell_alerts(self):
-        """Override of `ocd_soirees`: « the evening starts » (ocd_soiree_commence), to the people
+        """Override of `ocd_soirees`: « the event starts » (ocd_soiree_commence), to the people
         who asked; never after STOP."""
         super()._ocd_tell_alerts()
         alerts = self.sudo().alert_ids.filtered(lambda alert: not alert.partner_id.whatsapp_opt_out)
@@ -35,7 +35,13 @@ class OcdEveningAlert(models.Model):
     _inherit = "ocd.evening.alert"
 
     def _ocd_whatsapp_hour(self, value):
-        """An hour of the evening at the hour of the person told."""
+        """An hour of the event at the hour of the person told."""
         self.ensure_one()
         evening = self.evening_id
         return evening._ocd_hour(evening._ocd_local(value, self.partner_id._ocd_tz_name()))
+
+    def _ocd_whatsapp_until(self):
+        """The end of the event at the hour of the person told: « 23:00 », or « Sunday 7 December
+        at 23:00 » for several days."""
+        self.ensure_one()
+        return self.evening_id._ocd_until_text(self.partner_id._ocd_tz_name())

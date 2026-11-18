@@ -51,7 +51,7 @@ décisions), car leur approbation ne dépend pas de nous.
 
 | # | Ajout | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
-| 3.1 | **Prix promo** | Prix barré et nouveau prix, jusqu'à une date ; affiché dans la boutique, la fiche et le panier | Prix barré du site d'Odoo, à confirmer sur la version utilisée | ~1 semaine |
+| 3.1 | **Prix promo** | Prix barré et nouveau prix, jusqu'à une date ; affiché dans la boutique, la fiche et le panier | Prix barré du site d'Odoo, à confirmer sur la version utilisée | ~1 semaine ; **fait le 18 novembre 2026** avec le chantier 7 (un seul calcul des prix pour tout le site, le prix barré est le prix le plus bas des 14 derniers jours) |
 | 3.2 | **Préparer son prochain live** | Cocher les produits à montrer : la régie les a sous la main | Produits montrés pendant un live (`_ocd_show_product`), aujourd'hui choisis seulement par l'équipe | 3 à 4 jours ; **fait le 17 novembre 2026 (chantier 21)** |
 | 3.3 | **Ventes par produit** | Pièces vendues, dernière vente | Commandes ; à faire avec le chantier 3 « Statistiques du vendeur » de la feuille de route | 2 à 3 jours ; **fait le 17 novembre 2026 (chantier 3)** : la ligne « Vendu » sous chaque produit, « Plus vendus » et « Pas vendus » dans « Mes chiffres » |
 | 3.4 | **Alerte de stock bas** | WhatsApp au vendeur quand il reste peu de pièces (2 par défaut) | Messages WhatsApp aux vendeurs, stock | 1 à 2 jours, plus l'approbation du modèle par Meta ; **fait le 17 novembre 2026 (chantier 21)** |
@@ -288,7 +288,7 @@ plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
 | 2. Garantie OCD et avis | Le badge « Vendeur vérifié » ; les avis des acheteurs | Un magasin vérifié (M.5) a le même badge ; les avis de chaque produit s'affichent dans « Mes produits » une fois le chantier 2 fait ; le bouton « Signaler » un produit ou un vendeur (validé le 16 novembre) se fait dans ce chantier |
 | 3. Statistiques du vendeur | Les chiffres des produits et des magasins (1.1, 3.3, M.6) | 3.3 se fait dans le chantier 3 ; 1.1 et M.6 restent sous chaque produit et magasin, et l'écran des statistiques les reprend : un seul calcul |
 | 5. Paiement automatique dans l'UEMOA | Le paiement sur le téléphone au comptoir (A.1) | Automatique au Cameroun (CamPay) et, depuis le chantier 5, dans l'UEMOA (CinetPay, Flutterwave) dès que leurs clés sont saisies ; ailleurs, Mobile Money vérifié par l'équipe, donc plus lent au comptoir |
-| 7. Programme et événements | Le prix promo (3.1) | Une grande soirée (Vendredi noir, Tabaski…) invite ses vendeurs à mettre une promo pour la soirée |
+| 7. Programme et événements | Le prix promo (3.1) | Un grand événement (Vendredi noir, Tabaski…), d'une soirée ou de plusieurs jours, invite ses vendeurs à mettre une promo pour l'événement (fait le 18 novembre 2026) |
 | 8. Clips automatiques | Partager un produit, catalogue (1.3, 1.7) | Les clips d'un produit s'affichent dans « Mes produits », prêts à partager |
 | 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur reprend la fiche « lieu » |
 | 10. Points relais | Les lieux (M), A.6 | Un point relais est un lieu ; A.6 se fait avec le chantier 10 |

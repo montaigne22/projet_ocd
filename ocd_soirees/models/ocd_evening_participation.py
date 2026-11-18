@@ -3,16 +3,17 @@ from odoo.exceptions import UserError
 
 
 class OcdEveningParticipation(models.Model):
-    """A vendor who joins a big evening: their live during the evening (a usual booking) and their
+    """A vendor who joins a big event: their live during the event (a usual booking) and their
     promos of the evening, checked by the team. The promos show once the participation is
-    accepted, and only during the hours of the evening."""
+    accepted, and only during the hours of the event."""
 
     _name = "ocd.evening.participation"
-    _description = "Participation In A Big Evening"
+    _description = "Participation In A Big Event"
     _inherit = ["mail.thread"]
     _order = "evening_id desc, id"
 
-    evening_id = fields.Many2one(comodel_name="ocd.evening", required=True, index=True, ondelete="cascade")
+    evening_id = fields.Many2one(comodel_name="ocd.evening", string="Big Event", required=True, index=True,
+                                 ondelete="cascade")
     vendor_id = fields.Many2one(comodel_name="res.partner", string="Vendor", required=True, index=True,
                                 ondelete="cascade")
     company_id = fields.Many2one(related="evening_id.company_id", store=True)
@@ -21,13 +22,13 @@ class OcdEveningParticipation(models.Model):
         required=True, default="to_check", tracking=True, index=True,
     )
     refuse_reason = fields.Char(string="Why It Was Refused", readonly=True)
-    booking_id = fields.Many2one(comodel_name="ocd.live.booking", string="Live In The Evening",
+    booking_id = fields.Many2one(comodel_name="ocd.live.booking", string="Live During The Event",
                                  compute="_compute_booking_id")
     promo_ids = fields.One2many(comodel_name="ocd.product.promo", inverse_name="participation_id", string="Promos Of The Vendor",
                                 context={"active_test": False})
     promo_count = fields.Integer(string="Promos", compute="_compute_promo_count")
 
-    _unique_participation = models.UniqueIndex("(evening_id, vendor_id)", "This vendor already joins this evening.")
+    _unique_participation = models.UniqueIndex("(evening_id, vendor_id)", "This vendor already joins this event.")
 
     def _compute_booking_id(self):
         Booking = self.env["ocd.live.booking"].sudo()
@@ -51,7 +52,7 @@ class OcdEveningParticipation(models.Model):
 
     @api.model
     def _ocd_submit(self, evening, vendor, prices):
-        """`vendor` joins `evening` with `prices` {product template: promo price of the evening}
+        """`vendor` joins `evening` with `prices` {product template: promo price of the event}
         (none: a live without promos). Sent to the team; the promos show once accepted. Return
         the participation."""
         evening, vendor = evening.sudo(), vendor.sudo()
@@ -59,7 +60,7 @@ class OcdEveningParticipation(models.Model):
         if not evening._ocd_registration_open():
             raise UserError(env._("The registrations of %s are closed.", evening.name))
         if not evening._ocd_invites(vendor):
-            raise UserError(env._("This evening is for the vendors of %s.", evening._ocd_countries_text()))
+            raise UserError(env._("This event is for the vendors of %s.", evening._ocd_countries_text()))
         participation = self.sudo().search([("evening_id", "=", evening.id), ("vendor_id", "=", vendor.id)], limit=1)
         if not participation:
             participation = self.sudo().create({"evening_id": evening.id, "vendor_id": vendor.id})
@@ -84,7 +85,7 @@ class OcdEveningParticipation(models.Model):
         return participation
 
     def action_ocd_approve(self):
-        """« Accept »: the promos of the evening show during its hours."""
+        """« Accept »: the promos of the event show during its hours."""
         for participation in self:
             participation.state = "approved"
             participation.promo_ids.filtered(lambda promo: not promo.stopped_at).write({"active": True})
@@ -103,14 +104,14 @@ class OcdEveningParticipation(models.Model):
         self.ensure_one()
         env = self.env
         if self.state == "approved":
-            return env._("Accepted: you are in the programme of the evening.")
+            return env._("Accepted: you are in the programme of the event.")
         if self.state == "refused":
             return env._("Refused: %s", self.refuse_reason or "-")
         return env._("Sent: the team checks your participation and writes to you on WhatsApp.")
 
     @api.model
     def _ocd_invitations(self, vendor):
-        """The big evenings of the space of `vendor`: the ones that invite them, registrations open
+        """The big events of the space of `vendor`: the ones that invite them, registrations open
         (or joined), with what the card says."""
         if not vendor:
             return []
@@ -125,10 +126,11 @@ class OcdEveningParticipation(models.Model):
             tz_name = vendor._ocd_tz_name()
             rows.append({
                 "evening": evening,
-                "kicker": env._("Big evening · %s", evening._ocd_when_text(tz_name, "EEE d MMM")),
+                "kicker": env._("%(kind)s · %(when)s", kind=evening._ocd_kind_text(),
+                                when=evening._ocd_when_text(tz_name, "EEE d MMM")),
                 "title": env._("%s: join", evening.name) if not participation else evening.name,
                 "line": participation._ocd_state_line() if participation else env._(
-                    "A live during the evening and your promos of the evening. Registrations until %s.",
+                    "A live during the event and your promos of the event. Registrations until %s.",
                     evening._ocd_registration_day(tz_name)),
                 "button": env._("My participation") if participation else env._("Join"),
             })

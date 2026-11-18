@@ -477,6 +477,41 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     continue jusqu'à la fin ;
   - **pays** : le formulaire de paiement d'OCD Live, donc CamPay au Cameroun, CinetPay et Flutterwave dans
     l'UEMOA (chantier 5), la carte partout.
+- **Programme et événements** (chantier 7, avec le prix promo 3.1 ; maquette `ProgrammeSoirees` validée le
+  18 novembre 2026) :
+  - **le prix promo passe par le seul calcul des prix d'Odoo** : la boutique, le shop, la fiche, les
+    cartes des lives, la régie, le panier et la commande ont le même prix, dans toutes les devises. Le prix
+    barré est le prix le plus bas du produit des 14 derniers jours (réglable), gardé à la création de la
+    promo : un prix monté juste avant ne fait pas une promo. 50 % de remise au plus et 30 jours au plus
+    (réglables) ; la promo du vendeur s'affiche tout de suite, sans vérification de l'équipe ;
+  - **deux promos qui se croisent** (celle du vendeur et celle d'un événement) : le prix le plus bas
+    s'applique, le prix ne monte jamais pendant un événement ;
+  - **la fin d'une promo** : le prix revient tout seul à l'heure (aucune tâche à lancer). Un panier
+    commencé en promo la garde 2 heures après la fin, le temps de payer ; ensuite, le panier et la page de
+    paiement reprennent le prix du moment et le disent. Le vendeur qui baisse son prix sous la promo
+    l'arrête ; les étiquettes de prix imprimées gardent le prix habituel ;
+  - **le programme des lives** : les 7 prochains jours à l'heure du téléphone, les lives connus d'avance
+    (studio ou à distance, sur les comptes d'OCD Live) ; les lives des vendeurs sur leurs propres comptes
+    s'ajoutent quand ils commencent. Sur ordinateur, un guide télé par compte d'OCD Live ; deux lives du
+    même compte en même temps passent l'un sous l'autre. La cloche est « Suivre » le vendeur (chantier 1) ;
+  - **les grands événements** (créés par l'équipe) : **une soirée, une journée ou plusieurs jours de
+    suite** (14 jours au plus, réglable), demandé par l'équipe après la maquette. Leur étiquette vient de
+    leurs heures : « Grande soirée » (un jour, à partir de 16 h ; une soirée qui finit avant 6 h le
+    lendemain reste une soirée), « Grande journée », « Grand événement · 6 jours ». Les pages s'appellent
+    « Grands événements » (`/evenements` ; les premières adresses `/soirees` y mènent) ; les noms
+    techniques gardent « evening » ;
+  - **les promos d'un événement** valent pendant toutes ses heures, sans coupure (pas de créneaux par
+    jour : un prix qui change chaque soir serait difficile à suivre pour les clients) ; elles s'affichent
+    seulement après la vérification de la participation par l'équipe, suivent l'événement s'il est
+    déplacé et s'arrêtent s'il est annulé ;
+  - **les inscriptions** des vendeurs ferment 3 jours avant le début (réglable), ou plus tard au choix de
+    l'équipe, au plus tard avant la fin : un vendeur peut rejoindre un événement de plusieurs jours en
+    cours. Un vendeur participe avec un live pendant l'événement (la réservation habituelle, au prix
+    habituel) ou au moins une promo ;
+  - **« Me prévenir sur WhatsApp »** : un message un peu avant le début (15 minutes, réglable), qui donne
+    la fin des promos (« jusqu'à dimanche 7 décembre à 23 h » pour plusieurs jours) ; aucun message pour
+    un événement sans vendeur accepté. Les textes des modèles marchent pour un seul vendeur comme pour
+    plusieurs (« Vendeurs en live : 1 »).
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

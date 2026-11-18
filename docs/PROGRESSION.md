@@ -42,6 +42,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Statistiques du vendeur (chantier 3) et ventes par produit (3.3) : « Mes chiffres » (ventes, pièces, visites de la boutique, contacts WhatsApp et leur évolution sur 7 jours, 30 jours ou 3 mois ; ce que rapporte chaque live ; meilleures heures et « Réserver un live » ; clients fidèles ; ventes par produit avec « Pas vendus » ; magasins), la ligne « Vendu » de Mes produits, les ventes du mois dans Mon espace, le résumé du lundi sur WhatsApp ; nouveaux comptages jour par jour (« Regarder », visites, contacts) | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | OCD Vote (chantier 4) : concours avec candidats numérotés, voix payées en Mobile Money (seules les voix payées comptent, chacune liée à son paiement), vote sur la page ou par WhatsApp « VOTE 12 », classement en direct, bandeau de la finale, résultats certifiés, espace de l'organisateur, reversement | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | OCD Tickets (chantier 6) : billets de concerts et d'événements (application Événements d'Odoo), page de l'événement, achat (places gardées pendant le paiement), « Mes billets » (un QR signé par personne, PDF, « Donner ce billet »), contrôle à l'entrée avec le téléphone (même hors réseau), vente à l'entrée, billet à l'écran pendant un live avec son prix du live, annulé ou déplacé, espace de l'organisateur et ses contrôleurs, reversement | ✅ fait, testé (5 modèles WhatsApp à faire approuver par Meta) |
+| Programme et événements (chantier 7) et prix promo (3.1) : « Mettre en promo » dans Mes produits (prix barré = le plus bas des 14 derniers jours, jusqu'à une date, partout le même prix) ; le programme des lives des 7 prochains jours (guide télé sur ordinateur) ; les grands événements d'une soirée ou de plusieurs jours (Vendredi noir, Tabaski…) où les vendeurs invités participent avec un live et leurs promos, vérifiées par l'équipe, « Me prévenir sur WhatsApp » | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | Paiement automatique dans l'UEMOA (chantier 5) : CinetPay (module `payment_cinetpay` : Mobile Money, Wave, carte ; UEMOA, Cameroun, Guinée, RD Congo) et Flutterwave (module d'Odoo) ; l'état lu chez CinetPay, revérifié toutes les 10 minutes ; le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production ; clés manquantes et mode test dits dans les Paramètres | ✅ fait, testé (clés des comptes à saisir) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
@@ -104,6 +105,8 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    **Avec OCD Tickets**, aussi `ocd_billets_prets`, `ocd_billets_rappel`, `ocd_billets_annule`,
    `ocd_billets_deplace` et `ocd_billets_controleur` (français et anglais, Utilitaire) : les billets
    payés ou donnés, le rappel la veille, l'événement annulé ou déplacé, le contrôleur ajouté.
+   **Avec les grands événements**, aussi `ocd_soiree_invitation` et `ocd_soiree_commence` (français et
+   anglais, Utilitaire) : l'invitation des vendeurs, le début annoncé à ceux qui l'ont demandé.
 3. **Paiement dans l'UEMOA** (équipe) : ouvrir les comptes CinetPay et Flutterwave (documents de
    l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
    pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
@@ -127,6 +130,49 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 18 novembre 2026 · Programme et événements (chantier 7), prix promo (3.1)
+Dessiné d'abord (maquette `ProgrammeSoirees`, validée avec ses choix), puis codé dans `ocd_live_shop`
+(prix promo, programme des lives) et deux nouveaux modules, `ocd_soirees` et `ocd_soirees_whatsapp`.
+- **Le prix promo** : « Mettre en promo » dans le menu « Plus » de Mes produits (-10 %, -20 %, -25 %,
+  -30 % ou un autre prix ; 7, 14 ou 30 jours ; l'aperçu de ce que voient les clients ; « Arrêter la
+  promo »). Le prix barré et « -24 % » sur les cartes du shop, de la boutique et des lives, la fiche
+  (« Promo jusqu'au samedi 28 novembre »), la régie et le panier ; le filtre « En promo » du shop. Le
+  prix barré est le prix le plus bas des 14 derniers jours ; 50 % de remise et 30 jours au plus
+  (réglages) ; OCD Live › Shop › Promos pour l'équipe.
+- **Le programme des lives** (`/lives/programme`, « Programme des lives » depuis le fil) : les 7
+  prochains jours, par heure, « En direct maintenant », la cloche (« Suivre » le vendeur) ; filtres pays
+  et catégorie ; sur ordinateur, le guide télé, une ligne par compte d'OCD Live.
+- **Les grands événements** (`/evenements`) : une soirée, une journée ou plusieurs jours de suite
+  (14 jours au plus, réglable ; les événements de plusieurs jours ajoutés à la demande de l'équipe après
+  la maquette). L'étiquette vient des heures (« Grande soirée », « Grande journée », « Grand événement ·
+  6 jours ») ; la page : compte à rebours, vendeurs, promos, le programme jour par jour, les promos par
+  catégorie, « Me prévenir sur WhatsApp », partager ; chaque jour de l'événement est marqué sur le
+  programme des lives, avec son bandeau.
+- **Le vendeur invité** : l'invitation dans Mon espace et sur WhatsApp, « Participer » (son live pendant
+  l'événement, la réservation habituelle ; une remise par produit) ; l'équipe vérifie (« À vérifier »,
+  colonne « Grands événements ») ; les promos de l'événement s'affichent ensuite, pendant ses heures
+  seulement, sans coupure.
+- **Back-office** : OCD Live › Lives › Grands événements et Participations aux événements (ouvrir les
+  inscriptions, annuler, la page, les promos) ; réglages « Grands événements » (fin des inscriptions,
+  durée au plus, « Me prévenir ») ; automatisations « Grand événement : inviter les vendeurs » et
+  « Grand événement : prévenir ceux qui l'ont demandé ».
+- **Choix faits pendant le chantier** (détail dans [`DECISIONS.md`](DECISIONS.md)) : un seul calcul des
+  prix pour tout le site, toutes les devises comprises ; deux promos en même temps : le prix le plus bas ;
+  le prix revient tout seul à l'heure (pas de tâche « fin des promos ») ; un panier commencé en promo la
+  garde 2 heures, puis reprend le prix du moment et le dit ; un prix baissé sous la promo l'arrête ; les
+  étiquettes imprimées gardent le prix habituel ; les promos d'un événement le suivent s'il est déplacé
+  et s'arrêtent s'il est annulé ; aucun message « ça commence » pour un événement sans vendeur accepté ;
+  les anciennes adresses `/soirees` mènent à `/evenements` ; « jours » traduit dans les réglages du shop
+  (c'était « days »).
+- Tests : base neuve, tous les modules OCD avec `ocd_soirees`, `ocd_soirees_whatsapp` et
+  `payment_cinetpay` : **@@TESTS@@** ; contrôlé dans un navigateur en français en trois tailles (390,
+  820, 1440 px) : le programme, les grands événements, une soirée, un événement de six jours, le shop et
+  son filtre « En promo », une fiche en promo, le panier, la boutique, Mes produits, « Mettre en promo »,
+  Mon espace et « Participer » ; aucun débordement.
+- **À installer sur un serveur** : `-u ocd_live_shop,ocd_live_whatsapp` (20.0.1.42.0 et 20.0.1.9.3), puis
+  `-i ocd_soirees,ocd_soirees_whatsapp` (nouveaux modules). Puis soumettre à Meta `ocd_soiree_invitation`
+  et `ocd_soiree_commence` (Utilitaire, français et anglais).
 
 ### 18 novembre 2026 · OCD Tickets (chantier 6)
 Dessiné d'abord (maquette `OcdTickets`, validée avec ses choix), puis codé dans deux nouveaux modules,

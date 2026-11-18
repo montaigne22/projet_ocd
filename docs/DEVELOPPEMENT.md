@@ -50,7 +50,7 @@ En deux temps : les modules d'abord (Odoo met en place la comptabilité), puis l
 régler la société pendant qu'aucune écriture n'existe encore (pays, devise en franc CFA).
 
 ```bash
-odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp --load-language=fr_FR --stop-after-init
+odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp --load-language=fr_FR --stop-after-init
 ```
 
 Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**, téléphone et e-mail : ils s'affichent
@@ -91,7 +91,7 @@ Après un `git pull` du dépôt : redémarrer Odoo, puis mettre à jour les modu
 module › Mettre à jour, ou en ligne de commande) :
 
 ```bash
-odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp --stop-after-init
+odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp --stop-after-init
 ```
 
 **À chaque récupération du code, mettre à jour les modules.** Sans cela, le code appelle des pages qui
@@ -251,8 +251,8 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/payment_cinetpay --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/payment_cinetpay --stop-after-init
 ```
 
 Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Avec OCD, un test de
@@ -477,6 +477,25 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   réseau `/liste`, vente à l'entrée), `organizer.py` (dans l'espace de l'organisateur d'OCD Vote),
   `boutique.py` (le billet à l'écran pendant un live). Le scanner et le hors réseau :
   `static/src/interactions/tickets.js` (`BarcodeDetector`, `localStorage`).
+- Prix promo (chantier 7, 3.1) : `ocd_live_shop/models/product_promo.py`. Le modèle `ocd.product.promo`
+  (prix, prix barré gardé à la création, début, fin, source « vendor », « team » ou « evening ») ; le prix
+  passe par `_price_compute` de `product.template` et `product.product` (remplacé : le prix de liste
+  multiplié par `_ocd_promo_ratio`), donc par toutes les listes de prix, le shop, le panier et la
+  commande ; contexte `ocd_without_promo` pour le prix habituel (étiquettes, partage). Deux promos en
+  même temps : `_ocd_priority` (le prix le plus bas). Une ligne de commande garde sa promo 2 heures après
+  la fin (`PROMO_GRACE`, `ocd_promo_order_date`) ; `sale.order._ocd_refresh_promos` reprend les prix
+  ensuite. Le vendeur : `controllers/vendor_promo.py` (`/ocd/espace/moi/produits/<id>/promo`).
+- Programme des lives : `ocd_live_shop/controllers/programme.py` (`/lives/programme`, `jour`, `pays`,
+  `categorie`), avec deux points d'accroche pour les grands événements (`_ocd_evening_days`,
+  `_ocd_evening_band`).
+- Grands événements (`ocd_soirees`, noms techniques en « evening ») : `ocd.evening` (une soirée, une
+  journée ou plusieurs jours ; `_ocd_one_day`, `_ocd_days`, `_ocd_kind_text` et les textes
+  `_ocd_when_text`, `_ocd_when_sentence`, `_ocd_until_text` décident d'après les heures, au fuseau de
+  l'événement), `ocd.evening.participation` (`_ocd_submit` crée les promos « evening » inactives,
+  `action_ocd_approve` les active), `ocd.evening.alert` (« Me prévenir »). Pages :
+  `controllers/evening.py` (`/evenements`, `/evenements/<adresse>`, `/ocd/espace/moi/evenements/<id>` ;
+  `/soirees` y mène). WhatsApp : `ocd_soirees_whatsapp` (`ocd_soiree_invitation`,
+  `ocd_soiree_commence`).
 - Dans Odoo 20, une variable posée dans le corps d'un `t-call` (`<t t-call="x"><t t-set="a" .../></t>`)
   n'arrive pas au gabarit appelé : la poser avant le `t-call`.
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.

@@ -229,8 +229,10 @@
                                 <i class="o_ocd_onair_dot" aria-hidden="true"/>Seen in a live on OCD
                             </span>
                         </div>
-                        <span class="o_ocd_product_price_big o_ocd_variant_price" t-out="first.get('price_text') or ''"/>
-                        <s t-if="promo" class="o_ocd_product_was o_ocd_variant_was" t-out="first.get('was_text') or promo['was']"/>
+                        <span class="o_ocd_product_prices">
+                            <span class="o_ocd_product_price_big o_ocd_variant_price" t-out="first.get('price_text') or ''"/>
+                            <s t-if="promo" class="o_ocd_product_was o_ocd_variant_was" t-out="first.get('was_text') or promo['was']"/>
+                        </span>
                     </div>
                     <div t-if="promo" class="o_ocd_product_promo">
                         <span class="o_ocd_product_flag_promo" t-out="promo['off']"/>

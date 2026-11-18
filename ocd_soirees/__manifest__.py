@@ -1,25 +1,26 @@
 {
-    "name": "OCD Live: Big Evenings Of Several Vendors",
-    "summary": "Big evenings of OCD Live (Black Friday, Christmas, Valentine's Day, Tabaski): the vendors "
-    "of the countries invited do a live during the evening and put their promos of the evening",
+    "name": "OCD Live: Big Events Of Several Vendors",
+    "summary": "Big events of OCD Live (Black Friday, Christmas, Valentine's Day, Tabaski), an evening or "
+    "several days: the vendors of the countries invited do a live during the event and put their promos of the event",
     "description": """
-Big evenings of OCD Live
-========================
+Big events of OCD Live
+======================
 
-- The team creates an evening: its name, its day and its hours, its
-  countries, its image, the discount at most, the end of the registrations.
+- The team creates an event: its name, an evening, a day or several days in
+  a row (a setting caps the length), its countries, its image, the discount
+  at most, the end of the registrations.
 - Opening the registrations invites the checked vendors of these countries
-  (WhatsApp and their space). A vendor joins with a live during the evening
-  (the usual booking) and their promos of the evening; the team checks each
+  (WhatsApp and their space). A vendor joins with a live during the event
+  (the usual booking) and their promos of the event; the team checks each
   participation.
-- The page of the evening: the countdown, the programme of the evening, the
-  promos of the evening by category, « Tell me on WhatsApp ». The programme
-  of the lives shows the evening on its day.
-- The promos of the evening are the promo prices of the products, valid only
-  during the hours of the evening; then the products take back their price
-  (or the promo running before).
+- The page of the event: the countdown, its programme day by day, its
+  promos by category, « Tell me on WhatsApp ». The programme of the lives
+  shows the event on each of its days.
+- The promos of the event are promo prices of the products, valid only
+  during its hours, without a break; then the products take back their
+  price (or the promo running before).
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Website/Website",
     "author": "RollBackk",
     "license": "LGPL-3",
