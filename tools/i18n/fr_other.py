@@ -133,6 +133,9 @@ DEMO = {
     "A step of the demo takes place once.": "Une étape de la démo n'a lieu qu'une fois.",
     "Key": "Clé",
     "Sale Order": "Bon de commande",
+    "Parcel": "Colis",
+    "%(name)s asks to send parcels with OCD Express (%(social)s).":
+        "%(name)s demande à envoyer des colis avec OCD Express (%(social)s).",
     "Created by": "Créé par",
     "Created on": "Créé le",
     "Last Updated by": "Dernière mise à jour par",

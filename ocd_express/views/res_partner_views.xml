@@ -75,6 +75,8 @@
                                 invisible="ocd_express_state != 'active'"
                                 confirm="The sender can no longer create parcels; their parcels on the way go on."/>
                         <button name="action_ocd_express_view_parcels" type="object" string="See their parcels"/>
+                        <button name="action_ocd_express_view_space" type="object" string="See their space"
+                                invisible="ocd_express_state not in ('active', 'suspended')"/>
                         <button name="%(ocd_express.ocd_express_debt_wizard_action)d" type="action" string="Paid what they owe"
                                 invisible="ocd_express_balance &gt;= 0" groups="ocd_live.group_ocd_live_manager"/>
                     </div>

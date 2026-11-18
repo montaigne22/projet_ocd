@@ -697,6 +697,11 @@ Tout ce qu'il faut pour présenter OCD Live, dans un module qui se retire :
   remises par les livreurs chaque soir, les reversements des vendeuses préparés et payés
   chaque jour ; une robe en 2 couleurs et 4 tailles dont le stock reste à son niveau, des
   prix de livraison (livreurs OCD, agences, prix d'une vendeuse).
+- OCD Express, quand il est installé (avant ou après la démo) : une vendeuse des réseaux
+  qui envoie ses colis avec lui, ses colis de chaque jour ouvré à chaque étape (deux
+  ramassages par jour, un colis refusé puis rendu contre son code de retour, un souci
+  signalé par un client, un colis au-dessus de sa limite vérifié par l'équipe), son
+  argent versé chaque jour ouvré ; une demande d'ouverture de compte, qui attend l'équipe.
 - WhatsApp : les conversations du jour sur les commandes et les colis, sur un compte
   archivé ; aucun message WhatsApp n'est jamais envoyé aux contacts de la démo
   (ocd_live_demo_whatsapp).
@@ -704,7 +709,8 @@ Tout ce qu'il faut pour présenter OCD Live, dans un module qui se retire :
   paiement à la livraison.
 
 La désinstallation du module annule et retire tous ces enregistrements, et remet les
-moyens de paiement et la date d'ouverture des réservations comme avant.
+moyens de paiement, la date d'ouverture des réservations et les réglages d'OCD Express
+comme avant.
 """,
     "ocd_live_demo_whatsapp": """
 Aucun message WhatsApp aux contacts de la démo

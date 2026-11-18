@@ -228,6 +228,21 @@ class ResPartner(models.Model):
                 partner.message_post(body=self.env._("Request of OCD Express refused: %s", reason.name))
         return True
 
+    def action_ocd_express_view_space(self):
+        """Open the pages of the sender as they see them, in a new tab: the team helps them, or
+        shows OCD Express with a sender whose number gets no code (the demo)."""
+        self.ensure_one()
+        if not self.env.user.has_group("ocd_live.group_ocd_live_user"):
+            raise AccessError(self.env._("Only the team of OCD Live can see the space of a sender."))
+        if self.ocd_express_state not in ("active", "suspended"):
+            raise UserError(self.env._("The account of OCD Express of %s is not open.", self.display_name))
+        signature = self._ocd_team_view_signature(self.env.uid)
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"/express/equipe/{self.id}?signature={signature}",
+            "target": "new",
+        }
+
     def action_ocd_express_view_parcels(self):
         self.ensure_one()
         return {

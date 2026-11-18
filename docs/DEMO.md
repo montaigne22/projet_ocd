@@ -2,7 +2,8 @@
 
 La démo (`ocd_live_demo`) montre OCD Live **en service, le jour même de la présentation** : des
 vendeurs dans 8 pays, des lives en cours, les lives de la semaine au studio, des replays, la boutique de
-Douala dont les commandes et les colis avancent heure par heure, et ce qui attend l'équipe. Une action
+Douala dont les commandes et les colis avancent heure par heure, OCD Express (quand il est installé) et
+ce qui attend l'équipe. Une action
 planifiée la tient à jour toutes les 15 minutes : il n'y a rien à refaire avant une présentation, quel
 que soit le jour.
 
@@ -46,6 +47,13 @@ Clients à Douala : Estelle Ngono (Akwa), Hervé Kuete (Bonabéri), Sandrine Fou
 (Akwa), Bertrand Atangana (Bonamoussadi). Livreurs OCD : Junior Ekwalla, Raoul Nyobe, Christelle Mbarga
 (en repos).
 
+**OCD Express** (quand `ocd_express` est installé, avant ou après la démo) : **Nadège Mode** (Akwa,
+`@nadege.mode` sur Instagram et TikTok), sans boutique sur OCD Live, envoie ses colis avec OCD Express
+depuis 45 jours ; **Linda Cosmétiques** (Makepe) a demandé à ouvrir un compte : sa demande attend
+l'équipe. Les clientes et clients de Nadège (Grâce, Paul, Mireille, Aïcha, Rodrigue, Carine…) changent
+chaque jour. La démo ouvre Douala à OCD Express et remplit le point OCD et le Mobile Money d'OCD avec
+des exemples, si l'équipe ne l'a pas fait.
+
 ## Ce que la démo tient à jour
 
 - **L'annuaire** a des lives de 8 h à 21 h (heure de Lomé), en quatre fenêtres de vérification : la
@@ -69,6 +77,8 @@ Clients à Douala : Estelle Ngono (Akwa), Hervé Kuete (Bonabéri), Sandrine Fou
   les conversations WhatsApp qui vont avec, les espèces remises par les livreurs à 19 h 30, les
   reversements de Brenda et Fatou préparés à 7 h et payés par l'équipe à 10 h le lendemain (Mobile
   Money). Le stock reste à son niveau : « Plus que 3 » en bleu M, tailles épuisées, savon noir épuisé.
+- **OCD Express** (ci-dessous) : les colis de Nadège chaque jour ouvré (du lundi au samedi), les deux
+  passages de Junior chez elle, son argent compté une fois arrivé chez OCD et versé chaque jour ouvré.
 
 Ce que l'équipe fait pendant une présentation (refuser un lien, annuler ou déplacer un live, livrer un
 colis avec le code, signaler un problème) reste tel quel : la démo n'ajoute que ce qui manque et ne fait
@@ -91,6 +101,29 @@ celui du jour), et au fil de la journée des colis à préparer, prêts, en rout
 gardent leurs espèces du jour jusqu'à 19 h 30. Sur WhatsApp, les clients écrivent au fil de la journée et
 l'équipe répond en quelques minutes ; le message de Bertrand, écrit en fin d'après-midi, attend le
 lendemain matin.
+
+### La journée d'OCD Express (heure de Douala, du lundi au samedi)
+
+Nadège crée ses colis dans « Nouveau colis » ; Junior Ekwalla, le livreur d'Akwa, passe chez elle à
+**11 h** (les colis créés avant 10 h, livrés l'après-midi) et à **16 h** (ceux d'avant 15 h, livrés le
+lendemain matin) : un seul passage pour tous ses colis, gratuit à partir de 3.
+
+| Heure | Colis | Ce qui se passe |
+|---|---|---|
+| 8 h 15 | Sac à main en cuir, 18 000 F (livraison payée par Nadège) | La cliente répond « Je confirme » ; pris à 11 h, en route à 13 h 50, livré à 15 h 10 en espèces. |
+| 8 h 40 | Baskets, 22 000 F (livraison payée par le client) | Livré à 14 h 35, payé sur le téléphone. |
+| 9 h 05 | Deux perruques, 25 000 F | **Refusé à la porte** à 16 h 10 ; renvoyé à Nadège à 17 h ; **rendu** le lendemain à 11 h 05, contre son code de retour (500 F de retour). |
+| 9 h 30 | Coffret de parfums **déjà payé** (valeur 15 000 F) | La cliente envoie sa position ; elle ne paie que la livraison (1 000 F), livré à 16 h 20. |
+| 11 h 20 | Escarpins, 20 000 F | Pris à 16 h ; livré le lendemain à 10 h 15 (téléphone) ; **souci signalé** le soir à 18 h 30 (« La pointure ne correspond pas ») : son argent attend ; l'équipe donne raison à Nadège deux jours ouvrés plus tard. |
+| 12 h 45 | Montre, 30 000 F | Livrée le lendemain à 9 h 40, en espèces. |
+| 13 h 30 | Ensemble pagne, 16 000 F | Le lendemain, **client absent** à 10 h 30 ; nouveau passage à 15 h 45, livré à 16 h 40. |
+| 14 h 20 | Téléphone, 245 000 F | **Au-dessus de sa limite** : il attend l'équipe (« À vérifier ») ; accepté à 14 h 50, pris à 16 h, livré le lendemain à 11 h 30, payé sur le téléphone (au-delà de 100 000 F). |
+| 17 h 30 | Robe de soirée, 35 000 F (livraison payée par le client) | Pris au passage du lendemain matin, livré à 15 h 40. |
+
+Les espèces partent à la caisse avec celles du shop à 19 h 30 ; l'argent de Nadège est préparé à 7 h et
+**versé à 10 h** chaque jour ouvré (Mobile Money, enregistré dans la comptabilité). Ainsi, à toute
+heure, « Mon argent » montre le versement du lendemain, les espèces en chemin et un ou deux colis dont
+l'argent attend un souci, et « Mes colis » des colis à chaque étape.
 
 ## Scénario de présentation (20 minutes)
 
@@ -160,6 +193,21 @@ lendemain matin.
 - **WhatsApp** : les conversations du jour (Estelle, Hervé, Ruth, Bertrand, Brenda, Fatou), un client
   qui attend une réponse, et Awa à qui seul un modèle peut partir (plus de 24 heures).
 
+### 7. OCD Express · `/express`
+- **La page** `/express` : le prix dans Douala, les trois étapes, « Demander à envoyer mes colis ».
+- **Nadège** : back-office › Livraisons › Expéditeurs Express › Nadège Mode › onglet OCD Express ›
+  **Voir son espace** (aucun code WhatsApp ne part vers un numéro de la démo). « Mes colis » : les colis
+  du jour à chaque étape, les livrés, les problèmes ; un colis : son étiquette avec le QR, et pour le
+  colis refusé, le **code de retour** à donner au livreur ; « Nouveau colis » : le récapitulatif « Tu
+  reçois » en direct ; **« Mon argent »** : versé demain, le détail des frais, l'argent qui attend un
+  souci, les derniers versements. « Se déconnecter » ferme son espace.
+- **Le client** : depuis le colis de Nadège, « Partager le suivi » donne sa page (code, montant, « Je
+  confirme », « Pas là ? », position, « Ce n'est pas pour moi » ; après la livraison, le souci signalé).
+- **L'équipe** : Livraisons › Colis Express (le téléphone à vérifier : « Le laisser partir »), Ramassages
+  Express (les passages de Junior), **À vérifier** (la demande de Linda : « Ouvrir le compte » ; les
+  soucis : « L'expéditeur a raison » ou « Le client a raison »), Dispatch et Livreurs et caisse (les colis
+  Express avec ceux du shop), Vendeurs › Reversements (ceux de Nadège, payés chaque jour ouvré).
+
 ## Selon l'heure de la présentation (heure de Lomé, une heure de moins qu'à Douala et Paris en hiver)
 
 | Heure | En live dans l'annuaire |
@@ -212,5 +260,7 @@ S'y ajoute le live du studio en cours, d'après la semaine ci-dessus.
 ## Retirer la démo
 
 Désinstaller `ocd_live_demo` (Applications) : contacts, produits, photos, lives, commandes, colis,
-paiements, conversations et fenêtres de la démo sont retirés ; les moyens de paiement et la date
-d'ouverture des réservations reviennent comme avant. `ocd_live_demo_whatsapp` part avec elle.
+paiements, conversations et fenêtres de la démo sont retirés, avec les colis OCD Express de Nadège, ses
+passages, ses clients et ses versements ; les moyens de paiement, la date d'ouverture des réservations
+et les réglages d'OCD Express que la démo avait remplis (Douala, point OCD, Mobile Money d'OCD)
+reviennent comme avant. `ocd_live_demo_whatsapp` part avec elle.

@@ -274,6 +274,30 @@
         <field name="delivery_landmark">À côté de la station Total</field>
     </record>
 
+    <!-- === OCD Express in Douala: a vendor of the social networks who sends her parcels with it,
+         and a request waiting for the team (their accounts are opened by the scenario when OCD
+         Express is installed) === -->
+    <record id="sender_nadege" model="res.partner">
+        <field name="name">Nadège Mode</field>
+        <field name="is_company" eval="True"/>
+        <field name="phone">+237 677112210</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_akwa"/>
+        <field name="delivery_landmark">Rue Gallieni, immeuble bleu, 2e étage</field>
+        <field name="ocd_payout_momo">+237 677112210</field>
+        <field name="ocd_whatsapp_optin" eval="True"/>
+    </record>
+    <record id="sender_linda" model="res.partner">
+        <field name="name">Linda Cosmétiques</field>
+        <field name="is_company" eval="True"/>
+        <field name="phone">+237 677112211</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_makepe"/>
+        <field name="delivery_landmark">Makepe Saint-Tropez, en face de la pharmacie</field>
+    </record>
+
     <!-- === Hosts of the remote lives === -->
     <record id="host_dzifa" model="hr.employee">
         <field name="name">Dzifa Agbeko</field>

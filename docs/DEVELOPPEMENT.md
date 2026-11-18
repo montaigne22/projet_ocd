@@ -77,7 +77,10 @@ sans animatrice), les replays de la semaine passée avec les produits montrés, 
 vérifier ; la boutique de Douala heure par heure (six commandes par jour, colis à chaque étape, un colis
 en retard, un client absent, espèces remises chaque soir, reversements préparés et payés chaque jour si la
 comptabilité existe, conversations WhatsApp du jour ; robe en 2 couleurs et 4 tailles, « Plus que 3 »,
-tailles épuisées). Une action planifiée (toutes les 15 minutes) la tient sur les jours autour
+tailles épuisées) ; avec `ocd_express` (installé avant ou après la démo), une expéditrice d'OCD Express et
+ses colis de chaque jour ouvré (deux passages du livreur, un retour rendu contre le code, un souci
+signalé, un colis au-dessus de sa limite à vérifier, son argent versé chaque jour ouvré) et une demande
+d'ouverture de compte. Une action planifiée (toutes les 15 minutes) la tient sur les jours autour
 d'aujourd'hui : rien à refaire avant une présentation. Une vraie vidéo pour ses replays et un vrai compte pour ses lives se
 règlent dans OCD Live › Configuration › Paramètres › Démo. Le scénario de présentation, vendeur par
 vendeur et heure par heure, est dans [`DEMO.md`](DEMO.md).
@@ -89,6 +92,10 @@ Le stock est posé sans mouvement de stock et les colis livrés ne valident pas 
 désinstallation de `ocd_live_demo` retire tout (contacts, produits, photos, stocks, lives, commandes,
 paiements, factures, reversements, tarifs, fenêtres) et remet les moyens de paiement et la date
 d'ouverture comme avant.
+
+Installée **en une fois** avec les modules (ce que font les tests), la démo charge elle-même le plan
+comptable qu'Odoo n'aurait chargé qu'à la fin de l'installation : les colis des jours passés ont leurs
+factures et leurs reversements.
 
 Le site : `/ocd` (réserver), `/lives` (annuaire), `/shop`. Le back-office : application **OCD Live**.
 
@@ -348,6 +355,10 @@ Mise en route (avant d'inviter les premiers expéditeurs) :
    champ « Compte » des 12 modèles d'OCD Express (6 en français, 6 en anglais), puis « Soumettre à Meta ».
 6. **Inviter** : un expéditeur demande sur `/express/demande` ; l'équipe ouvre son compte dans « À
    vérifier » (colonne OCD Express) ou sur sa fiche (onglet OCD Express).
+
+Pour aider un expéditeur (ou présenter la démo) : sa fiche › onglet OCD Express › **Voir son espace**
+(`/express/equipe/<id>?signature=…`, signé pour la personne de l'équipe connectée) ouvre ses pages comme
+il les voit, jusqu'à « Se déconnecter ».
 
 Les pages : `/express` (prix, trois étapes), `/express/demande`, `/express/connexion` (numéro et code sur
 WhatsApp), `/express/envois`, `/express/colis/nouveau`, `/express/colis/<id>` (étiquette avec QR,

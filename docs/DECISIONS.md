@@ -24,6 +24,19 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   histoires cohérentes (ville, produits, heures, plateforme ; studio pour Lomé, à distance ailleurs) et
   **ne reçoivent jamais de WhatsApp** (numéros d'exemple, `ocd_live_demo_whatsapp`). Elle ajoute deux
   fenêtres de vérification (midi, après-midi) pour avoir des lives de 8 h à 21 h. Scénario : `DEMO.md`.
+  - **OCD Express dans la démo** (18 novembre 2026) : dans `ocd_live_demo` même, quand `ocd_express` est
+    installé (avant ou après la démo : l'action planifiée le rattrape), comme WhatsApp ; pas de module de
+    plus. Une expéditrice (Nadège Mode, Akwa) et une demande en attente ; ses colis rejoués chaque jour
+    ouvré avec la boutique de Douala, par les vraies fonctions d'OCD Express, datés au moment du scénario
+    (une étape jouée en retard ne planifie jamais depuis maintenant) ; ses clients ont des numéros
+    d'exemple reconnus par `ocd_live_demo_whatsapp`. Ses reversements sont **payés dans la comptabilité**
+    (« Mon argent » ne compte que l'argent non payé) ; ceux des vendeurs du shop restent marqués payés
+    sans écriture, comme avant. Ses étapes de 7 h et de 19 h 30 sont à elle : installé après la démo,
+    OCD Express rejoue aussi l'argent et la caisse des jours d'avant.
+  - **La démo installée en une fois avec les modules** charge elle-même le plan comptable qu'Odoo
+    allait charger à la fin de l'installation (Odoo 20 le charge après les `post_init_hook`) : sans lui,
+    les colis des jours d'avant étaient livrés sans facture et les reversements ne commençaient que le
+    lendemain des premières factures (le test `test_a_day_of_the_shop` échouait).
 - **Voix des pages** en plusieurs langues (français, éwé, etc.), enregistrées par l'équipe.
 - **L'adresse du site (`/`) ouvre l'accueil d'OCD Live** (`/ocd`), et non la page vide d'Odoo.
 - **Le site est en français par défaut** quand le français est installé ; les autres langues restent
@@ -611,6 +624,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     « Pas là ? », « Envoyer ma position »), sans compte ; rien d'autre ; le code n'est jamais montré à
     l'expéditeur ni au livreur ; son nom et son numéro sont **effacés après 6 mois** (le montant et les
     dates restent) ; le livreur voit son adresse et son numéro le jour de sa tournée ;
+  - **« Voir son espace »** sur la fiche d'un expéditeur (onglet OCD Express), comme pour un vendeur : un
+    lien signé pour la personne de l'équipe connectée, qui ouvre « Mes envois » et « Mon argent » tels que
+    l'expéditeur les voit (aider au téléphone, présenter la démo sans code WhatsApp), jusqu'à « Se
+    déconnecter » ; rien n'est gardé dans le navigateur (18 novembre 2026).
   - **WhatsApp** : **un numéro à part pour OCD Express** (des blocages n'abaissent pas la note du numéro
     d'OCD Live) ; l'expéditeur coche l'accord de son client à chaque colis ; cinq modèles Utilitaire
     (français et anglais) : colis annoncé et en route (au client), colis pris, livré ou problème, versement

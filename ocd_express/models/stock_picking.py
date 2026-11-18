@@ -90,14 +90,43 @@ class StockPicking(models.Model):
         string="Money Of The Sender", compute="_compute_ocd_express_money_state",
     )
 
-    @api.depends("ocd_vendor_bill_ids.ocd_express_kind")
+    @api.depends("ocd_vendor_bill_ids.ocd_express_kind", "ocd_stage", "ocd_cod_state", "ocd_cod_method")
     def _compute_ocd_express_money_state(self):
         for picking in self:
             if not picking.ocd_express:
                 picking.ocd_express_money_state = False
                 continue
             settled = picking.ocd_vendor_bill_ids.filtered(lambda m: m.ocd_express_kind in ("collected", "fees"))
-            picking.ocd_express_money_state = "counted" if settled else "waiting"
+            # A parcel already paid whose customer paid the delivery: nothing for the sender
+            nothing = picking._ocd_express_money_arrived() and not picking._ocd_express_owed()
+            picking.ocd_express_money_state = "counted" if settled or nothing else "waiting"
+
+    def _ocd_express_money_arrived(self):
+        """Whether the money of the delivered parcel reached OCD: nothing to collect, the cash
+        counted at the cash desk, or paid on the phone."""
+        self.ensure_one()
+        return self.ocd_stage == "delivered" and (
+            self.ocd_cod_state in ("none", "remitted")
+            or (self.ocd_cod_state == "collected" and self.ocd_cod_method == "online"))
+
+    def _ocd_express_owed(self):
+        """(goods, fees): the money collected for the sender, and what they pay for the delivery
+        and the collecting."""
+        self.ensure_one()
+        currency = self.company_id.currency_id
+        collected = self.ocd_cod_collected_amount if self.ocd_cod_state != "none" else 0.0
+        # The delivery paid by the customer is the money of OCD: only the goods are the sender's
+        goods = currency.round(collected - self.ocd_fee_amount) if collected else 0.0
+        goods = goods if currency.compare_amounts(goods, 0.0) > 0 else 0.0
+        fees = []
+        if self.ocd_express_fee_by == "sender" and self.ocd_express_fee:
+            fees.append(("ocd_express.product_express_delivery",
+                         self.env._("Delivery of %s", self.name), self.ocd_express_fee))
+        commission = self.company_id._ocd_express_cod_fee(goods)
+        if commission:
+            fees.append(("ocd_express.product_express_collecting",
+                         self.env._("Collecting %s at the door", self.name), commission))
+        return (goods, fees) if goods or fees else ()
 
     @api.depends("ocd_express_fee", "ocd_express_fee_by")
     def _compute_ocd_fee_amount(self):
@@ -730,32 +759,18 @@ class StockPicking(models.Model):
                 continue
             if parcel.ocd_vendor_bill_ids.filtered(lambda m: m.ocd_express_kind in ("collected", "fees")):
                 continue
-            arrived = parcel.ocd_cod_state == "none" or parcel.ocd_cod_state == "remitted" or (
-                parcel.ocd_cod_state == "collected" and parcel.ocd_cod_method == "online")
-            if not arrived:
+            if not parcel._ocd_express_money_arrived():
                 continue
-            company = parcel.company_id
-            currency = company.currency_id
             sender = parcel.ocd_express_sender_id
-            collected = parcel.ocd_cod_collected_amount if parcel.ocd_cod_state != "none" else 0.0
-            # The delivery paid by the customer is the money of OCD: only the goods are the sender's
-            goods = currency.round(collected - parcel.ocd_fee_amount) if collected else 0.0
-            if currency.compare_amounts(goods, 0.0) > 0:
+            goods, fees = parcel._ocd_express_owed() or (0.0, [])
+            if goods:
                 self._ocd_express_move(sender, "in_invoice", "collected", [(
                     "ocd_express.product_express_collected",
                     self.env._("Money of %(parcel)s collected for you (%(customer)s)",
                                parcel=parcel.name, customer=parcel.partner_id.name), goods)], parcel=parcel)
-            fees = []
-            if parcel.ocd_express_fee_by == "sender" and parcel.ocd_express_fee:
-                fees.append(("ocd_express.product_express_delivery",
-                             self.env._("Delivery of %s", parcel.name), parcel.ocd_express_fee))
-            commission = company._ocd_express_cod_fee(goods)
-            if commission:
-                fees.append(("ocd_express.product_express_collecting",
-                             self.env._("Collecting %s at the door", parcel.name), commission))
             if fees:
                 self._ocd_express_move(sender, "in_refund", "fees", fees, parcel=parcel)
-            elif currency.compare_amounts(goods, 0.0) <= 0:
+            if not goods and not fees:
                 # Nothing for the sender, nothing owed: noted as counted
                 parcel.message_post(body=self.env._("Nothing to pay to the sender for this parcel."))
 

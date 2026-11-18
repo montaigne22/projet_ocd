@@ -258,3 +258,86 @@ def hour_text(moment):
     minutes = round((moment.hour * 60 + moment.minute) / 15) * 15
     hours, minutes = divmod(minutes, 60)
     return f"{hours} h" if not minutes else f"{hours} h {minutes:02d}"
+
+
+# === OCD EXPRESS IN DOUALA (when ocd_express is installed) ===
+# Nadège Mode sells shoes, bags and clothes on Instagram and TikTok, without a shop on OCD Live: she
+# sends her parcels with OCD Express from Akwa. One day of parcels, played on the working days of
+# the last week and today (Monday to Saturday, hours of Douala): the parcels of the morning are
+# picked up at 11:00 and delivered in the afternoon, those of the afternoon picked up at 16:00 and
+# delivered the next working day; one parcel refused at the door goes back to her against her
+# return code, one customer reports a problem in the evening (checked by the team two days later),
+# one parcel above her limit waits for the team. The cash is handed over at 19:30 with the cash of
+# the shop; her money is paid every working day at 10:00 (a payout prepared at 7:00).
+EXPRESS_SENDER = "sender_nadege"
+# A request to send parcels, waiting for the team (« To check »)
+EXPRESS_REQUEST = "sender_linda"
+EXPRESS_SOCIAL = "@nadege.mode (Instagram, TikTok)"
+EXPRESS_REQUEST_SOCIAL = "@linda.cosmetiques (TikTok)"
+EXPRESS_POINT = "Point OCD, boulevard de la Liberté, Akwa (adresse d'exemple)"
+EXPRESS_MOMO = "Orange Money 690 00 00 00 (numéro d'exemple)"
+EXPRESS_SINCE_DAYS = 45
+# The customers of Nadège: (name, WhatsApp, district of Douala, landmark); the parcels of a day go to
+# a different one each day
+EXPRESS_CUSTOMERS = [
+    ("Grâce Ngo Bayiha", "+237 699210101", "makepe", "Derrière la pharmacie du rond-point"),
+    ("Paul Ebongue", "+237 699210102", "bonamoussadi", "Carrefour Kotto, immeuble jaune"),
+    ("Mireille Etame", "+237 699210103", "bonaberi", "Face à l'école publique"),
+    ("Aïcha Bello", "+237 699210104", "akwa", "Hôtel Akwa Palace, à la réception"),
+    ("Rodrigue Kamga", "+237 699210105", "bonapriso", "Rue Njo-Njo, portail vert"),
+    ("Carine Moukoko", "+237 699210106", "deido", "Marché de Deïdo, entrée principale"),
+    ("Steve Tchoumi", "+237 699210107", "makepe", "Après la boulangerie de Missoké"),
+    ("Laure Ndjock", "+237 699210108", "akwa", "Boulevard de la Liberté, immeuble Kassap"),
+    ("Yannick Essomba", "+237 699210109", "bonamoussadi", "Derrière la station Tradex"),
+    ("Nadia Ekambi", "+237 699210110", "bonaberi", "Ancienne route, en face du garage"),
+    ("Hélène Mbappe", "+237 699210111", "kotto", "Kotto Bloc, près de la chapelle"),
+]
+# (hour, what is in the parcel, to collect, value of a parcel already paid, who pays the delivery,
+# story of the parcel)
+EXPRESS_DAY = [
+    ("08:15", "Sac à main en cuir noir", 18000, 0, "sender", "cash"),
+    ("08:40", "Baskets blanches, pointure 43", 22000, 0, "customer", "online"),
+    ("09:05", "Deux perruques lisses", 25000, 0, "sender", "refused"),
+    ("09:30", "Coffret de parfums", 0, 15000, "customer", "prepaid"),
+    ("11:20", "Escarpins rouges, pointure 38", 20000, 0, "sender", "claim"),
+    ("12:45", "Montre dorée pour homme", 30000, 0, "sender", "next_cash"),
+    ("13:30", "Ensemble pagne, taille M", 16000, 0, "sender", "absent"),
+    ("14:20", "Téléphone Samsung Galaxy A55", 245000, 0, "sender", "check"),
+    ("17:30", "Robe de soirée longue", 35000, 0, "customer", "evening"),
+]
+# The steps of a parcel of OCD Express: minutes after its creation, or "+N HH:MM" N working days
+# later (Monday to Saturday); its pick-up is the passage of its wave
+EXPRESS_STORIES = {
+    # Picked up in the morning, the customer pays cash at the door
+    "cash": (("confirm", 25), ("leave", "+0 13:50"), ("deliver_cash", "+0 15:10")),
+    # Paid on the phone of the customer (QR code shown by the courier)
+    "online": (("leave", "+0 13:50"), ("deliver_online", "+0 14:35")),
+    # Refused at the door: it goes back to Nadège, given back the next morning against her code
+    "refused": (("confirm", 40), ("leave", "+0 13:50"), ("refused", "+0 16:10"), ("return", "+0 17:00"),
+                ("hand_back", "+1 11:05")),
+    # Already paid to Nadège: the customer pays only the delivery; she sends her position
+    "prepaid": (("leave", "+0 13:50"), ("position", "+0 14:30"), ("deliver_cash", "+0 16:20")),
+    # Delivered the next morning; the customer reports a problem in the evening, the team checks
+    # it two days later (Nadège was right: her money leaves with the next payout)
+    "claim": (("confirm", 30), ("leave", "+1 08:30"), ("deliver_online", "+1 10:15"), ("claim", "+1 18:30"),
+              ("sender_right", "+3 11:00")),
+    "next_cash": (("leave", "+1 08:30"), ("deliver_cash", "+1 09:40")),
+    # Nobody at home the next morning: the courier comes back in the afternoon
+    "absent": (("leave", "+1 08:30"), ("absent", "+1 10:30"), ("retry", "+1 15:30"), ("leave", "+1 15:45"),
+               ("deliver_cash", "+1 16:40")),
+    # Above the limit of Nadège: checked by the team, then picked up with the afternoon parcels
+    "check": (("approve", "+0 14:50"), ("leave", "+1 08:30"), ("deliver_online", "+1 11:30")),
+    # Created in the evening: picked up the next morning
+    "evening": (("confirm", 15), ("leave", "+1 13:50"), ("deliver_cash", "+1 15:40")),
+}
+EXPRESS_PICKUPS = (("morning", "11:00"), ("afternoon", "16:00"))
+EXPRESS_PAID = "10:00"
+EXPRESS_CLAIM = "La pointure ne correspond pas : 39 au lieu de 38."
+# Where the customer who sends her position is (Akwa)
+EXPRESS_POSITION = (4.0483, 9.7043)
+
+
+def express_phones():
+    """The WhatsApp numbers (digits) of the customers of OCD Express of the demo: examples, no
+    message goes to them."""
+    return {"".join(char for char in phone if char.isdigit()) for _name, phone, _district, _landmark in EXPRESS_CUSTOMERS}

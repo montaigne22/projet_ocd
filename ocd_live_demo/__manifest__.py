@@ -28,6 +28,11 @@ Everything needed to present OCD Live, in one module that can be removed:
   each evening, the payouts of the vendors prepared and paid every day; a dress in 2
   colours and 4 sizes whose stock stays at its level, delivery prices (OCD couriers,
   agencies, prices of a vendor).
+- OCD Express, when it is installed (before or after the demo): a vendor of the social
+  networks who sends her parcels with it, her parcels of each working day at every step
+  (two pick-ups a day, a parcel refused and given back against her return code, a
+  problem reported by a customer, a parcel above her limit checked by the team), her
+  money paid every working day; a request to open an account, waiting for the team.
 - WhatsApp: the conversations of the day about the orders and the parcels, on an
   archived account; no WhatsApp message is ever sent to the contacts of the demo
   (ocd_live_demo_whatsapp).
@@ -35,9 +40,10 @@ Everything needed to present OCD Live, in one module that can be removed:
   payment at the door.
 
 Uninstalling the module cancels and removes all these records, and puts the payment
-methods and the opening date of the bookings back as they were.
+methods, the opening date of the bookings and the settings of OCD Express back as they
+were.
 """,
-    "version": "20.0.1.5.0",
+    "version": "20.0.1.6.0",
     "category": "Hidden",
     "author": "RollBackk",
     "license": "LGPL-3",

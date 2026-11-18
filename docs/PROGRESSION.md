@@ -56,8 +56,8 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients (site, back-office, erreurs, e-mails) | ✅ fait, testé |
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
 | Togo (villes, quartiers, livraison) | ✅ fait |
-| Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements) | ✅ fait, testé |
-| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
+| Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements, OCD Express) ; installées en une fois avec les modules, avec leurs factures et reversements | ✅ fait, testé |
+| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), OCD Express (Nadège Mode : ses colis à chaque étape, deux passages par jour, un retour, un souci, son argent versé chaque jour ouvré ; une demande à vérifier), scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 | Grand public : pages publiques gardées en mémoire quelques secondes, photos et vidéos par un CDN, questions répétées des pages réduites ; modèle de rapport de charge ([`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md)) | ✅ fait, testé (à mesurer sur les vrais serveurs) |
 
@@ -139,6 +139,42 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 18 novembre 2026 · La démo installée en une fois, OCD Express dans la démo
+Les deux points laissés ouverts par le chantier 9, avant le chantier 10.
+- **`test_a_day_of_the_shop` corrigé** : Odoo 20 ne charge le plan comptable qu'à la toute fin d'une
+  installation (`_register_hook` de `ir.module.module`), après le `post_init_hook` de la démo. Installée en
+  une fois avec les modules (comme pour les tests), la démo livrait donc les colis des jours d'avant sans
+  facture : aucun reversement avant le lendemain des premières factures, et le test échouait selon l'heure.
+  La démo charge maintenant elle-même le plan comptable qu'Odoo allait charger ; le test de la boutique
+  vérifie aussi que chaque colis livré les jours d'avant a sa facture et que les reversements des jours
+  d'avant sont payés.
+- **OCD Express dans la démo** (`ocd_live_demo` 20.0.1.6.0, quand `ocd_express` est installé, avant ou
+  après elle) : **Nadège Mode** (Akwa, Instagram et TikTok, sans boutique), ses colis rejoués chaque jour
+  ouvré avec la boutique de Douala (9 par jour : espèces, téléphone, déjà payé, refusé à la porte puis
+  rendu contre son code, souci signalé puis vérifié, client absent puis second passage, colis au-dessus
+  de sa limite vérifié par l'équipe, colis du soir), deux passages de Junior par jour, la caisse de
+  19 h 30, son argent préparé à 7 h et versé à 10 h (enregistré dans la comptabilité : « Mon argent » est
+  juste) ; **Linda Cosmétiques**, une demande d'ouverture dans « À vérifier » ; Douala ouvert, point OCD et
+  Mobile Money d'OCD d'exemple s'ils manquent. Ses clients ont des numéros d'exemple : aucun WhatsApp ne
+  leur part. Désinstaller la démo retire colis, passages, clients, versements et paiements, et remet les
+  réglages d'OCD Express comme avant. Scénario dans [`DEMO.md`](DEMO.md).
+- **`ocd_express`** (20.0.1.1.0), vu en jouant la démo : « **Voir son espace** » sur la fiche d'un
+  expéditeur (lien signé pour la personne de l'équipe, comme pour un vendeur) ; un colis déjà payé dont le
+  client paie la livraison restait « attend l'argent » pour toujours (rien n'est dû à l'expéditeur) : il est
+  « compté » une fois l'argent arrivé ; « Mon argent » montre une ligne par colis retenu par un souci (et
+  non l'encaissement et les frais séparés) ; la page de suivi rappelle au client le souci qu'il a signalé,
+  puis sa vérification ; « 389 000 FCFA » ne se coupe plus au milieu du mot sur téléphone.
+- Contrôlé dans le navigateur en français sur la démo (`ocd_base`) à 390, 820 et 1440 px, sans débordement :
+  Mes colis, Mon argent, un colis et son code de retour, la page de suivi (en route, souci signalé), la
+  tournée de Junior, `/express`, la fiche de Nadège dans le back-office.
+- Tests : **la suite complète** sur une base neuve (tous les modules OCD avec `ocd_express`,
+  `ocd_express_whatsapp`, `attachment_s3`, et les tests de `payment_cinetpay` et `whatsapp_cloud`) :
+  **657 sans échec** (3 nouveaux dans `ocd_express`) ; la démo sur une autre base neuve, installée en une
+  fois avec tous les modules : **22 sans échec** (dont `test_a_day_of_the_shop`, et 3 nouveaux pour OCD
+  Express : la démo installée, une journée heure par heure, un colis laissé ouvert les jours d'avant).
+- **À mettre à jour sur un serveur** : `-u ocd_express,ocd_live_demo` (la mise à jour de la démo y met
+  OCD Express). Aucun nouveau modèle WhatsApp à soumettre à Meta.
 
 ### 18 novembre 2026 · OCD Express (chantier 9)
 Maquette `OcdExpress` validée, codée dans deux nouveaux modules, `ocd_express` et

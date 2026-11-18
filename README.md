@@ -24,7 +24,7 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `ocd_live_recruitment` | Offre « Animatrice live · Lomé » sur le site, 5 étapes de recrutement, l'embauchée devient animatrice |
 | `ocd_delivery_togo` | Régions, villes et quartiers du Togo, point de repère, modes de livraison pour Lomé et le reste du Togo |
 | `ocd_debranding` | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients : site, connexion, portail, back-office, fenêtres d'erreur, e-mails |
-| `ocd_live_demo` | Données de démonstration, retirées entièrement en désinstallant le module |
+| `ocd_live_demo` | Données de démonstration (vendeurs dans 8 pays, lives, boutique de Douala, et OCD Express quand il est installé), retirées entièrement en désinstallant le module |
 | `theme_ocd` | Thème du site « OCD Live » (polices, couleurs, boutons, en-tête, pied de page du design) pour les pages d'Odoo : à choisir dans Site Web › Configuration › Paramètres › Choisir un thème |
 
 | `whatsapp_cloud` | Conversations WhatsApp dans Odoo, messages automatiques validés par Meta (en-tête texte, PDF ou vidéo), STOP et START |

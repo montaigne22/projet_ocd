@@ -96,9 +96,19 @@ class OcdExpressTracking(http.Controller):
             if courier and phone and stage in ("picked", "on_the_way") else "",
             claim_line=env._("Within %s hours of the delivery. The team of OCD Live calls you back.",
                              parcel.company_id.ocd_express_claim_hours),
+            claim_state=self._claim_state(parcel),
             message=message,
             error=error,
         ))
+
+    def _claim_state(self, parcel):
+        """The problem the customer reported after the delivery, when they come back to the page."""
+        env = request.env
+        if parcel.ocd_express_claim_state == "open":
+            return env._("You reported a problem: the team of OCD Live calls you back.")
+        if parcel.ocd_express_claim_state:
+            return env._("The team of OCD Live checked the problem you reported.")
+        return ""
 
     def _when_line(self, parcel):
         env = request.env

@@ -12,5 +12,9 @@ class OcdLiveDemoEvent(models.Model):
 
     key = fields.Char(required=True, index=True)
     sale_order_id = fields.Many2one(comodel_name="sale.order", ondelete="cascade", index="btree_not_null")
+    # A parcel of OCD Express created by a step (no order)
+    picking_id = fields.Many2one(
+        comodel_name="stock.picking", string="Parcel", ondelete="cascade", index="btree_not_null",
+    )
 
     _unique_key = models.Constraint("UNIQUE (key)", "A step of the demo takes place once.")

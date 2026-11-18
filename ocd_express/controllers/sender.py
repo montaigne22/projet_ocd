@@ -131,6 +131,25 @@ class OcdExpressLogin(OcdMemberLogin):
         forget_sender()
         return request.redirect(LOGIN)
 
+    @http.route("/express/equipe/<int:partner_id>", type="http", auth="user", website=True, methods=["GET"],
+                sitemap=False)
+    def express_team_view(self, partner_id, signature=None, **kwargs):
+        """« See their space » of the back office: the link is signed for the person of the team who
+        touched it, it opens nothing for anyone else. The sender stays open on this browser for
+        this visit (not remembered), until « Log out »."""
+        user = request.env.user
+        partner = request.env["res.partner"].sudo().browse(partner_id).exists()
+        if (
+            not user.has_group("ocd_live.group_ocd_live_user")
+            or not _is_sender(partner)
+            or not signature
+            or not consteq(partner._ocd_team_view_signature(user.id), signature)
+        ):
+            raise request.not_found()
+        request.session[SESSION_SENDER] = partner.id
+        request.session[SESSION_SENDER_TOKEN] = partner._ocd_get_space_token()
+        return request.redirect(HOME)
+
     # === THE REQUEST === #
 
     @http.route("/express/demande", type="http", auth="public", website=True, methods=["GET"], sitemap=False)
@@ -657,6 +676,11 @@ class OcdExpressSender(http.Controller):
             row["amount"] += sign * move.amount_residual
             row["count"] += 1
         total = sum(row["amount"] for row in lines.values())
+        # The money of a parcel held by a problem: what it brings to the sender, in one line
+        held_parcels = {}
+        for move in held:
+            sign = 1 if move.move_type == "in_invoice" else -1
+            held_parcels[move.ocd_picking_id] = held_parcels.get(move.ocd_picking_id, 0.0) + sign * move.amount_residual
         waiting = env["stock.picking"].sudo().search([
             ("ocd_express", "=", True), ("ocd_express_sender_id", "=", sender.id), ("ocd_stage", "=", "delivered"),
             ("ocd_cod_state", "=", "collected"), ("ocd_cod_method", "=", "cash"),
@@ -678,10 +702,8 @@ class OcdExpressSender(http.Controller):
             debt=money(debt) if debt else "",
             debt_over=bool(company.ocd_express_debt_max) and debt > company.ocd_express_debt_max,
             rows=[{"label": row["label"], "amount": money(row["amount"])} for row in lines.values()],
-            held=[{"label": env._("%(parcel)s · problem reported · %(amount)s", parcel=move.ocd_picking_id.name,
-                                  amount=money(move.amount_residual if move.move_type == "in_invoice"
-                                               else -move.amount_residual))}
-                  for move in held],
+            held=[{"label": env._("%(parcel)s · problem reported · %(amount)s", parcel=parcel.name, amount=money(amount))}
+                  for parcel, amount in held_parcels.items()],
             waiting=env._("On its way to OCD: %s", money(sum(waiting.mapped("ocd_cod_collected_amount"))))
             if waiting else "",
             next_day=common.day_text(next_day, "EEEE d MMMM"),

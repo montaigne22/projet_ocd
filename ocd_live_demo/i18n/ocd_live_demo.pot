@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-12 13:20+0000\n"
-"PO-Revision-Date: 2026-11-12 13:20+0000\n"
+"POT-Creation-Date: 2026-11-18 18:56+0000\n"
+"PO-Revision-Date: 2026-11-18 18:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -43,6 +43,11 @@ msgid ""
 "  each evening, the payouts of the vendors prepared and paid every day; a dress in 2\n"
 "  colours and 4 sizes whose stock stays at its level, delivery prices (OCD couriers,\n"
 "  agencies, prices of a vendor).\n"
+"- OCD Express, when it is installed (before or after the demo): a vendor of the social\n"
+"  networks who sends her parcels with it, her parcels of each working day at every step\n"
+"  (two pick-ups a day, a parcel refused and given back against her return code, a\n"
+"  problem reported by a customer, a parcel above her limit checked by the team), her\n"
+"  money paid every working day; a request to open an account, waiting for the team.\n"
 "- WhatsApp: the conversations of the day about the orders and the parcels, on an\n"
 "  archived account; no WhatsApp message is ever sent to the contacts of the demo\n"
 "  (ocd_live_demo_whatsapp).\n"
@@ -50,7 +55,14 @@ msgid ""
 "  payment at the door.\n"
 "\n"
 "Uninstalling the module cancels and removes all these records, and puts the payment\n"
-"methods and the opening date of the bookings back as they were.\n"
+"methods, the opening date of the bookings and the settings of OCD Express back as they\n"
+"were.\n"
+msgstr ""
+
+#. module: ocd_live_demo
+#. odoo-python
+#: code:addons/ocd_live_demo/hooks.py:0
+msgid "%(name)s asks to send parcels with OCD Express (%(social)s)."
 msgstr ""
 
 #. module: ocd_live_demo
@@ -327,6 +339,11 @@ msgstr ""
 #. module: ocd_live_demo
 #: model:product.template,name:ocd_live_demo.product_panier
 msgid "Panier en osier tressé"
+msgstr ""
+
+#. module: ocd_live_demo
+#: model:ir.model.fields,field_description:ocd_live_demo.field_ocd_live_demo_event__picking_id
+msgid "Parcel"
 msgstr ""
 
 #. module: ocd_live_demo

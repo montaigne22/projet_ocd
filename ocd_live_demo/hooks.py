@@ -19,6 +19,8 @@ PARAM_MOMO = "ocd_live_demo.momo_pending_msg"
 PARAM_COD = "ocd_live_demo.cod_published"
 PARAM_WHATSAPP = "ocd_live_demo.whatsapp_account_id"
 PARAM_OPEN_DATE = "ocd_live_demo.booking_open_date"
+# The settings of OCD Express the demo filled in, put back as they were when it is removed
+PARAM_EXPRESS = "ocd_live_demo.express_settings"
 # Settings of the demo (OCD Live > Configuration > Settings > Demo)
 PARAM_REPLAY_URL = "ocd_live_demo.replay_url"
 PARAM_REPLAY_MINUTES = "ocd_live_demo.replay_minutes"
@@ -99,6 +101,7 @@ class OcdLiveDemo:
 
     def run(self):
         last_message = self.last_message()
+        self.step("the chart of accounts", self.accounting)
         self.payment()
         self.step("the currencies by country", self.currencies)
         self.open_bookings()
@@ -128,6 +131,16 @@ class OcdLiveDemo:
             params = self.env["ir.config_parameter"].sudo()
             known = json.loads(params.get_str(PARAM_MESSAGES) or "[]")
             params.set_str(PARAM_MESSAGES, json.dumps(sorted(set(known) | set(messages.ids))))
+
+    def accounting(self):
+        """The chart of accounts of the company, loaded now when Odoo loads it only at the end of
+        the installation (the demo installed in one go with the modules): without it, the parcels
+        of the days before would be delivered without the bills of their vendors, and the payouts
+        would start the day after the first bills. It is the chart Odoo was about to load."""
+        pending = getattr(self.env.registry, "_auto_install_template", None)
+        if pending and not self.company.chart_template:
+            pending(self.env)
+            del self.env.registry._auto_install_template
 
     def currencies(self):
         """The currencies by country: the vendors of Cameroon see their prices in FCFA (XAF, the
@@ -186,6 +199,7 @@ class OcdLiveDemo:
         self.step("the replays", self.keep_replays, now)
         self.step("the payment to check", self.keep_payment_to_check, now)
         self.step("the waiting list", self.keep_waitlist)
+        self.step("OCD Express", self.express_setup)
         self.step("the shop in Douala", self.keep_shop, now)
         self.step("the old records of the demo", self.prune, now)
         self.remember_channel_messages(last_message)
@@ -720,6 +734,8 @@ class OcdLiveDemo:
             steps.append((at(scenario.PAYOUTS_PAID), f"shop:{day}:paid", self.shop_pay, (day,)))
             moment = at(scenario.CASH_HANDOVER)
             steps.append((moment, f"shop:{day}:cash", self.shop_cash, (self.shop_utc(moment),)))
+            if self.express() and self.company._ocd_express_working_day(day):
+                steps.extend(self.express_plan(day, at))
         return sorted(steps, key=lambda step: step[0])
 
     def keep_shop(self, now):
@@ -731,6 +747,8 @@ class OcdLiveDemo:
         # First the parcels left open the days before: delivered in the evening of their order,
         # their cash is handed over with the cash of that day
         self.step("the parcels of the former scenario", self.shop_tidy, now)
+        if self.express():
+            self.step("the parcels of OCD Express left open", self.express_tidy, now)
         Event = self.env["ocd.live.demo.event"].sudo()
         local_now = pytz.utc.localize(now).astimezone(pytz.timezone(scenario.SHOP_TZ)).replace(tzinfo=None)
         steps = [step for step in self.shop_plan(now) if step[0] <= local_now]
@@ -739,8 +757,12 @@ class OcdLiveDemo:
             if key in done:
                 continue
             result = self.step(key, function, *args)
-            order = result if getattr(result, "_name", None) == "sale.order" else self.env["sale.order"]
-            Event.create({"key": key, "sale_order_id": order.id})
+            model = getattr(result, "_name", None)
+            Event.create({
+                "key": key,
+                "sale_order_id": result.id if model == "sale.order" else False,
+                "picking_id": result.id if model == "stock.picking" else False,
+            })
         self.keep_stock()
 
     def shop_order(self, key, day, index, ordered):
@@ -889,6 +911,278 @@ class OcdLiveDemo:
             self.parcel_leave(parcel, moment)
             self.parcel_deliver(parcel, moment, "cash")
 
+    # === OCD EXPRESS IN DOUALA (when ocd_express is installed) === #
+
+    def express(self):
+        return "ocd.express.pickup" in self.env
+
+    def express_senders(self):
+        """The senders of OCD Express of the demo."""
+        if not self.express():
+            return self.env["res.partner"]
+        return self.partners().filtered(lambda partner: partner.ocd_express_state in ("active", "suspended"))
+
+    def express_setup(self):
+        """OCD Express open in Douala (its OCD point and its Mobile Money, examples when the team
+        set none), Nadège Mode whose account is open, and a request waiting for the team. What
+        the team set stays; what the demo filled in goes away with it."""
+        if not self.express():
+            return
+        params = self.env["ir.config_parameter"].sudo()
+        company = self.company
+        if not params.get_str(PARAM_EXPRESS):
+            douala = self.env.ref("delivery_cameroon.city_cm_douala")
+            saved, values = {"company": company.id}, {}
+            if douala not in company.ocd_express_city_ids:
+                saved["city"] = douala.id
+                values["ocd_express_city_ids"] = [Command.link(douala.id)]
+            if not company.ocd_express_point:
+                saved["point"] = True
+                values["ocd_express_point"] = scenario.EXPRESS_POINT
+            if not company.ocd_express_momo_number:
+                saved["momo"] = True
+                values["ocd_express_momo_number"] = scenario.EXPRESS_MOMO
+            company.write(values)
+            params.set_str(PARAM_EXPRESS, json.dumps(saved))
+        sender = self.ref(scenario.EXPRESS_SENDER)
+        if not sender.ocd_express_state:
+            sender.write({
+                "ocd_express_state": "active",
+                "ocd_express_since": self.today() - timedelta(days=scenario.EXPRESS_SINCE_DAYS),
+                "ocd_express_social": scenario.EXPRESS_SOCIAL,
+                "ocd_express_id_checked": True,
+                "ocd_express_place_checked": True,
+            })
+        request = self.ref(scenario.EXPRESS_REQUEST)
+        if not request.ocd_express_state:
+            request.write({"ocd_express_state": "requested", "ocd_express_social": scenario.EXPRESS_REQUEST_SOCIAL})
+            request._ocd_express_alert(self.env._(
+                "%(name)s asks to send parcels with OCD Express (%(social)s).",
+                name=request.name, social=scenario.EXPRESS_REQUEST_SOCIAL))
+
+    def express_when(self, created, step_time):
+        """The moment of a step of a parcel of OCD Express (a datetime of Douala): minutes after its
+        creation, or "+N HH:MM" N working days later (the couriers do not pick up on Sunday)."""
+        if isinstance(step_time, int):
+            return created + timedelta(minutes=step_time)
+        days, hour = step_time.split(" ")
+        day = created.date()
+        for _index in range(int(days)):
+            day = self.company._ocd_express_next_working_day(day)
+        hours, minutes = (int(part) for part in hour.split(":"))
+        return datetime.combine(day, time(hours, minutes))
+
+    def express_plan(self, day, at):
+        """The steps of OCD Express of a working day: the parcels of Nadège along their story, the
+        two passages of the courier, her money prepared and paid, the cash of the couriers handed
+        over (with the cash of the shop: these steps of their own also play the days before when
+        OCD Express is installed after the demo)."""
+        steps = [(at(scenario.PAYOUTS_PREPARED), f"express:{day}:payouts", self.express_payouts, (day,))]
+        for index, row in enumerate(scenario.EXPRESS_DAY):
+            created = at(row[0])
+            key = f"express:{day}:{index}"
+            steps.append((created, f"{key}:order", self.express_order, (day, index, created)))
+            for number, (name, step_time) in enumerate(scenario.EXPRESS_STORIES[row[5]]):
+                moment = self.express_when(created, step_time)
+                steps.append((moment, f"{key}:{number}:{name}", self.express_step, (key, name, self.shop_utc(moment))))
+        for part, hour in scenario.EXPRESS_PICKUPS:
+            moment = at(hour)
+            steps.append((moment, f"express:{day}:pickup:{part}", self.express_pickup, (day, part, self.shop_utc(moment))))
+        steps.append((at(scenario.EXPRESS_PAID), f"express:{day}:paid", self.express_pay, (day,)))
+        moment = at(scenario.CASH_HANDOVER)
+        steps.append((moment, f"express:{day}:cash", self.shop_cash, (self.shop_utc(moment),)))
+        return steps
+
+    def express_customer(self, day, index):
+        """The customer of a parcel of the day: (name, WhatsApp, district, landmark)."""
+        customers = scenario.EXPRESS_CUSTOMERS
+        return customers[(scenario.number(day) + index) % len(customers)]
+
+    def express_order(self, day, index, created):
+        """A parcel created by Nadège on « New parcel », at its hour."""
+        _hour, content, amount, value, fee_by, _story = scenario.EXPRESS_DAY[index]
+        name, phone, district, landmark = self.express_customer(day, index)
+        district = self.env.ref(f"delivery_cameroon.district_douala_{district}")
+        parcel = self.env["stock.picking"].sudo()._ocd_express_create(self.ref(scenario.EXPRESS_SENDER), {
+            "name": name, "phone": phone, "district": district, "city": district.city_id, "landmark": landmark,
+            "content": content, "prepaid": bool(value), "amount": amount, "value": value, "fee_by": fee_by,
+            "can_open": True, "consent": True, "dropoff": False,
+        })
+        moment = self.shop_utc(created)
+        self.env.cr.execute(SQL("UPDATE stock_picking SET create_date = %s WHERE id = %s", moment, parcel.id))
+        parcel.invalidate_recordset(["create_date"])
+        if parcel.ocd_express_check == "ok":
+            parcel.ocd_ready_at = moment
+            self.express_slot(parcel, moment)
+        return parcel
+
+    def express_slot(self, parcel, moment):
+        """The wave and the passage of the parcel from the moment of the scenario: a step played
+        late (the installation, a server stopped) would plan it from now."""
+        before = parcel.ocd_express_pickup_id
+        parcel._ocd_express_plan(moment)
+        if before and before != parcel.ocd_express_pickup_id and before.state == "planned" and not before.parcel_ids:
+            before.unlink()
+
+    def express_step(self, key, name, moment):
+        parcel = self.env["ocd.live.demo.event"].sudo().search([("key", "=", f"{key}:order")], limit=1).picking_id
+        if parcel:
+            getattr(self, f"express_{name}")(parcel, moment)
+
+    # Each step checks where the parcel is: a parcel handled by the team during a presentation is
+    # left as it is
+
+    def express_confirm(self, parcel, moment):
+        if parcel.ocd_express_confirm == "waiting" and parcel._ocd_express_customer_open():
+            parcel._ocd_express_confirm()
+
+    def express_approve(self, parcel, moment):
+        if parcel.ocd_express_check == "to_check":
+            parcel.action_ocd_express_approve()
+            parcel.ocd_ready_at = moment
+            self.express_slot(parcel, moment)
+
+    def express_leave(self, parcel, moment):
+        if parcel.ocd_stage == "picked" and parcel.ocd_courier_id:
+            parcel.action_ocd_leave()
+            parcel.write({"ocd_left_at": moment, "ocd_code_sent_at": moment})
+
+    def express_position(self, parcel, moment):
+        if parcel._ocd_express_customer_open():
+            parcel._ocd_express_set_position(*scenario.EXPRESS_POSITION)
+
+    def express_deliver_cash(self, parcel, moment):
+        self.express_deliver(parcel, moment, "cash")
+
+    def express_deliver_online(self, parcel, moment):
+        self.express_deliver(parcel, moment, "online")
+
+    def express_deliver(self, parcel, moment, method):
+        """Delivered with the code of the customer, as the app of the courier does, without
+        validating the stock transfer (the demo moves no stock, so that it can be removed). The
+        money of Nadège counts once it reached OCD: paid on the phone now, the cash at 19:30."""
+        if parcel.ocd_stage != "on_the_way":
+            return
+        if parcel.ocd_cod_state == "to_collect":
+            courier = parcel.ocd_courier_id
+            if method == "cash" and not self.express_cash_allowed(parcel, courier):
+                method = "online"  # above the cash of the settings: the customer pays on the phone
+            parcel._ocd_collect(method, courier)
+            parcel.ocd_cod_collected_at = moment
+        parcel.write({"ocd_stage": "delivered", "ocd_delivered_at": moment, "ocd_problem_reason": False})
+        parcel._ocd_express_settle()
+        parcel._ocd_express_notify("delivered")
+
+    def express_cash_allowed(self, parcel, courier):
+        if "cash" not in parcel._ocd_allowed_cod_methods(courier):
+            return False
+        limit = parcel.company_id.ocd_express_cash_max
+        courier.invalidate_recordset(["ocd_cash_on_hand"])
+        return not limit or parcel.company_id.currency_id.compare_amounts(
+            courier.ocd_cash_on_hand + parcel.ocd_cod_amount, limit) <= 0
+
+    def express_refused(self, parcel, moment):
+        if parcel.ocd_stage == "on_the_way":
+            parcel._ocd_report_problem("refused")
+
+    def express_absent(self, parcel, moment):
+        if parcel.ocd_stage == "on_the_way":
+            parcel._ocd_report_problem("absent")
+
+    def express_retry(self, parcel, moment):
+        if parcel.ocd_stage == "problem":
+            parcel.action_ocd_retry()
+
+    def express_return(self, parcel, moment):
+        """The team sends the refused parcel back to Nadège, against her return code."""
+        if parcel.ocd_stage == "problem":
+            parcel._ocd_return()
+
+    def express_hand_back(self, parcel, moment):
+        """Given back to Nadège at the passage of the morning: she gives her return code."""
+        if parcel.ocd_express_return_state == "to_return" and parcel.ocd_courier_id:
+            parcel._ocd_express_hand_back(parcel._ocd_express_return_code(), parcel.ocd_courier_id)
+            parcel.ocd_express_returned_at = moment
+
+    def express_claim(self, parcel, moment):
+        """The customer reports a problem on her page in the evening: the money of the parcel
+        waits for the team (the 48 hours count from the moment of the scenario)."""
+        if parcel.ocd_stage != "delivered" or parcel.ocd_express_claim_state:
+            return
+        delivered = parcel.ocd_delivered_at
+        parcel.ocd_delivered_at = fields.Datetime.now()
+        parcel._ocd_express_report_claim(scenario.EXPRESS_CLAIM)
+        parcel.write({"ocd_delivered_at": delivered, "ocd_express_claim_at": moment})
+
+    def express_sender_right(self, parcel, moment):
+        """The team checked the photo of the parcel closed: Nadège sent the right size."""
+        if parcel.ocd_express_claim_state == "open":
+            parcel.action_ocd_express_claim_sender()
+
+    def express_pickup(self, day, part, moment):
+        """The passage of the courier at Nadège: he takes the parcels ready."""
+        pickups = self.env["ocd.express.pickup"].sudo().search([
+            ("sender_id", "in", self.express_senders().ids), ("date", "=", day), ("part", "=", part),
+            ("state", "=", "planned"),
+        ])
+        for pickup in pickups:
+            ready = pickup.parcel_ids.filtered(lambda p: p.ocd_stage == "ready" and p.ocd_express_check == "ok")
+            if ready:
+                pickup._ocd_done(ready)
+                pickup.done_at = moment
+                ready.write({"ocd_picked_at": moment})
+
+    def express_payouts(self, day):
+        """The money of the senders, every working day: what reached OCD minus the fees."""
+        self.env["ocd.payout"].sudo()._ocd_prepare(vendors=self.express_senders(), day=day)
+
+    def express_pay(self, day):
+        """The team pays the money of the senders prepared at 7:00 by Mobile Money, recorded in the
+        accounting: « My money » of Nadège shows what is paid and what comes next."""
+        payouts = self.env["ocd.payout"].sudo().search([
+            ("vendor_id", "in", self.express_senders().ids), ("state", "=", "draft"), ("date", "<=", day),
+        ], order="date, id")
+        for payout in payouts:
+            payout.action_validate()
+            payout.payment_reference = scenario.PAYOUT_REFERENCE % f"{payout.date:%d%m}-{payout.id}"
+            payout.action_register_payment()
+
+    def express_tidy(self, now):
+        """The parcels of OCD Express of the demo left open the days before (a parcel created during
+        a presentation, a server stopped for days) are delivered in the evening of their day, the
+        returns given back, the problems closed: the screens show the parcels of the days of now."""
+        senders = self.express_senders()
+        if not senders:
+            return
+        today = self.shop_today(now)
+        start = self.shop_utc(datetime.combine(today, time()))
+        first = self.shop_utc(datetime.combine(today - timedelta(days=scenario.SHOP_PAST_DAYS), time()))
+        known = self.env["ocd.live.demo.event"].sudo().search([("picking_id", "!=", False)]).picking_id
+        parcels = self.env["stock.picking"].sudo().search([
+            ("ocd_express", "=", True), ("ocd_express_sender_id", "in", senders.ids), ("create_date", "<", start),
+            "|", "|", ("ocd_stage", "in", ("to_prepare", "ready", "picked", "on_the_way", "problem")),
+            ("ocd_express_return_state", "=", "to_return"), ("ocd_express_claim_state", "=", "open"),
+        ]).filtered(lambda parcel: parcel not in known or parcel.create_date < first)
+        tz = pytz.timezone(scenario.SHOP_TZ)
+        for parcel in parcels:
+            day = pytz.utc.localize(parcel.create_date).astimezone(tz).date()
+            moment = max(min(self.shop_utc(datetime.combine(day, time(18, 0))), now), parcel.create_date)
+            if parcel.ocd_express_check == "to_check":
+                parcel.action_ocd_express_approve()
+            self.express_retry(parcel, moment)
+            if parcel.ocd_stage in ("to_prepare", "ready"):
+                parcel.action_ocd_pick_up()
+                parcel.ocd_picked_at = moment
+            self.express_leave(parcel, moment)
+            self.express_deliver(parcel, moment, "online")
+            self.express_hand_back(parcel, moment)
+            self.express_sender_right(parcel, moment)
+        # The passages of the days before left without a parcel to take
+        self.env["ocd.express.pickup"].sudo().search([
+            ("sender_id", "in", senders.ids), ("state", "=", "planned"), ("date", "<", today),
+        ]).filtered(lambda pickup: not pickup.parcel_ids.filtered(lambda p: p.ocd_stage == "ready")).write(
+            {"state": "cancelled"})
+
     # === WHATSAPP === #
 
     def whatsapp_account(self):
@@ -1023,6 +1317,20 @@ class OcdLiveDemo:
         self.wa_dated(channel, message, date)
 
 
+def _uninstall_express(env, partner_ids):
+    """The parcels of OCD Express of the senders of the demo, their passages and their customers."""
+    parcels = env["stock.picking"].sudo().search([("ocd_express_sender_id", "in", partner_ids)])
+    parcels.filtered(lambda parcel: parcel.state not in ("done", "cancel")).action_cancel()
+    env["ocd.express.pickup"].sudo().search([("sender_id", "in", partner_ids)]).unlink()
+    removed = parcels.filtered(lambda parcel: parcel.state == "cancel")
+    customers = removed.partner_id.filtered("ocd_express_recipient") - (parcels - removed).partner_id
+    removed.unlink()
+    if "whatsapp.message" in env:
+        env["whatsapp.message"].sudo().search([("partner_id", "in", customers.ids)]).unlink()
+        env["discuss.channel"].sudo().search([("whatsapp_partner_id", "in", customers.ids)]).unlink()
+    customers.unlink()
+
+
 def post_init_hook(env):
     OcdLiveDemo(env).run()
 
@@ -1038,11 +1346,17 @@ def uninstall_hook(env):
         domain = [("partner_id", "in", partner_ids)]
         # Payouts and vendor bills of the demo parcels
         payouts = env["ocd.payout"].sudo().search([("vendor_id", "in", partner_ids)])
+        # The money of OCD Express paid in the accounting (« My money » of the senders)
+        payments = payouts.payment_ids
+        payments.filtered(lambda payment: payment.state != "draft").action_draft()
+        payments.unlink()
         payouts.move_ids.write({"ocd_payout_id": False})
         payouts.unlink()
         bills = env["account.move"].sudo().search(domain + [("move_type", "in", ("in_invoice", "in_refund"))])
         bills.filtered(lambda move: move.state == "posted").button_draft()
         bills.with_context(force_delete=True).unlink()
+        if "ocd.express.pickup" in env:
+            _uninstall_express(env, partner_ids)
         orders = env["sale.order"].sudo().with_context(active_test=False).search(domain)
         pickings = orders.picking_ids
         pickings.filtered(lambda p: p.state not in ("done", "cancel")).action_cancel()
@@ -1095,6 +1409,20 @@ def uninstall_hook(env):
     if cod and previous:
         # The demo had published the payment in cash at the door: back as before
         cod.write(json.loads(previous.value or "{}") or {"is_published": False})
+    previous = params.search([("key", "=", PARAM_EXPRESS)])
+    if previous and "ocd_express_city_ids" in env["res.company"]._fields:
+        # The settings of OCD Express the demo filled in
+        saved = json.loads(previous.value or "{}")
+        company = env["res.company"].sudo().browse(saved.get("company") or []).exists()
+        if company:
+            values = {}
+            if saved.get("city"):
+                values["ocd_express_city_ids"] = [Command.unlink(saved["city"])]
+            if saved.get("point") and company.ocd_express_point == scenario.EXPRESS_POINT:
+                values["ocd_express_point"] = False
+            if saved.get("momo") and company.ocd_express_momo_number == scenario.EXPRESS_MOMO:
+                values["ocd_express_momo_number"] = False
+            company.write(values)
     previous = params.search([("key", "=", PARAM_OPEN_DATE)])
     if previous:
         # The demo had opened the bookings from its day: the date set by the team comes back
@@ -1103,6 +1431,6 @@ def uninstall_hook(env):
         if company and saved.get("date"):
             company.ocd_booking_open_date = fields.Date.to_date(saved["date"])
     params.search([("key", "in", (
-        PARAM_MESSAGES, PARAM_MOMO, PARAM_COD, PARAM_WHATSAPP, PARAM_OPEN_DATE,
+        PARAM_MESSAGES, PARAM_MOMO, PARAM_COD, PARAM_WHATSAPP, PARAM_OPEN_DATE, PARAM_EXPRESS,
         PARAM_REPLAY_URL, PARAM_REPLAY_MINUTES, PARAM_LIVE_URL,
     ))]).unlink()

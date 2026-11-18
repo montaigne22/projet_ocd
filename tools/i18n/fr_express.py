@@ -527,6 +527,14 @@ EXPRESS = {
     "See the parcel": "Voir le colis",
     "See the sender": "Voir l'expéditeur",
     "See their parcels": "Voir ses colis",
+    "See their space": "Voir son espace",
+    "You reported a problem: the team of OCD Live calls you back.":
+        "Tu as signalé un souci : l'équipe d'OCD Live te rappelle.",
+    "The team of OCD Live checked the problem you reported.":
+        "L'équipe d'OCD Live a vérifié le souci que tu as signalé.",
+    "Only the team of OCD Live can see the space of a sender.":
+        "Seule l'équipe d'OCD Live peut voir l'espace d'un expéditeur.",
+    "The account of OCD Express of %s is not open.": "Le compte OCD Express de %s n'est pas ouvert.",
     "Send a parcel (OCD Express)": "Envoyer un colis (OCD Express)",
     "Send my first parcel": "Envoyer mon premier colis",
     "Send my parcels": "Envoyer mes colis",

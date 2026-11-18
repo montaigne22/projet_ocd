@@ -29,7 +29,7 @@ OCD Express
 - Caps per parcel, team checks, return rate alert, data of the customers erased
   after 6 months.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Inventory/Delivery",
     "author": "RollBackk",
     "license": "LGPL-3",

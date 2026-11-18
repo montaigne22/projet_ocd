@@ -219,6 +219,15 @@ class TestOcdExpressMoney(OcdExpressCommon):
         self.assertEqual(self._moves(parcel, "fees").amount_total, 1000)
         self.assertEqual(self.afi.ocd_express_balance, -1000)
 
+    def test_nothing_for_the_sender_is_counted_once_the_money_arrived(self):
+        parcel = self._create(prepaid=True, value=8000, fee_by="customer")
+        self._deliver(parcel)
+        self.assertEqual(parcel.ocd_express_money_state, "waiting", "The delivery paid in cash is on the courier")
+        self._remit(self.courier)
+        self.assertFalse(self._moves(parcel), "The delivery paid by the customer is the money of OCD")
+        parcel.invalidate_recordset(["ocd_express_money_state"])
+        self.assertEqual(parcel.ocd_express_money_state, "counted")
+
     def test_debt_above_the_limit_blocks_until_paid(self):
         self.company.ocd_express_debt_max = 1500
         for index in range(2):

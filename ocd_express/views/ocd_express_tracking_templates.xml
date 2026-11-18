@@ -21,6 +21,7 @@
                                 <small class="o_ocd_ex_muted">In cash to the courier, or on your phone (Mobile Money): the courier shows you the payment. Never on the personal number of the courier.</small>
                             </div>
                             <div t-elif="paid" class="o_ocd_ok" role="status"><b>Paid. Thank you!</b></div>
+                            <div t-if="claim_state" class="o_ocd_info" role="status" t-out="claim_state"/>
                             <a t-if="pay_url" t-att-href="pay_url" class="o_ocd_button o_ocd_button_dark">Pay on my phone</a>
                             <small t-if="parcel.ocd_express_can_open and parcel.ocd_stage not in ('delivered', 'returned', 'cancelled')">You may open the parcel in front of the courier before paying.</small>
                             <t t-if="code">

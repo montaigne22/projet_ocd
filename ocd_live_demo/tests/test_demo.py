@@ -1,3 +1,4 @@
+import json
 import re
 from datetime import datetime, time, timedelta
 from types import SimpleNamespace
@@ -12,7 +13,13 @@ from odoo.tests import HttpCase, TransactionCase, tagged
 
 from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live_demo import scenario
-from odoo.addons.ocd_live_demo.hooks import PARAM_OPEN_DATE, PARAM_REPLAY_URL, OcdLiveDemo, uninstall_hook
+from odoo.addons.ocd_live_demo.hooks import (
+    PARAM_EXPRESS,
+    PARAM_OPEN_DATE,
+    PARAM_REPLAY_URL,
+    OcdLiveDemo,
+    uninstall_hook,
+)
 
 
 class DemoCommon:
@@ -43,6 +50,14 @@ class DemoCommon:
         return self.env["stock.picking"].search([
             ("partner_id", "in", self._demo_partners().ids), ("ocd_is_parcel", "=", True),
         ])
+
+    def _express(self):
+        if "ocd.express.pickup" not in self.env:
+            self.skipTest("OCD Express is not installed.")
+        return self.env.ref("ocd_live_demo.sender_nadege")
+
+    def _express_parcels(self):
+        return self.env["stock.picking"].search([("ocd_express_sender_id", "=", self._express().id)])
 
     def _free_stock(self):
         """Free stock of the dress shown on the website, by (colour, size)."""
@@ -105,6 +120,17 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
         )
         remittances = self.env["ocd.cash.remittance"].search([("courier_id", "in", couriers.ids)])
         self.assertTrue(remittances and set(remittances.mapped("state")) == {"done"}, "Cash handed over every evening")
+        self.assertTrue(self.env["account.journal"].search_count(
+            [("type", "=", "purchase"), ("company_id", "=", self.env.company.id)]),
+            "The accounting is there, also when the demo is installed with the modules in one go")
+        before = parcels.filtered(lambda p: p.ocd_stage == "delivered"
+                                  and p.ocd_delivered_at < fields.Datetime.now() - timedelta(days=2))
+        self.assertTrue(before)
+        self.assertFalse(before.filtered(lambda p: not p.ocd_vendor_bill_ids.filtered(lambda m: m.move_type == "in_invoice")),
+                         "Each parcel delivered the days before has the bill of its vendor")
+        payouts = self.env["ocd.payout"].search([("vendor_id", "in", partners.ids)])
+        self.assertGreaterEqual(len(payouts.filtered(lambda p: p.state == "paid")), scenario.SHOP_PAST_DAYS - 1,
+                                "The payouts of the days before, paid every day")
         if "whatsapp.account" in self.env:
             channels = self.env["discuss.channel"].search(
                 [("channel_type", "=", "whatsapp"), ("whatsapp_partner_id", "in", partners.ids)]
@@ -161,6 +187,107 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
                                  "The payouts of the days before are paid")
                 self.assertTrue(payouts.filtered(lambda p: p.date == tomorrow and p.state == "draft"))
 
+    def test_ocd_express_of_the_demo(self):
+        """Nadège Mode sends her parcels with OCD Express: the parcels of the last week delivered
+        and counted for her, her money paid every working day, a request waiting for the team."""
+        nadege = self._express()
+        company = self.env.company
+        self.assertEqual(nadege.ocd_express_state, "active")
+        self.assertEqual(self.env.ref("ocd_live_demo.sender_linda").ocd_express_state, "requested",
+                         "A request to check in « To check »")
+        self.assertIn(self.env.ref("delivery_cameroon.city_cm_douala"), company.ocd_express_city_ids)
+        self.assertTrue(company.ocd_express_point and company.ocd_express_momo_number)
+        parcels = self._express_parcels()
+        self.assertGreaterEqual(len(parcels), 4 * len(scenario.EXPRESS_DAY), "The parcels of the working days")
+        self.assertTrue(all(parcel.name.startswith("EX-") for parcel in parcels))
+        before = parcels.filtered(lambda p: p.create_date < fields.Datetime.now() - timedelta(days=3))
+        self.assertTrue(before)
+        self.assertLessEqual(set(before.mapped("ocd_stage")), {"delivered", "returned"},
+                             "The parcels of the days before are delivered, or given back")
+        self.assertTrue(before.filtered(lambda p: p.ocd_express_return_state == "handed_back"),
+                        "A parcel refused at the door, given back against the return code")
+        self.assertTrue(parcels.filtered(lambda p: p.ocd_express_claim_state == "sender_right"),
+                        "A problem reported by a customer, checked by the team")
+        delivered = before.filtered(lambda p: p.ocd_stage == "delivered" and p.ocd_express_claim_state != "open")
+        self.assertEqual(set(delivered.mapped("ocd_express_money_state")), {"counted"}, "The money reached OCD")
+        pickups = self.env["ocd.express.pickup"].search([("sender_id", "=", nadege.id), ("state", "=", "done")])
+        self.assertTrue(pickups and all(pickup.taken_count >= 3 for pickup in pickups),
+                        "A passage for the parcels of a wave, free from 3 parcels")
+        self.assertEqual(pickups.courier_id, self.env.ref("ocd_live_demo.courier_ekwalla"), "The courier of Akwa")
+        payouts = self.env["ocd.payout"].search([("vendor_id", "=", nadege.id)])
+        self.assertGreaterEqual(len(payouts.filtered(lambda p: p.state == "paid" and p.payment_ids)), 3,
+                                "Paid every working day, recorded in the accounting")
+        # « My money »: what was paid does not count again
+        paid = payouts.filtered(lambda p: p.state == "paid").move_ids
+        self.assertLessEqual(set(paid.mapped("payment_state")), {"paid", "in_payment"})
+        self.assertTrue(parcels.partner_id._ocd_demo_contact(), "No WhatsApp to the customers of the demo")
+        self.assertFalse(self.env["res.partner"].create({
+            "name": "Vraie cliente", "phone": "+237 699999999", "ocd_express_recipient": True,
+        })._ocd_demo_contact())
+
+    def test_a_day_of_ocd_express(self):
+        """The next working day, hour by hour in Douala: the parcels of Nadège at every step."""
+        nadege = self._express()
+        demo = OcdLiveDemo(self.env)
+        day = demo.shop_today(fields.Datetime.now()) + timedelta(days=1)
+        if day.weekday() == 6:
+            day += timedelta(days=1)  # no pick-up on Sunday
+        Pickup = self.env["ocd.express.pickup"]
+        with freeze_time(self._douala(day, 14, 30)):
+            demo.keep_shop(fields.Datetime.now())
+            of_day = self._express_parcels().filtered(lambda p: p.create_date >= self._douala(day, 0, 0))
+            self.assertEqual(len(of_day), len(scenario.EXPRESS_DAY) - 1, "The parcels of the day, the last at 17:30")
+            stages = set(self._express_parcels().mapped("ocd_stage"))
+            for stage in ("to_prepare", "ready", "on_the_way", "problem", "delivered"):
+                self.assertIn(stage, stages, stage)
+            checked = of_day.filtered(lambda p: p.ocd_express_check == "to_check")
+            self.assertEqual(len(checked), 1, "Above the limit of Nadège: the team checks it")
+            morning = Pickup.search([("sender_id", "=", nadege.id), ("date", "=", day), ("part", "=", "morning")])
+            self.assertEqual(morning.state, "done")
+            self.assertGreaterEqual(morning.taken_count, 4)
+            self.assertTrue(of_day.filtered(lambda p: p.ocd_express_confirm == "confirmed"), "« I confirm »")
+            self.assertTrue(of_day.filtered("ocd_express_latitude"), "« Send my position »")
+        with freeze_time(self._douala(day, 18, 0)):
+            demo.keep_shop(fields.Datetime.now())
+            self.assertEqual(checked.ocd_express_check, "ok")
+            self.assertEqual(checked.ocd_stage, "picked", "Picked up with the parcels of the afternoon")
+            returned = self._express_parcels().filtered(lambda p: p.ocd_express_return_state == "to_return")
+            self.assertEqual(len(returned), 1, "Refused at the door: to give back to Nadège")
+            self.assertEqual(len(returned._ocd_express_return_code()), 6)
+            self.assertTrue(self._express_parcels().filtered(lambda p: p.ocd_express_claim_state == "open"),
+                            "A problem reported by a customer, the money of the parcel waits")
+        with freeze_time(self._douala(day, 20, 0)):
+            demo.keep_shop(fields.Datetime.now())
+            courier = self.env.ref("ocd_live_demo.courier_ekwalla")
+            courier.invalidate_recordset(["ocd_cash_on_hand"])
+            self.assertFalse(courier.ocd_cash_on_hand, "The cash handed over at 19:30")
+            delivered = of_day.filtered(lambda p: p.ocd_stage == "delivered")
+            self.assertTrue(delivered)
+            self.assertEqual(set(delivered.mapped("ocd_express_money_state")), {"counted"})
+            payouts = self.env["ocd.payout"].search([("vendor_id", "=", nadege.id)])
+            self.assertTrue(payouts.filtered(lambda p: p.date == day and p.state == "paid"),
+                            "Paid at 10:00 the money counted the day before")
+            self.assertFalse(payouts.filtered(lambda p: p.state != "paid"))
+
+    def test_ocd_express_left_open_the_days_before(self):
+        """A parcel of Nadège created during a presentation two days ago, left waiting: delivered in
+        the evening of its day, its money counted."""
+        nadege = self._express()
+        akwa = self.env.ref("delivery_cameroon.district_douala_akwa")
+        name, phone, _district, landmark = scenario.EXPRESS_CUSTOMERS[0]
+        parcel = self.env["stock.picking"]._ocd_express_create(nadege, {
+            "name": name, "phone": phone, "district": akwa, "city": akwa.city_id, "landmark": landmark,
+            "content": "Sac", "prepaid": False, "amount": 9000, "value": 0, "fee_by": "sender",
+            "can_open": True, "consent": True, "dropoff": False,
+        })
+        self.env.flush_all()
+        self.env.cr.execute("UPDATE stock_picking SET create_date = %s WHERE id = %s",
+                            (fields.Datetime.now() - timedelta(days=2), parcel.id))
+        parcel.invalidate_recordset()
+        OcdLiveDemo(self.env).keep_shop(fields.Datetime.now())
+        self.assertEqual(parcel.ocd_stage, "delivered")
+        self.assertEqual(parcel.ocd_express_money_state, "counted")
+
     def test_shop_without_piling_up(self):
         demo = OcdLiveDemo(self.env)
         tomorrow = demo.shop_today(fields.Datetime.now()) + timedelta(days=1)
@@ -172,6 +299,9 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
                 self.env["mail.message"].search_count([("model", "=", "discuss.channel")]),
                 self.env["ocd.cash.remittance"].search_count([]),
                 self.env["ocd.payout"].search_count([]),
+                self.env["stock.picking"].search_count([("ocd_is_parcel", "=", True)]),
+                self.env["account.move"].search_count([("move_type", "in", ("in_invoice", "in_refund"))]),
+                self.env["ocd.express.pickup"].search_count([]) if "ocd.express.pickup" in self.env else 0,
             )
 
         with freeze_time(self._douala(tomorrow, 16, 0)):
@@ -408,6 +538,14 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
         orders = self.env["sale.order"].search([("partner_id", "in", partners.ids)])
         self.assertTrue(orders)
         saved = self.env["ir.config_parameter"].get_str(PARAM_OPEN_DATE)
+        if "ocd.express.pickup" in self.env:
+            express = self._express_parcels()
+            customers = express.partner_id
+            payments = self.env["ocd.payout"].search([("vendor_id", "in", partners.ids)]).payment_ids
+            self.assertTrue(express and customers and payments)
+            cities = self.env.company.ocd_express_city_ids
+            if json.loads(self.env["ir.config_parameter"].get_str(PARAM_EXPRESS) or "{}").get("city"):
+                cities -= self.env.ref("delivery_cameroon.city_cm_douala")  # opened by the demo
         uninstall_hook(self.env)
         domain = [("partner_id", "in", partners.ids)]
         self.assertFalse(orders.exists())
@@ -429,6 +567,12 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
             [("module", "=", "ocd_live_demo"), ("model", "=", "product.template")]
         ).mapped("res_id")
         self.assertFalse(self.env["stock.quant"].search([("product_id.product_tmpl_id", "in", templates)]))
+        if "ocd.express.pickup" in self.env:
+            self.assertFalse(express.exists(), "The parcels of OCD Express")
+            self.assertFalse(customers.exists(), "Their customers")
+            self.assertFalse(self.env["ocd.express.pickup"].search([("sender_id", "in", partners.ids)]))
+            self.assertFalse(payments.exists(), "The money paid to the senders")
+            self.assertEqual(self.env.company.ocd_express_city_ids, cities, "Back as before the demo")
 
 
 @tagged("post_install", "-at_install")

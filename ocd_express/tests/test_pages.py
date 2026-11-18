@@ -1,5 +1,7 @@
 from unittest.mock import patch
 
+from odoo import Command
+from odoo.exceptions import UserError
 from odoo.tests import HttpCase, tagged
 
 from .common import OcdExpressCommon
@@ -96,10 +98,15 @@ class TestOcdExpressPages(HttpCase, OcdExpressCommon):
     def test_my_money(self):
         parcel = self._create()
         self._deliver(parcel, method="online")
+        held = self._create(name="Paul Eto'o", phone="+237 699000011", amount=20000)
+        self._deliver(held, method="online")
+        held._ocd_express_report_claim("Pointure 39 au lieu de 38")
         self._login()
         page = self.url_open("/express/argent").text
         for text in ("My money", "13", "My payout number", "Change the number"):
             self.assertIn(text, page)
+        self.assertEqual(page.count(f"{held.name} · problem reported"), 1, "One line per parcel held")
+        self.assertIn("18", page.split(f"{held.name} · problem reported")[1][:40], "20 000 F minus its fees")
         Partner = type(self.env["res.partner"])
         with patch.object(Partner, "_ocd_send_login_code", lambda partner: True), \
                 patch.object(Partner, "_ocd_check_login_code", lambda partner, code: code == "123456"):
@@ -112,6 +119,18 @@ class TestOcdExpressPages(HttpCase, OcdExpressCommon):
         self.assertIn("Payout number changed", page)
         self.assertIn("690000999", self.afi.ocd_payout_momo.replace(" ", ""))
         self.assertTrue(self.afi._ocd_express_momo_held())
+
+    def test_the_customer_sees_the_problem_reported(self):
+        parcel = self._create()
+        self._deliver(parcel, method="online")
+        self.authenticate(None, None)
+        path = "/" + parcel._ocd_tracking_path()
+        self.assertNotIn("You reported a problem", self.url_open(path).text)
+        page = self.url_open(f"{path}/souci", data={"csrf_token": self.csrf_token(), "note": "Le colis etait ouvert"}).text
+        self.assertIn("calls you back", page)
+        self.assertIn("You reported a problem", self.url_open(path).text, "Still said when the customer comes back")
+        parcel.action_ocd_express_claim_sender()
+        self.assertIn("checked the problem you reported", self.url_open(path).text)
 
     def test_the_tour_of_the_courier(self):
         self.authenticate(None, None)
@@ -141,3 +160,22 @@ class TestOcdExpressPages(HttpCase, OcdExpressCommon):
         self.url_open(f"{base}/express/retour/{first.id}", data={
             "csrf_token": self.csrf_token(), "code": first._ocd_express_return_code()})
         self.assertEqual(first.ocd_express_return_state, "handed_back")
+
+    def test_the_team_sees_the_space_of_a_sender(self):
+        team = self.env["res.users"].create({
+            "name": "Kofi", "login": "kofi-express", "password": "kofi-express-2026",
+            "group_ids": [Command.set(self.env.ref("ocd_live.group_ocd_live_user").ids)],
+        })
+        url = self.afi.with_user(team).action_ocd_express_view_space()["url"]
+        self.authenticate(None, None)
+        self.assertNotIn("/express/envois", self.url_open(url).url, "Only for a person of the team, logged in")
+        self.authenticate("kofi-express", "kofi-express-2026")
+        # A changed link opens nothing
+        self.assertEqual(self.url_open(url.replace("signature=", "signature=0")).status_code, 404)
+        response = self.url_open(url)
+        self.assertIn("/express/envois", response.url)
+        self.assertIn("My parcels", response.text)
+        self.assertIn("/express/argent", response.text)
+        self.afi.ocd_express_state = "requested"
+        with self.assertRaises(UserError):
+            self.afi.with_user(team).action_ocd_express_view_space()
