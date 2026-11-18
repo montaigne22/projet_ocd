@@ -32,7 +32,7 @@ le bouton « Signaler » de la garantie (chantier 2) et de nouvelles mesures.
 | 6 | **OCD Tickets** | Billets de concerts et d'événements, vendus aussi en live ; QR vérifié une seule fois à l'entrée ; reversement à l'organisateur | Ticket PDF signé et son contrôle à l'entrée, application Événements d'Odoo (gratuite) | 2 à 3 semaines ; **fait le 18 novembre 2026** (modules `ocd_tickets` et `ocd_tickets_whatsapp`) |
 | 7 | **Programme et événements** | Programme des lives façon guide télé ; grands événements à plusieurs vendeurs (Tabaski, Noël, Vendredi noir, Saint-Valentin), d'une soirée ou de plusieurs jours, où les vendeurs mettent un prix promo (plan, 3.1) | Fil des lives, page d'un live | 1 à 2 semaines, plus ~1 semaine pour le prix promo ; **fait le 18 novembre 2026** (prix promo dans `ocd_live_shop`, modules `ocd_soirees` et `ocd_soirees_whatsapp`) |
 | 8 | **Clips automatiques** | Chaque moment produit d'un replay devient un clip vertical de 30 secondes, avec le lien du produit, à partager sur TikTok, Reels et les statuts ; les clips de chaque produit dans « Mes produits » | Moments du replay notés par la régie, conversion vidéo (ffmpeg) | 2 à 3 semaines ; **fait le 18 novembre 2026** (modules `ocd_clips` et `ocd_clips_whatsapp`, « Le live commence » dans la régie, en-tête vidéo des modèles WhatsApp) |
-| 9 | **OCD Express** | Livraison avec code et paiement à la porte pour tous les vendeurs des réseaux sociaux : espace expéditeur (connexion par numéro), colis sans commande de la boutique, suivi pour le destinataire | Livreurs, code de livraison, caisse du soir, reversements, tarifs par zone, messages des colis ; fiche « lieu » (chantier 17) pour l'endroit où le livreur prend les colis | ~4 semaines, plus l'organisation des livreurs |
+| 9 | **OCD Express** | Livraison avec code et paiement à la porte pour tous les vendeurs des réseaux sociaux : espace expéditeur (connexion par numéro), colis sans commande de la boutique, suivi pour le destinataire | Livreurs, code de livraison, caisse du soir, reversements, tarifs par zone, messages des colis ; fiche « lieu » (chantier 17) pour l'endroit où le livreur prend les colis | ~5 semaines avec les choix du 18 novembre 2026 (dettes, retours rendus contre un code, colis annoncé au client), plus l'organisation des livreurs |
 | 10 | **Points relais** | Boutiques partenaires où retirer son colis ; livraison moins chère ; les magasins des vendeurs qui le veulent (plan, A.6) | Tarifs de livraison, colis, fiche « lieu » (chantier 17) | 2 à 3 semaines, plus les partenaires |
 | 11 | **Ambassadeurs** | Chacun partage un produit avec son lien personnel et touche une commission quand le colis est livré | Images à partager, reversements, code de livraison, partage d'un produit (chantier 16) | 3 à 4 semaines |
 
@@ -61,7 +61,11 @@ développement, ou repousser des chantiers sans lien avec l'espace vendeur (OCD 
 - **Paiement dans l'UEMOA** : CinetPay et Flutterwave choisis le 18 novembre 2026, le code est prêt.
   Reste à ouvrir les deux comptes (documents de l'entreprise), saisir leurs clés, les publier, puis
   cocher « Live » après un premier paiement réel.
-- **OCD Express** : nombre de livreurs, tarifs pour les expéditeurs, règles des espèces.
+- **OCD Express** : choix validés le 18 novembre 2026 avec la maquette (voir `DECISIONS.md`) : le prix
+  (1 000 F dans Douala, 1,5 % pour encaisser, revu après 4 semaines avec le coût réel), les règles des
+  espèces, les livreurs actuels de Douala à 20 colis par jour. Reste à faire avant d'ouvrir au public :
+  vérifier avec un juriste les règles des services de paiement de la CEMAC et la loi sur les données
+  personnelles ; un numéro WhatsApp à part pour OCD Express.
 - **OCD Business** : le prix, après un essai avec 5 à 10 vendeurs (repère : le pass de l'annuaire,
   5 000 F pour 30 jours) ; piste : une commission plus basse pour la formule. Ce qui lui est réservé
   est décidé (`PLAN_MES_PRODUITS.md`).
@@ -81,7 +85,8 @@ Les décisions de l'espace vendeur (chantiers 15 à 22) sont prises : voir
 ## Ce qu'on mesure
 
 - Lives : part des spectateurs qui achètent, panier moyen, clients qui rachètent sous 30 jours.
-- OCD Express : colis par jour, coût de livraison par colis.
+- OCD Express : colis par jour, coût de livraison par colis, colis par livreur et par jour, part des
+  colis confirmés par le client, taux de retour.
 - OCD Vote : voix et montant par concours. OCD Tickets : billets vendus par événement.
 - Espace vendeur : délai de vérification d'un produit, part des produits refusés et leurs motifs,
   vendeurs avec au moins un magasin vérifié, itinéraires et appels par magasin, retraits en magasin

@@ -135,6 +135,26 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 18 novembre 2026 · OCD Express (chantier 9) : la maquette validée
+Maquette `OcdExpress` relue avec ce qui existe (colis du shop, code, paiement à la porte, dispatch,
+tournée, caisse, reversements, tarifs, fiche « lieu », connexion par numéro, WhatsApp des colis), complétée
+puis validée avec ses choix ; les trois décisions ouvertes de la feuille de route sont tranchées (prix,
+espèces, livreurs). Détail dans [`DECISIONS.md`](DECISIONS.md) (Shop et livraisons, OCD Express).
+- **Corrigé dans la maquette** : les chiffres de « Mon argent » (4 livraisons à 1 000 F, retour à 500 F,
+  un même nombre de colis partout) ; « la tournée se garde dans le téléphone » était faux (seuls les
+  brouillons de « Mes produits » marchent sans réseau).
+- **Ajouté** : le colis annoncé au client dès la création (« Je confirme »), l'accord du client pour les
+  messages, ouvrir avant de payer, la valeur d'un colis déjà payé, les deux vagues, le ramassage payant
+  sous 3 colis, le retour rendu contre un code de l'expéditeur, la photo du colis fermé, « Envoyer ma
+  position », un souci signalé pendant 48 h, ce que doit un expéditeur, les espèces plafonnées sur le
+  livreur et ses manques de caisse, le numéro WhatsApp à part, l'effacement des clients après 6 mois, le
+  coût réel par colis, ce qu'un juriste doit vérifier avant d'ouvrir au public ; les réglages de l'équipe.
+- Différences avec le shop à coder : la facture de l'expéditeur attend l'argent (celle du vendeur du shop
+  est faite à la livraison), pas de Mobile Money « déclaré », une dette du livreur pour les manques de
+  caisse. Effort revu : ~5 semaines.
+- Contrôlée dans le navigateur à 390, 820 et 1440 px, sans débordement. Aucun module ne change : rien à
+  mettre à jour sur un serveur, aucun modèle WhatsApp à soumettre pour l'instant.
+
 ### 18 novembre 2026 · Le script d'installation de l'environnement
 - `tools/setup_odoo20.sh` : Odoo 20 dans `/opt/odoo20` (source, environnement Python, `odoo.conf`),
   PostgreSQL et son rôle, `wkhtmltopdf`, `ffmpeg` ; les étapes déjà faites sont sautées. C'est le script de

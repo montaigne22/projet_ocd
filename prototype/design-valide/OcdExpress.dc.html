@@ -58,7 +58,7 @@
 .kpi b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px}
 .kpi span{font-size:12px;font-weight:600;color:#5A6068}
 .setrow{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #EEF0F2}
-.setrow .in{height:34px;border-radius:8px;border-width:1px;font-size:14px}
+.setrow .in{height:auto;min-height:34px;padding:6px 12px;box-sizing:border-box;border-radius:8px;border-width:1px;font-size:14px}
 table.t{width:100%;border-collapse:collapse;font-size:14px}
 table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
 table.t td{padding:9px 10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
@@ -66,6 +66,8 @@ table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
 table.t td:last-child{white-space:nowrap}
 .q{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#FFF8E6;border:1px dashed #F0C987;padding:12px 14px;font-size:14px;color:#6B4500}
 .q b{color:#15130F}
+.check{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:14px}
+.check i{width:24px;height:24px;border-radius:7px;background:#15130F;color:#FFF;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:14px}
 </style>
 </head>
 <body>
@@ -74,8 +76,8 @@ table.t td:last-child{white-space:nowrap}
      Facebook), même sans boutique sur OCD Live. On réutilise les livreurs, le code de livraison, la
      caisse du soir, les reversements, les tarifs par zone, les messages des colis, la connexion par
      numéro des vendeurs et la fiche « lieu » des magasins (chantier 17) pour l'endroit où le livreur
-     prend les colis. Les choix proposés sont en bas, dont les trois décisions encore ouvertes de la
-     feuille de route : le nombre de livreurs, les tarifs pour les expéditeurs, les règles des espèces.
+     prend les colis. Maquette validée le 18 novembre 2026 avec ses choix (en bas), dont les trois
+     décisions ouvertes de la feuille de route : le prix, les règles des espèces, le nombre de livreurs.
      Données d'exemple : Mode Afi, vendeuse sur Instagram et WhatsApp à Akwa (Douala) ; sa cliente
      Grâce Mbia à Bonamoussadi ; Junior, livreur OCD ; le mardi 24 novembre. -->
 <div class="board">
@@ -93,16 +95,20 @@ table.t td:last-child{white-space:nowrap}
     </div>
     <div class="step3"><b class="n">1</b><span><b>Tu crées le colis</b><br><span class="small muted">Le nom et le WhatsApp de ton client, son quartier, le montant à encaisser. Une minute.</span></span></div>
     <div class="step3"><b class="n">2</b><span><b>Un livreur OCD passe le prendre</b><br><span class="small muted">Chez toi ou à ton magasin, le matin ou l'après-midi. Ou tu le déposes au point OCD.</span></span></div>
-    <div class="step3"><b class="n">3</b><span><b>Ton client reçoit son colis avec un code</b><br><span class="small muted">Pas de code, pas de colis : rien ne se perd. L'argent encaissé t'est versé.</span></span></div>
+    <div class="step3"><b class="n">3</b><span><b>Ton client reçoit son colis avec un code</b><br><span class="small muted">Il confirme le moment sur WhatsApp. Pas de code, pas de colis : rien ne se perd. L'argent encaissé t'est versé.</span></span></div>
     <div class="card" style="padding:12px 14px">
       <b>Les prix à Douala</b>
       <div class="price"><span>Livraison dans Douala</span><b>1 000 F</b></div>
-      <div class="price"><span>Encaisser à la porte</span><b>1 % · 100 F au moins</b></div>
+      <div class="price"><span>Encaisser à la porte</span><b>1,5 % · 150 F au moins</b></div>
       <div class="price"><span>Colis déjà payé par ton client</span><b>rien de plus</b></div>
+      <div class="price"><span>Ramassage, dès 3 colis</span><b>gratuit</b></div>
+      <div class="price"><span>Ramassage de 1 ou 2 colis</span><b>500 F</b></div>
+      <div class="price"><span>Retour d'un colis</span><b>500 F</b></div>
       <div class="price"><span>Vers une autre ville (agence)</span><b>dès 2 500 F</b></div>
     </div>
-    <span class="cta">Envoyer mon premier colis</span>
-    <span class="small muted">Sans abonnement, sans boutique sur OCD Live. Tu te connectes avec ton numéro WhatsApp, comme les vendeurs d'OCD Live. Avec OCD Business, la livraison coûte moins cher.</span>
+    <span class="small muted">Le dépôt au point OCD est toujours gratuit. Le second passage chez ton client aussi.</span>
+    <span class="cta">Demander à envoyer mes colis</span>
+    <span class="small muted">Pour le lancement, OCD Express ouvre à quelques vendeurs de Douala : l'équipe te répond sur WhatsApp. Sans abonnement, sans boutique sur OCD Live : tu te connectes avec ton numéro WhatsApp, comme les vendeurs d'OCD Live. Avec OCD Business, la livraison coûte moins cher.</span>
   </div>
 
   <!-- 2. Nouveau colis -->
@@ -110,24 +116,30 @@ table.t td:last-child{white-space:nowrap}
     <div class="back"><i>←</i><span class="d" style="font-size:19px">Nouveau colis</span></div>
     <div><div class="lab">Pour qui ?</div><div class="in">Grâce Mbia</div></div>
     <div><div class="lab">Son WhatsApp</div><div class="in">+237 · 6 91 23 45 67</div></div>
+    <div class="check"><i>✓</i><span>Grâce est d'accord pour recevoir les messages d'OCD Express sur sa livraison (et rien d'autre).</span></div>
     <div class="row2"><div><div class="lab">Ville</div><div class="in">Douala</div></div><div><div class="lab">Quartier</div><div class="in">Bonamoussadi</div></div></div>
     <div><div class="lab">Point de repère</div><div class="in">Face au terrain de foot</div></div>
-    <div><div class="lab">Dans le colis</div><div class="in">2 robes wax</div></div>
+    <div><div class="lab">Dans le colis</div><div class="in">2 robes wax</div>
+      <span class="small muted">10 kg au plus, emballé, fermé, et qui tient dans le sac du livreur (50 × 40 × 40 cm).</span>
+    </div>
     <div><div class="lab">Ton client paie à la porte</div>
       <div class="chips"><span class="chip on">15 000 F</span><span class="chip">Déjà payé</span></div>
+      <span class="small muted">Déjà payé : écris sa valeur, c'est ce qu'OCD te rembourse s'il se perd.</span>
     </div>
     <div><div class="lab">La livraison</div>
       <div class="row2"><span class="btn2 on">Je la paie</span><span class="btn2">Mon client la paie</span></div>
     </div>
+    <div class="check"><i>✓</i><span>Grâce peut ouvrir le colis devant le livreur avant de payer.</span></div>
     <div><div class="lab">Le livreur prend le colis</div>
       <div class="chips"><span class="chip on">Mon magasin · Akwa</span><span class="chip">Au point OCD</span></div>
-      <span class="small muted">Aujourd'hui entre 14 h et 17 h (colis créé avant 12 h).</span>
+      <span class="small muted">Créé avant 10 h : pris ce matin, livré cet après-midi. Avant 15 h : pris cet après-midi, livré demain matin.</span>
     </div>
     <div class="sum">
       <span><span>Encaissé à la porte</span><b>15 000 F</b></span>
       <span><span>Livraison</span><span>− 1 000 F</span></span>
-      <span><span>Encaissement (1 %)</span><span>− 150 F</span></span>
-      <span class="tot"><span>Tu reçois</span><span>13 850 F</span></span>
+      <span><span>Encaissement (1,5 %)</span><span>− 225 F</span></span>
+      <span><span>Ramassage (dès 3 colis ce matin)</span><span>gratuit</span></span>
+      <span class="tot"><span>Tu reçois</span><span>13 775 F</span></span>
     </div>
     <span class="cta">Créer le colis</span>
   </div>
@@ -141,11 +153,11 @@ table.t td:last-child{white-space:nowrap}
       <span style="display:flex;flex-direction:column;gap:3px"><b class="d" style="font-size:20px">EX-0427</b><b>Grâce Mbia</b><span>Bonamoussadi · face au terrain de foot</span><span>À encaisser : 15 000 F</span><span class="small muted">De Mode Afi · OCD Express</span></span>
     </div>
     <span class="small"><b>Écris EX-0427 et le nom de Grâce sur le colis</b>, ou montre cette étiquette au livreur : il la scanne. Une imprimante ? « Imprimer l'étiquette ».</span>
-    <div class="rule"><b>Junior passe entre 14 h et 17 h</b><span>Il t'appelle avant. Tu reçois un WhatsApp quand il a pris tes colis : ce n'est pas lui ? Signale-le.</span></div>
-    <div class="rule"><b>Grâce est prévenue sur WhatsApp</b><span>Quand le colis part, avec la page de suivi et son code de livraison.</span></div>
+    <div class="rule"><b>Junior passe entre 10 h et 12 h</b><span>Il t'appelle avant et prend une photo de tes colis fermés. Tu reçois un WhatsApp quand il les a pris : ce n'est pas lui ? Signale-le.</span></div>
+    <div class="rule"><b>Grâce est prévenue tout de suite sur WhatsApp</b><span>Elle confirme qu'elle sera là ou choisit un autre moment. Quand le colis part, elle reçoit la page de suivi, avec son code de livraison.</span></div>
     <div class="row2"><span class="btn2 dark">Nouveau colis</span><span class="btn2">Imprimer l'étiquette</span></div>
     <span class="btn2">Partager le suivi avec Grâce</span>
-    <span class="small muted">« Nouveau colis » garde le même ramassage : plusieurs colis partent avec le même passage du livreur.</span>
+    <span class="small muted">« Nouveau colis » garde le même ramassage : plusieurs colis partent avec le même passage du livreur, gratuit dès 3 colis.</span>
   </div>
 </div>
 
@@ -156,27 +168,27 @@ table.t td:last-child{white-space:nowrap}
   <div class="phone">
     <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes envois</span></div>
     <div class="tiles">
-      <div class="tile"><span class="small muted">Aujourd'hui</span><b>6 colis</b><span class="small">4 livrés · 1 en route</span></div>
+      <div class="tile"><span class="small muted">Aujourd'hui</span><b>7 colis</b><span class="small">4 livrés · 1 en route</span></div>
       <div class="tile"><span class="small muted">Encaissé aujourd'hui</span><b>58 000 F</b><span class="small">versé demain matin</span></div>
     </div>
-    <div class="chips"><span class="chip on">En cours · 2</span><span class="chip">Livrés</span><span class="chip">Problèmes · 1</span><span class="chip">Retournés</span></div>
+    <div class="chips"><span class="chip on">En cours · 3</span><span class="chip">Livrés · 4</span><span class="chip">Problèmes · 1</span><span class="chip">Retournés</span></div>
     <div class="parcel go">
       <div class="h1"><b>EX-0427 · Grâce Mbia</b><span class="st route">En route</span></div>
-      <span class="small muted">Bonamoussadi · à encaisser 15 000 F · Junior</span>
+      <span class="small muted">Bonamoussadi · à encaisser 15 000 F · Junior · confirmé par Grâce</span>
       <div class="steps"><span><i class="on"></i>Créé</span><span><i class="on"></i>Pris</span><span><i class="now"></i>En route</span><span><i></i>Livré</span></div>
     </div>
     <div class="parcel">
       <div class="h1"><b>EX-0431 · Paul Eto'o</b><span class="st bad">Client absent</span></div>
       <span class="small muted">Makepe · à encaisser 9 500 F</span>
-      <span class="small">Paul a choisi demain matin pour le second passage. Après 2 passages, le colis te revient.</span>
+      <span class="small">Junior a appelé 2 fois et attendu 10 minutes. Paul a choisi demain matin pour le second passage (gratuit). Ensuite, le colis te revient (500 F).</span>
     </div>
     <div class="parcel">
       <div class="h1"><b>EX-0425 · Linda Ngo</b><span class="st done">Livré · code vérifié</span></div>
       <span class="small muted">Akwa · 12 000 F encaissés à 11:42</span>
     </div>
     <div class="parcel">
-      <div class="h1"><b>EX-0430 · Carine Fotso</b><span class="st wait">À prendre</span></div>
-      <span class="small muted">Deïdo · déjà payé · Junior passe entre 14 h et 17 h</span>
+      <div class="h1"><b>EX-0432 · Carine Fotso</b><span class="st wait">À prendre</span></div>
+      <span class="small muted">Deïdo · déjà payé, valeur 8 000 F · Junior passe entre 14 h et 17 h · ramassage 500 F (1 colis), ou dépôt gratuit au point OCD</span>
       <span class="small lnk">Modifier · Annuler</span>
     </div>
     <span class="cta">Nouveau colis</span>
@@ -187,50 +199,61 @@ table.t td:last-child{white-space:nowrap}
     <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon argent</span></div>
     <div class="money">
       <span class="small"><b>Versé demain matin sur Orange Money</b> · +237 6 70 11 22 33</span>
-      <span class="d">54 230 F</span>
-      <span class="small">Les colis livrés aujourd'hui avec leur code, dont l'argent est arrivé à la caisse d'OCD ce soir.</span>
+      <span class="d">52 130 F</span>
+      <span class="small">Les colis livrés aujourd'hui avec leur code. L'argent en espèces part une fois remis à la caisse d'OCD ce soir ; celui payé sur le téléphone du client, une fois confirmé.</span>
     </div>
     <div class="sum">
-      <span><span>Encaissé par les livreurs (5 colis)</span><b>58 000 F</b></span>
-      <span><span>Livraisons que tu paies (4)</span><span>− 3 000 F</span></span>
-      <span><span>Encaissement (1 %)</span><span>− 580 F</span></span>
-      <span><span>Retour de EX-0412 (moitié prix)</span><span>− 190 F</span></span>
-      <span class="tot"><span>À recevoir</span><span>54 230 F</span></span>
+      <span><span>Encaissé par les livreurs (4 colis)</span><b>58 000 F</b></span>
+      <span><span>Livraisons que tu paies (4)</span><span>− 4 000 F</span></span>
+      <span><span>Encaissement (1,5 %)</span><span>− 870 F</span></span>
+      <span><span>Retour de EX-0412</span><span>− 500 F</span></span>
+      <span><span>Ramassage de cet après-midi (1 colis)</span><span>− 500 F</span></span>
+      <span class="tot"><span>À recevoir</span><span>52 130 F</span></span>
     </div>
+    <div class="rule"><b>En attente · EX-0419 · 8 000 F</b><span>Ta cliente a signalé un souci avec le colis. Son montant part quand l'équipe a répondu ; le reste de ton argent n'attend pas.</span></div>
     <b class="d" style="font-size:19px">Derniers versements</b>
     <div class="price"><span>Lundi 23 novembre · OM-88213</span><b>41 600 F</b></div>
     <div class="price"><span>Samedi 21 novembre · OM-87140</span><b>23 750 F</b></div>
     <div class="price"><span>Vendredi 20 novembre · OM-86622</span><b>65 200 F</b></div>
     <span class="btn2">Mon relevé du mois</span>
-    <span class="small muted">OCD ne verse que l'argent vraiment encaissé : un colis livré avec son code et remis à la caisse du soir par le livreur. Rien n'est avancé. Le numéro de versement se change avec un code envoyé sur ton WhatsApp.</span>
+    <span class="small muted">OCD ne verse que l'argent vraiment encaissé : rien n'est avancé. Ce que tu dois (un retour, la livraison d'un colis déjà payé) est retiré du versement suivant ; au-delà de 10 000 F, tu le règles par Mobile Money avant ton prochain colis. Le numéro de versement se change avec un code envoyé sur ton WhatsApp ; le premier versement vers un nouveau numéro attend 48 h, et ton ancien numéro est prévenu.</span>
   </div>
 
   <!-- 6. Les règles en clair, pour l'expéditeur -->
   <div style="display:flex;flex-direction:column;gap:10px;width:390px">
     <span class="cap" style="margin:0">Ce que l'expéditeur lit avant son premier colis</span>
-    <div class="rule"><b>Ce qu'on livre</b><span>Vêtements, chaussures, cosmétiques, accessoires, téléphones, petits objets : 10 kg au plus, emballé et fermé. Pas d'argent, de médicaments, d'objets interdits ni de nourriture fraîche.</span></div>
-    <div class="rule"><b>À encaisser</b><span>Au départ, 50 000 F au plus par colis. Après 20 colis livrés sans souci, 200 000 F. Au-delà, l'équipe vérifie avant.</span></div>
-    <div class="rule"><b>Si ton client n'est pas là</b><span>Il choisit un autre moment ; le livreur repasse une fois. Après 2 passages ou un refus à la porte, le colis te revient, à moitié prix de la livraison.</span></div>
-    <div class="rule"><b>Ton argent</b><span>Versé sur ton Mobile Money le jour ouvré suivant la livraison. En cas de souci avec un colis, son montant attend la réponse de l'équipe ; le reste part.</span></div>
+    <div class="rule"><b>Ce qu'on livre</b><span>Vêtements, chaussures, cosmétiques, accessoires, téléphones, petits objets : 10 kg au plus, dans le sac du livreur (50 × 40 × 40 cm), emballé et fermé. Pas d'argent, de médicaments, d'objets interdits ni de nourriture fraîche.</span></div>
+    <div class="rule"><b>Ce qu'il y a dans le colis</b><span>C'est toi qui le vends : OCD le transporte. Ton client te contacte pour le produit ; les colis Express ne sont pas couverts par la garantie d'OCD Live. Ton client peut ouvrir le colis devant le livreur avant de payer (tu peux l'enlever pour un colis).</span></div>
+    <div class="rule"><b>À encaisser</b><span>Au départ, 50 000 F au plus par colis. Après 20 colis livrés sans souci, 200 000 F. Au-delà, l'équipe vérifie avant. Au-dessus de 100 000 F, ton client paie sur son téléphone, pas en espèces.</span></div>
+    <div class="rule"><b>Si ton client n'est pas là</b><span>Le livreur l'appelle 2 fois et attend 10 minutes. Ton client choisit un autre moment : le second passage est gratuit. Après 2 passages ou un refus à la porte, le colis te revient (500 F), remis contre ton code de retour.</span></div>
+    <div class="rule"><b>Ton argent</b><span>Versé sur ton Mobile Money le jour ouvré suivant, quand l'argent est arrivé chez OCD. Ton client a 48 h pour signaler un souci : si l'équipe lui donne raison, la somme est retirée de tes versements suivants.</span></div>
+    <div class="rule"><b>Perdu ou abîmé par OCD</b><span>OCD te rembourse sa valeur (le montant à encaisser, ou la valeur écrite pour un colis déjà payé), 50 000 F au plus.</span></div>
   </div>
 </div>
 
 <span class="cap" style="margin-top:18px">Téléphone · le client qui reçoit, et le livreur</span>
 <div style="display:flex;gap:20px;align-items:flex-start">
 
-  <!-- 7. WhatsApp au destinataire -->
+  <!-- 7. WhatsApp -->
   <div style="display:flex;flex-direction:column;gap:14px">
-    <span class="cap" style="margin:0">WhatsApp (nouveaux modèles, à soumettre à Meta)</span>
+    <span class="cap" style="margin:0">WhatsApp d'OCD Express (nouveaux modèles, à soumettre à Meta)</span>
+    <div class="wa">
+      <div class="bot">Bonjour Grâce, <b>Mode Afi</b> t'envoie un colis avec OCD Express : <b>2 robes wax</b>, à payer à la porte <b>15 000 F</b>. Il arrive <b>cet après-midi</b> à Bonamoussadi. Touche « Je confirme » si tu es là, ou change le moment.</div>
+      <span class="bt">Je confirme</span>
+      <span class="bt">Changer le moment</span>
+      <span class="bt">Ce n'est pas pour moi</span>
+    </div>
+    <span class="small muted" style="width:330px">Au client, dès que le colis est créé. « Ce n'est pas pour moi » arrête les messages et prévient l'expéditeur.</span>
     <div class="wa">
       <div class="bot">Bonjour Grâce, ton colis de <b>Mode Afi</b> est en route avec Junior, livreur OCD. À payer à la porte : <b>15 000 F</b>, en espèces ou par Mobile Money. Touche « Suivre mon colis » pour le suivre.</div>
       <span class="bt">Suivre mon colis</span>
     </div>
     <span class="small muted" style="width:330px">Au client, quand le livreur part. Le code de livraison est sur la page de suivi, jamais dans le message (règle de Meta pour les messages utilitaires).</span>
     <div class="wa">
-      <div class="bot">Bonjour, Junior, livreur OCD, a pris <b>4 colis</b> chez toi à 14:20 : EX-0427, EX-0428, EX-0429 et EX-0430. Ce n'est pas lui ? Touche « Signaler ».</div>
+      <div class="bot">Bonjour, Junior, livreur OCD, a pris <b>4 colis</b> chez toi à 10:40 : EX-0427, EX-0428, EX-0429 et EX-0430. Ce n'est pas lui ? Touche « Signaler ».</div>
       <span class="bt">Mes envois</span>
     </div>
-    <span class="small muted" style="width:330px">À l'expéditeur, quand le livreur prend ses colis. Puis « livré » ou « problème » pour chaque colis, et le versement du lendemain.</span>
+    <span class="small muted" style="width:330px">À l'expéditeur, quand le livreur prend ses colis. Puis « livré » ou « problème » pour chaque colis, et le versement du lendemain. Tous partent du numéro d'OCD Express, à part de celui d'OCD Live.</span>
   </div>
 
   <!-- 8. La page de suivi du destinataire -->
@@ -238,124 +261,153 @@ table.t td:last-child{white-space:nowrap}
     <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon colis</span></div>
     <span class="d" style="font-size:22px">Colis de Mode Afi</span>
     <span class="small muted">EX-0427 · 2 robes wax · pour Grâce Mbia, Bonamoussadi</span>
-    <div class="steps"><span><i class="on"></i>Pris</span><span><i class="now"></i>En route</span><span><i></i>À ta porte</span><span><i></i>Livré</span></div>
+    <div class="steps"><span><i class="on"></i>Confirmé</span><span><i class="now"></i>En route</span><span><i></i>À ta porte</span><span><i></i>Livré</span></div>
     <div class="sum">
       <span><span>À payer à la porte</span><b>15 000 F</b></span>
-      <span class="small muted" style="display:block">En espèces, ou sur ton téléphone (Mobile Money) : le livreur te montre le paiement.</span>
+      <span class="small muted" style="display:block">En espèces au livreur, ou sur ton téléphone (Mobile Money) : le livreur te montre le paiement. Jamais sur le numéro personnel du livreur.</span>
     </div>
+    <span class="small">Tu peux ouvrir le colis devant le livreur avant de payer.</span>
     <div class="lab" style="margin:0">Ton code pour ce colis</div>
     <div class="code">4729</div>
     <span class="small muted">Donne-le seulement quand tu as le colis en main et que tu as payé.</span>
-    <div class="row2"><span class="btn2 dark">Appeler Junior</span><span class="btn2">Pas là ?</span></div>
-    <span class="small muted">« Pas là ? » : choisir un autre moment (ce soir, demain matin, demain après-midi) ou une autre personne qui reçoit pour toi. Le vendeur reste ton contact pour le produit lui-même.</span>
+    <div class="row2"><span class="btn2 dark">Appeler Junior</span><span class="btn2">Envoyer ma position</span></div>
+    <span class="btn2">Pas là ?</span>
+    <span class="small muted">« Pas là ? » : choisir un autre moment (ce soir, demain matin, demain après-midi) ou une autre personne qui reçoit pour toi. Une fois livré, « Un souci avec mon colis ? » reste ouvert 48 h. Le vendeur reste ton contact pour le produit lui-même : OCD transporte le colis.</span>
   </div>
 
-  <!-- 9. Le livreur : prendre chez l'expéditeur, livrer -->
+  <!-- 9. Le livreur : prendre chez l'expéditeur, livrer, rendre un retour -->
   <div class="phone">
     <div class="back"><i>←</i><span class="d" style="font-size:19px">Ma tournée</span></div>
-    <span class="small muted">Junior · mar. 24 nov. · Douala · espèces sur moi : 12 000 F</span>
+    <span class="small muted">Junior · mar. 24 nov. · Douala · espèces sur moi : 42 000 F (150 000 F au plus)</span>
+    <span class="small muted">Ce matin : 4 colis pris chez Mode Afi à 10:40, scannés et photographiés fermés.</span>
     <div class="parcel go">
-      <div class="h1"><b>Prendre chez Mode Afi</b><span class="badge">Express</span></div>
-      <span class="small muted">Akwa · rue Joss, face à la boulangerie · 14 h – 17 h</span>
-      <span class="small"><b>4 colis :</b> EX-0427 · EX-0428 · EX-0429 · EX-0430</span>
-      <div class="row2"><span class="btn2 dark">Scanner les étiquettes</span><span class="btn2">Appeler</span></div>
-      <span class="small muted">Un colis manque ou est mal fermé ? « Pas pris » avec la raison : l'expéditeur le voit tout de suite.</span>
-    </div>
-    <div class="parcel">
       <div class="h1"><b>Livrer à Grâce Mbia</b><span class="badge">Express</span></div>
-      <span class="small muted">Bonamoussadi · face au terrain de foot · EX-0427 · de Mode Afi</span>
-      <span class="small"><b>À encaisser : 15 000 F</b></span>
-      <div class="row2"><span class="btn2">Mobile Money</span><span class="btn2">Espèces reçues</span></div>
+      <span class="small muted">Bonamoussadi · face au terrain de foot · EX-0427 · de Mode Afi · confirmé</span>
+      <span class="small"><b>À encaisser : 15 000 F</b> · elle peut ouvrir avant de payer</span>
+      <div class="row2"><span class="btn2">Paiement sur son téléphone</span><span class="btn2">Espèces reçues</span></div>
       <div class="lab" style="margin:0">Code donné par Grâce</div>
       <div class="in">_ _ _ _</div>
-      <span class="small muted">Comme les colis du shop : le code n'est accepté qu'une fois l'argent encaissé.</span>
+      <span class="small muted">Comme les colis du shop : le code n'est accepté qu'une fois l'argent encaissé. Personne ne répond ? Appelle 2 fois, attends 10 minutes, puis « Client absent ».</span>
     </div>
+    <div class="parcel">
+      <div class="h1"><b>Chez Mode Afi · 14 h – 17 h</b><span class="badge">Express</span></div>
+      <span class="small muted">Akwa · rue Joss, face à la boulangerie</span>
+      <span class="small"><b>Prendre</b> EX-0432 (1 colis · ramassage 500 F) · <b>rendre</b> EX-0412 (refusé hier, contre son code de retour)</span>
+      <div class="row2"><span class="btn2 dark">Scanner l'étiquette</span><span class="btn2">Photo du colis fermé</span></div>
+      <div class="row2"><span class="btn2">Code de retour</span><span class="btn2">Appeler</span></div>
+      <span class="small muted">Un colis manque ou est mal fermé ? « Pas pris » avec la raison : l'expéditeur le voit tout de suite.</span>
+    </div>
+    <span class="small muted">Sans réseau, le code ne se vérifie pas : pas de remise contre des espèces, tu repasses. Seul un client dont tu vois « Payé » sur son téléphone reçoit son colis ; son code part au retour du réseau.</span>
   </div>
 </div>
 
 <span class="cap" style="margin-top:18px">Back-office · l'équipe : les colis Express, les expéditeurs, l'argent, les réglages</span>
 <div class="screen" style="width:1300px;padding:20px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
-  <div class="bo">
-    <b>OCD Live › Livraisons › Dispatch · mar. 24 nov. · filtre « Express »</b>
-    <div class="kpis">
-      <div class="kpi"><b>37</b><span>colis Express aujourd'hui</span></div>
-      <div class="kpi"><b>9</b><span>ramassages · 6 faits</span></div>
-      <div class="kpi"><b>4 / 5</b><span>livreurs en service</span></div>
-      <div class="kpi"><b>62 / 100</b><span>colis de la journée (capacité)</span></div>
-    </div>
-    <table class="t">
-      <tr><th>Colis</th><th>Expéditeur</th><th>Pour</th><th>Quartier</th><th class="r">À encaisser</th><th>Livreur</th><th>État</th></tr>
-      <tr><td><b>EX-0427</b></td><td>Mode Afi</td><td>Grâce Mbia</td><td>Bonamoussadi</td><td class="r">15 000 F</td><td>Junior</td><td><span class="st route">En route</span></td></tr>
-      <tr><td><b>EX-0431</b></td><td>Mode Afi</td><td>Paul Eto'o</td><td>Makepe</td><td class="r">9 500 F</td><td>Junior</td><td><span class="st bad">Client absent · demain matin</span></td></tr>
-      <tr><td><b>EX-0433</b></td><td>Chez Nadine Cosmétiques</td><td>Rita Kamga</td><td>Bonapriso</td><td class="r">-</td><td>Raoul</td><td><span class="st wait">À prendre · 14 h – 17 h</span></td></tr>
-      <tr><td><b>EX-0435</b></td><td>Kossi Tech</td><td>Yves Mballa</td><td>Logbessou</td><td class="r">185 000 F</td><td>-</td><td><span class="st bad">Au-dessus du plafond : à valider</span></td></tr>
-      <tr><td><b>OUT/0049</b></td><td>Fatou Karité (shop)</td><td>Sandrine Fouda</td><td>Bonamoussadi</td><td class="r">4 000 F</td><td>Junior</td><td><span class="st done">Livré</span></td></tr>
-    </table>
-    <span class="small muted">Les colis Express et ceux du shop sont dans le même dispatch, la même tournée et la même caisse du soir : un livreur prend et livre les deux.</span>
-  </div>
   <div style="display:flex;flex-direction:column;gap:14px">
     <div class="bo">
+      <b>OCD Live › Livraisons › Dispatch · mar. 24 nov. · filtre « Express »</b>
+      <div class="kpis">
+        <div class="kpi"><b>37</b><span>colis Express aujourd'hui</span></div>
+        <div class="kpi"><b>9</b><span>ramassages · 6 faits</span></div>
+        <div class="kpi"><b>4 / 5</b><span>livreurs en service</span></div>
+        <div class="kpi"><b>62 / 80</b><span>colis du jour (capacité)</span></div>
+      </div>
+      <table class="t">
+        <tr><th>Colis</th><th>Expéditeur</th><th>Pour</th><th>Quartier</th><th class="r">À encaisser</th><th>Livreur</th><th>État</th></tr>
+        <tr><td><b>EX-0427</b></td><td>Mode Afi</td><td>Grâce Mbia</td><td>Bonamoussadi</td><td class="r">15 000 F</td><td>Junior</td><td><span class="st route">En route · confirmé</span></td></tr>
+        <tr><td><b>EX-0431</b></td><td>Mode Afi</td><td>Paul Eto'o</td><td>Makepe</td><td class="r">9 500 F</td><td>Junior</td><td><span class="st bad">Client absent · demain matin</span></td></tr>
+        <tr><td><b>EX-0433</b></td><td>Chez Nadine Cosmétiques</td><td>Rita Kamga</td><td>Bonapriso</td><td class="r">-</td><td>Raoul</td><td><span class="st wait">À prendre · 14 h – 17 h</span></td></tr>
+        <tr><td><b>EX-0435</b></td><td>Kossi Tech</td><td>Yves Mballa</td><td>Logbessou</td><td class="r">185 000 F</td><td>-</td><td><span class="st bad">Au-dessus du plafond : à valider</span></td></tr>
+        <tr><td><b>EX-0419</b></td><td>Mode Afi</td><td>Sylvie Ondoa</td><td>Bonabéri</td><td class="r">8 000 F</td><td>Raoul</td><td><span class="st wait">Livré · souci signalé</span></td></tr>
+        <tr><td><b>OUT/0049</b></td><td>Fatou Karité (shop)</td><td>Sandrine Fouda</td><td>Bonamoussadi</td><td class="r">4 000 F</td><td>Junior</td><td><span class="st done">Livré</span></td></tr>
+      </table>
+      <span class="small muted">Les colis Express et ceux du shop sont dans le même dispatch, la même tournée et la même caisse du soir : un livreur prend et livre les deux. La capacité du jour est les livreurs en service × 20 colis ; 20 % restent pour les colis du shop.</span>
+    </div>
+    <div class="bo">
       <b>Fiche expéditeur · Mode Afi</b>
-      <span class="small muted">+237 6 70 11 22 33 (vérifié par WhatsApp) · Instagram @mode.afi · depuis le 2 novembre</span>
-      <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+      <span class="small muted">+237 6 70 11 22 33 (vérifié par WhatsApp) · Instagram @mode.afi · depuis le 2 novembre · invitée au lancement</span>
+      <div class="kpis">
         <div class="kpi"><b>86</b><span>colis livrés</span></div>
-        <div class="kpi"><b>4 %</b><span>retournés</span></div>
-        <div class="kpi"><b>0</b><span>litige</span></div>
+        <div class="kpi"><b>4 %</b><span>retournés (alerte à 30 %)</span></div>
+        <div class="kpi"><b>1</b><span>souci en cours</span></div>
+        <div class="kpi"><b>0 F</b><span>dû à OCD (10 000 F au plus)</span></div>
       </div>
       <div class="setrow"><span>Tarif</span><span class="in">Standard (OCD Business : prix réduit)</span></div>
       <div class="setrow"><span>À encaisser au plus par colis</span><span class="in">200 000 F (après 20 colis)</span></div>
       <div class="setrow"><span>Versement</span><span class="in">Orange Money · chaque jour ouvré</span></div>
       <div class="setrow"><span>Lieu de ramassage</span><span class="in">Magasin · Akwa (vérifié)</span></div>
-      <span style="display:flex;gap:8px"><span class="bobtn">Voir ses envois</span><span class="bobtn">Écrire sur WhatsApp</span><span class="bobtn">Suspendre</span></span>
+      <span style="display:flex;gap:8px;flex-wrap:wrap"><span class="bobtn">Voir ses envois</span><span class="bobtn">Écrire sur WhatsApp</span><span class="bobtn">Suspendre</span></span>
     </div>
-    <div class="bo">
-      <b>Réglages · OCD Express</b>
-      <div class="setrow"><span>Villes ouvertes</span><span class="in">Douala</span></div>
-      <div class="setrow"><span>Prix de la livraison</span><span class="in">Les tarifs « livreur OCD » de la ville</span></div>
-      <div class="setrow"><span>Encaissement à la porte</span><span class="in">1 % · 100 F au moins</span></div>
-      <div class="setrow"><span>À encaisser au plus (nouveau, confirmé)</span><span class="in">50 000 F · 200 000 F après 20 colis</span></div>
-      <div class="setrow"><span>Colis pris le jour même si créé avant</span><span class="in">12 h</span></div>
-      <div class="setrow"><span>Colis par livreur et par jour</span><span class="in">25</span></div>
-      <div class="setrow"><span>Passages avant le retour · prix du retour</span><span class="in">2 · moitié de la livraison</span></div>
-      <div class="setrow" style="border:0"><span>Versement aux expéditeurs</span><span class="in">Jour ouvré suivant</span></div>
-    </div>
+  </div>
+  <div class="bo">
+    <b>Réglages · OCD Express</b>
+    <div class="setrow"><span>Villes ouvertes</span><span class="in">Douala</span></div>
+    <div class="setrow"><span>Ouvert à</span><span class="in">Expéditeurs invités</span></div>
+    <div class="setrow"><span>Prix de la livraison</span><span class="in">Tarifs « livreur OCD » de la ville</span></div>
+    <div class="setrow"><span>Encaissement à la porte</span><span class="in">1,5 % · 150 F au moins</span></div>
+    <div class="setrow"><span>Retour · ramassage de 1 ou 2 colis</span><span class="in">500 F · 500 F</span></div>
+    <div class="setrow"><span>Ramassage gratuit à partir de</span><span class="in">3 colis</span></div>
+    <div class="setrow"><span>À encaisser au plus (nouveau, confirmé)</span><span class="in">50 000 F · 200 000 F après 20 colis</span></div>
+    <div class="setrow"><span>Sur le téléphone seulement au-dessus de</span><span class="in">100 000 F</span></div>
+    <div class="setrow"><span>Espèces sur un livreur au plus</span><span class="in">150 000 F</span></div>
+    <div class="setrow"><span>Dû par un expéditeur au plus</span><span class="in">10 000 F</span></div>
+    <div class="setrow"><span>Vagues (créé avant)</span><span class="in">10 h : l'après-midi · 15 h : le lendemain matin</span></div>
+    <div class="setrow"><span>Colis par livreur et par jour · part du shop</span><span class="in">20 · 20 %</span></div>
+    <div class="setrow"><span>Passages avant le retour</span><span class="in">2</span></div>
+    <div class="setrow"><span>Souci signalé par le client</span><span class="in">48 h après la livraison</span></div>
+    <div class="setrow"><span>Perdu ou abîmé : remboursé au plus</span><span class="in">50 000 F</span></div>
+    <div class="setrow"><span>Retours d'un expéditeur : alerte à</span><span class="in">30 %</span></div>
+    <div class="setrow"><span>Versement · nouveau numéro</span><span class="in">Jour ouvré suivant · 48 h</span></div>
+    <div class="setrow" style="border:0"><span>Nom et numéro des clients effacés après</span><span class="in">6 mois</span></div>
   </div>
 </div>
 
 <div style="display:grid;grid-template-columns:repeat(4,320px);gap:14px">
-  <div class="rule"><b>Caisse du soir</b><span>Les espèces des colis Express rejoignent celles du shop : le livreur les remet le soir (existe déjà). Un colis compte pour le versement de l'expéditeur seulement quand son argent est à la caisse.</span></div>
-  <div class="rule"><b>Versements aux expéditeurs</b><span>Préparés chaque matin pour la veille, envoyés par Mobile Money (CinetPay, CamPay) ou à la main avec leur référence ; même écran que les reversements des vendeurs, filtre « Express ».</span></div>
-  <div class="rule"><b>À vérifier</b><span>Les colis au-dessus du plafond, les nouveaux expéditeurs qui envoient beaucoup le premier jour, les colis signalés (contenu, adresse fausse, refus répétés).</span></div>
-  <div class="rule"><b>Automatisations</b><span>« Colis Express pris : prévenir l'expéditeur », « En route : prévenir le client », « Livré ou problème : prévenir l'expéditeur », « Préparer les versements du matin ».</span></div>
+  <div class="rule"><b>Caisse du soir</b><span>Les espèces des colis Express rejoignent celles du shop : le livreur les remet le soir (existe déjà). Nouveau : un manque à la caisse devient une dette du livreur, retenue ou réglée, au lieu d'une simple note.</span></div>
+  <div class="rule"><b>Versements aux expéditeurs</b><span>Préparés chaque matin pour la veille : l'argent remis à la caisse, ou confirmé par le fournisseur de paiement. Envoyés par Mobile Money (CinetPay, CamPay) ou à la main avec leur référence ; même écran que les reversements des vendeurs, filtre « Express ».</span></div>
+  <div class="rule"><b>À vérifier</b><span>Les colis au-dessus du plafond, les nouveaux expéditeurs qui envoient beaucoup le premier jour, les soucis signalés par les clients (48 h), les expéditeurs au-dessus de 30 % de retours, les manques de caisse, les retours pas encore rendus.</span></div>
+  <div class="rule"><b>Automatisations</b><span>« Colis créé : prévenir le client », « Pris : prévenir l'expéditeur », « En route : prévenir le client », « Livré ou problème : prévenir l'expéditeur », « Préparer les versements du matin », « Versement fait : prévenir l'expéditeur », « Effacer les clients après 6 mois ».</span></div>
 </div>
 
 <span class="cap" style="margin-top:18px">Pour que ça tienne en vrai</span>
 <div style="display:grid;grid-template-columns:repeat(3,430px);gap:14px">
-  <div class="rule"><b>De l'argent jamais avancé</b><span>L'expéditeur reçoit l'argent encaissé et remis à la caisse, moins ses frais ; un colis en litige garde son montant jusqu'à la réponse de l'équipe. Un expéditeur qui doit de l'argent (retours, livraisons qu'il paie sans colis encaissé) le voit déduit du versement suivant, jamais négatif sans le dire.</span></div>
-  <div class="rule"><b>Contre la fraude</b><span>Plafond par colis pour un nouvel expéditeur, montant écrit sur l'étiquette et dans le message du client (il sait ce qu'il paie), code de livraison comme pour le shop, numéro de l'expéditeur vérifié par WhatsApp ; une pièce d'identité demandée au-delà d'un montant par jour (réglable).</span></div>
-  <div class="rule"><b>Un livreur qui ne déborde pas</b><span>Capacité par ville (colis par livreur et par jour × livreurs en service) : quand la journée est pleine, l'expéditeur le voit avant de créer (« pris demain matin »). Les ramassages sont groupés : un passage pour tous les colis d'un expéditeur.</span></div>
-  <div class="rule"><b>L'étiquette</b><span>Le numéro EX et le nom du client écrits sur le colis suffisent ; avec une imprimante, une étiquette avec QR que le livreur scanne. Le livreur vérifie le nombre de colis pris : l'expéditeur le reçoit sur WhatsApp.</span></div>
-  <div class="rule"><b>Les échecs</b><span>Client absent : le client choisit un autre moment sur sa page ; un second passage, puis le retour. Refus à la porte : retour direct. Le livreur garde le colis la nuit (comme aujourd'hui) ou le dépose au point OCD.</span></div>
-  <div class="rule"><b>Hors réseau</b><span>La tournée du livreur se garde dans le téléphone (comme pour le shop) ; le code se vérifie dès que le réseau revient, le colis reste « à confirmer » d'ici là.</span></div>
-  <div class="rule"><b>Les chiffres pour décider</b><span>Colis par jour et par ville, coût de livraison par colis (salaire et carburant des livreurs divisés par les colis livrés), taux de retour, délai moyen ; dans le tableau de bord, pour ouvrir une ville ou ajouter un livreur au bon moment.</span></div>
-  <div class="rule"><b>Les données des clients</b><span>Le numéro du client n'est utilisé que pour son colis : jamais montré aux autres expéditeurs, jamais d'autres messages ; l'expéditeur voit seulement ses propres clients.</span></div>
-  <div class="rule"><b>Un vendeur d'OCD Live</b><span>Même compte, même espace : « Envoyer un colis » s'ajoute à Mon espace, pour ses ventes faites hors du shop (WhatsApp, TikTok) ; ses colis du shop ne changent pas.</span></div>
+  <div class="rule"><b>De l'argent jamais avancé</b><span>L'expéditeur reçoit l'argent arrivé chez OCD (espèces remises à la caisse, paiement sur le téléphone du client confirmé par le fournisseur), moins ses frais. Pas de Mobile Money « déclaré » pour Express : une référence tapée par le livreur ne suffit pas. Dans le shop, la facture du vendeur est faite à la livraison ; pour Express, elle attend l'argent.</span></div>
+  <div class="rule"><b>Ce que doit un expéditeur</b><span>Un retour, un ramassage payant ou la livraison d'un colis déjà payé ne lui rapportent rien à encaisser : c'est retiré du versement suivant, et dit sur « Mon argent ». Au-delà de 10 000 F dus, il règle par Mobile Money avant de créer un colis, ou fait payer la livraison à son client.</span></div>
+  <div class="rule"><b>Un souci après la livraison</b><span>« Un souci avec mon colis ? » sur la page de suivi pendant 48 h : le montant du colis attend, s'il n'est pas encore versé. Si l'équipe donne raison au client, la somme est retirée des versements suivants de l'expéditeur. OCD transporte, ne vend pas : pas de garantie d'OCD Live sur un colis Express.</span></div>
+  <div class="rule"><b>Perdu ou abîmé par OCD</b><span>OCD rembourse la valeur déclarée (le montant à encaisser, ou la valeur écrite pour un colis déjà payé), 50 000 F au plus ; le livreur fautif en porte une part si l'accord avec les livreurs le prévoit. Jamais le contenu : la photo du colis fermé, prise au ramassage, fait foi.</span></div>
+  <div class="rule"><b>Les espèces du livreur</b><span>150 000 F au plus sur lui (sécurité) : au-dessus, il passe déposer au point OCD. Il part avec un fond de caisse pour rendre la monnaie. Au-dessus de 100 000 F à encaisser, seul le paiement sur le téléphone du client est accepté.</span></div>
+  <div class="rule"><b>Le Mobile Money d'OCD</b><span>Verser le matin l'argent encaissé en espèces la veille demande, chaque matin, environ une journée d'encaissements sur le compte d'où partent les versements, et de compter les frais pour y déposer les espèces.</span></div>
+  <div class="rule"><b>Contre la fraude</b><span>Le livreur qui encaisse puis dit « absent » : un retour est rendu contre le code de retour de l'expéditeur, un retour pas rendu se voit tout de suite. Le colis vide : photo au ramassage, ouverture devant le livreur. Le montant gonflé ou la commande jamais passée : le client confirme avant le départ ; 30 % de retours, un avertissement, puis la suspension. Jamais de Mobile Money sur le numéro du livreur. Numéro vérifié par WhatsApp, pièce d'identité au-delà d'un montant par jour, nouveau numéro de versement retenu 48 h.</span></div>
+  <div class="rule"><b>Le client prévenu tôt</b><span>Les absences et les refus sont le premier coût du paiement à la porte. Le client reçoit un WhatsApp dès la création (« Je confirme », « Changer le moment ») ; le dispatch voit les colis confirmés. Un client qui ne répond pas est livré quand même, avec un appel avant.</span></div>
+  <div class="rule"><b>Les échecs</b><span>Le livreur appelle 2 fois et attend 10 minutes avant « Client absent » ; le client peut envoyer sa position depuis sa page. Second passage gratuit au moment choisi, puis le retour (500 F). Refus à la porte : retour direct. Tout ou rien : pas de colis payé en partie.</span></div>
+  <div class="rule"><b>Ramassage et vagues</b><span>Gratuit dès 3 colis dans le même passage, 500 F en dessous, dépôt au point OCD toujours gratuit ; deux passages ratés chez l'expéditeur sont facturés. Deux vagues : créé avant 10 h, livré l'après-midi ; avant 15 h, livré le lendemain matin. La nuit, les colis dorment au point OCD, scannés à l'entrée et à la sortie : chaque passage de main est enregistré.</span></div>
+  <div class="rule"><b>Un livreur qui ne déborde pas</b><span>20 colis par livreur et par jour, ramassages compris ; 20 % de la capacité restent pour les colis du shop. Quand la journée est pleine, l'expéditeur le voit avant de créer (« livré demain matin »). Un livreur de plus quand la ville dépasse 80 % de sa capacité 5 jours de suite : le tableau de bord le dit.</span></div>
+  <div class="rule"><b>Hors réseau</b><span>Aujourd'hui, la tournée du livreur a besoin du réseau (seuls les brouillons de « Mes produits » se gardent dans le téléphone). Un code de 4 chiffres ne se vérifie pas dans le téléphone sans risque : sans réseau, pas de remise contre des espèces. Seul un paiement sur le téléphone du client, vu « Payé » sur son écran, permet la remise ; le code part au retour du réseau.</span></div>
+  <div class="rule"><b>WhatsApp et Meta</b><span>Le client n'a jamais accepté les messages d'OCD : des blocages feraient baisser la note du numéro. Un numéro à part pour OCD Express protège les messages d'OCD Live. L'expéditeur coche l'accord de son client ; « Ce n'est pas pour moi » arrête tout. Cinq modèles Utilitaire, français et anglais, sans variable au début ni à la fin, sans le mot « code ». Chaque message est payé à Meta : 3 à 5 par colis.</span></div>
+  <div class="rule"><b>Les données des clients</b><span>Le numéro du client sert seulement à son colis : jamais montré aux autres expéditeurs, jamais d'autres messages. Le livreur voit l'adresse et le numéro le jour de sa tournée. Après 6 mois, le nom et le numéro sont effacés ; le montant et les dates restent pour les comptes. Le code : la page de suivi et l'équipe, jamais l'expéditeur ni le livreur. La loi camerounaise de 2024 sur les données personnelles est à vérifier avec un juriste.</span></div>
+  <div class="rule"><b>Le coût réel par colis</b><span>Hypothèses à remplacer par les vrais chiffres : un livreur coûte environ 170 000 F par mois (salaire, carburant, crédit), soit environ 330 F par colis à 20 colis par jour et 650 F à 10 ; plus les échecs, les frais du Mobile Money, les messages et le temps de la caisse. À 1 000 F et 1,5 %, OCD gagne au-delà de 12 à 15 colis par livreur et par jour. Le tableau de bord montre ce coût chaque semaine ; le prix est revu après 4 semaines.</span></div>
+  <div class="rule"><b>L'argent des autres, et la loi</b><span>Encaisser pour des tiers puis leur verser peut tomber sous les règles des services de paiement de la CEMAC : à vérifier avec un juriste avant d'ouvrir au public. Seuls les frais sont le chiffre d'affaires d'OCD ; l'expéditeur reçoit chaque mois la facture de ses frais avec son relevé.</span></div>
+  <div class="rule"><b>L'étiquette</b><span>Le numéro EX et le nom du client écrits sur le colis suffisent ; avec une imprimante, une étiquette avec QR que le livreur scanne. Le livreur vérifie le nombre de colis pris et les photographie fermés : l'expéditeur le reçoit sur WhatsApp.</span></div>
+  <div class="rule"><b>Un vendeur d'OCD Live</b><span>Même compte, même espace : « Envoyer un colis » s'ajoute à Mon espace, pour ses ventes faites hors du shop (WhatsApp, TikTok) ; ses colis du shop ne changent pas. Le numéro d'un livreur ne peut pas devenir celui d'un expéditeur (une personne, un rôle).</span></div>
 </div>
 
-<span class="cap" style="margin-top:18px">Choix proposés, à valider</span>
+<span class="cap" style="margin-top:18px">Choix validés le 18 novembre 2026</span>
 <div class="q" style="width:1300px;box-sizing:border-box">
-  <span><b>1. Qui peut envoyer :</b> tout vendeur avec un numéro WhatsApp, même sans boutique sur OCD Live ; il se connecte comme les vendeurs (lien ou code sur WhatsApp). Les vendeurs d'OCD Live gardent le même espace, avec « Envoyer un colis » en plus. La page publique <b>/express</b> présente le service.</span>
+  <span><b>1. Qui peut envoyer :</b> tout vendeur avec un numéro WhatsApp, même sans boutique sur OCD Live ; il se connecte comme les vendeurs (lien ou code sur WhatsApp). Les vendeurs d'OCD Live gardent le même espace, avec « Envoyer un colis » en plus. D'abord 20 à 30 expéditeurs invités à Douala ; la page publique <b>/express</b> ouvre ensuite à tous (réglage « Ouvert à »).</span>
   <span><b>2. Où :</b> les villes où OCD a des livreurs, Douala d'abord (réglage « villes ouvertes ») ; vers une autre ville ou un autre pays, par agence, payé d'avance par l'expéditeur, sans paiement à la porte (comme le shop).</span>
-  <span><b>3. Le prix (décision ouverte) :</b> le tarif « livreur OCD » de la ville du client, le même que pour le shop (1 000 F dans Douala) ; l'expéditeur choisit qui paie la livraison : lui, ou son client (ajoutée au montant à encaisser). Moins cher avec OCD Business (prix à fixer avec le chantier 12).</span>
-  <span><b>4. Encaisser à la porte :</b> 1 % du montant encaissé, 100 F au moins ; rien pour un colis déjà payé. Le client paie en espèces ou par Mobile Money sur son téléphone (le paiement du shop à la porte).</span>
-  <span><b>5. Les espèces (décision ouverte) :</b> le livreur ne remet un colis que contre l'argent et le code ; il remet les espèces à la caisse du soir, avec celles du shop ; l'expéditeur reçoit le jour ouvré suivant, par Mobile Money, l'argent des colis livrés et remis à la caisse, moins la livraison et l'encaissement. Jamais d'avance.</span>
-  <span><b>6. Les plafonds :</b> 50 000 F à encaisser par colis pour un nouvel expéditeur, 200 000 F après 20 colis livrés sans litige ; au-delà, l'équipe valide le colis (réglables).</span>
-  <span><b>7. Le ramassage :</b> chez l'expéditeur (son lieu, comme les magasins du chantier 17, vérifié la première fois) le matin ou l'après-midi, sans frais, ou dépôt au point OCD (le studio) ; un colis créé avant 12 h part le jour même.</span>
-  <span><b>8. Les échecs :</b> 2 passages, le client choisit le second sur sa page ; puis le colis revient à l'expéditeur, à moitié prix de la livraison. Un refus à la porte est un retour.</span>
-  <span><b>9. Les livreurs (décision ouverte) :</b> on commence avec les livreurs OCD actuels de Douala ; repère : 25 colis par livreur et par jour en ville ; une capacité par ville que l'équipe règle, et un livreur de plus quand la ville atteint 80 % de sa capacité plusieurs jours de suite (le tableau de bord le dit).</span>
-  <span><b>10. Le client qui reçoit :</b> un WhatsApp quand le colis part, avec la page de suivi (le code, le montant à payer, « Pas là ? »), sans créer de compte. Rien d'autre ne lui est envoyé.</span>
-  <span><b>11. WhatsApp :</b> quatre nouveaux modèles (Utilitaire, français et anglais) : colis pris (à l'expéditeur), en route (au client), livré ou problème (à l'expéditeur), versement fait (à l'expéditeur).</span>
-  <span><b>12. Plus tard :</b> les points relais (chantier 10) pour retirer ou déposer un colis, l'envoi de plusieurs colis d'un coup (liste collée depuis WhatsApp), un lien pour les boutiques en ligne (API), l'assurance d'un colis de valeur.</span>
+  <span><b>3. Le prix (tranché) :</b> le tarif « livreur OCD » de la ville du client, le même que pour le shop (1 000 F dans Douala) ; l'expéditeur choisit qui paie la livraison : lui, ou son client (ajoutée au montant à encaisser). Encaissement 1,5 %, 150 F au moins, rien pour un colis déjà payé ; retour 500 F ; ramassage gratuit dès 3 colis, 500 F en dessous, dépôt au point OCD gratuit ; second passage gratuit. Tout est réglable ; prix revu après 4 semaines avec le coût réel. Moins cher avec OCD Business (prix à fixer avec le chantier 12).</span>
+  <span><b>4. Payer à la porte :</b> en espèces au livreur, ou sur le téléphone du client (le paiement du shop à la porte) ; pas de Mobile Money « déclaré » pour Express ; au-dessus de 100 000 F, sur le téléphone seulement. Le client peut ouvrir le colis devant le livreur avant de payer (oui par défaut, au choix de l'expéditeur). Tout ou rien.</span>
+  <span><b>5. Les espèces (tranché) :</b> le livreur ne remet un colis que contre l'argent et le code ; 150 000 F au plus sur lui ; il remet les espèces à la caisse du soir, avec celles du shop ; un manque devient une dette du livreur. L'expéditeur reçoit le jour ouvré suivant, par Mobile Money, l'argent arrivé chez OCD (caisse ou fournisseur de paiement), moins ses frais ; ce qu'il doit est retiré, 10 000 F au plus ; un souci signalé dans les 48 h garde le montant du colis ; un nouveau numéro de versement attend 48 h. Jamais d'avance.</span>
+  <span><b>6. Les plafonds :</b> 50 000 F à encaisser par colis pour un nouvel expéditeur, 200 000 F après 20 colis livrés sans souci ; au-delà, l'équipe valide le colis (réglables).</span>
+  <span><b>7. Le ramassage :</b> chez l'expéditeur (son lieu, comme les magasins du chantier 17, vérifié la première fois) ou dépôt au point OCD (le studio) ; deux vagues : créé avant 10 h, pris le matin et livré l'après-midi ; avant 15 h, pris l'après-midi et livré le lendemain matin. Les colis dorment au point OCD, scannés à chaque passage de main.</span>
+  <span><b>8. Les échecs :</b> 2 appels et 10 minutes avant « absent » ; 2 passages, le client choisit le second sur sa page ; puis le colis revient à l'expéditeur, rendu contre son code de retour (500 F). Un refus à la porte est un retour.</span>
+  <span><b>9. Les livreurs (tranché) :</b> on commence avec les livreurs OCD actuels de Douala ; 20 colis par livreur et par jour, ramassages compris ; 20 % de la capacité gardés pour le shop ; un livreur de plus quand la ville dépasse 80 % de sa capacité 5 jours de suite (le tableau de bord le dit).</span>
+  <span><b>10. La responsabilité d'OCD :</b> perdu ou abîmé par OCD, remboursé jusqu'à 50 000 F (la valeur déclarée) ; jamais le contenu, qui reste à l'expéditeur ; les colis Express sont hors de la garantie d'OCD Live.</span>
+  <span><b>11. Le client qui reçoit :</b> un WhatsApp dès la création (« Je confirme », « Changer le moment », « Ce n'est pas pour moi »), puis quand le colis part, avec la page de suivi (le code, le montant à payer, « Pas là ? », « Envoyer ma position », « Un souci avec mon colis ? » 48 h), sans créer de compte. Rien d'autre ne lui est envoyé ; son nom et son numéro sont effacés après 6 mois.</span>
+  <span><b>12. WhatsApp :</b> un numéro à part pour OCD Express ; l'expéditeur coche l'accord de son client à chaque colis ; cinq nouveaux modèles Utilitaire (français et anglais) : colis annoncé et en route (au client), colis pris, livré ou problème, versement fait (à l'expéditeur).</span>
+  <span><b>13. Hors réseau :</b> pas de remise contre des espèces sans réseau ; seulement contre un paiement sur le téléphone du client, vu « Payé » ; le code part au retour du réseau.</span>
+  <span><b>14. Avant d'ouvrir au public :</b> les règles des services de paiement de la CEMAC et la loi sur les données personnelles vérifiées avec un juriste ; le coût réel par colis mesuré pendant le lancement.</span>
+  <span><b>15. Plus tard :</b> les points relais (chantier 10) pour retirer ou déposer un colis, l'envoi de plusieurs colis d'un coup (liste collée depuis WhatsApp), un lien pour les boutiques en ligne (API), l'assurance d'un colis de valeur, la tournée gardée dans le téléphone.</span>
 </div>
 
 </div>

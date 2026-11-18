@@ -558,6 +558,68 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   reviennent à OCD.
 - **Vers une autre ville ou un autre pays : seulement par un tarif « agence »** prévu par l'équipe, sans
   paiement à la porte. Une adresse qu'aucun tarif ne couvre est refusée avant le paiement.
+- **OCD Express** (chantier 9 ; maquette `OcdExpress` validée le 18 novembre 2026, avec ses choix et
+  « Pour que ça tienne en vrai ») :
+  - **qui envoie** : tout vendeur avec un numéro WhatsApp, même sans boutique, connecté comme les vendeurs
+    (lien ou code sur WhatsApp) ; un vendeur d'OCD Live garde son espace, avec « Envoyer un colis » en plus ;
+    le numéro d'un livreur ne devient pas celui d'un expéditeur. D'abord **20 à 30 expéditeurs invités** à
+    Douala, puis la page `/express` pour tous (réglage « Ouvert à ») ;
+  - **où** : les villes où OCD a des livreurs, Douala d'abord ; vers une autre ville ou un autre pays, par
+    agence, payé d'avance, sans paiement à la porte ;
+  - **le prix** : le tarif « livreur OCD » de la ville du client (1 000 F dans Douala), payé par
+    l'expéditeur ou ajouté au montant à encaisser ; **encaissement 1,5 %, 150 F au moins**, rien pour un
+    colis déjà payé ; **retour 500 F** ; **ramassage gratuit dès 3 colis** dans le même passage, 500 F en
+    dessous, dépôt au point OCD gratuit ; second passage gratuit ; deux ramassages ratés chez l'expéditeur
+    facturés. Tout est réglable ; prix revu après 4 semaines avec le coût réel par colis. Moins cher avec
+    OCD Business (chantier 12) ;
+  - **payer à la porte** : en espèces au livreur, ou sur le téléphone du client ; **pas de Mobile Money
+    « déclaré »** pour Express ; au-dessus de 100 000 F, sur le téléphone seulement ; jamais sur le numéro
+    personnel du livreur. Le client peut **ouvrir le colis devant le livreur avant de payer** (oui par
+    défaut, au choix de l'expéditeur pour chaque colis). Tout ou rien ;
+  - **les espèces** : le colis contre l'argent et le code (comme le shop) ; **150 000 F au plus sur un
+    livreur** (au-dessus, dépôt au point OCD) ; un fond de caisse pour rendre la monnaie ; la caisse du soir
+    avec celle du shop ; **un manque à la caisse devient une dette du livreur** (retenue ou réglée), plus
+    seulement une note ;
+  - **l'argent de l'expéditeur** : versé par Mobile Money le **jour ouvré suivant**, seulement l'argent
+    arrivé chez OCD (espèces remises à la caisse, paiement confirmé par le fournisseur), moins ses frais :
+    la facture attend l'argent, alors que celle du vendeur du shop est faite à la livraison. Jamais
+    d'avance. Ce qu'il doit (retour, ramassage, livraison d'un colis déjà payé) est retiré du versement
+    suivant, **10 000 F au plus** ; au-delà, il règle par Mobile Money avant de créer un colis. Un nouveau
+    numéro de versement attend **48 h** et l'ancien numéro est prévenu ;
+  - **les plafonds** : 50 000 F à encaisser par colis pour un nouvel expéditeur, 200 000 F après 20 colis
+    livrés sans souci ; au-delà, l'équipe valide le colis ; pièce d'identité au-delà d'un montant par jour ;
+  - **la responsabilité** : OCD transporte, ne vend pas. Perdu ou abîmé par OCD : la valeur déclarée (le
+    montant à encaisser, ou la valeur écrite pour un colis déjà payé) remboursée jusqu'à **50 000 F** ;
+    jamais le contenu (la photo du colis fermé, prise au ramassage, fait foi). Les colis Express sont **hors
+    de la garantie d'OCD Live**. « Un souci avec mon colis ? » pendant **48 h** après la livraison : le
+    montant attend s'il n'est pas versé ; si l'équipe donne raison au client, la somme est retirée des
+    versements suivants de l'expéditeur. 30 % de retours : un avertissement, puis la suspension (réglable) ;
+  - **le ramassage** : chez l'expéditeur (son lieu, comme les magasins du chantier 17, vérifié la première
+    fois) ou au point OCD (le studio) ; le livreur scanne ou tape le numéro EX et photographie les colis
+    fermés ; **deux vagues** : créé avant 10 h, livré l'après-midi ; avant 15 h, livré le lendemain matin
+    (réglables). La nuit, les colis dorment au point OCD, scannés à chaque passage de main ;
+  - **les échecs** : 2 appels et 10 minutes d'attente avant « absent » ; le client envoie sa position depuis
+    sa page ; 2 passages, puis le retour ; un refus à la porte est un retour ; **un retour est rendu contre
+    le code de retour de l'expéditeur** ;
+  - **les livreurs** : les livreurs OCD actuels de Douala ; **20 colis par livreur et par jour**, ramassages
+    compris ; 20 % de la capacité gardés pour le shop ; l'expéditeur voit une journée pleine avant de créer ;
+    un livreur de plus quand la ville dépasse 80 % de sa capacité 5 jours de suite (tableau de bord) ;
+  - **hors réseau** : pas de remise contre des espèces ; seulement contre un paiement sur le téléphone du
+    client, vu « Payé » sur son écran, le code partant au retour du réseau ;
+  - **le client qui reçoit** : un WhatsApp dès la création (« Je confirme », « Changer le moment », « Ce
+    n'est pas pour moi », qui arrête tout), puis au départ du colis avec la page de suivi (code, montant,
+    « Pas là ? », « Envoyer ma position »), sans compte ; rien d'autre ; le code n'est jamais montré à
+    l'expéditeur ni au livreur ; son nom et son numéro sont **effacés après 6 mois** (le montant et les
+    dates restent) ; le livreur voit son adresse et son numéro le jour de sa tournée ;
+  - **WhatsApp** : **un numéro à part pour OCD Express** (des blocages n'abaissent pas la note du numéro
+    d'OCD Live) ; l'expéditeur coche l'accord de son client à chaque colis ; cinq modèles Utilitaire
+    (français et anglais) : colis annoncé et en route (au client), colis pris, livré ou problème, versement
+    fait (à l'expéditeur) ;
+  - **avant d'ouvrir au public** : les règles des services de paiement de la CEMAC et la loi camerounaise
+    de 2024 sur les données personnelles vérifiées avec un juriste ; seuls les frais sont le chiffre
+    d'affaires d'OCD (facture des frais chaque mois avec le relevé) ;
+  - **plus tard** : les points relais (chantier 10), plusieurs colis d'un coup, un lien pour les boutiques en
+    ligne, l'assurance d'un colis de valeur, la tournée gardée dans le téléphone.
 
 ## WhatsApp
 
