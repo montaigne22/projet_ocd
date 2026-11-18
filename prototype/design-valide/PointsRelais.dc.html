@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Points relais</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.muted{color:#665F58}
+.lnk{text-decoration:underline;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:8px;background:#15130F;color:#FFF;font-weight:800;font-size:12.5px;padding:3px 8px}
+.badge.soft{background:#FFF0E3;color:#B84F00}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn2{display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px;border-radius:14px;border:2px solid #E7E2DC;font-weight:800;font-size:15px;text-align:center;padding:0 10px}
+.btn2.dark{background:#15130F;border-color:#15130F;color:#FFF}
+.btn2.on{border-color:#F46A00;background:#FFF0E3}
+.hero{display:flex;flex-direction:column;gap:10px;border-radius:22px;background:#15130F;color:#FFF;padding:18px}
+.hero .d{font-size:27px;line-height:1.1}
+.step3{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start}
+.step3 b.n{width:30px;height:30px;border-radius:50%;background:#F46A00;color:#15130F;display:grid;place-items:center;font-size:14px}
+.price{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC}
+.price:last-child{border-bottom:0}
+.sum{display:flex;flex-direction:column;gap:4px;border-radius:16px;background:#F5F2EE;padding:12px 14px;font-size:14.5px}
+.sum span{display:flex;justify-content:space-between}
+.sum .tot{border-top:1px solid #E7E2DC;padding-top:6px;font-weight:800}
+.parcel{display:flex;flex-direction:column;gap:6px;border:2px solid #E7E2DC;border-radius:18px;padding:12px 14px}
+.parcel.go{border-color:#F46A00}
+.parcel .h1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.st{display:inline-flex;align-items:center;border-radius:8px;padding:2px 8px;font-size:12.5px;font-weight:800;white-space:nowrap}
+.st.wait{background:#FFF0CC;color:#6B4500}.st.grey{background:#EEF0F2;color:#15130F}.st.route{background:#15130F;color:#FFF}
+.st.done{background:#DCF2E5;color:#0A5A31}.st.bad{background:#FCE4E4;color:#8E1220}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:11.5px;font-weight:700;color:#665F58}
+.steps i{display:block;height:5px;border-radius:99px;background:#E7E2DC;margin-bottom:3px}
+.steps i.on{background:#0F7A43}.steps i.now{background:#F46A00}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{border-radius:14px;background:#F5F2EE;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.tile b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px}
+.money{display:flex;flex-direction:column;gap:6px;border-radius:20px;background:#DCF2E5;padding:16px;color:#0A5A31}
+.money .d{font-size:32px;color:#15130F}
+.code{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:40px;letter-spacing:.18em;text-align:center;border-radius:16px;border:2px dashed #F46A00;padding:6px 0}
+.label{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;border:2px solid #15130F;border-radius:14px;padding:10px;font-size:13.5px}
+.qr{width:96px;height:96px;border-radius:8px;background:repeating-linear-gradient(90deg,#15130F 0 6px,#FFF 6px 10px),#FFF;border:4px solid #FFF;box-shadow:0 0 0 1px #15130F}
+.wa{width:330px;border-radius:18px;background:#E5DDD5;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.wa .bot{align-self:flex-start;background:#FFF;border-radius:12px 12px 12px 2px;padding:8px 10px;max-width:92%}
+.wa .bt{background:#FFF;border-radius:10px;text-align:center;color:#1F7A4D;font-weight:700;padding:8px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule b{font-size:15px}
+.bo{background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.bobtn{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid #AEB4BA;font-weight:700;font-size:13.5px;background:#FFF}
+.bobtn.p{background:#F46A00;border-color:#F46A00;color:#FFF}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{border:1px solid #E3E6E9;border-radius:10px;padding:8px 12px;display:flex;flex-direction:column}
+.kpi b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px}
+.kpi span{font-size:12px;font-weight:600;color:#5A6068}
+.setrow{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #EEF0F2}
+.setrow .in{height:auto;min-height:34px;padding:6px 12px;box-sizing:border-box;border-radius:8px;border-width:1px;font-size:14px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
+table.t td{padding:9px 10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
+table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
+table.t td:last-child{white-space:nowrap}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#FFF8E6;border:1px dashed #F0C987;padding:12px 14px;font-size:14px;color:#6B4500}
+.q b{color:#15130F}
+.check{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:14px}
+.check i{width:24px;height:24px;border-radius:7px;background:#15130F;color:#FFF;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:14px}
+.pt{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;border:2px solid #E7E2DC;border-radius:16px;padding:10px 12px}
+.pt.on{border-color:#F46A00;background:#FFF8F2}
+.pt .dot{box-sizing:border-box;width:22px;height:22px;border-radius:50%;border:2px solid #AEB4BA;margin-top:2px}
+.pt.on .dot{border:7px solid #F46A00}
+.opt{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;border:2px solid #E7E2DC;border-radius:16px;padding:12px}
+.opt.on{border-color:#F46A00;background:#FFF8F2}
+.opt .dot{box-sizing:border-box;width:22px;height:22px;border-radius:50%;border:2px solid #AEB4BA}
+.opt.on .dot{border:7px solid #F46A00}
+.map{height:120px;border-radius:16px;background:linear-gradient(135deg,#EDE7DF 0 30%,#E3DCD2 30% 31%,#EDE7DF 31% 64%,#E3DCD2 64% 65%,#EDE7DF 65%);position:relative}
+.map i{position:absolute;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#F46A00;box-shadow:0 0 0 3px #FFF}
+.map i.me{background:#15130F;border-radius:50%;transform:none;width:16px;height:16px}
+.bar{height:8px;border-radius:99px;background:#E7E2DC;overflow:hidden}
+.bar i{display:block;height:100%;background:#F46A00;border-radius:99px}
+.scan{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC;font-size:14.5px}
+.scan:last-child{border-bottom:0}
+.scan i{width:24px;height:24px;border-radius:7px;border:2px solid #AEB4BA;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px}
+.scan i.ok{background:#0F7A43;border-color:#0F7A43;color:#FFF}
+.gain{display:flex;flex-direction:column;gap:4px;border-radius:18px;background:#DCF2E5;padding:14px;color:#0A5A31}
+.gain .d{font-size:26px;color:#15130F}
+</style>
+</head>
+<body>
+<!-- Points relais (chantier 10 de la feuille de route) : des boutiques partenaires du quartier (kiosque
+     de transfert d'argent, pressing, boutique de téléphones) et les magasins des vendeurs qui le veulent
+     (plan « Mes produits », A.6) gardent les colis : le client passe retirer le sien quand il veut, avec
+     son code ; la livraison coûte moins cher, parce que le livreur dépose tous les colis d'un quartier en
+     un seul arrêt. On réutilise la fiche « lieu » des magasins (chantier 17 : adresse, position,
+     devanture, horaires, vérification), le retrait en magasin (chantier 20 : code de retrait, délai,
+     rappel, rien de remis sans paiement), la connexion par numéro de l'équipe d'un vendeur
+     (chantier 22), la tournée et le dispatch, les tarifs de livraison, les reversements, OCD Express.
+     Maquette proposée le 18 novembre 2026, à valider avec ses choix (en bas).
+     Données d'exemple : le point relais « Chez Mama Ngo » (kiosque Orange Money et crédit, Akwa) ;
+     Estelle Ngono, cliente à Akwa ; Brenda Wax, vendeuse ; Junior, livreur OCD ; Nadège Mode,
+     expéditrice d'OCD Express ; le mardi 24 novembre. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le client : choisir un point relais, retirer son colis</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. Livraison : au point relais -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Livraison</span></div>
+    <span class="small muted">Robe en wax · Bleu, M · vendue par Brenda Wax</span>
+    <div class="opt"><span class="dot"></span><span><b>Livrée chez moi</b><br><span class="small muted">Demain, à Akwa</span></span><b>1 000 F</b></div>
+    <div class="opt on"><span class="dot"></span><span><b>Au point relais</b><br><span class="small muted">Tu passes quand tu veux, pendant 7 jours</span></span><b>500 F</b></div>
+    <div class="map"><i class="me" style="left:46%;top:52%"></i><i style="left:30%;top:28%"></i><i style="left:62%;top:20%"></i><i style="left:74%;top:58%"></i></div>
+    <div class="pt on"><span class="dot"></span><span><b>Chez Mama Ngo</b><br><span class="small muted">Akwa · Rue Joss, face à la boulangerie · Ouvert · ferme à 20:00 · 7 jours sur 7</span></span><span class="small"><b>350 m</b></span></div>
+    <div class="pt"><span class="dot"></span><span><b>Brenda Wax Akwa</b> <span class="badge soft">Magasin d'une vendeuse</span><br><span class="small muted">En face de la pharmacie du Port · Ouvert · ferme à 19:00 · fermé le dimanche</span></span><span class="small"><b>800 m</b></span></div>
+    <div class="pt"><span class="dot"></span><span><b>Pressing Le Bon Coin</b><br><span class="small muted">Akwa Nord · Carrefour Douche · Fermé · ouvre demain à 8:00</span></span><span class="small"><b>1,4 km</b></span></div>
+    <span class="small muted">Un point relais plein ou en congé n'est pas proposé. « Près de moi » classe les points relais depuis ta position, sinon depuis ton quartier.</span>
+    <div class="sum"><span>Robe en wax<b>12 000 F</b></span><span>Au point relais Chez Mama Ngo<b>500 F</b></span><span class="tot">Total<b>12 500 F</b></span></div>
+    <span class="small muted">Au point relais, tu paies avant (Mobile Money, carte) ou sur ton téléphone au comptoir. Jamais d'espèces : le point relais ne garde pas d'argent.</span>
+    <span class="cta">Continuer vers le paiement</span>
+  </div>
+
+  <!-- 2. Le suivi : au point relais -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Ma commande</span><span class="st done" style="margin-left:auto">Au point relais</span></div>
+    <div class="steps"><span><i class="on"></i>Payée</span><span><i class="on"></i>En route</span><span><i class="now"></i>Au point relais</span><span><i></i>Retirée</span></div>
+    <span class="lab" style="margin:0">Ton code de retrait</span>
+    <div class="code">4821</div>
+    <div class="label"><span class="qr"></span><span><b>Montre ce QR ou donne ton code</b><br>Au comptoir, avec ton prénom. Payé : rien à payer au comptoir.</span></div>
+    <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+      <b>Chez Mama Ngo</b>
+      <span class="small muted">Akwa · Rue Joss, face à la boulangerie</span>
+      <span class="small">Ouvert · ferme à 20:00 · 7 jours sur 7</span>
+      <span class="small"><b>À retirer avant mardi 1er décembre à 20:00</b></span>
+      <div class="row2"><span class="btn2 dark">Itinéraire</span><span class="btn2">Appeler</span></div>
+    </div>
+    <span class="small muted">Quelqu'un d'autre peut le retirer pour toi : donne-lui ton code. Le point relais ne demande rien d'autre.</span>
+    <span class="lnk small">Je ne pourrai pas passer : livrez-le chez moi (500 F de plus)</span>
+  </div>
+
+  <!-- 3. WhatsApp au client -->
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <span class="cap" style="margin:0">WhatsApp au client (nouveaux modèles, à soumettre à Meta)</span>
+    <div class="wa">
+      <div class="bot">Bonjour Estelle, ta commande <b>S00042</b> t'attend au point relais <b>Chez Mama Ngo</b> (Akwa, rue Joss), jusqu'au <b>mardi 1er décembre</b>. Touche le bouton pour ta page de retrait et l'itinéraire.</div>
+      <span class="bt">Retirer ma commande</span>
+    </div>
+    <span class="small muted" style="width:330px">Quand le point relais a compté le colis. Rien qui ressemble à une connexion dans un message Utilitaire (règle de Meta) : le code est sur la page, jamais dans le message.</span>
+    <div class="wa">
+      <div class="bot">Bonjour Estelle, plus que <b>deux jours</b> pour retirer ta commande <b>S00042</b> au point relais <b>Chez Mama Ngo</b>, avant le <b>mardi 1er décembre à 20:00</b>. Touche le bouton pour l'itinéraire.</div>
+      <span class="bt">Retirer ma commande</span>
+    </div>
+    <span class="small muted" style="width:330px">Deux jours avant la fin. Pas retiré à temps : le colis revient au vendeur avec le livreur ; payé en ligne, un avoir des articles (la livraison n'est pas rendue).</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · 390 px · le point relais : recevoir, garder, remettre</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 4. Mon point relais -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon point relais</span><span class="st done" style="margin-left:auto">Ouvert</span></div>
+    <span class="small muted">Chez Mama Ngo · Akwa · connectée avec ton numéro, comme l'équipe d'un vendeur</span>
+    <div class="tiles">
+      <div class="tile"><small class="muted">En garde</small><b>9 colis</b><div class="bar"><i style="width:36%"></i></div><small class="muted">sur 25 places</small></div>
+      <div class="tile"><small class="muted">Ce mois</small><b>4 350 F</b><small class="muted">29 colis remis · 150 F chacun</small></div>
+    </div>
+    <span class="cta">Remettre un colis</span>
+    <div class="parcel go">
+      <div class="h1"><b>Junior arrive vers 14:00</b><span class="st wait">6 colis</span></div>
+      <span class="small muted">Tu comptes chaque colis à son arrivée : il est à ta charge dès que tu l'as compté.</span>
+    </div>
+    <div class="chips"><span class="chip on">En garde · 9</span><span class="chip">À recevoir · 6</span><span class="chip">À rendre · 2</span></div>
+    <div class="parcel"><div class="h1"><b>S00042 · Estelle N.</b><span class="st done">Payé</span></div><span class="small muted">Arrivé hier · jusqu'au mar. 1er déc.</span></div>
+    <div class="parcel"><div class="h1"><b>EX-0427 · Grâce M.</b><span class="st wait">À payer 15 000 F</span></div><span class="small muted">OCD Express · sur son téléphone, au comptoir · jusqu'au lun. 30 nov.</span></div>
+    <div class="parcel"><div class="h1"><b>S00031 · Paul E.</b><span class="st bad">Dernier jour</span></div><span class="small muted">Arrivé le 17 nov. · avant ce soir 20:00</span></div>
+    <div class="row2"><span class="btn2">En congé</span><span class="btn2">Mes horaires</span></div>
+    <span class="small muted">« En congé » : plus aucun nouveau colis, ceux en garde attendent leurs clients.</span>
+  </div>
+
+  <!-- 5. Recevoir les colis du livreur -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Recevoir</span></div>
+    <span class="small muted">Junior Ekwalla, livreur OCD · mar. 24 nov. 14:05</span>
+    <div class="card" style="padding:8px 14px">
+      <div class="scan"><i class="ok">✓</i><span><b>S00042</b> · Estelle N. · 1 colis</span><span class="small muted">scanné</span></div>
+      <div class="scan"><i class="ok">✓</i><span><b>S00044</b> · Ruth M. · 1 colis</span><span class="small muted">scanné</span></div>
+      <div class="scan"><i class="ok">✓</i><span><b>EX-0427</b> · Grâce M.</span><span class="small muted">scanné</span></div>
+      <div class="scan"><i class="ok">✓</i><span><b>EX-0429</b> · Hervé K.</span><span class="small muted">coché</span></div>
+      <div class="scan"><i></i><span><b>EX-0430</b> · Linda E.</span><span class="small muted">à compter</span></div>
+      <div class="scan"><i>!</i><span><b>S00047</b> · Bertrand A.</span><span class="st bad">Abîmé</span></div>
+    </div>
+    <div class="row2"><span class="btn2 dark">Scanner une étiquette</span><span class="btn2">Abîmé ou ouvert</span></div>
+    <span class="small muted">Un colis abîmé ou ouvert : une photo, et il repart avec Junior. Le point relais ne prend jamais un colis qu'il n'a pas vu.</span>
+    <span class="cta">J'ai reçu 5 colis</span>
+    <span class="small muted">Junior voit « 5 colis reçus par Chez Mama Ngo » sur sa tournée ; chacun des 5 clients reçoit son WhatsApp.</span>
+  </div>
+
+  <!-- 6. Remettre au client -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Remettre un colis</span></div>
+    <div class="row2"><span class="btn2 dark">Scanner son QR</span><span class="btn2 on">Taper son code</span></div>
+    <div class="in" style="font-size:22px;letter-spacing:.2em;justify-content:center;font-weight:800">4821</div>
+    <div class="parcel go">
+      <div class="h1"><b>S00042 · Estelle N.</b><span class="st done">Payé</span></div>
+      <span class="small">1 colis · étagère du haut · arrivé hier</span>
+    </div>
+    <span class="cta">Remis à Estelle</span>
+    <span class="small muted">Le code donne le colis, pas un nom : quelqu'un d'autre peut venir pour le client. 3 codes faux de suite bloquent le colis ; l'équipe débloque.</span>
+    <div class="rule">
+      <b>À payer au comptoir : EX-0427 · 15 000 F</b>
+      <span>Touche « Faire payer » : le QR du paiement s'affiche, Grâce paie sur son téléphone (Mobile Money). Le code n'est accepté qu'une fois « Payé » affiché.</span>
+      <span class="btn2 dark">Faire payer 15 000 F</span>
+    </div>
+    <span class="small muted">Pas d'espèces au point relais : il ne garde jamais l'argent d'un autre.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · 390 px · le livreur, l'expéditeur d'OCD Express, devenir point relais</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 7. La tournée : un arrêt au point relais -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Ma tournée</span></div>
+    <div class="parcel go">
+      <div class="h1"><b>3 · Point relais Chez Mama Ngo</b><span class="st route">6 colis</span></div>
+      <span class="small muted">Akwa · Rue Joss, face à la boulangerie · ouvert jusqu'à 20:00</span>
+      <span class="small">Déposer : S00042, S00044, S00047, EX-0427, EX-0429, EX-0430</span>
+      <span class="small">Reprendre : <b>2 colis pas retirés</b> (S00031, EX-0398)</span>
+      <span class="btn2 dark">J'y suis</span>
+      <span class="small muted">Mama compte les colis sur son téléphone ; ta tournée se met à jour. Les colis qu'elle te rend, tu les scannes.</span>
+    </div>
+    <div class="parcel"><div class="h1"><b>4 · Livrer à Hervé Kuete</b><span class="st grey">Chez lui</span></div><span class="small muted">Bonabéri · à encaisser 9 500 F</span></div>
+    <span class="small muted">Un arrêt pour 6 colis au lieu de 6 portes : c'est pourquoi le point relais coûte moins cher au client.</span>
+  </div>
+
+  <!-- 8. OCD Express : au point relais -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Nouveau colis</span></div>
+    <div><div class="lab">Pour qui ?</div><div class="in">Grâce Mbia</div></div>
+    <div><div class="lab">Où ton client le reçoit</div>
+      <div class="opt"><span class="dot"></span><span><b>Chez lui</b><br><span class="small muted">Bonamoussadi, face au terrain de foot</span></span><b>1 000 F</b></div>
+      <div class="opt on" style="margin-top:8px"><span class="dot"></span><span><b>Au point relais</b><br><span class="small muted">Chez Mama Ngo, Akwa · il passe quand il veut</span></span><b>500 F</b></div>
+    </div>
+    <span class="small muted">Ton client peut aussi choisir le point relais sur sa page de suivi (« Pas là ? Je passe le retirer »), tant que le livreur n'est pas parti.</span>
+    <div class="sum"><span>Ton client paie au comptoir<b>15 000 F</b></span><span>Livraison au point relais<b>- 500 F</b></span><span>Encaisser (1,5 %)<b>- 225 F</b></span><span class="tot">Tu reçois<b>14 275 F</b></span></div>
+    <span class="small muted">Le jour ouvré suivant le retrait, comme pour une livraison à la porte. Pas retiré en 7 jours : il te revient contre ton code de retour (500 F).</span>
+  </div>
+
+  <!-- 9. Devenir point relais -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Points relais</span></div>
+    <div class="hero">
+      <span class="badge soft" style="align-self:flex-start">Pour les boutiques du quartier</span>
+      <span class="d">Garde les colis d'OCD Live : 150 F par colis remis.</span>
+      <span class="small" style="opacity:.85">Les clients viennent chez toi pour leur colis, et voient ta boutique. Ton argent est versé chaque mois sur ton Mobile Money.</span>
+    </div>
+    <div class="rule">
+      <b>Ce qu'il faut</b>
+      <span>Une boutique ouverte au moins 6 jours sur 7, avec des horaires fixes.</span>
+      <span>Une place fermée pour 25 colis, à l'abri de la pluie.</span>
+      <span>Un téléphone avec WhatsApp, et ta pièce d'identité.</span>
+    </div>
+    <span class="cta">Demander à devenir point relais</span>
+    <span class="small muted">L'équipe passe voir ta boutique avant de t'ouvrir. Tu es vendeuse sur OCD Live avec un magasin vérifié ? Dans « Mes magasins », coche « Mon magasin est point relais ».</span>
+    <div class="parcel"><div class="h1"><b>Brenda Wax Akwa</b><span class="st done">Point relais</span></div><span class="small muted">Mes magasins · garde les colis des autres vendeurs · 7 colis en garde sur 15</span></div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · l'équipe : les points relais, le dispatch, les réglages</span>
+<div class="screen" style="width:1300px;padding:20px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="bo">
+      <b>OCD Live › Livraisons › Points relais · Douala</b>
+      <div class="kpis">
+        <div class="kpi"><b>4</b><span>points relais en service · 1 à vérifier</span></div>
+        <div class="kpi"><b>23 %</b><span>des colis du jour au point relais</span></div>
+        <div class="kpi"><b>1,8 jour</b><span>pour retirer, en moyenne</span></div>
+        <div class="kpi"><b>4 %</b><span>pas retirés à temps</span></div>
+      </div>
+      <table class="t">
+        <tr><th>Point relais</th><th>Quartier</th><th>Tenu par</th><th class="r">En garde</th><th class="r">Remis (30 j)</th><th class="r">Ce mois</th><th>État</th></tr>
+        <tr><td><b>Chez Mama Ngo</b></td><td>Akwa</td><td>Partenaire</td><td class="r">9 / 25</td><td class="r">34</td><td class="r">4 350 F</td><td><span class="st done">Ouvert</span></td></tr>
+        <tr><td><b>Brenda Wax Akwa</b></td><td>Akwa</td><td>Vendeuse</td><td class="r">7 / 15</td><td class="r">15</td><td class="r">1 950 F</td><td><span class="st done">Ouvert</span></td></tr>
+        <tr><td><b>Pressing Le Bon Coin</b></td><td>Akwa Nord</td><td>Partenaire</td><td class="r">25 / 25</td><td class="r">31</td><td class="r">3 900 F</td><td><span class="st wait">Plein</span></td></tr>
+        <tr><td><b>Phone City Kotto</b></td><td>Bonamoussadi</td><td>Partenaire</td><td class="r">3 / 25</td><td class="r">17</td><td class="r">2 100 F</td><td><span class="st grey">En congé jusqu'au 28 nov.</span></td></tr>
+        <tr><td><b>Boutique Ebène</b></td><td>Makepe</td><td>Partenaire</td><td class="r">-</td><td class="r">-</td><td class="r">-</td><td><span class="st bad">À vérifier · visite à faire</span></td></tr>
+      </table>
+      <span class="small muted">La fiche d'un point relais est une fiche « lieu » (chantier 17) : adresse, position, devanture, horaires, téléphone ; avec ses places, ses colis en garde et rendus, ses pertes, la personne qui le tient et son numéro de versement. « À vérifier » a une colonne « Points relais » (la visite, la pièce d'identité, la devanture).</span>
+    </div>
+    <div class="bo">
+      <b>Dispatch · mar. 24 nov. · les arrêts aux points relais</b>
+      <table class="t">
+        <tr><th>Arrêt</th><th>Livreur</th><th class="r">À déposer</th><th class="r">À reprendre</th><th>Heure</th><th>État</th></tr>
+        <tr><td><b>Chez Mama Ngo</b> · Akwa</td><td>Junior</td><td class="r">6</td><td class="r">2</td><td>14:00</td><td><span class="st done">5 reçus · 1 abîmé</span></td></tr>
+        <tr><td><b>Brenda Wax Akwa</b></td><td>Junior</td><td class="r">3</td><td class="r">0</td><td>15:30</td><td><span class="st route">En route</span></td></tr>
+        <tr><td><b>Phone City Kotto</b> · Bonamoussadi</td><td>Raoul</td><td class="r">0</td><td class="r">1</td><td>16:00</td><td><span class="st wait">À reprendre seulement</span></td></tr>
+      </table>
+      <span class="small muted">Les colis d'un même point relais partent ensemble avec le livreur de son quartier : un seul arrêt. Les colis pas retirés reviennent avec le passage suivant, au vendeur ou à l'expéditeur.</span>
+    </div>
+  </div>
+  <div class="bo">
+    <b>Réglages · Points relais</b>
+    <div class="setrow"><span>Prix au point relais</span><span class="in">Tarifs « point relais » de la ville (500 F à Douala)</span></div>
+    <div class="setrow"><span>Gagné par le point relais</span><span class="in">150 F par colis remis</span></div>
+    <div class="setrow"><span>Versé au point relais</span><span class="in">Chaque mois, avec les reversements</span></div>
+    <div class="setrow"><span>Gardé au point relais</span><span class="in">7 jours · rappel 2 jours avant</span></div>
+    <div class="setrow"><span>Places par défaut</span><span class="in">25 colis</span></div>
+    <div class="setrow"><span>Payer au comptoir</span><span class="in">Sur le téléphone du client seulement</span></div>
+    <div class="setrow"><span>Colis perdu par un point relais</span><span class="in">Remboursé par OCD · retiré de ses gains · en pause après 2</span></div>
+    <div class="setrow"><span>Magasins des vendeurs</span><span class="in">Point relais possible (magasin vérifié, ouvert au public)</span></div>
+    <div class="setrow"><span>OCD Express</span><span class="in">Livrer au point relais : oui · déposer au point relais : plus tard</span></div>
+    <span class="small muted">Automatisations : « Colis au point relais : prévenir le client », « Point relais : rappel 2 jours avant la fin », « Pas retiré à temps : à reprendre », « Point relais plein ou fermé : ne plus le proposer », « Point relais : gains du mois ».</span>
+    <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+      <div class="kpi"><b>350 F</b><span>restent à OCD par colis (500 F payés, 150 F au point relais)</span></div>
+      <div class="kpi"><b>1 arrêt</b><span>pour 6 colis, au lieu de 6 portes</span></div>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Pour que ça tienne en vrai</span>
+<div style="display:grid;grid-template-columns:repeat(3,430px);gap:14px">
+  <div class="rule"><b>Chaque colis compté à chaque main</b><span>Le livreur scanne en déposant, le point relais compte en recevant, le client donne son code, le livreur scanne les colis repris : à tout moment, on sait qui a le colis. Un colis pas compté par le point relais reste à la charge du livreur.</span></div>
+  <div class="rule"><b>Pas d'argent au comptoir</b><span>Le colis est payé avant, ou sur le téléphone du client au comptoir (le QR du paiement d'OCD Live, confirmé par le fournisseur) : le point relais ne garde jamais d'espèces, il n'a rien à remettre le soir. Le code n'est accepté qu'une fois « Payé ».</span></div>
+  <div class="rule"><b>Un colis perdu au point relais</b><span>OCD rembourse le client (ou l'expéditeur, jusqu'à 50 000 F), et le retire des gains du point relais ; deux pertes, et il est mis en pause le temps que l'équipe passe. L'accord signé avec le partenaire le dit (un modèle d'accord à préparer avec un juriste).</span></div>
+  <div class="rule"><b>Plein, en congé, fermé</b><span>Un point relais plein (ses places), en congé ou fermé le jour de la livraison n'est pas proposé ; ceux qui ont déjà des colis les gardent. Ses horaires sont ceux de sa fiche, comme un magasin : « Ouvert · ferme à 20:00 » sur la page du client.</span></div>
+  <div class="rule"><b>7 jours, puis retour</b><span>Rappel au client 2 jours avant la fin. Pas retiré : le livreur le reprend au passage suivant. Shop : la commande est annulée et les pièces reviennent au stock, avec un avoir des articles si elle était payée (la livraison n'est pas rendue). Express : retour à l'expéditeur contre son code (500 F).</span></div>
+  <div class="rule"><b>Le bon point relais</b><span>On ouvre quartier par quartier, là où les livreurs passent déjà : 5 ou 6 points relais à Douala d'abord (Akwa, Bonamoussadi, Makepe, Bonabéri, Deïdo). Un point relais qui ne remet rien en 30 jours est revu avec lui. Les gains du mois sont des factures du point relais dans les reversements, comme ceux d'un vendeur.</span></div>
+</div>
+
+<span class="cap" style="margin-top:18px">Choix à valider</span>
+<div class="q" style="width:1300px;box-sizing:border-box">
+  <span><b>1. Qui peut être point relais :</b> des boutiques partenaires (kiosques de transfert d'argent et de crédit, pressings, boutiques de téléphones), choisies et visitées par l'équipe ; et les magasins vérifiés des vendeurs d'OCD Live qui le veulent (plan, A.6), pour tous les vendeurs ou seulement avec OCD Business. <i>Proposé : tous les vendeurs avec un magasin vérifié ouvert au public (ça leur amène du passage) ; pas de point relais chez un vendeur qui vend depuis chez lui.</i></span>
+  <span><b>2. Le prix :</b> un nouveau tarif « point relais » par ville, dans « Tarifs de livraison ». <i>Proposé : 500 F à Douala (1 000 F à la porte), pour le shop et pour OCD Express ; seulement pour les colis portés par les livreurs OCD (pas pour un vendeur qui livre lui-même, ni par agence).</i></span>
+  <span><b>3. Ce que gagne le point relais :</b> <i>proposé : 150 F par colis remis au client (rien pour un colis repris), versés chaque mois sur son Mobile Money avec les reversements ; sa boutique sur la carte des points relais.</i></span>
+  <span><b>4. Payer au point relais :</b> <i>proposé : payé avant, ou sur le téléphone du client au comptoir ; pas d'espèces au lancement</i> (les espèces demanderaient une caisse du soir chez chaque partenaire). À revoir si les clients le demandent.</span>
+  <span><b>5. Le délai :</b> <i>proposé : 7 jours, rappel 2 jours avant ; puis retour</i> (shop : la commande annulée, un avoir des articles si elle était payée, la livraison gardée ; Express : retour contre le code de l'expéditeur, 500 F).</span>
+  <span><b>6. Les places :</b> <i>proposé : 25 colis par défaut, réglable par point relais ; plein, il n'est plus proposé.</i></span>
+  <span><b>7. OCD Express :</b> <i>proposé : livrer au point relais, au choix de l'expéditeur ou du client sur sa page de suivi ; déposer ses colis à un point relais au lieu du ramassage : plus tard</i> (le point relais deviendrait un point OCD pour les expéditeurs du quartier).</span>
+  <span><b>8. Un colis perdu au point relais :</b> <i>proposé : OCD rembourse et le retire de ses gains ; en pause après deux pertes.</i> Faut-il demander une caution aux partenaires ?</span>
+  <span><b>9. Où commencer :</b> <i>proposé : Douala, 5 ou 6 points relais dans les quartiers des livreurs actuels, avec un accord signé (modèle à faire relire par un juriste).</i></span>
+  <span><b>Effort :</b> 2 à 3 semaines (point relais sur la fiche « lieu », son espace, la tournée, le choix au paiement et sur Express, les messages, le back-office), plus la recherche des partenaires par l'équipe. Nouveaux modèles WhatsApp à soumettre à Meta : le colis au point relais et le rappel (au client), les colis qui arrivent (au point relais).</span>
+</div>
+
+</div>
+</body>
+</html>

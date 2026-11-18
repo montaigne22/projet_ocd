@@ -140,6 +140,25 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 18 novembre 2026 · Points relais (chantier 10) : la maquette, à valider
+Pas de maquette pour ce chantier : proposée avant tout code, dans
+[`prototype/design-valide/PointsRelais.dc.html`](../prototype/design-valide/PointsRelais.dc.html), relue avec
+ce qui existe (fiche « lieu » des magasins, retrait en magasin et son code, connexion par numéro de l'équipe
+d'un vendeur, tournée et dispatch, tarifs, reversements, OCD Express).
+- **Le client** : « Au point relais » à la livraison (500 F au lieu de 1 000 F à Douala), les points
+  relais proches, ouverts et pas pleins ; sa page avec le code de retrait et le QR, jusqu'à quand (7 jours),
+  l'itinéraire ; WhatsApp quand le colis arrive et deux jours avant la fin (sans le code dans le message).
+- **Le point relais** : « Mon point relais » (colis en garde sur ses places, gains du mois à 150 F par colis
+  remis, congé, horaires) ; recevoir les colis du livreur en les comptant un par un ; remettre contre le
+  code, payé avant ou sur le téléphone du client au comptoir, jamais en espèces.
+- **Le livreur** : un arrêt par point relais (déposer, reprendre les colis pas retirés). **OCD Express** :
+  livrer au point relais. **Devenir point relais** : la page des partenaires, et « Mon magasin est point
+  relais » pour les vendeuses (A.6). **Le back-office** : points relais, dispatch, réglages.
+- **Choix à valider** (en bas de la maquette) : qui peut être point relais, le prix, ce qu'il gagne, payer
+  au comptoir, le délai, les places, OCD Express, un colis perdu, où commencer.
+- Contrôlée en la rendant dans un navigateur. Aucun module ne change : rien à mettre à jour sur un serveur,
+  aucun modèle WhatsApp à soumettre.
+
 ### 18 novembre 2026 · La démo installée en une fois, OCD Express dans la démo
 Les deux points laissés ouverts par le chantier 9, avant le chantier 10.
 - **`test_a_day_of_the_shop` corrigé** : Odoo 20 ne charge le plan comptable qu'à la toute fin d'une
