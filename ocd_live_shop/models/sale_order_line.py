@@ -25,6 +25,31 @@ class SaleOrderLine(models.Model):
         currency_field="currency_id",
     )
 
+    ocd_promo_id = fields.Many2one(
+        comodel_name="ocd.product.promo",
+        string="Promo",
+        compute="_compute_ocd_promo_id",
+        store=True,
+        help="The promo of the price of the line, kept while the order is paid (a little after its end).",
+    )
+
+    @api.depends("product_id", "price_unit")
+    def _compute_ocd_promo_id(self):
+        Promo = self.env["ocd.product.promo"]
+        for order, lines in self.grouped("order_id").items():
+            products = lines.product_id.product_tmpl_id
+            promos = Promo._ocd_running(products, order_date=order.date_order) if products else {}
+            for line in lines:
+                line.ocd_promo_id = promos.get(line.product_id.product_tmpl_id.id, False)
+
+    def _get_product_price_context(self):
+        """Override of `sale`: the price of a product in promo is the promo price of the date of
+        the order, kept a little after the end of the promo while the order is paid."""
+        context = super()._get_product_price_context()
+        if self.order_id.date_order:
+            context = {**context, "ocd_promo_order_date": self.order_id.date_order}
+        return context
+
     @api.depends("product_id")
     def _compute_ocd_vendor(self):
         for line in self:

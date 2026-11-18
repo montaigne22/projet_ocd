@@ -179,10 +179,13 @@ class OcdLiveRegie(models.AbstractModel):
         if product.is_storable:
             quantity = int(product.qty_available)
             stock = self.env._("%s in stock", quantity) if quantity > 0 else self.env._("sold out")
+        price, was = product._ocd_on_sale_price()
         return {
             "id": product.id,
             "name": product.name,
-            "price": format_amount(self.env, product.list_price, product.currency_id),
+            "price": format_amount(self.env, price, product.currency_id),
+            # In promo: the price struck through, for the host to say it
+            "was": format_amount(self.env, was, product.currency_id) if was else "",
             "stock": stock,
             "image": f"/web/image/product.template/{product.id}/image_128",
             "shown": product == booking.current_product_tmpl_id,

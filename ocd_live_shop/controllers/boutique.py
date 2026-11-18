@@ -309,13 +309,14 @@ class OcdBoutique(http.Controller):
         stores, stores_line = self._stores(vendor)
         products = self._products(vendor)
         price_by_id = shop_common.prices(products)
+        promo_by_id = shop_common.promos(products)
         country = vendor.country_id
         categories = " · ".join(part for part in (vendor.ocd_category_id.name, vendor.ocd_business) if part)
         # « New » (chantier 1): put on sale this week; from the message of the news, its products
         # first
         news_first = bool(kwargs.get("nouveautes"))
         news_ids = set(vendor.sudo().ocd_news_product_ids.ids) if news_first else set()
-        cards = [shop_common.card(product, price_by_id) for product in products]
+        cards = [shop_common.card(product, price_by_id, promo_by_id) for product in products]
         for card in cards:
             card["new"] = card["product"].id in news_ids or card["product"]._ocd_is_new()
         if news_first:
@@ -434,6 +435,7 @@ class OcdBoutique(http.Controller):
             "name": product.name,
             "url": card["url"],
             "price": card["price"],
+            "was": card.get("was") or False,
             "image": product._ocd_image_url("image_128"),
         }
 

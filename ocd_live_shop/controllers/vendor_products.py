@@ -165,6 +165,8 @@ class OcdVendorProducts(http.Controller):
         # calculation of « My figures »
         Figures = env["ocd.vendor.figures"]
         sales = Figures._ocd_product_sales(vendor, products) if vendor.ocd_sale_mode == "ocd" else {}
+        # The promos running (3.1): one query for the page
+        promos = env["ocd.product.promo"]._ocd_running(products)
         rows = []
         for index, product in enumerate(products):
             qty = sum(free[v.id] for v in product.product_variant_ids) if shop_common.tracked(product) else None
@@ -182,9 +184,16 @@ class OcdVendorProducts(http.Controller):
                     for place in places
                 ]
                 places_line = env._("%(count)s in stock · %(places)s", count=qty, places=" · ".join(parts))
+            promo = promos.get(product.id)
             rows.append({
                 "product": product,
-                "price": common.money(product.list_price, product.currency_id),
+                "price": common.money(promo.price if promo else product.list_price, product.currency_id),
+                "was": common.money(promo.reference_price, product.currency_id) if promo else False,
+                "promo_line": env._("In promo: %(off)s %(until)s", off=promo._ocd_off_text(),
+                                    until=promo._ocd_until_text(vendor._ocd_tz_name())) if promo else False,
+                "promo_url": f"/ocd/espace/moi/produits/{product.id}/promo"
+                if status in ("on", "out") else False,
+                "promo_label": env._("My promo") if promo else env._("Put in promo"),
                 # « My stock »: the sizes and the colours, or the stock of each place
                 "stock_url": f"/ocd/espace/moi/produits/{product.id}/mon-stock"
                 if places or len(product.product_variant_ids) > 1 else False,

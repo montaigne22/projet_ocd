@@ -39,6 +39,12 @@ export class OcdBoutiqueLive extends Interaction {
         this.card.href = product.url;
         this.card.querySelector(".o_ocd_onscreen_name").textContent = product.name;
         this.card.querySelector(".o_ocd_onscreen_price").textContent = product.price;
+        // In promo: the price struck through, else nothing
+        const was = this.card.querySelector(".o_ocd_onscreen_was");
+        if (was) {
+            was.textContent = product.was || "";
+            was.hidden = !product.was;
+        }
         const photo = this.card.querySelector(".o_ocd_onscreen_photo");
         if (product.image) {
             photo.replaceChildren(Object.assign(document.createElement("img"), {

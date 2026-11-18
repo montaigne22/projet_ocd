@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- « Put in promo » of « My products » (plan, 3.1; chantier 7, design ProgrammeSoirees). The
+     sentences with values are built whole in Python (controllers/vendor_promo.py). -->
+<odoo>
+
+    <template id="vendor_product_promo" name="OCD Live: put a product in promo">
+        <t t-set="additional_title">My products</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_my_products o_ocd_promo_page">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Put in promo</h1>
+                    <div class="o_ocd_promo_product">
+                        <span class="o_ocd_photo o_ocd_cart_photo"><img t-att-src="image" alt="" loading="lazy"/></span>
+                        <span>
+                            <b t-out="product.name"/>
+                            <small class="d-block" t-out="price_text"/>
+                        </span>
+                    </div>
+                    <t t-call="ocd_live.message_box"/>
+                    <div t-if="running" class="o_ocd_product_promo" role="status">
+                        <span class="o_ocd_product_flag_promo" t-out="running._ocd_off_text()"/>
+                        <span t-out="running_line"/>
+                    </div>
+                    <form t-if="running" t-attf-action="/ocd/espace/moi/produits/#{product.id}/promo/arreter" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="o_ocd_button">Stop the promo</button>
+                    </form>
+                    <form method="post" class="o_ocd_form o_ocd_promo_form" t-att-data-reference="reference"
+                          t-att-data-symbol="symbol" t-att-data-position="position"
+                          t-att-data-title="preview_title" t-att-data-line="preview_line"
+                          t-att-data-until="until_json" t-att-data-was="reference_text">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <fieldset class="o_ocd_field">
+                            <legend class="o_ocd_label"><t t-if="running">A new promo</t><t t-else="">The discount</t></legend>
+                            <div class="o_ocd_promo_choices">
+                                <label t-foreach="percents" t-as="p" class="o_ocd_promo_choice">
+                                    <input type="radio" name="percent" t-att-value="str(p)" t-att-checked="'checked' if percent == str(p) else None"/>
+                                    <span>-<t t-out="p"/> %</span>
+                                </label>
+                                <label class="o_ocd_promo_choice">
+                                    <input type="radio" name="percent" value="autre" t-att-checked="'checked' if percent == 'autre' else None"/>
+                                    <span>Another price</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                        <div class="o_ocd_field o_ocd_promo_price">
+                            <label for="promo-price" class="o_ocd_label">New price (if another price)</label>
+                            <input id="promo-price" name="price" class="o_ocd_input" inputmode="decimal" autocomplete="off"
+                                   t-att-value="price_value" t-att-placeholder="reference_text"/>
+                        </div>
+                        <fieldset class="o_ocd_field">
+                            <legend class="o_ocd_label">Until</legend>
+                            <div class="o_ocd_promo_choices">
+                                <label t-foreach="durations" t-as="d" class="o_ocd_promo_choice">
+                                    <input type="radio" name="days" t-att-value="str(d)" t-att-checked="'checked' if days == d else None"/>
+                                    <span t-if="d == 1">1 day</span>
+                                    <span t-else=""><t t-out="d"/> days</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                        <div class="o_ocd_promo_preview" aria-live="polite" hidden="hidden">
+                            <b class="o_ocd_promo_preview_title"/>
+                            <span class="o_ocd_promo_preview_line"/>
+                        </div>
+                        <small t-if="reference_line" class="o_ocd_my_product_fact" t-out="reference_line"/>
+                        <button type="submit" class="o_ocd_cta">Put in promo</button>
+                        <small class="o_ocd_my_product_fact" t-out="rules_line"/>
+                    </form>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

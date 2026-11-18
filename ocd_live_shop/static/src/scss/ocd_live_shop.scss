@@ -5225,3 +5225,123 @@
         }
     }
 }
+
+// The promo price (plan, 3.1; chantier 7, design ProgrammeSoirees): « -25 % » on the photo, the
+// price struck through next to the price, until when on the product page
+.o_ocd_app {
+    .o_ocd_product_flag.o_ocd_product_flag_promo {
+        left: auto;
+        right: 8px;
+        background: $ocd-red-badge;
+        color: #FFFFFF;
+        font-weight: 800;
+    }
+    .o_ocd_product_was {
+        color: $ocd-muted;
+        font-size: 13.5px;
+        font-weight: 600;
+        margin-left: 6px;
+    }
+    .o_ocd_product_text .o_ocd_product_was {
+        margin-left: 0;
+    }
+    .o_ocd_product_promo {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        border-radius: 10px;
+        background: $ocd-red-soft;
+        color: $ocd-red-dark;
+        font-weight: 700;
+        font-size: 13.5px;
+        padding: 6px 10px;
+        .o_ocd_product_flag_promo {
+            border-radius: 6px;
+            background: $ocd-red-badge;
+            color: #FFFFFF;
+            font-weight: 800;
+            padding: 1px 7px;
+        }
+    }
+    .o_ocd_cart_was {
+        color: $ocd-muted;
+        font-size: 13px;
+        margin-left: 6px;
+    }
+}
+
+// « Put in promo » of « My products »
+.o_ocd_app {
+    .o_ocd_promo_page {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_promo_product {
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 10px;
+        align-items: center;
+        b {
+            overflow-wrap: anywhere;
+        }
+    }
+    .o_ocd_promo_form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        fieldset {
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+    }
+    .o_ocd_promo_choices {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .o_ocd_promo_choice {
+        position: relative;
+        cursor: pointer;
+        input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        span {
+            display: inline-flex;
+            align-items: center;
+            min-height: 42px;
+            padding: 0 14px;
+            border-radius: 999px;
+            border: 2px solid $ocd-line;
+            font-weight: 700;
+            font-size: 14.5px;
+            background: #FFFFFF;
+        }
+        input:checked + span {
+            background: $ocd-ink;
+            border-color: $ocd-ink;
+            color: #FFFFFF;
+        }
+        input:focus-visible + span {
+            outline: 3px solid $ocd-orange;
+            outline-offset: 2px;
+        }
+    }
+    .o_ocd_promo_preview {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 14px;
+        background: $ocd-sand;
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    .o_ocd_my_product_promo {
+        color: $ocd-red-dark;
+        font-weight: 700;
+    }
+}

@@ -129,6 +129,11 @@ export class OcdProductPage extends Interaction {
         if (price) {
             price.textContent = variant.price_text;
         }
+        // A product in promo: the price struck through of the size or the colour chosen
+        const was = this.el.querySelector(".o_ocd_variant_was");
+        if (was && variant.was_text) {
+            was.textContent = variant.was_text;
+        }
         const texts = this.data.texts;
         let qty = qtyInput ? Math.max(1, parseInt(qtyInput.value) || 1) : 1;
         if (variant.qty !== null) {

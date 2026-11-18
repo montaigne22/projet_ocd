@@ -124,7 +124,7 @@
             <img t-att-src="product.image" alt="" loading="lazy"/>
             <span>
                 <b t-out="product.name"/>
-                <span><t t-out="product.price"/><t t-if="product.stock"> · <t t-out="product.stock"/></t></span>
+                <span><t t-out="product.price"/><s t-if="product.was" class="o_ocd_regie_was" t-out="product.was"/><t t-if="product.stock"> · <t t-out="product.stock"/></t></span>
                 <small t-if="product.shown">On screen now</small>
                 <small t-else="">Show on screen</small>
             </span>

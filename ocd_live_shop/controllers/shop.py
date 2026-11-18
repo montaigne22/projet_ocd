@@ -35,6 +35,14 @@ def cart_pill(order=None):
     return {"href": "/shop/cart", "label": request.env._("Cart · %s", count), "count": count}
 
 
+def promo_domain():
+    """The products in promo now (« In promo » of the shop): read by the server, the visitors do
+    not read the promos themselves."""
+    now = common.now()
+    promos = request.env["ocd.product.promo"].sudo().search([("date_start", "<=", now), ("date_end", ">", now)])
+    return Domain("id", "in", promos.product_tmpl_id.ids)
+
+
 def order_by_token(order_id, access_token):
     """The order of the link sent to the customer (tracking page)."""
     order = request.env["sale.order"].sudo().browse(order_id).exists()
@@ -68,6 +76,8 @@ class OcdShop(WebsiteSale):
         ocd_category = request.params.get("categorie")
         if ocd_category and str(ocd_category).isdigit():
             domain = Domain.AND([domain, Domain("ocd_category_id", "=", int(ocd_category))])
+        if request.params.get("promo") == "1":
+            domain = Domain.AND([domain, promo_domain()])
         where = self._ocd_where_domain()
         if where is not None:
             domain = Domain.AND([domain, where])
@@ -80,13 +90,16 @@ class OcdShop(WebsiteSale):
         if ocd_category and str(ocd_category).isdigit():
             extra = [("ocd_category_id", "=", int(ocd_category))]
             options["extra_domain"] = Domain.AND([options["extra_domain"], extra]) if options.get("extra_domain") else extra
+        if request.params.get("promo") == "1":
+            extra = promo_domain()
+            options["extra_domain"] = Domain.AND([options["extra_domain"], extra]) if options.get("extra_domain") else extra
         where = self._ocd_where_domain()
         if where is not None:
             options["extra_domain"] = Domain.AND([options["extra_domain"], where]) if options.get("extra_domain") else where
         return options
 
     # The position of the phone makes a page of its own: never kept in memory (see page_cache)
-    @http.route(ocd_cache=60, ocd_cache_params=("categorie", "ville", "quartier"))
+    @http.route(ocd_cache=60, ocd_cache_params=("categorie", "ville", "quartier", "promo"))
     def shop(self, *args, **kwargs):
         if self._ocd_where()["position"]:
             return self._ocd_shop_near(kwargs.get("search") or "")
@@ -122,11 +135,12 @@ class OcdShop(WebsiteSale):
         return request.render("ocd_live_shop.shop", values)
 
     def _ocd_where_url(self, **changes):
-        return where_filter.url("/shop", **changes)
+        return where_filter.url("/shop", keep=("categorie", "search", "promo"), **changes)
 
     def _ocd_shop_values(self, values):
         products = values.get("products") or request.env["product.template"]
         price_by_id = shop_common.prices(products)
+        promo_by_id = shop_common.promos(products)
         current = request.params.get("categorie")
         search = values.get("search") or ""
         where_lines = where_filter.lines()
@@ -142,6 +156,15 @@ class OcdShop(WebsiteSale):
                 "href": self._ocd_where_url(categorie=category.id, page=None, search=search or None),
                 "on": str(category.id) == str(current),
             })
+        in_promo = request.params.get("promo") == "1"
+        if in_promo or request.env["ocd.product.promo"].sudo().search_count(
+                [("date_start", "<=", common.now()), ("date_end", ">", common.now())], limit=1):
+            chips.insert(1, {
+                "label": request.env._("In promo"),
+                "href": self._ocd_where_url(promo=None if in_promo else 1, page=None, search=search or None),
+                "on": in_promo,
+                "promo": True,
+            })
         pager = values.get("pager") or {}
         more_url = False
         if pager and pager.get("page_count", 1) > (pager.get("page") or {}).get("num", 1):
@@ -151,7 +174,7 @@ class OcdShop(WebsiteSale):
             nav="shop",
             header_name=request.env._("Shop OCD"),
             header_pill=cart_pill(),
-            cards=[{**shop_common.card(product, price_by_id), "where": where_lines.get(product.ocd_vendor_id.id)}
+            cards=[{**shop_common.card(product, price_by_id, promo_by_id), "where": where_lines.get(product.ocd_vendor_id.id)}
                    for product in products],
             chips=chips,
             categorie=current,
@@ -211,13 +234,21 @@ class OcdShop(WebsiteSale):
         rows = []
         template = template.sudo()
         store_levels = store_levels or {}
+        promo = request.env["ocd.product.promo"]._ocd_running(template).get(template.id)
         for variant in template.product_variant_ids:
             amount, money_currency = shop_common.variant_price(variant)
             qty = shop_common.free_qty(variant) if shop_common.tracked(variant) else None
+            was = False
+            if promo and template.list_price:
+                # The price struck through of the variant: its price without the promo, from the
+                # lowest price of the last days
+                usual, _currency = shop_common.variant_price(variant.with_context(ocd_without_promo=True))
+                was = common.money(usual * promo.reference_price / template.list_price, money_currency)
             rows.append({
                 "id": variant.id,
                 "values": sorted(variant.product_template_attribute_value_ids.ids),
                 "price": amount,
+                "was_text": was,
                 "price_text": common.money(amount, money_currency),
                 "qty": qty,
                 "photo": template._ocd_variant_photo(variant),
@@ -299,7 +330,8 @@ class OcdShop(WebsiteSale):
             ("sale_ok", "=", True), ("ocd_review_state", "=", "approved"),
         ], order="website_sequence, id desc", limit=limit)
         price_by_id = shop_common.prices(products)
-        return [shop_common.card(product, price_by_id) for product in products]
+        promo_by_id = shop_common.promos(products)
+        return [shop_common.card(product, price_by_id, promo_by_id) for product in products]
 
     def _ocd_product_values(self, template):
         env = request.env
@@ -360,6 +392,7 @@ class OcdShop(WebsiteSale):
             header_pill=cart_pill(),
             template=template_sudo,
             ocd=ocd,
+            promo=shop_common.promos(template_sudo).get(template_sudo.id),
             images=[photo["src"] for photo in photos],
             photos=photos,
             first=first,
@@ -870,10 +903,16 @@ class OcdShop(WebsiteSale):
 
     @http.route()
     def shop_payment(self, **post):
+        # A promo ended while the cart waited: the price of now, said on the page
+        ended = request.cart._ocd_refresh_promos() if request.cart else request.env["product.template"]
         response = super().shop_payment(**post)
         if getattr(response, "template", None) == "website_sale.payment":
             response.template = PAGE_TEMPLATES[response.template]
             response.qcontext.update(self._ocd_payment_values(response.qcontext.get("order") or request.cart, post))
+            if ended:
+                response.qcontext["promo_ended"] = request.env._(
+                    "The promo of %s is over: the price of now is in the total.", ", ".join(ended.mapped("name"))
+                )
         return response
 
     def _ocd_payment_values(self, order, post):
@@ -1174,6 +1213,8 @@ class OcdCart(Cart):
 
     @http.route()
     def cart(self, id=None, access_token=None, **post):
+        if request.cart:
+            request.cart._ocd_refresh_promos()
         response = super().cart(id=id, access_token=access_token, **post)
         if getattr(response, "template", None) == "website_sale.cart":
             response.template = PAGE_TEMPLATES[response.template]
@@ -1193,6 +1234,9 @@ class OcdCart(Cart):
                 "name": template.name,
                 "variant": variant,
                 "price": common.money(line.price_total, order.currency_id),
+                # In promo: the price struck through of the line, from the lowest price of the last days
+                "was": common.money(line.price_total * line.ocd_promo_id.reference_price / line.ocd_promo_id.price,
+                                    order.currency_id) if line.ocd_promo_id and line.ocd_promo_id.price else False,
                 "qty": qty,
                 "image": shop_common.image_url(template, "image_128"),
                 "less_aria": env._("One %s less", template.name),

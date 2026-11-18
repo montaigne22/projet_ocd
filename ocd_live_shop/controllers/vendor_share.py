@@ -57,6 +57,16 @@ def jpeg_response(data, unique, stamp):
     ])
 
 
+
+def share_price(product):
+    """The price written on an image to share: the price of now, with its discount in promo
+    (« 9,000 F · -25 % »)."""
+    price, was = product.sudo()._ocd_on_sale_price()
+    text = common.money(price, product.currency_id)
+    if was:
+        text = f"{text} · -{round((was - price) * 100 / was)} %"
+    return text
+
 class OcdVendorShare(http.Controller):
     """What a vendor shares on their WhatsApp status: the image of a product (1.3 of the plan of
     « My products ») and the catalogue of their boutique (1.7). And what they print for their
@@ -76,10 +86,11 @@ class OcdVendorShare(http.Controller):
         stamp = product._ocd_photo_stamp(product)
         url = request.httprequest.url_root.rstrip("/") + product.website_url
         lang = env.lang or ""
-        data = drawn(("product", product.id, stamp, lang, url), lambda: share_image.product({
+        price = share_price(product)
+        data = drawn(("product", product.id, stamp, lang, url, price), lambda: share_image.product({
             "photo": photo_bytes(product),
             "name": product.name,
-            "price": common.money(product.list_price, product.currency_id),
+            "price": price,
             "vendor": product.ocd_vendor_id.name or common.company().name,
             "cta": env._("Order it on OCD Live"),
             "link": short_link(url),
@@ -154,12 +165,13 @@ class OcdVendorShare(http.Controller):
         env = request.env
         url = request.httprequest.url_root.rstrip("/") + f"/ocd/boutique/{vendor.id}"
         lang = env.lang or ""
-        data = drawn(("catalogue", vendor.id, number, stamp, lang, url), lambda: share_image.catalogue({
+        prices = tuple(share_price(p) for p in pages[number - 1])
+        data = drawn(("catalogue", vendor.id, number, stamp, lang, url, prices), lambda: share_image.catalogue({
             "title": vendor.name,
             "subtitle": (env._("1 product") if len(products) == 1 else env._("%s products", len(products)))
             + (f" · {number}/{len(pages)}" if len(pages) > 1 else ""),
             "items": [
-                {"photo": photo_bytes(p, "image_512"), "name": p.name, "price": common.money(p.list_price, p.currency_id)}
+                {"photo": photo_bytes(p, "image_512"), "name": p.name, "price": share_price(p)}
                 for p in pages[number - 1]
             ],
             "cta": env._("Order on OCD Live"),
@@ -190,7 +202,8 @@ class OcdVendorShare(http.Controller):
             products = products.filtered(lambda p: p.id in chosen)
         copies = min(max(int(copies), 1), LABELS_MAX_COPIES) if str(copies or "").isdigit() else 1
         root = request.httprequest.url_root.rstrip("/")
-        price_by_id = shop_common.prices(products)
+        # A label printed for the store keeps the usual price: a promo ends, the label stays
+        price_by_id = shop_common.prices(products.with_context(ocd_without_promo=True))
         labels = []
         for product in products:
             price = price_by_id.get(product.id) or common.money(product.list_price, product.currency_id)

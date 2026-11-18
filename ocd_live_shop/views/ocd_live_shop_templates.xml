@@ -98,6 +98,8 @@
                                 <small>On screen now</small>
                                 <b class="o_ocd_onscreen_name" t-out="on_screen['product'].name if on_screen else ''"/>
                                 <span class="o_ocd_onscreen_price" t-out="on_screen['price'] if on_screen else ''"/>
+                                <s class="o_ocd_product_was o_ocd_onscreen_was" t-att-hidden="None if on_screen and on_screen.get('was') else 'hidden'"
+                                   t-out="on_screen.get('was') if on_screen else ''"/>
                             </span>
                             <t t-call="ocd_live.icon" icon.f="next"/>
                         </a>
@@ -151,17 +153,20 @@
                                 <span class="o_ocd_product_text">
                                     <b t-out="card['product'].name"/>
                                     <span class="o_ocd_product_price" t-out="card['price']"/>
+                                    <s t-if="card.get('was')" class="o_ocd_product_was" t-out="card['was']"/>
                                 </span>
                             </div>
                             <a t-else="" t-att-href="card['url']" class="o_ocd_product">
                                 <span class="o_ocd_photo o_ocd_product_photo">
                                     <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
-                                    <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
+                                    <span t-if="card.get('off')" class="o_ocd_product_flag o_ocd_product_flag_promo" t-out="card['off']"/>
+                                <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
                                     <span t-elif="card.get('new')" class="o_ocd_product_flag o_ocd_product_flag_new">New</span>
                                 </span>
                                 <span class="o_ocd_product_text">
                                     <b t-out="card['product'].name"/>
                                     <span class="o_ocd_product_price" t-out="card['price']"/>
+                                    <s t-if="card.get('was')" class="o_ocd_product_was" t-out="card['was']"/>
                                 </span>
                             </a>
                         </t>

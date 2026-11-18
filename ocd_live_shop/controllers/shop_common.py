@@ -29,6 +29,37 @@ def prices(templates):
     }
 
 
+def promos(templates):
+    """Return {template id: its promo for the visitor} of the products in promo now: the price
+    struck through in the currency of the visitor, the discount, until when."""
+    templates = templates.sudo()
+    if not templates:
+        return {}
+    info = templates._ocd_promo_info(common.viewer_tz())
+    if not info:
+        return {}
+    in_promo = templates.filtered(lambda template: template.id in info)
+    website = request.env.website
+    pricelist = getattr(request, "pricelist", None) or website.pricelist_id
+    fiscal_position = getattr(request, "fiscal_position", None) or request.env["account.fiscal.position"]
+    usual = in_promo.with_context(ocd_without_promo=True)._get_sales_prices(pricelist, fiscal_position, website)
+    money_currency = currency()
+    result = {}
+    for template in in_promo:
+        promo = info[template.id]
+        was = usual.get(template.id, {}).get("price_reduce")
+        # The price struck through is the lowest of the last days, converted as the price of now
+        reference = promo["promo"].reference_price
+        if was and template.list_price:
+            was = was * reference / template.list_price
+        result[template.id] = {
+            "was": common.money(was if was else reference, money_currency),
+            "off": promo["off"],
+            "until": promo["until"],
+        }
+    return result
+
+
 def variant_price(product):
     """Price of a variant for the visitor, as on the product page of Odoo: (amount, currency)."""
     info = product.sudo()._get_combination_info_variant()
@@ -75,11 +106,16 @@ def vendor_line(template):
     return " · ".join(part for part in (vendor.name, vendor.city) if part)
 
 
-def card(template, price_by_id):
-    """One product in a grid of products (shop, boutique)."""
+def card(template, price_by_id, promo_by_id=None):
+    """One product in a grid of products (shop, boutique), with its promo (`promo_by_id`, see
+    promos(); read for this product when not given)."""
     out, low = stock_info(template)
     ocd = sold_by_ocd(template)
+    promo = (promo_by_id if promo_by_id is not None else promos(template)).get(template.id) or {}
     return {
+        "was": promo.get("was"),
+        "off": promo.get("off"),
+        "until": promo.get("until"),
         "product": template,
         "url": template.website_url,
         "price": price_by_id.get(template.id) or common.money(template.list_price, template.currency_id),

@@ -29,6 +29,24 @@ class SaleOrder(models.Model):
         for order in self:
             order.ocd_parcel_ids = order.picking_ids.filtered("ocd_is_parcel")
 
+    def _ocd_refresh_promos(self):
+        """A cart kept after the end of a promo (and of the time to pay it): its lines take the
+        price of now again before the payment. Return the products whose promo ended."""
+        self.ensure_one()
+        if self.state not in ("draft", "sent"):
+            return self.env["product.template"]
+        lines = self.order_line.filtered(lambda line: line.ocd_promo_id and line.product_id)
+        if not lines:
+            return self.env["product.template"]
+        running = self.env["ocd.product.promo"]._ocd_running(
+            lines.product_id.product_tmpl_id, order_date=self.date_order
+        )
+        ended = lines.filtered(lambda line: running.get(line.product_id.product_tmpl_id.id) != line.ocd_promo_id)
+        if ended:
+            ended.with_context(force_price_recomputation=True)._compute_price_unit()
+            ended._compute_ocd_promo_id()
+        return ended.product_id.product_tmpl_id
+
     def _ocd_delivery_fee(self):
         """Return the delivery fee paid by the customer for the whole order."""
         self.ensure_one()

@@ -19,18 +19,21 @@
                 <b t-out="card['product'].name"/>
                 <small t-if="show_by" class="o_ocd_product_by" t-out="card['by']"/>
                 <span class="o_ocd_product_price" t-out="card['price']"/>
+                <s t-if="card.get('was')" class="o_ocd_product_was" t-out="card['was']"/>
             </span>
         </div>
         <a t-else="" t-att-href="card['url']" class="o_ocd_product">
             <span class="o_ocd_photo o_ocd_product_photo">
                 <t t-call="ocd_live_shop.product_photo" image="card['image']"/>
-                <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
+                <span t-if="card.get('off')" class="o_ocd_product_flag o_ocd_product_flag_promo" t-out="card['off']"/>
+                                <span t-if="card['low']" class="o_ocd_product_flag" t-out="card['low']"/>
                 <span t-elif="card.get('new')" class="o_ocd_product_flag o_ocd_product_flag_new">New</span>
             </span>
             <span class="o_ocd_product_text">
                 <b t-out="card['product'].name"/>
                 <small t-if="show_by" class="o_ocd_product_by" t-out="card['by']"/>
                 <span class="o_ocd_product_price" t-out="card['price']"/>
+                <s t-if="card.get('was')" class="o_ocd_product_was" t-out="card['was']"/>
                 <small t-if="card.get('where')" class="o_ocd_product_where"><t t-call="ocd_live.icon" icon.f="pin"/><t t-out="card['where']"/></small>
                 <small t-if="show_by" t-attf-class="o_ocd_product_mode #{'o_ocd_product_mode_ocd' if card['ocd'] else ''}" t-out="card['mode']"/>
             </span>
@@ -227,6 +230,11 @@
                             </span>
                         </div>
                         <span class="o_ocd_product_price_big o_ocd_variant_price" t-out="first.get('price_text') or ''"/>
+                        <s t-if="promo" class="o_ocd_product_was o_ocd_variant_was" t-out="first.get('was_text') or promo['was']"/>
+                    </div>
+                    <div t-if="promo" class="o_ocd_product_promo">
+                        <span class="o_ocd_product_flag_promo" t-out="promo['off']"/>
+                        <span>Promo <t t-out="promo['until']"/></span>
                     </div>
                     <a t-if="vendor" t-attf-href="/ocd/boutique/#{vendor.id}" class="o_ocd_product_vendor">
                         <span class="o_ocd_avatar o_ocd_avatar_mid" aria-hidden="true">
@@ -412,6 +420,7 @@
                                 <b t-out="row['name']"/>
                                 <small t-if="row['variant']" t-out="row['variant']"/>
                                 <span class="o_ocd_product_price" t-out="row['price']"/>
+                                <s t-if="row.get('was')" class="o_ocd_cart_was" t-out="row['was']"/>
                                 <div class="o_ocd_cart_actions">
                                     <form action="/ocd/panier/ligne" method="post" class="o_ocd_stepper">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -624,6 +633,7 @@
                 <main class="o_ocd_main o_ocd_pay o_ocd_pay_order o_ocd_panes">
                     <h1 class="o_ocd_h1">Pay</h1>
                     <div class="o_ocd_pane_main">
+                    <div t-if="promo_ended" class="o_ocd_info" role="status" t-out="promo_ended"/>
                     <div t-if="payment_error" class="o_ocd_failed" role="alert">
                         <b>The payment did not go through.</b>
                         <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your cart is kept.</span>
@@ -1077,8 +1087,10 @@
                                     <b t-out="row['product'].name"/>
                                     <span>
                                         <span t-out="row['price']"/>
+                                        <s t-if="row.get('was')" class="o_ocd_product_was" t-out="row['was']"/>
                                         <span t-attf-class="o_ocd_step_pill o_ocd_my_status_#{row['status']}" t-out="row['status_label']"/>
                                     </span>
+                                    <small t-if="row.get('promo_line')" class="o_ocd_my_product_fact o_ocd_my_product_promo" t-out="row['promo_line']"/>
                                     <small t-if="row['variants_line']" class="o_ocd_my_product_fact" t-out="row['variants_line']"/>
                                     <span t-if="row['low_line']" class="o_ocd_my_product_low" t-out="row['low_line']"/>
                                     <small t-if="row['refusal']" class="o_ocd_error o_ocd_my_product_refusal" t-out="row['refusal']"/>
@@ -1154,6 +1166,7 @@
                                         <button t-if="row['share']" type="button" class="o_ocd_button o_ocd_share o_ocd_my_product_share" data-track="/ocd/espace/moi/partage"
                                                 t-att-data-url="row['share']['url']" t-att-data-text="row['share']['text']"
                                                 t-att-data-image="row['share'].get('image')">Share</button>
+                                        <a t-if="row.get('promo_url')" t-att-href="row['promo_url']" class="o_ocd_button" t-out="row['promo_label']"/>
                                         <a t-if="row['public_url']" t-attf-href="/ocd/espace/moi/etiquettes?produit=#{row['product'].id}"
                                            class="o_ocd_button">Price label</a>
                                         <form t-attf-action="/ocd/espace/moi/produits/#{row['product'].id}/dupliquer" method="post">

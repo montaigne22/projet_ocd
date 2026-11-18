@@ -145,6 +145,16 @@ class ResCompany(models.Model):
         help="A vendor who changes a price by more than this confirms it (« You go from 15,000 to 1,500, "
         "is that right? »); the team sees it in the history of the prices. 0: never asked.",
     )
+    ocd_promo_max_discount = fields.Integer(
+        string="Promo: Discount At Most (%)", default=50,
+        help="Of the price struck through (the lowest price of the last days).",
+    )
+    ocd_promo_max_days = fields.Integer(string="Promo: Days At Most", default=30)
+    ocd_promo_reference_days = fields.Integer(
+        string="Promo: Price Struck Through Over", default=14,
+        help="Days: the price struck through is the lowest price of the product in these days, so that a price "
+        "raised just before does not make a promo.",
+    )
     ocd_vendor_catalogue_items = fields.Integer(
         string="Products Per Image Of The Catalogue",
         default=4,

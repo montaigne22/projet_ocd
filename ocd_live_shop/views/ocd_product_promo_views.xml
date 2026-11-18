@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The promos of the products (plan, 3.1; chantier 7): Shop › Promos -->
+<odoo>
+
+    <record id="ocd_product_promo_view_list" model="ir.ui.view">
+        <field name="name">ocd.product.promo.list</field>
+        <field name="model">ocd.product.promo</field>
+        <field name="arch" type="xml">
+            <list string="Promos" create="0" decoration-muted="state in ('ended', 'stopped')" decoration-success="state == 'running'">
+                <field name="product_tmpl_id"/>
+                <field name="vendor_id"/>
+                <field name="reference_price"/>
+                <field name="price"/>
+                <field name="discount"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="source"/>
+                <field name="state" widget="badge" decoration-success="state == 'running'" decoration-info="state == 'scheduled'"/>
+                <field name="stop_reason" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+                <button name="action_ocd_stop" type="object" string="Stop the promo" invisible="state not in ('running', 'scheduled')"
+                        confirm="The usual price is back at once. Stop this promo?"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_product_promo_view_search" model="ir.ui.view">
+        <field name="name">ocd.product.promo.search</field>
+        <field name="model">ocd.product.promo</field>
+        <field name="arch" type="xml">
+            <search string="Promos">
+                <field name="product_tmpl_id"/>
+                <field name="vendor_id"/>
+                <filter string="Running" name="running"
+                        domain="[('date_start', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59')), ('date_end', '&gt;', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Stopped" name="stopped" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Vendor" name="by_vendor" context="{'group_by': 'vendor_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_product_promo_action" model="ir.actions.act_window">
+        <field name="name">Promos</field>
+        <field name="res_model">ocd.product.promo</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_running': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No promo for now</p>
+            <p>The vendors put their products in promo from « My products »: a discount until a date, from the lowest
+                price of the last days. The price comes back by itself at the end.</p>
+        </field>
+    </record>
+
+</odoo>
