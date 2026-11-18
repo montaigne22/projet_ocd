@@ -50,7 +50,7 @@ En deux temps : les modules d'abord (Odoo met en place la comptabilité), puis l
 régler la société pendant qu'aucune écriture n'existe encore (pays, devise en franc CFA).
 
 ```bash
-odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp --load-language=fr_FR --stop-after-init
+odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp --load-language=fr_FR --stop-after-init
 ```
 
 Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**, téléphone et e-mail : ils s'affichent
@@ -91,7 +91,7 @@ Après un `git pull` du dépôt : redémarrer Odoo, puis mettre à jour les modu
 module › Mettre à jour, ou en ligne de commande) :
 
 ```bash
-odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp --stop-after-init
+odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp --stop-after-init
 ```
 
 **À chaque récupération du code, mettre à jour les modules.** Sans cela, le code appelle des pages qui
@@ -276,16 +276,59 @@ sauvegarder à part (elle n'est pas sur le bucket). Code : `attachment_s3/models
 (envoi, reprise, nettoyage), `ir_attachment.py` (branchement sur `_file_write`, `_file_read`,
 `_to_http_stream`) ; tests avec un bucket en mémoire (`tests/`).
 
+## Clips automatiques (modules `ocd_clips` et `ocd_clips_whatsapp`)
+
+Après un live, l'équipe envoie sa vidéo (bouton « Clips » du live, ou « Envoyer la vidéo du live » dans
+la régie) ; chaque produit mis à l'écran dans la régie devient un clip vertical de 30 secondes avec son
+lien court. Ce qu'il faut sur le serveur :
+
+- **ffmpeg et ffprobe** (`apt-get install -y ffmpeg`) : ffprobe vérifie la vidéo reçue, ffmpeg fait les
+  clips. Le ffmpeg de `imageio-ffmpeg` suffit (la vérification lit alors sa sortie) ; sans ffmpeg, la vidéo
+  reçue attend (l'écran et les Paramètres le disent).
+- **Le dossier des vidéos des lives** : `<ocd_recordings_path>/<base>` (`ocd_recordings_path` dans
+  `odoo.conf`, ex. un disque à part), sinon `<data_dir>/ocd_recordings/<base>`. Ces fichiers (1 à 3 Go par live) restent hors de la base, hors des
+  pièces jointes et donc hors des sauvegardes et du bucket S3 : ils ne durent que 7 jours (réglable),
+  effacés par la tâche planifiée ; les clips restent. Prévoir la place de quelques lives, plus environ
+  1 Go de clips par jour à 20 lives par jour (les clips sont des pièces jointes : avec `attachment_s3`,
+  ils vont aussi sur le bucket). Avec plusieurs serveurs, ce dossier doit être partagé (comme `data_dir`).
+- **L'envoi** se fait par morceaux de 8 Mo (`/ocd/clips/envoi/<partie>`) : le `client_max_body_size 220m`
+  de nginx suffit ; un envoi coupé reprend en choisissant le même fichier, même après avoir fermé la page.
+- **La tâche planifiée** « OCD Live : faire les clips des lives » : lancée dès qu'une vidéo arrive, et
+  toutes les 10 minutes. Elle vérifie les vidéos reçues, puis fait les clips l'un après l'autre (environ
+  10 secondes pour un clip de 30 s en 720 × 1280, ffmpeg en basse priorité avec 2 threads) ; elle tourne
+  sur le serveur des tâches planifiées (`max_cron_threads`), jamais pendant une page. Un clip pris par un
+  serveur arrêté est repris au bout de 30 minutes ; 3 essais, puis « Pas fait » avec la raison.
+- **Les liens courts** `/p/<code>` : l'adresse du site par défaut, ou une adresse plus courte dans
+  Paramètres › Clips automatiques (le domaine doit mener au même Odoo). `robots.txt` exclut `/p/` ; les
+  aperçus des liens (WhatsApp, TikTok, Facebook) ne comptent pas de visite. Les vidéos et les images des
+  clips passent par le CDN quand le site en a un (filtre `^/ocd/clips/` ajouté).
+- **WhatsApp** : deux modèles à soumettre à Meta (`ocd_clips_prets` et `ocd_clip_video`, Utilitaire,
+  français et anglais). `ocd_clip_video` a une **vidéo en tête** (nouveau type d'en-tête de
+  `whatsapp_cloud`) : à la soumission, Meta reçoit en exemple le dernier clip fait (ou la vidéo donnée
+  sur le modèle) ; à l'envoi, la vidéo du clip est envoyée à Meta (16 Mo au plus). Le bouton « M'envoyer
+  le clip sur WhatsApp » ne s'affiche que quand le modèle peut partir.
+
+Pour essayer à la main : un live confirmé, « Le live commence » dans la régie, des produits mis à
+l'écran, puis la vidéo envoyée depuis l'écran « Vidéo du live et clips » (une vidéo de test :
+`ffmpeg -f lavfi -i testsrc=size=640x360:rate=10:duration=600 -f lavfi -i sine=duration=600 -shortest live.mp4`).
+
+Code : `ocd_clips/clip_video.py` (le montage, les textes, l'aperçu), `models/ocd_live_recording.py` (les
+parties de la vidéo, leur envoi et leur vérification), `models/ocd_live_booking.py` (le découpage d'un
+live en clips), `models/ocd_live_clip.py` (la file d'attente, le lien, le texte du partage, les pages),
+`models/sale_order.py` (les ventes venues d'un clip), `controllers/` (envoi, médias, lien court, pages
+du vendeur), `static/src/screen/` (l'écran de l'équipe).
+
 ## Tests
 
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/payment_cinetpay --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,attachment_s3 \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud --stop-after-init
 ```
 
-Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Avec OCD, un test de
+Les tests des clips font de vraies vidéos avec ffmpeg (sources `lavfi`, quelques secondes). Ajouter
+`/whatsapp_cloud_sale` pour les tests de la commande sur WhatsApp. Avec OCD, un test de
 `whatsapp_cloud_sale` échoue, c'est voulu : « commande expédiée » y est remplacé par les messages des colis.
 
 Puis la démo sur une autre base neuve : les mêmes modules et `ocd_live_demo`, avec

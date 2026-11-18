@@ -39,6 +39,9 @@ MODULES = {
                     ns["SITE_SHOP"], ns["VENDOR_SPACE"], ns["PROMO_SHOP"], ns["EVENINGS"], *SCREENS],
     "ocd_soirees_whatsapp": [ns["WHATSAPP"], ns["SHOP_WHATSAPP"], ns["EVENINGS_WHATSAPP"], *SCREENS],
     "attachment_s3": [ns["STORAGE"]],
+    "ocd_clips": [ns["CLIPS"]],
+    "ocd_clips_whatsapp": [ns["CLIPS_WHATSAPP"]],
+    "whatsapp_cloud": [ns["WA_CLOUD_VIDEO"]],
     "ocd_tickets_whatsapp": [ns["WHATSAPP"], ns["SHOP_WHATSAPP"], ns["VOTE_WHATSAPP"], ns["TICKETS_WHATSAPP"], *SCREENS],
 }
 ns["DESCRIPTIONS"]["theme_ocd"] = ns["THEME_DESCRIPTION"]
@@ -48,6 +51,7 @@ ns["DESCRIPTIONS"]["payment_cinetpay"] = ns["CINETPAY_DESCRIPTION"]
 ns["DESCRIPTIONS"]["ocd_tickets"] = ns["TICKETS_DESCRIPTION"]
 ns["DESCRIPTIONS"]["ocd_soirees"] = ns["EVENINGS_DESCRIPTION"]
 ns["DESCRIPTIONS"]["attachment_s3"] = ns["STORAGE_DESCRIPTION"]
+ns["DESCRIPTIONS"]["ocd_clips"] = ns["CLIPS_DESCRIPTION"]
 # Names of places and products: the same in French
 IDENTITY = {"ocd_delivery_togo", "ocd_live_demo"}
 

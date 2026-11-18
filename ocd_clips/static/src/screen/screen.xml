@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ocd_clips.Screen">
+        <div class="o_action o_ocd_bo o_ocd_clips_screen">
+            <t t-set="data" t-value="this.data()"/>
+            <div class="o_ocd_bo_header">
+                <h1 class="o_ocd_bo_title">Video of the live and clips</h1>
+                <span class="o_ocd_bo_pager o_ocd_bo_push" t-out="data.title"/>
+            </div>
+            <div class="o_ocd_bo_body o_ocd_clips_body">
+                <p t-if="data.off" class="o_ocd_clips_warn">This vendor refuses the clips (« No clips » on their form): no clip is made of their lives.</p>
+
+                <section t-if="data.can_send" class="o_ocd_clips_card">
+                    <h2>Send the video of the live</h2>
+                    <p class="o_ocd_clips_muted">The recording of the studio, or the video downloaded from the account of OCD Live (TikTok, Facebook and YouTube offer it to their owner). MP4 or MOV, 4 GB at most. Sent in pieces: if the network cuts, it goes on where it stopped.</p>
+                    <p t-if="data.no_moment" class="o_ocd_clips_warn">No product was put on screen in the control room during this live: without its moments, no clip can be made.</p>
+                    <div t-if="this.sending()" class="o_ocd_clips_sending" role="status">
+                        <div class="o_ocd_clips_sending_head">
+                            <b t-out="this.sending().name"/>
+                            <span t-out="this.sendingPercent + ' %'"/>
+                        </div>
+                        <div class="o_ocd_clips_bar"><i t-attf-style="width: #{this.sendingPercent}%"/></div>
+                        <small t-out="this.sending().line || this.sendingLine"/>
+                    </div>
+                    <label t-else="" class="o_ocd_clips_drop">
+                        <input type="file" accept="video/*,.mp4,.mov,.m4v" class="o_ocd_clips_file" t-on-change="(ev) => this.onFile(ev)"/>
+                        <span class="o_ocd_clips_button o_ocd_clips_primary">Choose the video</span>
+                        <small>A part already sent halfway: choose the same file, it goes on.</small>
+                    </label>
+
+                    <div t-if="data.parts.length" class="o_ocd_clips_parts">
+                        <div t-foreach="data.parts" t-as="part" t-key="part.id" class="o_ocd_clips_part">
+                            <div class="o_ocd_clips_part_head">
+                                <b>Part <t t-out="part.sequence"/></b>
+                                <span t-attf-class="o_ocd_clips_pill o_ocd_clips_#{part.tone}" t-out="part.state_label"/>
+                                <span class="o_ocd_clips_muted"><t t-out="part.size"/><t t-if="part.length"> · <t t-out="part.length"/></t></span>
+                                <button type="button" class="o_ocd_clips_link o_ocd_bo_push" t-on-click="() => this.removePart(part)">Remove</button>
+                            </div>
+                            <small t-attf-class="#{part.warning ? 'o_ocd_clips_warn_text' : 'o_ocd_clips_muted'}" t-out="part.line"/>
+                            <div t-if="part.state === 'uploading'" class="o_ocd_clips_bar"><i t-attf-style="width: #{part.percent}%"/></div>
+                            <div t-if="part.can_shift" class="o_ocd_clips_shift">
+                                <span t-out="part.where"/>
+                                <span class="o_ocd_clips_shift_buttons">
+                                    <button type="button" class="o_ocd_clips_button" t-on-click="() => this.shift(part, -5)"
+                                            aria-label="5 seconds earlier">− 5 s</button>
+                                    <button type="button" class="o_ocd_clips_button" t-on-click="() => this.shift(part, 5)"
+                                            aria-label="5 seconds later">+ 5 s</button>
+                                </span>
+                            </div>
+                        </div>
+                        <p class="o_ocd_clips_muted" t-out="data.started"/>
+                    </div>
+
+                    <div t-if="data.preview" class="o_ocd_clips_preview">
+                        <video t-att-src="this.previewUrl" controls="controls" playsinline="playsinline" preload="none"
+                               t-key="this.previewUrl"/>
+                        <p class="o_ocd_clips_muted" t-out="data.preview.line"/>
+                    </div>
+                </section>
+
+                <section class="o_ocd_clips_card">
+                    <h2>The clips of the live</h2>
+                    <div t-if="data.clips.length" class="o_ocd_clips_table_wrap">
+                        <table class="o_ocd_clips_table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Moment</th>
+                                    <th>Length</th>
+                                    <th>State</th>
+                                    <th class="o_ocd_clips_num">Plays</th>
+                                    <th class="o_ocd_clips_num">Visits</th>
+                                    <th class="o_ocd_clips_num">Sales</th>
+                                    <th/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data.clips" t-as="clip" t-key="clip.id">
+                                    <td><b t-out="clip.product"/><small class="d-block o_ocd_clips_muted" t-out="clip.link"/></td>
+                                    <td t-out="clip.moment"/>
+                                    <td t-out="clip.length"/>
+                                    <td>
+                                        <span t-attf-class="o_ocd_clips_pill o_ocd_clips_#{clip.tone}" t-out="clip.state_label"/>
+                                        <small t-if="clip.why" class="d-block o_ocd_clips_muted" t-out="clip.why"/>
+                                    </td>
+                                    <td class="o_ocd_clips_num" t-out="clip.plays"/>
+                                    <td class="o_ocd_clips_num" t-out="clip.visits"/>
+                                    <td class="o_ocd_clips_num" t-out="clip.sales"/>
+                                    <td class="o_ocd_clips_actions">
+                                        <button t-if="clip.video" type="button" class="o_ocd_clips_link" t-on-click="() => this.see(clip)">See</button>
+                                        <button t-if="clip.can_remake" type="button" class="o_ocd_clips_link" t-on-click="() => this.act(clip, 'remake')">Make again</button>
+                                        <button t-if="clip.can_hide and !clip.hidden" type="button" class="o_ocd_clips_link" t-on-click="() => this.act(clip, 'hide')">Hide</button>
+                                        <button t-if="clip.hidden" type="button" class="o_ocd_clips_link" t-on-click="() => this.act(clip, 'show')">Show</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p t-else="" class="o_ocd_clips_muted">The clips come once the video of the live is received: one for each product put on screen in the control room.</p>
+                    <p class="o_ocd_clips_muted" t-out="data.note"/>
+                </section>
+
+                <div t-if="this.playing()" class="o_ocd_clips_player" role="dialog" aria-modal="true" t-on-click.self="() => this.close()">
+                    <div class="o_ocd_clips_player_box">
+                        <video t-att-src="this.playing().video" t-att-poster="this.playing().poster or undefined" controls="controls"
+                               autoplay="autoplay" playsinline="playsinline"/>
+                        <button type="button" class="o_ocd_clips_button" t-on-click="() => this.close()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

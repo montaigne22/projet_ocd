@@ -1,0 +1,15 @@
+from . import (
+    ocd_automation,
+    ocd_live_clip,
+    ocd_live_recording,
+    ocd_live_booking,
+    ocd_clips_screen,
+    ocd_live_dashboard,
+    ocd_live_regie,
+    ocd_live_settings,
+    ocd_vendor_count,
+    res_company,
+    res_partner,
+    sale_order,
+    website,
+)

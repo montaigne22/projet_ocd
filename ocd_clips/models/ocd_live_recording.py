@@ -8,17 +8,20 @@ A live may come in several parts (the studio that starts again, TikTok that cuts
 each part says where it starts in the live (`offset_seconds`, from the real start of the live).
 
 The files are kept out of the database and of its files (they are not saved in the backups):
-in the folder `ocd_recordings_path` of the configuration of the server, else in
+in <ocd_recordings_path>/<database> (ocd_recordings_path in the configuration of the server), else in
 <data_dir>/ocd_recordings/<database>. A folder on an object storage (S3, R2) mounted on the
 server works the same."""
 import logging
 import os
 import secrets
 import shutil
+import time
 from datetime import timedelta
 
 from odoo import api, fields, models, tools as odoo_tools
 from odoo.exceptions import UserError
+
+from odoo.addons.ocd_live import media
 
 from .. import clip_video
 
@@ -64,20 +67,29 @@ class OcdLiveRecording(models.Model):
     width = fields.Integer(readonly=True)
     height = fields.Integer(readonly=True)
     has_sound = fields.Boolean(string="Sound", readonly=True)
-    warning = fields.Char(readonly=True, help="Something to check, the clips are made all the same.")
-    error = fields.Char(readonly=True)
+    # Written in the language of the person who reads them (the checks run in a scheduled task)
+    warning = fields.Char(compute="_compute_texts", help="Something to check, the clips are made all the same.")
+    error = fields.Char(compute="_compute_texts")
     user_id = fields.Many2one(comodel_name="res.users", string="Sent By", default=lambda self: self.env.user,
                               readonly=True)
     received_at = fields.Datetime(string="Received At", readonly=True)
     delete_after = fields.Datetime(string="Deleted After", readonly=True)
 
+    def _compute_texts(self):
+        for recording in self:
+            recording.warning = recording._ocd_warning() if recording.state == "ready" else False
+            recording.error = self.env._(
+                "This file cannot be read as a video: send the video of the live in MP4 or MOV."
+            ) if recording.state == "refused" else False
+
     # === FILES === #
 
     @api.model
     def _ocd_folder(self):
-        folder = odoo_tools.config.get("ocd_recordings_path") or os.path.join(
-            odoo_tools.config["data_dir"], "ocd_recordings", self.env.cr.dbname
-        )
+        # One folder per database, also under ocd_recordings_path: the cleaning of a database never
+        # touches the videos of another one
+        root = odoo_tools.config.get("ocd_recordings_path") or os.path.join(odoo_tools.config["data_dir"], "ocd_recordings")
+        folder = os.path.join(root, self.env.cr.dbname)
         os.makedirs(folder, exist_ok=True)
         return folder
 
@@ -181,14 +193,15 @@ class OcdLiveRecording(models.Model):
     def _ocd_check(self):
         """Check a video received: readable, with an image; its length and its sound. Then the
         clips of the live are planned."""
+        if not media.can_convert():
+            return  # waits for ffmpeg (the settings say it is missing)
         for recording in self.filtered(lambda part: part.state == "checking"):
             company = recording.company_id or self.env.company
             try:
                 info = clip_video.probe(recording._ocd_path())
-            except clip_video.ClipError:
-                recording.write({"state": "refused", "error": self.env._(
-                    "This file cannot be read as a video: send the video of the live in MP4 or MOV."
-                )})
+            except (clip_video.ClipError, ValueError, OSError) as error:
+                _logger.info("OCD Live: video of a live refused (part %s): %s", recording.id, error)
+                recording.state = "refused"
                 recording._ocd_remove(recording._ocd_path())
                 continue
             values = {
@@ -197,7 +210,6 @@ class OcdLiveRecording(models.Model):
                 "width": info["width"],
                 "height": info["height"],
                 "has_sound": info["sound"],
-                "error": False,
                 "delete_after": fields.Datetime.now() + timedelta(days=company.ocd_clip_keep_days),
             }
             before = recording.booking_id.ocd_recording_ids.filtered(
@@ -206,7 +218,6 @@ class OcdLiveRecording(models.Model):
             if before and not recording.offset_seconds:
                 values["offset_seconds"] = before.offset_seconds + before.duration
             recording.write(values)
-            recording.warning = recording._ocd_warning()
             recording.booking_id._ocd_plan_clips()
 
     def _ocd_warning(self):
@@ -235,8 +246,18 @@ class OcdLiveRecording(models.Model):
     def _ocd_shift(self, seconds):
         """Move this part by `seconds` in the live (« − 5 s », « + 5 s »): its clips are made again."""
         for recording in self:
+            before = (recording.offset_seconds, recording.offset_seconds + recording.duration)
             recording.offset_seconds = round(recording.offset_seconds + seconds, 1)
-            recording.warning = recording._ocd_warning() if recording.state == "ready" else recording.warning
+            after = (recording.offset_seconds, recording.offset_seconds + recording.duration)
+
+            def in_part(clip, span):
+                return clip.start < span[1] and clip.start + clip.duration > span[0]
+
+            # The seconds of the live in this part are now other images: their clips are made
+            # again (the clips of the other parts stay)
+            recording.booking_id.ocd_clip_ids.filtered(
+                lambda clip: clip.state in ("ready", "failed") and (in_part(clip, before) or in_part(clip, after))
+            ).write({"state": "queued", "tries": 0, "error_code": False, "reason": False})
             recording.booking_id._ocd_plan_clips()
 
     # === CLEANING === #
@@ -254,3 +275,22 @@ class OcdLiveRecording(models.Model):
         self.sudo().search([
             ("state", "=", "uploading"), ("write_date", "<", now - timedelta(hours=ABANDONED_HOURS)),
         ]).unlink()
+        self._ocd_remove_orphans()
+
+    @api.model
+    def _ocd_remove_orphans(self):
+        """The files of the folder without their part (a live deleted with its parts by the
+        database), a day old: the disk never keeps a video nobody can see."""
+        folder = self._ocd_folder()
+        limit = time.time() - ABANDONED_HOURS * 3600
+        names = {}
+        for name in os.listdir(folder):
+            stem, _dot, extension = name.partition(".")
+            if extension == "video" and stem.isdigit():
+                names[int(stem)] = os.path.join(folder, name)
+        if not names:
+            return
+        known = set(self.sudo().with_context(active_test=False).browse(list(names)).exists().ids)
+        for record_id, path in names.items():
+            if record_id not in known and os.path.getmtime(path) < limit:
+                self._ocd_remove(path)

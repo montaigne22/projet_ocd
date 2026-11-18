@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-inherit="ocd_live_shop.Regie" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_ocd_regie_replay')]" position="after">
+            <div t-if="data.clips" class="o_ocd_regie_clips">
+                <span class="o_ocd_regie_caption">After the live: the clips of the products</span>
+                <small t-out="data.clips.line"/>
+                <button type="button" class="o_ocd_regie_button" t-on-click="() => this.openClips()">
+                    <t t-if="data.clips.sent">Video of the live and clips</t>
+                    <t t-else="">Send the video of the live</t>
+                </button>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

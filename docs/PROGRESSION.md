@@ -43,6 +43,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | OCD Vote (chantier 4) : concours avec candidats numérotés, voix payées en Mobile Money (seules les voix payées comptent, chacune liée à son paiement), vote sur la page ou par WhatsApp « VOTE 12 », classement en direct, bandeau de la finale, résultats certifiés, espace de l'organisateur, reversement | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | OCD Tickets (chantier 6) : billets de concerts et d'événements (application Événements d'Odoo), page de l'événement, achat (places gardées pendant le paiement), « Mes billets » (un QR signé par personne, PDF, « Donner ce billet »), contrôle à l'entrée avec le téléphone (même hors réseau), vente à l'entrée, billet à l'écran pendant un live avec son prix du live, annulé ou déplacé, espace de l'organisateur et ses contrôleurs, reversement | ✅ fait, testé (5 modèles WhatsApp à faire approuver par Meta) |
 | Programme et événements (chantier 7) et prix promo (3.1) : « Mettre en promo » dans Mes produits (prix barré = le plus bas des 14 derniers jours, jusqu'à une date, partout le même prix) ; le programme des lives des 7 prochains jours (guide télé sur ordinateur) ; les grands événements d'une soirée ou de plusieurs jours (Vendredi noir, Tabaski…) où les vendeurs invités participent avec un live et leurs promos, vérifiées par l'équipe, « Me prévenir sur WhatsApp » | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
+| Clips automatiques (chantier 8) : chaque produit montré dans un live devient un clip vertical de 30 secondes avec son lien court, à partager sur les statuts, TikTok et Reels ; la vidéo du live envoyée par l'équipe par morceaux, vérifiée ; « Mes clips » du vendeur, « Vu en live » sur la fiche produit et le replay, visites et ventes de chaque clip | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | Paiement automatique dans l'UEMOA (chantier 5) : CinetPay (module `payment_cinetpay` : Mobile Money, Wave, carte ; UEMOA, Cameroun, Guinée, RD Congo) et Flutterwave (module d'Odoo) ; l'état lu chez CinetPay, revérifié toutes les 10 minutes ; le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production ; clés manquantes et mode test dits dans les Paramètres | ✅ fait, testé (clés des comptes à saisir) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
@@ -107,6 +108,9 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    payés ou donnés, le rappel la veille, l'événement annulé ou déplacé, le contrôleur ajouté.
    **Avec les grands événements**, aussi `ocd_soiree_invitation` et `ocd_soiree_commence` (français et
    anglais, Utilitaire) : l'invitation des vendeurs, le début annoncé à ceux qui l'ont demandé.
+   **Avec les clips automatiques**, aussi `ocd_clips_prets` et `ocd_clip_video` (français et anglais,
+   Utilitaire) : les clips d'un live prêts, le clip lui-même avec la vidéo en tête (à soumettre une fois
+   un premier clip fait : Meta reçoit sa vidéo en exemple).
 3. **Paiement dans l'UEMOA** (équipe) : ouvrir les comptes CinetPay et Flutterwave (documents de
    l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
    pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
@@ -131,14 +135,59 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
-### 18 novembre 2026 · Clips automatiques (chantier 8), en cours
-Maquette `ClipsAutomatiques` validée avec ses choix et ses recommandations. Fait pour l'instant :
+### 18 novembre 2026 · Clips automatiques (chantier 8)
+Maquette `ClipsAutomatiques` validée avec ses choix et ses recommandations « Pour que ça tienne en vrai »,
+puis codée dans deux nouveaux modules, `ocd_clips` et `ocd_clips_whatsapp`, avec « Le live commence » dans
+la régie (`ocd_live_shop`) et un en-tête vidéo pour les modèles WhatsApp (`whatsapp_cloud`).
+- **Avant tout, la suite complète** sur une base neuve, attendue pour les deux commits poussés avant elle
+  (`attachment_s3` et la régie) : tous les modules OCD avec `attachment_s3` et `payment_cinetpay`,
+  **506 tests sans échec**.
 - **La régie** : « Le live commence » (de 30 minutes avant l'heure réservée jusqu'à la fin du live) ; les
   moments du replay comptent depuis ce vrai début, et ceux déjà notés sont recomptés : un live qui
-  commence en retard ne décale plus son replay ni ses clips (`ocd_live_shop` 20.0.1.43.0).
-- Le module `ocd_clips` est commencé (pas encore installable : sans manifeste) : le montage des clips
-  (`clip_video.py`), les vidéos des lives envoyées par morceaux (`ocd.live.recording`), les clips et leur
-  file d'attente (`ocd.live.clip`), le découpage d'un live en clips.
+  commence en retard ne décale plus son replay ni ses clips (`ocd_live_shop` 20.0.1.43.0). À la fin du
+  live, « Envoyer la vidéo du live » à côté de « Publier le replay », avec où en sont ses clips.
+- **La vidéo du live** (écran « Vidéo du live et clips » : bouton « Clips » du live, ou la régie) :
+  envoyée par morceaux de 8 Mo, reprise après une coupure du réseau ou en choisissant le même fichier
+  après avoir fermé la page, 4 Go au plus, place vérifiée avant ; vérifiée à l'arrivée (lisible, image et
+  son, sa durée face au dernier moment : « la vidéo dure 25:00, le dernier moment est à 43:23 ») ; en
+  plusieurs parties, chacune avec son début, réglable de 5 s en 5 s avec l'aperçu du premier moment ;
+  effacée après 7 jours, les clips restent ; les envois abandonnés effacés après 24 h.
+- **Les clips** : un par produit et par live, de 3 s avant le moment noté à 30 s au plus, coupé avant le
+  produit suivant, 12 s au moins sinon « Pas de clip » ; vertical 720 × 1280 (une vidéo horizontale posée
+  sur un fond flou), le son du live, le logo « Vu en live », le produit, le vendeur et sa ville et le lien
+  court hors des zones cachées de TikTok, Reels et des statuts, les 2 dernières secondes avec le QR. Faits
+  sur le serveur l'un après l'autre par une tâche planifiée (environ 10 s par clip), 3 essais, reprise
+  après un redémarrage, ffmpeg en basse priorité ; « Refaire » et « Masquer » pour l'équipe ;
+  OCD Live › Lives › Clips ; dans « À faire », les lives sans vidéo et les clips pas faits.
+- **Le vendeur** : « Tes clips sont prêts » en haut de Mon espace ; « Mes clips » (par live, du plus
+  récent au plus ancien, grille de 5 sur ordinateur) ; la page d'un clip : « Partager » (la vidéo
+  elle-même avec son texte au prix du moment), « Enregistrer », « M'envoyer le clip sur WhatsApp » (10 par
+  jour), « Masquer », « Vidéo de ma carte du fil », ses lectures, visites et ventes ; « ▶ 3 clips » sous
+  chaque produit de Mes produits et « Mes clips » dans son menu « Plus » ; « Venus des clips » dans Mes
+  chiffres.
+- **Le public** : « Vu en live » sur la fiche du produit (l'image du clip, la vidéo chargée seulement au
+  toucher, le replay à ce moment) ; un clip par produit sur le replay ; le lien court `/p/K7Q2AB` vers le
+  produit avec la couleur montrée (sinon la boutique ou le shop), une visite par téléphone et par jour,
+  sans les robots ; une vente comptée pour un clip si la commande arrive dans les 7 jours après sa visite,
+  depuis le même téléphone.
+- **WhatsApp** (`ocd_clips_whatsapp`) : `ocd_clips_prets` au vendeur une fois par live, quand ses clips
+  sont prêts ; `ocd_clip_video`, le clip lui-même en tête du message. `whatsapp_cloud` sait maintenant
+  envoyer et soumettre à Meta un modèle avec une vidéo en tête.
+- **Réglages** (Paramètres › Clips automatiques) : durées, vidéo gardée, clips d'un produit retiré,
+  qualité (720 ou 1080), adresse des liens courts, clips envoyés sur WhatsApp par jour ; « Pas de clips »
+  sur la fiche d'un vendeur ; automatisations « Clips prêts : prévenir le vendeur », « Vidéo du live pas
+  envoyée : dans À faire » et la tâche « Faire les clips des lives ».
+- Tests : base neuve, tous les modules OCD avec `ocd_clips`, `ocd_clips_whatsapp`, `attachment_s3`,
+  `payment_cinetpay` et les tests de `whatsapp_cloud` : **605 sans échec** (23 nouveaux : 18 dans `ocd_clips`, avec de
+  vraies vidéos faites par ffmpeg, 3 dans `ocd_clips_whatsapp`, 2 pour l'en-tête vidéo de WhatsApp) ; essayé de bout en bout sur la démo en
+  français : une vidéo de 45 minutes en deux parties envoyée par l'écran de l'équipe, les 3 clips faits
+  par la tâche planifiée, partagés, lus sur la fiche et le replay, le lien court ; contrôlé dans un
+  navigateur en trois tailles (390, 820, 1440 px) : Mon espace, Mes clips, un clip, Mes produits, Mes
+  chiffres, la fiche produit, le replay, l'écran de l'équipe ; aucun débordement.
+- **À installer sur un serveur** : `apt-get install -y ffmpeg` (ffprobe compris) ; `-u whatsapp_cloud`
+  (20.0.2.10.0), puis `-i ocd_clips,ocd_clips_whatsapp` (nouveaux modules). Puis soumettre à Meta
+  `ocd_clips_prets` et `ocd_clip_video` (Utilitaire, français et anglais ; le second avec la vidéo d'un
+  clip en exemple : à soumettre après le premier clip fait, ou avec une vidéo d'exemple sur le modèle).
 
 ### 18 novembre 2026 · Fichiers sur Cloudflare R2 (module `attachment_s3`)
 Demandé par l'équipe pendant le chantier 8 : les fichiers de toute la plateforme sur un stockage objet,

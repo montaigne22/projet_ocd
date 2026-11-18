@@ -1,0 +1,2008 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 13:03+0000\n"
+"PO-Revision-Date: 2026-11-18 13:03+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: ocd_clips
+#: model:ir.module.module,description:base.module_ocd_clips
+msgid ""
+"\n"
+"Automatic clips of the lives\n"
+"============================\n"
+"\n"
+"- After a live, the team sends its video (the recording of the studio, or the\n"
+"  video downloaded from the account of OCD Live), in pieces that start again\n"
+"  where they stopped; it is checked when it arrives (readable, image and\n"
+"  sound, its length) and deleted after a few days, the clips stay.\n"
+"- Each product noted by the control room becomes a vertical clip: from a\n"
+"  little before its moment, 30 seconds at most, cut before the next product;\n"
+"  the logo « Seen in live », the name, the vendor and the short link written\n"
+"  out of the zones covered by TikTok, Reels and the statuses; the last 2\n"
+"  seconds with the QR code. Made with ffmpeg on the server, one after the\n"
+"  other, in low priority, 3 tries.\n"
+"- The vendor: « My clips » in their space, share the video itself with its\n"
+"  text, save it, hide it, make it the video of their card in the feed; the\n"
+"  clips of each product in « My products ».\n"
+"- The public: « Seen in live » on the product page, the clip of each product\n"
+"  on the replay; the short link leads to the product with the colour shown,\n"
+"  its visits and its sales counted for the vendor.\n"
+msgstr ""
+"\n"
+"Clips automatiques des lives\n"
+"============================\n"
+"\n"
+"- Après un live, l'équipe envoie sa vidéo (l'enregistrement du studio, ou la\n"
+"  vidéo téléchargée du compte d'OCD Live), par morceaux qui reprennent où ils\n"
+"  se sont arrêtés ; elle est vérifiée à son arrivée (lisible, image et son, sa\n"
+"  durée) et effacée après quelques jours, les clips restent.\n"
+"- Chaque produit noté par la régie devient un clip vertical : depuis un peu\n"
+"  avant son moment, 30 secondes au plus, coupé avant le produit suivant ; le\n"
+"  logo « Vu en live », le nom, le vendeur et le lien court écrits hors des\n"
+"  zones cachées par TikTok, Reels et les statuts ; les 2 dernières secondes\n"
+"  avec le QR code. Faits avec ffmpeg sur le serveur, l'un après l'autre, en\n"
+"  basse priorité, 3 essais.\n"
+"- Le vendeur : « Mes clips » dans son espace, partager la vidéo elle-même\n"
+"  avec son texte, l'enregistrer, la masquer, en faire la vidéo de sa carte du\n"
+"  fil ; les clips de chaque produit dans « Mes produits ».\n"
+"- Le public : « Vu en live » sur la fiche du produit, le clip de chaque\n"
+"  produit sur le replay ; le lien court mène au produit avec la couleur\n"
+"  montrée, ses visites et ses ventes comptées pour le vendeur.\n"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "%(count)s sales · %(amount)s"
+msgstr "%(count)s ventes · %(amount)s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "%(product)s · %(count)s clips"
+msgstr "%(product)s · %(count)s clips"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "%(product)s · 1 clip"
+msgstr "%(product)s · 1 clip"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "%(product)s, %(price)s at %(vendor)s. Order here: %(link)s · Delivery with a code, you pay at the door. #OCDLive"
+msgstr "%(product)s, %(price)s chez %(vendor)s. Commande ici : %(link)s · Livraison avec code, tu paies à la porte. #OCDLive"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "%(product)s, %(price)s at %(vendor)s. See it here: %(link)s #OCDLive"
+msgstr "%(product)s, %(price)s chez %(vendor)s. À voir ici : %(link)s #OCDLive"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "%(ready)s clips ready, %(waiting)s being made."
+msgstr "%(ready)s clips prêts, %(waiting)s en préparation."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "%(received)s of %(size)s received: choose the same file to go on."
+msgstr "%(received)s reçus sur %(size)s : choisis le même fichier pour continuer."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "%(received)s of %(total)s sent"
+msgstr "%(received)s envoyés sur %(total)s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "%(tries)s tries: %(why)s"
+msgstr "%(tries)s essais : %(why)s"
+
+#. module: ocd_clips
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "%s GB"
+msgstr "%s Go"
+
+#. module: ocd_clips
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "%s MB"
+msgstr "%s Mo"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "%s clips"
+msgstr "%s clips"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_dashboard.py:0
+msgid "%s clips not made: see why"
+msgstr "%s clips pas faits : voir pourquoi"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "%s clips ready."
+msgstr "%s clips prêts."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "%s min"
+msgstr "%s min"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "%s plays on the site"
+msgstr "%s lectures sur le site"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "%s s"
+msgstr "%s s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "%s visits"
+msgstr "%s visites"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "%s visits by its link"
+msgstr "%s visites par son lien"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "%s · hidden"
+msgstr "%s · masqué"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "+ 5 s"
+msgstr "+ 5 s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "1 clip"
+msgstr "1 clip"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_dashboard.py:0
+msgid "1 clip not made: see why"
+msgstr "1 clip pas fait : voir pourquoi"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "1 clip ready."
+msgstr "1 clip prêt."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "1 play on the site"
+msgstr "1 lecture sur le site"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "1 sale · %s"
+msgstr "1 vente · %s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "1 visit"
+msgstr "1 visite"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "1 visit by its link"
+msgstr "1 visite par son lien"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "5 seconds earlier"
+msgstr "5 secondes plus tôt"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "5 seconds later"
+msgstr "5 secondes plus tard"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "720 × 1280: about 6 MB for 30 seconds, quick on mobile data."
+msgstr "720 × 1280 : environ 6 Mo pour 30 secondes, rapide avec les données mobiles."
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_company__ocd_clip_quality
+msgid "720 × 1280: about 6 MB for 30 seconds, quick on mobile data. 1080 × 1920: sharper, twice as heavy."
+msgstr "720 × 1280 : environ 6 Mo pour 30 secondes, rapide avec les données mobiles. 1080 × 1920 : plus net, deux fois plus lourd."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.product_clip
+msgid "<b><i class=\"o_ocd_onair_dot\" aria-hidden=\"true\"/>Seen in live</b>"
+msgstr "<b><i class=\"o_ocd_onair_dot\" aria-hidden=\"true\"/>Vu en live</b>"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_products_clips
+msgid "<span aria-hidden=\"true\">▶</span>"
+msgstr "<span aria-hidden=\"true\">▶</span>"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.clip_tile
+#: model_terms:ir.ui.view,arch_db:ocd_clips.product_clip
+#: model_terms:ir.ui.view,arch_db:ocd_clips.replay_clips
+msgid "<span class=\"o_ocd_clip_play\" aria-hidden=\"true\">▶</span>"
+msgstr "<span class=\"o_ocd_clip_play\" aria-hidden=\"true\">▶</span>"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "<span class=\"o_ocd_label\">The text, copied with the clip</span>"
+msgstr "<span class=\"o_ocd_label\">Le texte, copié avec le clip</span>"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.space_menu_clips
+msgid "<span>My clips</span>"
+msgstr "<span>Mes clips</span>"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "<span>Save</span>"
+msgstr "<span>Enregistrer</span>"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "<span>Send me the clip on WhatsApp</span>"
+msgstr "<span>M'envoyer le clip sur WhatsApp</span>"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "<span>Share</span>"
+msgstr "<span>Partager</span>"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/res_company.py:0
+msgid "A clip lasts between 5 and 60 seconds, at least shorter than at most."
+msgstr "Un clip dure entre 5 et 60 secondes, la durée au moins plus courte que la durée au plus."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.space_clips
+msgid "A clip of 30 seconds for each product shown, with its link. Share them on your status, TikTok and Reels: each clip brings customers to the product."
+msgstr "Un clip de 30 secondes pour chaque produit montré, avec son lien. Partage-les sur ton statut, TikTok et Reels : chaque clip ramène des clients vers le produit."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.res_partner_view_form_ocd_vendor_clips
+msgid ""
+"A clip of 30 seconds is made for each product shown in a live of OCD, with its short\n"
+"                            link: the vendor shares it on their status, TikTok and Reels, the site shows it on the\n"
+"                            product. « No clips »: the vendor refuses them, none is made of their lives and theirs\n"
+"                            are no longer shown."
+msgstr "Un clip de 30 secondes est fait pour chaque produit montré dans un live d'OCD, avec son lien court : le vendeur le partage sur son statut, TikTok et Reels, le site le montre sur le produit. « Pas de clips » : le vendeur les refuse, aucun n'est fait de ses lives et les siens ne s'affichent plus."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/res_company.py:0
+msgid "A clip starts between 0 and 15 seconds before the moment."
+msgstr "Un clip commence entre 0 et 15 secondes avant le moment."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "A part already sent halfway: choose the same file, it goes on."
+msgstr "Une partie déjà envoyée à moitié : choisis le même fichier, l'envoi continue."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_figures_clips
+msgid "A sale counts for a clip when the order comes in the 7 days after a visit by its link, from the same phone."
+msgstr "Une vente compte pour un clip quand la commande arrive dans les 7 jours après une visite par son lien, depuis le même téléphone."
+
+#. module: ocd_clips
+#: model:ocd.automation,trigger:ocd_clips.automation_clips_made
+msgid "A video sent, and every 10 minutes."
+msgstr "Une vidéo envoyée, et toutes les 10 minutes."
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__ocd_clip_link_base
+msgid "Address Of The Short Links"
+msgstr "Adresse des liens courts"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Address of the short links"
+msgstr "Adresse des liens courts"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/regie/regie_clips.xml:0
+msgid "After the live: the clips of the products"
+msgstr "Après le live : les clips des produits"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "All"
+msgstr "Tous"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "All the clips"
+msgstr "Tous les clips"
+
+#. module: ocd_clips
+#: model:ir.model.constraint,message:ocd_clips.constraint_ocd_live_clip_unique_code
+msgid "Another clip has this short link."
+msgstr "Un autre clip a ce lien court."
+
+#. module: ocd_clips
+#: model:ocd.automation,when:ocd_clips.automation_clips_made
+msgid "As soon as a video of a live arrives, and every 10 minutes"
+msgstr "Dès qu'une vidéo de live arrive, et toutes les 10 minutes"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Automatic clips"
+msgstr "Clips automatiques"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Automatic clips of the lives"
+msgstr "Clips automatiques des lives"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_ocd_automation
+msgid "Automation Of OCD Live"
+msgstr "Automatisation d'OCD Live"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Back to my clips"
+msgstr "Retour à mes clips"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Back to my products"
+msgstr "Retour à mes produits"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Back to my space"
+msgstr "Retour à mon espace"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_recording__state__checking
+msgid "Being Checked"
+msgstr "En vérification"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__state__processing
+msgid "Being Made"
+msgstr "En préparation"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_recording__state__uploading
+msgid "Being Sent"
+msgstr "En envoi"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+msgid "Being made"
+msgstr "En préparation"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Best clip: %(product)s, live of %(day)s (%(visits)s)"
+msgstr "Meilleur clip : %(product)s, live du %(day)s (%(visits)s)"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_ocd_live_clip__version
+msgid "Changes with the video (the address seen by the CDN)."
+msgstr "Change avec la vidéo (l'adresse vue par le CDN)."
+
+#. module: ocd_clips
+#: model:ocd.automation,actions:ocd_clips.automation_clips_made
+msgid ""
+"Check the video (readable, image and sound, its length).\n"
+"Make the clips one by one with ffmpeg, in low priority: 3 tries, then « Not made » with the reason.\n"
+"Delete the videos of the lives after their days (the clips stay)."
+msgstr ""
+"Vérifier la vidéo (lisible, image et son, sa durée).\n"
+"Faire les clips un par un avec ffmpeg, en basse priorité : 3 essais, puis « Pas fait » avec la raison.\n"
+"Effacer les vidéos des lives après leurs jours (les clips restent)."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clips
+msgid "Choose a live"
+msgstr "Choisir un live"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "Choose the video"
+msgstr "Choisir la vidéo"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/interactions/clip_player.js:0
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_form
+msgid "Clip"
+msgstr "Clip"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_ocd_live_clip
+msgid "Clip Of A Product Of A Live"
+msgstr "Clip d'un produit d'un live"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__ocd_clip_keep_removed_months
+msgid "Clip Of A Product Taken Off Sale: Kept"
+msgstr "Clip d'un produit retiré de la vente : gardé"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_vendor_count__kind__clip_play
+msgid "Clip Played"
+msgstr "Clip lu"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__ocd_clip_before_seconds
+msgid "Clip: Before The Moment"
+msgstr "Clip : avant le moment"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__ocd_clip_min_seconds
+msgid "Clip: Length At Least"
+msgstr "Clip : durée au moins"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__ocd_clip_max_seconds
+msgid "Clip: Length At Most"
+msgstr "Clip : durée au plus"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__ocd_clip_quality
+msgid "Clip: Quality"
+msgstr "Clip : qualité"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_dashboard.py:0
+#: model:ir.actions.act_window,name:ocd_clips.ocd_live_clip_action
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_booking__ocd_clip_ids
+#: model:ir.model.fields,field_description:ocd_clips.field_res_partner__ocd_clip_ids
+#: model:ir.model.fields,field_description:ocd_clips.field_res_users__ocd_clip_ids
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_automation__group__clips
+#: model:ir.ui.menu,name:ocd_clips.ocd_live_clip_menu
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_booking_view_form_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_clips.res_partner_view_form_ocd_vendor_clips
+msgid "Clips"
+msgstr "Clips"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_partner__ocd_clip_count
+#: model:ir.model.fields,field_description:ocd_clips.field_res_users__ocd_clip_count
+msgid "Clips Made"
+msgstr "Clips faits"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_booking__ocd_clip_count
+msgid "Clips Ready"
+msgstr "Clips prêts"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__ocd_clip_whatsapp_per_day
+msgid "Clips Sent On WhatsApp Per Day"
+msgstr "Clips envoyés sur WhatsApp par jour"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_partner__ocd_clips_sent_count
+#: model:ir.model.fields,field_description:ocd_clips.field_res_users__ocd_clips_sent_count
+msgid "Clips Sent On WhatsApp That Day"
+msgstr "Clips envoyés sur WhatsApp ce jour-là"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_booking__ocd_clips_told_at
+msgid "Clips Told At"
+msgstr "Clips annoncés le"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_sale_order__ocd_clip_visits
+msgid "Clips Visited"
+msgstr "Clips visités"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_dashboard.py:0
+msgid "Clips not made"
+msgstr "Clips pas faits"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_booking.py:0
+msgid "Clips of %s"
+msgstr "Clips de %s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Clips of a product taken off sale"
+msgstr "Clips d'un produit retiré de la vente"
+
+#. module: ocd_clips
+#: model:ocd.automation,name:ocd_clips.automation_clips_ready
+msgid "Clips ready: tell the vendor"
+msgstr "Clips prêts : prévenir le vendeur"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/interactions/clip_player.js:0
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "Close"
+msgstr "Fermer"
+
+#. module: ocd_clips
+#: model:ocd.automation,tools:ocd_clips.automation_clips_ready
+msgid "Code of OCD Live."
+msgstr "Code d'OCD Live."
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__product_id
+msgid "Colour Shown"
+msgstr "Couleur montrée"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_res_company
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__company_id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__create_uid
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__create_date
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: ocd_clips
+#: model:ocd.automation,tools:ocd_clips.automation_clips_video_missing
+msgid "Dashboard of OCD Live."
+msgstr "Tableau de bord d'OCD Live."
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_partner__ocd_clips_sent_day
+#: model:ir.model.fields,field_description:ocd_clips.field_res_users__ocd_clips_sent_day
+msgid "Day Of The Clips Sent On WhatsApp"
+msgstr "Jour des clips envoyés sur WhatsApp"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_company__ocd_clip_keep_days
+msgid "Days the video of a live stays on the server to make its clips again; the clips stay."
+msgstr "Jours pendant lesquels la vidéo d'un live reste sur le serveur pour refaire ses clips ; les clips restent."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_recording__state__deleted
+msgid "Deleted"
+msgstr "Effacée"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__delete_after
+msgid "Deleted After"
+msgstr "Effacée après"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Deleted after its days: the clips stay."
+msgstr "Effacée après ses jours : les clips restent."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Deleted after this long; the link of the clip leads to the boutique."
+msgstr "Effacés après ce délai ; le lien du clip mène alors à la boutique."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Delivery with a code, you pay at the door"
+msgstr "Livraison avec code, tu paies à la porte"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__error_detail
+msgid "Detail"
+msgstr "Détail"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_automation__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_booking__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_dashboard__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_regie__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_vendor_count__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_sale_order__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:ocd_clips.field_website__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Done: this clip is the video of your card in the feed of the lives."
+msgstr "C'est fait : ce clip est la vidéo de ta carte dans le fil des lives."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Done: this clip no longer shows on the site."
+msgstr "C'est fait : ce clip ne s'affiche plus sur le site."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Done: this clip shows again on the site."
+msgstr "C'est fait : ce clip s'affiche de nouveau sur le site."
+
+#. module: ocd_clips
+#: model:ir.module.module,summary:base.module_ocd_clips
+msgid "Each product shown in a live becomes a vertical clip of 30 seconds with its short link, to share on the WhatsApp statuses, TikTok and Reels; shown on the product page and the replay"
+msgstr "Chaque produit montré dans un live devient un clip vertical de 30 secondes avec son lien court, à partager sur les statuts WhatsApp, TikTok et Reels ; montré sur la fiche du produit et le replay"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__error
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Facebook"
+msgstr "Facebook"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_ocd_vendor_count
+msgid "Figures Of A Vendor, Day By Day"
+msgstr "Chiffres d'un vendeur, jour par jour"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__name
+msgid "File"
+msgstr "Fichier"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__start
+msgid "From (Seconds Of The Live)"
+msgstr "Depuis (secondes du live)"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "From a little before the moment noted by the control room, cut before the next product."
+msgstr "Depuis un peu avant le moment noté par la régie, coupé avant le produit suivant."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_figures_clips
+msgid "From my clips"
+msgstr "Venus des clips"
+
+#. module: ocd_clips
+#: model:ocd.automation,when:ocd_clips.automation_clips_video_missing
+msgid "From the day after a live with products shown"
+msgstr "Dès le lendemain d'un live avec des produits montrés"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_automation__group
+msgid "Group"
+msgstr "Groupe"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__height
+msgid "Height"
+msgstr "Hauteur"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__hidden
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+msgid "Hidden"
+msgstr "Masqué"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__hidden_by
+msgid "Hidden By"
+msgstr "Masqué par"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Hidden by the team"
+msgstr "Masqué par l'équipe"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Hidden by the vendor"
+msgstr "Masqué par le vendeur"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Hidden: no longer on the site"
+msgstr "Masqué : plus sur le site"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_list
+msgid "Hide"
+msgstr "Masquer"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Hide this clip"
+msgstr "Masquer ce clip"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_automation__id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_booking__id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_dashboard__id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_regie__id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_vendor_count__id
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__id
+#: model:ir.model.fields,field_description:ocd_clips.field_res_partner__id
+#: model:ir.model.fields,field_description:ocd_clips.field_sale_order__id
+#: model:ir.model.fields,field_description:ocd_clips.field_sale_order_line__id
+#: model:ir.model.fields,field_description:ocd_clips.field_website__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__poster
+msgid "Image"
+msgstr "Image"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "In their live of %(day)s, %(vendor)s presents this product. Touch to watch it (the video loads only then)."
+msgstr "Dans son live du %(day)s, %(vendor)s présente ce produit. Touche pour le voir (la vidéo ne se charge qu'à ce moment)."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "It leaves: the clip arrives in the conversation of OCD Live on WhatsApp."
+msgstr "C'est parti : le clip arrive dans la conversation d'OCD Live sur WhatsApp."
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_vendor_count__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__write_uid
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__write_date
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "Length"
+msgstr "Durée"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__duration
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__duration
+msgid "Length (Seconds)"
+msgstr "Durée (secondes)"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Length of a clip"
+msgstr "Durée d'un clip"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__booking_id
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__booking_id
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+msgid "Live"
+msgstr "Live"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_ocd_live_booking
+msgid "Live Booking"
+msgstr "Réservation de live"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Live of %(day)s · %(place)s"
+msgstr "Live du %(day)s · %(place)s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Live of %(day)s · at %(time)s"
+msgstr "Live du %(day)s · à %(time)s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_dashboard.py:0
+msgid "Live of %(vendor)s, %(day)s: send its video to make its clips"
+msgstr "Live de %(vendor)s, %(day)s : envoie sa vidéo pour faire ses clips"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Live of %s"
+msgstr "Live du %s"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__made_at
+msgid "Made At"
+msgstr "Fait le"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_form
+msgid "Make again"
+msgstr "Refaire"
+
+#. module: ocd_clips
+#: model:ocd.automation,name:ocd_clips.automation_clips_made
+msgid "Make the clips of the lives"
+msgstr "Faire les clips des lives"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__moment_id
+msgid "Moment"
+msgstr "Moment"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_company__ocd_clip_keep_removed_months
+msgid "Months after which the clips of a product no longer on sale are deleted."
+msgstr "Mois après lesquels les clips d'un produit qui n'est plus en vente sont effacés."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_figures_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_products_clips
+msgid "My clips"
+msgstr "Mes clips"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clips
+msgid "Newest first. A hidden clip no longer shows on the site; you can put it back."
+msgstr "Rangés du plus récent au plus ancien. Un clip masqué ne s'affiche plus sur le site ; tu peux le remettre."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__state__skipped
+msgid "No Clip"
+msgstr "Pas de clip"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_partner__ocd_clips_off
+#: model:ir.model.fields,field_description:ocd_clips.field_res_users__ocd_clips_off
+msgid "No Clips"
+msgstr "Pas de clips"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_products_clips
+msgid "No clip"
+msgstr "Pas de clip"
+
+#. module: ocd_clips
+#: model_terms:ir.actions.act_window,help:ocd_clips.ocd_live_clip_action
+msgid "No clip yet"
+msgstr "Pas encore de clip"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "No product was put on screen in the control room during this live: without its moments, no clip can be made."
+msgstr "Aucun produit n'a été mis à l'écran dans la régie pendant ce live : sans ses moments, aucun clip ne peut être fait."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "No video yet: send it after the live, its clips are made from it."
+msgstr "Pas encore de vidéo : envoie-la après le live, ses clips en sont tirés."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__state__failed
+msgid "Not Made"
+msgstr "Pas fait"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_recording.py:0
+msgid "Not enough space on the server for this video: %(free)s GB free, %(size)s GB needed."
+msgstr "Pas assez de place sur le serveur pour cette vidéo : %(free)s Go libres, %(size)s Go nécessaires."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__error_code__outside
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__reason__outside
+msgid "Not in the video of the live"
+msgstr "Pas dans la vidéo du live"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Not in the video of the live: check its shift or send the next part."
+msgstr "Pas dans la vidéo du live : vérifie son décalage ou envoie la partie suivante."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+msgid "Not made"
+msgstr "Pas faits"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Not on the site: the product is not on sale"
+msgstr "Pas sur le site : le produit n'est pas en vente"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Not sent: %s clips a day at most on WhatsApp. Use « Save », then share it from your phone."
+msgstr "Pas envoyé : %s clips par jour au plus sur WhatsApp. Utilise « Enregistrer », puis partage-le depuis ton téléphone."
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_ocd_live_regie
+msgid "OCD Live Control Room"
+msgstr "Régie OCD Live"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_ocd_live_dashboard
+msgid "OCD Live Dashboard"
+msgstr "Tableau de bord OCD Live"
+
+#. module: ocd_clips
+#: model:ir.module.module,shortdesc:base.module_ocd_clips
+msgid "OCD Live: Automatic Clips Of The Lives"
+msgstr "OCD Live : clips automatiques des lives"
+
+#. module: ocd_clips
+#: model:ir.actions.server,name:ocd_clips.ir_cron_clips_ir_actions_server
+msgid "OCD Live: make the clips of the lives"
+msgstr "OCD Live : faire les clips des lives"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "On the form of the vendor, tab « Clips »: no clip is made of their lives, and theirs are no longer shown."
+msgstr "Sur la fiche du vendeur, onglet « Clips » : aucun clip n'est fait de ses lives, et les siens ne s'affichent plus."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_form
+msgid "On the site"
+msgstr "Sur le site"
+
+#. module: ocd_clips
+#: model:ir.model.constraint,message:ocd_clips.constraint_ocd_live_clip_unique_product
+msgid "One clip per product and per live."
+msgstr "Un clip par produit et par live."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Only the team of OCD Live sends the videos of the lives."
+msgstr "Seule l'équipe d'OCD Live envoie les vidéos des lives."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Order on OCD Live"
+msgstr "Commande sur OCD Live"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__sequence
+msgid "Part"
+msgstr "Partie"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Per vendor and per day."
+msgstr "Par vendeur et par jour."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Play the clip of %s"
+msgstr "Lire le clip de %s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Play the clip of the live"
+msgstr "Lire le clip du live"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__play_count
+msgid "Plays"
+msgstr "Lectures"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_figures_clips
+msgid "Plays on the site"
+msgstr "Lectures sur le site"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/interactions/clip_share.js:0
+msgid "Preparing the clip…"
+msgstr "Préparation du clip…"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__processing_since
+msgid "Processing Since"
+msgstr "En préparation depuis"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__product_tmpl_id
+msgid "Product"
+msgstr "Produit"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Quality of the clips"
+msgstr "Qualité des clips"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__state__ready
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_recording__state__ready
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+msgid "Ready"
+msgstr "Prêt"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/interactions/clip_share.js:0
+msgid "Ready: touch again to share"
+msgstr "Prêt : touche encore pour partager"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__received
+msgid "Received (Bytes)"
+msgstr "Reçu (octets)"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__received_at
+msgid "Received At"
+msgstr "Reçue le"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Received, being checked."
+msgstr "Reçue, en vérification."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Received: waits for ffmpeg, not installed on the server (apt-get install ffmpeg)."
+msgstr "Reçue : attend ffmpeg, pas installé sur le serveur (apt-get install ffmpeg)."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Reels"
+msgstr "Reels"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_recording__state__refused
+msgid "Refused"
+msgstr "Refusée"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "Remove"
+msgstr "Retirer"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "Remove this part of the video? Its clips are planned again."
+msgstr "Retirer cette partie de la vidéo ? Ses clips sont prévus à nouveau."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__order_count
+msgid "Sales"
+msgstr "Ventes"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Ligne de bon de commande"
+
+#. module: ocd_clips
+#: model:ocd.automation,tools:ocd_clips.automation_clips_made
+msgid "Scheduled task and ffmpeg."
+msgstr "Tâche planifiée et ffmpeg."
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_company__ocd_clip_max_seconds
+msgid "Seconds at most of a clip of a product (a WhatsApp status takes 60 seconds, a clip of 30 is shared most)."
+msgstr "Secondes au plus d'un clip de produit (un statut WhatsApp prend 60 secondes, un clip de 30 est le plus partagé)."
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_company__ocd_clip_before_seconds
+msgid "Seconds kept before the moment noted by the control room: the time to present the product."
+msgstr "Secondes gardées avant le moment noté par la régie : le temps de présenter le produit."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "See"
+msgstr "Voir"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.space_clips
+msgid "See my clips"
+msgstr "Voir mes clips"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Seen in live"
+msgstr "Vu en live"
+
+#. module: ocd_clips
+#: model_terms:ir.actions.act_window,help:ocd_clips.ocd_live_clip_action
+msgid ""
+"Send the video of a live with products shown in the control room (« Clips » on the live): a clip of\n"
+"                30 seconds is made for each product, with its short link."
+msgstr "Envoie la vidéo d'un live dont les produits ont été montrés dans la régie (« Clips » sur le live) : un clip de 30 secondes est fait pour chaque produit, avec son lien court."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/regie/regie_clips.xml:0
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "Send the video of the live"
+msgstr "Envoyer la vidéo du live"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "Sending stopped: choose the same file again to go on where it stopped."
+msgstr "Envoi arrêté : choisis à nouveau le même fichier pour reprendre où il s'est arrêté."
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__user_id
+msgid "Sent By"
+msgstr "Envoyée par"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_ocd_live_settings
+msgid "Settings Page Of OCD Live"
+msgstr "Page des paramètres d'OCD Live"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Share the clip"
+msgstr "Partager le clip"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__code
+msgid "Short Link"
+msgstr "Lien court"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_form
+msgid "Short link"
+msgstr "Lien court"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_company__ocd_clip_min_seconds
+msgid "Shorter (the next product shown too soon), no clip rather than a confused one."
+msgstr "Plus court (le produit suivant montré trop tôt), pas de clip plutôt qu'un clip confus."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Shorter than the length at most."
+msgstr "Plus court que la durée au plus."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_list
+msgid "Show"
+msgstr "Afficher"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Show it in your next live: its clip makes itself."
+msgstr "Montre-le dans ton prochain live : son clip se fait tout seul."
+
+#. module: ocd_clips
+#: model:ocd.automation,actions:ocd_clips.automation_clips_video_missing
+msgid "Show them in « To do now », with the screen to send the video."
+msgstr "Les montrer dans « À faire maintenant », avec l'écran pour envoyer la vidéo."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Show this clip again"
+msgstr "Afficher de nouveau ce clip"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__video_size
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__size
+msgid "Size (Bytes)"
+msgstr "Taille (octets)"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_figures_clips
+msgid "Sold"
+msgstr "Vendu"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_sale_order_line__ocd_clip_id
+msgid "Sold By The Clip"
+msgstr "Vendu par le clip"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_ocd_live_recording__warning
+msgid "Something to check, the clips are made all the same."
+msgstr "Quelque chose à vérifier, les clips sont faits quand même."
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__has_sound
+msgid "Sound"
+msgstr "Son"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__offset_seconds
+msgid "Starts At (Seconds Of The Live)"
+msgstr "Commence à (secondes du live)"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Starts at %s of the live"
+msgstr "Commence à %s du live"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__state
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__state
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+msgid "State"
+msgstr "État"
+
+#. module: ocd_clips
+#: model:ocd.automation,actions:ocd_clips.automation_clips_ready
+msgid "Tell them on WhatsApp that their clips are ready, with « See my clips »."
+msgstr "Le prévenir sur WhatsApp que ses clips sont prêts, avec « Voir mes clips »."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Text copied: paste it under the clip."
+msgstr "Texte copié : colle-le sous le clip."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__hidden_by__team
+msgid "The Team"
+msgstr "L'équipe"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__hidden_by__vendor
+msgid "The Vendor"
+msgstr "Le vendeur"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_company__ocd_clip_link_base
+msgid "The address written in the clips before /p/K7Q2AB (e.g. https://ocdlive.com). Empty: the address of the site."
+msgstr "L'adresse écrite dans les clips avant /p/K7Q2AB (ex. https://ocdlive.com). Vide : l'adresse du site."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_form
+msgid "The clip"
+msgstr "Le clip"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "The clip could not be made: %s"
+msgstr "Le clip n'a pas pu être fait : %s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "The clips are made on the server, one live at a time (a few minutes for a live). The video of the live is deleted after %s days; the clips stay."
+msgstr "Les clips se font sur le serveur, un live à la fois (quelques minutes pour un live). La vidéo du live est effacée après %s jours ; les clips restent."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "The clips come once the video of the live is received: one for each product put on screen in the control room."
+msgstr "Les clips arrivent une fois la vidéo du live reçue : un pour chaque produit mis à l'écran dans la régie."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "The clips of the live"
+msgstr "Les clips du live"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_sale_order__ocd_clip_visits
+msgid "The clips whose short link the customer opened, with the hour of the visit: the lines of their product count for the clip when the order comes in the 7 days after."
+msgstr "Les clips dont le client a ouvert le lien court, avec l'heure de la visite : les lignes de leur produit comptent pour le clip quand la commande arrive dans les 7 jours qui suivent."
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_sale_order_line__ocd_clip_id
+msgid "The customer opened the short link of this clip in the 7 days before the order."
+msgstr "Le client a ouvert le lien court de ce clip dans les 7 jours avant la commande."
+
+#. module: ocd_clips
+#: model:ocd.automation,trigger:ocd_clips.automation_clips_video_missing
+msgid "The dashboard, at each look."
+msgstr "Le tableau de bord, à chaque visite."
+
+#. module: ocd_clips
+#: model:ocd.automation,trigger:ocd_clips.automation_clips_ready
+msgid "The last clip of the live made (or not possible)."
+msgstr "Le dernier clip du live fait (ou impossible)."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_recording.py:0
+msgid "The live is not confirmed."
+msgstr "Le live n'est pas confirmé."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "The live started at %s (« The live starts » touched in the control room): the moments count from there."
+msgstr "Le live a commencé à %s (« Le live commence » touché dans la régie) : les moments partent de là."
+
+#. module: ocd_clips
+#: model:ocd.automation,scope:ocd_clips.automation_clips_video_missing
+msgid "The lives of the last 3 days with products shown in the control room and no video sent; the clips not made of the week."
+msgstr "Les lives des 3 derniers jours avec des produits montrés dans la régie et sans vidéo envoyée ; les clips pas faits de la semaine."
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_ocd_live_clip__error_detail
+msgid "The message of the server, for the developers."
+msgstr "Le message du serveur, pour les développeurs."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "The network cut: tries again in %s s."
+msgstr "Le réseau a coupé : nouvel essai dans %s s."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__reason__too_close
+msgid "The next product comes too soon"
+msgstr "Le produit suivant arrive trop tôt"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "The preview of the first moment (%(product)s, at %(time)s) plays again after each shift: the product must be on screen at its first seconds."
+msgstr "L'aperçu du premier moment (%(product)s, à %(time)s) se rejoue à chaque réglage : le produit doit être à l'écran dès ses premières secondes."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "The recording of the studio, or the video downloaded from the account of OCD Live (TikTok, Facebook and YouTube offer it to their owner). MP4 or MOV, 4 GB at most. Sent in pieces: if the network cuts, it goes on where it stopped."
+msgstr "L'enregistrement du studio, ou la vidéo téléchargée du compte d'OCD Live (TikTok, Facebook et YouTube la proposent à leur propriétaire). MP4 ou MOV, 4 Go au plus. Envoyée par morceaux : si le réseau coupe, elle reprend où elle s'est arrêtée."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "The recording starts %s before the live"
+msgstr "L'enregistrement commence %s avant le live"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.product_clip
+msgid "The replay at this moment"
+msgstr "Le replay à ce moment"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "The server"
+msgstr "Le serveur"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__error_code__stopped
+msgid "The server stopped"
+msgstr "Le serveur s'est arrêté"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "The server stopped while making the clip."
+msgstr "Le serveur s'est arrêté pendant la préparation du clip."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "The server took too long to make the clip."
+msgstr "Le serveur a mis trop de temps à faire le clip."
+
+#. module: ocd_clips
+#: model:ocd.automation,scope:ocd_clips.automation_clips_ready
+msgid "The vendor of the live, once per live; nothing to the customers."
+msgstr "Le vendeur du live, une fois par live ; rien aux clients."
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_partner__ocd_clips_off
+#: model:ir.model.fields,help:ocd_clips.field_res_users__ocd_clips_off
+msgid "The vendor refuses the clips: none is made of their lives, theirs are no longer shown on the site."
+msgstr "Le vendeur refuse les clips : aucun n'est fait de ses lives, les siens ne s'affichent plus sur le site."
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_ocd_live_booking__ocd_clips_told_at
+msgid "The vendor was told on WhatsApp that the clips of the live are ready."
+msgstr "Le vendeur a été prévenu sur WhatsApp que les clips du live sont prêts."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__reason__unreadable
+msgid "The video cannot be read"
+msgstr "La vidéo est illisible"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__reason__failed
+msgid "The video could not be made"
+msgstr "La vidéo n'a pas pu être faite"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "The video could not be made (ffmpeg)."
+msgstr "La vidéo n'a pas pu être faite (ffmpeg)."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "The video could not be sent."
+msgstr "La vidéo n'a pas pu être envoyée."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_recording.py:0
+msgid "The video has no sound: the clips will be silent."
+msgstr "La vidéo n'a pas de son : les clips seront muets."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_recording.py:0
+msgid "The video is too heavy: %s GB at most."
+msgstr "La vidéo est trop lourde : %s Go au plus."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "The video is too heavy: 4 GB at most."
+msgstr "La vidéo est trop lourde : 4 Go au plus."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_recording.py:0
+msgid "The video lasts %(video)s, the last moment is at %(moment)s: check the shift, or send the next part."
+msgstr "La vidéo dure %(video)s, le dernier moment est à %(moment)s : vérifie le décalage, ou envoie la partie suivante."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__error_code__no_video
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__reason__no_video
+msgid "The video of the live is deleted"
+msgstr "La vidéo du live est effacée"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "The video of the live is no longer on the server (deleted after its days)."
+msgstr "La vidéo du live n'est plus sur le serveur (effacée après ses jours)."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "The video of your card in the feed"
+msgstr "La vidéo de ta carte du fil"
+
+#. module: ocd_clips
+#: model:ocd.automation,scope:ocd_clips.automation_clips_made
+msgid "The videos received and the clips to make, one after the other."
+msgstr "Les vidéos reçues et les clips à faire, l'un après l'autre."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "This clip could not become the video of your card."
+msgstr "Ce clip n'a pas pu devenir la vidéo de ta carte."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "This clip is no longer there."
+msgstr "Ce clip n'est plus là."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/res_partner.py:0
+msgid "This clip is not ready."
+msgstr "Ce clip n'est pas prêt."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_recording.py:0
+msgid "This file cannot be read as a video: send the video of the live in MP4 or MOV."
+msgstr "Ce fichier ne se lit pas comme une vidéo : envoie la vidéo du live en MP4 ou MOV."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_recording.py:0
+msgid "This file is empty."
+msgstr "Ce fichier est vide."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "This part of the video is no longer there."
+msgstr "Cette partie de la vidéo n'est plus là."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "This vendor refuses the clips (« No clips » on their form)."
+msgstr "Ce vendeur refuse les clips (« Pas de clips » sur sa fiche)."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "This vendor refuses the clips (« No clips » on their form): no clip is made of their lives."
+msgstr "Ce vendeur refuse les clips (« Pas de clips » sur sa fiche) : aucun clip n'est fait de ses lives."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "TikTok"
+msgstr "TikTok"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__state__queued
+msgid "To Make"
+msgstr "À faire"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "To make its clips again; then deleted, the clips stay."
+msgstr "Pour refaire ses clips ; puis effacée, les clips restent."
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__token
+msgid "Token"
+msgstr "Jeton"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__error_code__too_slow
+msgid "Too long to make"
+msgstr "Trop long à faire"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.replay_clips
+msgid "Touch a clip to play it here; « See » opens the product, with the colour shown."
+msgstr "Toucher un clip le joue dans la page ; « Voir » ouvre le produit, avec la couleur montrée."
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__tries
+msgid "Tries"
+msgstr "Essais"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Type the address only, beginning with https://."
+msgstr "Tape seulement l'adresse, qui commence par https://."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__error_code__crash
+msgid "Unexpected error"
+msgstr "Erreur imprévue"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__vendor_id
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_search
+msgid "Vendor"
+msgstr "Vendeur"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__version
+msgid "Version"
+msgstr "Version"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__video
+msgid "Video"
+msgstr "Vidéo"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__state__deleted
+msgid "Video Deleted"
+msgstr "Vidéo effacée"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_ocd_live_recording
+msgid "Video Of A Live"
+msgstr "Vidéo d'un live"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_res_company__ocd_clip_keep_days
+msgid "Video Of A Live: Kept"
+msgstr "Vidéo d'un live : gardée"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_booking__ocd_recording_ids
+msgid "Video Of The Live"
+msgstr "Vidéo du live"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Video being sent: %s %%"
+msgstr "Vidéo en envoi : %s %%"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Video of a live kept"
+msgstr "Vidéo d'un live gardée"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Video of my card in the feed"
+msgstr "Vidéo de ma carte du fil"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_clips.ocd_live_clip_view_list
+msgid "Video of the live"
+msgstr "Vidéo du live"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/regie/regie_clips.xml:0
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model:ir.actions.client,name:ocd_clips.ocd_clips_screen_action
+msgid "Video of the live and clips"
+msgstr "Vidéo du live et clips"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Video of the live deleted after its days; the clips stay."
+msgstr "Vidéo du live effacée après ses jours ; les clips restent."
+
+#. module: ocd_clips
+#: model:ocd.automation,name:ocd_clips.automation_clips_video_missing
+msgid "Video of the live not sent: in « To do »"
+msgstr "Vidéo du live pas envoyée : dans « À faire »"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Video received, being checked."
+msgstr "Vidéo reçue, en vérification."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.js:0
+msgid "Video received: it is checked, then the clips are made."
+msgstr "Vidéo reçue : elle est vérifiée, puis les clips sont faits."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "Video refused: send the video of the live in MP4 or MOV."
+msgstr "Vidéo refusée : envoie la vidéo du live en MP4 ou MOV."
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_vendor_count__kind__clip_visit
+msgid "Visit By A Clip"
+msgstr "Visite par un clip"
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__visit_count
+msgid "Visits"
+msgstr "Visites"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_figures_clips
+msgid "Visits by their links"
+msgstr "Visites par leurs liens"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__warning
+msgid "Warning"
+msgstr "À vérifier"
+
+#. module: ocd_clips
+#: model:ir.model,name:ocd_clips.model_website
+msgid "Website"
+msgstr "Site Web"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__error_code
+msgid "What Happened"
+msgstr "Ce qui s'est passé"
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "WhatsApp status"
+msgstr "Statut WhatsApp"
+
+#. module: ocd_clips
+#: model:ocd.automation,when:ocd_clips.automation_clips_ready
+msgid "When the clips of a live are all made"
+msgstr "Quand les clips d'un live sont tous faits"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_ocd_live_recording__offset_seconds
+msgid "Where this part starts in the live, from its real start. Negative: the recording started before the live."
+msgstr "Où cette partie commence dans le live, depuis son vrai début. Négatif : l'enregistrement a commencé avant le live."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "Where to share it"
+msgstr "Où le partager"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_clip__reason
+msgid "Why"
+msgstr "Pourquoi"
+
+#. module: ocd_clips
+#: model:ir.model.fields,field_description:ocd_clips.field_ocd_live_recording__width
+msgid "Width"
+msgstr "Largeur"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "Written in the clips before /p/K7Q2AB. Empty: the address of the site."
+msgstr "Écrite dans les clips avant /p/K7Q2AB. Vide : l'adresse du site."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clips
+msgid "You asked for no clips: none is made of your lives. Ask the team to start them again."
+msgstr "Tu as demandé à ne pas avoir de clips : aucun n'est fait de tes lives. Demande à l'équipe de les relancer."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Your %s clips are ready"
+msgstr "Tes %s clips sont prêts"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "Your clip is ready"
+msgstr "Ton clip est prêt"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/controllers/vendor_clips.py:0
+msgid "Your clips come after your next live with OCD: a clip of 30 seconds for each product shown, with its link."
+msgstr "Tes clips arrivent après ton prochain live avec OCD : un clip de 30 secondes pour chaque produit montré, avec son lien."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "clips at most"
+msgstr "clips au plus"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "days"
+msgstr "jours"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__error_code__ffmpeg
+msgid "ffmpeg failed"
+msgstr "ffmpeg a échoué"
+
+#. module: ocd_clips
+#: model:ir.model.fields.selection,name:ocd_clips.selection__ocd_live_clip__error_code__no_ffmpeg
+msgid "ffmpeg is not installed"
+msgstr "ffmpeg n'est pas installé"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "ffmpeg is not installed on the server."
+msgstr "ffmpeg n'est pas installé sur le serveur."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "ffmpeg is not installed on the server: the clips cannot be made (apt-get install ffmpeg)."
+msgstr "ffmpeg n'est pas installé sur le serveur : les clips ne peuvent pas être faits (apt-get install ffmpeg)."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "ffmpeg is there; %(free)s GB free for the videos of the lives (1 to 3 GB each, kept a few days)."
+msgstr "ffmpeg est là ; %(free)s Go libres pour les vidéos des lives (1 à 3 Go chacune, gardées quelques jours)."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "image and sound checked"
+msgstr "image et son vérifiés"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "image checked, no sound"
+msgstr "image vérifiée, pas de son"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "months"
+msgstr "mois"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "remote"
+msgstr "à distance"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "seconds at least, else no clip"
+msgstr "secondes au moins, sinon pas de clip"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "seconds at most"
+msgstr "secondes au plus"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "seconds before the moment"
+msgstr "secondes avant le moment"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_clip.py:0
+msgid "studio of %s"
+msgstr "studio de %s"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "« No clips » for a vendor"
+msgstr "« Pas de clips » pour un vendeur"
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_live_settings.py:0
+msgid "« Send me the clip on WhatsApp »"
+msgstr "« M'envoyer le clip sur WhatsApp »"
+
+#. module: ocd_clips
+#: model:ir.model.fields,help:ocd_clips.field_res_company__ocd_clip_whatsapp_per_day
+msgid "« Send me the clip on WhatsApp »: per vendor and per day, at most."
+msgstr "« M'envoyer le clip sur WhatsApp » : par vendeur et par jour, au plus."
+
+#. module: ocd_clips
+#: model_terms:ir.ui.view,arch_db:ocd_clips.vendor_clip
+msgid "« Share » sends the video itself, with the text: you choose the status, TikTok, Reels or Facebook. On TikTok and Reels a link cannot be touched: it is written in the video and in the text. The price of the text is the one of now (promo included). A phone that cannot share a video: « Send me the clip on WhatsApp », then forward it to your status."
+msgstr "« Partager » envoie la vidéo elle-même, avec le texte : tu choisis le statut, TikTok, Reels ou Facebook. Sur TikTok et Reels, un lien ne se touche pas : il est écrit dans la vidéo et dans le texte. Le prix du texte est celui du moment (promo comprise). Un téléphone qui ne sait pas partager une vidéo : « M'envoyer le clip sur WhatsApp », puis le transférer sur le statut."
+
+#. module: ocd_clips
+#. odoo-python
+#: code:addons/ocd_clips/models/ocd_clips_screen.py:0
+msgid "« The live starts » was not touched in the control room: the moments count from the hour booked (%s)."
+msgstr "« Le live commence » n'a pas été touché dans la régie : les moments partent de l'heure réservée (%s)."
+
+#. module: ocd_clips
+#. odoo-javascript
+#: code:addons/ocd_clips/static/src/screen/screen.xml:0
+msgid "− 5 s"
+msgstr "− 5 s"

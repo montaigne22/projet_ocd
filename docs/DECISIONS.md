@@ -512,6 +512,45 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     la fin des promos (« jusqu'à dimanche 7 décembre à 23 h » pour plusieurs jours) ; aucun message pour
     un événement sans vendeur accepté. Les textes des modèles marchent pour un seul vendeur comme pour
     plusieurs (« Vendeurs en live : 1 »).
+- **Clips automatiques** (chantier 8 ; maquette `ClipsAutomatiques` validée le 18 novembre 2026, avec ses
+  choix et ses recommandations « Pour que ça tienne en vrai ») :
+  - **la vidéo vient de l'équipe** (l'enregistrement du studio, ou la vidéo téléchargée du compte d'OCD
+    Live), jamais téléchargée automatiquement des plateformes. Envoyée par morceaux de 8 Mo, 4 Go au plus ;
+    un envoi coupé reprend en choisissant le même fichier ; la place sur le serveur est vérifiée avant ; un
+    envoi abandonné est effacé après 24 h. Les vidéos des lives restent hors de la base et des sauvegardes
+    et sont effacées après 7 jours (réglable) ; les clips restent ;
+  - **le vrai début du live** : « Le live commence » dans la régie (de 30 minutes avant l'heure réservée
+    jusqu'à la fin) ; sans lui, l'heure réservée. Les moments déjà notés sont recomptés ;
+  - **une vidéo en plusieurs parties** : chaque partie commence où la précédente finit, réglable à 5 s près
+    avec un aperçu du premier moment ; un réglage ne refait que les clips de cette partie ;
+  - **un clip par produit et par live** : le moment du produit qui a le plus de place avant le produit
+    suivant ; 3 s avant le moment, 30 s au plus, coupé 1 s avant le produit suivant, 12 s au moins, sinon
+    « Pas de clip » (réglables). Un clip refait garde son lien court (il est peut-être déjà partagé) ;
+  - **le lien court** : `/p/` et 6 lettres sans 0, O, 1, I ni L ; l'adresse du site, ou une adresse plus
+    courte réglable. Il mène au produit avec la couleur montrée, sinon à la boutique, sinon au shop, jamais
+    à une erreur. Les clips d'un produit retiré de la vente depuis 3 mois (réglable) perdent leur vidéo mais
+    gardent leur lien ;
+  - **ce qui s'affiche** : un clip seulement si son produit est en vente, son vendeur actif et sans « Pas de
+    clips » ; le vendeur ou l'équipe le masque ; sur la fiche produit, le clip le plus récent, lu au
+    toucher (rien ne se charge avant) ;
+  - **des chiffres honnêtes** : une visite par téléphone et par jour, sans les robots (aperçus de WhatsApp,
+    TikTok, Facebook, navigateurs sans écran), ni le vendeur ni l'équipe ; une lecture comptée une fois par
+    page vue. Une vente compte pour un clip si la commande arrive dans les 7 jours après la visite par son
+    lien, depuis le même téléphone (le panier garde le clip) ; avec plusieurs clips, la dernière visite ;
+    « Venus des clips » dans Mes chiffres (OCD Business) ;
+  - **un serveur qui reste rapide** : chaque clip est une tâche notée en base, prise par un seul serveur
+    (son essai compté dès qu'il la prend), 3 essais à des passages différents de la tâche planifiée, reprise
+    après 30 minutes si le serveur s'est arrêté ; une erreur imprévue sur un clip n'arrête pas les autres ;
+    ffmpeg en basse priorité, 2 threads. Les messages d'erreur s'écrivent dans la langue de la personne
+    qui les lit ;
+  - **le partage** : « Partager » envoie la vidéo elle-même et son texte (copié aussi : TikTok et Reels ne
+    gardent que la vidéo) au prix du moment, promo comprise ; une vidéo trop longue à préparer demande un
+    second toucher. « M'envoyer le clip sur WhatsApp » part même sans l'accord aux notifications (le
+    vendeur le demande), 10 par jour au plus, et ne s'affiche que quand son modèle peut partir. Un clip
+    devient la vidéo de la carte du fil tel quel (il est déjà au bon format) ;
+  - **WhatsApp** : un nouveau type d'en-tête « vidéo » dans `whatsapp_cloud` : la vidéo est prise du
+    document au moment de l'envoi (une copie, 16 Mo au plus), l'exemple pour Meta est la vidéo donnée sur
+    le modèle ou celle du dernier document.
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

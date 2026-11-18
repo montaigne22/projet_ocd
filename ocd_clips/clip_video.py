@@ -100,12 +100,13 @@ def _brand_width(draw, k, label):
     name_width = draw.textlength("OCD", font=_font(EXTRABOLD, 24 * k))
     live_width = draw.textlength("LIVE", font=_font(EXTRABOLD, 15 * k)) + round(26 * k)
     label_width = draw.textlength(label, font=_font(BOLD, 21 * k)) if label else 0
-    return round(8 * k) + round(40 * k) + round(8 * k) + name_width + round(8 * k) + live_width + (
-        round(10 * k) + label_width if label else 0) + round(14 * k)
+    return round(round(8 * k) + round(40 * k) + round(8 * k) + name_width + round(8 * k) + live_width + (
+        round(10 * k) + label_width if label else 0) + round(14 * k))
 
 
 def _brand(image, draw, left, top, k, label):
     """« (logo) OCD ● LIVE Seen in live » at (left, top); return its width."""
+    left, top = round(left), round(top)
     height = round(52 * k)
     logo = _logo(round(40 * k))
     pad = round(8 * k)
@@ -218,6 +219,8 @@ def probe(path):
     """{duration, width, height, sound} of the video at `path` (its rotation taken into account);
     raise ClipError("unreadable") when it has no image."""
     ffprobe = shutil.which("ffprobe")
+    if not ffprobe and not media.ffmpeg():
+        raise ClipError("no_ffmpeg")
     if ffprobe:
         try:
             code, stdout, _stderr = media.run(

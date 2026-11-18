@@ -1,9 +1,13 @@
+import io
 import json
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import requests
 
+from PIL import Image
+
 from odoo.tests import tagged
+from odoo.tools import BinaryBytes
 
 from odoo.addons.whatsapp_cloud import const
 
@@ -256,6 +260,63 @@ class TestWhatsAppCloud(WhatsAppCommon):
         ]})
         self.assertEqual(message.state, "sent")
 
+    def test_video_header(self):
+        """A video in the header (a clip of a live...): taken from a field of the document when the
+        message is sent, uploaded to Meta, sent as a video."""
+        self.template.write({"header_type": "video", "header_video_field": "image_1920"})
+        output = io.BytesIO()
+        Image.new("RGB", (8, 8), "orange").save(output, format="PNG")
+        self.partner.image_1920 = BinaryBytes(output.getvalue())
+        message = self.template._send(self.partner)
+        self.assertFalse(message.attachment_id, "Taken when the message is sent")
+        answers = [mock_response({"id": "media-7"}), mock_response({"messages": [{"id": "wamid.7"}]})]
+        with patch(REQUEST, side_effect=answers) as request:
+            message._send()
+        upload, send = request.call_args_list
+        self.assertEqual(upload.kwargs["data"]["type"], "video/mp4")
+        header = send.kwargs["json"]["template"]["components"][0]
+        self.assertEqual(header, {"type": "header", "parameters": [{"type": "video", "video": {"id": "media-7"}}]})
+        self.assertEqual(message.state, "sent")
+        self.assertEqual(message.attachment_id.res_model, "whatsapp.message", "A copy: the field keeps its video")
+        self.assertTrue(self.partner.image_1920)
+        # No video: the message fails at once and says why
+        self.partner.image_1920 = False
+        message = self.template._send(self.partner)
+        with patch(REQUEST) as request:
+            message._send()
+            request.assert_not_called()
+        self.assertEqual(message.state, "failed")
+        self.assertIn("no longer exists", message.error)
+
+    def test_video_header_submitted_to_meta(self):
+        self.account.app_id = "4440004"
+        self.template.write({
+            "header_type": "video", "header_video_field": "image_1920",
+            "header_sample_file": BinaryBytes(b"\x00\x00\x00\x18ftypmp42sample"),
+            "header_sample_filename": "clip.mp4",
+        })
+        session = MagicMock(**{"json.return_value": {"id": "upload:1"}})
+        uploaded = MagicMock(**{"json.return_value": {"h": "4::handle"}})
+        with patch("odoo.addons.whatsapp_cloud.models.whatsapp_template.requests.post",
+                   side_effect=[session, uploaded]) as post:
+            components = self.template._prepare_meta_components(self.account)
+        self.assertEqual(post.call_args_list[0].kwargs["params"]["file_type"], "video/mp4")
+        self.assertEqual(post.call_args_list[1].kwargs["data"], b"\x00\x00\x00\x18ftypmp42sample")
+        self.assertEqual(components[0], {"type": "HEADER", "format": "VIDEO", "example": {"header_handle": ["4::handle"]}})
+        # Without a sample: the video of the latest document that has one
+        output = io.BytesIO()
+        Image.new("RGB", (8, 8), "green").save(output, format="PNG")
+        self.partner.image_1920 = BinaryBytes(output.getvalue())
+        self.env["res.partner"].create({"name": "Newer, without video"})
+        self.template.header_sample_file = False
+        session = MagicMock(**{"json.return_value": {"id": "upload:2"}})
+        uploaded = MagicMock(**{"json.return_value": {"h": "4::other"}})
+        with patch("odoo.addons.whatsapp_cloud.models.whatsapp_template.requests.post",
+                   side_effect=[session, uploaded]) as post:
+            components = self.template._prepare_meta_components(self.account)
+        self.assertEqual(post.call_args_list[1].kwargs["data"], output.getvalue())
+        self.assertEqual(components[0]["example"], {"header_handle": ["4::other"]})
+
     def test_document_header_made_when_sent(self):
         """The flow that queues a message never waits for its PDF: it is made when the message
         is sent; when it cannot be made, the message says why, is tried again, then fails."""
@@ -379,6 +440,15 @@ class TestWhatsAppCloud(WhatsAppCommon):
                 ]},
             ],
         }, {
+            "name": "clip_video",
+            "language": "fr",
+            "status": "APPROVED",
+            "category": "UTILITY",
+            "components": [
+                {"type": "HEADER", "format": "VIDEO"},
+                {"type": "BODY", "text": "Ton clip {{1}} est prêt."},
+            ],
+        }, {
             "name": "provided",
             "language": "fr",
             "status": "PAUSED",
@@ -394,6 +464,7 @@ class TestWhatsAppCloud(WhatsAppCommon):
         self.assertEqual(template.account_id, self.account)
         self.assertEqual(template.status, "approved")
         self.assertEqual(template.header_type, "document")
+        self.assertEqual(Template.search([("template_name", "=", "clip_video")]).header_type, "video")
         self.assertEqual(template.variable_ids.mapped("placeholder"), ["{{1}}", "{{2}}"])
         self.assertTrue(template.button_url_dynamic)
         # The template provided by a module is updated, not duplicated.

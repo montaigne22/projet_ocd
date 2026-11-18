@@ -1,0 +1,236 @@
+// « Video of the live and clips », as in the validated design (ClipsAutomatiques, back office)
+.o_ocd_clips_body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.o_ocd_clips_card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 1100px;
+    padding: 14px 16px;
+    background: #FFFFFF;
+    border: 1px solid $ocd-bo-line;
+    border-radius: 12px;
+    h2 {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 17px;
+    }
+    p {
+        margin: 0;
+    }
+}
+.o_ocd_clips_muted {
+    color: $ocd-bo-muted;
+    font-size: 13.5px;
+}
+.o_ocd_clips_warn {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px dashed $ocd-yellow-line;
+    background: $ocd-yellow-soft;
+    color: $ocd-yellow-text;
+}
+.o_ocd_clips_warn_text {
+    color: $ocd-yellow-text;
+    font-weight: 600;
+}
+.o_ocd_clips_drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px;
+    border: 2px dashed $ocd-bo-input;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    small {
+        color: $ocd-bo-muted;
+    }
+    &:focus-within {
+        outline: 2px solid $ocd-orange;
+    }
+}
+.o_ocd_clips_file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+.o_ocd_clips_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-weight: 700;
+    font-size: 13.5px;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+    &.o_ocd_clips_primary {
+        border-color: $ocd-orange;
+        background: $ocd-orange;
+        color: #FFFFFF;
+    }
+}
+.o_ocd_clips_link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: $ocd-ink;
+    font-weight: 700;
+    text-decoration: underline;
+    & + & {
+        margin-left: 12px;
+    }
+}
+.o_ocd_clips_bar {
+    height: 10px;
+    border-radius: 99px;
+    background: $ocd-line;
+    overflow: hidden;
+    i {
+        display: block;
+        height: 100%;
+        background: $ocd-orange;
+        transition: width 0.3s;
+    }
+}
+.o_ocd_clips_sending {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    small {
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_clips_sending_head, .o_ocd_clips_part_head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.o_ocd_clips_parts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.o_ocd_clips_part {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    border: 1px solid $ocd-bo-line;
+    border-radius: 10px;
+}
+.o_ocd_clips_shift {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.o_ocd_clips_shift_buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.o_ocd_clips_pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    background: $ocd-bo-grey;
+    color: $ocd-bo-text;
+    &.o_ocd_clips_ok {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+    &.o_ocd_clips_wait {
+        background: $ocd-yellow-soft;
+        color: $ocd-yellow-text;
+    }
+    &.o_ocd_clips_bad {
+        background: $ocd-red-soft;
+        color: $ocd-red-text;
+    }
+}
+.o_ocd_clips_preview {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    video {
+        width: 180px;
+        aspect-ratio: 9 / 16;
+        border-radius: 12px;
+        background: $ocd-ink;
+    }
+}
+.o_ocd_clips_table_wrap {
+    overflow-x: auto;
+}
+.o_ocd_clips_table {
+    width: 100%;
+    border-collapse: collapse;
+    th {
+        padding: 8px 10px;
+        border-bottom: 2px solid $ocd-line;
+        text-align: left;
+        font-size: 12.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: $ocd-bo-muted;
+    }
+    td {
+        padding: 9px 10px;
+        border-bottom: 1px solid $ocd-line;
+        vertical-align: middle;
+    }
+    .o_ocd_clips_num {
+        text-align: right;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+    }
+    .o_ocd_clips_actions {
+        white-space: nowrap;
+    }
+}
+.o_ocd_clips_player {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    display: grid;
+    place-items: center;
+    background: rgba(21, 19, 15, 0.7);
+}
+.o_ocd_clips_player_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    video {
+        height: unquote("min(80vh, 720px)");
+        aspect-ratio: 9 / 16;
+        border-radius: 16px;
+        background: $ocd-ink;
+    }
+}
+@include media-breakpoint-down(md) {
+    .o_ocd_clips_preview {
+        grid-template-columns: minmax(0, 1fr);
+        video {
+            width: 160px;
+        }
+    }
+}

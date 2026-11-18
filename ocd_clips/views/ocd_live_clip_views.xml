@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The clips in the back office (chantier 8, design ClipsAutomatiques): Lives › Clips, the tab
+     « Clips » of a live and of a vendor, the screen of the video of a live -->
+<odoo>
+
+    <record id="ocd_live_clip_view_list" model="ir.ui.view">
+        <field name="name">ocd.live.clip.list</field>
+        <field name="model">ocd.live.clip</field>
+        <field name="arch" type="xml">
+            <list string="Clips" create="false" decoration-muted="hidden or state in ('skipped', 'deleted')"
+                  decoration-danger="state == 'failed'">
+                <field name="vendor_id"/>
+                <field name="product_tmpl_id"/>
+                <field name="booking_id"/>
+                <field name="code" optional="show"/>
+                <field name="duration" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'ready'" decoration-info="state in ('queued', 'processing')"
+                       decoration-danger="state == 'failed'"/>
+                <field name="reason" optional="show"/>
+                <field name="hidden" optional="show"/>
+                <field name="play_count"/>
+                <field name="visit_count"/>
+                <field name="order_count"/>
+                <button name="action_ocd_open_screen" type="object" string="Video of the live" icon="movie"/>
+                <button name="action_ocd_hide" type="object" string="Hide" icon="visibility_off"
+                        invisible="hidden or state != 'ready'"/>
+                <button name="action_ocd_show" type="object" string="Show" icon="visibility" invisible="not hidden"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_live_clip_view_form" model="ir.ui.view">
+        <field name="name">ocd.live.clip.form</field>
+        <field name="model">ocd.live.clip</field>
+        <field name="arch" type="xml">
+            <form string="Clip" create="false">
+                <header>
+                    <button name="action_ocd_open_screen" type="object" string="Video of the live" class="btn-primary"/>
+                    <button name="action_ocd_remake" type="object" string="Make again"
+                            invisible="state in ('queued', 'processing')"/>
+                    <button name="action_ocd_hide" type="object" string="Hide" invisible="hidden or state != 'ready'"/>
+                    <button name="action_ocd_show" type="object" string="Show" invisible="not hidden"/>
+                    <field name="state" widget="statusbar" statusbar_visible="queued,ready"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_ocd_open_link" type="object" class="oe_stat_button" icon="link" string="Short link"/>
+                    </div>
+                    <field name="poster" widget="image" class="oe_avatar" readonly="1" invisible="not poster"/>
+                    <div class="oe_title">
+                        <h1><field name="product_tmpl_id" readonly="1"/></h1>
+                        <field name="booking_id" readonly="1"/>
+                    </div>
+                    <group>
+                        <group string="The clip">
+                            <field name="vendor_id" readonly="1"/>
+                            <field name="moment_id" readonly="1"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="start" readonly="1"/>
+                            <field name="duration" readonly="1"/>
+                            <field name="code"/>
+                            <field name="video" filename="code" readonly="1" invisible="not video"/>
+                        </group>
+                        <group string="On the site">
+                            <field name="hidden" readonly="1"/>
+                            <field name="hidden_by" invisible="not hidden"/>
+                            <field name="play_count"/>
+                            <field name="visit_count"/>
+                            <field name="order_count"/>
+                            <field name="reason" invisible="not reason"/>
+                            <field name="error" invisible="not error_code" decoration-danger="1"/>
+                            <field name="error_code" invisible="1"/>
+                            <field name="error_detail" invisible="not error_detail" groups="base.group_no_one"/>
+                            <field name="tries"/>
+                            <field name="made_at"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_live_clip_view_search" model="ir.ui.view">
+        <field name="name">ocd.live.clip.search</field>
+        <field name="model">ocd.live.clip</field>
+        <field name="arch" type="xml">
+            <search string="Clips">
+                <field name="vendor_id"/>
+                <field name="product_tmpl_id"/>
+                <field name="booking_id"/>
+                <field name="code"/>
+                <filter string="Ready" name="ready" domain="[('state', '=', 'ready')]"/>
+                <filter string="Being made" name="making" domain="[('state', 'in', ('queued', 'processing'))]"/>
+                <filter string="Not made" name="failed" domain="[('state', '=', 'failed')]"/>
+                <filter string="No clip" name="skipped" domain="[('state', '=', 'skipped')]"/>
+                <filter string="Hidden" name="hidden" domain="[('hidden', '=', True)]"/>
+                <group>
+                    <filter string="Vendor" name="by_vendor" context="{'group_by': 'vendor_id'}"/>
+                    <filter string="Live" name="by_live" context="{'group_by': 'booking_id'}"/>
+                    <filter string="State" name="by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_live_clip_action" model="ir.actions.act_window">
+        <field name="name">Clips</field>
+        <field name="res_model">ocd.live.clip</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="ocd_live_clip_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No clip yet</p>
+            <p>Send the video of a live with products shown in the control room (« Clips » on the live): a clip of
+                30 seconds is made for each product, with its short link.</p>
+        </field>
+    </record>
+
+    <!-- The live: « Clips » opens the screen of its video and its clips -->
+    <record id="ocd_live_booking_view_form_clips" model="ir.ui.view">
+        <field name="name">ocd.live.booking.form.clips</field>
+        <field name="model">ocd.live.booking</field>
+        <field name="inherit_id" ref="ocd_live.ocd_live_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_ocd_open_clips" type="object" class="oe_stat_button" icon="movie"
+                        invisible="state not in ('confirmed', 'done')">
+                    <field name="ocd_clip_count" widget="statinfo" string="Clips"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- The vendor: their clips, « No clips » -->
+    <record id="res_partner_view_form_ocd_vendor_clips" model="ir.ui.view">
+        <field name="name">res.partner.form.ocd.vendor.clips</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.res_partner_view_form_ocd_vendor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_ocd_view_clips" type="object" class="oe_stat_button" icon="movie">
+                    <field name="ocd_clip_count" widget="statinfo" string="Clips"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='ocd_card']" position="after">
+                <page name="ocd_clips" string="Clips">
+                    <group>
+                        <group>
+                            <field name="ocd_clips_off"/>
+                        </group>
+                        <div class="text-muted" colspan="2">
+                            A clip of 30 seconds is made for each product shown in a live of OCD, with its short
+                            link: the vendor shares it on their status, TikTok and Reels, the site shows it on the
+                            product. « No clips »: the vendor refuses them, none is made of their lives and theirs
+                            are no longer shown.
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- The screen of the video of a live and its clips (client action) -->
+    <record id="ocd_clips_screen_action" model="ir.actions.client">
+        <field name="name">Video of the live and clips</field>
+        <field name="tag">ocd_clips.screen</field>
+    </record>
+
+    <menuitem id="ocd_live_clip_menu" name="Clips" parent="ocd_live.ocd_live_menu_lives"
+              action="ocd_live_clip_action" sequence="45"/>
+
+</odoo>

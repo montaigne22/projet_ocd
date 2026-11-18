@@ -9,7 +9,7 @@ class OcdLiveBooking(models.Model):
     ocd_recording_ids = fields.One2many(comodel_name="ocd.live.recording", inverse_name="booking_id",
                                         string="Video Of The Live")
     ocd_clip_ids = fields.One2many(comodel_name="ocd.live.clip", inverse_name="booking_id", string="Clips")
-    ocd_clip_count = fields.Integer(string="Clips", compute="_compute_ocd_clip_count")
+    ocd_clip_count = fields.Integer(string="Clips Ready", compute="_compute_ocd_clip_count")
     ocd_clips_told_at = fields.Datetime(string="Clips Told At", readonly=True, copy=False,
                                         help="The vendor was told on WhatsApp that the clips of the live are ready.")
 
@@ -81,7 +81,7 @@ class OcdLiveBooking(models.Model):
                     "duration": item["duration"],
                 }
                 if item["reason"]:
-                    values.update({"state": "skipped", "reason": item["reason"], "error": False})
+                    values.update({"state": "skipped", "reason": item["reason"], "error_code": False})
                 clip = existing.get(item["product"])
                 if not clip:
                     Clip.create({
@@ -94,7 +94,7 @@ class OcdLiveBooking(models.Model):
                     if clip.state != "skipped" or moved:
                         clip.write(values)
                 elif moved or clip.state in ("skipped", "failed"):
-                    clip.write({**values, "state": "queued", "tries": 0, "error": False, "reason": False})
+                    clip.write({**values, "state": "queued", "tries": 0, "error_code": False, "reason": False})
             booking._ocd_clips_done()
         self.env["ocd.live.recording"]._ocd_trigger()
 

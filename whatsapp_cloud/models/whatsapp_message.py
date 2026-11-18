@@ -183,13 +183,11 @@ class WhatsappMessage(models.Model):
         try:
             if self.attachment_id and payload.get("type") == "template":
                 media_id = account._upload_media(self.attachment_id.sudo())
-                header = {
-                    "type": "header",
-                    "parameters": [{
-                        "type": "document",
-                        "document": {"id": media_id, "filename": self.attachment_id.name},
-                    }],
-                }
+                if self.template_id.header_type == "video":
+                    parameter = {"type": "video", "video": {"id": media_id}}
+                else:
+                    parameter = {"type": "document", "document": {"id": media_id, "filename": self.attachment_id.name}}
+                header = {"type": "header", "parameters": [parameter]}
                 payload["template"]["components"] = [
                     header, *payload["template"].get("components", [])
                 ]
@@ -229,6 +227,8 @@ class WhatsappMessage(models.Model):
         fails and the users are told."""
         self.ensure_one()
         template = self.template_id
+        if not self.attachment_id and template.header_type == "video":
+            return self._make_header_video()
         if self.attachment_id or template.header_type != "document" or not template.header_report_id:
             return True
         record = self._get_record()
@@ -255,6 +255,37 @@ class WhatsappMessage(models.Model):
             self.write({"attempts": attempts, "state": "failed", "error": error})
             self._notify_failure()
         return False
+
+    def _make_header_video(self):
+        """The video of the header of the template (a clip...), taken from its document when the
+        message is sent: a copy for the message (the file itself is shared on the disk). Return
+        False when there is none or it is too heavy: the message fails at once and says why."""
+        self.ensure_one()
+        template = self.template_id
+        record = self._get_record()
+        attachment = template._header_video_attachment(record) if record is not None else self.env["ir.attachment"]
+        error = False
+        if not attachment:
+            error = _("The video of the message no longer exists.")
+        elif attachment.file_size > const.MAX_MEDIA_SIZE_BY_TYPE["video"]:
+            error = _("The video is too heavy for WhatsApp: 16 MB at most.")
+        if error:
+            # Nothing to wait for: the video is gone or too heavy
+            self.write({"attempts": self.attempts + 1, "state": "failed", "error": error})
+            self._notify_failure()
+            return False
+        mimetype = attachment.mimetype if (attachment.mimetype or "").startswith("video/") else "video/mp4"
+        copy = attachment.copy({
+            "res_model": self._name, "res_id": self.id, "res_field": False,
+            "name": attachment.name if attachment.name and "." in attachment.name else "video.mp4",
+            "mimetype": mimetype,
+        })
+        self.attachment_id = copy
+        if self.mail_message_id and self.channel_id:
+            # The team sees in the conversation the video that the customer receives
+            copy.write({"res_model": "discuss.channel", "res_id": self.channel_id.id})
+            self.mail_message_id.attachment_ids = [Command.link(copy.id)]
+        return True
 
     def _notify_failure(self):
         """Tell the users that the message did not reach the customer, and why."""

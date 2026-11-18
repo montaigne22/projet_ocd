@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-12 19:37+0000\n"
-"PO-Revision-Date: 2026-11-12 19:37+0000\n"
+"POT-Creation-Date: 2026-11-18 12:44+0000\n"
+"PO-Revision-Date: 2026-11-18 12:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -677,11 +677,6 @@ msgid "Conversations"
 msgstr "Conversations"
 
 #. module: whatsapp_cloud
-#: model:ir.model,website_form_label:whatsapp_cloud.model_res_partner
-msgid "Create a Customer"
-msgstr "Créer un client"
-
-#. module: whatsapp_cloud
 #: model_terms:ir.actions.act_window,help:whatsapp_cloud.mail_canned_response_action_whatsapp
 msgid "Create the answers you write often"
 msgstr "Créez les réponses que vous écrivez souvent"
@@ -862,8 +857,8 @@ msgstr "Fin de l’URL du bouton lien du modèle, quand son URL se termine par u
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
-msgid "Enter the App ID of the Meta app on the WhatsApp account to submit a template with a document."
-msgstr "Saisissez l’ID de l’app Meta sur le compte WhatsApp pour soumettre un modèle avec un document."
+msgid "Enter the App ID of the Meta app on the WhatsApp account to submit a template with a document or a video."
+msgstr "Saisissez l'App ID de l'application Meta sur le compte WhatsApp pour soumettre un modèle avec un document ou une vidéo."
 
 #. module: whatsapp_cloud
 #: model_terms:ir.actions.act_window,help:whatsapp_cloud.whatsapp_account_action
@@ -951,6 +946,11 @@ msgid "Field of the document that gives the contact who receives the message, e.
 msgstr "Champ du document qui donne le contact destinataire, ex. partner_id (client d’une commande). Ignoré sur les contacts eux-mêmes."
 
 #. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_video_field
+msgid "Field of the document that holds the video sent in the header (MP4, 16 MB at most), kept as an attachment, e.g. video."
+msgstr "Champ du document qui contient la vidéo envoyée en en-tête (MP4, 16 Mo au plus), gardée en pièce jointe, ex. video."
+
+#. module: whatsapp_cloud
 #: model:whatsapp.template,name:whatsapp_cloud.template_conversation_follow_up
 msgid "Follow-up of the conversation"
 msgstr "Suite de la conversation"
@@ -996,6 +996,12 @@ msgstr "Recevoir les alertes"
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
 msgid "Give a sample PDF for the header of the template."
 msgstr "Donnez un PDF d’exemple pour l’en-tête du modèle."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "Give a sample video (MP4) for the header of the template."
+msgstr "Donnez une vidéo d'exemple (MP4) pour l'en-tête du modèle."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -1975,11 +1981,6 @@ msgid "Quick reply"
 msgstr "Réponse rapide"
 
 #. module: whatsapp_cloud
-#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__rating_ids
-msgid "Ratings"
-msgstr "Évaluations"
-
-#. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__reaction
 msgid "Reaction"
 msgstr "Réaction"
@@ -2107,8 +2108,8 @@ msgstr "Document d’exemple"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__header_sample_file
-msgid "Sample PDF for the review by Meta; when empty, the document of the latest record is used."
-msgstr "PDF d’exemple pour la vérification par Meta ; si vide, le document du dernier enregistrement est utilisé."
+msgid "Sample PDF (or MP4 video) for the review by Meta; when empty, the one of the latest record is used."
+msgstr "PDF (ou vidéo MP4) d'exemple pour la revue de Meta ; vide, celui du dernier enregistrement est utilisé."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3038,6 +3039,18 @@ msgid "The variable of the link %s must be at its end."
 msgstr "La variable du lien %s doit être à sa fin."
 
 #. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "The video is too heavy for WhatsApp: 16 MB at most."
+msgstr "La vidéo est trop lourde pour WhatsApp : 16 Mo au plus."
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "The video of the message no longer exists."
+msgstr "La vidéo du message n'existe plus."
+
+#. module: whatsapp_cloud
 #: model:ir.model.constraint,message:whatsapp_cloud.constraint_discuss_channel_whatsapp_user_ref_uniq
 msgid "There is already a conversation with this WhatsApp user."
 msgstr "Il existe déjà une conversation avec cet utilisateur WhatsApp."
@@ -3216,6 +3229,16 @@ msgid ""
 "- 'Send Webhook Notification': send a POST request to an external system, also known as a Webhook\n"
 "- 'Multi Actions': define an action that triggers several other server actions\n"
 msgstr ""
+"Type d'action du serveur. Les valeurs possibles :\n"
+"- « Mettre à jour un enregistrement » : modifier les valeurs d'un enregistrement\n"
+"- « Créer une activité » : créer une activité (Discussion)\n"
+"- « Envoyer un e-mail » : publier un message, une note ou envoyer un e-mail (Discussion)\n"
+"- « Envoyer un SMS » : envoyer des SMS, les noter sur les documents (SMS)\n"
+"- « Ajouter/Retirer des abonnés » : ajouter ou retirer des abonnés d'un enregistrement (Discussion)\n"
+"- « Créer un enregistrement » : créer un enregistrement avec de nouvelles valeurs\n"
+"- « Exécuter du code » : un bloc de code Python à exécuter\n"
+"- « Envoyer une notification webhook » : envoyer une requête POST à un système externe (webhook)\n"
+"- « Actions multiples » : une action qui en déclenche plusieurs autres\n"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template_button__url
@@ -3325,8 +3348,14 @@ msgstr "Variables"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__video
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__header_type__video
 msgid "Video"
 msgstr "Vidéo"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__header_video_field
+msgid "Video Field"
+msgstr "Champ de la vidéo"
 
 #. module: whatsapp_cloud
 #. odoo-javascript
@@ -3765,6 +3794,11 @@ msgstr "ex. Nos magasins"
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_conversation_assign_view_form
 msgid "e.g. The customer asks for an exchange of size."
 msgstr "ex. Le client demande un échange de taille."
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid "e.g. video"
+msgstr "ex. video"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_button__url

@@ -242,6 +242,7 @@ Une nouvelle section « Produits et magasins des vendeurs », comme « Shop et l
 | Nouveautés aux abonnés : rythme et jour d'envoi | A.8 | Une fois par mois pour tous, chaque semaine avec OCD Business ; le vendredi |
 | Personnes dans l'équipe d'un vendeur, au plus | A.9 | 5 |
 | Fonctions Business offertes à tous | B.1 | Oui, jusqu'au lancement d'OCD Business |
+| Clips : durée au plus, avant le moment, durée au moins ; vidéo d'un live gardée ; clip d'un produit retiré gardé ; qualité ; adresse des liens courts ; clips envoyés sur WhatsApp par jour (section « Clips automatiques ») | 8 | 30 s, 3 s, 12 s ; 7 jours ; 3 mois ; 720 × 1280 ; l'adresse du site ; 10 |
 
 ### Sur la fiche du vendeur (back-office)
 
@@ -259,6 +260,7 @@ s'applique.
 | Mise de côté permise | A.7 |
 | Personnes de son équipe : ajouter, retirer | A.9 |
 | Formule Business, jusqu'au… (comme le pass de l'annuaire) | B.1 |
+| « Pas de clips » : aucun clip de ses lives, les siens plus montrés (onglet « Clips ») | 8 |
 
 ### Listes et automatisations (écrans qui existent déjà)
 
@@ -289,7 +291,7 @@ plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
 | 3. Statistiques du vendeur | Les chiffres des produits et des magasins (1.1, 3.3, M.6) | 3.3 se fait dans le chantier 3 ; 1.1 et M.6 restent sous chaque produit et magasin, et l'écran des statistiques les reprend : un seul calcul |
 | 5. Paiement automatique dans l'UEMOA | Le paiement sur le téléphone au comptoir (A.1) | Automatique au Cameroun (CamPay) et, depuis le chantier 5, dans l'UEMOA (CinetPay, Flutterwave) dès que leurs clés sont saisies ; ailleurs, Mobile Money vérifié par l'équipe, donc plus lent au comptoir |
 | 7. Programme et événements | Le prix promo (3.1) | Un grand événement (Vendredi noir, Tabaski…), d'une soirée ou de plusieurs jours, invite ses vendeurs à mettre une promo pour l'événement (fait le 18 novembre 2026) |
-| 8. Clips automatiques | Partager un produit, catalogue (1.3, 1.7) | Les clips d'un produit s'affichent dans « Mes produits », prêts à partager |
+| 8. Clips automatiques | Partager un produit, catalogue (1.3, 1.7) | Les clips d'un produit s'affichent dans « Mes produits » (« ▶ 3 clips » sous le produit, « Mes clips » dans son menu « Plus »), prêts à partager avec leur texte au prix du moment (fait le 18 novembre 2026) |
 | 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur reprend la fiche « lieu » |
 | 10. Points relais | Les lieux (M), A.6 | Un point relais est un lieu ; A.6 se fait avec le chantier 10 |
 | 11. Ambassadeurs | Partager un produit (1.3) | Le lien de partage reçoit ensuite le lien personnel de l'ambassadeur |

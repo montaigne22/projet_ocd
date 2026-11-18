@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates to create at Meta (language French, category Utility) with the same names and
+         texts, then to synchronise from the WhatsApp account (chantier 8, design ClipsAutomatiques). -->
+    <data noupdate="1">
+
+        <!-- The clips of a live are ready: to its vendor, once per live; nothing to the customers -->
+        <record id="template_clips_ready" model="whatsapp.template">
+            <field name="name">Clips: the clips of a live are ready</field>
+            <field name="template_name">ocd_clips_prets</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour, les clips de ton live du {{1}} sont prêts. Clips à partager : {{2}}. Touche « Voir mes clips » pour les mettre sur ton statut, TikTok et Reels.</field>
+            <field name="button_url_value">{{ object._ocd_clips_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir mes clips', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/clips?live=42'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_clip_ids[:1]._ocd_live_day() }}', 'sample_value': 'mardi 17 novembre'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_clips_ready_count() }}', 'sample_value': '6'}),
+            ]"/>
+        </record>
+
+        <!-- « Send me the clip on WhatsApp »: the clip itself, the video in the header -->
+        <record id="template_clip_video" model="whatsapp.template">
+            <field name="name">Clips: the clip sent to its vendor</field>
+            <field name="template_name">ocd_clip_video</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_clips.model_ocd_live_clip"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="header_type">video</field>
+            <field name="header_video_field">video</field>
+            <field name="body">Ton clip {{1}} du live du {{2}} est prêt : transfère-le sur ton statut. Son lien : {{3}}, à coller dans ta légende.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.product_tmpl_id.name }}', 'sample_value': 'Robe wax Kaba'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_live_day() }}', 'sample_value': 'mardi 17 novembre'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object._ocd_link_text() }}', 'sample_value': 'ocdlive.com/p/K7Q2AB'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

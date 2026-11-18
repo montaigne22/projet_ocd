@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of the clips in the catalogue of the team (OCD Live › Automations) -->
+<odoo>
+
+    <record id="automation_clips_ready" model="ocd.automation">
+        <field name="code">clips_ready</field>
+        <field name="name">Clips ready: tell the vendor</field>
+        <field name="sequence">10</field>
+        <field name="group">clips</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_live_booking"/>
+        <field name="when">When the clips of a live are all made</field>
+        <field name="trigger">The last clip of the live made (or not possible).</field>
+        <field name="scope">The vendor of the live, once per live; nothing to the customers.</field>
+        <field name="actions">Tell them on WhatsApp that their clips are ready, with « See my clips ».</field>
+        <field name="tools">Code of OCD Live.</field>
+    </record>
+
+    <record id="automation_clips_video_missing" model="ocd.automation">
+        <field name="code">clips_video_missing</field>
+        <field name="name">Video of the live not sent: in « To do »</field>
+        <field name="sequence">11</field>
+        <field name="group">clips</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_live_booking"/>
+        <field name="when">From the day after a live with products shown</field>
+        <field name="trigger">The dashboard, at each look.</field>
+        <field name="scope">The lives of the last 3 days with products shown in the control room and no video sent; the clips not made of the week.</field>
+        <field name="actions">Show them in « To do now », with the screen to send the video.</field>
+        <field name="tools">Dashboard of OCD Live.</field>
+    </record>
+
+    <record id="automation_clips_made" model="ocd.automation">
+        <field name="code">clips_made</field>
+        <field name="name">Make the clips of the lives</field>
+        <field name="sequence">12</field>
+        <field name="group">clips</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="model_ocd_live_clip"/>
+        <field name="cron_id" ref="ir_cron_clips"/>
+        <field name="when">As soon as a video of a live arrives, and every 10 minutes</field>
+        <field name="trigger">A video sent, and every 10 minutes.</field>
+        <field name="scope">The videos received and the clips to make, one after the other.</field>
+        <field name="actions">Check the video (readable, image and sound, its length).
+Make the clips one by one with ffmpeg, in low priority: 3 tries, then « Not made » with the reason.
+Delete the videos of the lives after their days (the clips stay).</field>
+        <field name="tools">Scheduled task and ffmpeg.</field>
+    </record>
+
+</odoo>

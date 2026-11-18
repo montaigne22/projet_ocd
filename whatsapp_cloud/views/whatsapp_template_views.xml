@@ -113,8 +113,10 @@
                                     <field name="header_sample" invisible="header_type != 'text'"/>
                                     <field name="header_report_id" invisible="header_type != 'document'"
                                            required="header_type == 'document'"/>
+                                    <field name="header_video_field" invisible="header_type != 'video'"
+                                           required="header_type == 'video'" placeholder="e.g. video"/>
                                     <field name="header_sample_file" filename="header_sample_filename"
-                                           invisible="header_type != 'document'"/>
+                                           invisible="header_type not in ('document', 'video')"/>
                                     <field name="header_sample_filename" invisible="1"/>
                                 </group>
                                 <group string="Link Button">

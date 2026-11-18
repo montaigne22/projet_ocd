@@ -1,0 +1,295 @@
+// The clips on the site, faithful to the validated design (ClipsAutomatiques): a clip is 9:16,
+// its image only until it is touched. Colours and fonts ($ocd-*) from ocd_tokens.scss.
+
+.o_ocd_app {
+    // === A CLIP IN A GRID === //
+    .o_ocd_clip_grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .o_ocd_clip_tile {
+        position: relative;
+        display: block;
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #3A332C, $ocd-ink);
+        color: #FFFFFF;
+        text-decoration: none;
+        img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        &.o_ocd_clip_hidden {
+            opacity: 0.45;
+        }
+        &:focus-visible {
+            outline: 3px solid $ocd-orange;
+            outline-offset: 2px;
+        }
+    }
+    .o_ocd_clip_play {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+    }
+    .o_ocd_clip_length {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        z-index: 1;
+        padding: 1px 6px;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.55);
+        font-size: 11.5px;
+        font-weight: 700;
+    }
+    .o_ocd_clip_caption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 6px 7px;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+        font-size: 11.5px;
+        font-weight: 700;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+    .o_ocd_clips_filters {
+        flex-wrap: wrap;
+    }
+
+    // === « YOUR CLIPS ARE READY » IN MY SPACE === //
+    .o_ocd_clips_ready {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px;
+        border-radius: 18px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        .o_ocd_muted, .o_ocd_note {
+            color: $ocd-bo-faded;
+        }
+    }
+    .o_ocd_clips_ready_title {
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 22px;
+        line-height: 1.15;
+    }
+
+    // === A CLIP: SHARE IT === //
+    // The video on the left and what to do with it on the right from the tablet (.o_ocd_detail)
+    .o_ocd_clip_page {
+        gap: 12px;
+    }
+    .o_ocd_clip_video {
+        display: flex;
+        justify-content: center;
+        video {
+            width: unquote("min(100%, 300px)");
+            aspect-ratio: 9 / 16;
+            border-radius: 22px;
+            background: $ocd-ink;
+            object-fit: cover;
+        }
+    }
+    .o_ocd_clip_info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+    .o_ocd_clip_figures {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 13.5px;
+        color: $ocd-muted;
+        b {
+            color: $ocd-ink;
+            font-size: 15px;
+        }
+        .o_ocd_badge_off {
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+    }
+    .o_ocd_clip_share {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
+        border-radius: 22px;
+        box-shadow: 0 -2px 14px rgba(0, 0, 0, 0.12);
+    }
+    .o_ocd_clip_apps {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        li {
+            padding: 4px 10px;
+            border-radius: 99px;
+            background: $ocd-sand;
+            font-size: 12.5px;
+            font-weight: 700;
+        }
+    }
+    .o_ocd_clip_text {
+        margin: 0;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: $ocd-sand;
+        font-size: 14px;
+        overflow-wrap: anywhere;
+    }
+    .o_ocd_clip_buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        .o_ocd_button {
+            justify-content: center;
+            gap: 6px;
+        }
+    }
+    .o_ocd_clip_more {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    // === MY PRODUCTS === //
+    .o_ocd_my_product_clips {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 8px;
+        border-radius: 8px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        font-weight: 800;
+        font-size: 12.5px;
+        text-decoration: none;
+    }
+
+    // === « SEEN IN LIVE » ON THE PRODUCT PAGE === //
+    .o_ocd_seen_live {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 18px;
+        background: $ocd-sand;
+        .o_ocd_clip_tile {
+            border-radius: 12px;
+        }
+    }
+    .o_ocd_seen_live_text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+        b {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        small {
+            color: $ocd-muted;
+            font-size: 13.5px;
+        }
+        .o_ocd_link {
+            align-self: flex-start;
+            font-size: 14px;
+        }
+    }
+
+    // === THE REPLAY: THE CLIP OF EACH PRODUCT === //
+    .o_ocd_moment:has(.o_ocd_moment_clip) {
+        grid-template-columns: 40px minmax(0, 1fr) auto;
+    }
+    .o_ocd_moment_clip {
+        width: 40px;
+        border-radius: 8px;
+        .o_ocd_clip_play {
+            font-size: 15px;
+        }
+    }
+}
+
+// The clip played over the page (created at the first touch)
+.o_ocd_clip_viewer {
+    width: unquote("min(92vw, 420px)");
+    max-height: 92vh;
+    padding: 0;
+    border: 0;
+    border-radius: 22px;
+    background: $ocd-ink;
+    overflow: visible;
+    &::backdrop {
+        background: rgba(21, 19, 15, 0.8);
+    }
+    video {
+        display: block;
+        width: 100%;
+        max-height: 88vh;
+        aspect-ratio: 9 / 16;
+        border-radius: 22px;
+        background: $ocd-ink;
+    }
+}
+.o_ocd_clip_viewer_close {
+    position: absolute;
+    top: -14px;
+    right: -10px;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+// A tablet and a computer: « My clips » in a grid of 5 (design: Ordinateur, vendeur); the card of
+// « My space » keeps clips of the size of a phone
+@media (min-width: $ocd-tablet) {
+    .o_ocd_app .o_ocd_clips_ready .o_ocd_clip_grid {
+        grid-template-columns: repeat(3, 120px);
+    }
+    .o_ocd_app .o_ocd_clips_ready .o_ocd_button_wide {
+        align-self: flex-start;
+        min-width: 240px;
+    }
+    .o_ocd_app .o_ocd_clips_page .o_ocd_clip_grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+@media (min-width: $ocd-desktop) {
+    .o_ocd_app .o_ocd_clips_page .o_ocd_clip_grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}

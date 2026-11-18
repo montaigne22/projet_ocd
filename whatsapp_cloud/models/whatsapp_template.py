@@ -135,9 +135,14 @@ class WhatsappTemplate(models.Model):
         copy=True,
     )
     header_type = fields.Selection(
-        selection=[("none", "None"), ("text", "Text"), ("document", "PDF document")],
+        selection=[("none", "None"), ("text", "Text"), ("document", "PDF document"), ("video", "Video")],
         default="none",
         required=True,
+    )
+    header_video_field = fields.Char(
+        string="Video Field",
+        help="Field of the document that holds the video sent in the header (MP4, 16 MB at most), "
+        "kept as an attachment, e.g. video.",
     )
     header_text = fields.Char(
         string="Header",
@@ -153,8 +158,8 @@ class WhatsappTemplate(models.Model):
     header_sample_file = fields.Binary(
         string="Sample Document",
         attachment=True,
-        help="Sample PDF for the review by Meta; when empty, the document of the latest record "
-        "is used.",
+        help="Sample PDF (or MP4 video) for the review by Meta; when empty, the one of the latest "
+        "record is used.",
     )
     header_sample_filename = fields.Char()
     footer_text = fields.Char(string="Footer", help="Text under the message (60 characters).")
@@ -292,6 +297,8 @@ class WhatsappTemplate(models.Model):
                 header_format = (component.get("format") or "").upper()
                 if header_format == "DOCUMENT":
                     vals["header_type"] = "document"
+                elif header_format == "VIDEO":
+                    vals["header_type"] = "video"
                 elif header_format == "TEXT":
                     vals["header_type"] = "text"
                     vals["header_text"] = component.get("text")
@@ -596,10 +603,10 @@ class WhatsappTemplate(models.Model):
             if "{{" in self.header_text:
                 header["example"] = {"header_text": [self.header_sample or _("Example")]}
             components.append(header)
-        elif self.header_type == "document":
+        elif self.header_type in ("document", "video"):
             components.append({
                 "type": "HEADER",
-                "format": "DOCUMENT",
+                "format": self.header_type.upper(),
                 "example": {"header_handle": [self._upload_sample_document(account)]},
             })
         samples = self._get_samples()
@@ -621,18 +628,38 @@ class WhatsappTemplate(models.Model):
             })
         return components
 
-    def _upload_sample_document(self, account):
-        """Upload the sample PDF of the header with the Resumable Upload API of Meta (the
-        App ID of the account is needed); return its handle."""
+    def _header_video_attachment(self, record):
+        """The attachment of the video of the header for `record` (its field `header_video_field`)."""
         self.ensure_one()
+        field = self.header_video_field
+        if record is None or not field or field not in record._fields:
+            return self.env["ir.attachment"]
+        return self.env["ir.attachment"].sudo().search([
+            ("res_model", "=", record._name), ("res_id", "=", record.id), ("res_field", "=", field),
+        ], limit=1)
+
+    def _upload_sample_document(self, account):
+        """Upload the sample PDF (or video) of the header with the Resumable Upload API of Meta
+        (the App ID of the account is needed); return its handle."""
+        self.ensure_one()
+        video = self.header_type == "video"
         if not account.app_id:
             raise UserError(_(
                 "Enter the App ID of the Meta app on the WhatsApp account to submit a template "
-                "with a document."
+                "with a document or a video."
             ))
         if self.header_sample_file:
-            content = base64.b64decode(self.header_sample_file)
-            name = self.header_sample_filename or "sample.pdf"
+            value = self.header_sample_file
+            content = bytes(value) if not isinstance(value, (str, bytes)) else base64.b64decode(value)
+            name = self.header_sample_filename or ("sample.mp4" if video else "sample.pdf")
+        elif video:
+            # The video of the latest document that has one (the latest document may have none yet)
+            attachment = self.env["ir.attachment"].sudo().search([
+                ("res_model", "=", self.model), ("res_field", "=", self.header_video_field or False),
+            ], order="id desc", limit=1) if self.model and self.header_video_field else self.env["ir.attachment"]
+            if not attachment:
+                raise UserError(_("Give a sample video (MP4) for the header of the template."))
+            content, name = bytes(attachment.raw), "sample.mp4"
         else:
             record = self._get_sample_record()
             if record is None or not self.header_report_id:
@@ -647,7 +674,7 @@ class WhatsappTemplate(models.Model):
             session = requests.post(
                 f"{const.GRAPH_URL}/{version}/{account.app_id}/uploads",
                 params={"file_name": name, "file_length": len(content),
-                        "file_type": "application/pdf", "access_token": token},
+                        "file_type": "video/mp4" if video else "application/pdf", "access_token": token},
                 timeout=30,
             )
             session.raise_for_status()

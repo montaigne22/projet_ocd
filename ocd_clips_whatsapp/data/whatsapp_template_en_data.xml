@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The English versions of the templates of the clips (same names at Meta, language en) -->
+    <data noupdate="1">
+
+        <record id="template_clips_ready_en" model="whatsapp.template">
+            <field name="name">Clips: the clips of a live are ready (English)</field>
+            <field name="template_name">ocd_clips_prets</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_live.model_ocd_live_booking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello, the clips of your live of {{1}} are ready. Clips to share: {{2}}. Tap « See my clips » to put them on your status, TikTok and Reels.</field>
+            <field name="button_url_value">{{ object._ocd_clips_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'See my clips', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/AbC123/clips?live=42'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.ocd_clip_ids[:1]._ocd_live_day() }}', 'sample_value': 'Tuesday 17 November'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_clips_ready_count() }}', 'sample_value': '6'}),
+            ]"/>
+        </record>
+
+        <record id="template_clip_video_en" model="whatsapp.template">
+            <field name="name">Clips: the clip sent to its vendor (English)</field>
+            <field name="template_name">ocd_clip_video</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_clips.model_ocd_live_clip"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="header_type">video</field>
+            <field name="header_video_field">video</field>
+            <field name="body">Your clip {{1}} of the live of {{2}} is ready: forward it to your status. Its link: {{3}}, to paste in your caption.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.product_tmpl_id.name }}', 'sample_value': 'Kaba wax dress'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_live_day() }}', 'sample_value': 'Tuesday 17 November'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object._ocd_link_text() }}', 'sample_value': 'ocdlive.com/p/K7Q2AB'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

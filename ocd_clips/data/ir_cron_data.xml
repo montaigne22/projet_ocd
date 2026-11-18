@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- The videos of the lives checked, then the clips made one after the other (started at once
+         when a video arrives); the videos past their days deleted -->
+    <record id="ir_cron_clips" model="ir.cron">
+        <field name="name">OCD Live: make the clips of the lives</field>
+        <field name="model_id" ref="model_ocd_live_clip"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_ocd_clips()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">10</field>
+        <field name="interval_type">minutes</field>
+    </record>
+
+</odoo>

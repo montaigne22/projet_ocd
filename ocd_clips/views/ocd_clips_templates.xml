@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The clips on the site (chantier 8, design ClipsAutomatiques): the vendor (« My clips », a
+     clip, the card of « My space », « My products »), the public (« Seen in live » on the
+     product page, a clip per product on the replay). The sentences with values are built whole
+     in Python (controllers/vendor_clips.py, models/ocd_live_clip.py). -->
+<odoo>
+
+    <!-- A clip in a grid: its image, its length, the product; the video loads only when opened -->
+    <template id="clip_tile" name="OCD Live: a clip in a grid">
+        <a t-att-href="tile['url']" t-attf-class="o_ocd_clip_tile #{'o_ocd_clip_hidden' if tile['hidden'] else ''}">
+            <img t-if="tile['poster']" t-att-src="tile['poster']" alt="" loading="lazy" decoding="async"/>
+            <span class="o_ocd_clip_length" t-out="tile['length']"/>
+            <span class="o_ocd_clip_play" aria-hidden="true">▶</span>
+            <span class="o_ocd_clip_caption" t-out="tile['caption']"/>
+        </a>
+    </template>
+
+    <!-- === MY CLIPS === -->
+
+    <template id="vendor_clips" name="OCD Live: my clips">
+        <t t-set="additional_title">My clips</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_clips_page">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="title"/>
+                    <div t-if="off" class="o_ocd_alert" role="status">You asked for no clips: none is made of your lives. Ask the team to start them again.</div>
+                    <nav t-if="filters and tiles" class="o_ocd_chips o_ocd_clips_filters" aria-label="Choose a live">
+                        <t t-foreach="filters" t-as="chip">
+                            <a t-att-href="chip['url']" class="o_ocd_chip" t-att-aria-current="'true' if chip['on'] else None" t-out="chip['label']"/>
+                        </t>
+                    </nav>
+                    <div t-if="tiles" class="o_ocd_clip_grid">
+                        <t t-foreach="tiles" t-as="tile" t-call="ocd_clips.clip_tile"/>
+                    </div>
+                    <p t-else="" class="o_ocd_info" t-out="empty_line"/>
+                    <p t-if="tiles" class="o_ocd_note">Newest first. A hidden clip no longer shows on the site; you can put it back.</p>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === A CLIP: SHARE IT === -->
+
+    <template id="vendor_clip" name="OCD Live: a clip">
+        <t t-set="additional_title">My clips</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_clip_page o_ocd_detail">
+                    <div class="o_ocd_detail_media">
+                        <div class="o_ocd_clip_video">
+                            <video t-att-src="video_url" t-att-poster="poster or None" controls="controls" playsinline="playsinline"
+                                   preload="none"/>
+                        </div>
+                    </div>
+                    <div class="o_ocd_detail_info o_ocd_clip_info">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="clip.product_tmpl_id.name"/>
+                        <span class="o_ocd_muted" t-out="line"/>
+                        <t t-call="ocd_live.message_box"/>
+                        <div class="o_ocd_clip_figures">
+                            <b t-out="live_title"/>
+                            <t t-foreach="figures" t-as="figure"><span t-out="figure"/></t>
+                            <span t-if="clip.hidden" class="o_ocd_badge_off">Hidden: no longer on the site</span>
+                            <span t-elif="not public" class="o_ocd_badge_off">Not on the site: the product is not on sale</span>
+                        </div>
+
+                        <section class="o_ocd_clip_share">
+                            <h2 class="o_ocd_section">Share the clip</h2>
+                            <ul class="o_ocd_clip_apps" aria-label="Where to share it">
+                                <li>WhatsApp status</li>
+                                <li>TikTok</li>
+                                <li>Reels</li>
+                                <li>Facebook</li>
+                            </ul>
+                            <span class="o_ocd_label">The text, copied with the clip</span>
+                            <p class="o_ocd_clip_text" t-out="share_text"/>
+                            <div class="o_ocd_clip_buttons">
+                                <button type="button" class="o_ocd_button o_ocd_button_dark o_ocd_clip_share_file"
+                                        t-att-data-video="video_url" t-att-data-name="file_name" t-att-data-text="share_text"
+                                        t-att-data-link="link" t-att-data-download="download_url">
+                                    <t t-call="ocd_live.icon" icon.f="share"/><span>Share</span>
+                                </button>
+                                <a t-att-href="download_url" t-att-download="file_name" class="o_ocd_button">
+                                    <t t-call="ocd_live.icon" icon.f="download"/><span>Save</span>
+                                </a>
+                            </div>
+                            <div class="o_ocd_ok o_ocd_clip_copied" role="status" hidden="hidden">Text copied: paste it under the clip.</div>
+                            <form t-if="whatsapp" t-attf-action="/ocd/espace/moi/clips/#{clip.id}/whatsapp" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_button o_ocd_button_line o_ocd_button_wide">
+                                    <t t-call="ocd_live.icon" icon.f="chat"/><span>Send me the clip on WhatsApp</span>
+                                </button>
+                            </form>
+                            <p class="o_ocd_note">« Share » sends the video itself, with the text: you choose the status, TikTok, Reels or Facebook. On TikTok and Reels a link cannot be touched: it is written in the video and in the text. The price of the text is the one of now (promo included). A phone that cannot share a video: « Send me the clip on WhatsApp », then forward it to your status.</p>
+                        </section>
+
+                        <div class="o_ocd_clip_more">
+                            <form t-attf-action="/ocd/espace/moi/clips/#{clip.id}/masquer" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_button">
+                                    <t t-if="clip.hidden">Show this clip again</t>
+                                    <t t-else="">Hide this clip</t>
+                                </button>
+                            </form>
+                            <form t-if="not is_card" t-attf-action="/ocd/espace/moi/clips/#{clip.id}/carte" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_button">Video of my card in the feed</button>
+                            </form>
+                            <span t-else="" class="o_ocd_badge_ok">The video of your card in the feed</span>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === MY SPACE: « YOUR CLIPS ARE READY » === -->
+
+    <template id="space_clips" inherit_id="ocd_live.space" name="OCD Live: the clips in the space">
+        <xpath expr="//div[hasclass('o_ocd_space_head')]" position="after">
+            <t t-set="clips_card" t-value="request.env['ocd.live.clip']._ocd_space_card(vendor)"/>
+            <section t-if="clips_card" class="o_ocd_clips_ready">
+                <small class="o_ocd_muted" t-out="clips_card['kicker']"/>
+                <b class="o_ocd_clips_ready_title" t-out="clips_card['title']"/>
+                <div class="o_ocd_clip_grid o_ocd_clip_grid_three">
+                    <t t-foreach="clips_card['tiles']" t-as="tile" t-call="ocd_clips.clip_tile"/>
+                </div>
+                <p class="o_ocd_note">A clip of 30 seconds for each product shown, with its link. Share them on your status, TikTok and Reels: each clip brings customers to the product.</p>
+                <a t-att-href="clips_card['url']" class="o_ocd_button o_ocd_button_orange o_ocd_button_wide">See my clips</a>
+            </section>
+        </xpath>
+    </template>
+
+    <!-- The menu of the space: « My clips » after « My products » -->
+    <template id="space_menu_clips" inherit_id="ocd_live_shop.space_menu" name="OCD Live: my clips in the menu of the space">
+        <xpath expr="//a[@data-page='products']" position="after">
+            <a href="/ocd/espace/moi/clips" data-page="clips" t-att-class="'o_ocd_on' if space_page == 'clips' else None"
+               t-att-aria-current="'page' if space_page == 'clips' else None">
+                <t t-call="ocd_live.icon" icon.f="play"/><span>My clips</span>
+            </a>
+        </xpath>
+    </template>
+
+    <!-- === MY FIGURES: « FROM MY CLIPS » === -->
+
+    <template id="vendor_figures_clips" inherit_id="ocd_live_shop.vendor_figures" name="OCD Live: the clips in my figures">
+        <xpath expr="//section[@id='lives']" position="after">
+            <t t-set="clip_figures" t-value="request.env['ocd.live.clip']._ocd_figures(vendor, figures['days'])"/>
+            <section t-if="clip_figures" class="o_ocd_figures_card o_ocd_figures_clips" id="clips">
+                <div class="o_ocd_figures_sec">
+                    <h2>From my clips</h2>
+                    <small t-out="period_label"/>
+                </div>
+                <span class="o_ocd_figures_kv">
+                    <span>Visits by their links <b t-out="clip_figures['visits']"/></span>
+                    <span>Plays on the site <b t-out="clip_figures['plays']"/></span>
+                    <span t-if="sold_by_ocd">Sold <b t-out="clip_figures['sales']"/></span>
+                </span>
+                <p t-if="clip_figures['best']" class="o_ocd_note" t-out="clip_figures['best']"/>
+                <p class="o_ocd_note">A sale counts for a clip when the order comes in the 7 days after a visit by its link, from the same phone.</p>
+                <a href="/ocd/espace/moi/clips" class="o_ocd_link">My clips</a>
+            </section>
+        </xpath>
+    </template>
+
+    <!-- === MY PRODUCTS: THE CLIPS OF EACH PRODUCT === -->
+
+    <template id="vendor_products_clips" inherit_id="ocd_live_shop.vendor_products" name="OCD Live: the clips in my products">
+        <xpath expr="//small[hasclass('o_ocd_my_product_sold')]" position="before">
+            <a t-if="row.get('clips_count')" t-att-href="row['clips_url']" class="o_ocd_my_product_clips">
+                <span aria-hidden="true">▶</span> <t t-out="row['clips_label']"/>
+            </a>
+            <small t-elif="row.get('clips_none')" class="o_ocd_my_product_fact">No clip</small>
+        </xpath>
+        <xpath expr="//div[hasclass('o_ocd_my_product_actions')]/a[1]" position="before">
+            <a t-att-href="row.get('clips_url')" class="o_ocd_button">My clips</a>
+        </xpath>
+    </template>
+
+    <!-- === THE PUBLIC: « SEEN IN LIVE » ON THE PRODUCT PAGE === -->
+
+    <template id="product_clip" inherit_id="ocd_live_shop.product" name="OCD Live: seen in live on the product page">
+        <xpath expr="//div[hasclass('o_ocd_product_head')]" position="before">
+            <t t-set="seen_clip" t-value="request.env['ocd.live.clip']._ocd_seen_in_live(template)"/>
+        </xpath>
+        <!-- The clip says it already, with the replay at its moment -->
+        <xpath expr="//a[hasclass('o_ocd_product_seen_link')]" position="attributes">
+            <attribute name="t-if">seen_live_url and not seen_clip</attribute>
+        </xpath>
+        <xpath expr="//span[hasclass('o_ocd_product_seen')]" position="attributes">
+            <attribute name="t-elif">seen_live and not seen_clip</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_ocd_product_head')]" position="after">
+            <div t-if="seen_clip" class="o_ocd_seen_live">
+                <button type="button" class="o_ocd_clip_tile o_ocd_clip_open" t-att-data-video="seen_clip['video']"
+                        t-att-data-count="seen_clip['count_url']" t-att-aria-label="seen_clip['aria']">
+                    <img t-if="seen_clip['poster']" t-att-src="seen_clip['poster']" alt="" loading="lazy" decoding="async"/>
+                    <span class="o_ocd_clip_length" t-out="seen_clip['length']"/>
+                    <span class="o_ocd_clip_play" aria-hidden="true">▶</span>
+                </button>
+                <span class="o_ocd_seen_live_text">
+                    <b><i class="o_ocd_onair_dot" aria-hidden="true"/>Seen in live</b>
+                    <small t-out="seen_clip['line']"/>
+                    <a t-if="seen_clip['replay']" t-att-href="seen_clip['replay']" class="o_ocd_link">The replay at this moment</a>
+                </span>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- === THE REPLAY: THE CLIP OF EACH PRODUCT === -->
+
+    <template id="replay_clips" inherit_id="ocd_live_shop.replay" name="OCD Live: a clip per product on the replay">
+        <xpath expr="//div[hasclass('o_ocd_moments')]" position="before">
+            <t t-set="replay_clips" t-value="request.env['ocd.live.clip']._ocd_replay_clips(replay)"/>
+        </xpath>
+        <xpath expr="//div[hasclass('o_ocd_moments')]//a[hasclass('o_ocd_moment_go')]" position="before">
+            <t t-set="row_clip" t-value="replay_clips.get(row['product'].id)"/>
+            <button t-if="row_clip" type="button" class="o_ocd_clip_tile o_ocd_clip_open o_ocd_moment_clip"
+                    t-att-data-video="row_clip['video']" t-att-data-count="row_clip['count_url']" t-att-aria-label="row_clip['aria']">
+                <img t-if="row_clip['poster']" t-att-src="row_clip['poster']" alt="" loading="lazy" decoding="async"/>
+                <span class="o_ocd_clip_play" aria-hidden="true">▶</span>
+            </button>
+        </xpath>
+        <xpath expr="//div[hasclass('o_ocd_moments')]" position="after">
+            <p t-if="replay_clips" class="o_ocd_note">Touch a clip to play it here; « See » opens the product, with the colour shown.</p>
+        </xpath>
+    </template>
+
+    <template id="robots" inherit_id="website.robots" name="OCD Live: robots.txt of the clips">
+        <!-- The short links of the clips: redirections counted as visits, never for the robots -->
+        <xpath expr="//t[@id='robots_module_rules']" position="inside">
+<t t-translation="off">
+Disallow: /p/
+</t>
+        </xpath>
+    </template>
+
+</odoo>

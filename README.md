@@ -16,6 +16,8 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `ocd_tickets_whatsapp` | OCD Tickets sur WhatsApp : billets prêts, rappel la veille, événement annulé ou déplacé, contrôleur ajouté |
 | `ocd_soirees` | Grands événements d'OCD Live (Vendredi noir, Noël, Saint-Valentin, Tabaski), d'une soirée ou de plusieurs jours : les vendeurs des pays invités participent avec un live et leurs promos de l'événement, vérifiées par l'équipe ; page de l'événement (compte à rebours, programme jour par jour, promos, « Me prévenir sur WhatsApp »), l'événement sur le programme des lives |
 | `ocd_soirees_whatsapp` | Grands événements sur WhatsApp : l'invitation des vendeurs, le début annoncé à ceux qui l'ont demandé |
+| `ocd_clips` | Clips automatiques des lives : la vidéo d'un live envoyée par l'équipe (par morceaux, vérifiée), un clip vertical de 30 secondes par produit montré, avec son lien court (`/p/K7Q2AB`) et ses textes hors des zones cachées de TikTok et Reels ; « Mes clips » du vendeur (partager la vidéo elle-même, enregistrer, masquer, vidéo de sa carte du fil), « Vu en live » sur la fiche produit et le replay, visites et ventes de chaque clip |
+| `ocd_clips_whatsapp` | Les clips sur WhatsApp : « tes clips sont prêts » au vendeur, le clip lui-même en tête du message quand il le demande |
 | `attachment_s3` | Les fichiers d'Odoo sur un stockage S3 (Cloudflare R2, AWS S3, Backblaze B2, MinIO), module générique utilisable sur tout Odoo 20 : on saisit les clés dans les Paramètres, chaque fichier est copié et vérifié sur le bucket, les fichiers déjà là partent en arrière-plan, un fichier qui manque sur le serveur revient du bucket |
 | `ocd_live_recruitment` | Offre « Animatrice live · Lomé » sur le site, 5 étapes de recrutement, l'embauchée devient animatrice |
 | `ocd_delivery_togo` | Régions, villes et quartiers du Togo, point de repère, modes de livraison pour Lomé et le reste du Togo |
@@ -23,7 +25,7 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `ocd_live_demo` | Données de démonstration, retirées entièrement en désinstallant le module |
 | `theme_ocd` | Thème du site « OCD Live » (polices, couleurs, boutons, en-tête, pied de page du design) pour les pages d'Odoo : à choisir dans Site Web › Configuration › Paramètres › Choisir un thème |
 
-| `whatsapp_cloud` | Conversations WhatsApp dans Odoo, messages automatiques validés par Meta, STOP et START |
+| `whatsapp_cloud` | Conversations WhatsApp dans Odoo, messages automatiques validés par Meta (en-tête texte, PDF ou vidéo), STOP et START |
 | `whatsapp_cloud_sale` | Messages WhatsApp de la commande du shop au client |
 | `payment_campay` | Paiement au Cameroun : MTN MoMo, Orange Money, carte |
 | `payment_cinetpay` | Paiement dans l'UEMOA, au Cameroun, en Guinée et en RD Congo avec CinetPay : Mobile Money (Orange, MTN, Moov, Free, T-Money, Flooz…), Wave, carte ; Flutterwave (module d'Odoo) en second |
@@ -51,7 +53,7 @@ Le dépôt contient tous les modules nécessaires. `disable_odoo_online` (OCA, n
 ## Installation rapide
 
 ```bash
-odoo -c odoo.conf -d ocd -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp --load-language=fr_FR
+odoo -c odoo.conf -d ocd -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp --load-language=fr_FR
 ```
 
 Pour voir le projet avec des données : ajouter `ocd_live_demo` (le désinstaller retire tout).
