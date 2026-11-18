@@ -90,3 +90,19 @@ class TestOcdShopSettingsPage(OcdShopCommon):
         self.assertTrue(result["ok"], result)
         todos = self.env["ocd.live.dashboard"]._ocd_todos()
         self.assertFalse([todo for todo in todos if todo["key"].startswith("campay_demo_")])
+
+    def test_the_payments_of_the_uemoa(self):
+        """Chantier 5: CinetPay (UEMOA, Cameroon) and Flutterwave are there, with what is left to do."""
+        Settings = self.env["ocd.live.settings"]
+        cinetpay = self.env.ref("payment_cinetpay.payment_provider_cinetpay")
+        flutterwave = self.env.ref("payment.payment_provider_flutterwave")
+        for country in ("bj", "bf", "ci", "ml", "ne", "sn", "tg", "cm"):
+            self.assertIn(self.env.ref(f"base.{country}"), cinetpay.available_country_ids)
+        self.assertIn("Its keys are not entered yet", Settings._ocd_provider_text(cinetpay))
+        self.assertIn("Its keys are not entered yet", Settings._ocd_provider_text(flutterwave))
+        cinetpay.write({"cinetpay_site_id": "105889", "cinetpay_api_key": "key"})
+        self.assertIn("In test mode", Settings._ocd_provider_text(cinetpay))
+        cinetpay.is_live = True
+        self.assertNotIn("In test mode", Settings._ocd_provider_text(cinetpay))
+        keys = [item["key"] for section in Settings._ocd_sections() if section["key"] == "payments" for item in section["items"]]
+        self.assertIn(f"ocd_provider_{cinetpay.id}", keys)

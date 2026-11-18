@@ -4,7 +4,7 @@
 
 - **Odoo 20 Community** (Python 3.13, PostgreSQL 16).
 - Chemin des modules (`addons_path`) : les modules d'Odoo, **ce dépôt** (qui contient aussi
-  `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay` et `delivery_cameroon`), et son dossier
+  `whatsapp_cloud`, `whatsapp_cloud_sale`, `payment_campay`, `payment_cinetpay` et `delivery_cameroon`), et son dossier
   `marketplace/oca_server_brand` (modules de l'OCA, dont `disable_odoo_online`, nécessaire à
   `ocd_debranding`).
 - Exemple de `odoo.conf` :
@@ -101,9 +101,28 @@ outils qui ne mettent à jour qu'un module dont la version a changé.
 
 Avec la démo, ajouter `ocd_live_demo` à la liste : sa mise à jour met le nouveau scénario en place et
 installe `ocd_live_demo_whatsapp` (voir [`DEMO.md`](DEMO.md)). Avec CamPay, ajouter `payment_campay`.
+`ocd_live` installe lui-même `payment_cinetpay` (dans ce dépôt) et `payment_flutterwave` (module d'Odoo).
 
 Les changements à faire une seule fois sur une base existante sont dans `migrations/` de chaque module
 (ex. `ocd_live` 20.0.1.1.0 : accueil d'OCD Live sur `/`, site en français, logo, menus traduits).
+
+## Paiement dans l'UEMOA : ouvrir CinetPay et Flutterwave
+
+Les deux fournisseurs sont installés avec `ocd_live`, ni publiés ni en production : rien ne change pour
+les clients tant que l'équipe ne les ouvre pas (Site Web › Configuration › Fournisseurs de paiement).
+
+1. **CinetPay** : dans le tableau de bord de CinetPay, « Intégration », copier l'identifiant du site, la
+   clé d'API et la clé secrète dans la fiche « CinetPay ». L'adresse des notifications est donnée avec
+   chaque paiement (`https://<domaine>/payment/cinetpay/webhook`) : rien à saisir chez CinetPay. Le
+   serveur doit joindre `api-checkout.cinetpay.com`.
+2. **Flutterwave** : dans le tableau de bord de Flutterwave, « Settings › API Keys », copier la clé
+   publique et la clé secrète, et la clé de hachage du webhook (Webhook secret hash) ; l'adresse du
+   webhook chez Flutterwave est `https://<domaine>/payment/flutterwave/webhook`. Activer le moyen
+   « Mobile money » de la fiche (onglet Configuration) : au départ, seule la carte l'est.
+3. Publier le fournisseur, faire un vrai paiement de 100 F en mode test, puis cocher « Live ». Les
+   Paramètres d'OCD Live (Paiements) disent pour chacun : ses pays, ses devises, les clés manquantes, le
+   mode test. En production, le Mobile Money vérifié par l'équipe disparaît de lui-même du formulaire dans
+   les pays et les devises qu'ils prennent.
 
 Un nouveau module (ex. `theme_ocd`) n'apparaît qu'après **Applications › Mettre à jour la liste des
 applications** (mode développeur). Le thème se choisit ensuite dans Site Web › Configuration ›
@@ -233,7 +252,7 @@ Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neu
 
 ```bash
 odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp --stop-after-init
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/payment_cinetpay --stop-after-init
 ```
 
 Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Avec OCD, un test de
@@ -429,6 +448,20 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   espace de l'organisateur `organizer.py` (connexion par numéro et code, cible `vote` des pages de
   connexion). Le vote par WhatsApp (« VOTE 12 ») : `ocd_vote_whatsapp/models/discuss_channel.py` (demande
   CamPay sur le téléphone quand le numéro est camerounais, sinon le lien de la page du paiement).
+- Paiement automatique dans l'UEMOA (chantier 5) : `payment_cinetpay` suit le modèle de
+  `payment_campay`. `models/payment_transaction.py` : `_get_specific_rendering_values` ouvre le paiement
+  chez CinetPay (API `payment`) et envoie le client sur sa page ; l'identifiant donné à CinetPay
+  (`cinetpay_transaction_id`) est la référence sans espaces ni signes, plus le numéro de la transaction ;
+  `_cinetpay_amount` arrondit au multiple de 5 en francs CFA ; `_cinetpay_fetch_status` lit l'état chez
+  CinetPay (API `payment/check`), jamais dans les paramètres reçus ; tâche planifiée
+  `_cron_cinetpay_check_pending` (toutes les 10 minutes, pendant 24 heures). Routes :
+  `/payment/cinetpay/return` (retour du client) et `/payment/cinetpay/webhook` (notification, vérifie
+  l'identifiant du site), dans `controllers/main.py`. Les tests de `payment_cinetpay` ne parlent jamais à
+  CinetPay (`_send_api_request` remplacé). Flutterwave est le module d'Odoo, sans changement.
+  Le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production pour
+  le pays et la devise : `ocd_live/models/payment_provider.py` (`_find_available_providers`,
+  `_ocd_takes_mobile_money`). Les clés manquantes et le mode test sont dits dans les Paramètres
+  (`ocd_live_shop/models/ocd_live_settings.py`, `_ocd_provider_text`).
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - Thème du site : `ocd_live/static/src/scss/ocd_app.scss` (pages sous `.o_ocd_app`).
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).

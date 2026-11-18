@@ -1,0 +1,226 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 05:25+0000\n"
+"PO-Revision-Date: 2026-11-18 05:25+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: payment_cinetpay
+#: model:ir.module.module,description:base.module_payment_cinetpay
+msgid ""
+"\n"
+"CinetPay payment provider\n"
+"=========================\n"
+"\n"
+"- Mobile Money of the UEMOA (Côte d'Ivoire, Senegal, Togo, Benin, Mali, Burkina\n"
+"  Faso, Niger) and of Cameroon, Guinea and the DR Congo: Orange Money, MTN, Moov,\n"
+"  Free, T-Money, Flooz..., Wave and the other wallets, and the cards, on the\n"
+"  payment page of CinetPay.\n"
+"- The amount asked to CinetPay is a multiple of 5 in CFA francs (rule of CinetPay):\n"
+"  rounded up by a few francs at most, the order is paid for its own amount.\n"
+"- The state of a payment is always read from CinetPay (verification API), never\n"
+"  from the parameters of the notification or of the return.\n"
+"- The payments still waiting are checked again every 10 minutes for a day, in case\n"
+"  a notification was missed.\n"
+msgstr ""
+"\n"
+"Fournisseur de paiement CinetPay\n"
+"===============================\n"
+"\n"
+"- Le Mobile Money de l'UEMOA (Côte d'Ivoire, Sénégal, Togo, Bénin, Mali, Burkina\n"
+"  Faso, Niger) et du Cameroun, de la Guinée et de la RD Congo : Orange Money, MTN,\n"
+"  Moov, Free, T-Money, Flooz…, Wave et les autres portefeuilles, et les cartes,\n"
+"  sur la page de paiement de CinetPay.\n"
+"- Le montant demandé à CinetPay est un multiple de 5 en francs CFA (règle de\n"
+"  CinetPay) : arrondi de quelques francs au plus, la commande est payée pour son\n"
+"  propre montant.\n"
+"- L'état d'un paiement est toujours lu chez CinetPay (API de vérification),\n"
+"  jamais dans les paramètres de la notification ou du retour.\n"
+"- Les paiements encore en attente sont vérifiés de nouveau toutes les 10 minutes\n"
+"  pendant un jour, au cas où une notification se serait perdue.\n"
+
+#. module: payment_cinetpay
+#: model_terms:ir.ui.view,arch_db:payment_cinetpay.payment_provider_form
+msgid "API Key"
+msgstr "Clé d'API"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_transaction__cinetpay_requested_amount
+msgid "Amount Asked To CinetPay"
+msgstr "Montant demandé à CinetPay"
+
+#. module: payment_cinetpay
+#: model:payment.method,name:payment_cinetpay.payment_method_card
+msgid "Card"
+msgstr "Carte"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields.selection,name:payment_cinetpay.selection__payment_provider__code__cinetpay
+#: model:payment.provider,name:payment_cinetpay.payment_provider_cinetpay
+msgid "CinetPay"
+msgstr "CinetPay"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_provider__cinetpay_api_key
+msgid "CinetPay API Key"
+msgstr "Clé d'API CinetPay"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_provider__cinetpay_secret_key
+msgid "CinetPay Secret Key"
+msgstr "Clé secrète CinetPay"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_provider__cinetpay_site_id
+msgid "CinetPay Site ID"
+msgstr "Identifiant du site CinetPay"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_transaction__cinetpay_transaction_id
+msgid "CinetPay Transaction"
+msgstr "Transaction CinetPay"
+
+#. module: payment_cinetpay
+#. odoo-python
+#: code:addons/payment_cinetpay/models/payment_transaction.py:0
+msgid "CinetPay did not open the payment: %s"
+msgstr "CinetPay n'a pas ouvert le paiement : %s"
+
+#. module: payment_cinetpay
+#: model:ir.actions.server,name:payment_cinetpay.ir_cron_cinetpay_check_pending_ir_actions_server
+msgid "CinetPay: check the payments still waiting"
+msgstr "CinetPay : vérifier les paiements encore en attente"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_provider__code
+msgid "Code"
+msgstr "Code"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_provider__display_name
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_transaction__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_provider__id
+#: model:ir.model.fields,field_description:payment_cinetpay.field_payment_transaction__id
+msgid "ID"
+msgstr "ID"
+
+#. module: payment_cinetpay
+#: model:ir.module.module,summary:base.module_payment_cinetpay
+msgid "Mobile Money (Orange, MTN, Moov, Free, Wave...) and cards in the UEMOA and Central Africa with CinetPay"
+msgstr "Mobile Money (Orange, MTN, Moov, Free, Wave…) et cartes dans l'UEMOA et en Afrique centrale avec CinetPay"
+
+#. module: payment_cinetpay
+#: model:payment.method,name:payment_cinetpay.payment_method_mobile_money
+msgid "Mobile Money (Orange, MTN, Moov, T-Money, Flooz...)"
+msgstr "Mobile Money (Orange, MTN, Moov, T-Money, Flooz…)"
+
+#. module: payment_cinetpay
+#. odoo-python
+#: code:addons/payment_cinetpay/models/payment_transaction.py:0
+msgid "Order %(reference)s on %(company)s"
+msgstr "Commande %(reference)s sur %(company)s"
+
+#. module: payment_cinetpay
+#: model:ir.model,name:payment_cinetpay.model_payment_provider
+msgid "Payment Provider"
+msgstr "Fournisseur de paiement"
+
+#. module: payment_cinetpay
+#: model:ir.module.module,shortdesc:base.module_payment_cinetpay
+msgid "Payment Provider: CinetPay"
+msgstr "Fournisseur de paiement : CinetPay"
+
+#. module: payment_cinetpay
+#: model:ir.model,name:payment_cinetpay.model_payment_transaction
+msgid "Payment Transaction"
+msgstr "Transaction de paiement"
+
+#. module: payment_cinetpay
+#: model_terms:ir.ui.view,arch_db:payment_cinetpay.payment_provider_form
+msgid "Secret Key"
+msgstr "Clé secrète"
+
+#. module: payment_cinetpay
+#: model_terms:ir.ui.view,arch_db:payment_cinetpay.payment_provider_form
+msgid "Site ID"
+msgstr "Identifiant du site"
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,help:payment_cinetpay.field_payment_transaction__cinetpay_requested_amount
+msgid "The amount of the transaction, rounded up to a multiple of 5 in CFA francs (rule of CinetPay)."
+msgstr "Le montant de la transaction, arrondi au multiple de 5 supérieur en francs CFA (règle de CinetPay)."
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,help:payment_cinetpay.field_payment_transaction__cinetpay_transaction_id
+msgid "The identifier given to CinetPay: the reference with letters, numbers and dashes only."
+msgstr "L'identifiant donné à CinetPay : la référence avec seulement des lettres, des chiffres et des tirets."
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,help:payment_cinetpay.field_payment_provider__cinetpay_site_id
+msgid "The identifier of the site, in « Integration » of the dashboard of CinetPay."
+msgstr "L'identifiant du site, dans « Intégration » du tableau de bord de CinetPay."
+
+#. module: payment_cinetpay
+#: model_terms:ir.ui.view,arch_db:payment_cinetpay.payment_provider_form
+msgid ""
+"The keys of the site are in « Integration » of the dashboard of CinetPay. The notifications go to\n"
+"                        <code>https://your-domain/payment/cinetpay/webhook</code>, given with each payment. In CFA francs,\n"
+"                        CinetPay takes multiples of 5: the amount is rounded up by a few francs at most."
+msgstr ""
+"Les clés du site sont dans « Intégration » du tableau de bord de CinetPay. Les notifications vont à\n"
+"                        <code>https://votre-domaine/payment/cinetpay/webhook</code>, donnée avec chaque paiement. En francs CFA,\n"
+"                        CinetPay prend des multiples de 5 : le montant est arrondi de quelques francs au plus."
+
+#. module: payment_cinetpay
+#. odoo-python
+#: code:addons/payment_cinetpay/models/payment_transaction.py:0
+msgid "The payment was refused or cancelled, or the balance was insufficient (%s)."
+msgstr "Le paiement a été refusé ou annulé, ou le solde était insuffisant (%s)."
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,help:payment_cinetpay.field_payment_provider__cinetpay_secret_key
+msgid "The secret key of the site (signature of the notifications); the state of a payment is read from CinetPay anyway."
+msgstr "La clé secrète du site (signature des notifications) ; l'état d'un paiement est de toute façon lu chez CinetPay."
+
+#. module: payment_cinetpay
+#: model:ir.model.fields,help:payment_cinetpay.field_payment_provider__code
+msgid "The technical code of this payment provider."
+msgstr "Le code technique de ce fournisseur de paiement."
+
+#. module: payment_cinetpay
+#: model:payment.method,name:payment_cinetpay.payment_method_wallet
+msgid "Wave and the wallets"
+msgstr "Wave et les portefeuilles"
+
+#. module: payment_cinetpay
+#: model_terms:payment.provider,auth_msg:payment_cinetpay.payment_provider_cinetpay
+msgid "Your payment has been authorized."
+msgstr "Ton paiement a été autorisé."
+
+#. module: payment_cinetpay
+#: model_terms:payment.provider,cancel_msg:payment_cinetpay.payment_provider_cinetpay
+msgid "Your payment has been cancelled."
+msgstr "Ton paiement a été annulé."
+
+#. module: payment_cinetpay
+#: model_terms:payment.provider,done_msg:payment_cinetpay.payment_provider_cinetpay
+msgid "Your payment has been processed."
+msgstr "Ton paiement a été traité."
+
+#. module: payment_cinetpay
+#: model_terms:payment.provider,pending_msg:payment_cinetpay.payment_provider_cinetpay
+msgid "Your payment is being confirmed by CinetPay. Your order is confirmed as soon as the payment is received."
+msgstr "Ton paiement est en cours de confirmation par CinetPay. Ta commande est confirmée dès que le paiement est reçu."

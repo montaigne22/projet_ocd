@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- The countries of the UEMOA, then Cameroon, Guinea and the DR Congo: the team narrows them to
+         the countries opened on its account at CinetPay -->
+    <record id="payment_provider_cinetpay" model="payment.provider">
+        <field name="name">CinetPay</field>
+        <field name="code">cinetpay</field>
+        <field name="image_128" type="bytes" file="payment_cinetpay/static/description/icon.png"/>
+        <field name="module_id" ref="base.module_payment_cinetpay"/>
+        <field name="redirect_form_view_id" ref="payment.generic_redirect_form"/>
+        <field name="available_country_ids" eval="[Command.set([ref('base.ci'), ref('base.sn'), ref('base.tg'), ref('base.bj'),
+                                                                ref('base.ml'), ref('base.bf'), ref('base.ne'), ref('base.cm'),
+                                                                ref('base.gn'), ref('base.cd')])]"/>
+        <field name="pending_msg" type="html">
+            <p>Your payment is being confirmed by CinetPay. Your order is confirmed as soon as the payment is received.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -80,8 +80,30 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 ## Paiements et devises
 
 - **Aucun fournisseur de paiement figé dans le code** : le site propose les moyens configurés dans
-  Odoo pour le pays, la devise et le montant. Aujourd'hui Campay au Cameroun ; au Togo, Mobile Money
-  vérifié par l'équipe en attendant un second connecteur.
+  Odoo pour le pays, la devise et le montant. CamPay au Cameroun ; CinetPay et Flutterwave dans l'UEMOA ;
+  la carte (Stripe) partout ; le Mobile Money vérifié par l'équipe là où rien d'automatique n'est ouvert.
+- **Paiement automatique dans l'UEMOA (chantier 5, 18 novembre 2026) : CinetPay et Flutterwave**, choisis
+  par l'équipe. Le code est prêt avant les contrats : chaque fournisseur ne s'affiche qu'une fois ses clés
+  saisies et publié, et ne prend de vrai argent qu'en production (« Live » coché) ; les Paramètres disent
+  ce qui manque pour chacun.
+  - **CinetPay** (module `payment_cinetpay`, écrit pour OCD Live) : Côte d'Ivoire, Sénégal, Togo, Bénin,
+    Mali, Burkina Faso, Niger, et aussi Cameroun, Guinée et RD Congo ; Mobile Money (Orange, MTN, Moov,
+    Free, T-Money, Flooz…), Wave et les portefeuilles (Côte d'Ivoire, Sénégal) et la carte, sur la page de
+    paiement de CinetPay ;
+  - **Flutterwave** (module d'Odoo, sans changement) : la carte partout, le Mobile Money en Côte
+    d'Ivoire, au Sénégal, au Mali et au Cameroun ; en second, ou pour la diaspora ;
+  - **la Guinée-Bissau** n'est couverte par aucun des deux : la carte, le Mobile Money vérifié par
+    l'équipe ou le paiement à la porte, comme aujourd'hui ; les Paramètres la nomment parmi les pays sans
+    paiement en ligne ;
+  - **le montant** : CinetPay prend des multiples de 5 en francs CFA ; le montant demandé est arrondi au
+    multiple de 5 supérieur (quelques francs au plus) et la commande est payée pour son propre montant ;
+  - **l'état d'un paiement est toujours lu chez CinetPay** (API de vérification), jamais dans la
+    notification ou le retour du client ; un paiement en attente est revérifié toutes les 10 minutes
+    pendant un jour, au cas où la notification se perdrait ;
+  - **le Mobile Money vérifié par l'équipe s'efface** dans un pays et une devise où CinetPay, Flutterwave
+    ou CamPay prend le Mobile Money en production ; en mode test, les deux sont proposés ;
+  - **les reversements** restent faits par l'équipe (avec la référence du transfert), comme au Cameroun ;
+    les transferts automatiques de CinetPay viendront plus tard.
 - **La devise suit le pays** via les listes de prix d'Odoo (franc CFA BCEAO au Togo, BEAC au Cameroun).
 - **Devises par pays : quatre zones**, mises en place par un bouton (Paramètres › Devises par pays), jamais
   d'elles-mêmes en production (la démo, elle, les met en place) :
@@ -416,7 +438,7 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     les rangs « 1er, 2e, 3e » ; rien n'est deviné d'après un prénom ;
   - **à vérifier avant d'ouvrir dans un pays** : le cadre légal des votes payants (pas de tirage au sort,
     rien à gagner pour les votants : le règlement de chaque concours le dit) ; d'abord le Cameroun avec
-    CamPay, l'UEMOA avec le paiement automatique (chantier 5).
+    CamPay, l'UEMOA avec CinetPay ou Flutterwave (chantier 5).
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

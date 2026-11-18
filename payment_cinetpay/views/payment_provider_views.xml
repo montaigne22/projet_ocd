@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="payment_provider_form" model="ir.ui.view">
+        <field name="name">CinetPay Provider Form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <group name="provider_credentials" position="inside">
+                <group invisible="code != 'cinetpay'" colspan="2">
+                    <field string="Site ID" name="cinetpay_site_id" required="code == 'cinetpay' and is_live"/>
+                    <field string="API Key" name="cinetpay_api_key" required="code == 'cinetpay' and is_live" widget="password"/>
+                    <field string="Secret Key" name="cinetpay_secret_key" widget="password"/>
+                    <div class="text-muted" colspan="2">
+                        The keys of the site are in « Integration » of the dashboard of CinetPay. The notifications go to
+                        <code>https://your-domain/payment/cinetpay/webhook</code>, given with each payment. In CFA francs,
+                        CinetPay takes multiples of 5: the amount is rounded up by a few francs at most.
+                    </div>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

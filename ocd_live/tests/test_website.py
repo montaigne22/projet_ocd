@@ -239,6 +239,30 @@ class TestOcdLiveWebsite(HttpCase):
         response = self.url_open(pay_url)
         self.assertNotIn(f'data-provider-id="{provider.id}"', response.text, "Not offered outside its countries")
 
+    def test_the_automatic_mobile_money_replaces_the_one_checked_by_the_team(self):
+        booking, pay_url = self._book()
+        xof = self.env.ref("base.XOF")
+        xof.active = True
+        booking.sale_order_id.pricelist_id = self.env["product.pricelist"].create({"name": "Togo", "currency_id": xof.id})
+        self.assertEqual(booking.sale_order_id.currency_id, xof)
+        momo_team = self.env.ref("ocd_live.payment_provider_momo_team")
+        momo_team.active = True
+        cinetpay = self.env.ref("payment_cinetpay.payment_provider_cinetpay")
+        cinetpay.write({
+            "active": True, "is_published": True, "is_live": False,
+            "cinetpay_site_id": "105", "cinetpay_api_key": "key",
+        })
+        response = self.url_open(pay_url)
+        self.assertIn(f'data-provider-id="{cinetpay.id}"', response.text)
+        self.assertIn(f'data-provider-id="{momo_team.id}"', response.text, "In test mode, both are offered")
+        cinetpay.write({"is_live": True, "is_published": True})
+        response = self.url_open(pay_url)
+        self.assertIn(f'data-provider-id="{cinetpay.id}"', response.text)
+        self.assertNotIn(f'data-provider-id="{momo_team.id}"', response.text, "CinetPay takes the Mobile Money for real")
+        cinetpay.payment_method_ids.filtered(lambda method: method.code == "mobile_money").active = False
+        response = self.url_open(pay_url)
+        self.assertIn(f'data-provider-id="{momo_team.id}"', response.text, "Only the card left on CinetPay")
+
     def test_i_paid_keeps_the_hour_while_the_team_checks(self):
         booking, pay_url = self._book()
         order = booking.sale_order_id

@@ -287,7 +287,7 @@ plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
 | 1. Suivre un vendeur | Les nouveautés aux abonnés (A.8) en dépendent | Fait avant A.8 ; le bouton « Suivre » est aussi sur les magasins (M.2) |
 | 2. Garantie OCD et avis | Le badge « Vendeur vérifié » ; les avis des acheteurs | Un magasin vérifié (M.5) a le même badge ; les avis de chaque produit s'affichent dans « Mes produits » une fois le chantier 2 fait ; le bouton « Signaler » un produit ou un vendeur (validé le 16 novembre) se fait dans ce chantier |
 | 3. Statistiques du vendeur | Les chiffres des produits et des magasins (1.1, 3.3, M.6) | 3.3 se fait dans le chantier 3 ; 1.1 et M.6 restent sous chaque produit et magasin, et l'écran des statistiques les reprend : un seul calcul |
-| 5. Paiement automatique dans l'UEMOA | Le paiement sur le téléphone au comptoir (A.1) | Automatique au Cameroun (CamPay) ; ailleurs, Mobile Money vérifié par l'équipe jusqu'au chantier 5, donc plus lent au comptoir |
+| 5. Paiement automatique dans l'UEMOA | Le paiement sur le téléphone au comptoir (A.1) | Automatique au Cameroun (CamPay) et, depuis le chantier 5, dans l'UEMOA (CinetPay, Flutterwave) dès que leurs clés sont saisies ; ailleurs, Mobile Money vérifié par l'équipe, donc plus lent au comptoir |
 | 7. Programme et événements | Le prix promo (3.1) | Une grande soirée (Vendredi noir, Tabaski…) invite ses vendeurs à mettre une promo pour la soirée |
 | 8. Clips automatiques | Partager un produit, catalogue (1.3, 1.7) | Les clips d'un produit s'affichent dans « Mes produits », prêts à partager |
 | 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur reprend la fiche « lieu » |

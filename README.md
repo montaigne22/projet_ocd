@@ -21,6 +21,7 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `whatsapp_cloud` | Conversations WhatsApp dans Odoo, messages automatiques validés par Meta, STOP et START |
 | `whatsapp_cloud_sale` | Messages WhatsApp de la commande du shop au client |
 | `payment_campay` | Paiement au Cameroun : MTN MoMo, Orange Money, carte |
+| `payment_cinetpay` | Paiement dans l'UEMOA, au Cameroun, en Guinée et en RD Congo avec CinetPay : Mobile Money (Orange, MTN, Moov, Free, T-Money, Flooz…), Wave, carte ; Flutterwave (module d'Odoo) en second |
 | `delivery_cameroon` | Villes et quartiers du Cameroun, point de repère obligatoire dans l'adresse |
 
 Le dépôt contient tous les modules nécessaires. `disable_odoo_online` (OCA, nécessaire à

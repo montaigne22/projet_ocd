@@ -230,7 +230,7 @@ class OcdLiveSettings(models.AbstractModel):
             items.append(item(
                 "warn", "ocd_payment_countries",
                 _("No online payment in: %s", shown),
-                _("The vendors and the customers of these countries pay with the payments checked by the team (Mobile Money, cash at the studio) or at the door. The card payment (Stripe) takes the payments of every country once its keys are entered."),
+                _("The vendors and the customers of these countries pay with the payments checked by the team (Mobile Money, cash at the studio) or at the door. CinetPay (UEMOA, Cameroon) and Flutterwave take the Mobile Money once their keys are entered and they are published; the card payment (Stripe) takes every country."),
                 link={"label": _("Payment providers"), "action": "payment.action_payment_provider"},
             ))
         return {
@@ -297,7 +297,24 @@ class OcdLiveSettings(models.AbstractModel):
             text = self.env._("%(text)s In %(currencies)s.", text=text, currencies=", ".join(currencies.mapped("name")))
         if provider.custom_mode == "cash_on_delivery":
             text = self.env._("Paid at the door: offered when every parcel of the order accepts it.")
+        if self._ocd_provider_keys_missing(provider):
+            text = self.env._("%s Its keys are not entered yet: Website › Configuration › Payment providers.", text)
+        elif not provider.is_live and provider.code not in ("custom", "none"):
+            text = self.env._("%s In test mode: no real payment until « Live » is ticked on the provider.", text)
         return text
+
+    @api.model
+    def _ocd_provider_keys_missing(self, provider):
+        """Whether the keys of the account of the provider are still to enter (CinetPay, Flutterwave,
+        Stripe, CamPay): it shows nothing to the customers until then."""
+        keys = {
+            "cinetpay": ("cinetpay_site_id", "cinetpay_api_key"),
+            "flutterwave": ("flutterwave_public_key", "flutterwave_secret_key", "flutterwave_webhook_secret"),
+            "stripe": ("stripe_publishable_key", "stripe_secret_key"),
+            "campay": ("campay_app_username", "campay_app_password"),
+        }.get(provider.code, ())
+        provider = provider.sudo()
+        return any(name in provider._fields and not provider[name] for name in keys)
 
     def _ocd_get_provider_published(self, provider_id):
         return bool(self.env["payment.provider"].sudo().browse(provider_id).exists().is_published)

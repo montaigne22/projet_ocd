@@ -2,7 +2,7 @@
 
 Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 
-## Où en est le projet (17 novembre 2026)
+## Où en est le projet (18 novembre 2026)
 
 | Domaine | État |
 |---|---|
@@ -41,6 +41,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Garantie OCD et avis (chantier 2) : la garantie montrée sur la fiche produit et la boutique (le vendeur payé après le code de livraison, pas livré : remboursé, retour possible), un avis par colis livré, la note du vendeur dès 3 avis, « Vendeur vérifié », « Signaler » un produit ou un vendeur vers « À vérifier » | ✅ fait, testé |
 | Statistiques du vendeur (chantier 3) et ventes par produit (3.3) : « Mes chiffres » (ventes, pièces, visites de la boutique, contacts WhatsApp et leur évolution sur 7 jours, 30 jours ou 3 mois ; ce que rapporte chaque live ; meilleures heures et « Réserver un live » ; clients fidèles ; ventes par produit avec « Pas vendus » ; magasins), la ligne « Vendu » de Mes produits, les ventes du mois dans Mon espace, le résumé du lundi sur WhatsApp ; nouveaux comptages jour par jour (« Regarder », visites, contacts) | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
 | OCD Vote (chantier 4) : concours avec candidats numérotés, voix payées en Mobile Money (seules les voix payées comptent, chacune liée à son paiement), vote sur la page ou par WhatsApp « VOTE 12 », classement en direct, bandeau de la finale, résultats certifiés, espace de l'organisateur, reversement | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
+| Paiement automatique dans l'UEMOA (chantier 5) : CinetPay (module `payment_cinetpay` : Mobile Money, Wave, carte ; UEMOA, Cameroun, Guinée, RD Congo) et Flutterwave (module d'Odoo) ; l'état lu chez CinetPay, revérifié toutes les 10 minutes ; le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production ; clés manquantes et mode test dits dans les Paramètres | ✅ fait, testé (clés des comptes à saisir) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -99,7 +100,11 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    (français et anglais, Utilitaire), pour le résumé de la semaine que le vendeur demande dans « Mes
    chiffres » (rien ne part avant). **Avec OCD Vote**, aussi `ocd_vote_comptee` et `ocd_vote_finale`
    (français et anglais, Utilitaire) : les voix comptées au votant, la finale à ceux qui l'ont demandé.
-3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
+3. **Paiement dans l'UEMOA** (équipe) : ouvrir les comptes CinetPay et Flutterwave (documents de
+   l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
+   pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
+   vérifié par l'équipe reste proposé.
+4. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
    back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
 
@@ -118,6 +123,30 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 18 novembre 2026 · Paiement automatique dans l'UEMOA (chantier 5)
+CinetPay et Flutterwave, choisis par l'équipe. Le code est prêt avant les contrats : chaque fournisseur
+s'ouvre quand ses clés sont saisies.
+- **CinetPay** (nouveau module `payment_cinetpay`) : le client choisit Mobile Money, Wave ou la carte
+  dans le formulaire de paiement d'OCD Live, puis paie sur la page de CinetPay ; Côte d'Ivoire, Sénégal,
+  Togo, Bénin, Mali, Burkina Faso, Niger, Cameroun, Guinée, RD Congo. Le montant demandé est un multiple
+  de 5 en francs CFA (arrondi de quelques francs au plus), la commande est payée pour son montant.
+  L'état est toujours lu chez CinetPay (au retour du client, à la notification, puis toutes les 10
+  minutes pendant un jour pour un paiement resté en attente).
+- **Flutterwave** : le module d'Odoo, installé avec `ocd_live` ; la carte partout, le Mobile Money en
+  Côte d'Ivoire, au Sénégal, au Mali et au Cameroun une fois activé sur sa fiche.
+- **Le Mobile Money vérifié par l'équipe s'efface** dans un pays et une devise où CinetPay, Flutterwave
+  ou CamPay prend le Mobile Money en production ; il reste en mode test et là où rien d'automatique
+  n'est ouvert (Guinée-Bissau, par exemple). Les votes d'OCD Vote, les réservations et le shop en
+  profitent sans changement.
+- **Paramètres › Paiements** : pour chaque fournisseur, ses pays et ses devises, puis « Ses clés ne sont
+  pas encore saisies » ou « En mode test » ; l'avertissement des pays sans paiement en ligne nomme
+  CinetPay et Flutterwave.
+- Tests : base neuve, tous les modules OCD avec `payment_cinetpay` : **466 sans échec**
+  (7 nouveaux : 5 pour CinetPay, sans jamais lui parler, 1 pour le Mobile Money de l'équipe qui s'efface,
+  1 pour les Paramètres). Aucun nouvel écran sur le site (la page de paiement est celle de CinetPay).
+- **À installer sur un serveur** : `-u ocd_live,ocd_live_shop` (20.0.1.23.0 et 20.0.1.40.0) : la mise à
+  jour d'`ocd_live` installe `payment_cinetpay` et `payment_flutterwave`. Aucun modèle WhatsApp nouveau.
 
 ### 18 novembre 2026 · OCD Vote (chantier 4)
 Dessiné d'abord (maquette `OcdVote`, validée avec ses choix), puis codé dans deux nouveaux modules,

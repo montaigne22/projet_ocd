@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="payment_method_mobile_money" model="payment.method">
+        <field name="name">Mobile Money (Orange, MTN, Moov, T-Money, Flooz...)</field>
+        <field name="code">mobile_money</field>
+        <field name="sequence">1</field>
+        <field name="provider_id" ref="payment_provider_cinetpay"/>
+        <field name="image" type="bytes" file="payment/static/img/mobile.png"/>
+        <field name="support_tokenization">False</field>
+        <field name="supported_currency_ids" eval="[Command.set([ref('base.XOF'), ref('base.XAF'), ref('base.GNF'), ref('base.CDF')])]"/>
+    </record>
+
+    <record id="payment_method_wallet" model="payment.method">
+        <field name="name">Wave and the wallets</field>
+        <field name="code">wallet</field>
+        <field name="sequence">2</field>
+        <field name="provider_id" ref="payment_provider_cinetpay"/>
+        <field name="image" type="bytes" file="payment/static/img/mobile.png"/>
+        <field name="support_tokenization">False</field>
+        <field name="supported_country_ids" eval="[Command.set([ref('base.ci'), ref('base.sn')])]"/>
+        <field name="supported_currency_ids" eval="[Command.set([ref('base.XOF')])]"/>
+    </record>
+
+    <record id="payment_method_card" model="payment.method">
+        <field name="name">Card</field>
+        <field name="code">card</field>
+        <field name="sequence">10</field>
+        <field name="provider_id" ref="payment_provider_cinetpay"/>
+        <field name="image" type="bytes" file="payment/static/img/card.png"/>
+        <field name="support_tokenization">False</field>
+    </record>
+
+</odoo>
