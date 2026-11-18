@@ -135,6 +135,13 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 18 novembre 2026 · Le script d'installation de l'environnement
+- `tools/setup_odoo20.sh` : Odoo 20 dans `/opt/odoo20` (source, environnement Python, `odoo.conf`),
+  PostgreSQL et son rôle, `wkhtmltopdf`, `ffmpeg` ; les étapes déjà faites sont sautées. C'est le script de
+  l'environnement cloud « projet_ocd » créé pour les sessions de Claude Code (Odoo prêt dès le début d'une
+  session) ; marche à suivre dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Environnement).
+- Aucun module ne change : rien à mettre à jour sur un serveur.
+
 ### 18 novembre 2026 · Clips automatiques (chantier 8)
 Maquette `ClipsAutomatiques` validée avec ses choix et ses recommandations « Pour que ça tienne en vrai »,
 puis codée dans deux nouveaux modules, `ocd_clips` et `ocd_clips_whatsapp`, avec « Le live commence » dans

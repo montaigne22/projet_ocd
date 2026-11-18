@@ -17,6 +17,13 @@ db_port = 5432
 data_dir = /opt/odoo20/data
 ```
 
+- **Tout installer d'un coup** (Linux, en root) : `bash tools/setup_odoo20.sh` met Odoo 20 dans
+  `/opt/odoo20` (la source de la branche 20.0, son environnement Python avec les bibliothèques du dépôt,
+  `odoo.conf` ci-dessus), démarre PostgreSQL avec un rôle `root`, installe `wkhtmltopdf` et `ffmpeg`. Une
+  étape déjà faite est sautée : il se relance sans risque. C'est le script d'installation de
+  l'environnement cloud « projet_ocd » des sessions de Claude Code (claude.ai, Settings › Environments) :
+  changer les deux ensemble. Ensuite :
+  `cd /opt/odoo20 && . venv/bin/activate && python src/odoo-bin -c odoo.conf -d <base> ...`.
 - Moteur PDF d'Odoo (`wkhtmltopdf`, ex. `apt-get install -y wkhtmltopdf`) : la confirmation d'une
   commande du shop envoie un PDF, le ticket du live est un PDF. La version « avec Qt patché » est la
   meilleure ; celle d'Ubuntu (Qt non patché) marche aussi, le ticket corrige son échelle.
