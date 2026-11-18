@@ -50,7 +50,7 @@ En deux temps : les modules d'abord (Odoo met en place la comptabilité), puis l
 régler la société pendant qu'aucune écriture n'existe encore (pays, devise en franc CFA).
 
 ```bash
-odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --load-language=fr_FR --stop-after-init
+odoo -c odoo.conf -d ocd_demo -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp --load-language=fr_FR --stop-after-init
 ```
 
 Puis, dans Odoo : la société (pays, devise **XOF** ou **XAF**, téléphone et e-mail : ils s'affichent
@@ -91,7 +91,7 @@ Après un `git pull` du dépôt : redémarrer Odoo, puis mettre à jour les modu
 module › Mettre à jour, ou en ligne de commande) :
 
 ```bash
-odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --stop-after-init
+odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp --stop-after-init
 ```
 
 **À chaque récupération du code, mettre à jour les modules.** Sans cela, le code appelle des pages qui
@@ -232,8 +232,8 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp --stop-after-init
 ```
 
 Ajouter `/whatsapp_cloud,/whatsapp_cloud_sale` pour les tests de WhatsApp eux-mêmes. Avec OCD, un test de
@@ -421,6 +421,14 @@ fiches) ; `crons` et `odoo_settings` montrent les listes d'Odoo aux administrate
   mémoire, écrits toutes les 5 secondes) ; « Regarder » compté par `/ocd/regarder/<live>` et
   `/ocd/regarder/annonce/<annonce>` (`ocd_live/controllers/watch.py`). Une nouvelle façon d'ouvrir un
   live depuis OCD passe par ces adresses.
+- OCD Vote (chantier 4) : `ocd_vote/models/ocd_vote_contest.py` (concours, paquets, classement
+  `_ocd_ranking`, nombres cachés `_ocd_hidden`, signature des résultats `_ocd_signature`, tâche planifiée
+  `_cron_ocd_vote`), `ocd_vote.py` (une ligne par paiement : `_ocd_create` crée la commande et ses voix,
+  `_ocd_on_paid` les compte quand la commande est confirmée par le paiement), pages publiques
+  `ocd_vote/controllers/contest.py` (la page du paiement reprend le formulaire d'Odoo comme `/ocd/payer`),
+  espace de l'organisateur `organizer.py` (connexion par numéro et code, cible `vote` des pages de
+  connexion). Le vote par WhatsApp (« VOTE 12 ») : `ocd_vote_whatsapp/models/discuss_channel.py` (demande
+  CamPay sur le téléphone quand le numéro est camerounais, sinon le lien de la page du paiement).
 - Couleurs et polices communes : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - Thème du site : `ocd_live/static/src/scss/ocd_app.scss` (pages sous `.o_ocd_app`).
 - Thème du back-office : `ocd_live/static/src/backend/` (barre, onglets, cartes, widget de choix).

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The certified results of a contest: the votes of each candidate, signed by OCD Live -->
+    <record id="action_report_results" model="ir.actions.report">
+        <field name="name">Certified results</field>
+        <field name="model">ocd.vote.contest</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ocd_vote.report_results</field>
+        <field name="print_report_name">'Results %s' % object.name</field>
+        <field name="binding_model_id" ref="model_ocd_vote_contest"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_results">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="contest">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family: sans-serif; font-size: 13px;">
+                        <h1 style="margin: 0 0 4px;"><t t-out="contest.name"/></h1>
+                        <t t-set="texts" t-value="contest._ocd_report_texts()"/>
+                        <p style="margin: 0 0 14px; color: #665F58;" t-out="texts['head']"/>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #15130F; text-align: left;">
+                                    <th style="padding: 6px;">Rank</th>
+                                    <th style="padding: 6px;">Number</th>
+                                    <th style="padding: 6px;">Candidate</th>
+                                    <th style="padding: 6px; text-align: right;">Votes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="contest._ocd_ranking()" t-as="row" style="border-bottom: 1px solid #E7E2DC;">
+                                    <td style="padding: 6px;" t-out="row['rank']"/>
+                                    <td style="padding: 6px;" t-out="row['candidate'].number"/>
+                                    <td style="padding: 6px;" t-out="row['candidate'].name"/>
+                                    <td style="padding: 6px; text-align: right;" t-out="contest._ocd_number(row['votes'])"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 14px;" t-out="texts['count']"/>
+                        <p style="margin-top: 8px;" t-out="texts['signature']"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

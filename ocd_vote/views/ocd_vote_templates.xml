@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The pages of OCD Vote for the public (chantier 4, design OcdVote). The sentences with values
+     are built whole in Python (controllers/contest.py, models). -->
+<odoo>
+
+    <!-- « Votes » in the menu, on the larger screens, when a contest is open -->
+    <template id="nav_links" inherit_id="ocd_live.nav_links" name="OCD Vote: votes in the menu">
+        <xpath expr="//a[@href='/ocd/espace/moi']" position="before">
+            <a t-if="request.env['ocd.vote.contest'].sudo()._ocd_menu_shown()" href="/vote"
+               t-attf-class="o_ocd_nav_votes #{'o_ocd_on' if nav == 'votes' else ''}" t-att-aria-current="'page' if nav == 'votes' else None">
+                <t t-call="ocd_live.icon" icon.f="chart"/><span>Votes</span>
+            </a>
+        </xpath>
+    </template>
+
+    <!-- === THE CONTESTS === -->
+
+    <template id="contests" name="OCD Vote: the contests">
+        <t t-set="additional_title">Votes</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_vote">
+                    <h1 class="o_ocd_h1">Votes</h1>
+                    <p class="o_ocd_note">Vote for your candidate with Mobile Money. Only the paid votes count.</p>
+                    <div class="o_ocd_vote_list">
+                        <a t-foreach="rows" t-as="row" t-attf-href="/vote/#{row['contest'].slug}" class="o_ocd_vote_hero o_ocd_vote_item">
+                            <span class="o_ocd_vote_kicker">OCD Vote<t t-if="row['contest'].city"> · <t t-out="row['contest'].city"/></t></span>
+                            <b class="o_ocd_vote_title" t-out="row['contest'].name"/>
+                            <span t-out="row['line']"/>
+                        </a>
+                    </div>
+                    <div t-if="not rows" class="o_ocd_info">No contest for now.</div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The top of a contest: name, organiser, end, figures -->
+    <template id="contest_hero" name="OCD Vote: the top of a contest">
+        <div class="o_ocd_vote_hero">
+            <img t-if="banner" t-att-src="banner" alt="" class="o_ocd_vote_banner"/>
+            <span class="o_ocd_vote_kicker">OCD Vote<t t-if="contest.city"> · <t t-out="contest.city"/></t></span>
+            <h1 class="o_ocd_vote_title" t-out="contest.name"/>
+            <span class="o_ocd_vote_org">
+                <span t-out="organizer_line"/>
+                <span t-if="contest.organizer_id and contest.organizer_verified" class="o_ocd_vote_badge">Organiser checked</span>
+            </span>
+            <span class="o_ocd_vote_small" t-out="state_line"/>
+            <div class="o_ocd_vote_count">
+                <div><b t-out="candidates_total"/><span>candidates</span></div>
+                <div><b t-out="votes_total"/><span>votes</span></div>
+                <div t-if="left"><b t-out="left"/><span>to vote</span></div>
+                <div t-else=""><b>-</b><span>to vote</span></div>
+            </div>
+        </div>
+    </template>
+
+    <!-- A card of a candidate -->
+    <template id="candidate_card" name="OCD Vote: a candidate">
+        <a t-att-href="row['url']" class="o_ocd_vote_cand">
+            <span class="o_ocd_vote_num" t-out="row['candidate'].number"/>
+            <span t-if="row['rank_label']" class="o_ocd_vote_rank" t-out="row['rank_label']"/>
+            <span class="o_ocd_vote_photo">
+                <img t-if="row['photo']" t-att-src="row['photo']" t-att-alt="row['candidate'].name" loading="lazy"/>
+            </span>
+            <b t-out="row['candidate'].name"/>
+            <span class="o_ocd_vote_line">
+                <span class="o_ocd_vote_muted" t-out="row['candidate'].city or ''"/>
+                <b t-if="row['votes_text']" t-out="row['votes_text']"/>
+            </span>
+            <span t-if="open" class="o_ocd_vote_button">Vote</span>
+        </a>
+    </template>
+
+    <template id="contest" name="OCD Vote: a contest">
+        <t t-set="additional_title" t-value="contest.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_vote o_ocd_vote_contest">
+                    <div class="o_ocd_vote_main">
+                        <t t-call="ocd_vote.contest_hero"/>
+                        <div class="o_ocd_vote_how o_ocd_vote_phone_only">
+                            <b>How to vote</b>
+                            <span t-out="how"/>
+                        </div>
+                        <form action="" method="get" class="o_ocd_vote_search" role="search">
+                            <input t-if="view == 'numbers'" type="hidden" name="vue" value="numeros"/>
+                            <label for="vote-q" class="visually-hidden">A number or a name</label>
+                            <input id="vote-q" name="q" type="search" class="o_ocd_input" t-att-value="search"
+                                   placeholder="A number or a name" autocomplete="off"/>
+                            <button type="submit" class="o_ocd_button">Search</button>
+                        </form>
+                        <nav class="o_ocd_chips o_ocd_vote_chips" aria-label="Order of the candidates">
+                            <a t-attf-href="/vote/#{contest.slug}" class="o_ocd_chip" t-att-aria-current="'true' if view == 'ranking' else None">Ranking</a>
+                            <a t-attf-href="/vote/#{contest.slug}?vue=numeros" class="o_ocd_chip" t-att-aria-current="'true' if view == 'numbers' else None">By number</a>
+                        </nav>
+                        <p t-if="hidden" class="o_ocd_note">The last hours, the numbers of votes are hidden until the results: only the order stays.</p>
+                        <div class="o_ocd_vote_grid">
+                            <t t-foreach="rows" t-as="row" t-call="ocd_vote.candidate_card"/>
+                        </div>
+                        <div t-if="not rows" class="o_ocd_info">No candidate found.</div>
+                        <p class="o_ocd_vote_muted o_ocd_vote_small">
+                            <t t-if="contest.prize"><t t-out="contest.prize"/> · </t>
+                            <a t-attf-href="/vote/#{contest.slug}/reglement" class="o_ocd_link">Rules of the contest</a>
+                            <t t-if="report_url"> · <a t-att-href="report_url" target="_blank" rel="noopener" class="o_ocd_link">Report</a></t>
+                        </p>
+                    </div>
+                    <aside class="o_ocd_vote_side">
+                        <div class="o_ocd_vote_how o_ocd_vote_wide_only">
+                            <b>How to vote</b>
+                            <span t-out="how"/>
+                        </div>
+                        <section class="o_ocd_vote_card">
+                            <h2 class="o_ocd_vote_h2">Live ranking</h2>
+                            <t t-foreach="rows[:3] if view == 'ranking' else []" t-as="row" t-call="ocd_vote.ranking_row"/>
+                            <a t-attf-href="/vote/#{contest.slug}/classement" class="o_ocd_link">The whole ranking</a>
+                        </section>
+                        <section t-if="final_line" class="o_ocd_vote_card" id="finale">
+                            <b>The final in live</b>
+                            <span class="o_ocd_vote_small" t-out="final_line"/>
+                            <a t-if="contest.final_url" t-att-href="contest.final_url" target="_blank" rel="noopener" class="o_ocd_link">Watch the final</a>
+                            <div t-if="alert_noted" class="o_ocd_ok" role="status">Done: a WhatsApp when the final starts.</div>
+                            <details t-else="" class="o_ocd_vote_alert">
+                                <summary class="o_ocd_link">Tell me on WhatsApp</summary>
+                                <form t-attf-action="/vote/#{contest.slug}/finale" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <t t-call="ocd_live.phone_field" field_id.f="final-phone" phone_value.f=""/>
+                                    <button type="submit" class="o_ocd_button">Tell me</button>
+                                </form>
+                            </details>
+                        </section>
+                        <a t-if="contest.state == 'done'" t-attf-href="/vote/#{contest.slug}/resultats" class="o_ocd_cta">See the results</a>
+                    </aside>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="rules" name="OCD Vote: the rules">
+        <t t-set="additional_title" t-value="contest.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_vote">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Rules of the contest</h1>
+                    <p t-if="contest.description" t-out="contest.description"/>
+                    <p class="o_ocd_vote_rules" t-out="contest.rules or ''"/>
+                    <div class="o_ocd_vote_rule">
+                        <b>Only the paid votes count</b>
+                        <span>A vote exists once its payment is confirmed. Each vote is linked to its payment; a payment cancelled or refunded removes its votes. No free votes. A payment started after the end does not count: it is refunded.</span>
+                    </div>
+                    <a t-attf-href="/vote/#{contest.slug}" class="o_ocd_cta">Back to the contest</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === A CANDIDATE: HER VOTES === -->
+
+    <template id="candidate" name="OCD Vote: a candidate and her votes">
+        <t t-set="additional_title" t-value="candidate.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_vote o_ocd_detail">
+                    <div class="o_ocd_detail_media">
+                        <div class="o_ocd_vote_big">
+                            <img t-if="candidate.photo" t-att-src="candidate._ocd_photo_url()" t-att-alt="candidate.name"/>
+                            <span class="o_ocd_vote_num" t-out="candidate.number"/>
+                        </div>
+                    </div>
+                    <div class="o_ocd_detail_info o_ocd_vote_info">
+                        <div class="o_ocd_vote_name">
+                            <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="candidate.name"/>
+                            <span t-if="not hidden" class="o_ocd_vote_badge o_ocd_vote_badge_orange">
+                                <t t-out="contest._ocd_rank_label(row['rank'])"/> · <t t-out="row['votes_text']"/>
+                            </span>
+                        </div>
+                        <p t-if="candidate.bio or candidate.city" class="o_ocd_vote_muted">
+                            <t t-out="' · '.join(part for part in (candidate.city, candidate.bio) if part)"/>
+                        </p>
+                        <button type="button" class="o_ocd_button o_ocd_share" t-att-data-url="header_share">
+                            <t t-call="ocd_live.icon" icon.f="share"/><span>Share the page</span>
+                        </button>
+                        <t t-if="open">
+                            <h2 class="o_ocd_vote_h2">How many votes?</h2>
+                            <t t-call="ocd_live.message_box"/>
+                            <form method="post" class="o_ocd_vote_form" t-att-data-price="contest.vote_price">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <fieldset class="o_ocd_vote_packs">
+                                    <legend class="visually-hidden">Number of votes</legend>
+                                    <label t-foreach="choices" t-as="choice" class="o_ocd_vote_pack">
+                                        <input type="radio" name="votes" t-att-value="choice['votes']" t-att-checked="'checked' if choice['votes'] == chosen else None"
+                                               t-att-data-label="choice['price_text']" t-att-data-votes="choice['votes']"/>
+                                        <span><b t-out="choice['label']"/> <span t-if="choice['offered']" class="o_ocd_vote_save" t-out="choice['offered']"/></span>
+                                        <b t-out="choice['price_text']"/>
+                                    </label>
+                                    <label class="o_ocd_vote_pack o_ocd_vote_other">
+                                        <input type="radio" name="votes" value="autre" t-att-checked="'checked' if chosen == 0 else None"/>
+                                        <span><b>Another number</b> <small class="o_ocd_vote_muted"><t t-out="price_text"/> a vote</small></span>
+                                        <span class="o_ocd_stepper o_ocd_stepper_js" role="group" aria-label="Another number of votes">
+                                            <button type="button" class="o_ocd_stepper_less" aria-label="One less">−</button>
+                                            <input type="number" name="autre" min="1" max="10000" inputmode="numeric" class="o_ocd_stepper_value"
+                                                   t-att-value="other" aria-label="Number of votes"/>
+                                            <button type="button" class="o_ocd_stepper_more" aria-label="One more">+</button>
+                                        </span>
+                                    </label>
+                                </fieldset>
+                                <div class="o_ocd_field">
+                                    <label for="vote-phone" class="o_ocd_label">Your Mobile Money number</label>
+                                    <t t-call="ocd_live.phone_field" field_id.f="vote-phone"/>
+                                </div>
+                                <small class="o_ocd_vote_muted">You then pay on the next page: a request arrives on your phone, type your Mobile Money code there to pay. Your votes count as soon as the money arrives.</small>
+                                <button type="submit" class="o_ocd_cta o_ocd_vote_pay" t-out="pay_label"/>
+                            </form>
+                        </t>
+                        <div t-else="" class="o_ocd_info" t-out="state_line"/>
+                        <a t-attf-href="/vote/#{contest.slug}" class="o_ocd_link">All the candidates</a>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === THE PAYMENT AND THE VOTES COUNTED === -->
+
+    <template id="vote_page" name="OCD Vote: my votes">
+        <t t-set="additional_title">My votes</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_focus">
+                <main class="o_ocd_main o_ocd_pay o_ocd_vote o_ocd_poll" t-att-data-state="state"
+                      t-att-data-poll-url="status_url if state == 'waiting' else None" t-att-data-access-token="token">
+                    <div class="o_ocd_focus_side">
+                        <h1 class="o_ocd_h1">My votes</h1>
+                        <div class="o_ocd_recap">
+                            <b t-out="what"/>
+                            <span t-out="contest.name"/>
+                        </div>
+                    </div>
+                    <div class="o_ocd_focus_main">
+                        <div t-if="state == 'failed'" class="o_ocd_failed" role="alert">
+                            <b>The payment did not go through.</b>
+                            <span>Refused or cancelled on the phone, or not enough money. Nothing was taken, no vote counted.</span>
+                        </div>
+                        <t t-if="state in ('form', 'failed')">
+                            <div t-if="no_method" class="o_ocd_no_method" role="status">
+                                <b>Paying online is not open yet in your country.</b>
+                                <a t-if="help_whatsapp" t-att-href="help_whatsapp" target="_blank" rel="noopener" class="o_ocd_cta o_ocd_cta_line">
+                                    <t t-call="ocd_live.icon" icon.f="chat"/><span>Write to OCD Live on WhatsApp</span>
+                                </a>
+                            </div>
+                            <div t-else="" class="o_ocd_payment">
+                                <t t-call="payment.form" sale_order_id="order.id"/>
+                            </div>
+                            <div class="o_ocd_total"><span>Total</span><b t-out="total"/></div>
+                        </t>
+                        <t t-elif="state == 'waiting'">
+                            <div class="o_ocd_wait" role="status">
+                                <div class="o_ocd_wait_head">
+                                    <span class="o_ocd_spinner" aria-hidden="true"/>
+                                    <b>We wait for your payment…</b>
+                                </div>
+                                <div class="o_ocd_wait_text"><t t-call="payment.state_header"/></div>
+                                <small>Type your secret code on your phone only, never here. This page updates by itself.</small>
+                            </div>
+                            <t t-if="tx.state == 'pending' and tx.provider_code == 'custom'">
+                                <div t-if="order.ocd_payment_declared_date" class="o_ocd_ok" role="status">
+                                    <b>Thank you: the team checks your payment.</b>
+                                    <span>Your votes count once it is checked.</span>
+                                </div>
+                                <form t-else="" t-attf-action="/vote/voix/#{vote.id}/envoye" method="post" class="o_ocd_announce">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="t" t-att-value="token"/>
+                                    <label for="vote-reference" class="o_ocd_label">Money sent? The number that paid, or the reference of the transfer</label>
+                                    <input id="vote-reference" name="reference" class="o_ocd_input" maxlength="60" autocomplete="off"/>
+                                    <button type="submit" class="o_ocd_cta">I paid</button>
+                                </form>
+                            </t>
+                            <a t-if="tx.state == 'pending'" t-att-href="change_url" class="o_ocd_cta o_ocd_cta_line">Change the number or the method</a>
+                        </t>
+                        <t t-elif="state == 'done'">
+                            <div class="o_ocd_vote_ok" role="status">
+                                <b class="o_ocd_vote_h2" t-out="counted_title"/>
+                                <span t-out="counted_line"/>
+                            </div>
+                            <div class="o_ocd_vote_receipt">
+                                <b>Receipt</b>
+                                <span><t t-out="contest.name"/> · <t t-out="candidate._ocd_label()"/></span>
+                                <span t-out="receipt"/>
+                                <span class="o_ocd_vote_muted" t-out="receipt_when"/>
+                                <span class="o_ocd_vote_muted">Each vote is linked to this payment: a payment cancelled removes its votes.</span>
+                            </div>
+                            <a t-att-href="again_url" class="o_ocd_cta">Vote again</a>
+                            <button type="button" class="o_ocd_button o_ocd_share" t-att-data-url="share_url" t-att-data-text="share_text">
+                                <t t-call="ocd_live.icon" icon.f="share"/><span>Share: « I voted »</span>
+                            </button>
+                            <section t-if="top" class="o_ocd_vote_card">
+                                <h2 class="o_ocd_vote_h2">Live ranking</h2>
+                                <t t-foreach="top" t-as="row" t-call="ocd_vote.ranking_row"/>
+                                <a t-attf-href="/vote/#{contest.slug}/classement" class="o_ocd_link">The whole ranking</a>
+                            </section>
+                        </t>
+                        <t t-elif="state == 'late'">
+                            <div class="o_ocd_failed" role="status">
+                                <b>The payment arrived after the end of the votes.</b>
+                                <span>It does not count: the team refunds it to your number.</span>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="o_ocd_failed" role="status">
+                                <b>Payment not received: no vote counted.</b>
+                                <span>Nothing was taken. Vote again when you want.</span>
+                            </div>
+                            <a t-att-href="again_url" class="o_ocd_cta">Vote again</a>
+                        </t>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === THE RANKING === -->
+
+    <template id="ranking_row" name="OCD Vote: a row of the ranking">
+        <a t-att-href="row['url']" class="o_ocd_vote_row">
+            <b class="o_ocd_vote_row_rank" t-out="row['rank']"/>
+            <span class="o_ocd_vote_row_photo"><img t-if="row['photo']" t-att-src="row['photo']" alt="" loading="lazy"/></span>
+            <span class="o_ocd_vote_row_name">
+                <b t-out="row['candidate']._ocd_label()"/>
+                <span t-if="not hidden" class="o_ocd_vote_bar" aria-hidden="true"><i t-attf-style="width: #{row['width']}%"/></span>
+            </span>
+            <b t-if="not hidden" t-out="row['number_text']"/>
+        </a>
+    </template>
+
+    <template id="ranking_rows" name="OCD Vote: the rows of the ranking">
+        <t t-foreach="rows" t-as="row" t-call="ocd_vote.ranking_row"/>
+    </template>
+
+    <template id="ranking" name="OCD Vote: live ranking">
+        <t t-set="additional_title" t-value="contest.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_vote">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Live ranking</h1>
+                    <p class="o_ocd_vote_muted" t-out="contest.name"/>
+                    <div class="o_ocd_vote_ranking" t-att-data-refresh="'/vote/%s/classement/liste' % contest.slug if open else None">
+                        <t t-call="ocd_vote.ranking_rows"/>
+                    </div>
+                    <p class="o_ocd_vote_muted o_ocd_vote_small">
+                        <t t-if="hidden">The last hours, the numbers are hidden: only the order stays, until the results.</t>
+                        <t t-elif="open">Updated every 10 seconds.</t>
+                    </p>
+                    <a t-if="open" t-attf-href="/vote/#{contest.slug}" class="o_ocd_cta">Vote</a>
+                    <a t-elif="contest.state == 'done'" t-attf-href="/vote/#{contest.slug}/resultats" class="o_ocd_cta">See the results</a>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- === THE BAND OF THE FINAL: a page for the live software (OBS, 1280 × 720, transparent) === -->
+
+    <template id="band" name="OCD Vote: band of the final">
+        &lt;!DOCTYPE html&gt;
+        <html t-att-lang="request.env.lang and request.env.lang.replace('_', '-')">
+            <head>
+                <meta charset="utf-8"/>
+                <meta http-equiv="refresh" content="5"/>
+                <meta name="viewport" content="width=1280"/>
+                <title t-out="contest.name"/>
+                <style>
+                    html, body { margin: 0; background: transparent; font-family: 'Figtree', Arial, sans-serif; color: #FFFFFF; }
+                    .b { position: relative; width: 1280px; height: 720px; overflow: hidden; }
+                    .lb { position: absolute; right: 28px; top: 28px; width: 360px; border-radius: 20px; background: rgba(21, 19, 15, .82); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+                    .lb h1 { margin: 0; font-size: 20px; }
+                    .r { display: grid; grid-template-columns: 34px 1fr auto; gap: 8px; align-items: center; font-size: 17px; }
+                    .r .k { font-size: 22px; font-weight: 800; color: #FF9A4D; }
+                    .s { font-size: 14px; opacity: .8; }
+                    .foot { position: absolute; left: 28px; right: 28px; bottom: 24px; border-radius: 20px; background: #F46A00; color: #15130F; display: flex; align-items: center; gap: 20px; padding: 14px 20px; font-weight: 800; font-size: 26px; }
+                    .foot img { width: 86px; height: 86px; border-radius: 12px; background: #FFFFFF; }
+                </style>
+            </head>
+            <body>
+                <div class="b">
+                    <div class="lb">
+                        <h1 t-out="contest.name"/>
+                        <div t-foreach="rows" t-as="row" class="r">
+                            <span class="k" t-out="row['candidate'].number"/>
+                            <span t-out="row['candidate'].name"/>
+                            <b t-if="not hidden" t-out="row['number_text']"/>
+                        </div>
+                        <span t-if="left_line" class="s" t-out="left_line"/>
+                    </div>
+                    <div t-if="open" class="foot">
+                        <img t-att-src="qr" alt=""/>
+                        <span t-out="foot_line"/>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- === THE RESULTS === -->
+
+    <template id="results" name="OCD Vote: the results">
+        <t t-set="additional_title" t-value="contest.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_vote">
+                    <span class="o_ocd_vote_live">Results</span>
+                    <h1 t-if="winner_title" class="o_ocd_h1 o_ocd_h1_small" t-out="winner_title"/>
+                    <p t-if="winner_line" t-out="winner_line"/>
+                    <div class="o_ocd_vote_ranking">
+                        <t t-call="ocd_vote.ranking_rows"><t t-set="hidden" t-value="False"/></t>
+                    </div>
+                    <p class="o_ocd_vote_muted o_ocd_vote_small">The results are certified by OCD Live: only the paid votes count. Signature of the results: <b t-out="signature"/>.</p>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

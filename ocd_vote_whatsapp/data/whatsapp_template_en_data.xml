@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The English versions of the templates of OCD Vote (same names at Meta, language en) -->
+    <data noupdate="1">
+
+        <record id="template_vote_counted_en" model="whatsapp.template">
+            <field name="name">OCD Vote: votes counted (English)</field>
+            <field name="template_name">ocd_vote_comptee</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_vote.model_ocd_vote"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Thank you: your {{1}} votes for {{2}} in the contest {{3}} are counted. Tap « See the ranking » to follow the contest.</field>
+            <field name="button_url_value">{{ 'vote/' + object.contest_id.slug + '/classement' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'See the ranking', 'url': '{base_url}/{{1}}', 'url_example': 'vote/miss-douala-2026/classement'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.votes }}', 'sample_value': '10'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.candidate_id._ocd_label() }}', 'sample_value': 'N° 12 Aicha Mbappe'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.contest_id.name }}', 'sample_value': 'Miss Douala 2026'}),
+            ]"/>
+        </record>
+
+        <record id="template_vote_final_en" model="whatsapp.template">
+            <field name="name">OCD Vote: the final starts (English)</field>
+            <field name="template_name">ocd_vote_finale</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_vote.model_ocd_vote_alert"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Hello, the final of {{1}} starts soon in live. The votes close during the final: tap « Vote » to vote again.</field>
+            <field name="button_url_value">{{ 'vote/' + object.contest_id.slug }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Vote', 'url': '{base_url}/{{1}}', 'url_example': 'vote/miss-douala-2026'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.contest_id.name }}', 'sample_value': 'Miss Douala 2026'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

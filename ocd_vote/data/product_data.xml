@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- The votes bought on a contest: the price of each order is the one of its votes -->
+    <record id="product_vote" model="product.template">
+        <field name="name">Votes OCD Vote</field>
+        <field name="type">service</field>
+        <field name="list_price">100</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="invoice_policy">order</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="description_sale">Paid votes of a contest of OCD Vote.</field>
+    </record>
+
+</odoo>

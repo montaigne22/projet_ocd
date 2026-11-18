@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- One line per payment of votes -->
+    <record id="ocd_vote_view_list" model="ir.ui.view">
+        <field name="name">ocd.vote.list</field>
+        <field name="model">ocd.vote</field>
+        <field name="arch" type="xml">
+            <list string="Votes" create="False" decoration-muted="state in ('cancelled', 'refunded')" decoration-danger="state == 'late'">
+                <field name="create_date" string="Date"/>
+                <field name="contest_id"/>
+                <field name="candidate_id"/>
+                <field name="votes" sum="Votes"/>
+                <field name="amount_company" sum="Amount"/>
+                <field name="payment_method" optional="show"/>
+                <field name="payment_reference" optional="show"/>
+                <field name="phone"/>
+                <field name="source" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'paid'" decoration-danger="state == 'late'"/>
+                <field name="currency_id" column_invisible="True"/>
+                <button name="action_ocd_refund" type="object" string="Refunded" icon="undo"
+                        invisible="state not in ('paid', 'late')" confirm="The payment was refunded: its votes no longer count?"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_vote_view_form" model="ir.ui.view">
+        <field name="name">ocd.vote.form</field>
+        <field name="model">ocd.vote</field>
+        <field name="arch" type="xml">
+            <form string="Votes" create="False">
+                <header>
+                    <button name="action_ocd_refund" type="object" string="Refunded" invisible="state not in ('paid', 'late')"
+                            confirm="The payment was refunded: its votes no longer count?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,paid"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="contest_id" readonly="1"/>
+                            <field name="candidate_id" readonly="1"/>
+                            <field name="votes" readonly="1"/>
+                            <field name="amount_company" readonly="1"/>
+                            <field name="currency_id" invisible="True"/>
+                        </group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="phone"/>
+                            <field name="source" readonly="1"/>
+                            <field name="order_id" readonly="1"/>
+                            <field name="payment_method"/>
+                            <field name="payment_reference"/>
+                            <field name="paid_at"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_vote_view_search" model="ir.ui.view">
+        <field name="name">ocd.vote.search</field>
+        <field name="model">ocd.vote</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="contest_id"/>
+                <field name="candidate_id"/>
+                <field name="phone"/>
+                <filter name="paid" string="Counted" domain="[('state', '=', 'paid')]"/>
+                <filter name="late" string="To refund" domain="[('state', '=', 'late')]"/>
+                <filter name="whatsapp" string="On WhatsApp" domain="[('source', '=', 'whatsapp')]"/>
+                <group>
+                    <filter name="group_phone" string="Phone of the voter" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_candidate" string="Candidate" context="{'group_by': 'candidate_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_vote_action" model="ir.actions.act_window">
+        <field name="name">Votes</field>
+        <field name="res_model">ocd.vote</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_paid': 1}</field>
+        <field name="help" type="html">
+            <p>One line per payment: the votes count once the payment is confirmed. A payment refunded removes its votes. Grouped by phone, the big payments of a same phone show at once.</p>
+        </field>
+    </record>
+
+</odoo>

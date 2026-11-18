@@ -1,0 +1,552 @@
+// The pages of OCD Vote (chantier 4, design OcdVote). Colours and fonts ($ocd-*) come from
+// ocd_live/static/src/scss/ocd_tokens.scss.
+
+$ocd-vote-violet: #5B2DB0;
+$ocd-vote-violet-dark: #2B1A4A;
+$ocd-vote-violet-soft: #EEE8FB;
+
+.o_ocd_app {
+    // « Votes » in the menu at the top of the larger screens only (the phone keeps its 4 buttons)
+    .o_ocd_nav .o_ocd_nav_votes {
+        display: none;
+    }
+    .o_ocd_vote {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_vote_main,
+    .o_ocd_vote_side {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+    .o_ocd_vote_small {
+        font-size: 13.5px;
+    }
+    .o_ocd_vote_muted {
+        color: $ocd-muted;
+        font-size: 13.5px;
+    }
+    .o_ocd_vote_h2 {
+        margin: 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 20px;
+    }
+    .o_ocd_vote_hero {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, $ocd-vote-violet-dark, $ocd-vote-violet);
+        color: #FFFFFF;
+        padding: 16px;
+        text-decoration: none;
+        overflow: hidden;
+    }
+    a.o_ocd_vote_hero {
+        color: #FFFFFF !important;
+    }
+    .o_ocd_vote_banner {
+        width: calc(100% + 32px);
+        margin: -16px -16px 6px;
+        max-height: 220px;
+        object-fit: cover;
+    }
+    .o_ocd_vote_kicker {
+        font-size: 13.5px;
+        opacity: .85;
+    }
+    .o_ocd_vote_title {
+        margin: 0;
+        color: #FFFFFF;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 26px;
+        line-height: 1.1;
+    }
+    .o_ocd_vote_org {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        font-size: 13.5px;
+    }
+    .o_ocd_vote_badge {
+        border-radius: 999px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 2px 9px;
+        white-space: nowrap;
+    }
+    .o_ocd_vote_badge_orange {
+        background: $ocd-orange-pale;
+        color: $ocd-orange-dark;
+    }
+    .o_ocd_vote_live {
+        align-self: flex-start;
+        border-radius: 999px;
+        background: $ocd-red-live;
+        color: #FFFFFF;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 2px 9px;
+    }
+    .o_ocd_vote_count {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .14);
+            padding: 8px 4px;
+            min-width: 0;
+        }
+        b {
+            font-family: $ocd-display;
+            font-size: 20px;
+            white-space: nowrap;
+        }
+        span {
+            font-size: 12px;
+        }
+    }
+    .o_ocd_vote_how {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 16px;
+        background: $ocd-orange-pale;
+        color: #6B3300;
+        padding: 12px 14px;
+        font-size: 14.5px;
+    }
+    .o_ocd_vote_wide_only {
+        display: none;
+    }
+    .o_ocd_vote_search {
+        display: flex;
+        gap: 8px;
+        .o_ocd_input {
+            flex: 1;
+            min-width: 0;
+        }
+        .o_ocd_button {
+            margin: 0;
+        }
+    }
+    .o_ocd_vote_chips {
+        margin: 0;
+        padding: 0;
+        .o_ocd_chip {
+            color: $ocd-ink;
+            text-decoration: none;
+            &[aria-current="true"] {
+                border-color: $ocd-ink;
+                background: $ocd-ink;
+                color: #FFFFFF;
+            }
+        }
+    }
+    .o_ocd_vote_grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .o_ocd_vote_cand {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 8px;
+        color: $ocd-ink;
+        text-decoration: none;
+        min-width: 0;
+        > b {
+            overflow-wrap: anywhere;
+        }
+    }
+    .o_ocd_vote_photo {
+        display: block;
+        height: 150px;
+        border-radius: 12px;
+        background: $ocd-vote-violet-soft;
+        overflow: hidden;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    .o_ocd_vote_num {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        z-index: 1;
+        border-radius: 10px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 16px;
+        padding: 2px 9px;
+    }
+    .o_ocd_vote_rank {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 1;
+        border-radius: 999px;
+        background: $ocd-orange;
+        color: $ocd-ink;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 2px 8px;
+    }
+    .o_ocd_vote_line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 6px;
+        font-size: 13.5px;
+        b {
+            white-space: nowrap;
+        }
+    }
+    .o_ocd_vote_button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        border-radius: 12px;
+        background: $ocd-orange;
+        font-weight: 800;
+        font-size: 15px;
+    }
+    .o_ocd_vote_card {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 14px 16px;
+    }
+    .o_ocd_vote_card > .o_ocd_button,
+    .o_ocd_vote_card > form > .o_ocd_cta,
+    .o_ocd_vote_info > .o_ocd_share {
+        align-self: stretch;
+        justify-content: center;
+        margin: 0;
+    }
+    .o_ocd_vote_row {
+        display: grid;
+        grid-template-columns: 28px 44px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid $ocd-line;
+        color: $ocd-ink;
+        text-decoration: none;
+    }
+    .o_ocd_vote_row_photo {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: $ocd-vote-violet-soft;
+        overflow: hidden;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    .o_ocd_vote_row_name {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        b {
+            overflow-wrap: anywhere;
+        }
+    }
+    .o_ocd_vote_bar {
+        display: block;
+        height: 8px;
+        border-radius: 99px;
+        background: $ocd-sand;
+        overflow: hidden;
+        margin-top: 4px;
+        i {
+            display: block;
+            height: 100%;
+            background: $ocd-vote-violet;
+            border-radius: 99px;
+        }
+    }
+    .o_ocd_vote_ranking {
+        display: flex;
+        flex-direction: column;
+    }
+    .o_ocd_vote_alert {
+        summary {
+            cursor: pointer;
+            list-style: none;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+    }
+    // A candidate and her votes
+    .o_ocd_vote_big {
+        position: relative;
+        border-radius: 18px;
+        background: $ocd-vote-violet-soft;
+        overflow: hidden;
+        aspect-ratio: 1 / 1;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .o_ocd_vote_num {
+            top: 12px;
+            left: 12px;
+        }
+    }
+    .o_ocd_vote_info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_vote_name {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 8px;
+        .o_ocd_h1 {
+            margin: 0;
+        }
+    }
+    .o_ocd_vote_form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_vote_packs {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+    .o_ocd_vote_pack {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 12px 14px;
+        cursor: pointer;
+        > input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        &:has(> input:checked) {
+            border-color: $ocd-ink;
+            box-shadow: inset 0 0 0 1px $ocd-ink;
+        }
+        &:has(> input:focus-visible) {
+            outline: 3px solid $ocd-orange;
+            outline-offset: 2px;
+        }
+        b {
+            font-size: 16px;
+        }
+        .o_ocd_stepper {
+            flex: none;
+        }
+    }
+    .o_ocd_vote_other {
+        flex-wrap: wrap;
+    }
+    .o_ocd_vote_save {
+        border-radius: 999px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 2px 8px;
+        white-space: nowrap;
+    }
+    // My votes
+    .o_ocd_vote_ok {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 16px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        padding: 14px;
+    }
+    .o_ocd_vote_receipt {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border: 2px dashed $ocd-line;
+        border-radius: 16px;
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    .o_ocd_vote_rule {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 14px;
+        background: $ocd-sand;
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    .o_ocd_vote_rules {
+        white-space: pre-line;
+    }
+    .o_ocd_vote_list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    // The organiser
+    .o_ocd_vote_tiles {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .o_ocd_vote_tile {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 10px 12px;
+        min-width: 0;
+        small {
+            color: $ocd-muted;
+            font-size: 13.5px;
+        }
+        b {
+            font-family: $ocd-display;
+            font-weight: 800;
+            font-size: 22px;
+            line-height: 1.1;
+            overflow-wrap: anywhere;
+        }
+    }
+    .o_ocd_vote_columns {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .o_ocd_vote_step {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 14px;
+        i {
+            flex: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: $ocd-green-soft;
+            color: $ocd-green-text;
+            display: grid;
+            place-items: center;
+            font-style: normal;
+            font-weight: 800;
+            font-size: 12px;
+        }
+        .o_ocd_vote_step_wait {
+            background: $ocd-sand;
+            color: $ocd-muted;
+        }
+    }
+    .o_ocd_vote_place {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 12px 14px;
+        color: $ocd-ink;
+        text-decoration: none;
+    }
+    .o_ocd_vote_thumb {
+        width: 160px;
+        height: 160px;
+        border-radius: 16px;
+        object-fit: cover;
+    }
+}
+@media (min-width: $ocd-tablet) {
+    .o_ocd_app {
+        // The layout of the site for a detail keeps its grid
+        .o_ocd_vote.o_ocd_detail {
+            display: grid;
+        }
+        .o_ocd_vote_grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .o_ocd_vote_photo {
+            height: 200px;
+        }
+        .o_ocd_vote_tiles {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .o_ocd_vote_columns {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: start;
+        }
+    }
+}
+@media (min-width: $ocd-desktop) {
+    .o_ocd_app {
+        .o_ocd_vote.o_ocd_panes {
+            display: grid;
+        }
+        .o_ocd_vote_contest {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 380px;
+            gap: 28px;
+            align-items: start;
+        }
+        .o_ocd_vote_phone_only {
+            display: none;
+        }
+        .o_ocd_vote_wide_only {
+            display: flex;
+        }
+        .o_ocd_vote_hero .o_ocd_vote_title {
+            font-size: 40px;
+        }
+        .o_ocd_vote_grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .o_ocd_vote_photo {
+            height: 220px;
+        }
+    }
+}

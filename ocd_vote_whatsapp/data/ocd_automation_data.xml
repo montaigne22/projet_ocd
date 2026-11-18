@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The WhatsApp templates of the automations of OCD Vote -->
+<odoo>
+
+    <record id="ocd_vote.automation_vote_paid" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_vote_counted')])]"/>
+    </record>
+    <record id="ocd_vote.automation_vote_final" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_vote_final')])]"/>
+    </record>
+
+</odoo>

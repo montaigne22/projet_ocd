@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates to create at Meta (language French, category Utility) with the same names
+         and texts, then to synchronise from the WhatsApp account. -->
+    <data noupdate="1">
+
+        <!-- The votes counted (chantier 4, design OcdVote): the voter just paid, the button opens
+             the ranking. The number of votes of the candidate is not in it: it is hidden the last
+             hours of a contest -->
+        <record id="template_vote_counted" model="whatsapp.template">
+            <field name="name">OCD Vote: votes counted</field>
+            <field name="template_name">ocd_vote_comptee</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_vote.model_ocd_vote"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Merci : vos {{1}} voix pour {{2}} au concours {{3}} sont comptées. Touchez « Voir le classement » pour suivre le concours.</field>
+            <field name="button_url_value">{{ 'vote/' + object.contest_id.slug + '/classement' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir le classement', 'url': '{base_url}/{{1}}', 'url_example': 'vote/miss-douala-2026/classement'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.votes }}', 'sample_value': '10'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.candidate_id._ocd_label() }}', 'sample_value': 'N° 12 Aïcha Mbappe'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.contest_id.name }}', 'sample_value': 'Miss Douala 2026'}),
+            ]"/>
+        </record>
+
+        <!-- The final starts: to the people who asked « Tell me on WhatsApp » on the contest -->
+        <record id="template_vote_final" model="whatsapp.template">
+            <field name="name">OCD Vote: the final starts</field>
+            <field name="template_name">ocd_vote_finale</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_vote.model_ocd_vote_alert"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour, la finale de {{1}} commence bientôt en live. Les votes ferment pendant la finale : touchez « Voter » pour voter encore.</field>
+            <field name="button_url_value">{{ 'vote/' + object.contest_id.slug }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voter', 'url': '{base_url}/{{1}}', 'url_example': 'vote/miss-douala-2026'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.contest_id.name }}', 'sample_value': 'Miss Douala 2026'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Reasons sent to the organiser when a contest or a candidate is refused -->
+    <record id="refuse_reason_vote_rules" model="ocd.listing.refuse.reason">
+        <field name="name">Rules missing or unclear</field>
+        <field name="message">The rules of the contest are missing or unclear: say how the winner is chosen, the end of the votes and the prize, then send it again.</field>
+        <field name="applies_to">vote</field>
+        <field name="sequence">410</field>
+    </record>
+    <record id="refuse_reason_vote_lottery" model="ocd.listing.refuse.reason">
+        <field name="name">Looks like a lottery</field>
+        <field name="message">The voters cannot win anything and nothing is drawn by lot: change the rules, then send them again.</field>
+        <field name="applies_to">vote</field>
+        <field name="sequence">420</field>
+    </record>
+    <record id="refuse_reason_vote_photo" model="ocd.listing.refuse.reason">
+        <field name="name">Photo not suitable</field>
+        <field name="message">The photo of the candidate is blurry or not suitable. Send another photo of the candidate.</field>
+        <field name="applies_to">vote</field>
+        <field name="sequence">430</field>
+    </record>
+
+</odoo>

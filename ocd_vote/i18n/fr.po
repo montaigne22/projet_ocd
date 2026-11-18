@@ -1,0 +1,2346 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-17 21:09+0000\n"
+"PO-Revision-Date: 2026-11-17 21:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: ocd_vote
+#: model:ir.module.module,description:base.module_ocd_vote
+msgid ""
+"\n"
+"OCD Vote\n"
+"========\n"
+"\n"
+"- A contest of an organiser (checked by the team, like the vendors) or of OCD\n"
+"  Live: its dates, the price of a vote and its packs, the share of the\n"
+"  organiser, its rules; numbered candidates with their photo.\n"
+"- The public votes on the page of a candidate: a number of votes, then the\n"
+"  payment form of OCD Live (Mobile Money, card...). Only the paid votes\n"
+"  count, each one linked to its payment; a payment refunded removes its\n"
+"  votes; a payment started after the end does not count. No free votes.\n"
+"- Live ranking (the numbers hidden in the last hours, setting), a band for\n"
+"  the live of the final (a page for the live software), the results\n"
+"  certified by OCD Live (PDF signed).\n"
+"- The organiser logs in with their number, like the vendors: their contest,\n"
+"  their share, their candidates (checked by the team after the opening).\n"
+"- The payout of the organiser after the results, with the reference of the\n"
+"  transfer.\n"
+msgstr ""
+"\n"
+"OCD Vote\n"
+"========\n"
+"\n"
+"- Un concours d'un organisateur (vérifié par l'équipe, comme les vendeurs) ou\n"
+"  d'OCD Live : ses dates, le prix de la voix et ses paquets, la part de\n"
+"  l'organisateur, son règlement ; des candidats numérotés avec leur photo.\n"
+"- Le public vote sur la page d'un candidat : un nombre de voix, puis le\n"
+"  formulaire de paiement d'OCD Live (Mobile Money, carte…). Seules les voix\n"
+"  payées comptent, chacune liée à son paiement ; un paiement remboursé retire\n"
+"  ses voix ; un paiement commencé après la fin ne compte pas. Pas de voix\n"
+"  gratuites.\n"
+"- Classement en direct (les nombres cachés les dernières heures, réglable),\n"
+"  un bandeau pour le live de la finale (une page pour le logiciel du live),\n"
+"  les résultats certifiés par OCD Live (PDF signé).\n"
+"- L'organisateur se connecte avec son numéro, comme les vendeurs : son\n"
+"  concours, sa part, ses candidats (vérifiés par l'équipe après l'ouverture).\n"
+"- Le reversement à l'organisateur après les résultats, avec la référence du\n"
+"  transfert.\n"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "%(day)s at %(hour)s"
+msgstr "%(day)s à %(hour)s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "%(days)s d %(hours)s h"
+msgstr "%(days)s j %(hours)s h"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "%(name)s (N° %(number)s) now has %(votes)s votes: %(rank)s."
+msgstr "%(name)s (N° %(number)s) a maintenant %(votes)s voix : %(rank)s."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "%(name)s wins %(contest)s"
+msgstr "%(name)s remporte %(contest)s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: code:addons/ocd_vote/models/ocd_vote.py:0
+msgid "%(votes)s votes for %(candidate)s"
+msgstr "%(votes)s voix pour %(candidate)s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote.py:0
+msgid "%(votes)s votes for %(candidate)s · %(contest)s"
+msgstr "%(votes)s voix pour %(candidate)s · %(contest)s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "%(votes)s votes for %(name)s, it is counted"
+msgstr "%(votes)s voix pour %(name)s, c'est compté"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "%(votes)s votes paid by %(voters)s people. Only the paid votes count, each one linked to its payment; the refunded payments and the payments started after the end are not counted."
+msgstr "%(votes)s voix payées par %(voters)s personnes. Seules les voix payées comptent, chacune liée à son paiement ; les paiements remboursés et ceux commencés après la fin ne sont pas comptés."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "%s candidates"
+msgstr "%s candidats"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "%s candidates, each with a photo and a number"
+msgstr "%s candidats, chacun avec sa photo et son numéro"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "%s has paid votes: close it instead."
+msgstr "%s a des voix payées : ferme-le plutôt."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "%s min"
+msgstr "%s min"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "%s offered"
+msgstr "%s offertes"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "%s people"
+msgstr "%s personnes"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: code:addons/ocd_vote/controllers/organizer.py:0
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "%s votes"
+msgstr "%s voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "%sth"
+msgstr "%se"
+
+#. module: ocd_vote
+#: model:ir.actions.report,print_report_name:ocd_vote.action_report_results
+msgid "'Results %s' % object.name"
+msgstr "'Résultats %s' % object.name"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "0 votes: no second pack."
+msgstr "0 voix : pas de second paquet."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "1 offered"
+msgstr "1 offerte"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "1 person"
+msgstr "1 personne"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: code:addons/ocd_vote/controllers/organizer.py:0
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "1 vote"
+msgstr "1 voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "1 vote for %s, it is counted"
+msgstr "1 voix pour %s, c'est compté"
+
+#. module: ocd_vote
+#: model:ocd.automation,when:ocd_vote.automation_vote_final
+msgid "10 minutes before the live of the final"
+msgstr "10 minutes avant le live de la finale"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "1st"
+msgstr "1er"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "2nd"
+msgstr "2e"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "3rd"
+msgstr "3e"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest_hero
+msgid "<b>-</b><span>to vote</span>"
+msgstr "<b>-</b><span>pour voter</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "<b>Another number</b>"
+msgstr "<b>Autre nombre</b>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "<b>How to vote</b>"
+msgstr "<b>Comment voter</b>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.rules
+msgid ""
+"<b>Only the paid votes count</b>\n"
+"                        <span>A vote exists once its payment is confirmed. Each vote is linked to its payment; a payment cancelled or refunded removes its votes. No free votes. A payment started after the end does not count: it is refunded.</span>"
+msgstr ""
+"<b>Seules les voix payées comptent</b>\n"
+"                        <span>Une voix existe quand son paiement est confirmé. Chaque voix est liée à son paiement ; un paiement annulé ou remboursé retire ses voix. Pas de voix gratuites. Un paiement commencé après la fin ne compte pas : il est remboursé.</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "<b>Paying online is not open yet in your country.</b>"
+msgstr "<b>Le paiement en ligne n'est pas encore ouvert dans ton pays.</b>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid ""
+"<b>Payment not received: no vote counted.</b>\n"
+"                                <span>Nothing was taken. Vote again when you want.</span>"
+msgstr ""
+"<b>Paiement pas reçu : aucune voix comptée.</b>\n"
+"                                <span>Rien n'a été pris. Revote quand tu veux.</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "<b>Receipt</b>"
+msgstr "<b>Reçu</b>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid ""
+"<b>Thank you: the team checks your payment.</b>\n"
+"                                    <span>Your votes count once it is checked.</span>"
+msgstr ""
+"<b>Merci : l'équipe vérifie ton paiement.</b>\n"
+"                                    <span>Tes voix comptent dès qu'il est vérifié.</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "<b>The final in live</b>"
+msgstr "<b>La finale en live</b>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid ""
+"<b>The payment arrived after the end of the votes.</b>\n"
+"                                <span>It does not count: the team refunds it to your number.</span>"
+msgstr ""
+"<b>Le paiement est arrivé après la fin des votes.</b>\n"
+"                                <span>Il ne compte pas : l'équipe le rembourse sur ton numéro.</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid ""
+"<b>The payment did not go through.</b>\n"
+"                            <span>Refused or cancelled on the phone, or not enough money. Nothing was taken, no vote counted.</span>"
+msgstr ""
+"<b>Le paiement n'est pas passé.</b>\n"
+"                            <span>Refusé ou annulé sur le téléphone, ou pas assez d'argent. Rien n'a été pris, aucune voix comptée.</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_contest
+msgid "<small class=\"o_ocd_vote_muted\">The band is a page to put in the software of your live (OBS): the 5 first, updated every 5 seconds, and how to vote.</small>"
+msgstr "<small class=\"o_ocd_vote_muted\">Le bandeau est une page à mettre dans le logiciel de ton live (OBS) : les 5 premiers, mis à jour toutes les 5 secondes, et comment voter.</small>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "<small class=\"o_ocd_vote_muted\">You then pay on the next page: a request arrives on your phone, type your Mobile Money code there to pay. Your votes count as soon as the money arrives.</small>"
+msgstr "<small class=\"o_ocd_vote_muted\">Tu paies ensuite sur la page suivante : une demande arrive sur ton téléphone, tape ton code Mobile Money pour payer. Tes voix comptent dès que l'argent arrive.</small>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "<small>Type your secret code on your phone only, never here. This page updates by itself.</small>"
+msgstr "<small>Tape ton code secret sur ton téléphone, jamais ici. Cette page se met à jour toute seule.</small>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "<span class=\"o_ocd_link\">Change</span>"
+msgstr "<span class=\"o_ocd_link\">Modifier</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid ""
+"<span class=\"o_ocd_spinner\" aria-hidden=\"true\"/>\n"
+"                                    <b>We wait for your payment…</b>"
+msgstr ""
+"<span class=\"o_ocd_spinner\" aria-hidden=\"true\"/>\n"
+"                                    <b>On attend ton paiement…</b>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.results
+msgid "<span class=\"o_ocd_vote_live\">Results</span>"
+msgstr "<span class=\"o_ocd_vote_live\">Résultats</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "<span class=\"o_ocd_vote_muted\">Each vote is linked to this payment: a payment cancelled removes its votes.</span>"
+msgstr "<span class=\"o_ocd_vote_muted\">Chaque voix est liée à ce paiement : un paiement annulé retire ses voix.</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_contest
+msgid "<span>Share the contest</span>"
+msgstr "<span>Partager le concours</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "<span>Share the page</span>"
+msgstr "<span>Partager sa page</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "<span>Share: « I voted »</span>"
+msgstr "<span>Partager : « J'ai voté »</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "<span>Total</span>"
+msgstr "<span>Total</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.nav_links
+msgid "<span>Votes</span>"
+msgstr "<span>Votes</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "<span>Write to OCD Live on WhatsApp</span>"
+msgstr "<span>Écrire à OCD Live sur WhatsApp</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest_hero
+msgid "<span>candidates</span>"
+msgstr "<span>candidats</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest_hero
+msgid "<span>to vote</span>"
+msgstr "<span>pour voter</span>"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest_hero
+msgid "<span>votes</span>"
+msgstr "<span>voix</span>"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__bio
+msgid "A Sentence"
+msgstr "Une phrase"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidate
+msgid "A change waits for the check of the team: the page shows the candidate as before until then."
+msgstr "Une modification attend la vérification de l'équipe : la page montre le candidat comme avant d'ici là."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "A contest without candidates cannot open."
+msgstr "Un concours sans candidats ne peut pas ouvrir."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidate
+msgid "A new photo (if you want)"
+msgstr "Une nouvelle photo (si tu veux)"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "A number or a name"
+msgstr "Un numéro ou un nom"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "A pack has 2 votes or more, and a price."
+msgstr "Un paquet a 2 voix ou plus, et un prix."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidate
+msgid "A sentence"
+msgstr "Une phrase"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "A sentence (if you want)"
+msgstr "Une phrase (si tu veux)"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "A vote has a price: there are no free votes."
+msgstr "Une voix a un prix : il n'y a pas de voix gratuites."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "Accept the change"
+msgstr "Accepter la modification"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__access_secret
+msgid "Access Secret"
+msgstr "Secret d'accès"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__access_token
+msgid "Access Token"
+msgstr "Jeton d'accès"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_needaction
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "Add a candidate"
+msgstr "Ajouter un candidat"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Add the candidates first."
+msgstr "Ajoute d'abord les candidats."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Add the photo"
+msgstr "Ajoute sa photo"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Add the photo."
+msgstr "Ajoute sa photo."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Added: N° %s."
+msgstr "Ajouté : N° %s."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__slug
+msgid "Address"
+msgstr "Adresse"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "All the candidates"
+msgstr "Tous les candidats"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__amount_company
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_list
+msgid "Amount"
+msgstr "Montant"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_candidate__bio
+msgid "An age, a district, why the candidate takes part."
+msgstr "Un âge, un quartier, pourquoi le candidat participe."
+
+#. module: ocd_vote
+#: model:ir.model.constraint,message:ocd_vote.constraint_ocd_vote_contest_unique_slug
+msgid "Another contest has this address."
+msgstr "Un autre concours a cette adresse."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "Another number of votes"
+msgstr "Autre nombre de voix"
+
+#. module: ocd_vote
+#: model:ocd.automation,when:ocd_vote.automation_vote_close
+msgid "At the end of the votes of a contest"
+msgstr "À la fin des votes d'un concours"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_attachment_count
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_automation
+msgid "Automation Of OCD Live"
+msgstr "Automatisation d'OCD Live"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.rules
+msgid "Back to the contest"
+msgstr "Retour au concours"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Band"
+msgstr "Bandeau"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__image
+msgid "Banner"
+msgstr "Bannière"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__state__draft
+msgid "Being prepared"
+msgstr "En préparation"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "By %s"
+msgstr "Par %s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "By OCD Live"
+msgstr "Par OCD Live"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "By number"
+msgstr "Par numéro"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Cancel this contest?"
+msgstr "Annuler ce concours ?"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__candidate_id
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_vote.report_results
+msgid "Candidate"
+msgstr "Candidat"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_vote_candidate
+msgid "Candidate Of A Contest"
+msgstr "Candidat d'un concours"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "Candidate changed"
+msgstr "Candidat modifié"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__candidate_ids
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Candidates"
+msgstr "Candidats"
+
+#. module: ocd_vote
+#: model:ir.actions.report,name:ocd_vote.action_report_results
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Certified results"
+msgstr "Résultats certifiés"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Certified results of OCD Live · %(organizer)s · votes closed on %(close)s"
+msgstr "Résultats certifiés par OCD Live · %(organizer)s · votes fermés le %(close)s"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "Change the number or the method"
+msgstr "Changer de numéro ou de moyen"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Change to check by OCD Live"
+msgstr "Modification à vérifier par OCD Live"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Check and open"
+msgstr "Vérifier et ouvrir"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__state__approved
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_search
+msgid "Checked"
+msgstr "Vérifié"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Checked by %s: the votes open on the date of the contest."
+msgstr "Vérifié par %s : les votes ouvrent à la date du concours."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Checked by OCD Live (organiser and rules)"
+msgstr "Vérifié par OCD Live (organisateur et règlement)"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote.py:0
+msgid "Choose between 1 and %s votes."
+msgstr "Choisis entre 1 et %s voix."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Choose your candidate, then the number of votes: %(price)s a vote, paid with Mobile Money. Or on WhatsApp: write VOTE and the number to %(number)s."
+msgstr "Choisis ton candidat, puis le nombre de voix : %(price)s la voix, payées en Mobile Money. Ou sur WhatsApp : écris VOTE et son numéro au %(number)s."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Choose your candidate, then the number of votes: %s a vote, paid with Mobile Money."
+msgstr "Choisis ton candidat, puis le nombre de voix : %s la voix, payées en Mobile Money."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__city
+msgid "City"
+msgstr "Ville"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Close now"
+msgstr "Fermer maintenant"
+
+#. module: ocd_vote
+#: model:ocd.automation,actions:ocd_vote.automation_vote_close
+msgid "Close the votes (a payment started later is to refund); the team then publishes the certified results, and the share of the organiser is due 3 days after."
+msgstr "Fermer les votes (un paiement commencé après est à rembourser) ; l'équipe publie ensuite les résultats certifiés, et la part de l'organisateur est due 3 jours après."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Close the votes of %s first."
+msgstr "Ferme d'abord les votes de %s."
+
+#. module: ocd_vote
+#: model:ocd.automation,tools:ocd_vote.automation_vote_paid
+msgid "Code of OCD Live."
+msgstr "Code d'OCD Live."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__amount_total
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_list
+msgid "Collected"
+msgstr "Encaissé"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_res_company
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__company_id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__contest_id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_alert__contest_id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__contest_id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__contest_id
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Contest"
+msgstr "Concours"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_vote_contest
+msgid "Contest Of OCD Vote"
+msgstr "Concours OCD Vote"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Contest and rules sent"
+msgstr "Concours et règlement envoyés"
+
+#. module: ocd_vote
+#: model:ocd.automation,name:ocd_vote.automation_vote_close
+msgid "Contest closed: results and payout"
+msgstr "Concours fermé : résultats et reversement"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+#: model:ir.actions.act_window,name:ocd_vote.ocd_vote_contest_action
+#: model:ir.model.fields,field_description:ocd_vote.field_res_partner__ocd_vote_contest_ids
+#: model:ir.model.fields,field_description:ocd_vote.field_res_users__ocd_vote_contest_ids
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_listing_refuse_reason__applies_to__vote
+#: model:ir.ui.menu,name:ocd_vote.ocd_vote_contest_menu
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_vote.res_partner_view_form_ocd_vote
+msgid "Contests"
+msgstr "Concours"
+
+#. module: ocd_vote
+#: model:ir.module.module,summary:base.module_ocd_vote
+msgid "Contests (miss, awards, talents, schools) with numbered candidates, votes paid with Mobile Money, live ranking, band for the live of the final, results and payout to the organiser"
+msgstr "Concours (miss, awards, talents, écoles) avec des candidats numérotés, votes payés en Mobile Money, classement en direct, bandeau pour le live de la finale, résultats et reversement à l'organisateur"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/res_partner.py:0
+msgid "Contests of %s"
+msgstr "Concours de %s"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote__state__paid
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_search
+msgid "Counted"
+msgstr "Comptées"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__country_id
+msgid "Country"
+msgstr "Pays"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__create_uid
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_alert__create_uid
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__create_uid
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__create_uid
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__create_date
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_alert__create_date
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__create_date
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__create_date
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__currency_id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__currency_id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_list
+msgid "Date"
+msgstr "Date"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__description
+msgid "Description"
+msgstr "Description"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_listing_refuse_reason
+msgid "Directory Link Refusal Reason"
+msgstr "Motif de refus"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_automation__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_listing_refuse_reason__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_live_verification__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_alert__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ocd_vote.field_sale_order__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__city
+msgid "District Or City"
+msgstr "Quartier ou ville"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidate
+msgid "District or city"
+msgstr "Quartier ou ville"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "District or city (if you want)"
+msgstr "Quartier ou ville (si tu veux)"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "Done: a WhatsApp when the final starts."
+msgstr "C'est noté : un WhatsApp quand la finale commence."
+
+#. module: ocd_vote
+#: model:ir.model.constraint,message:ocd_vote.constraint_ocd_vote_candidate_unique_number
+msgid "Each candidate has their own number in the contest."
+msgstr "Chaque candidat a son propre numéro dans le concours."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__organizer_id
+msgid "Empty: a contest of OCD Live. The organiser logs in with their number and adds the candidates."
+msgstr "Vide : un concours d'OCD Live. L'organisateur se connecte avec son numéro et ajoute les candidats."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "End on %s, then the certified results"
+msgstr "Fin le %s, puis les résultats certifiés"
+
+#. module: ocd_vote
+#: model:ocd.automation,trigger:ocd_vote.automation_vote_close
+#: model:ocd.automation,trigger:ocd_vote.automation_vote_final
+msgid "Every 5 minutes."
+msgstr "Toutes les 5 minutes."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__final_at
+msgid "Final At"
+msgstr "Finale le"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_vote_alert
+msgid "Final Of A Contest: Tell Me"
+msgstr "Finale d'un concours : me prévenir"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__final_told_at
+msgid "Final Told At"
+msgstr "Finale annoncée le"
+
+#. module: ocd_vote
+#: model:ocd.automation,name:ocd_vote.automation_vote_final
+msgid "Final: tell the people who asked"
+msgstr "Finale : prévenir ceux qui l'ont demandé"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__ocd_vote_pack1_price
+msgid "First Pack: Price"
+msgstr "Premier paquet : prix"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__ocd_vote_pack1_votes
+msgid "First Pack: Votes"
+msgstr "Premier paquet : voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "First pack"
+msgstr "Premier paquet"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_follower_ids
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_partner_ids
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (contacts)"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_listing_refuse_reason__applies_to
+msgid "For"
+msgstr "Pour"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_res_company__ocd_vote_hide_hours
+msgid "For a new contest: the order stays, the numbers are hidden until the results. 0: always shown."
+msgstr "Pour un nouveau concours : l'ordre reste, les nombres sont cachés jusqu'aux résultats. 0 : toujours montrés."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_res_company__ocd_vote_price
+msgid "For a new contest; changed on the contest before its opening."
+msgstr "Pour un nouveau concours ; modifiable sur le concours avant son ouverture."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "For a new contest; changed on the contest before its opening. No free votes."
+msgstr "Pour un nouveau concours ; modifiable sur le concours avant son ouverture. Pas de voix gratuites."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_candidate__number
+msgid "Given in order: never given again in the contest."
+msgstr "Donné dans l'ordre : jamais redonné dans le concours."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_automation__group
+msgid "Group"
+msgstr "Groupe"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__has_message
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__has_pending
+msgid "Has Pending"
+msgstr "A une modification"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Hello, I report the contest %s on OCD Live."
+msgstr "Bonjour, je signale le concours %s sur OCD Live."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Hello, I want to pay my votes %(order)s (%(total)s) from %(country)s."
+msgstr "Bonjour, je veux payer mes voix %(order)s (%(total)s) depuis : %(country)s."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "How many votes?"
+msgstr "Combien de voix ?"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "I paid"
+msgstr "J'ai payé"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "I voted for %(name)s, N° %(number)s, in %(contest)s. Vote too:"
+msgstr "J'ai voté pour %(name)s, N° %(number)s, à %(contest)s. Vote toi aussi :"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_automation__id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_listing_refuse_reason__id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_live_verification__id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_alert__id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__id
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__id
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__id
+#: model:ir.model.fields,field_description:ocd_vote.field_res_partner__id
+#: model:ir.model.fields,field_description:ocd_vote.field_sale_order__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote__message_needaction
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote__message_has_error
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote__message_has_sms_error
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__message_has_error
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote__amount_company
+msgid "In the currency of the company."
+msgstr "Dans la devise de la société."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_is_follower
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__write_uid
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_alert__write_uid
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__write_uid
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__write_uid
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__write_date
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_alert__write_date
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__write_date
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__write_date
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__final_url
+msgid "Live Of The Final"
+msgstr "Live de la finale"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ranking
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "Live ranking"
+msgstr "Classement en direct"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_res_partner__ocd_vote_organizer
+#: model:ir.model.fields,help:ocd_vote.field_res_users__ocd_vote_organizer
+msgid "Logs in with their number on /vote/organisateur, like the vendors: their contests and candidates."
+msgstr "Se connecte avec son numéro sur /vote/organisateur, comme les vendeurs : ses concours et ses candidats."
+
+#. module: ocd_vote
+#: model:ocd.listing.refuse.reason,name:ocd_vote.refuse_reason_vote_lottery
+msgid "Looks like a lottery"
+msgstr "Ressemble à une loterie"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_has_error
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_ids
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_res_company__ocd_vote_pay_minutes
+msgid "Minutes; past them, votes not paid are cancelled (a payment checked by the team keeps waiting)."
+msgstr "Minutes ; passé ce délai, les voix non payées sont annulées (un paiement vérifié par l'équipe continue d'attendre)."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__payout_momo
+msgid "Mobile Money Of The Organiser"
+msgstr "Mobile Money de l'organisateur"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Money"
+msgstr "Argent"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "Money sent? The number that paid, or the reference of the transfer"
+msgstr "Argent envoyé ? Le numéro qui a payé, ou la référence du transfert"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "My contest"
+msgstr "Mon concours"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_home
+msgid "My contests"
+msgstr "Mes concours"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "My votes"
+msgstr "Mes voix"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__name
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__name
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidate
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "Name"
+msgstr "Nom"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__pending_photo
+msgid "New Photo To Check"
+msgstr "Nouvelle photo à vérifier"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__pending_bio
+msgid "New Sentence To Check"
+msgstr "Nouvelle phrase à vérifier"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "New candidate"
+msgstr "Nouveau candidat"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "New contest"
+msgstr "Nouveau concours"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "New photo, the old one stays shown until then."
+msgstr "Nouvelle photo, l'ancienne reste montrée d'ici là."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "No candidate found."
+msgstr "Aucun candidat trouvé."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "No candidate yet: add the first one."
+msgstr "Pas encore de candidat : ajoute le premier."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contests
+msgid "No contest for now."
+msgstr "Pas de concours pour l'instant."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "No contest waiting."
+msgstr "Aucun concours en attente."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_home
+msgid "No contest yet: write to OCD Live to create yours, the team prepares it with you."
+msgstr "Pas encore de concours : écris à OCD Live pour créer le tien, l'équipe le prépare avec toi."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "No rules written."
+msgstr "Pas de règlement écrit."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "No vote after this. Close the votes now?"
+msgstr "Plus aucune voix après. Fermer les votes maintenant ?"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote__state__cancelled
+msgid "Not paid"
+msgstr "Pas payées"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__payout_state__none
+msgid "Not yet"
+msgstr "Pas encore"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__number
+#: model_terms:ir.ui.view,arch_db:ocd_vote.report_results
+msgid "Number"
+msgstr "Numéro"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_needaction_counter
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_has_error_counter
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote__message_needaction_counter
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote__message_has_error_counter
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur d'envoi"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "Number of votes"
+msgstr "Nombre de voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "OCD Live"
+msgstr "OCD Live"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_live_verification
+msgid "OCD Live Checks"
+msgstr "Vérifications OCD Live"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest_hero
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contests
+#: model_terms:ir.ui.view,arch_db:ocd_vote.res_partner_view_form_ocd_vote
+msgid "OCD Vote"
+msgstr "OCD Vote"
+
+#. module: ocd_vote
+#: model:ir.module.module,shortdesc:base.module_ocd_vote
+msgid "OCD Vote: Paid Votes For Contests"
+msgstr "OCD Vote : votes payants pour des concours"
+
+#. module: ocd_vote
+#: model:ir.actions.server,name:ocd_vote.ir_cron_vote_ir_actions_server
+msgid "OCD Vote: close the contests, cancel the votes not paid, tell of the finals"
+msgstr "OCD Vote : fermer les concours, annuler les voix non payées, annoncer les finales"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Of the money collected, paid after the results; the rest for OCD Live (with the fees of the Mobile Money)."
+msgstr "De l'argent encaissé, versée après les résultats ; le reste pour OCD Live (avec les frais du Mobile Money)."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_search
+msgid "On WhatsApp"
+msgstr "Sur WhatsApp"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_contest
+msgid "Once the votes open, the price of a vote, the packs and the end no longer change: they are in the rules the voters saw."
+msgstr "Après l'ouverture, le prix de la voix, les paquets et la date de fin ne changent plus : ils sont dans le règlement que les votants ont vu."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "One less"
+msgstr "Un de moins"
+
+#. module: ocd_vote
+#: model_terms:ir.actions.act_window,help:ocd_vote.ocd_vote_action
+msgid "One line per payment: the votes count once the payment is confirmed. A payment refunded removes its votes. Grouped by phone, the big payments of a same phone show at once."
+msgstr "Une ligne par paiement : les voix comptent dès que le paiement est confirmé. Un paiement remboursé retire ses voix. Groupés par téléphone, les gros paiements d'un même téléphone se voient d'un coup."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "One more"
+msgstr "Un de plus"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__order_id
+msgid "Order"
+msgstr "Commande"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "Order of the candidates"
+msgstr "Ordre des candidats"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__organizer_id
+msgid "Organiser"
+msgstr "Organisateur"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__organizer_verified
+#: model:ir.model.fields,field_description:ocd_vote.field_res_partner__ocd_vote_organizer_verified
+#: model:ir.model.fields,field_description:ocd_vote.field_res_users__ocd_vote_organizer_verified
+msgid "Organiser Checked"
+msgstr "Organisateur vérifié"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_res_partner__ocd_vote_organizer
+#: model:ir.model.fields,field_description:ocd_vote.field_res_users__ocd_vote_organizer
+msgid "Organiser Of Contests"
+msgstr "Organisateur de concours"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest_hero
+msgid "Organiser checked"
+msgstr "Organisateur vérifié"
+
+#. module: ocd_vote
+#: model:ir.actions.act_window,name:ocd_vote.res_partner_action_ocd_vote_organizer
+#: model:ir.ui.menu,name:ocd_vote.ocd_vote_organizer_menu
+msgid "Organisers"
+msgstr "Organisateurs"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_vote_pack
+msgid "Pack Of Votes"
+msgstr "Paquet de voix"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__pack_ids
+msgid "Packs"
+msgstr "Paquets"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote__source__page
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Page"
+msgstr "Page"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__payout_state__paid
+msgid "Paid"
+msgstr "Versé"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__paid_at
+msgid "Paid At"
+msgstr "Payées le"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__payout_date
+msgid "Paid On"
+msgstr "Versé le"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__payment_method
+msgid "Paid With"
+msgstr "Payées avec"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote.py:0
+msgid "Paid after the end of the votes: to refund."
+msgstr "Payées après la fin des votes : à rembourser."
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote__state__late
+msgid "Paid after the end: to refund"
+msgstr "Payées après la fin : à rembourser"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Paid on %(day)s at %(hour)s · reference %(reference)s"
+msgstr "Payé le %(day)s à %(hour)s · référence %(reference)s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Paid votes"
+msgstr "Voix payées"
+
+#. module: ocd_vote
+#: model:product.template,description_sale:ocd_vote.product_vote
+msgid "Paid votes of a contest of OCD Vote."
+msgstr "Voix payées d'un concours OCD Vote."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_alert__partner_id
+msgid "Partner"
+msgstr "Contact"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Past it, the votes not paid are cancelled; a payment checked by the team keeps waiting."
+msgstr "Passé ce délai, les voix non payées sont annulées ; un paiement vérifié par l'équipe continue d'attendre."
+
+#. module: ocd_vote
+#. odoo-javascript
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: code:addons/ocd_vote/static/src/interactions/vote.js:0
+msgid "Pay"
+msgstr "Payer"
+
+#. module: ocd_vote
+#. odoo-javascript
+#: code:addons/ocd_vote/static/src/interactions/vote.js:0
+msgid "Pay %(price)s for %(votes)s votes"
+msgstr "Payer %(price)s pour %(votes)s voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Pay %s"
+msgstr "Payer %s"
+
+#. module: ocd_vote
+#. odoo-javascript
+#: code:addons/ocd_vote/static/src/interactions/vote.js:0
+msgid "Pay %s for 1 vote"
+msgstr "Payer %s pour 1 voix"
+
+#. module: ocd_vote
+#. odoo-javascript
+#: code:addons/ocd_vote/static/src/interactions/vote.js:0
+msgid "Pay for %s votes"
+msgstr "Payer pour %s voix"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__payment_reference
+msgid "Payment Reference"
+msgstr "Référence du paiement"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__vote_ids
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__payment_count
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__vote_ids
+msgid "Payments"
+msgstr "Paiements"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Payments of %s"
+msgstr "Paiements de %s"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__payout_state
+msgid "Payout"
+msgstr "Reversement"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__payout_due
+msgid "Payout Before"
+msgstr "À verser avant le"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Payout paid"
+msgstr "Reversement versé"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_search
+msgid "Payout to pay"
+msgstr "Reversement à verser"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__phone
+msgid "Phone Of The Voter"
+msgstr "Téléphone du votant"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_search
+msgid "Phone of the voter"
+msgstr "Téléphone du votant"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__photo
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "Photo"
+msgstr "Photo"
+
+#. module: ocd_vote
+#: model:ocd.listing.refuse.reason,name:ocd_vote.refuse_reason_vote_photo
+msgid "Photo not suitable"
+msgstr "Photo qui ne convient pas"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__price
+msgid "Price"
+msgstr "Prix"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__vote_price
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__ocd_vote_price
+msgid "Price Of A Vote"
+msgstr "Prix de la voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Price of a vote"
+msgstr "Prix de la voix"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Prices"
+msgstr "Prix"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__prize
+msgid "Prize"
+msgstr "Prix"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Publish the certified results"
+msgstr "Publier les résultats certifiés"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.report_results
+msgid "Rank"
+msgstr "Rang"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "Ranking"
+msgstr "Classement"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__hide_hours
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__ocd_vote_hide_hours
+msgid "Ranking Hidden The Last Hours"
+msgstr "Classement caché les dernières heures"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Ranking hidden at the end"
+msgstr "Classement caché à la fin"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote__state__refunded
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_list
+msgid "Refunded"
+msgstr "Remboursées"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote.py:0
+msgid "Refunded by %s: the votes no longer count."
+msgstr "Remboursées par %s : les voix ne comptent plus."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__refuse_reason
+msgid "Refuse Reason"
+msgstr "Motif du refus"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_candidate__state__refused
+msgid "Refused"
+msgstr "Refusé"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Refused: %s"
+msgstr "Refusé : %s"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "Report"
+msgstr "Signaler"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__state__done
+msgid "Results"
+msgstr "Résultats"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__results_at
+msgid "Results Published At"
+msgstr "Résultats publiés le"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Results published: %s."
+msgstr "Résultats publiés : %s."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Results: %s"
+msgstr "Résultats : %s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__rules
+msgid "Rules"
+msgstr "Règlement"
+
+#. module: ocd_vote
+#: model:ocd.listing.refuse.reason,name:ocd_vote.refuse_reason_vote_rules
+msgid "Rules missing or unclear"
+msgstr "Règlement absent ou pas clair"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+#: model_terms:ir.ui.view,arch_db:ocd_vote.rules
+msgid "Rules of the contest"
+msgstr "Règlement du concours"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__message_has_sms_error
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidate
+msgid "Save"
+msgstr "Enregistrer"
+
+#. module: ocd_vote
+#: model:ocd.automation,tools:ocd_vote.automation_vote_close
+#: model:ocd.automation,tools:ocd_vote.automation_vote_final
+msgid "Scheduled task."
+msgstr "Tâche planifiée."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "Search"
+msgstr "Chercher"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__ocd_vote_pack2_price
+msgid "Second Pack: Price"
+msgstr "Second paquet : prix"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__ocd_vote_pack2_votes
+msgid "Second Pack: Votes"
+msgstr "Second paquet : voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Second pack"
+msgstr "Second paquet"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "See the contest"
+msgstr "Voir le concours"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ranking
+msgid "See the results"
+msgstr "Voir les résultats"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_contest
+msgid "Send my contest to OCD Live"
+msgstr "Envoyer mon concours à OCD Live"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Send to check"
+msgstr "Envoyer pour vérification"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Sent back to the organiser: %s"
+msgstr "Renvoyé à l'organisateur : %s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Sent to OCD Live to check."
+msgstr "Envoyé à OCD Live pour vérification."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Sent: the team checks your contest and writes to you on WhatsApp."
+msgstr "C'est envoyé : l'équipe vérifie ton concours et t'écrit sur WhatsApp."
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_live_settings
+msgid "Settings Page Of OCD Live"
+msgstr "Page des paramètres d'OCD Live"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__organizer_amount
+msgid "Share Of The Organiser"
+msgstr "Part de l'organisateur"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__organizer_share
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__ocd_vote_organizer_share
+msgid "Share Of The Organiser (%)"
+msgstr "Part de l'organisateur (%)"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Share of the organiser"
+msgstr "Part de l'organisateur"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "Show"
+msgstr "Montrer"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_candidate__state__approved
+msgid "Shown"
+msgstr "Montré"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Signature: %(signature)s. The same signature is on the page of the results: %(url)s"
+msgstr "Signature : %(signature)s. La même signature est sur la page des résultats : %(url)s"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__source
+msgid "Source"
+msgstr "Source"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__state
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__state
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__state
+msgid "State"
+msgstr "État"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "Tell me"
+msgstr "Préviens-moi"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "Tell me on WhatsApp"
+msgstr "Préviens-moi sur WhatsApp"
+
+#. module: ocd_vote
+#: model:ocd.automation,actions:ocd_vote.automation_vote_paid
+msgid "Tell them how many votes are counted for their candidate."
+msgstr "Leur dire combien de voix sont comptées pour leur candidat."
+
+#. module: ocd_vote
+#: model:ocd.automation,actions:ocd_vote.automation_vote_final
+msgid "Tell them the final starts, with the link of the contest to vote."
+msgstr "Leur dire que la finale commence, avec le lien du concours pour voter."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "Texts"
+msgstr "Textes"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_contest
+msgid "The band for my live"
+msgstr "Le bandeau pour mon live"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "The candidates"
+msgstr "Les candidats"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "The candidates · %s"
+msgstr "Les candidats · %s"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "The contest"
+msgstr "Le concours"
+
+#. module: ocd_vote
+#: model_terms:ir.actions.act_window,help:ocd_vote.ocd_vote_contest_action
+msgid "The contests of OCD Vote: an organiser (or OCD Live) adds the candidates, the team checks the contest and opens it. Only the paid votes count."
+msgstr "Les concours d'OCD Vote : un organisateur (ou OCD Live) ajoute les candidats, l'équipe vérifie le concours et l'ouvre. Seules les voix payées comptent."
+
+#. module: ocd_vote
+#: model:ocd.automation,scope:ocd_vote.automation_vote_close
+msgid "The contests whose end passed."
+msgstr "Les concours dont la fin est passée."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__slug
+msgid "The end of the address of its page: /vote/<address>."
+msgstr "La fin de l'adresse de sa page : /vote/<adresse>."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "The final live on %(day)s at %(hour)s. The votes stay open until %(close)s."
+msgstr "La finale en live le %(day)s à %(hour)s. Les votes restent ouverts jusqu'à %(close)s."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__tz
+msgid "The hours of the contest are shown at this hour."
+msgstr "Les heures du concours sont montrées à cette heure."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ranking
+msgid "The last hours, the numbers are hidden: only the order stays, until the results."
+msgstr "Les dernières heures, les nombres sont cachés : seul l'ordre reste, jusqu'aux résultats."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "The last hours, the numbers of votes are hidden until the results: only the order stays."
+msgstr "Les dernières heures, les nombres de voix sont cachés jusqu'aux résultats : seul l'ordre reste."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__final_at
+msgid "The live of the final, announced on the page."
+msgstr "Le live de la finale, annoncé sur la page."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "The number is given in order (the next one: %s). A candidate added or changed after the opening is checked by the team before being shown. A candidate who has votes is not removed: the team decides with you."
+msgstr "Le numéro est donné dans l'ordre (le suivant : %s). Un candidat ajouté ou changé après l'ouverture est vérifié par l'équipe avant d'être montré. Un candidat qui a des voix ne se retire pas : l'équipe décide avec toi."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "The order stays, the numbers are hidden until the results: the suspense of the final. 0: always shown."
+msgstr "L'ordre reste, les nombres sont cachés jusqu'aux résultats : le suspense de la finale. 0 : toujours montrés."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__hide_hours
+msgid "The order stays, the numbers of votes are hidden until the results. 0: always shown."
+msgstr "L'ordre reste, les nombres de voix sont cachés jusqu'aux résultats. 0 : toujours montrés."
+
+#. module: ocd_vote
+#: model:ocd.automation,trigger:ocd_vote.automation_vote_paid
+msgid "The payment provider (Mobile Money, card) or the team that checks the payment."
+msgstr "Le moyen de paiement (Mobile Money, carte) ou l'équipe qui vérifie le paiement."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_list
+msgid "The payment was refunded: its votes no longer count?"
+msgstr "Le paiement a été remboursé : ses voix ne comptent plus ?"
+
+#. module: ocd_vote
+#: model:ocd.automation,scope:ocd_vote.automation_vote_final
+msgid "The people who asked « Tell me on WhatsApp » on the page of the contest."
+msgstr "Les personnes qui ont demandé « Préviens-moi sur WhatsApp » sur la page du concours."
+
+#. module: ocd_vote
+#: model:ocd.listing.refuse.reason,message:ocd_vote.refuse_reason_vote_photo
+msgid "The photo of the candidate is blurry or not suitable. Send another photo of the candidate."
+msgstr "La photo du candidat est floue ou ne convient pas. Envoie une autre photo du candidat."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.results
+msgid "The results are certified by OCD Live: only the paid votes count. Signature of the results:"
+msgstr "Les résultats sont certifiés par OCD Live : seules les voix payées comptent. Signature des résultats :"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "The results are certified once published."
+msgstr "Les résultats sont certifiés une fois publiés."
+
+#. module: ocd_vote
+#: model:ocd.listing.refuse.reason,message:ocd_vote.refuse_reason_vote_rules
+msgid "The rules of the contest are missing or unclear: say how the winner is chosen, the end of the votes and the prize, then send it again."
+msgstr "Le règlement du concours est absent ou pas clair : dis comment le gagnant est choisi, la fin des votes et le prix, puis renvoie-le."
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__rules
+msgid "The rules the voters read: the price of a vote, the end, how the winner is chosen. Nothing drawn by lot, nothing to win for the voters."
+msgstr "Le règlement que lisent les votants : le prix de la voix, la fin, comment le gagnant est choisi. Aucun tirage au sort, rien à gagner pour les votants."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "The share of the organiser is between 0 and 100 %."
+msgstr "La part de l'organisateur est entre 0 et 100 %."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_contest
+msgid "The steps"
+msgstr "Les étapes"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__organizer_verified
+#: model:ir.model.fields,help:ocd_vote.field_res_partner__ocd_vote_organizer_verified
+#: model:ir.model.fields,help:ocd_vote.field_res_users__ocd_vote_organizer_verified
+msgid "The team checked the identity and the number of the organiser: « Checked organiser » on their contests."
+msgstr "L'équipe a vérifié l'identité et le numéro de l'organisateur : « Organisateur vérifié » sur ses concours."
+
+#. module: ocd_vote
+#: model:ocd.listing.refuse.reason,message:ocd_vote.refuse_reason_vote_lottery
+msgid "The voters cannot win anything and nothing is drawn by lot: change the rules, then send them again."
+msgstr "Les votants ne peuvent rien gagner et rien n'est tiré au sort : change le règlement, puis renvoie-le."
+
+#. module: ocd_vote
+#: model:ocd.automation,scope:ocd_vote.automation_vote_paid
+msgid "The voters of the page and of WhatsApp."
+msgstr "Les votants de la page et de WhatsApp."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "The votes are closed: no new candidate."
+msgstr "Les votes sont fermés : pas de nouveau candidat."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_candidate.py:0
+msgid "The votes are closed: the candidates no longer change."
+msgstr "Les votes sont fermés : les candidats ne changent plus."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "The votes are closed: the results come soon."
+msgstr "Les votes sont fermés : les résultats arrivent bientôt."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidate
+msgid "The votes are open: the name no longer changes (the voters know the candidate by it); a new photo or sentence is checked by the team."
+msgstr "Les votes sont ouverts : le nom ne change plus (les votants connaissent le candidat par lui) ; une nouvelle photo ou phrase est vérifiée par l'équipe."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "The votes close %s"
+msgstr "Les votes ferment %s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "The votes close after they open."
+msgstr "Les votes ferment après leur ouverture."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote.py:0
+msgid "The votes of %s are not open."
+msgstr "Les votes de %s ne sont pas ouverts."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "The votes of %s are open: the price, the packs, the dates and the share no longer change (the voters saw them in the rules)."
+msgstr "Les votes de %s sont ouverts : le prix, les paquets, les dates et la part ne changent plus (les votants les ont vus dans le règlement)."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "The votes open %(day)s at %(hour)s"
+msgstr "Les votes ouvrent %(day)s à %(hour)s"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "The whole ranking"
+msgstr "Tout le classement"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote.py:0
+msgid "This candidate cannot get votes."
+msgstr "Ce candidat ne peut pas recevoir de voix."
+
+#. module: ocd_vote
+#: model:ir.model.constraint,message:ocd_vote.constraint_ocd_vote_alert_unique_alert
+msgid "This contact is already told of this final."
+msgstr "Ce contact est déjà prévenu de cette finale."
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_res_company__ocd_vote_pay_minutes
+msgid "Time To Pay The Votes"
+msgstr "Délai pour payer les voix"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__tz
+msgid "Time Zone"
+msgstr "Fuseau horaire"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Time to pay the votes"
+msgstr "Délai pour payer les voix"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_candidate__state__to_check
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__state__to_check
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_search
+msgid "To check"
+msgstr "À vérifier"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "To check by OCD Live"
+msgstr "À vérifier par OCD Live"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__payout_state__to_pay
+msgid "To pay"
+msgstr "À verser"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_search
+msgid "To refund"
+msgstr "À rembourser"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__payout_reference
+msgid "Transfer Reference"
+msgstr "Référence du transfert"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ranking
+msgid "Updated every 10 seconds."
+msgstr "Mis à jour toutes les 10 secondes."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate_card
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ranking
+msgid "Vote"
+msgstr "Voter"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.vote_page
+msgid "Vote again"
+msgstr "Revoter"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contests
+msgid "Vote for your candidate with Mobile Money. Only the paid votes count."
+msgstr "Vote pour ton candidat en Mobile Money. Seules les voix payées comptent."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Vote now: %(url)s or on WhatsApp VOTE + number to %(number)s"
+msgstr "Vote maintenant : %(url)s ou sur WhatsApp VOTE + numéro au %(number)s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Vote now: %s"
+msgstr "Vote maintenant : %s"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__partner_id
+msgid "Voter"
+msgstr "Votant"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__voter_count
+msgid "Voters"
+msgstr "Votants"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+#: model:ir.actions.act_window,name:ocd_vote.ocd_vote_action
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote__votes
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_candidate__vote_count
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__vote_count
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_pack__votes
+#: model:ir.model.fields,field_description:ocd_vote.field_sale_order__ocd_vote_ids
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_automation__group__votes
+#: model:ir.ui.menu,name:ocd_vote.ocd_vote_menu
+#: model:ir.ui.menu,name:ocd_vote.ocd_vote_vote_menu
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contests
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_form
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_vote.report_results
+msgid "Votes"
+msgstr "Votes"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Votes (OCD Vote)"
+msgstr "Votes (OCD Vote)"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__date_close
+msgid "Votes Close At"
+msgstr "Fermeture des votes"
+
+#. module: ocd_vote
+#: model:product.template,name:ocd_vote.product_vote
+msgid "Votes OCD Vote"
+msgstr "Voix OCD Vote"
+
+#. module: ocd_vote
+#: model:ir.model,name:ocd_vote.model_ocd_vote
+msgid "Votes Of One Payment"
+msgstr "Voix d'un paiement"
+
+#. module: ocd_vote
+#: model:ir.model.fields,field_description:ocd_vote.field_ocd_vote_contest__date_open
+msgid "Votes Open At"
+msgstr "Ouverture des votes"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Votes bought together, a little cheaper."
+msgstr "Des voix achetées ensemble, un peu moins chères."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Votes close in %s"
+msgstr "Fermeture des votes dans %s"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote_contest__state__closed
+msgid "Votes closed"
+msgstr "Votes fermés"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Votes closed."
+msgstr "Votes fermés."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "Votes of the contests"
+msgstr "Votes des concours"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Votes open"
+msgstr "Votes ouverts"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Votes open on %s"
+msgstr "Votes ouverts le %s"
+
+#. module: ocd_vote
+#: model:ocd.automation,name:ocd_vote.automation_vote_paid
+msgid "Votes paid: tell the voter"
+msgstr "Voix payées : prévenir le votant"
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote__state__pending
+msgid "Waiting for the payment"
+msgstr "En attente du paiement"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.contest
+msgid "Watch the final"
+msgstr "Regarder la finale"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__description
+msgid "What the contest is, in a few words."
+msgstr "Ce qu'est le concours, en quelques mots."
+
+#. module: ocd_vote
+#: model:ir.model.fields.selection,name:ocd_vote.selection__ocd_vote__source__whatsapp
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#. module: ocd_vote
+#: model:ocd.automation,when:ocd_vote.automation_vote_paid
+msgid "When the payment of votes is confirmed"
+msgstr "Quand le paiement de voix est confirmé"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__final_url
+msgid "Where the final is watched (TikTok, Facebook...)."
+msgstr "Où la finale se regarde (TikTok, Facebook…)."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "With %(votes)s votes of %(total)s. Thank you to the %(voters)s people who voted."
+msgstr "Avec %(votes)s voix sur %(total)s. Merci aux %(voters)s personnes qui ont voté."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Write the name."
+msgstr "Écris son nom."
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_vote_contest.py:0
+msgid "Write the reference of the transfer first."
+msgstr "Écris d'abord la référence du transfert."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "Your Mobile Money number"
+msgstr "Ton numéro Mobile Money"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Your share (%s %%)"
+msgstr "Ta part (%s %%)"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Your share paid within 3 days on your Mobile Money"
+msgstr "Ta part versée sous 3 jours sur ton Mobile Money"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "Your share paid: %s"
+msgstr "Ta part versée : %s"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/contest.py:0
+msgid "Your votes count for %s. The numbers are hidden until the results."
+msgstr "Tes voix comptent pour %s. Les nombres sont cachés jusqu'aux résultats."
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.candidate
+msgid "a vote"
+msgstr "la voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "after the votes"
+msgstr "après les votes"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_verification.py:0
+msgid "closes %s"
+msgstr "ferme %s"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.organizer_candidates
+msgid "e.g. 21 years old, student in marketing"
+msgstr "ex. 21 ans, étudiant en marketing"
+
+#. module: ocd_vote
+#: model_terms:ir.ui.view,arch_db:ocd_vote.ocd_vote_contest_view_form
+msgid "e.g. Miss Douala 2026"
+msgstr "ex. Miss Douala 2026"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "last hours"
+msgstr "dernières heures"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "minutes"
+msgstr "minutes"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "votes"
+msgstr "voix"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/models/ocd_live_settings.py:0
+msgid "votes for"
+msgstr "voix pour"
+
+#. module: ocd_vote
+#. odoo-python
+#: code:addons/ocd_vote/controllers/organizer.py:0
+msgid "with the packs"
+msgstr "avec les paquets"
+
+#. module: ocd_vote
+#: model:ir.model.fields,help:ocd_vote.field_ocd_vote_contest__prize
+msgid "« The crown, 1,000,000 F and a contract of a year »."
+msgstr "« La couronne, 1 000 000 F et un an de contrat »."

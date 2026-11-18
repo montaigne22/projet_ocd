@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of OCD Vote in the catalogue of the team (OCD Live › Automations) -->
+<odoo>
+
+    <record id="automation_vote_paid" model="ocd.automation">
+        <field name="code">vote_paid</field>
+        <field name="name">Votes paid: tell the voter</field>
+        <field name="sequence">90</field>
+        <field name="group">votes</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_vote"/>
+        <field name="when">When the payment of votes is confirmed</field>
+        <field name="trigger">The payment provider (Mobile Money, card) or the team that checks the payment.</field>
+        <field name="scope">The voters of the page and of WhatsApp.</field>
+        <field name="actions">Tell them how many votes are counted for their candidate.</field>
+        <field name="tools">Code of OCD Live.</field>
+    </record>
+
+    <record id="automation_vote_close" model="ocd.automation">
+        <field name="code">vote_close</field>
+        <field name="name">Contest closed: results and payout</field>
+        <field name="sequence">91</field>
+        <field name="group">votes</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_vote_contest"/>
+        <field name="when">At the end of the votes of a contest</field>
+        <field name="trigger">Every 5 minutes.</field>
+        <field name="scope">The contests whose end passed.</field>
+        <field name="actions">Close the votes (a payment started later is to refund); the team then publishes the certified results, and the share of the organiser is due 3 days after.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_vote_final" model="ocd.automation">
+        <field name="code">vote_final</field>
+        <field name="name">Final: tell the people who asked</field>
+        <field name="sequence">92</field>
+        <field name="group">votes</field>
+        <field name="kind">rule</field>
+        <field name="model_id" ref="model_ocd_vote_contest"/>
+        <field name="when">10 minutes before the live of the final</field>
+        <field name="trigger">Every 5 minutes.</field>
+        <field name="scope">The people who asked « Tell me on WhatsApp » on the page of the contest.</field>
+        <field name="actions">Tell them the final starts, with the link of the contest to vote.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+</odoo>

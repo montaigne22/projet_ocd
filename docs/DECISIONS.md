@@ -388,6 +388,35 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     le lundi dès 9 h à son heure (jour et heure réglables), rien quand rien ne s'est passé ;
   - **l'équipe** voit la page comme le vendeur (bouton « Chiffres » de la fiche, comme « Voir son
     espace »).
+- **OCD Vote** (chantier 4 ; maquette `OcdVote` validée le 17 novembre 2026, avec ses choix) :
+  - **qui crée un concours** : un organisateur (vérifié par l'équipe : « Organisateur vérifié » sur la fiche
+    du contact) ou OCD Live ; l'équipe crée le concours dans le back-office avec l'organisateur, il ajoute
+    ses candidats dans son espace et l'envoie à vérifier ; l'équipe le vérifie et l'ouvre (« À vérifier »,
+    colonne « Concours »). L'organisateur se connecte avec son numéro et un code WhatsApp, comme les
+    vendeurs (pas de lien personnel : aucun nouveau modèle à faire approuver pour lui) ;
+  - **prix** : 100 F la voix, 10 voix à 900 F, 50 voix à 4 000 F, un autre nombre au prix de la voix
+    (réglable pour un nouveau concours, puis sur le concours avant l'ouverture) ; après l'ouverture, le
+    prix, les paquets, les dates et la part ne changent plus (ils sont dans le règlement) ;
+  - **seules les voix payées comptent** : une ligne par paiement (`ocd.vote`), comptée quand le paiement
+    confirme la commande, jamais par le navigateur ; un paiement remboursé retire ses voix ; un paiement
+    commencé après la fin ne compte pas (« à rembourser ») ; une demande non payée en 10 minutes
+    (réglable) est annulée, sauf un Mobile Money envoyé et vérifié par l'équipe ; pas de voix gratuites,
+    pas de limite par personne (l'équipe voit les paiements d'un même téléphone d'un coup) ;
+  - **le paiement** : le formulaire de paiement d'OCD Live (les moyens du pays et de la devise, comme pour
+    les réservations) ; sur WhatsApp, « VOTE 12 » au bot, puis le nombre de voix (boutons), puis la
+    demande CamPay sur le téléphone quand le numéro est camerounais, sinon le lien de la page du paiement ;
+  - **classement** : les nombres cachés les 2 dernières heures (réglable par concours, 0 pour toujours
+    montrer), l'ordre reste ; le bandeau de la finale suit la même règle. Des voix égales ont le même rang ;
+  - **résultats certifiés** : publiés par l'équipe après la fermeture (automatique à l'heure de fin), avec
+    une signature du serveur sur le PDF et sur la page des résultats, pour comparer ;
+  - **partage** : 60 % des sommes encaissées pour l'organisateur, 40 % pour OCD Live (frais du Mobile
+    Money compris), versés sous 3 jours après les résultats ; le reversement est noté sur le concours
+    (à verser, versé avec la référence du transfert), l'écriture comptable reste à l'équipe ;
+  - **écriture neutre** : « candidat » est générique (un concours peut avoir des hommes et des femmes),
+    les rangs « 1er, 2e, 3e » ; rien n'est deviné d'après un prénom ;
+  - **à vérifier avant d'ouvrir dans un pays** : le cadre légal des votes payants (pas de tirage au sort,
+    rien à gagner pour les votants : le règlement de chaque concours le dit) ; d'abord le Cameroun avec
+    CamPay, l'UEMOA avec le paiement automatique (chantier 5).
 - **Frais de livraison : un prix par colis** (un colis par vendeur), selon la ville d'où part le colis et
   le quartier du client ; le client paie la somme des colis.
 - **Le vendeur qui livre fixe ses prix**, dans les bornes fixées par l'équipe (réglable) ; OCD garde une

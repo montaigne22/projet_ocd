@@ -10,6 +10,8 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 | `ocd_live_shop` | Shop des vendeurs : mode de vente et « qui livre » par vendeur, un colis par vendeur, code de livraison, dispatch, livreurs et caisse, paiement à la porte, reversements, régie en direct, commandes de la semaine |
 | `ocd_live_whatsapp` | Messages WhatsApp d'OCD Live (lien personnel, code, ticket, live confirmé, rappels, créneau libéré, pass, annuaire), un seul accord WhatsApp, écran des conversations, avec `whatsapp_cloud` |
 | `ocd_live_shop_whatsapp` | Messages WhatsApp des colis (à préparer, en route avec le code, échec, livré, retourné) |
+| `ocd_vote` | OCD Vote : concours (miss, awards, talents, écoles) avec candidats numérotés, voix payées en Mobile Money (seules les voix payées comptent), classement en direct, bandeau de la finale, résultats certifiés, espace de l'organisateur et son reversement |
+| `ocd_vote_whatsapp` | OCD Vote sur WhatsApp : « VOTE 12 » au bot, voix comptées, finale annoncée |
 | `ocd_live_recruitment` | Offre « Animatrice live · Lomé » sur le site, 5 étapes de recrutement, l'embauchée devient animatrice |
 | `ocd_delivery_togo` | Régions, villes et quartiers du Togo, point de repère, modes de livraison pour Lomé et le reste du Togo |
 | `ocd_debranding` | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients : site, connexion, portail, back-office, fenêtres d'erreur, e-mails |
@@ -43,7 +45,7 @@ Le dépôt contient tous les modules nécessaires. `disable_odoo_online` (OCA, n
 ## Installation rapide
 
 ```bash
-odoo -c odoo.conf -d ocd -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding --load-language=fr_FR
+odoo -c odoo.conf -d ocd -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp --load-language=fr_FR
 ```
 
 Pour voir le projet avec des données : ajouter `ocd_live_demo` (le désinstaller retire tout).

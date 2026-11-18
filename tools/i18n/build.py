@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import potlib  # noqa: E402
 
 ns = {}
-for name in ("fr_web.py", "fr_rest.py", "fr_shop.py", "fr_other.py", "fr_bo2.py", "fr_bo3.py", "fr_site_shop.py", "fr_rates.py", "fr_bo4.py", "fr_site_frame.py", "fr_ticket.py", "fr_countries.py", "fr_media.py", "fr_cards.py", "fr_vendor_space.py"):
+for name in ("fr_web.py", "fr_rest.py", "fr_shop.py", "fr_other.py", "fr_bo2.py", "fr_bo3.py", "fr_site_shop.py", "fr_rates.py", "fr_bo4.py", "fr_site_frame.py", "fr_ticket.py", "fr_countries.py", "fr_media.py", "fr_cards.py", "fr_vendor_space.py", "fr_vote.py"):
     exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), name), encoding="utf-8").read(), ns)
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
@@ -29,9 +29,13 @@ MODULES = {
     "ocd_debranding": [ns["NO_ODOO"]],
     "theme_ocd": [ns["THEME"]],
     "payment_campay": [ns["CAMPAY"]],
+    "ocd_vote": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"],
+                 ns["VENDOR_SPACE"], ns["VOTE"], *SCREENS],
+    "ocd_vote_whatsapp": [ns["WHATSAPP"], ns["SHOP_WHATSAPP"], ns["VOTE_WHATSAPP"], *SCREENS],
 }
 ns["DESCRIPTIONS"]["theme_ocd"] = ns["THEME_DESCRIPTION"]
 ns["DESCRIPTIONS"]["payment_campay"] = ns["CAMPAY_DESCRIPTION"]
+ns["DESCRIPTIONS"]["ocd_vote"] = ns["VOTE_DESCRIPTION"]
 # Names of places and products: the same in French
 IDENTITY = {"ocd_delivery_togo", "ocd_live_demo"}
 

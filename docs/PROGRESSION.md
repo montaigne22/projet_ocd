@@ -40,6 +40,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Suivre un vendeur (chantier 1) et ses nouveautés (A.8) : « Suivre » sur la boutique, les cartes des lives, le replay et la fiche produit ; un WhatsApp à chaque live (2 par jour au plus) ; les nouveautés le vendredi (une fois par mois, chaque semaine avec OCD Business) ; « Mes vendeurs suivis » ; « Mes abonnés » du vendeur | ✅ fait, testé (1 modèle WhatsApp Marketing à faire approuver par Meta) |
 | Garantie OCD et avis (chantier 2) : la garantie montrée sur la fiche produit et la boutique (le vendeur payé après le code de livraison, pas livré : remboursé, retour possible), un avis par colis livré, la note du vendeur dès 3 avis, « Vendeur vérifié », « Signaler » un produit ou un vendeur vers « À vérifier » | ✅ fait, testé |
 | Statistiques du vendeur (chantier 3) et ventes par produit (3.3) : « Mes chiffres » (ventes, pièces, visites de la boutique, contacts WhatsApp et leur évolution sur 7 jours, 30 jours ou 3 mois ; ce que rapporte chaque live ; meilleures heures et « Réserver un live » ; clients fidèles ; ventes par produit avec « Pas vendus » ; magasins), la ligne « Vendu » de Mes produits, les ventes du mois dans Mon espace, le résumé du lundi sur WhatsApp ; nouveaux comptages jour par jour (« Regarder », visites, contacts) | ✅ fait, testé (1 modèle WhatsApp à faire approuver par Meta) |
+| OCD Vote (chantier 4) : concours avec candidats numérotés, voix payées en Mobile Money (seules les voix payées comptent, chacune liée à son paiement), vote sur la page ou par WhatsApp « VOTE 12 », classement en direct, bandeau de la finale, résultats certifiés, espace de l'organisateur, reversement | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
 | Shop : un colis par vendeur, code de livraison, dispatch, caisse des livreurs, reversements | ✅ fait, testé |
@@ -96,7 +97,8 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    « Préviens-moi » qui nomme les magasins où le produit est revenu (l'ancien message part jusque-là) ; et `ocd_modification_refusee` (français et anglais), pour une modification de produit
    refusée par l'équipe (rien ne part avant). **Depuis le 17 novembre**, aussi `ocd_resume_semaine`
    (français et anglais, Utilitaire), pour le résumé de la semaine que le vendeur demande dans « Mes
-   chiffres » (rien ne part avant).
+   chiffres » (rien ne part avant). **Avec OCD Vote**, aussi `ocd_vote_comptee` et `ocd_vote_finale`
+   (français et anglais, Utilitaire) : les voix comptées au votant, la finale à ceux qui l'ont demandé.
 3. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
    back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
@@ -116,6 +118,50 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 18 novembre 2026 · OCD Vote (chantier 4)
+Dessiné d'abord (maquette `OcdVote`, validée avec ses choix), puis codé dans deux nouveaux modules,
+`ocd_vote` et `ocd_vote_whatsapp`.
+- **Le concours** (`/vote`, `/vote/<concours>`) : le nom, l'organisateur (« Organisateur vérifié »), la fin
+  à l'heure du pays, les candidats, les voix, le temps qui reste ; « Comment voter » ; chercher un numéro
+  ou un nom ; « Classement » ou « Par numéro » ; le prix, le règlement, « Signaler » ; sur ordinateur, le
+  classement et la finale à droite. « Votes » est dans le menu des grands écrans quand un concours est
+  ouvert.
+- **Voter** (`/vote/<concours>/<numéro>`) : la photo et le numéro, le rang et les voix, « Partager sa
+  page », 1 voix, les paquets (« 1 offerte », « 10 offertes ») ou un autre nombre, le numéro Mobile Money,
+  « Payer 900 F pour 10 voix », puis le formulaire de paiement d'OCD Live. **Mes voix** : l'attente du
+  paiement (« J'ai payé » pour le Mobile Money vérifié par l'équipe), puis « 10 voix pour Aïcha, c'est
+  compté », le reçu (moyen, date, référence), « Revoter », « J'ai voté », le classement ; paiement pas
+  reçu ou arrivé après la fin : dit tel quel.
+- **Seules les voix payées comptent** : une ligne par paiement, comptée quand le paiement confirme la
+  commande ; remboursée, elle ne compte plus ; commencée après la fin, elle est « à rembourser » ; non payée
+  en 10 minutes (réglable), annulée.
+- **Classement en direct** (`/vote/<concours>/classement`, mis à jour toutes les 10 secondes), les nombres
+  cachés les dernières heures ; **bandeau de la finale** (une adresse secrète par concours, pour OBS :
+  les 5 premiers, le temps qui reste, le lien, le QR et « VOTE + numéro ») ; **résultats certifiés**
+  (`/vote/<concours>/resultats` et PDF, avec la signature des résultats) ; « Préviens-moi sur WhatsApp »
+  pour la finale.
+- **L'organisateur** (`/vote/organisateur`, connexion par numéro et code) : ses voix, l'encaissé, sa part,
+  les voix du jour, les étapes, « Envoyer mon concours à OCD Live », partager, le bandeau ; ses candidats
+  (ajouter avec une photo, numérotés dans l'ordre ; après l'ouverture, une nouvelle photo ou phrase est
+  vérifiée et le nom ne change plus).
+- **WhatsApp** : « VOTE 12 » au bot d'OCD Live, le candidat et ses voix, le nombre de voix en boutons, puis
+  la demande CamPay sur le téléphone (numéro camerounais) ou le lien du paiement ; le message des voix
+  comptées (`ocd_vote_comptee`) et celui de la finale (`ocd_vote_finale`) ; les messages des commandes du
+  shop ne partent pas pour des voix.
+- **Back-office** : OCD Live › Votes (Concours, Voix, Organisateurs) ; la fiche d'un concours (vérifier et
+  ouvrir, fermer, publier les résultats certifiés, le PDF, le reversement versé, la page, le bandeau) ; une
+  ligne par paiement (« Remboursées », groupées par téléphone) ; « À vérifier » : les concours envoyés et
+  les candidats ajoutés ou changés après l'ouverture ; réglages « Votes » ; automatisations « Voix
+  payées : prévenir le votant », « Concours fermé : résultats et reversement », « Finale : prévenir ceux qui
+  l'ont demandé ».
+- Tests : base neuve, tous les modules OCD avec `ocd_vote` et `ocd_vote_whatsapp` : **459 sans échec**
+  (9 nouveaux) ; contrôlé dans un navigateur en français en trois tailles (390, 820, 1440 px) : les
+  concours, un concours, un candidat et ses voix, le paiement, Mes voix, le classement, les résultats,
+  l'espace de l'organisateur et ses candidats ; aucun débordement.
+- **À installer sur un serveur** : `-i ocd_vote,ocd_vote_whatsapp` (nouveaux modules), et `-u
+  ocd_live_whatsapp` (20.0.1.9.1, un test seulement). Puis soumettre à Meta `ocd_vote_comptee` et
+  `ocd_vote_finale` (Utilitaire, français et anglais).
 
 ### 17 novembre 2026 · Statistiques du vendeur, « Mes chiffres » (chantier 3, avec 3.3)
 Dessiné d'abord (maquette `MesChiffres`, validée), puis codé.

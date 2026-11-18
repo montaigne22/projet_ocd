@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The space of an organiser (design OcdVote): their contest, their candidates -->
+<odoo>
+
+    <template id="organizer_home" name="OCD Vote: my contests">
+        <t t-set="additional_title">My contests</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_vote">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">My contests</h1>
+                    <a t-foreach="contests" t-as="contest" t-attf-href="/vote/organisateur/concours/#{contest.id}" class="o_ocd_vote_place">
+                        <b t-out="contest.name"/>
+                        <span class="o_ocd_vote_muted" t-out="contest._ocd_close_text()"/>
+                    </a>
+                    <div t-if="not contests" class="o_ocd_info">No contest yet: write to OCD Live to create yours, the team prepares it with you.</div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="organizer_contest" name="OCD Vote: my contest">
+        <t t-set="additional_title" t-value="contest.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_vote o_ocd_vote_organizer">
+                    <div class="o_ocd_vote_name">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="contest.name"/>
+                        <span class="o_ocd_vote_badge" t-out="state_label"/>
+                    </div>
+                    <t t-call="ocd_live.message_box"/>
+                    <div class="o_ocd_vote_tiles">
+                        <div t-foreach="tiles" t-as="tile" class="o_ocd_vote_tile">
+                            <small t-out="tile[0]"/>
+                            <b t-out="tile[1]"/>
+                            <small t-out="tile[2]"/>
+                        </div>
+                    </div>
+                    <div class="o_ocd_vote_columns">
+                        <section class="o_ocd_vote_card">
+                            <h2 class="o_ocd_vote_h2">The steps</h2>
+                            <span t-foreach="steps" t-as="step" class="o_ocd_vote_step">
+                                <i t-attf-class="#{'' if step['done'] else 'o_ocd_vote_step_wait'}" aria-hidden="true">
+                                    <t t-if="step['done']">✓</t><t t-else="" t-out="step['index']"/>
+                                </i>
+                                <span t-out="step['label']"/>
+                            </span>
+                        </section>
+                        <section class="o_ocd_vote_card">
+                            <form t-if="contest.state == 'draft'" t-attf-action="/vote/organisateur/concours/#{contest.id}/envoyer" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="o_ocd_cta">Send my contest to OCD Live</button>
+                            </form>
+                            <a t-attf-href="/vote/organisateur/concours/#{contest.id}/candidates" class="o_ocd_button o_ocd_button_dark">
+                                <t t-out="candidates_label"/>
+                            </a>
+                            <button t-if="contest._ocd_public()" type="button" class="o_ocd_button o_ocd_share" t-att-data-url="share_url">
+                                <t t-call="ocd_live.icon" icon.f="share"/><span>Share the contest</span>
+                            </button>
+                            <a t-if="contest._ocd_public()" t-att-href="band_url" target="_blank" rel="noopener" class="o_ocd_button">The band for my live</a>
+                            <small class="o_ocd_vote_muted">The band is a page to put in the software of your live (OBS): the 5 first, updated every 5 seconds, and how to vote.</small>
+                            <div class="o_ocd_note">Once the votes open, the price of a vote, the packs and the end no longer change: they are in the rules the voters saw.</div>
+                        </section>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="organizer_candidates" name="OCD Vote: the candidates">
+        <t t-set="additional_title">The candidates</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_vote o_ocd_panes">
+                    <div class="o_ocd_pane_main">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">The candidates</h1>
+                        <t t-call="ocd_live.message_box"/>
+                        <a t-foreach="rows" t-as="row" t-attf-href="/vote/organisateur/candidate/#{row['candidate'].id}" class="o_ocd_vote_row">
+                            <b class="o_ocd_vote_row_rank" t-out="row['candidate'].number"/>
+                            <span class="o_ocd_vote_row_photo"><img t-if="row['photo']" t-att-src="row['photo']" alt=""/></span>
+                            <span class="o_ocd_vote_row_name">
+                                <b t-out="row['candidate'].name"/>
+                                <small class="o_ocd_vote_muted" t-out="row['line']"/>
+                            </span>
+                            <span class="o_ocd_link">Change</span>
+                        </a>
+                        <div t-if="not rows" class="o_ocd_info">No candidate yet: add the first one.</div>
+                    </div>
+                    <div t-if="can_add" class="o_ocd_pane_side">
+                        <form t-attf-action="/vote/organisateur/concours/#{contest.id}/candidates" method="post" enctype="multipart/form-data"
+                              class="o_ocd_form o_ocd_vote_card">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <h2 class="o_ocd_vote_h2">Add a candidate</h2>
+                            <div class="o_ocd_field">
+                                <label for="c-name" class="o_ocd_label">Name</label>
+                                <input id="c-name" name="name" class="o_ocd_input" maxlength="60" required="required" t-att-value="values.get('name')"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="c-photo" class="o_ocd_label">Photo</label>
+                                <input id="c-photo" name="photo" type="file" accept="image/*" class="o_ocd_input" required="required"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="c-city" class="o_ocd_label">District or city (if you want)</label>
+                                <input id="c-city" name="city" class="o_ocd_input" maxlength="60" t-att-value="values.get('city')"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="c-bio" class="o_ocd_label">A sentence (if you want)</label>
+                                <input id="c-bio" name="bio" class="o_ocd_input" maxlength="200" t-att-value="values.get('bio')"
+                                       placeholder="e.g. 21 years old, student in marketing"/>
+                            </div>
+                            <button type="submit" class="o_ocd_cta">Add a candidate</button>
+                            <small class="o_ocd_vote_muted" t-out="add_hint"/>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="organizer_candidate" name="OCD Vote: change a candidate">
+        <t t-set="additional_title" t-value="candidate.name"/>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_vote">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="candidate._ocd_label()"/>
+                    <t t-call="ocd_live.message_box"/>
+                    <img t-if="photo" t-att-src="photo" alt="" class="o_ocd_vote_thumb"/>
+                    <p t-if="candidate.has_pending" class="o_ocd_note">A change waits for the check of the team: the page shows the candidate as before until then.</p>
+                    <form method="post" enctype="multipart/form-data" class="o_ocd_form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div t-if="not locked_name" class="o_ocd_field">
+                            <label for="c-name" class="o_ocd_label">Name</label>
+                            <input id="c-name" name="name" class="o_ocd_input" maxlength="60" required="required" t-att-value="candidate.name"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="c-photo" class="o_ocd_label">A new photo (if you want)</label>
+                            <input id="c-photo" name="photo" type="file" accept="image/*" class="o_ocd_input"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="c-city" class="o_ocd_label">District or city</label>
+                            <input id="c-city" name="city" class="o_ocd_input" maxlength="60" t-att-value="candidate.city"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="c-bio" class="o_ocd_label">A sentence</label>
+                            <input id="c-bio" name="bio" class="o_ocd_input" maxlength="200" t-att-value="candidate.pending_bio or candidate.bio"/>
+                        </div>
+                        <button type="submit" class="o_ocd_cta">Save</button>
+                        <small t-if="locked_name" class="o_ocd_vote_muted">The votes are open: the name no longer changes (the voters know the candidate by it); a new photo or sentence is checked by the team.</small>
+                    </form>
+                </main>
+            </div>
+        </t>
+    </template>
+
+</odoo>

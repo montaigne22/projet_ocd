@@ -18,7 +18,7 @@ le bouton « Signaler » de la garantie (chantier 2) et de nouvelles mesures.
 | 1 | **Suivre un vendeur** | « Awa est en live maintenant » sur WhatsApp, à chaque live du vendeur suivi | « Préviens-moi » de la boutique, messages WhatsApp | ~1 semaine ; **fait le 17 novembre 2026**, avec les nouveautés aux abonnés (A.8) |
 | 2 | **Garantie OCD et avis** | La garantie rendue visible (l'argent n'est versé au vendeur qu'après le code de livraison), les avis des acheteurs sur les boutiques et les cartes du fil, le badge « Vendeur vérifié » ; un bouton « Signaler » un produit ou un vendeur, pour les clients, vers l'écran « À vérifier » de l'équipe | Notes demandées après la livraison, code de livraison, vérification des vendeurs | 1 à 2 semaines, plus ~2 jours pour « Signaler » ; **fait le 17 novembre 2026** |
 | 3 | **Statistiques du vendeur** | Dans son espace : vues, clics et ventes par live, meilleures heures, clients fidèles ; ventes par produit (plan, 3.3) | Espace vendeur, commandes, lives ; chiffres des produits et des magasins du plan (un seul calcul) | ~2 semaines, plus 2 à 3 jours pour les ventes par produit ; **fait le 17 novembre 2026**, avec 3.3 et le résumé du lundi sur WhatsApp |
-| 4 | **OCD Vote** | Votes payants en Mobile Money pour des concours (miss, awards, talents, écoles) : page du concours, candidats avec leur numéro, vote sur la page ou par WhatsApp (« VOTE 12 »), classement en direct, bandeau pour le live de la finale, reversement à l'organisateur. Seules les voix payées comptent, chacune liée à son paiement. | Paiements (CamPay, mode démo), reversements, WhatsApp, page d'un live | 3 à 4 semaines |
+| 4 | **OCD Vote** | Votes payants en Mobile Money pour des concours (miss, awards, talents, écoles) : page du concours, candidats avec leur numéro, vote sur la page ou par WhatsApp (« VOTE 12 »), classement en direct, bandeau pour le live de la finale, reversement à l'organisateur. Seules les voix payées comptent, chacune liée à son paiement. | Paiements (CamPay, mode démo), reversements, WhatsApp, page d'un live | 3 à 4 semaines ; **fait le 17 novembre 2026** (modules `ocd_vote` et `ocd_vote_whatsapp`) |
 | 5 | **Paiement automatique dans l'UEMOA** | T-Money, Flooz, Orange Money, Wave… par un agrégateur (CinetPay, FedaPay ou PayDunya), à la place du Mobile Money vérifié à la main par l'équipe | Formulaire de paiement d'Odoo, reversements | 2 à 3 semaines, après le contrat avec l'agrégateur |
 
 ## Phase 2 : de 2 à 6 mois
@@ -55,10 +55,9 @@ développement, ou repousser des chantiers sans lien avec l'espace vendeur (OCD 
 
 ## Décisions à prendre
 
-- **OCD Vote** (choix proposés, à confirmer) : concours créés par des organisateurs et par OCD ;
-  100 F la voix, packs de 10 voix à 900 F et de 50 voix à 4 000 F ; 60 % pour l'organisateur et 40 %
-  pour OCD ; pas de voix gratuites. À vérifier : le cadre légal des votes payants dans chaque pays
-  (ne pas être assimilé à une loterie).
+- **OCD Vote** : choix validés le 17 novembre 2026 avec la maquette (voir `DECISIONS.md`). Reste à
+  vérifier avant d'ouvrir dans un pays : le cadre légal des votes payants (ne pas être assimilé à une
+  loterie).
 - **Paiement dans l'UEMOA** : choisir l'agrégateur, puis signer son contrat (documents de
   l'entreprise) : à lancer dès maintenant.
 - **OCD Express** : nombre de livreurs, tarifs pour les expéditeurs, règles des espèces.
