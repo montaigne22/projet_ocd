@@ -39,6 +39,11 @@ class OcdLiveBooking(models.Model):
     moment_ids = fields.One2many(
         comodel_name="ocd.live.moment", inverse_name="booking_id", string="Moments Of The Replay"
     )
+    ocd_started_at = fields.Datetime(
+        string="Started At", copy=False, readonly=True,
+        help="« The live starts » touched in the control room: the moments of the replay (and their clips) "
+        "count from it. Empty: from the hour booked.",
+    )
     ocd_visit_count = fields.Integer(
         string="Boutique Visits",
         copy=False,
@@ -69,13 +74,37 @@ class OcdLiveBooking(models.Model):
             raise UserError(self.env._("The live is not confirmed."))
         if product.ocd_vendor_id != self.partner_id:
             raise UserError(self.env._("This product does not belong to the vendor of the live."))
-        offset = max(int((fields.Datetime.now() - self.start_datetime).total_seconds()), 0)
+        now = fields.Datetime.now()
         self.current_product_tmpl_id = product
         self.env["ocd.live.moment"].create({
             "booking_id": self.id,
             "product_tmpl_id": product.id,
-            "offset_seconds": offset,
+            "shown_at": now,
+            "offset_seconds": self._ocd_offset_of(now),
         })
+
+    def _ocd_live_start(self):
+        """The real start of the live: « The live starts » in the control room, else the hour booked."""
+        self.ensure_one()
+        return self.ocd_started_at or self.start_datetime
+
+    def _ocd_offset_of(self, moment):
+        """The second of the live (from its real start) of the datetime `moment`."""
+        self.ensure_one()
+        return max(int((moment - self._ocd_live_start()).total_seconds()), 0)
+
+    def _ocd_mark_started(self, when=None):
+        """« The live starts » (once): the moments already noted count again from it, so that a live
+        that starts late does not shift its replay and its clips."""
+        self.ensure_one()
+        if self.state not in ("confirmed", "done"):
+            raise UserError(self.env._("The live is not confirmed."))
+        if self.ocd_started_at:
+            return False
+        self.ocd_started_at = when or fields.Datetime.now()
+        for moment in self.moment_ids.filtered("shown_at"):
+            moment.offset_seconds = self._ocd_offset_of(moment.shown_at)
+        return True
 
     def _ocd_count_visit(self):
         """Count a visit of the boutique during the live (one per browser)."""

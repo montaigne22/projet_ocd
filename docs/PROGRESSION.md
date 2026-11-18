@@ -131,6 +131,15 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 18 novembre 2026 · Clips automatiques (chantier 8), en cours
+Maquette `ClipsAutomatiques` validée avec ses choix et ses recommandations. Fait pour l'instant :
+- **La régie** : « Le live commence » (de 30 minutes avant l'heure réservée jusqu'à la fin du live) ; les
+  moments du replay comptent depuis ce vrai début, et ceux déjà notés sont recomptés : un live qui
+  commence en retard ne décale plus son replay ni ses clips (`ocd_live_shop` 20.0.1.43.0).
+- Le module `ocd_clips` est commencé (pas encore installable : sans manifeste) : le montage des clips
+  (`clip_video.py`), les vidéos des lives envoyées par morceaux (`ocd.live.recording`), les clips et leur
+  file d'attente (`ocd.live.clip`), le découpage d'un live en clips.
+
 ### 18 novembre 2026 · Fichiers sur Cloudflare R2 (module `attachment_s3`)
 Demandé par l'équipe pendant le chantier 8 : les fichiers de toute la plateforme sur un stockage objet,
 en saisissant seulement les clés, dans un module à part utilisable ailleurs.

@@ -61,7 +61,7 @@ class OcdLiveRegie(models.AbstractModel):
         total = sum(
             order.currency_id._convert(order.amount_total, currency, company, order.date_order) for order in orders
         )
-        if booking.start_datetime <= now < booking.end_datetime and booking.state == "confirmed":
+        if booking._ocd_live_start() <= now < booking.end_datetime and booking.state == "confirmed":
             status = "live"
         elif booking.start_datetime > now:
             status = "coming"
@@ -79,7 +79,11 @@ class OcdLiveRegie(models.AbstractModel):
                 end=end.strftime("%H:%M"),
                 city=company.ocd_studio_city or "Lomé",
             ),
-            "start": fields.Datetime.to_string(booking.start_datetime),
+            "start": fields.Datetime.to_string(booking._ocd_live_start()),
+            "started": bool(booking.ocd_started_at),
+            # « The live starts »: from a few minutes before the hour booked, until its end
+            "can_start": not booking.ocd_started_at and booking.state == "confirmed"
+            and booking.start_datetime - timedelta(minutes=30) <= now < booking.end_datetime,
             "end": fields.Datetime.to_string(booking.end_datetime),
             "now": fields.Datetime.to_string(now),
             "vendor": vendor.name,
@@ -199,6 +203,15 @@ class OcdLiveRegie(models.AbstractModel):
             raise UserError(self.env._("This live or this product no longer exists."))
         booking._ocd_show_product(product)
         return True
+
+    @api.model
+    def ocd_live_starts(self, booking_id):
+        """« The live starts »: the moments of the replay count from now."""
+        booking = self.env["ocd.live.booking"].browse(booking_id).exists()
+        if not booking:
+            raise UserError(self.env._("This live no longer exists."))
+        booking._ocd_mark_started()
+        return self.get_regie_data(booking.id)
 
     @api.model
     def ocd_publish_replay(self, booking_id, url):

@@ -24,6 +24,9 @@
                         <span t-out="this.clock()"/>
                         <small t-out="this.clockCaption"/>
                     </div>
+                    <button t-if="data.can_start" type="button" class="o_ocd_regie_button o_ocd_green o_ocd_regie_start"
+                            t-on-click="() => this.liveStarts()">The live starts</button>
+                    <small t-if="data.can_start" class="o_ocd_regie_caption">Touch it at the first second of the live: the replay and the clips start right.</small>
                     <div class="o_ocd_regie_vendor">
                         <strong t-out="data.vendor"/>
                         <span t-out="data.line"/>

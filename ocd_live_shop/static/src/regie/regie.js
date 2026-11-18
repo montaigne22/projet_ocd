@@ -105,6 +105,12 @@ export class OcdLiveRegie extends Component {
         await this.load();
     }
 
+    async liveStarts() {
+        await this.orm.call("ocd.live.regie", "ocd_live_starts", [this.bookingId]);
+        this.notification.add(_t("Noted: the moments of the replay count from now."), { type: "success" });
+        await this.load();
+    }
+
     async hostCalled() {
         await this.orm.call("ocd.live.regie", "host_called", [this.bookingId]);
         await this.load();

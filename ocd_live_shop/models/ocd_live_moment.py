@@ -20,7 +20,10 @@ class OcdLiveMoment(models.Model):
         domain="[('product_tmpl_id', '=', product_tmpl_id)]",
         help="The colour or the size shown during the live: the replay opens the product on it.",
     )
-    offset_seconds = fields.Integer(string="Second Of The Video", required=True, default=0)
+    offset_seconds = fields.Integer(string="Second Of The Video", required=True, default=0,
+                                    help="From the real start of the live (« The live starts » in the control room).")
+    shown_at = fields.Datetime(string="Shown At", readonly=True,
+                               help="The moment the control room put the product on screen.")
     offset_label = fields.Char(string="Minute", compute="_compute_offset_label")
 
     @api.depends("offset_seconds")
