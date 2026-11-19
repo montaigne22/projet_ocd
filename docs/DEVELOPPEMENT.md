@@ -590,6 +590,21 @@ python3 tools/versions.py --check
 
 Il liste les modules changés depuis leur version et échoue s'il en reste un.
 
+**Sur un serveur**, après avoir récupéré le code, le même outil lit la base et donne la commande à
+lancer (rien n'est écrit dans la base) :
+
+```bash
+python3 tools/versions.py --db <base> --conf /etc/odoo/odoo.conf
+```
+
+Il dit les modules dont la version installée est plus ancienne que le code (`-u`), les modules du projet
+pas encore installés (à ajouter à `-i` s'ils sont voulus ; ceux qui s'installent seuls avec un autre sont
+signalés, la démo jamais proposée), une commande arrêtée en route (modules restés « à installer » ou « à
+mettre à jour ») et un code plus ancien que la base (mauvaise branche déployée), puis la commande `odoo`
+complète. Il se connecte comme le serveur (`db_host`, `db_port`, `db_user`, `db_password` du fichier de
+configuration, sinon `$ODOO_RC`, sinon les variables `PG*`), avec le Python d'Odoo (psycopg2) ou `psql`.
+Ses tests : `python3 -m unittest tools/test_versions.py`.
+
 ## Grand écran : tablette et ordinateur
 
 Le téléphone garde le design validé (`ocd_app.scss`, `ocd_live_shop.scss`) ; la tablette (768 px) et

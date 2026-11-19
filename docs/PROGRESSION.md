@@ -154,6 +154,15 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · Outil : les modules à mettre à jour sur un serveur
+`python3 tools/versions.py --db <base> --conf <odoo.conf>` compare les versions installées dans une base
+à celles du code récupéré, et donne la commande `odoo` à lancer : les modules à mettre à jour (`-u`), ceux
+qui restent d'une commande arrêtée en route (« à installer », « à mettre à jour »), les modules du projet
+pas installés (ceux qui viennent seuls avec un autre sont signalés, la démo n'est jamais proposée), et un
+code plus ancien que la base. Il ne fait que lire la base, avec le Python d'Odoo ou `psql`. Essayé sur la
+base de démo (il y trouve `ocd_business` et `ocd_debranding` à mettre à jour) ; 6 tests
+(`tools/test_versions.py`). Aucun module ne change : rien à mettre à jour.
+
 ### 19 novembre 2026 · Correctif : `ocd_business` ne s'installait pas avant la mise à jour d'`ocd_live`
 Sur le serveur de préproduction, l'installation s'arrêtait sur `ocd_business/views/ocd_business_templates.xml`
 (« Element … cannot be located in parent view ») : la page de paiement d'OCD Business visait la phrase
