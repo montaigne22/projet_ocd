@@ -99,7 +99,9 @@ class OcdExpressPickup(models.Model):
             parcel._ocd_express_replan()
             parcel._ocd_express_notify("not_taken")
         fee = 0.0
-        if len(taken) < company.ocd_express_pickup_free_from and company.ocd_express_pickup_fee:
+        # The small pick-up is free with OCD Business
+        if len(taken) < company.ocd_express_pickup_free_from and company.ocd_express_pickup_fee \
+                and not self.sender_id._ocd_business_formula():
             fee = company.ocd_express_pickup_fee
             self.env["stock.picking"]._ocd_express_move(self.sender_id, "in_refund", "pickup", [(
                 "ocd_express.product_express_pickup",

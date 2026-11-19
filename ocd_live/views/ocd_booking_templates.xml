@@ -752,7 +752,8 @@ Disallow: /*/reserver/
                     <div class="o_ocd_focus_main">
                     <div t-if="state == 'failed'" class="o_ocd_failed" role="alert">
                         <b>The payment did not go through.</b>
-                        <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.</span>
+                        <span t-if="order.ocd_booking_ids">Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.</span>
+                        <span t-else="">Refused or cancelled on the phone, or not enough money. Nothing was taken.</span>
                     </div>
                     <t t-if="state in ('form', 'failed')">
                         <div class="o_ocd_with_what">
@@ -764,7 +765,8 @@ Disallow: /*/reserver/
                         </div>
                         <div t-if="no_method" class="o_ocd_no_method" role="status">
                             <b t-out="no_method_title"/>
-                            <span>The team agrees on the payment with you on WhatsApp: your hour stays held meanwhile.</span>
+                            <span t-if="order.ocd_booking_ids">The team agrees on the payment with you on WhatsApp: your hour stays held meanwhile.</span>
+                            <span t-else="">The team agrees on the payment with you on WhatsApp.</span>
                             <div t-if="help_asked" class="o_ocd_ok o_ocd_info_icon">
                                 <t t-call="ocd_live.icon" icon.f="check"/>
                                 <span>Thank you: the team writes to you on WhatsApp.</span>
@@ -812,7 +814,8 @@ Disallow: /*/reserver/
                                 <label for="o_ocd_reference" class="o_ocd_label">Money sent? The number that paid, or the reference of the transfer</label>
                                 <input id="o_ocd_reference" name="reference" class="o_ocd_input" maxlength="60" autocomplete="off"/>
                                 <button type="submit" class="o_ocd_cta">I paid</button>
-                                <small>Your hour then stays held while the team checks the payment. Without it, the hour is offered again to the others.</small>
+                                <small t-if="order.ocd_booking_ids">Your hour then stays held while the team checks the payment. Without it, the hour is offered again to the others.</small>
+                                <small t-else="">The team then checks the payment and confirms it on WhatsApp.</small>
                             </form>
                         </t>
                         <a t-if="tx.state == 'pending'" t-att-href="change_url" class="o_ocd_cta o_ocd_cta_line">Change the number or the method</a>

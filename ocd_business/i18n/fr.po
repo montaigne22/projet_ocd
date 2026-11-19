@@ -1,0 +1,1193 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 14:18+0000\n"
+"PO-Revision-Date: 2026-11-19 14:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: ocd_business
+#: model:ir.module.module,description:base.module_ocd_business
+msgid ""
+"\n"
+"OCD Business\n"
+"============\n"
+"\n"
+"- The formula is a chain of periods: paid (one per paid line of an order, unique\n"
+"  in the database), offered by the team (with a reason), offered at the launch.\n"
+"  « Until » is read from them, never typed; a new period starts the day after\n"
+"  the last one, or today when the formula ended: no day is lost. The vendor is\n"
+"  locked while the dates are computed.\n"
+"- Bought from the space of the vendor (1, 3 or 12 months, prices in the settings,\n"
+"  in the currency of each country) with the payment of OCD Live; the duration and\n"
+"  the price are the ones of the order. One invoice per payment.\n"
+"- A Mobile Money checked by the team: « I paid » keeps the features 3 days after\n"
+"  the end, the time of the check; checked, the days start at the end of the\n"
+"  formula.\n"
+"- A refund takes back the days not passed yet, never backwards; the periods\n"
+"  after it come closer.\n"
+"- Reminders 7 days before and the day before, at the hour of the vendor, once per\n"
+"  date of end; the end told. Nothing is erased at the end: the store the parcels\n"
+"  leave from stays shown, the team pauses, the detailed figures hide.\n"
+"- The launch: the vendors who use the features receive the months of the\n"
+"  settings once, before the features offered to all stop.\n"
+"- « My space » › OCD Business, the line before and after the end, the way to the\n"
+"  formula from each feature it keeps, the page /business, the back office.\n"
+msgstr ""
+"\n"
+"OCD Business\n"
+"============\n"
+"\n"
+"- La formule est une suite de périodes : payées (une par ligne de commande payée,\n"
+"  unique dans la base), offertes par l'équipe (avec un motif), offertes au\n"
+"  lancement. « Jusqu'au » se lit dans les périodes, ne se tape jamais ; une nouvelle\n"
+"  période commence le lendemain de la dernière, ou aujourd'hui si la formule est\n"
+"  terminée : aucun jour n'est perdu. Le vendeur est verrouillé le temps de calculer\n"
+"  les dates.\n"
+"- Achetée depuis l'espace du vendeur (1, 3 ou 12 mois, prix dans les réglages, dans\n"
+"  la devise de chaque pays) avec le paiement d'OCD Live ; la durée et le prix sont\n"
+"  ceux de la commande. Une facture par paiement.\n"
+"- Un Mobile Money vérifié par l'équipe : « J'ai payé » garde les fonctions 3 jours\n"
+"  après la fin, le temps de la vérification ; vérifié, les jours partent de la fin\n"
+"  de la formule.\n"
+"- Un remboursement reprend les jours pas encore passés, jamais en arrière ; les\n"
+"  périodes suivantes se rapprochent.\n"
+"- Rappels 7 jours avant et la veille, à l'heure du vendeur, une fois par date de\n"
+"  fin ; la fin est dite. Rien n'est effacé à la fin : le magasin de départ des\n"
+"  colis reste visible, l'équipe se met en pause, les chiffres en détail se cachent.\n"
+"- Le lancement : les vendeurs qui utilisent les fonctions reçoivent une fois les\n"
+"  mois des réglages, avant que les fonctions offertes à tous s'arrêtent.\n"
+"- « Mon espace » › OCD Business, la ligne avant et après la fin, le chemin vers la\n"
+"  formule depuis chaque fonction qu'elle garde, la page /business, le back-office.\n"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "%(count)s of %(max)s"
+msgstr "%(count)s sur %(max)s"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/wizard/ocd_business_offer.py:0
+msgid "%(days)s days of OCD Business offered by %(user)s: %(note)s"
+msgstr "%(days)s jours d'OCD Business offerts par %(user)s : %(note)s"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "%s days"
+msgstr "%s jours"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "%s months"
+msgstr "%s mois"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "%s months offered"
+msgstr "%s mois offerts"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "%s people"
+msgstr "%s personnes"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "%s per month"
+msgstr "%s par mois"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "%s vendors with a formula running."
+msgstr "%s vendeurs avec une formule en cours."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid ", then « OCD Business » in your space."
+msgstr ", puis « OCD Business » dans ton espace."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "1 month"
+msgstr "1 mois"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "1 month offered"
+msgstr "1 mois offert"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "1 person"
+msgstr "1 personne"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "12 months"
+msgstr "12 mois"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "3 months"
+msgstr "3 mois"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid ""
+"<b>For all, always</b>\n"
+"                                <small class=\"o_ocd_biz_muted\">Your boutique, your products, one store, the pick-up at the store, the promos, the lives, the clips, the ambassadors, the payouts.</small>"
+msgstr ""
+"<b>Pour tous, toujours</b>\n"
+"                                <small class=\"o_ocd_biz_muted\">Ta boutique, tes produits, un magasin, le retrait en magasin, les promos, les lives, les clips, les ambassadeurs, les reversements.</small>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid "<b>Grow with the formula</b><span>Your other stores, your team, your figures, OCD Express.</span>"
+msgstr "<b>Grandis avec la formule</b><span>Tes autres magasins, ton équipe, tes chiffres, OCD Express.</span>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid ""
+"<b>If the formula stops</b>\n"
+"                                <small class=\"o_ocd_biz_muted\">Your stores beyond the first one are hidden from your customers (the orders still leave from their stock; the store your parcels leave from stays shown), your team is paused, your figures in detail are hidden, your news go once a month. Nothing is ever erased: everything comes back when you renew.</small>"
+msgstr ""
+"<b>Si la formule s'arrête</b>\n"
+"                                <small class=\"o_ocd_biz_muted\">Tes magasins en plus sont masqués à tes clients (les commandes partent toujours de leur stock ; le magasin de départ de tes colis reste visible), ton équipe est en pause, tes chiffres en détail sont cachés, tes nouveautés partent une fois par mois. Rien n'est jamais effacé : tout revient quand tu renouvelles.</small>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid "<b>Open your boutique</b><span>Free: your products, one store, a commission on each sale.</span>"
+msgstr "<b>Ouvre ta boutique</b><span>Gratuit : tes produits, un magasin, une commission sur chaque vente.</span>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "<b>The features of OCD Business are offered to all during the launch.</b>"
+msgstr "<b>Les fonctions d'OCD Business sont offertes à tous pendant le lancement.</b>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid ""
+"<b>With OCD Business</b>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>Several stores</b> and the stock of each; the customers see « Available in Akwa »</span>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>Your team</b>: the people who hold your stores, without the prices or the money</span>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>Your figures in detail</b>: each live, your best hours, your loyal customers, each product</span>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>Your news every week</b> to those who follow you (once a month without the formula)</span>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>OCD Express</b>: your parcels outside the boutique, account open at once, the small pick-up free</span>"
+msgstr ""
+"<b>Avec OCD Business</b>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>Plusieurs magasins</b> et le stock de chacun ; les clients voient « Disponible à Akwa »</span>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>Ton équipe</b> : les personnes qui tiennent tes magasins, sans les prix ni l'argent</span>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>Tes chiffres en détail</b> : chaque live, tes meilleures heures, tes clients fidèles, chaque produit</span>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>Tes nouveautés chaque semaine</b> à ceux qui te suivent (une fois par mois sans la formule)</span>\n"
+"                                <span class=\"o_ocd_biz_check\"><b>OCD Express</b> : tes colis hors boutique, compte ouvert tout de suite, le petit ramassage gratuit</span>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "<small class=\"o_ocd_biz_muted\">Mobile Money, Wave or card, with the payment of OCD Live. Nothing is debited: you renew when you want, you are told before the end.</small>"
+msgstr "<small class=\"o_ocd_biz_muted\">Mobile Money, Wave ou carte, avec le paiement d'OCD Live. Rien n'est prélevé : tu renouvelles quand tu veux, on te prévient avant la fin.</small>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "<small><b>Your formula</b></small>"
+msgstr "<small><b>Ta formule</b></small>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "<small>Stores</small>"
+msgstr "<small>Magasins</small>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "<small>Your team</small>"
+msgstr "<small>Ton équipe</small>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "<span class=\"o_ocd_biz_badge\">For the organised vendors</span>"
+msgstr "<span class=\"o_ocd_biz_badge\">Pour les vendeurs organisés</span>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid "<span>For the shops, even without lives: your products on OCD Live, delivered with a code, the money paid after the delivery.</span>"
+msgstr "<span>Pour les commerçants, même sans live : tes produits sur OCD Live, livrés avec un code, l'argent versé après la livraison.</span>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.space_menu_business
+msgid "<span>OCD Business</span>"
+msgstr "<span>OCD Business</span>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "<span>What makes you sell stays free for all. OCD Business adds what helps when you grow.</span>"
+msgstr "<span>Ce qui fait vendre reste gratuit pour tous. OCD Business ajoute ce qui sert quand tu grandis.</span>"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid "<span>Without commitment, paid when you want.</span>"
+msgstr "<span>Sans engagement, payé quand tu veux.</span>"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/product_template.py:0
+msgid "A formula of OCD Business lasts one day at least."
+msgstr "Une formule OCD Business dure un jour au moins."
+
+#. module: ocd_business
+#: model:ir.model.constraint,message:ocd_business.constraint_ocd_business_period_unique_sale_line
+msgid "A paid line gives one period of OCD Business."
+msgstr "Une ligne payée donne une période d'OCD Business."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "A payment of OCD Business is on its way."
+msgstr "Un paiement d'OCD Business est en cours."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_business_period.py:0
+msgid "A period of OCD Business ends after it starts."
+msgstr "Une période d'OCD Business finit après son début."
+
+#. module: ocd_business
+#: model_terms:ir.actions.act_window,help:ocd_business.ocd_business_period_action
+msgid "A vendor buys OCD Business from their space (« OCD Business »); the team offers days from the form of the vendor."
+msgstr "Un vendeur achète OCD Business depuis son espace (« OCD Business ») ; l'équipe offre des jours depuis la fiche du vendeur."
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: ocd_business
+#: model:ocd.automation,actions:ocd_business.automation_business_paid
+msgid ""
+"Add the days bought after the end of the formula (or from today), once per payment.\n"
+"Make the invoice of the payment.\n"
+"Tell the vendor until when."
+msgstr ""
+"Ajouter les jours achetés après la fin de la formule (ou à partir d'aujourd'hui), une fois par paiement.\n"
+"Faire la facture du paiement.\n"
+"Dire au vendeur jusqu'à quand."
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_res_company__ocd_business_grace_days
+msgid "After « I paid » for a Mobile Money checked by the team: the features stay this long after the end, the time of the check."
+msgstr "Après « J'ai payé » pour un Mobile Money vérifié par l'équipe : les fonctions restent ce temps après la fin, le temps de la vérification."
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_ocd_automation
+msgid "Automation Of OCD Live"
+msgstr "Automatisation d'OCD Live"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "Back to my space"
+msgstr "Retour à mon espace"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_offer_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: ocd_business
+#: model:ir.model.fields.selection,name:ocd_business.selection__ocd_business_period__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "Choose your formula"
+msgstr "Choisis ta formule"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_res_company
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__create_uid
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__create_date
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__days
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__days
+msgid "Days"
+msgstr "Jours"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_product_product__ocd_business_days
+#: model:ir.model.fields,field_description:ocd_business.field_product_template__ocd_business_days
+msgid "Days Of OCD Business"
+msgstr "Jours d'OCD Business"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_business_period.py:0
+msgid "Days not passed yet taken back: %s"
+msgstr "Jours pas encore passés repris : %s"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_automation__display_name
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__display_name
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__display_name
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_business.field_product_template__display_name
+#: model:ir.model.fields,field_description:ocd_business.field_res_company__display_name
+#: model:ir.model.fields,field_description:ocd_business.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ocd_business.field_sale_order__display_name
+#: model:ir.model.fields,field_description:ocd_business.field_sale_order_line__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_partner__ocd_business_end_told_for
+#: model:ir.model.fields,field_description:ocd_business.field_res_users__ocd_business_end_told_for
+msgid "End Told For"
+msgstr "Fin dite pour"
+
+#. module: ocd_business
+#: model:ir.model.fields.selection,name:ocd_business.selection__ocd_business_period__state__ended
+msgid "Ended"
+msgstr "Terminé"
+
+#. module: ocd_business
+#: model:ocd.automation,when:ocd_business.automation_business_days
+msgid "Every hour"
+msgstr "Chaque heure"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_partner__ocd_business_reminded_for
+#: model:ir.model.fields,field_description:ocd_business.field_res_users__ocd_business_reminded_for
+msgid "First Reminder Sent For"
+msgstr "Premier rappel envoyé pour"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "First reminder"
+msgstr "Premier rappel"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (contacts)"
+
+#. module: ocd_business
+#: model:ocd.automation,name:ocd_business.automation_business_paid
+msgid "Formula paid: the days added"
+msgstr "Formule payée : les jours ajoutés"
+
+#. module: ocd_business
+#: model:ocd.automation,name:ocd_business.automation_business_days
+msgid "Formulas: reminders, end and launch"
+msgstr "Formules : rappels, fin et lancement"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__date_start
+msgid "From"
+msgstr "De"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_business_period.py:0
+msgid "Give one day at least."
+msgstr "Donner un jour au moins."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "Grace for a payment checked"
+msgstr "Grâce pour un paiement vérifié"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "Hello, I want to open my boutique on OCD Live."
+msgstr "Bonjour, je veux ouvrir ma boutique sur OCD Live."
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_automation__id
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__id
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__id
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_business.field_product_template__id
+#: model:ir.model.fields,field_description:ocd_business.field_res_company__id
+#: model:ir.model.fields,field_description:ocd_business.field_res_partner__id
+#: model:ir.model.fields,field_description:ocd_business.field_sale_order__id
+#: model:ir.model.fields,field_description:ocd_business.field_sale_order_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_ocd_business_period__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_ocd_business_period__message_has_error
+#: model:ir.model.fields,help:ocd_business.field_ocd_business_period__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_ocd_business_period__date_end
+msgid "Included."
+msgstr "Inclus."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__kind
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_search
+msgid "Kind"
+msgstr "Type"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__write_uid
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__write_date
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: ocd_business
+#: model:ir.model.fields.selection,name:ocd_business.selection__ocd_business_period__state__scheduled
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_search
+msgid "Later"
+msgstr "Plus tard"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "Launch"
+msgstr "Lancement"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_company__ocd_business_launch_date
+msgid "Launch Of OCD Business"
+msgstr "Lancement d'OCD Business"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_company__ocd_business_launch_done
+msgid "Launch Of OCD Business Done"
+msgstr "Lancement d'OCD Business fait"
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_product_product__ocd_product_kind
+#: model:ir.model.fields,help:ocd_business.field_product_template__ocd_product_kind
+msgid "Live package: its lives become credits of the vendor once paid. Directory pass: gives the right to send live links to the directory."
+msgstr "Paquet de lives : ses lives deviennent des crédits du vendeur une fois payé. Pass annuaire : donne le droit d'envoyer des liens de live à l'annuaire."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid "Log in"
+msgstr "Me connecter"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_company__ocd_business_launch_months
+msgid "Months Offered At The Launch"
+msgstr "Mois offerts au lancement"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "Months offered at the launch"
+msgstr "Mois offerts au lancement"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.vendor_places_business
+msgid "More stores come with OCD Business."
+msgstr "D'autres magasins viennent avec OCD Business."
+
+#. module: ocd_business
+#: model_terms:ir.actions.act_window,help:ocd_business.ocd_business_period_action
+msgid "No formula yet"
+msgstr "Pas encore de formule"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.vendor_places_business
+msgid "Not shown to your customers: one store without OCD Business."
+msgstr "Pas visible de tes clients : un magasin sans OCD Business."
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_ocd_business_period__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_ocd_business_period__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur d'envoi"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+#: model:ir.actions.act_window,name:ocd_business.ocd_business_period_action
+#: model:ir.model.fields.selection,name:ocd_business.selection__product_template__ocd_product_kind__business
+#: model:ir.ui.menu,name:ocd_business.ocd_business_menu
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+#: model_terms:ir.ui.view,arch_db:ocd_business.res_partner_view_form_ocd_business
+msgid "OCD Business"
+msgstr "OCD Business"
+
+#. module: ocd_business
+#: model:product.template,name:ocd_business.product_business_1
+msgid "OCD Business (1 month)"
+msgstr "OCD Business (1 mois)"
+
+#. module: ocd_business
+#: model:product.template,name:ocd_business.product_business_12
+msgid "OCD Business (12 months)"
+msgstr "OCD Business (12 mois)"
+
+#. module: ocd_business
+#: model:product.template,name:ocd_business.product_business_3
+msgid "OCD Business (3 months)"
+msgstr "OCD Business (3 mois)"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_partner__ocd_business_grace_until
+#: model:ir.model.fields,field_description:ocd_business.field_res_users__ocd_business_grace_until
+msgid "OCD Business Kept Until (Payment Checked)"
+msgstr "OCD Business gardé jusqu'au (paiement vérifié)"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.res_partner_view_form_ocd_business
+msgid "OCD Business until"
+msgstr "OCD Business jusqu'au"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_company__ocd_business_reminder_days
+msgid "OCD Business: First Reminder (Days Before)"
+msgstr "OCD Business : premier rappel (jours avant)"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_company__ocd_business_grace_days
+msgid "OCD Business: Grace For A Payment Checked (Days)"
+msgstr "OCD Business : grâce pour un paiement vérifié (jours)"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "OCD Business: the monthly formula of the organised vendors"
+msgstr "OCD Business : la formule mensuelle des vendeurs organisés"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_product_product__ocd_product_kind
+#: model:ir.model.fields,field_description:ocd_business.field_product_template__ocd_product_kind
+msgid "OCD Live Product"
+msgstr "Produit OCD Live"
+
+#. module: ocd_business
+#: model:ir.module.module,shortdesc:base.module_ocd_business
+msgid "OCD Live: OCD Business"
+msgstr "OCD Live : OCD Business"
+
+#. module: ocd_business
+#: model:ir.actions.server,name:ocd_business.ir_cron_business_ir_actions_server
+msgid "OCD Live: formulas of OCD Business"
+msgstr "OCD Live : formules d'OCD Business"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_offer_view_form
+msgid "Offer"
+msgstr "Offrir"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_ocd_business_offer
+msgid "Offer Days Of OCD Business"
+msgstr "Offrir des jours d'OCD Business"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/wizard/ocd_business_offer.py:0
+msgid "Offer between 1 and 400 days."
+msgstr "Offrir entre 1 et 400 jours."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.res_partner_view_form_ocd_business
+msgid "Offer days"
+msgstr "Offrir des jours"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_offer_view_form
+msgid "Offer days of OCD Business"
+msgstr "Offrir des jours d'OCD Business"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_search
+msgid "Offered"
+msgstr "Offertes"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__user_id
+msgid "Offered By"
+msgstr "Offert par"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+#: model:ir.model.fields.selection,name:ocd_business.selection__ocd_business_period__kind__launch
+msgid "Offered at the launch"
+msgstr "Offert au lancement"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_company.py:0
+msgid "Offered at the launch of OCD Business"
+msgstr "Offert au lancement d'OCD Business"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+#: model:ir.model.fields.selection,name:ocd_business.selection__ocd_business_period__kind__offered
+msgid "Offered by the team"
+msgstr "Offert par l'équipe"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "Offered to all until %s."
+msgstr "Offertes à tous jusqu'au %s."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/wizard/ocd_business_offer.py:0
+msgid "Only a manager of OCD Live offers days of OCD Business."
+msgstr "Seul un responsable d'OCD Live offre des jours d'OCD Business."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_business_period.py:0
+msgid "Only a manager of OCD Live takes back days of OCD Business."
+msgstr "Seul un responsable d'OCD Live reprend des jours d'OCD Business."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid "Open my boutique: write to OCD Live"
+msgstr "Ouvrir ma boutique : écrire à OCD Live"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__sale_order_id
+msgid "Order"
+msgstr "Commande"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/sale_order.py:0
+msgid "Order %s cancelled"
+msgstr "Commande %s annulée"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__sale_line_id
+msgid "Order Line"
+msgstr "Ligne de commande"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__amount
+#: model:ir.model.fields.selection,name:ocd_business.selection__ocd_business_period__kind__paid
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_search
+msgid "Paid"
+msgstr "Payé"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "Paid in advance, never debited; in the currency of each country, as the directory pass. A price changed counts for the next payments."
+msgstr "Payé d'avance, jamais prélevé ; dans la devise de chaque pays, comme le pass de l'annuaire. Un prix changé vaut pour les paiements suivants."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "Paid: thank you. Your formula runs %s."
+msgstr "Payé : merci. Ta formule court %s."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "Pay"
+msgstr "Payer"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "Payments"
+msgstr "Paiements"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_ocd_business_period
+msgid "Period Of OCD Business"
+msgstr "Période d'OCD Business"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_form
+msgid "Period of OCD Business"
+msgstr "Période d'OCD Business"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_partner__ocd_business_period_ids
+#: model:ir.model.fields,field_description:ocd_business.field_res_users__ocd_business_period_ids
+msgid "Periods Of OCD Business"
+msgstr "Périodes d'OCD Business"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_search
+msgid "Periods of OCD Business"
+msgstr "Périodes d'OCD Business"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "Prices"
+msgstr "Prix"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_business_period.py:0
+msgid "Refunded, by %s"
+msgstr "Remboursé, par %s"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_form
+msgid "Refunded: take back the days"
+msgstr "Remboursé : reprendre les jours"
+
+#. module: ocd_business
+#: model:ocd.automation,actions:ocd_business.automation_business_days
+msgid ""
+"Remind the vendor the days of the settings before the end, then the day before, once per date of end.\n"
+"At the end, tell what is paused (nothing is erased).\n"
+"The day of the launch, offer the months of the settings to the vendors who use the features, then stop the features offered to all."
+msgstr ""
+"Rappeler au vendeur les jours des réglages avant la fin, puis la veille, une fois par date de fin.\n"
+"À la fin, dire ce qui est en pause (rien n'est effacé).\n"
+"Le jour du lancement, offrir les mois des réglages aux vendeurs qui utilisent les fonctions, puis arrêter les fonctions offertes à tous."
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_res_partner__ocd_business_last_call_for
+#: model:ir.model.fields,field_description:ocd_business.field_res_users__ocd_business_last_call_for
+msgid "Reminder Of The Day Before Sent For"
+msgstr "Rappel de la veille envoyé pour"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "Renew"
+msgstr "Renouveler"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.vendor_team_business
+msgid "Renew OCD Business"
+msgstr "Renouveler OCD Business"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_partner.py:0
+msgid "Renew it to keep your stores shown, your team and your figures in detail."
+msgstr "Renouvelle-la pour garder tes magasins visibles, ton équipe et tes chiffres en détail."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "Renewing adds days after this date: no day is lost."
+msgstr "Renouveler ajoute des jours après cette date : aucun jour n'est perdu."
+
+#. module: ocd_business
+#: model:ir.model.fields.selection,name:ocd_business.selection__ocd_business_period__state__active
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_search
+msgid "Running"
+msgstr "En cours"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Ligne de commande"
+
+#. module: ocd_business
+#: model:ocd.automation,tools:ocd_business.automation_business_paid
+msgid "Sales, Invoicing, code of OCD Live."
+msgstr "Ventes, Facturation, code d'OCD Live."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+#: model_terms:ir.ui.view,arch_db:ocd_business.vendor_figures_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.vendor_places_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.vendor_team_business
+msgid "See OCD Business"
+msgstr "Voir OCD Business"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "See my payment"
+msgstr "Voir mon paiement"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/hooks.py:0
+msgid "Set by hand before OCD Business"
+msgstr "Mis à la main avant OCD Business"
+
+#. module: ocd_business
+#: model:ir.model,name:ocd_business.model_ocd_live_settings
+msgid "Settings Page Of OCD Live"
+msgstr "Page des paramètres d'OCD Live"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_page
+msgid "Several stores, a team, your figures in detail"
+msgstr "Plusieurs magasins, une équipe, tes chiffres en détail"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_search
+msgid "Started this month"
+msgstr "Commencées ce mois-ci"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__state
+msgid "State"
+msgstr "État"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "Thank you: your payment is on its way. Your formula is added as soon as it is confirmed."
+msgstr "Merci : ton paiement est en cours. Ta formule est ajoutée dès qu'il est confirmé."
+
+#. module: ocd_business
+#: model:ocd.automation,trigger:ocd_business.automation_business_days
+msgid "The date of end of each formula, at the hour of the vendor; the day of the launch."
+msgstr "La date de fin de chaque formule, à l'heure du vendeur ; le jour du lancement."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_form
+msgid "The days not passed yet are taken back; the periods after it come closer."
+msgstr "Les jours pas encore passés sont repris ; les périodes suivantes se rapprochent."
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_product_product__ocd_business_days
+#: model:ir.model.fields,help:ocd_business.field_product_template__ocd_business_days
+msgid "The days of the formula one piece gives, from the end of the current one."
+msgstr "Les jours de formule que donne une pièce, à partir de la fin de la formule en cours."
+
+#. module: ocd_business
+#: model:product.template,description_sale:ocd_business.product_business_1
+msgid "The formula OCD Business for 30 days"
+msgstr "La formule OCD Business pour 30 jours"
+
+#. module: ocd_business
+#: model:product.template,description_sale:ocd_business.product_business_12
+msgid "The formula OCD Business for 365 days"
+msgstr "La formule OCD Business pour 365 jours"
+
+#. module: ocd_business
+#: model:product.template,description_sale:ocd_business.product_business_3
+msgid "The formula OCD Business for 90 days"
+msgstr "La formule OCD Business pour 90 jours"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "The formulas"
+msgstr "Les formules"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/sale_order.py:0
+msgid "The invoice could not be made: %s"
+msgstr "La facture n'a pas pu être faite : %s"
+
+#. module: ocd_business
+#: model:ir.module.module,summary:base.module_ocd_business
+msgid "The monthly formula of the organised vendors: several stores and their stock, their team, their figures in detail, their news every week, OCD Express; paid in advance, never debited"
+msgstr "La formule mensuelle des vendeurs organisés : plusieurs magasins et leur stock, leur équipe, leurs chiffres en détail, leurs nouveautés chaque semaine, OCD Express ; payée d'avance, jamais prélevée"
+
+#. module: ocd_business
+#: model:ocd.automation,trigger:ocd_business.automation_business_paid
+msgid "The payment confirmed by its provider, or checked by the team."
+msgstr "Le paiement confirmé par son fournisseur, ou vérifié par l'équipe."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.vendor_team_business
+msgid "The team comes with OCD Business: the people who hold your stores, without the prices or the money."
+msgstr "L'équipe vient avec OCD Business : les personnes qui tiennent tes magasins, sans les prix ni l'argent."
+
+#. module: ocd_business
+#: model:ocd.automation,scope:ocd_business.automation_business_paid
+msgid "The vendors who buy OCD Business."
+msgstr "Les vendeurs qui achètent OCD Business."
+
+#. module: ocd_business
+#: model:ocd.automation,scope:ocd_business.automation_business_days
+msgid "The vendors with a formula."
+msgstr "Les vendeurs avec une formule."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "Then the day before; once per date of end, never after a renewal."
+msgstr "Puis la veille ; une fois par date de fin, jamais après un renouvellement."
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_res_company__ocd_business_reminder_days
+msgid "Then the day before; one message per date of end, never after a renewal."
+msgstr "Puis la veille ; un message par date de fin, jamais après un renouvellement."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "This day, the features offered to all stop (« OCD Business features offered to all », section Stores); the vendors who use them receive the months below first."
+msgstr "Ce jour-là, les fonctions offertes à tous s'arrêtent (« Fonctions OCD Business offertes à tous », section Magasins) ; les vendeurs qui les utilisent reçoivent d'abord les mois ci-dessous."
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_res_company__ocd_business_launch_date
+msgid "This day, the features offered to all stop; the vendors who use them receive the months of the settings first, once."
+msgstr "Ce jour-là, les fonctions offertes à tous s'arrêtent ; les vendeurs qui les utilisent reçoivent d'abord les mois des réglages, une fois."
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_res_company__ocd_business_launch_months
+msgid "To the vendors who use the features (several stores, a team) on the day of the launch."
+msgstr "Aux vendeurs qui utilisent les fonctions (plusieurs magasins, une équipe) le jour du lancement."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "To the vendors with several stores or a team, once."
+msgstr "Aux vendeurs avec plusieurs magasins ou une équipe, une fois."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_list
+msgid "Total"
+msgstr "Total"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__date_end
+msgid "Until"
+msgstr "Jusqu'au"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__vendor_id
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__vendor_id
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_period_view_search
+msgid "Vendor"
+msgstr "Vendeur"
+
+#. module: ocd_business
+#: model:ocd.automation,tools:ocd_business.automation_business_days
+msgid "WhatsApp, code of OCD Live."
+msgstr "WhatsApp, code d'OCD Live."
+
+#. module: ocd_business
+#: model:ocd.automation,when:ocd_business.automation_business_paid
+msgid "When a payment of OCD Business is confirmed"
+msgstr "Quand un paiement d'OCD Business est confirmé"
+
+#. module: ocd_business
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_offer__note
+#: model:ir.model.fields,field_description:ocd_business.field_ocd_business_period__note
+msgid "Why"
+msgstr "Pourquoi"
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_ocd_business_period__note
+msgid "Why the team offered these days, or cancelled them."
+msgstr "Pourquoi l'équipe a offert ces jours, ou les a annulés."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid "You already sell on OCD Live?"
+msgstr "Tu vends déjà sur OCD Live ?"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.pay_business
+msgid "Your features of OCD Business then stay while the team checks the payment."
+msgstr "Tes fonctions d'OCD Business restent alors le temps que l'équipe vérifie le paiement."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_partner.py:0
+msgid "Your features stay until %s, the time of the check."
+msgstr "Tes fonctions restent jusqu'au %s, le temps de la vérification."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_partner.py:0
+msgid "Your formula OCD Business ended on %s."
+msgstr "Ta formule OCD Business s'est terminée le %s."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_partner.py:0
+msgid "Your formula OCD Business ends on %s."
+msgstr "Ta formule OCD Business se termine le %s."
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.business_public
+msgid "Your online shop, your stores, your deliveries"
+msgstr "Ta boutique en ligne, tes magasins, tes livraisons"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_partner.py:0
+msgid "Your payment of OCD Business is being checked."
+msgstr "Ton paiement d'OCD Business est en cours de vérification."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/res_partner.py:0
+msgid "Your stores beyond the first one are hidden, your team is paused: nothing is erased, everything comes back with the formula."
+msgstr "Tes magasins en plus sont masqués, ton équipe est en pause : rien n'est effacé, tout revient avec la formule."
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "days"
+msgstr "jours"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "days before"
+msgstr "jours avant"
+
+#. module: ocd_business
+#: model_terms:ir.ui.view,arch_db:ocd_business.ocd_business_offer_view_form
+msgid "e.g. a gesture after a problem, a vendor tested"
+msgstr "ex. un geste après un problème, un vendeur testé"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "months"
+msgstr "months"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "payment being checked"
+msgstr "paiement en cours de vérification"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/controllers/business.py:0
+msgid "until %s"
+msgstr "jusqu'au %s"
+
+#. module: ocd_business
+#. odoo-python
+#: code:addons/ocd_business/models/ocd_live_settings.py:0
+msgid "« I paid » for a Mobile Money checked by the team: the features stay this long after the end."
+msgstr "« J'ai payé » pour un Mobile Money vérifié par l'équipe : les fonctions restent ce temps après la fin."
+
+#. module: ocd_business
+#: model:ir.model.fields,help:ocd_business.field_res_partner__ocd_business_grace_until
+#: model:ir.model.fields,help:ocd_business.field_res_users__ocd_business_grace_until
+msgid "« I paid » for a Mobile Money checked by the team: the features stay until this day, the time of the check."
+msgstr "« J'ai payé » pour un Mobile Money vérifié par l'équipe : les fonctions restent jusqu'à ce jour, le temps de la vérification."

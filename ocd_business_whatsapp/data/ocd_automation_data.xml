@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The templates sent by the automations of OCD Business (OCD Live › Automations) -->
+<odoo>
+
+    <record id="ocd_business.automation_business_paid" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_business_paid'), ref('template_business_paid_en')])]"/>
+    </record>
+
+    <record id="ocd_business.automation_business_days" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_business_ending'), ref('template_business_ending_en'),
+                                                       ref('template_business_ended'), ref('template_business_ended_en'),
+                                                       ref('template_business_launch'), ref('template_business_launch_en')])]"/>
+    </record>
+
+</odoo>

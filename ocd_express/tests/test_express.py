@@ -162,6 +162,15 @@ class TestOcdExpressPickup(OcdExpressCommon):
         self.assertNotEqual(second.ocd_express_pickup_id, pickup, "The next passage")
         self.assertEqual(second.ocd_express_pickup_id.state, "planned")
 
+    def test_the_small_pickup_is_free_with_ocd_business(self):
+        self.company.ocd_business_offered_all = False
+        self.afi.ocd_business_until = fields.Date.add(fields.Date.today(), days=10)
+        parcel = self._create()
+        pickup = parcel.ocd_express_pickup_id
+        pickup._ocd_done(parcel)
+        self.assertEqual(pickup.fee, 0, "Included in the formula")
+        self.assertFalse(self._moves(parcel, "pickup"))
+
     def test_second_missed_pickup_in_a_row_is_paid(self):
         parcel = self._create()
         first = parcel.ocd_express_pickup_id
@@ -461,6 +470,16 @@ class TestOcdExpressSender(OcdExpressCommon):
                                               self.akwa, "", "", vendor=self.brenda)
         self.assertEqual(sender, self.brenda)
         self.assertEqual(sender.ocd_express_state, "active")
+
+    def test_ocd_business_opens_the_account_at_once(self):
+        self.company.write({"ocd_express_open_to": "invited", "ocd_business_offered_all": False})
+        self.brenda.ocd_business_until = fields.Date.add(fields.Date.today(), days=10)
+        Partner = self.env["res.partner"]
+        sender = Partner._ocd_express_request(self.brenda.name, "+237 677000222", self.env.ref("base.cm"),
+                                              self.akwa, "", "", vendor=self.brenda)
+        self.assertEqual(sender.ocd_express_state, "active", "OCD Business includes OCD Express")
+        typed = Partner._ocd_express_request("Fatou", "+237 677000444", self.env.ref("base.cm"), self.akwa, "", "")
+        self.assertEqual(typed.ocd_express_state, "requested", "A number typed: the team opens it")
 
     def test_limit_after_twenty_parcels(self):
         self.assertEqual(self.afi.ocd_express_max_cod, 50000)

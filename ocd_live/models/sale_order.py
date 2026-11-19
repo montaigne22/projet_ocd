@@ -34,6 +34,13 @@ class SaleOrder(models.Model):
         "the vendor asked the team for help. The hour of the live stays held meanwhile.",
     )
 
+    def _ocd_on_payment_page(self):
+        """Whether the order is paid on the payment page of OCD Live: lives, or a product of OCD
+        Live (a directory pass before it is paid, and the products of the other modules)."""
+        self.ensure_one()
+        return bool(self.ocd_booking_ids or self.ocd_pass_ids
+                    or self.order_line.product_id.filtered("ocd_product_kind"))
+
     def _ocd_announce_payment(self, reference):
         """The vendor says the payment checked by the team was sent: the hours of its lives stay
         held while the team checks it (« Slot Held For A Payment Checked By The Team »), and the

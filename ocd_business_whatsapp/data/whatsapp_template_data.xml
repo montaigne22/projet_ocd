@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates to create at Meta (category Utility, language French) with the same names and texts, on the WhatsApp number of OCD Live. Never « code » in the texts (rule of Meta). -->
+    <data noupdate="1">
+
+        <record id="template_business_paid" model="whatsapp.template">
+            <field name="name">OCD Business: formula paid</field>
+            <field name="template_name">ocd_business_payee</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, votre formule OCD Business est payée : elle court jusqu'au {{2}}. Merci, touchez « Ma formule » pour votre facture.</field>
+            <field name="button_url_value">{{ 'ocd/espace/moi/business' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Ma formule', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/moi/business'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.name or \'\').split(\' \')[0] }}', 'sample_value': 'Brenda'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_business_until_text(\'fr_FR\') }}', 'sample_value': 'mercredi 17 février'}),
+            ]"/>
+        </record>
+
+        <record id="template_business_ending" model="whatsapp.template">
+            <field name="name">OCD Business: the end is close</field>
+            <field name="template_name">ocd_business_fin_proche</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, votre formule OCD Business se termine le {{2}}. Renouvelez-la pour garder vos magasins, votre équipe et vos chiffres, touchez « Renouveler ».</field>
+            <field name="button_url_value">{{ 'ocd/espace/moi/business' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Renouveler', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/moi/business'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.name or \'\').split(\' \')[0] }}', 'sample_value': 'Brenda'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_business_until_text(\'fr_FR\') }}', 'sample_value': 'dimanche 22 novembre'}),
+            ]"/>
+        </record>
+
+        <record id="template_business_ended" model="whatsapp.template">
+            <field name="name">OCD Business: the formula ended</field>
+            <field name="template_name">ocd_business_terminee</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, votre formule OCD Business s'est terminée le {{2}} : vos magasins en plus sont masqués et votre équipe est en pause, rien n'est effacé. Touchez « Renouveler » pour tout retrouver.</field>
+            <field name="button_url_value">{{ 'ocd/espace/moi/business' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Renouveler', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/moi/business'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.name or \'\').split(\' \')[0] }}', 'sample_value': 'Brenda'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_business_until_text(\'fr_FR\') }}', 'sample_value': 'dimanche 22 novembre'}),
+            ]"/>
+        </record>
+
+        <record id="template_business_launch" model="whatsapp.template">
+            <field name="name">OCD Business: months offered at the launch</field>
+            <field name="template_name">ocd_business_lancement</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, OCD Business est lancé et vous l'utilisez déjà : {{2}} vous sont offerts, jusqu'au {{3}}. Merci, touchez « Ma formule » pour la voir.</field>
+            <field name="button_url_value">{{ 'ocd/espace/moi/business' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Ma formule', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/espace/moi/business'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.name or \'\').split(\' \')[0] }}', 'sample_value': 'Brenda'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object._ocd_business_launch_text(\'fr_FR\') }}', 'sample_value': '2 mois'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object._ocd_business_until_text(\'fr_FR\') }}', 'sample_value': 'mardi 2 février'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

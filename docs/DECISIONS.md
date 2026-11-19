@@ -742,6 +742,39 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   - **dans deux modules** (`ocd_ambassadors`, `ocd_ambassadors_whatsapp`), qui s'appuient sur les
     commandes, les colis et les reversements du shop sans les changer, sauf un point d'accroche du
     détail des reversements (`_ocd_breakdown_bills`).
+- **OCD Business** (chantier 12 ; maquette `OcdBusiness` validée le 19 novembre 2026 avec les choix
+  recommandés et ses règles de robustesse) :
+  - **ce qui reste pour tous** : ce qui fait vendre (la boutique, les produits, un magasin, le retrait
+    en magasin, les promos, les lives, les clips, les ambassadeurs, les reversements) ; **la formule
+    ajoute** plusieurs magasins et leur stock, l'équipe, les chiffres en détail, les nouveautés chaque
+    semaine, et OCD Express (compte ouvert tout de suite, petit ramassage gratuit) ; **pas de commission
+    plus basse** ;
+  - **le prix** : 10 000 F pour 1 mois, 27 000 F pour 3 mois, 100 000 F pour 12 mois (réglables, dans
+    la devise de chaque pays comme le pass de l'annuaire, sans taxe ajoutée : le prix des réglages est le
+    prix payé) ; **payé d'avance, jamais prélevé** ;
+  - **des périodes, pas une date** : une période par paiement (index unique sur la ligne de commande),
+    avec la durée et le prix de la commande même si les réglages changent après ; elle commence le
+    lendemain de la dernière, ou aujourd'hui : aucun jour perdu. « Jusqu'au » se calcule, ne se tape
+    jamais ; l'équipe offre des jours avec un motif (1 à 400) ; le vendeur est verrouillé le temps du
+    calcul ; une facture par paiement ;
+  - **le Mobile Money vérifié par l'équipe est accepté** (choix 1) : « J'ai payé » garde les fonctions
+    **3 jours** après la fin, le temps de la vérification ; vérifié, les jours partent de la fin de la
+    formule (jamais de jours perdus ni gagnés par l'attente) ; refusé, la grâce s'arrête ;
+  - **un remboursement** (la commande annulée) reprend les jours pas encore passés, jamais en arrière ;
+    les périodes suivantes se rapprochent ;
+  - **à la fin, rien n'est effacé** : les magasins au-delà du premier sont masqués aux clients (les
+    commandes partent toujours de leur stock), mais **le magasin de départ des colis reste visible** ;
+    l'équipe est en pause ; les chiffres en détail se cachent ; les nouveautés partent une fois par mois ;
+  - **les rappels** : 7 jours avant et la veille, à l'heure du vendeur, une fois par date de fin, jamais
+    après un renouvellement ; la fin est dite une fois ;
+  - **le lancement** : le jour choisi par l'équipe, les vendeurs qui utilisent les fonctions (au moins
+    deux magasins vérifiés ou une équipe) reçoivent une fois **2 mois offerts**, puis les fonctions
+    offertes à tous s'arrêtent ; **limites** : 5 magasins et 5 personnes, réglables ;
+  - **la page publique** `/business` pour les commerçants sans lives : ouvrir sa boutique en écrivant à
+    OCD Live sur WhatsApp, puis la formule depuis son espace ;
+  - **dans deux modules** (`ocd_business`, `ocd_business_whatsapp`) : l'interrupteur du chantier 17
+    (`ocd_business_until`) devient le résultat des périodes ; `ocd_live_shop` et `ocd_express` lisent
+    la formule propre du vendeur (`_ocd_business_formula`), sans l'offre à tous, pour OCD Express.
 
 ## WhatsApp
 

@@ -778,6 +778,9 @@ class TestOcdLiveWebsite(HttpCase):
         vendor = self.env["res.partner"].search([("name", "=", "Brenda Wax")])
         order = vendor.sale_order_ids
         self.assertEqual(order.order_line.product_id, self.env.ref("ocd_live.product_directory_pass").product_variant_id)
+        page = self.url_open(response.headers["Location"])
+        self.assertEqual(page.status_code, 200, "The payment page of the pass opens before it is paid")
+        self.assertNotIn("Your hour", page.text, "A pass holds no hour")
         self.assertEqual(self.url_open("/lives/envoyer", allow_redirects=False).status_code, 303, "The pass is not paid yet")
         order.action_confirm()
         self.assertTrue(vendor.ocd_pass_active)

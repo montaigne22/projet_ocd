@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The formulas of OCD Business, sold as products with the payment of OCD Live (as the directory pass).
+     Their prices are changed in the settings of OCD Live; a price changed counts for the next payments. -->
+<odoo noupdate="1">
+
+    <record id="product_business_1" model="product.template">
+        <field name="name">OCD Business (1 month)</field>
+        <field name="description_sale">The formula OCD Business for 30 days</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="list_price">10000</field>
+        <field name="invoice_policy">order</field>
+        <!-- The price of the settings is the price paid, as the pass of the directory -->
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_product_kind">business</field>
+        <field name="ocd_business_days">30</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="product_business_3" model="product.template">
+        <field name="name">OCD Business (3 months)</field>
+        <field name="description_sale">The formula OCD Business for 90 days</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="list_price">27000</field>
+        <field name="invoice_policy">order</field>
+        <!-- The price of the settings is the price paid, as the pass of the directory -->
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_product_kind">business</field>
+        <field name="ocd_business_days">90</field>
+        <field name="sequence">21</field>
+    </record>
+
+    <record id="product_business_12" model="product.template">
+        <field name="name">OCD Business (12 months)</field>
+        <field name="description_sale">The formula OCD Business for 365 days</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="list_price">100000</field>
+        <field name="invoice_policy">order</field>
+        <!-- The price of the settings is the price paid, as the pass of the directory -->
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_product_kind">business</field>
+        <field name="ocd_business_days">365</field>
+        <field name="sequence">22</field>
+    </record>
+
+</odoo>

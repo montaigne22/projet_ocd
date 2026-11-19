@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The pages of OCD Business (chantier 12, design OcdBusiness): the formula in the space of the
+     vendor, the line of « My space » before and after the end, the way to the formula from each
+     feature it keeps, the payment page, the page for the shops without lives. -->
+<odoo>
+
+    <template id="business_page" name="OCD Live: OCD Business in my space">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">OCD Business</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_biz">
+                    <div class="o_ocd_biz_head">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">OCD Business</h1>
+                        <span t-if="formula" class="o_ocd_step_pill o_ocd_step_pill_done">Running</span>
+                    </div>
+                    <div t-if="message" class="o_ocd_ok" role="status" t-out="message"/>
+                    <div t-if="note" t-attf-class="#{'o_ocd_alert' if note['kind'] == 'ended' else 'o_ocd_info'}" role="status">
+                        <b t-out="note['title']"/> <span t-out="note['line']"/>
+                    </div>
+                    <div t-if="offered_all" class="o_ocd_ok" role="status">
+                        <b>The features of OCD Business are offered to all during the launch.</b>
+                        <span t-if="launch_line" t-out="launch_line"/>
+                    </div>
+                    <div class="o_ocd_biz_panes">
+                        <div class="o_ocd_biz_pane">
+                            <div t-if="formula" class="o_ocd_biz_money">
+                                <small><b>Your formula</b></small>
+                                <b class="o_ocd_biz_big" t-out="until_title"/>
+                                <small t-out="renew_line"/>
+                            </div>
+                            <div t-else="" class="o_ocd_biz_hero">
+                                <span class="o_ocd_biz_badge">For the organised vendors</span>
+                                <h2 class="o_ocd_h1">Several stores, a team, your figures in detail</h2>
+                                <span>What makes you sell stays free for all. OCD Business adds what helps when you grow.</span>
+                            </div>
+                            <div t-if="formula" class="o_ocd_biz_tiles">
+                                <div class="o_ocd_biz_tile"><small>Stores</small><b t-out="places_line"/></div>
+                                <div class="o_ocd_biz_tile"><small>Your team</small><b t-out="team_line"/></div>
+                            </div>
+                            <div class="o_ocd_biz_card">
+                                <b>With OCD Business</b>
+                                <span class="o_ocd_biz_check"><b>Several stores</b> and the stock of each; the customers see « Available in Akwa »</span>
+                                <span class="o_ocd_biz_check"><b>Your team</b>: the people who hold your stores, without the prices or the money</span>
+                                <span class="o_ocd_biz_check"><b>Your figures in detail</b>: each live, your best hours, your loyal customers, each product</span>
+                                <span class="o_ocd_biz_check"><b>Your news every week</b> to those who follow you (once a month without the formula)</span>
+                                <span class="o_ocd_biz_check"><b>OCD Express</b>: your parcels outside the boutique, account open at once, the small pick-up free</span>
+                            </div>
+                            <div class="o_ocd_biz_card">
+                                <b>For all, always</b>
+                                <small class="o_ocd_biz_muted">Your boutique, your products, one store, the pick-up at the store, the promos, the lives, the clips, the ambassadors, the payouts.</small>
+                            </div>
+                        </div>
+                        <div class="o_ocd_biz_pane">
+                            <t t-if="pending_url">
+                                <div class="o_ocd_info" role="status">A payment of OCD Business is on its way.</div>
+                                <a t-att-href="pending_url" class="o_ocd_cta">See my payment</a>
+                            </t>
+                            <form t-else="" action="/ocd/espace/moi/business" method="post" class="o_ocd_biz_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <h2 class="o_ocd_biz_h2"><t t-if="formula">Renew</t><t t-else="">Choose your formula</t></h2>
+                                <label t-foreach="durations" t-as="row" class="o_ocd_biz_option">
+                                    <input type="radio" name="duree" t-att-value="row['product'].id" required="required"
+                                           t-att-checked="'checked' if row['months'] == 3 or (len(durations) == 1) else None"/>
+                                    <span>
+                                        <b t-out="row['label']"/>
+                                        <span t-if="row['badge']" class="o_ocd_biz_badge" t-out="row['badge']"/>
+                                        <small class="o_ocd_biz_muted"><t t-out="row['days']"/><t t-if="row['per_month']"> · <t t-out="row['per_month']"/></t></small>
+                                    </span>
+                                    <b class="o_ocd_biz_price" t-out="row['price']"/>
+                                </label>
+                                <button type="submit" class="o_ocd_cta"><t t-if="formula">Renew</t><t t-else="">Pay</t></button>
+                                <small class="o_ocd_biz_muted">Mobile Money, Wave or card, with the payment of OCD Live. Nothing is debited: you renew when you want, you are told before the end.</small>
+                            </form>
+                            <t t-if="payments">
+                                <h2 class="o_ocd_biz_h2">Payments</h2>
+                                <div t-foreach="payments" t-as="row" class="o_ocd_biz_line">
+                                    <span t-out="row['label']"/>
+                                    <span class="o_ocd_biz_line_end">
+                                        <b t-out="row['amount']"/>
+                                        <a t-if="row['invoice_url']" t-att-href="row['invoice_url']" class="o_ocd_link">Invoice</a>
+                                    </span>
+                                </div>
+                            </t>
+                            <div class="o_ocd_biz_card">
+                                <b>If the formula stops</b>
+                                <small class="o_ocd_biz_muted">Your stores beyond the first one are hidden from your customers (the orders still leave from their stock; the store your parcels leave from stays shown), your team is paused, your figures in detail are hidden, your news go once a month. Nothing is ever erased: everything comes back when you renew.</small>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- The page for the shops that do not do lives -->
+    <template id="business_public" name="OCD Live: OCD Business for the shops">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">OCD Business</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow">
+                <main class="o_ocd_main o_ocd_biz">
+                    <div class="o_ocd_biz_hero">
+                        <h1 class="o_ocd_h1">Your online shop, your stores, your deliveries</h1>
+                        <span>For the shops, even without lives: your products on OCD Live, delivered with a code, the money paid after the delivery.</span>
+                    </div>
+                    <ol class="o_ocd_biz_steps">
+                        <li><b>Open your boutique</b><span>Free: your products, one store, a commission on each sale.</span></li>
+                        <li><b>Grow with the formula</b><span>Your other stores, your team, your figures, OCD Express.</span></li>
+                        <li><b t-out="price_line"/><span>Without commitment, paid when you want.</span></li>
+                    </ol>
+                    <a t-if="vendor" href="/ocd/espace/moi/business" class="o_ocd_cta">See OCD Business</a>
+                    <t t-else="">
+                        <a t-att-href="whatsapp_url or '/ocd/connexion'" target="_blank" rel="noopener" class="o_ocd_cta">Open my boutique: write to OCD Live</a>
+                        <small class="o_ocd_biz_muted">You already sell on OCD Live? <a href="/ocd/connexion">Log in</a>, then « OCD Business » in your space.</small>
+                    </t>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- My space: the menu, and the line before and after the end -->
+    <template id="space_menu_business" inherit_id="ocd_live_shop.space_menu" name="OCD Live: OCD Business in the menu of the space">
+        <xpath expr="//a[@data-page='places']" position="after">
+            <a href="/ocd/espace/moi/business" data-page="business" t-att-class="'o_ocd_on' if space_page == 'business' else None"
+               t-att-aria-current="'page' if space_page == 'business' else None">
+                <t t-call="ocd_live.icon" icon.f="chart"/><span>OCD Business</span>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="space_business_note" inherit_id="ocd_live.space" name="OCD Live: OCD Business in my space">
+        <xpath expr="//div[hasclass('o_ocd_space_head')]" position="after">
+            <t t-set="business_note" t-value="vendor.sudo()._ocd_business_space_note()"/>
+            <div t-if="business_note" class="o_ocd_biz_note" role="status">
+                <span><b t-out="business_note['title']"/> <t t-out="business_note['line']"/></span>
+                <a t-if="business_note['button']" href="/ocd/espace/moi/business" class="o_ocd_button o_ocd_button_dark" t-out="business_note['button']"/>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Each feature kept for the formula leads to it -->
+    <template id="vendor_figures_business" inherit_id="ocd_live_shop.vendor_figures" name="OCD Live: my figures lead to OCD Business">
+        <xpath expr="//span[hasclass('o_ocd_figures_gift')]" position="replace">
+            <a href="/ocd/espace/moi/business" class="o_ocd_link">See OCD Business</a>
+        </xpath>
+    </template>
+
+    <template id="vendor_places_business" inherit_id="ocd_live_shop.vendor_places" name="OCD Live: my stores lead to OCD Business">
+        <xpath expr="//small[@t-if=&quot;row['hidden']&quot;]" position="replace">
+            <small t-if="row['hidden']" class="o_ocd_my_product_fact">Not shown to your customers: one store without OCD Business. <a href="/ocd/espace/moi/business">See OCD Business</a></small>
+        </xpath>
+        <!-- No place left: without the formula, more stores come with it -->
+        <xpath expr="//a[@t-if='can_add']/following-sibling::small[1]" position="before">
+            <small t-elif="not vendor.sudo()._ocd_business()" class="o_ocd_parcel_hint">More stores come with OCD Business. <a href="/ocd/espace/moi/business">See OCD Business</a></small>
+        </xpath>
+    </template>
+
+    <template id="vendor_team_business" inherit_id="ocd_live_shop.vendor_team" name="OCD Live: my team leads to OCD Business">
+        <xpath expr="//div[hasclass('o_ocd_team_paused')]" position="inside">
+            <a href="/ocd/espace/moi/business" class="o_ocd_link">Renew OCD Business</a>
+        </xpath>
+        <!-- Without the formula, the team leads to it (the paused note already does when there is a team) -->
+        <xpath expr="//div[@t-out='blocked']" position="replace">
+            <t t-if="not vendor.sudo()._ocd_business()">
+                <div t-if="not paused" class="o_ocd_info">The team comes with OCD Business: the people who hold your stores, without the prices or the money. <a href="/ocd/espace/moi/business">See OCD Business</a></div>
+            </t>
+            <div t-else="" class="o_ocd_info" t-out="blocked"/>
+        </xpath>
+    </template>
+
+    <!-- The payment page: « I paid » keeps the formula, the way back to it -->
+    <template id="pay_business" inherit_id="ocd_live.pay" name="OCD Live: pay OCD Business">
+        <xpath expr="//form[hasclass('o_ocd_announce')]//small[@t-if='order.ocd_booking_ids']" position="before">
+            <small t-if="order._ocd_business_lines()">Your features of OCD Business then stay while the team checks the payment.</small>
+        </xpath>
+        <xpath expr="//form[hasclass('o_ocd_announce')]//small[@t-if='order.ocd_booking_ids']" position="attributes">
+            <attribute name="t-if"/>
+            <attribute name="t-elif">order.ocd_booking_ids</attribute>
+        </xpath>
+        <xpath expr="//a[@href='/ocd/espace/moi'][hasclass('o_ocd_cta')]" position="attributes">
+            <attribute name="t-att-href">'/ocd/espace/moi/business?paye=1' if order._ocd_business_lines() else '/ocd/espace/moi'</attribute>
+        </xpath>
+    </template>
+
+</odoo>

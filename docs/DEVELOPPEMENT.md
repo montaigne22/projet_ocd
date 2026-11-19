@@ -479,13 +479,53 @@ Mobile Money, ce qui retient le versement, la pause), `ocd_payout.py`, `product_
 à partager, ce qu'on gagne), `controllers/ambassador.py` ; `ocd_ambassadors_whatsapp` (les trois
 messages).
 
+## OCD Business (modules `ocd_business` et `ocd_business_whatsapp`)
+
+La formule des vendeurs organisés : plusieurs magasins et leur stock, l'équipe, les chiffres en détail,
+les nouveautés chaque semaine, OCD Express (décisions dans [`DECISIONS.md`](DECISIONS.md), Shop et
+livraisons).
+
+Mise en route :
+
+1. **OCD Live › Paramètres › OCD Business** : les prix (1, 3, 12 mois ; ceux des autres pays suivent la
+   conversion des devises comme le pass de l'annuaire), le jour du lancement, les mois offerts au
+   lancement (2), le premier rappel (7 jours avant), la grâce d'un paiement vérifié (3 jours). Les
+   limites (5 magasins, 5 personnes) restent dans les sections Magasins et Équipe.
+2. **WhatsApp** : soumettre `ocd_business_payee`, `ocd_business_fin_proche`, `ocd_business_terminee` et
+   `ocd_business_lancement` (français et anglais, Utilitaire).
+3. **Le lancement** : choisir son jour. Ce jour-là, la tâche offre une fois les mois du réglage aux
+   vendeurs qui utilisent les fonctions (au moins deux magasins vérifiés, ou une personne d'équipe), puis
+   décoche « Fonctions OCD Business offertes à tous ». Sans jour choisi, les fonctions restent offertes.
+4. Faire connaître `/business` aux commerçants qui ne font pas de lives.
+
+Le parcours : `/ocd/espace/moi/business` crée une commande du vendeur (ou reprend celle laissée avant de
+payer, ou celle dont le paiement est en route) et l'envoie sur `/ocd/payer/<commande>` ; à la
+confirmation, `sale.order.line._ocd_process_confirmed_lines` écrit une `ocd.business.period` par ligne
+(index unique sur la ligne) avec la durée du produit (`ocd_business_days`), fait la facture et prévient
+le vendeur ; « J'ai payé » (Mobile Money vérifié par l'équipe) pose `ocd_business_grace_until` ;
+l'annulation de la commande reprend les jours pas passés (`_ocd_cancel`). `res.partner.ocd_business_until`
+est recalculé à partir des périodes (`_ocd_business_refresh`) ; `_ocd_business_formula()` dit si le
+vendeur a sa formule (ou la grâce), `_ocd_business()` y ajoute l'offre à tous. La tâche « OCD Live :
+formules OCD Business » (`_cron_ocd_business`, toutes les heures) fait avancer les périodes, le
+lancement, les rappels et la fin.
+
+Pour offrir des jours : la fiche du vendeur › onglet OCD Business › **Offrir des jours** (responsables
+d'OCD Live, avec un motif). Pour rembourser : Vendeurs › OCD Business › la période › **Remboursé :
+reprendre les jours** (ou annuler la commande).
+
+Code : `ocd_business/models/ocd_business_period.py` (les périodes, le calcul des dates, la tâche),
+`res_partner.py` (jusqu'au, la grâce, la ligne de Mon espace, les rappels), `res_company.py` (le
+lancement), `sale_order.py` (le paiement, la facture, l'annulation), `controllers/business.py` ;
+`ocd_business_whatsapp` (les quatre messages). `ocd_live_shop` garde le magasin de départ visible
+(`_ocd_kept_first`) ; `ocd_express` ouvre le compte et offre le petit ramassage avec la formule.
+
 ## Tests
 
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp,ocd_ambassadors,ocd_ambassadors_whatsapp,attachment_s3 \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/ocd_express,/ocd_express_whatsapp,/ocd_ambassadors,/ocd_ambassadors_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp,ocd_ambassadors,ocd_ambassadors_whatsapp,ocd_business,ocd_business_whatsapp,attachment_s3 \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/ocd_express,/ocd_express_whatsapp,/ocd_ambassadors,/ocd_ambassadors_whatsapp,/ocd_business,/ocd_business_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud --stop-after-init
 ```
 
 Les tests des clips font de vraies vidéos avec ffmpeg (sources `lavfi`, quelques secondes). Ajouter

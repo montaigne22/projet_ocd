@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OCD Business in the back office (design OcdBusiness): the formulas, their periods, the tab of the
+     vendor, « Offer days ». -->
+<odoo>
+
+    <record id="ocd_business_period_view_list" model="ir.ui.view">
+        <field name="name">ocd.business.period.view.list</field>
+        <field name="model">ocd.business.period</field>
+        <field name="arch" type="xml">
+            <list string="Periods of OCD Business" create="false" edit="false"
+                  decoration-muted="state in ('ended', 'cancelled')" decoration-info="state == 'scheduled'">
+                <field name="vendor_id"/>
+                <field name="kind"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="days" optional="hide"/>
+                <field name="sale_order_id" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="amount" optional="show" sum="Total"/>
+                <field name="note" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'"
+                       decoration-info="state == 'scheduled'" decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_business_period_view_form" model="ir.ui.view">
+        <field name="name">ocd.business.period.view.form</field>
+        <field name="model">ocd.business.period</field>
+        <field name="arch" type="xml">
+            <form string="Period of OCD Business" create="false" edit="false">
+                <header>
+                    <button name="action_ocd_cancel" type="object" string="Refunded: take back the days"
+                            invisible="state in ('ended', 'cancelled')" groups="ocd_live.group_ocd_live_manager"
+                            confirm="The days not passed yet are taken back; the periods after it come closer."/>
+                    <field name="state" widget="statusbar" statusbar_visible="scheduled,active,ended"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="vendor_id"/>
+                            <field name="kind"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="days"/>
+                        </group>
+                        <group>
+                            <field name="sale_order_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="amount" invisible="not sale_order_id"/>
+                            <field name="note"/>
+                            <field name="user_id" invisible="not user_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_business_period_view_search" model="ir.ui.view">
+        <field name="name">ocd.business.period.view.search</field>
+        <field name="model">ocd.business.period</field>
+        <field name="arch" type="xml">
+            <search string="Periods of OCD Business">
+                <field name="vendor_id"/>
+                <field name="sale_order_id"/>
+                <filter name="running" string="Running" domain="[('state', '=', 'active')]"/>
+                <filter name="later" string="Later" domain="[('state', '=', 'scheduled')]"/>
+                <filter name="paid" string="Paid" domain="[('kind', '=', 'paid')]"/>
+                <filter name="offered" string="Offered" domain="[('kind', 'in', ('offered', 'launch'))]"/>
+                <separator/>
+                <filter name="this_month" string="Started this month" date="date_start"/>
+                <group>
+                    <filter name="group_vendor" string="Vendor" context="{'group_by': 'vendor_id'}"/>
+                    <filter name="group_kind" string="Kind" context="{'group_by': 'kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_business_period_action" model="ir.actions.act_window">
+        <field name="name">OCD Business</field>
+        <field name="res_model">ocd.business.period</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="ocd_business_period_view_search"/>
+        <field name="context">{'search_default_running': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No formula yet</p>
+            <p>A vendor buys OCD Business from their space (« OCD Business »); the team offers days from the form of the vendor.</p>
+        </field>
+    </record>
+
+    <!-- The vendor: « until » is read from the periods; the team offers days, never types a date -->
+    <record id="res_partner_view_form_ocd_business" model="ir.ui.view">
+        <field name="name">res.partner.view.form.ocd.business</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live_shop.res_partner_view_form_ocd_vendor_places"/>
+        <field name="arch" type="xml">
+            <field name="ocd_business_until" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <xpath expr="//page[@name='ocd_places']" position="after">
+                <page name="ocd_business" string="OCD Business">
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button name="action_ocd_business_offer" type="object" string="Offer days"
+                                groups="ocd_live.group_ocd_live_manager"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ocd_business_until" string="OCD Business until" readonly="1"/>
+                            <field name="ocd_business_grace_until" invisible="not ocd_business_grace_until"/>
+                        </group>
+                    </group>
+                    <field name="ocd_business_period_ids" readonly="1">
+                        <list decoration-muted="state in ('ended', 'cancelled')">
+                            <field name="kind"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="sale_order_id"/>
+                            <field name="note"/>
+                            <field name="state" widget="badge" decoration-success="state == 'active'"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ocd_business_offer_view_form" model="ir.ui.view">
+        <field name="name">ocd.business.offer.view.form</field>
+        <field name="model">ocd.business.offer</field>
+        <field name="arch" type="xml">
+            <form string="Offer days of OCD Business">
+                <group>
+                    <field name="vendor_id" readonly="1"/>
+                    <field name="days"/>
+                    <field name="note" placeholder="e.g. a gesture after a problem, a vendor tested"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Offer" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="ocd_business_menu" name="OCD Business" parent="ocd_live.ocd_live_menu_vendors"
+              action="ocd_business_period_action" sequence="25"/>
+
+</odoo>

@@ -47,6 +47,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | OCD Express (chantier 9) : la livraison avec code pour tous les vendeurs des réseaux, sans boutique ; connexion par numéro, « Nouveau colis » (accord du client, montant ou valeur, qui paie la livraison, ouvrir avant de payer, ramassage ou point OCD), deux vagues et capacité, un passage de ramassage par expéditeur (photo, « pas pris », expéditeur absent), page de suivi du client (code, « Je confirme », « Pas là ? », position, souci 48 h, « Ce n'est pas pour moi »), retours rendus contre un code, « Mon argent » (versé le jour ouvré suivant une fois l'argent chez OCD, dettes plafonnées, nouveau numéro retenu 48 h), plafonds et vérifications dans « À vérifier », clients effacés après 6 mois ; manque de caisse des livreurs en dette | ✅ fait, testé (6 modèles WhatsApp à faire approuver par Meta, sur un numéro à part) |
 | Points relais (chantier 10) : « En point relais » à la livraison du shop (moins cher qu'à la porte, les points relais ouverts et pas pleins de la ville), la page du client (code et QR de retrait, jusqu'à quand, itinéraire, « livrez-la chez moi »), « Mon point relais » (connexion par numéro, colis gardés sur ses places, gains du mois, congé, recevoir en comptant chaque colis, remettre contre le code ou le QR, payé avant ou sur le téléphone du client, jamais en espèces), l'arrêt du livreur (déposer, reprendre les colis pas retirés), 7 jours puis retour, 150 F par colis remis versés chaque mois, colis perdu remboursé et retenu, pause après 2 pertes ; la page `/points-relais` pour devenir partenaire, le magasin vérifié d'un vendeur point relais (A.6) ; OCD Express au point relais (choisi par l'expéditeur ou par le client) ; back-office, « À vérifier », réglages | ✅ fait, testé (4 modèles WhatsApp à faire approuver par Meta, et 1 sur le numéro d'OCD Express) |
 | Ambassadeurs (chantier 11) : chacun partage un produit avec son lien personnel (`/a/<code>`) et gagne 5 % des articles une fois le colis livré avec son code et gardé, payés par OCD sur sa commission (le client paie le même prix, le vendeur rien) ; inscription par numéro vérifié, « Mon espace ambassadeur » (ventes et leur état), « Mon argent » (versé chaque lundi dès 2 000 F, nouveau numéro retenu 48 h), « Produits à partager », « Partager » (image au prix du moment avec le lien, texte, statut WhatsApp, clip du live), « Mes liens » ; « Grâce te recommande ce produit » ; un gain par colis, une facture à la confirmation, un avoir pour un retour ; contre la fraude : jamais sur ses propres achats, 5 commandes d'un client par mois, pause au-delà de 30 % de retours, un Mobile Money par personne, pièce d'identité au-delà de 50 000 F ; « Vendu grâce aux ambassadeurs » dans Mes chiffres ; back-office, « À vérifier », réglages | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
+| OCD Business (chantier 12) : la formule des vendeurs organisés (plusieurs magasins et leur stock, leur équipe, leurs chiffres en détail, leurs nouveautés chaque semaine, OCD Express avec compte ouvert tout de suite et petit ramassage gratuit), 1, 3 ou 12 mois payés d'avance avec le paiement d'OCD Live, jamais prélevés ; des périodes (payées, offertes par l'équipe avec un motif, offertes au lancement), une par paiement, la date de fin calculée, jamais tapée, aucun jour perdu ; une facture par paiement ; le Mobile Money vérifié par l'équipe garde les fonctions 3 jours après « J'ai payé » ; un remboursement reprend les jours pas passés ; rappels 7 jours avant et la veille ; à la fin, rien n'est effacé et le magasin de départ des colis reste visible ; le lancement offre 2 mois aux vendeurs qui utilisent les fonctions ; « OCD Business » dans Mon espace, chaque fonction gardée y mène, la page `/business` pour les commerçants ; back-office et réglages | ✅ fait, testé (4 modèles WhatsApp à faire approuver par Meta) |
 | Paiement automatique dans l'UEMOA (chantier 5) : CinetPay (module `payment_cinetpay` : Mobile Money, Wave, carte ; UEMOA, Cameroun, Guinée, RD Congo) et Flutterwave (module d'Odoo) ; l'état lu chez CinetPay, revérifié toutes les 10 minutes ; le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production ; clés manquantes et mode test dits dans les Paramètres | ✅ fait, testé (clés des comptes à saisir) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
@@ -126,6 +127,9 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    **Avec les ambassadeurs**, aussi `ocd_ambassadeur_livres`, `ocd_ambassadeur_versement` et
    `ocd_ambassadeur_numero` (français et anglais, Utilitaire) : les colis partagés livrés du jour, le
    versement fait, le numéro de versement changé (à l'ambassadeur).
+   **Avec OCD Business**, aussi `ocd_business_payee`, `ocd_business_fin_proche`, `ocd_business_terminee`
+   et `ocd_business_lancement` (français et anglais, Utilitaire) : la formule payée, la fin qui approche
+   (7 jours avant et la veille), la fin, les mois offerts au lancement (au vendeur).
 3. **Paiement dans l'UEMOA** (équipe) : ouvrir les comptes CinetPay et Flutterwave (documents de
    l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
    pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
@@ -149,6 +153,57 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 19 novembre 2026 · OCD Business (chantier 12)
+Maquette `OcdBusiness` validée avec ses choix recommandés, complétée de règles de robustesse (un paiement
+une seule fois, la date calculée, le prix et la durée de la commande, le Mobile Money vérifié à la main,
+le remboursement, le magasin de départ visible, les rappels, le lancement), et codée dans deux nouveaux
+modules, `ocd_business` et `ocd_business_whatsapp` (20.0.1.0.0) ; `ocd_live_shop` (20.0.1.47.0) et
+`ocd_express` (20.0.1.3.0) lisent la formule, `ocd_live` (20.0.1.25.0) corrige la page de paiement.
+- **La formule** : une suite de périodes (payée, offerte par l'équipe avec un motif, offerte au
+  lancement). Un paiement donne une seule période (index unique sur la ligne de commande), avec la
+  durée et le prix de la commande même si les réglages changent ensuite ; elle commence le lendemain de
+  la dernière, ou aujourd'hui si la formule est finie : aucun jour perdu. Le vendeur est verrouillé le
+  temps de calculer les dates. « OCD Business jusqu'au » se lit dans les périodes : l'équipe offre des
+  jours (1 à 400, avec un motif), ne tape jamais une date ; les dates mises à la main avant le module
+  deviennent des périodes offertes. Une facture par paiement, liée à son paiement.
+- **Le Mobile Money vérifié par l'équipe** : « J'ai payé » garde les fonctions 3 jours après la fin le
+  temps de la vérification ; vérifié, les jours partent de la fin de la formule. **Un remboursement**
+  (commande annulée) reprend les jours pas encore passés, jamais en arrière, et rapproche les périodes
+  suivantes.
+- **Le vendeur** : « OCD Business » dans Mon espace (ce que la formule ajoute, ce qui reste pour tous, 1,
+  3 ou 12 mois au prix de son pays avec le mois par mois et l'économie, la formule en cours, renouveler,
+  ses paiements et leurs factures, ce qui se met en pause si elle s'arrête) ; la ligne de Mon espace avant
+  la fin (7 jours avant) et après ; chaque fonction gardée y mène (Mes chiffres, le magasin masqué, plus de
+  magasin possible, Mon équipe). Une commande laissée avant de payer est reprise, jamais une deuxième.
+  À la fin, rien n'est effacé : les magasins en plus sont masqués mais **le magasin de départ des colis
+  reste visible**, l'équipe est en pause, les chiffres en détail sont cachés.
+- **OCD Express compris** : avec la formule, le compte d'expéditeur s'ouvre tout de suite et le petit
+  ramassage est gratuit.
+- **Le lancement** : le jour choisi, les vendeurs qui utilisent les fonctions (plusieurs magasins ou une
+  équipe) reçoivent une fois 2 mois offerts, puis les fonctions offertes à tous s'arrêtent.
+- **WhatsApp** (au vendeur, « vous ») : la formule payée, la fin proche 7 jours avant et la veille (une
+  fois par date de fin, jamais après un renouvellement), la fin, les mois offerts au lancement.
+- **La page publique** `/business` pour les commerçants qui ne font pas de lives. **Le back-office** :
+  Vendeurs › OCD Business (les périodes, « Remboursé : reprendre les jours »), l'onglet OCD Business de
+  la fiche du vendeur et « Offrir des jours », Paramètres › OCD Business (prix, jour du lancement, mois
+  offerts, premier rappel, grâce), deux automatisations.
+- **Correctifs** : la page de paiement d'un pass de l'annuaire répondait « page introuvable » (seules
+  les commandes avec une réservation l'ouvraient) ; elle ne parle plus de « ton heure » pour un pass ou
+  une formule.
+- Contrôlé dans le navigateur en français sur la démo (`ocd_base`) à 390, 820 et 1440 px, sans
+  débordement : OCD Business (à acheter, en cours, fin proche), Mon espace avec la ligne de fin proche,
+  Mes magasins, Mon équipe, Mes chiffres, la page de paiement, `/business` ; le back-office (la liste, la
+  fiche du vendeur, « Offrir des jours »).
+- Tests : 9 dans `ocd_business` (les règles), 3 pour ses pages, 2 dans `ocd_business_whatsapp`, 2 dans
+  `ocd_express`, 1 dans `ocd_live_shop` ; **la suite complète** sur une base neuve (tous les modules OCD
+  avec les deux nouveaux, et les tests de `payment_cinetpay` et `whatsapp_cloud`) : **TODO_FULL sans
+  échec** ; la démo sur une autre base neuve, installée en une fois avec tous les modules : **TODO_DEMO
+  sans échec**.
+- **À installer sur un serveur** : `-i ocd_business` (`ocd_business_whatsapp` s'installe avec), et **à
+  mettre à jour** : `-u ocd_live,ocd_live_shop,ocd_express`. **Modèles WhatsApp à soumettre à Meta** :
+  `ocd_business_payee`, `ocd_business_fin_proche`, `ocd_business_terminee`, `ocd_business_lancement`
+  (français et anglais).
 
 ### 19 novembre 2026 · OCD Business (chantier 12) : la maquette, à valider
 Pas de maquette pour ce chantier : proposée avant tout code, dans

@@ -29,7 +29,7 @@ class OcdLivePayment(http.Controller):
             or not access_token
             or not order.access_token
             or not consteq(order.access_token, access_token)
-            or not (order.ocd_booking_ids or order.ocd_pass_ids)
+            or not order._ocd_on_payment_page()
         ):
             raise request.not_found()
         return order

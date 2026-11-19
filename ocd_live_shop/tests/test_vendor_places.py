@@ -100,6 +100,13 @@ class TestOcdVendorPlaces(OcdShopCommon):
         self.assertFalse(self.brenda._ocd_departure_place(), "Two places: the vendor chooses")
         self.brenda.ocd_departure_place_id = second
         self.assertEqual(self.brenda._ocd_departure_place(), second)
+        # The formula ends: the place the parcels leave from stays shown
+        self.brenda.ocd_business_until = date(2020, 1, 1)
+        self.assertEqual(self.Place._ocd_shown_places(self.brenda), second)
+        self.assertEqual(self.Place._ocd_shown_by_vendor(self.brenda)[self.brenda.id], second)
+        self.assertFalse(self.brenda._ocd_business_formula())
+        self.company.ocd_business_offered_all = True
+        self.assertFalse(self.brenda._ocd_business_formula(), "Offered to all: no formula of their own")
 
     def test_the_visits_of_the_week(self):
         store = self._store()

@@ -167,7 +167,10 @@ class ResPartner(models.Model):
         Partner = self.sudo()
         partner = vendor or Partner._ocd_find_by_phone(phone, [("ocd_express_state", "!=", False)]) \
             or Partner._ocd_find_vendor_by_phone(phone)
-        state = "active" if company.ocd_express_open_to == "all" else "requested"
+        # OCD Business includes OCD Express: the account opens at once for the vendor logged in
+        # with the formula (never for a number typed by someone else)
+        business = bool(vendor and vendor._ocd_business_formula())
+        state = "active" if company.ocd_express_open_to == "all" or business else "requested"
         vals = {
             "ocd_express_social": social or False,
             "district_id": district.id if district else False,

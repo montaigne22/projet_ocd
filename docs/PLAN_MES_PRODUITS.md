@@ -142,9 +142,14 @@ WhatsApp *Marketing*). C'est aussi le cœur de l'offre pour les commerçants qui
 - **Fin de la formule, rien n'est supprimé** : les lieux en plus sont masqués aux clients (les
   commandes partent toujours de tous les magasins), l'équipe est mise en pause, les statistiques
   détaillées sont cachées ; tout revient avec la formule.
-- **Le prix** est fixé par l'équipe, après un essai avec 5 à 10 vendeurs. Repère : le pass de
-  l'annuaire coûte 5 000 F pour 30 jours, et OCD Business comprend OCD Express. Piste à étudier :
-  une commission plus basse pour les vendeurs de la formule.
+- **Fin de la formule** : le magasin de départ des colis reste toujours visible (décidé avec le
+  chantier 12).
+- **Le prix** : 10 000 F par mois, 27 000 F pour 3 mois, 100 000 F pour 12 mois (réglables), sans
+  commission plus basse ; OCD Business comprend OCD Express (compte ouvert tout de suite, petit
+  ramassage gratuit). Revu après un essai avec 5 à 10 vendeurs.
+- **Vendue depuis le 19 novembre 2026 (chantier 12)** : « OCD Business » dans l'espace du vendeur,
+  payée d'avance avec le paiement d'OCD Live ; « jusqu'au » de B.1 se calcule désormais à partir des
+  périodes payées ou offertes (l'équipe offre des jours, ne tape plus de date).
 
 ## Ordre de travail
 
@@ -259,7 +264,7 @@ s'applique.
 | Mode vacances (dates), mis par l'équipe pour le vendeur au besoin | A.5 |
 | Mise de côté permise | A.7 |
 | Personnes de son équipe : ajouter, retirer | A.9 |
-| Formule Business, jusqu'au… (comme le pass de l'annuaire) | B.1 |
+| Formule Business, jusqu'au… (calculé à partir des périodes ; l'équipe offre des jours avec un motif) | B.1, chantier 12 |
 | « Pas de clips » : aucun clip de ses lives, les siens plus montrés (onglet « Clips ») | 8 |
 
 ### Listes et automatisations (écrans qui existent déjà)
@@ -295,7 +300,7 @@ plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
 | 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur : son quartier et son point de repère (ceux de sa fiche, vérifiés au premier passage) ; fait le 18 novembre 2026 |
 | 10. Points relais | Les lieux (M), A.6 | Un point relais est un lieu (ses horaires, son itinéraire, son téléphone) ; A.6 fait avec le chantier 10 le 19 novembre 2026 |
 | 11. Ambassadeurs | Partager un produit (1.3) | L'image de partage d'un produit (1.3) porte le lien personnel de l'ambassadeur, au prix du moment ; fait le 19 novembre 2026 |
-| 12. OCD Business | Plusieurs lieux, stock par magasin, équipe du vendeur, statistiques | Ce qui est réservé à la formule est décidé (section OCD Business) ; l'interrupteur (B.1) est déjà fait quand le chantier 12 commence |
+| 12. OCD Business | Plusieurs lieux, stock par magasin, équipe du vendeur, statistiques | Ce qui est réservé à la formule est décidé (section OCD Business) ; l'interrupteur (B.1) est devenu le résultat des périodes de la formule ; fait le 19 novembre 2026 |
 | 13. Diaspora | Retrait en magasin (A.1) | Un proche retire en magasin ce qu'on lui a acheté : le code part sur son WhatsApp |
 | 14. Live sur la plateforme | Préparer son prochain live (3.2) | Les produits préparés s'affichent dans le lecteur du live |
 

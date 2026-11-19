@@ -253,6 +253,13 @@ class ResPartner(models.Model):
             return True
         return bool(self.ocd_business_until and self.ocd_business_until >= fields.Date.context_today(self))
 
+    def _ocd_business_formula(self):
+        """Whether the vendor has a formula of OCD Business of their own today (not only the
+        features offered to all before its launch): its perks (OCD Express) follow it. Extended
+        by `ocd_business`."""
+        self.ensure_one()
+        return bool(self.ocd_business_until and self.ocd_business_until >= fields.Date.context_today(self))
+
     def _ocd_places_allowed(self):
         """How many places the vendor may show: one without OCD Business, else their own number or
         the one of the settings."""

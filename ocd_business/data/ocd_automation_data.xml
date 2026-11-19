@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of OCD Business in the catalogue of the team (OCD Live › Automations) -->
+<odoo>
+
+    <record id="automation_business_paid" model="ocd.automation">
+        <field name="code">business_paid</field>
+        <field name="name">Formula paid: the days added</field>
+        <field name="sequence">40</field>
+        <field name="group">money</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="model_ocd_business_period"/>
+        <field name="when">When a payment of OCD Business is confirmed</field>
+        <field name="trigger">The payment confirmed by its provider, or checked by the team.</field>
+        <field name="scope">The vendors who buy OCD Business.</field>
+        <field name="actions">Add the days bought after the end of the formula (or from today), once per payment.
+Make the invoice of the payment.
+Tell the vendor until when.</field>
+        <field name="tools">Sales, Invoicing, code of OCD Live.</field>
+    </record>
+
+    <record id="automation_business_days" model="ocd.automation">
+        <field name="code">business_days</field>
+        <field name="name">Formulas: reminders, end and launch</field>
+        <field name="sequence">41</field>
+        <field name="group">money</field>
+        <field name="kind">cron</field>
+        <field name="cron_id" ref="ir_cron_business"/>
+        <field name="model_id" ref="model_ocd_business_period"/>
+        <field name="when">Every hour</field>
+        <field name="trigger">The date of end of each formula, at the hour of the vendor; the day of the launch.</field>
+        <field name="scope">The vendors with a formula.</field>
+        <field name="actions">Remind the vendor the days of the settings before the end, then the day before, once per date of end.
+At the end, tell what is paused (nothing is erased).
+The day of the launch, offer the months of the settings to the vendors who use the features, then stop the features offered to all.</field>
+        <field name="tools">WhatsApp, code of OCD Live.</field>
+    </record>
+
+</odoo>

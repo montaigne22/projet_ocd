@@ -210,13 +210,26 @@ class OcdVendorPlace(models.Model):
         return {"open": False, "label": _("Closed")}
 
     @api.model
+    def _ocd_kept_first(self, vendor, places):
+        """`places` of `vendor` in their order, the place their parcels leave from first: the one
+        that stays shown when the vendor may show fewer (the end of OCD Business)."""
+        departure = vendor.ocd_departure_place_id
+        if departure and departure in places:
+            return departure | (places - departure)
+        return places
+
+    @api.model
     def _ocd_shown_places(self, vendor):
         """The places of `vendor` the customers see: online, in their order, as many as the
-        vendor may have (one without OCD Business: the others are kept, not shown)."""
+        vendor may have (one without OCD Business: the place the parcels leave from stays, the
+        others are kept, not shown)."""
         places = self.sudo().search(
             [("vendor_id", "=", vendor.id), ("state", "=", "approved")], order="sequence, id"
         )
-        return places[:vendor._ocd_places_allowed()]
+        allowed = vendor._ocd_places_allowed()
+        if len(places) > allowed:
+            places = self._ocd_kept_first(vendor, places)
+        return places[:allowed]
 
     # === THE VENDOR ADDS AND CHANGES THEIR PLACES === #
 

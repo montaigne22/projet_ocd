@@ -15,6 +15,19 @@ WEB = {
     "<b>Payment received</b>": "<b>Paiement reçu</b>",
     "<b>The payment did not go through.</b>\n                        <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.</span>":
         "<b>Le paiement n'est pas passé.</b>\n                        <span>Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité. Ton heure est encore gardée.</span>",
+    # The payment page says « your hour » only for a booking (not for a pass or a formula)
+    "<b>The payment did not go through.</b>": "<b>Le paiement n'est pas passé.</b>",
+    "Refused or cancelled on the phone, or not enough money. Nothing was taken.":
+        "Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité.",
+    "Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.":
+        "Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité. Ton heure est encore gardée.",
+    "The team agrees on the payment with you on WhatsApp.": "L'équipe convient du paiement avec toi sur WhatsApp.",
+    "The team agrees on the payment with you on WhatsApp: your hour stays held meanwhile.":
+        "L'équipe convient du paiement avec toi sur WhatsApp : ton heure reste gardée en attendant.",
+    "The team then checks the payment and confirms it on WhatsApp.":
+        "L'équipe vérifie alors le paiement et te le confirme sur WhatsApp.",
+    "Your hour then stays held while the team checks the payment. Without it, the hour is offered again to the others.":
+        "Ton heure reste alors gardée pendant que l'équipe vérifie le paiement. Sans ça, l'heure est de nouveau proposée aux autres.",
     "<b>This booking is cancelled.</b>\n                            <span>The hour was not paid in time and was offered again.</span>":
         "<b>Cette réservation est annulée.</b>\n                            <span>L'heure n'a pas été payée à temps : elle a été proposée à nouveau.</span>",
     "<i aria-hidden=\"true\"/>\n                            <span>Closed for now</span>":

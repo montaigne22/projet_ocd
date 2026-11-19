@@ -41,7 +41,7 @@ le bouton « Signaler » de la garantie (chantier 2) et de nouvelles mesures.
 | # | Chantier | Ce que c'est | Ce qu'on réutilise | Effort |
 |---|---|---|---|---|
 | 21 | **Vendre plus** | Préparer son prochain live (le choix des produits pour la régie), alerte de stock bas, tailles et couleurs choisies par le vendeur dès la création | Plan, 3.2, 3.4, 3.5 | 2,5 à 3,5 semaines ; **fait le 17 novembre 2026** |
-| 12 | **OCD Business** | Boutique, colis, WhatsApp et statistiques en formule mensuelle, OCD Express compris. Réservés à la formule : plusieurs lieux et le stock par magasin, l'équipe du vendeur, les statistiques détaillées, les nouveautés chaque semaine ; ce qui fait vendre reste pour tous | Le pass de l'annuaire (30 jours prépayés, rappel, renouvellement) : Odoo Community n'a pas d'abonnements ; l'interrupteur « Formule Business » (chantier 17) | ~2 semaines, après OCD Express et les statistiques ; **maquette proposée le 19 novembre 2026** (`OcdBusiness`), à valider |
+| 12 | **OCD Business** | Boutique, colis, WhatsApp et statistiques en formule mensuelle, OCD Express compris. Réservés à la formule : plusieurs lieux et le stock par magasin, l'équipe du vendeur, les statistiques détaillées, les nouveautés chaque semaine ; ce qui fait vendre reste pour tous | Le pass de l'annuaire (30 jours prépayés, rappel, renouvellement) : Odoo Community n'a pas d'abonnements ; l'interrupteur « Formule Business » (chantier 17) | ~2 semaines, après OCD Express et les statistiques ; **fait le 19 novembre 2026** (maquette `OcdBusiness`, modules `ocd_business` et `ocd_business_whatsapp`) |
 | 22 | **Équipe du vendeur** | La vendeuse d'un magasin a son propre accès, limité au stock et aux commandes de son magasin | Plan, A.9 ; connexion par lien ou code WhatsApp | 1 à 2 semaines, avec le chantier 12 ; **fait le 17 novembre 2026** |
 | 13 | **Diaspora** | « Acheter pour un proche » : payer en euros par carte, livrer au pays, code de livraison envoyé au proche ; ou retrait en magasin par le proche, avec son code | Devises par pays, paiement par carte, livraison avec code, retrait en magasin (chantier 20) | 2 à 3 semaines |
 | 14 | **Live sur la plateforme** | Lecteur vidéo sur le site avec les produits, le chat et l'achat ; le même live diffusé en même temps sur TikTok, Facebook et YouTube | Page d'un live, régie, produits préparés pour le live (chantier 21) | ~6 semaines, plus un service vidéo payé à la minute |
@@ -66,9 +66,11 @@ développement, ou repousser des chantiers sans lien avec l'espace vendeur (OCD 
   espèces, les livreurs actuels de Douala à 20 colis par jour. Reste à faire avant d'ouvrir au public :
   vérifier avec un juriste les règles des services de paiement de la CEMAC et la loi sur les données
   personnelles ; un numéro WhatsApp à part pour OCD Express. Le code est prêt (18 novembre 2026).
-- **OCD Business** : le prix, après un essai avec 5 à 10 vendeurs (repère : le pass de l'annuaire,
-  5 000 F pour 30 jours) ; piste : une commission plus basse pour la formule. Ce qui lui est réservé
-  est décidé (`PLAN_MES_PRODUITS.md`).
+- **OCD Business** : choix validés le 19 novembre 2026 avec la maquette (voir `DECISIONS.md`) :
+  10 000 F par mois, 27 000 F pour 3 mois, 100 000 F pour 12 mois, sans commission plus basse, OCD
+  Express compris, 2 mois offerts au lancement. Le code est prêt (19 novembre 2026). Reste à l'équipe :
+  choisir le jour du lancement (Paramètres › OCD Business), revoir le prix après un essai avec 5 à 10
+  vendeurs.
 - **Live sur la plateforme** : budget du service vidéo.
 
 Les décisions de l'espace vendeur (chantiers 15 à 22) sont prises : voir

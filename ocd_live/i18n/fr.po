@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 19:56+0000\n"
-"PO-Revision-Date: 2026-11-17 19:56+0000\n"
+"POT-Creation-Date: 2026-11-19 14:11+0000\n"
+"PO-Revision-Date: 2026-11-19 14:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -622,12 +622,8 @@ msgstr ""
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
-msgid ""
-"<b>The payment did not go through.</b>\n"
-"                        <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.</span>"
-msgstr ""
-"<b>Le paiement n'est pas passé.</b>\n"
-"                        <span>Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité. Ton heure est encore gardée.</span>"
+msgid "<b>The payment did not go through.</b>"
+msgstr "<b>Le paiement n'est pas passé.</b>"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
@@ -647,11 +643,6 @@ msgstr "<small>Montrée dans le fil des lives pendant ton live, avant ton procha
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
 msgid "<small>Type your secret code on your phone only, never here. This page updates by itself.</small>"
 msgstr "<small>Tape ton code secret sur ton téléphone, jamais ici. Cette page se met à jour toute seule.</small>"
-
-#. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.pay
-msgid "<small>Your hour then stays held while the team checks the payment. Without it, the hour is offered again to the others.</small>"
-msgstr "<small>Ton heure reste alors gardée pendant que l'équipe vérifie le paiement. Sans ça, l'heure est de nouveau proposée aux autres.</small>"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.booking_hour
@@ -978,11 +969,6 @@ msgstr "<span>Me prévenir si une heure se libère</span>"
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
 msgid "<span>Thank you: the team writes to you on WhatsApp.</span>"
 msgstr "<span>Merci : l'équipe t'écrit sur WhatsApp.</span>"
-
-#. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.pay
-msgid "<span>The team agrees on the payment with you on WhatsApp: your hour stays held meanwhile.</span>"
-msgstr "<span>L'équipe convient du paiement avec toi sur WhatsApp : ton heure reste gardée en attendant.</span>"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.ticket
@@ -5827,6 +5813,16 @@ msgid "Refused"
 msgstr "Refusé"
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "Refused or cancelled on the phone, or not enough money. Nothing was taken."
+msgstr "Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held."
+msgstr "Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité. Ton heure est encore gardée."
+
+#. module: ocd_live
 #. odoo-python
 #: code:addons/ocd_live/models/ocd_live_verification.py:0
 msgid "Refused · %s"
@@ -7174,6 +7170,16 @@ msgid "The studio is closed on that day."
 msgstr "Le studio est fermé ce jour-là."
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "The team agrees on the payment with you on WhatsApp."
+msgstr "L'équipe convient du paiement avec toi sur WhatsApp."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "The team agrees on the payment with you on WhatsApp: your hour stays held meanwhile."
+msgstr "L'équipe convient du paiement avec toi sur WhatsApp : ton heure reste gardée en attendant."
+
+#. module: ocd_live
 #: model:ir.model.fields,help:ocd_live.field_res_partner__ocd_verified
 #: model:ir.model.fields,help:ocd_live.field_res_users__ocd_verified
 msgid "The team checked the identity and the WhatsApp number of the vendor: « Verified vendor » is shown to the customers."
@@ -7211,6 +7217,11 @@ msgstr "L'équipe a ouvert ton lien : aucun live n'était en cours. Relance ton 
 #: code:addons/ocd_live/models/ocd_automation.py:0
 msgid "The team pauses it here; its texts are the WhatsApp templates and its delays are set in the Settings."
 msgstr "L'équipe la met en pause ici ; ses textes sont les modèles WhatsApp et ses délais se règlent dans les Paramètres."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "The team then checks the payment and confirms it on WhatsApp."
+msgstr "L'équipe vérifie alors le paiement et te le confirme sur WhatsApp."
 
 #. module: ocd_live
 #. odoo-python
@@ -8550,6 +8561,11 @@ msgstr "Ton heure est gardée %s heures."
 #: code:addons/ocd_live/controllers/payment.py:0
 msgid "Your hour is held %s minutes."
 msgstr "Ton heure est gardée %s minutes."
+
+#. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.pay
+msgid "Your hour then stays held while the team checks the payment. Without it, the hour is offered again to the others."
+msgstr "Ton heure reste alors gardée pendant que l'équipe vérifie le paiement. Sans ça, l'heure est de nouveau proposée aux autres."
 
 #. module: ocd_live
 #. odoo-python

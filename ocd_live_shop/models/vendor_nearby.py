@@ -48,9 +48,10 @@ class OcdVendorPlace(models.Model):
         )
         allowed = {vendor.id: vendor._ocd_places_allowed() for vendor in vendors}
         shown = defaultdict(lambda: self.browse())
-        for place in places:
-            if len(shown[place.vendor_id.id]) < allowed.get(place.vendor_id.id, 1):
-                shown[place.vendor_id.id] |= place
+        for vendor, vendor_places in places.grouped("vendor_id").items():
+            if len(vendor_places) > allowed.get(vendor.id, 1):
+                vendor_places = self._ocd_kept_first(vendor, vendor_places)
+            shown[vendor.id] = vendor_places[:allowed.get(vendor.id, 1)]
         return shown
 
 
