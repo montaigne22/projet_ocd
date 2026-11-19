@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Name of the application installed on the phones and computers of the team -->
-    <data noupdate="1">
-        <record id="param_web_app_name" model="ir.config_parameter">
-            <field name="key">web.web_app_name</field>
-            <field name="value">OCD Live</field>
-        </record>
-    </data>
+    <!-- Name of the application installed on the phones and computers of the team: set when nobody
+         chose one, never created twice (the parameter may exist already, saved from the settings) -->
+    <function model="ir.config_parameter" name="_ocd_default_web_app_name"/>
 </odoo>

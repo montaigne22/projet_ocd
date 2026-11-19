@@ -150,6 +150,16 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · Correctif : `ocd_debranding` ne s'installait pas sur une base déjà réglée
+Sur le serveur de préproduction, l'installation s'arrêtait sur `ocd_debranding/data/ocd_debranding_data.xml`
+(« duplicate key value violates unique constraint ir_config_parameter_key_uniq ») : le nom de
+l'application (`web.web_app_name`) existait déjà, enregistré depuis les Paramètres d'Odoo, et le module
+le créait une deuxième fois. Le module ne crée plus ce paramètre : une fonction appelée à chaque
+installation et mise à jour met « OCD Live » seulement quand aucun nom n'est choisi (vide ou « Odoo ») et
+garde le nom choisi par l'équipe. `ocd_debranding` 20.0.1.2.0, sans migration (le paramètre existant est
+gardé). Reproduit puis vérifié sur une base de test dans le même état ; un test nouveau (6 dans le module).
+**Sur le serveur** : reprendre l'installation ou `-u ocd_debranding`.
+
 ### 19 novembre 2026 · Ambassadeurs (chantier 11)
 Maquette `Ambassadeurs` validée avec ses choix recommandés (« robuste, optimisé et fonctionnel »), codée
 dans deux nouveaux modules, `ocd_ambassadors` et `ocd_ambassadors_whatsapp` (20.0.1.0.0), et un point

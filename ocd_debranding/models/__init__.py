@@ -1,1 +1,1 @@
-from . import res_users
+from . import ir_config_parameter, res_users

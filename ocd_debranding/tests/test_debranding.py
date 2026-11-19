@@ -1,4 +1,5 @@
 from odoo.tests import HttpCase, new_test_user, tagged
+from odoo.tools import convert_file
 
 
 @tagged("post_install", "-at_install")
@@ -24,6 +25,20 @@ class TestOcdDebranding(HttpCase):
             self.assertIn("/ocd_debranding/static/img/ocd-icon-", icon["src"])
             self.assertEqual(self.url_open(icon["src"]).status_code, 200, icon["src"])
         self.assertEqual({icon["purpose"] for icon in manifest["icons"]}, {"any", "maskable"})
+
+    def test_app_name_never_created_twice(self):
+        """The name of the application is set when nobody chose one, kept otherwise; the module
+        loads on a database where the parameter was saved from the settings before."""
+        Param = self.env["ir.config_parameter"].sudo()
+        Param.set_str("web.web_app_name", "Odoo")
+        Param._ocd_default_web_app_name()
+        self.assertEqual(Param.get_str("web.web_app_name"), "OCD Live")
+        Param.set_str("web.web_app_name", "OCD Live Staging")
+        Param._ocd_default_web_app_name()
+        self.assertEqual(Param.get_str("web.web_app_name"), "OCD Live Staging", "The choice of the team stays")
+        self.env["ir.model.data"].search([("module", "=", "ocd_debranding"), ("name", "=", "param_web_app_name")]).unlink()
+        convert_file(self.env, "ocd_debranding", "data/ocd_debranding_data.xml", {}, mode="update", noupdate=False)
+        self.assertEqual(Param.search_count([("key", "=", "web.web_app_name")]), 1)
 
     def test_back_office_page(self):
         self.authenticate("admin", "admin")
