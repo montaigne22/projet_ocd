@@ -189,7 +189,9 @@ boutique partenaire tenue par un contact « tient un point relais », ou le maga
 - Tests : 14 nouveaux dans `ocd_live_shop` (le prix et qui peut y aller, de la livraison à la remise, un
   colis refusé, le rappel puis le retour, plein, congé ou en pause, la perte et la pause, le versement
   du mois, la demande, et les pages), 7 dans `ocd_express`, 1 dans `ocd_express_whatsapp` ; **la suite
-  complète** sur une base neuve : TESTS_COUNT.
+  complète** sur une base neuve (tous les modules OCD avec `ocd_express`, `ocd_express_whatsapp`,
+  `attachment_s3`, et les tests de `payment_cinetpay` et `whatsapp_cloud`) : **679 sans échec** ; la
+  démo sur une autre base neuve, installée en une fois avec tous les modules : **22 sans échec**.
 - **À mettre à jour sur un serveur** : `-u ocd_live_shop,ocd_live_shop_whatsapp,ocd_express,ocd_express_whatsapp`,
   puis un tarif « point relais » par ville (Livraisons › Tarifs de livraison) et les premiers points
   relais. **Modèles WhatsApp à soumettre à Meta** : `ocd_colis_point_relais`, `ocd_colis_rappel_relais`,
