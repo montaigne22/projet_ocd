@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Ambassadeurs</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.muted{color:#665F58}
+.lnk{text-decoration:underline;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:8px;background:#15130F;color:#FFF;font-weight:800;font-size:12.5px;padding:3px 8px}
+.badge.soft{background:#FFF0E3;color:#B84F00}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn2{display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px;border-radius:14px;border:2px solid #E7E2DC;font-weight:800;font-size:15px;text-align:center;padding:0 10px}
+.btn2.dark{background:#15130F;border-color:#15130F;color:#FFF}
+.btn2.on{border-color:#F46A00;background:#FFF0E3}
+.hero{display:flex;flex-direction:column;gap:10px;border-radius:22px;background:#15130F;color:#FFF;padding:18px}
+.hero .d{font-size:27px;line-height:1.1}
+.step3{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start}
+.step3 b.n{width:30px;height:30px;border-radius:50%;background:#F46A00;color:#15130F;display:grid;place-items:center;font-size:14px}
+.price{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC}
+.price:last-child{border-bottom:0}
+.sum{display:flex;flex-direction:column;gap:4px;border-radius:16px;background:#F5F2EE;padding:12px 14px;font-size:14.5px}
+.sum span{display:flex;justify-content:space-between}
+.sum .tot{border-top:1px solid #E7E2DC;padding-top:6px;font-weight:800}
+.parcel{display:flex;flex-direction:column;gap:6px;border:2px solid #E7E2DC;border-radius:18px;padding:12px 14px}
+.parcel.go{border-color:#F46A00}
+.parcel .h1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.st{display:inline-flex;align-items:center;border-radius:8px;padding:2px 8px;font-size:12.5px;font-weight:800;white-space:nowrap}
+.st.wait{background:#FFF0CC;color:#6B4500}.st.grey{background:#EEF0F2;color:#15130F}.st.route{background:#15130F;color:#FFF}
+.st.done{background:#DCF2E5;color:#0A5A31}.st.bad{background:#FCE4E4;color:#8E1220}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:11.5px;font-weight:700;color:#665F58}
+.steps i{display:block;height:5px;border-radius:99px;background:#E7E2DC;margin-bottom:3px}
+.steps i.on{background:#0F7A43}.steps i.now{background:#F46A00}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{border-radius:14px;background:#F5F2EE;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.tile b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px}
+.money{display:flex;flex-direction:column;gap:6px;border-radius:20px;background:#DCF2E5;padding:16px;color:#0A5A31}
+.money .d{font-size:32px;color:#15130F}
+.code{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:40px;letter-spacing:.18em;text-align:center;border-radius:16px;border:2px dashed #F46A00;padding:6px 0}
+.label{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;border:2px solid #15130F;border-radius:14px;padding:10px;font-size:13.5px}
+.qr{width:96px;height:96px;border-radius:8px;background:repeating-linear-gradient(90deg,#15130F 0 6px,#FFF 6px 10px),#FFF;border:4px solid #FFF;box-shadow:0 0 0 1px #15130F}
+.wa{width:330px;border-radius:18px;background:#E5DDD5;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.wa .bot{align-self:flex-start;background:#FFF;border-radius:12px 12px 12px 2px;padding:8px 10px;max-width:92%}
+.wa .bt{background:#FFF;border-radius:10px;text-align:center;color:#1F7A4D;font-weight:700;padding:8px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule b{font-size:15px}
+.bo{background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.bobtn{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid #AEB4BA;font-weight:700;font-size:13.5px;background:#FFF}
+.bobtn.p{background:#F46A00;border-color:#F46A00;color:#FFF}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{border:1px solid #E3E6E9;border-radius:10px;padding:8px 12px;display:flex;flex-direction:column}
+.kpi b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px}
+.kpi span{font-size:12px;font-weight:600;color:#5A6068}
+.setrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #EEF0F2}
+.setrow .in{height:auto;min-height:34px;padding:6px 12px;box-sizing:border-box;border-radius:8px;border-width:1px;font-size:14px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
+table.t td{padding:9px 10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
+table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
+table.t td:last-child{white-space:nowrap}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#FFF8E6;border:1px dashed #F0C987;padding:12px 14px;font-size:14px;color:#6B4500}
+.q b{color:#15130F}
+.check{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:14px}
+.check i{width:24px;height:24px;border-radius:7px;background:#15130F;color:#FFF;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:14px}
+.pt{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;border:2px solid #E7E2DC;border-radius:16px;padding:10px 12px}
+.pt.on{border-color:#F46A00;background:#FFF8F2}
+.pt .dot{box-sizing:border-box;width:22px;height:22px;border-radius:50%;border:2px solid #AEB4BA;margin-top:2px}
+.pt.on .dot{border:7px solid #F46A00}
+.opt{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;border:2px solid #E7E2DC;border-radius:16px;padding:12px}
+.opt.on{border-color:#F46A00;background:#FFF8F2}
+.opt .dot{box-sizing:border-box;width:22px;height:22px;border-radius:50%;border:2px solid #AEB4BA}
+.opt.on .dot{border:7px solid #F46A00}
+.map{height:120px;border-radius:16px;background:linear-gradient(135deg,#EDE7DF 0 30%,#E3DCD2 30% 31%,#EDE7DF 31% 64%,#E3DCD2 64% 65%,#EDE7DF 65%);position:relative}
+.map i{position:absolute;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#F46A00;box-shadow:0 0 0 3px #FFF}
+.map i.me{background:#15130F;border-radius:50%;transform:none;width:16px;height:16px}
+.bar{height:8px;border-radius:99px;background:#E7E2DC;overflow:hidden}
+.bar i{display:block;height:100%;background:#F46A00;border-radius:99px}
+.scan{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC;font-size:14.5px}
+.scan:last-child{border-bottom:0}
+.scan i{width:24px;height:24px;border-radius:7px;border:2px solid #AEB4BA;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px}
+.scan i.ok{background:#0F7A43;border-color:#0F7A43;color:#FFF}
+.gain{display:flex;flex-direction:column;gap:4px;border-radius:18px;background:#DCF2E5;padding:14px;color:#0A5A31}
+.gain .d{font-size:26px;color:#15130F}
+.prod{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;border:2px solid #E7E2DC;border-radius:16px;padding:8px 10px}
+.prod .ph{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#F4B183,#C55A11)}
+.prod .ph.b{background:linear-gradient(135deg,#9DC3E6,#2E75B6)}.prod .ph.g{background:linear-gradient(135deg,#A9D18E,#548235)}.prod .ph.k{background:linear-gradient(135deg,#B4A7D6,#5B4A9B)}
+.earn{display:inline-flex;align-items:center;border-radius:8px;background:#DCF2E5;color:#0A5A31;font-weight:800;font-size:12.5px;padding:2px 8px;margin-top:4px;white-space:nowrap}
+.sharebtn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 12px;border-radius:12px;background:#15130F;color:#FFF;font-weight:800;font-size:14px}
+.img{position:relative;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#F4B183 0 50%,#15130F 50%);height:330px;color:#FFF}
+.img .tag{position:absolute;left:14px;right:14px;bottom:66px;display:flex;flex-direction:column;gap:2px}
+.img .tag b{font-family:'Bricolage Grotesque',sans-serif;font-size:26px}
+.img .foot{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700}
+.img .mini{width:44px;height:44px;border-radius:6px;background:repeating-linear-gradient(90deg,#15130F 0 4px,#FFF 4px 7px);border:3px solid #FFF}
+.text{border:2px dashed #E7E2DC;border-radius:14px;padding:10px 12px;font-size:14px}
+.reco{display:flex;align-items:center;gap:8px;border-radius:12px;background:#FFF0E3;color:#B84F00;font-weight:700;font-size:14px;padding:8px 12px}
+.reco i{width:26px;height:26px;border-radius:50%;background:#F46A00;color:#FFF;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:12px}
+.line{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #E7E2DC;font-size:14px}
+.line:last-child{border-bottom:0}
+</style>
+</head>
+<body>
+<!-- Ambassadeurs (chantier 11 de la feuille de route) : chacun partage un produit avec son lien
+     personnel et gagne une part quand le colis est livré avec son code et gardé. OCD paie sur sa
+     commission : le client paie le même prix, le vendeur ne paie rien. On réutilise le partage d'un
+     produit et son image (chantier 16, plan 1.3 et 1.7), le lien court et les visites comptées sans les
+     robots (clips, chantier 8), le code de livraison, les reversements (factures d'achat, jamais un solde
+     négatif versé), la connexion par numéro et code WhatsApp (équipe d'un vendeur, points relais), le
+     nouveau numéro de versement retenu 48 h (OCD Express), « Signaler » et « À vérifier » (chantier 2).
+     Maquette proposée le 19 novembre 2026, à valider avec ses choix (en bas), pensée d'abord pour tenir
+     face à la fraude : aucun gain sans colis livré et gardé, chaque gain est une ligne de comptabilité.
+     Données d'exemple : Grâce Mbia, étudiante à Bonamoussadi (Douala), ambassadrice depuis le 2 novembre,
+     son lien ocdlive.com/a/GRACE7 ; Estelle Ngono, cliente à Akwa ; Brenda Wax, vendeuse ; le jeudi
+     19 novembre, versement le lundi 23. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · devenir ambassadeur, son espace, son argent</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. La page publique : devenir ambassadeur -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Ambassadeurs</span></div>
+    <div class="hero">
+      <span class="badge soft" style="align-self:flex-start">Pour tout le monde, sans boutique</span>
+      <span class="d">Partage, et gagne sur chaque colis livré</span>
+      <span class="small" style="color:#E7E2DC">Tu partages un produit d'OCD Live avec ton lien. Ton contact commande dans les 7 jours : quand son colis est livré et qu'il le garde, tu gagnes 5 % des articles.</span>
+    </div>
+    <div class="step3"><b class="n">1</b><span><b>Choisis un produit</b><br><span class="small muted">Les plus vendus, les promos, ceux en live ce soir.</span></span></div>
+    <div class="step3"><b class="n">2</b><span><b>Partage-le</b><br><span class="small muted">Statut WhatsApp, un contact, TikTok : l'image et le texte sont prêts, avec ton lien.</span></span></div>
+    <div class="step3"><b class="n">3</b><span><b>Reçois tes gains chaque lundi</b><br><span class="small muted">Sur ton Mobile Money, dès 2 000 F.</span></span></div>
+    <div class="gain"><span class="small"><b>Exemple</b></span><span class="d">600 F</span><span class="small">pour une robe en wax à 12 000 F livrée et gardée. Ton contact paie le même prix que sur le site.</span></div>
+    <div><div class="lab">Ton nom</div><div class="in">Grâce Mbia</div></div>
+    <div><div class="lab">Ton WhatsApp</div><div class="in">+237 6 91 23 45 67</div></div>
+    <div><div class="lab">Ton Mobile Money, pour tes gains</div><div class="in">+237 6 77 40 12 18 · Orange Money</div><span class="small muted">À ton nom : il est vérifié avant le premier versement.</span></div>
+    <div class="check"><i>✓</i><span>Je partage honnêtement : le vrai prix, pas de messages en masse à des inconnus, jamais d'achat avec mon propre lien. <span class="lnk">La charte</span></span></div>
+    <span class="cta">Devenir ambassadeur</span>
+    <span class="small muted">Tu reçois un code sur WhatsApp pour te connecter, comme les vendeurs. Un compte par numéro.</span>
+  </div>
+
+  <!-- 2. Mon espace ambassadeur -->
+  <div class="phone">
+    <div class="back"><span class="d" style="font-size:22px">Mon espace ambassadeur</span><span class="small lnk" style="margin-left:auto">Se déconnecter</span></div>
+    <span class="small muted">Grâce Mbia · ton lien ocdlive.com/a/GRACE7</span>
+    <div class="money"><span class="small"><b>À verser lundi 23 novembre</b></span><span class="d">3 450 F</span><span class="small">Sur ton Orange Money 6 77 •• •• 18</span></div>
+    <div class="tiles">
+      <div class="tile"><span class="small muted">En attente</span><b>1 850 F</b><span class="small muted">1 colis livré il y a moins de 7 jours, 1 en route</span></div>
+      <div class="tile"><span class="small muted">Cette semaine</span><b>5 commandes</b><span class="small muted">46 visites · 3 livrées</span></div>
+    </div>
+    <span class="cta">Produits à partager</span>
+    <div class="chips"><span class="chip on">Mes ventes</span><span class="chip">Mon argent</span><span class="chip">Mes liens</span></div>
+    <div class="parcel go">
+      <div class="h1"><b>Montre connectée</b><span class="st route">En route</span></div>
+      <span class="small muted">Paul E. · Makepe · commandée hier</span>
+      <span class="small"><b>1 250 F</b> si elle est livrée et gardée</span>
+    </div>
+    <div class="parcel">
+      <div class="h1"><b>Robe en wax</b><span class="st wait">Livrée</span></div>
+      <span class="small muted">Estelle N. · Akwa · livrée le 17 novembre</span>
+      <span class="small"><b>600 F</b> confirmés le mardi 24 novembre</span>
+    </div>
+    <div class="parcel">
+      <div class="h1"><b>Chemise wax homme, Pagne wax</b><span class="st done">Confirmée</span></div>
+      <span class="small muted">Carine M. · Deïdo · 2 articles</span>
+      <span class="small"><b>875 F</b> dans le versement de lundi</span>
+    </div>
+    <div class="parcel">
+      <div class="h1"><b>Perruque bob 12 pouces</b><span class="st bad">Retournée</span></div>
+      <span class="small muted">Laure N. · Bonapriso · livrée le 3, retournée le 15 novembre</span>
+      <span class="small"><b>− 1 500 F</b> : déjà confirmée, retirée du versement de lundi</span>
+    </div>
+    <div class="parcel">
+      <div class="h1"><b>Robe en wax</b><span class="st grey">Pas de gain</span></div>
+      <span class="small muted">Commandée avec ton propre numéro : ton propre achat ne compte pas.</span>
+    </div>
+    <span class="small muted">Tu vois le prénom et le quartier de tes clients, jamais leur numéro.</span>
+  </div>
+
+  <!-- 3. Mon argent -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon argent</span></div>
+    <div class="money"><span class="small"><b>Lundi 23 novembre</b></span><span class="d">3 450 F</span><span class="small">5 lignes confirmées, un retour retiré</span></div>
+    <div class="sum">
+      <span>Chemise wax homme, Pagne wax · Carine M.<b>875 F</b></span>
+      <span>Ensemble pagne sur mesure · Rodrigue K.<b>1 750 F</b></span>
+      <span>Foulard en pagne × 3 · Sandrine F.<b>525 F</b></span>
+      <span>Robe de soirée longue · Yannick E.<b>1 800 F</b></span>
+      <span>Perruque bob, retournée · Laure N.<b style="color:#8E1220">− 1 500 F</b></span>
+      <span class="tot">À verser<b>3 450 F</b></span>
+    </div>
+    <span class="small muted">Un gain est confirmé 7 jours après la livraison. Un retour plus tard (30 jours) est retiré du versement suivant ; s'il reste moins de 2 000 F, ou rien, il attend la semaine d'après : rien n'est perdu, rien n'est versé en trop.</span>
+    <b>Versé</b>
+    <div class="line"><span>Lundi 16 novembre · OM-90412</span><b>4 200 F</b></div>
+    <div class="line"><span>Lundi 9 novembre · OM-88213</span><b>6 150 F</b></div>
+    <div class="line"><span>Depuis le début</span><b>18 600 F</b></div>
+    <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+      <b>Mon numéro de versement</b>
+      <span class="small">Orange Money 6 77 •• •• 18 · vérifié</span>
+      <span class="small muted">Un nouveau numéro attend 48 h avant le premier versement, et l'ancien numéro est prévenu sur WhatsApp : si ce n'est pas toi, tu l'arrêtes.</span>
+      <span class="btn2">Changer de numéro</span>
+    </div>
+    <span class="small muted">Au-delà de 50 000 F gagnés, l'équipe voit ta pièce d'identité avant le versement suivant (une seule fois).</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Téléphone · 390 px · partager un produit, le client qui ouvre le lien</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 4. Produits à partager -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Produits à partager</span></div>
+    <div class="chips"><span class="chip on">Les plus vendus</span><span class="chip">En promo</span><span class="chip">En live ce soir</span><span class="chip">Nouveautés</span></div>
+    <div class="in" style="color:#8A837C">Chercher un produit, une boutique</div>
+    <div class="prod"><span class="ph"></span><span><b>Robe en wax</b><br><span class="small muted">Brenda Wax · 12 000 F · 38 vendues cette semaine</span><br><span class="earn">Tu gagnes 600 F</span></span><span class="sharebtn">Partager</span></div>
+    <div class="prod"><span class="ph b"></span><span><b>Montre connectée</b><br><span class="small muted">Junior Gadgets · 25 000 F · en live ce soir à 20:00</span><br><span class="earn">Tu gagnes 1 250 F</span></span><span class="sharebtn">Partager</span></div>
+    <div class="prod"><span class="ph g"></span><span><b>Pagne wax hollandais</b><br><span class="small muted">Ama Pagnes · <s>16 000 F</s> <b>13 500 F</b> jusqu'à dimanche</span><br><span class="earn">Tu gagnes 675 F</span></span><span class="sharebtn">Partager</span></div>
+    <div class="prod"><span class="ph k"></span><span><b>Perruque bob 12 pouces</b><br><span class="small muted">Chioma Hair · 30 000 F · livrée au Cameroun</span><br><span class="earn">Tu gagnes 1 500 F</span></span><span class="sharebtn">Partager</span></div>
+    <span class="small muted">Les produits livrés dans ton pays, vendus sur OCD Live (pas ceux des vendeurs en contact direct sur WhatsApp : la vente ne passe pas par le site). Un produit épuisé disparaît de la liste ; ton lien reste bon et mène à la boutique.</span>
+    <span class="btn2">Partager une boutique ou un live</span>
+  </div>
+
+  <!-- 5. Partager -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Partager</span></div>
+    <div class="img">
+      <span class="badge" style="position:absolute;left:14px;top:14px">OCD ● LIVE</span>
+      <div class="tag"><span class="small" style="font-weight:700">Robe en wax · Brenda Wax</span><b>12 000 F</b><span class="small">Livrée à Douala, tu paies à la livraison</span></div>
+      <div class="foot"><span>ocdlive.com/a/GRACE7/31</span><span class="mini"></span></div>
+    </div>
+    <span class="small muted">L'image est faite par OCD Live avec le prix du moment : un nouveau prix, une nouvelle image. Le prix ne se change pas.</span>
+    <div class="text">Regarde cette robe en wax de Brenda Wax : 12 000 F, livrée chez toi à Douala, tu paies à la livraison. ocdlive.com/a/GRACE7/31</div>
+    <span class="small muted">Tu peux changer le texte ; le lien est ajouté à la fin s'il manque.</span>
+    <span class="cta">Mettre en statut WhatsApp</span>
+    <div class="row2"><span class="btn2 dark">Envoyer à un contact</span><span class="btn2">Copier le lien</span></div>
+    <div class="row2"><span class="btn2">Enregistrer l'image</span><span class="btn2">▶ Le clip du live</span></div>
+    <span class="small muted">Le clip de 30 secondes, quand le produit a été montré en live (chantier 8), avec le même lien.</span>
+  </div>
+
+  <!-- 6. Le client -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Robe en wax</span></div>
+    <div class="reco"><i>G</i><span>Grâce te recommande ce produit</span></div>
+    <div style="height:210px;border-radius:18px;background:linear-gradient(135deg,#F4B183,#C55A11)"></div>
+    <span class="d" style="font-size:26px">12 000 F</span>
+    <span class="small muted">Brenda Wax · Vendeur vérifié · ★ 4,8 (32 avis) · Garantie OCD Live</span>
+    <div class="chips"><span class="chip on">M</span><span class="chip">L</span><span class="chip">XL</span></div>
+    <span class="cta">Ajouter au panier</span>
+    <span class="small muted">Le même prix pour tous : Grâce est payée par OCD Live, pas par toi ni par la vendeuse.</span>
+    <div class="q">
+      <span><b>Le lien de Grâce sur ce téléphone :</b> il compte 7 jours. Estelle commande cette robe, ou autre chose, dans les 7 jours : les articles de sa commande comptent pour Grâce. Elle ouvre ensuite le lien de quelqu'un d'autre : c'est le dernier lien ouvert qui compte. À la commande, l'ambassadeur est inscrit sur la commande et n'en change plus.</span>
+      <span><b>Ne comptent pas :</b> les aperçus de WhatsApp et de TikTok (des robots), Grâce qui ouvre son propre lien, la vendeuse qui ouvre un lien vers ses produits.</span>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">WhatsApp à l'ambassadeur (nouveaux modèles Utilitaire, à soumettre à Meta) · le vendeur</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="wa">
+      <div class="bot">Bonjour Grâce, des colis partagés par toi ont été livrés aujourd'hui : <b>3 colis</b>, pour <b>2 650 F</b> de gains, confirmés dans 7 jours s'ils sont gardés. Touche le bouton pour les voir.</div>
+      <span class="bt">Mon espace ambassadeur</span>
+    </div>
+    <span class="small muted" style="width:330px">Un message par jour au plus, le soir, qui réunit les colis livrés du jour : jamais un message par colis.</span>
+    <div class="wa">
+      <div class="bot">Bonjour Grâce, ton versement de <b>3 450 F</b> d'OCD Live est parti sur ton Mobile Money <b>6 77 •• •• 18</b>, référence <b>OM-93107</b>. Merci pour tes partages, touche le bouton pour le détail.</div>
+      <span class="bt">Mon argent</span>
+    </div>
+    <span class="small muted" style="width:330px">Le lundi, une fois le versement fait. La connexion passe par le message d'Authentification déjà soumis.</span>
+  </div>
+
+  <!-- 7. Le vendeur : Mes chiffres -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mes chiffres</span></div>
+    <div class="chips"><span class="chip">7 jours</span><span class="chip on">30 jours</span><span class="chip">3 mois</span></div>
+    <div class="gain"><span class="small"><b>Vendu grâce aux ambassadeurs</b></span><span class="d">148 000 F</span><span class="small">12 commandes · tes produits partagés par 9 ambassadeurs</span></div>
+    <span class="small muted">Tu ne paies rien : OCD Live paie les ambassadeurs sur sa commission. Tes produits vendus sur OCD Live sont tous à partager.</span>
+    <div class="line"><span>Robe en wax</span><span><b>6 vendues</b> par 4 ambassadeurs</span></div>
+    <div class="line"><span>Chemise wax homme</span><span><b>3 vendues</b> par 2 ambassadeurs</span></div>
+    <div class="line"><span>Pagne wax 6 yards</span><span><b>3 vendus</b> par 3 ambassadeurs</span></div>
+    <span class="small muted">Le vendeur ne voit pas qui sont les ambassadeurs (leur nom et leur numéro restent à OCD Live), seulement combien.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · l'équipe : les ambassadeurs, à vérifier, les réglages</span>
+<div class="screen" style="width:1300px;box-sizing:border-box;padding:20px 24px;display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:18px">
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="bo">
+      <b>OCD Live › Ambassadeurs · novembre</b>
+      <div class="kpis">
+        <div class="kpi"><b>184</b><span>ambassadeurs actifs (30 jours)</span></div>
+        <div class="kpi"><b>11 %</b><span>des commandes du shop</span></div>
+        <div class="kpi"><b>412 300 F</b><span>de gains ce mois · 96 400 F à verser lundi</span></div>
+        <div class="kpi"><b>6 %</b><span>de retours et refus (shop : 5 %)</span></div>
+      </div>
+      <table class="t">
+        <tr><th>Ambassadeur</th><th class="r">Visites</th><th class="r">Commandes</th><th class="r">Livrées</th><th class="r">Retours</th><th class="r">Ce mois</th><th class="r">Lundi</th><th>État</th></tr>
+        <tr><td><b>Kevin Tossou</b><br><span class="small muted">Lomé</span></td><td class="r">1 204</td><td class="r">64</td><td class="r">51</td><td class="r">2</td><td class="r">31 250 F</td><td class="r">12 100 F</td><td><span class="st wait">Pièce à voir</span></td></tr>
+        <tr><td><b>Grâce Mbia</b><br><span class="small muted">Douala</span></td><td class="r">312</td><td class="r">21</td><td class="r">18</td><td class="r">1</td><td class="r">9 875 F</td><td class="r">3 450 F</td><td><span class="st done">Actif</span></td></tr>
+        <tr><td><b>Aïcha Diallo</b><br><span class="small muted">Abidjan</span></td><td class="r">88</td><td class="r">3</td><td class="r">3</td><td class="r">0</td><td class="r">1 500 F</td><td class="r">attend 2 000 F</td><td><span class="st done">Actif</span></td></tr>
+        <tr><td><b>Boris Nkoulou</b><br><span class="small muted">Douala</span></td><td class="r">40</td><td class="r">9</td><td class="r">4</td><td class="r">4</td><td class="r">2 300 F</td><td class="r">retenu</td><td><span class="st bad">En pause</span></td></tr>
+        <tr><td><b>Mireille Kamga</b><br><span class="small muted">Douala</span></td><td class="r">-</td><td class="r">-</td><td class="r">-</td><td class="r">-</td><td class="r">-</td><td class="r">-</td><td><span class="st bad">À vérifier</span></td></tr>
+      </table>
+      <span class="small muted">La fiche d'un ambassadeur : ses liens, ses visites, ses commandes, chaque gain avec son colis, son taux et sa date, ses versements, son numéro de versement et son historique ; « Mettre en pause » (ses liens marchent, rien ne se gagne, les gains dus sont gardés) et « Fermer le compte » (les gains dus sont versés une dernière fois).</span>
+    </div>
+    <div class="bo">
+      <b>À vérifier · colonne Ambassadeurs</b>
+      <table class="t">
+        <tr><th>Ambassadeur</th><th>Pourquoi</th><th>Que faire</th></tr>
+        <tr><td><b>Boris Nkoulou</b></td><td>4 colis refusés ou retournés sur 8 : mis en pause tout seul, 2 300 F retenus</td><td><span class="bobtn">Appeler</span> <span class="bobtn p">Rouvrir</span></td></tr>
+        <tr><td><b>Mireille Kamga</b></td><td>Son Mobile Money est celui de Boris Nkoulou (un compte par personne)</td><td><span class="bobtn">Voir les deux</span> <span class="bobtn p">Accepter</span></td></tr>
+        <tr><td><b>Kevin Tossou</b></td><td>50 000 F gagnés : sa pièce d'identité avant le versement de lundi</td><td><span class="bobtn p">Pièce vue</span></td></tr>
+        <tr><td><b>Paul Essomba</b></td><td>8 commandes du même client en un mois : 5 comptent, les autres non</td><td><span class="bobtn">Voir</span></td></tr>
+      </table>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="bo">
+      <b>Réglages · Ambassadeurs</b>
+      <div class="setrow"><span>Le programme</span><span class="in">Ouvert à tous ▾</span></div>
+      <div class="setrow"><span>Gain sur les articles (pas la livraison)</span><span class="in">5 %</span></div>
+      <div class="setrow"><span>Au plus par colis</span><span class="in">3 000 F</span></div>
+      <div class="setrow"><span>Le lien compte pendant</span><span class="in">7 jours</span></div>
+      <div class="setrow"><span>Gain confirmé après la livraison</span><span class="in">7 jours</span></div>
+      <div class="setrow"><span>Versement</span><span class="in">Chaque lundi, dès 2 000 F</span></div>
+      <div class="setrow"><span>Pièce d'identité au-delà de</span><span class="in">50 000 F gagnés</span></div>
+      <div class="setrow"><span>En pause au-delà de</span><span class="in">30 % de retours sur 10 colis</span></div>
+      <div class="setrow"><span>Un même client compte</span><span class="in">5 commandes par mois au plus</span></div>
+      <span class="small muted">Un réglage changé vaut pour les commandes suivantes : le taux et le plafond sont inscrits sur chaque commande à sa confirmation. Fermer le programme arrête les gains des nouvelles commandes ; ceux déjà dus sont versés.</span>
+    </div>
+    <div class="bo">
+      <b>Ce qu'il reste à OCD</b>
+      <div class="line"><span>Commission d'OCD sur une robe à 12 000 F (15 %)</span><b>1 800 F</b></div>
+      <div class="line"><span>À Grâce, l'ambassadrice (5 %)</span><b>600 F</b></div>
+      <div class="line"><span>Restent à OCD</span><b>1 200 F</b></div>
+      <span class="small muted">Le gain n'est jamais plus que la commission d'OCD sur l'article : un vendeur à 3 % donne 3 %.</span>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Pour que ça tienne en vrai</span>
+<div style="display:grid;grid-template-columns:repeat(3,430px);gap:14px">
+  <div class="rule"><b>Payé sur ce qui est livré et gardé</b><span>Rien à la commande, rien en route : un gain naît quand le colis est livré avec son code, il est confirmé 7 jours plus tard. Un colis refusé, annulé ou pas retiré au point relais ne donne rien ; un retour après la confirmation (30 jours) est retiré du versement suivant.</span></div>
+  <div class="rule"><b>Jamais sur ses propres achats</b><span>Pas de gain quand la commande vient du numéro de l'ambassadeur, de son Mobile Money ou de son compte, ni sur les produits de sa propre boutique s'il vend aussi. Un même client compte pour 5 commandes par mois au plus : un client ne se partage pas les gains avec un ami.</span></div>
+  <div class="rule"><b>Le lien, compté proprement</b><span>Le dernier lien ouvert compte, 7 jours, sur le téléphone puis sur le panier ; à la confirmation, l'ambassadeur est inscrit sur la commande, avec le taux du jour, et n'en change plus. Les robots (aperçus des liens) et les propres visites de l'ambassadeur ne comptent pas.</span></div>
+  <div class="rule"><b>Chaque gain est une ligne de comptabilité</b><span>Une facture d'achat de l'ambassadeur par colis livré, un avoir pour un retour, une seule fois par colis, dans les reversements comme ceux d'un vendeur : un solde négatif n'est jamais versé, il attend les gains suivants. Les compteurs de l'espace se refont à partir de ces lignes, jamais l'inverse.</span></div>
+  <div class="rule"><b>Le vrai prix, le même pour tous</b><span>L'image et le prix du partage viennent du site, au prix du moment ; le client paie le prix du site. OCD paie sur sa commission, jamais plus qu'elle : le vendeur ne paie rien, rien ne change pour lui sauf ses ventes.</span></div>
+  <div class="rule"><b>Une personne, un compte, un Mobile Money</b><span>Connexion par numéro et code WhatsApp ; un Mobile Money déjà pris par un autre compte passe par « À vérifier » ; un nouveau numéro de versement attend 48 h et l'ancien est prévenu ; pièce d'identité au-delà de 50 000 F gagnés, une fois.</span></div>
+  <div class="rule"><b>Les retours surveillés</b><span>Au-delà de 30 % de colis refusés ou retournés sur 10, le compte se met en pause tout seul : ses liens marchent encore pour les clients, rien ne se gagne, les gains dus sont gardés jusqu'à la décision de l'équipe.</span></div>
+  <div class="rule"><b>Pas de spam</b><span>La charte acceptée à l'inscription ; un client qui reçoit des messages en masse signale l'ambassadeur avec « Signaler » (chantier 2), dans « À vérifier » ; l'équipe met en pause ou ferme le compte. Les messages à l'ambassadeur : un par jour au plus, et le versement.</span></div>
+  <div class="rule"><b>Tenir sur un petit réseau</b><span>Les images de partage sont faites une fois puis gardées (et par le CDN) ; le lien est court ; « Copier le lien » et l'image enregistrée marchent sans attendre ; l'espace s'ouvre comme celui des vendeurs, sans application à installer.</span></div>
+</div>
+
+<span class="cap" style="margin-top:18px">Choix à valider</span>
+<div class="q" style="width:1300px;box-sizing:border-box">
+  <span><b>1. Qui peut être ambassadeur :</b> <i>proposé : tout le monde avec un numéro WhatsApp dans un pays où le shop livre, dès 18 ans, compte ouvert tout de suite (le premier versement après la vérification du Mobile Money) ; un vendeur ou un livreur aussi, jamais sur ses propres produits.</i> Ou sur invitation au début ?</span>
+  <span><b>2. Combien, payé par qui :</b> <i>proposé : 5 % des articles (pas la livraison), au plus 3 000 F par colis et jamais plus que la commission d'OCD sur l'article, payés par OCD sur sa commission ; le client paie le même prix, le vendeur ne paie rien.</i> Plus tard : un vendeur qui veut ajouter un bonus sur ses produits.</span>
+  <span><b>3. Sur quoi :</b> <i>proposé : tous les articles de la commande passée dans les 7 jours après le lien (pas seulement le produit partagé), le dernier lien ouvert gagne ; seulement les produits vendus sur OCD Live (pas les vendeurs en contact direct).</i></span>
+  <span><b>4. Quand c'est gagné :</b> <i>proposé : confirmé 7 jours après la livraison avec le code ; un retour plus tard (jusqu'à 30 jours, la garantie) est retiré du versement suivant.</i> Ou attendre les 30 jours avant de confirmer (plus sûr, plus lent) ?</span>
+  <span><b>5. Le versement :</b> <i>proposé : chaque lundi sur Mobile Money, dès 2 000 F (sinon il attend la semaine suivante), comme les reversements des vendeurs.</i></span>
+  <span><b>6. Contre la fraude :</b> <i>proposé : pas de gain sur ses propres achats (numéro, Mobile Money, compte, sa boutique) ; 5 commandes par mois au plus d'un même client ; pause automatique au-delà de 30 % de retours sur 10 colis ; un Mobile Money par personne ; pièce d'identité au-delà de 50 000 F gagnés ; nouveau numéro de versement retenu 48 h.</i></span>
+  <span><b>7. Ce que voit le client :</b> <i>proposé : « Grâce te recommande ce produit » (le prénom seulement), le même prix.</i> Ou rien du tout ?</span>
+  <span><b>8. Les vendeurs :</b> <i>proposé : tous leurs produits vendus sur OCD Live sont à partager, sans rien payer et sans refus possible ; ils voient combien les ambassadeurs ont vendu dans « Mes chiffres », pas qui.</i></span>
+  <span><b>9. Les gains et les impôts :</b> des commissions versées à des particuliers : <i>proposé : un relevé de l'année téléchargeable dans « Mon argent », et la question posée au comptable d'OCD avant d'ouvrir (retenue ou non).</i></span>
+  <span><b>Effort :</b> 3 à 4 semaines (inscription et connexion, liens et attribution, produits à partager et images, gains et versements, fraude et « À vérifier », messages, back-office, Mes chiffres du vendeur). Nouveaux modèles WhatsApp à soumettre à Meta : les colis livrés du jour et le versement (à l'ambassadeur).</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -146,6 +146,32 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · Ambassadeurs (chantier 11) : la maquette, à valider
+Pas de maquette pour ce chantier : proposée avant tout code, dans
+[`prototype/design-valide/Ambassadeurs.dc.html`](../prototype/design-valide/Ambassadeurs.dc.html), relue avec
+ce qui existe (partage d'un produit et son image, lien court et visites sans les robots des clips, code de
+livraison, reversements, connexion par numéro, nouveau numéro de versement retenu, « Signaler » et « À
+vérifier »), et pensée pour tenir face à la fraude.
+- **L'ambassadeur** : `/ambassadeurs` pour s'inscrire (WhatsApp, Mobile Money, la charte), « Mon espace
+  ambassadeur » (à verser lundi, en attente, ses ventes et leur état), « Mon argent », « Produits à
+  partager » (ce qu'on gagne sur chacun), « Partager » (l'image faite par OCD au prix du moment, avec son
+  lien, pour le statut WhatsApp, un contact, TikTok, et le clip du live).
+- **Le client** : le même prix, « Grâce te recommande ce produit » ; le dernier lien ouvert compte 7 jours,
+  pour tous les articles de la commande, et l'ambassadeur est inscrit sur la commande à sa confirmation.
+- **L'argent** : 5 % des articles payés par OCD sur sa commission (au plus 3 000 F par colis, jamais plus
+  que la commission), gagnés quand le colis est livré avec son code, confirmés 7 jours après, versés
+  chaque lundi dès 2 000 F ; un retour plus tard est retiré du versement suivant ; chaque gain est une
+  facture d'achat, un retour un avoir, jamais un solde négatif versé.
+- **Contre la fraude** : jamais sur ses propres achats (numéro, Mobile Money, compte, sa boutique), 5
+  commandes par mois au plus d'un même client, pause automatique au-delà de 30 % de retours sur 10 colis,
+  un Mobile Money par personne, pièce d'identité au-delà de 50 000 F gagnés, nouveau numéro retenu 48 h.
+- **Le vendeur** ne paie rien et voit « Vendu grâce aux ambassadeurs » dans Mes chiffres ; **le
+  back-office** : les ambassadeurs, une colonne dans « À vérifier », les réglages.
+- **Choix à valider** (en bas de la maquette) : qui, combien et payé par qui, sur quoi, quand c'est gagné,
+  le versement, la fraude, ce que voit le client, les vendeurs, les impôts.
+- Contrôlée en la rendant dans un navigateur. Aucun module ne change : rien à mettre à jour sur un serveur,
+  aucun modèle WhatsApp à soumettre.
+
 ### 19 novembre 2026 · Points relais (chantier 10)
 Maquette `PointsRelais` validée avec ses choix recommandés, codée dans `ocd_live_shop` (20.0.1.45.0),
 `ocd_live_shop_whatsapp` (20.0.1.29.0), `ocd_express` (20.0.1.2.0) et `ocd_express_whatsapp` (20.0.1.1.0).
