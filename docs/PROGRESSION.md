@@ -168,8 +168,8 @@ Après une remarque de l'équipe. `ocd_live` 20.0.1.28.0 et `ocd_live_shop` 20.0
   leur taille suit la largeur de la tuile.
 - **Contrôle** : `tools/captures/mise-en-page.js` contrôle aussi « Mon espace » avec le lien d'un vendeur
   de la démo (les mêmes entrées à 390, 820 et 1440 px, aucun titre recouvert, aucun montant coupé) : toutes
-  les règles tenues. Test : 1 nouveau ; la suite complète sur une base neuve : **TODO_FULL sans échec**, la
-  démo : **TODO_DEMO sans échec**.
+  les règles tenues. Test : 1 nouveau ; la suite complète sur une base neuve : **726 sans échec**, la
+  démo : **22 sans échec**.
 - **Sur un serveur** : `-u ocd_live,ocd_live_shop`.
 
 ### 19 novembre 2026 · Correctif : une seule carte sur toute la largeur dans la page d'un pays
