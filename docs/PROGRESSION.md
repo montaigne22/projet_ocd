@@ -197,7 +197,7 @@ modules, `ocd_business` et `ocd_business_whatsapp` (20.0.1.0.0) ; `ocd_live_shop
   fiche du vendeur, « Offrir des jours »).
 - Tests : 9 dans `ocd_business` (les règles), 3 pour ses pages, 2 dans `ocd_business_whatsapp`, 2 dans
   `ocd_express`, 1 dans `ocd_live_shop` ; **la suite complète** sur une base neuve (tous les modules OCD
-  avec les deux nouveaux, et les tests de `payment_cinetpay` et `whatsapp_cloud`) : **TODO_FULL sans
+  avec les deux nouveaux, et les tests de `payment_cinetpay` et `whatsapp_cloud`) : **720 sans
   échec** ; la démo sur une autre base neuve, installée en une fois avec tous les modules : **22
   sans échec**.
 - **À installer sur un serveur** : `-i ocd_business` (`ocd_business_whatsapp` s'installe avec), et **à
