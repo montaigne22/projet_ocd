@@ -21,7 +21,7 @@ téléphone garde son design. Captures dans `docs/captures/maquette-responsive-*
 
 | Écran du design | Où | État |
 |---|---|---|
-| `Main` Accueil OCD Live | `/ocd`, `ocd_live/views/ocd_booking_templates.xml` (`home`) ; les pays où il y a un live, puis celui du visiteur, puis « Tous les pays » | ✅ |
+| `Main` Accueil OCD Live | `/ocd`, `ocd_live/views/ocd_booking_templates.xml` (`home`) ; les pays où il y a un live, puis celui du visiteur, puis « Tous les pays » ; « Cherche ton pays » (les pays au fil de la frappe, par leur nom, sans les accents, leur nom anglais, leur code ou un nom courant comme Ivory Coast ou RDC) | ✅ |
 | `Jour` Choisir le jour | `/reserver/<mode>`, modèle `booking_day` | ✅ |
 | `Heure` Choisir l'heure | `/reserver/<mode>/<jour>`, modèle `booking_hour` (prix selon l'heure) | ✅ |
 | `Paquet` Choisir le paquet | `/reserver/<mode>/<jour>/<heure>`, modèle `booking_package` | ✅ |
@@ -35,8 +35,8 @@ téléphone garde son design. Captures dans `docs/captures/maquette-responsive-*
 
 | Écran du design | Où | État |
 |---|---|---|
-| `Lives` Lives par pays | `/lives`, `ocd_directory_templates.xml` ; sur tablette et ordinateur, une grille qui suit le défilement de la page (colonnes de 320 px au moins, un bandeau par pays sur toute la largeur, la barre des pays et « Je suis en live » en haut) | ✅ |
-| `LivesPays` Lives d'un pays | `/lives/<pays>` | ✅ |
+| `Lives` Lives par pays | `/lives`, `ocd_directory_templates.xml` ; les pays puis les catégories en haut (une catégorie choisie garde le pays, et l'inverse) ; sur tablette et ordinateur, une grille qui suit le défilement de la page (colonnes de 320 px au moins, un bandeau par pays sur toute la largeur, la barre des pays et « Je suis en live » en haut) | ✅ |
+| `LivesPays` Lives d'un pays | `/lives/<pays>` : les mêmes cartes que l'onglet Lives (les lives en cours, au studio, les prochains lives et les replays du pays, l'une sous l'autre, la page défile), ses catégories, « Où ? » et où vend chaque vendeur (« 2 magasins · Akwa », en congé), « Programme des lives » du pays, « Je suis en live » ; `/lives/pays` : tous les pays, avec « Cherche ton pays » | ✅ |
 | `Pass` Pass annuaire | `/lives/pass` | ✅ |
 | `EnvoyerLien` Envoyer le lien de son live | `/lives/envoyer` | ✅ |
 | `EnLigne` Vérification du live | `/lives/statut/<lien>` | ✅ |

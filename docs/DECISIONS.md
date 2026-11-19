@@ -26,7 +26,14 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
     ne change pas ;
   - **l'accueil** nomme les pays où il y a un live (les plus actifs d'abord), puis celui du visiteur
     même sans live, puis « Tous les pays » : jamais la liste des 112 pays proposés, presque tous à 0 ;
-    la page gardée en mémoire l'est déjà par pays du visiteur ;
+    la page gardée en mémoire l'est déjà par pays du visiteur. **« Cherche ton pays »** trouve un pays
+    au fil de la frappe, par son nom sans les accents, son nom anglais, son code ou un nom courant
+    (Ivory Coast, RDC, USA…) ; Entrée ouvre le premier ; sans JavaScript, la page de tous les pays ;
+  - **la page d'un pays** montre les mêmes cartes que l'onglet Lives (ses lives, au studio, ses prochains
+    lives, ses replays), l'une sous l'autre sous ses filtres, la page défile, sur téléphone aussi (une
+    boîte sous les filtres laissait trop peu de place à une carte) ; avec « Programme des lives » du pays ;
+  - **les catégories dans l'onglet Lives**, sous les pays, plus discrètes : une catégorie montre ses lives
+    dans tous les pays, le pays choisi gardé, et les cartes suivantes sont de la même catégorie ;
   - **« À vérifier »** : seules les colonnes qui ont quelque chose à vérifier prennent une place, 280 px
     au moins ; les autres sont nommées en une ligne au-dessus (« Rien en attente : … ») ; quand les
     colonnes ne tiennent pas, le tableau défile de côté, une carte n'est jamais écrasée. Chaque chantier

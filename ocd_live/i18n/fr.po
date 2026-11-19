@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-19 19:10+0000\n"
-"PO-Revision-Date: 2026-11-19 19:10+0000\n"
+"POT-Creation-Date: 2026-11-19 19:43+0000\n"
+"PO-Revision-Date: 2026-11-19 19:43+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -94,12 +94,6 @@ msgstr " et "
 #: code:addons/ocd_live/models/ocd_live_booking.py:0
 msgid "%(body)s To prepare: %(need)s."
 msgstr "%(body)s À préparer : %(need)s."
-
-#. module: ocd_live
-#. odoo-python
-#: code:addons/ocd_live/controllers/directory.py:0
-msgid "%(category)s · for %(minutes)s min"
-msgstr "%(category)s · depuis %(minutes)s min"
 
 #. module: ocd_live
 #. odoo-python
@@ -471,6 +465,7 @@ msgstr "1 activité"
 
 #. module: ocd_live
 #. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
 #: code:addons/ocd_live/models/ocd_live_dashboard.py:0
 msgid "1 live"
 msgstr "1 live"
@@ -780,6 +775,7 @@ msgstr "<span class=\"o_ocd_muted\">Tu réserves au nom de</span>"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
 msgid "<span class=\"o_ocd_rec\" aria-hidden=\"true\"/><span>I am live</span>"
 msgstr "<span class=\"o_ocd_rec\" aria-hidden=\"true\"/><span>Je suis en live</span>"
 
@@ -1398,7 +1394,10 @@ msgid "All"
 msgstr "Tout"
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
 #: model_terms:ir.ui.view,arch_db:ocd_live.home
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_countries
 msgid "All countries"
 msgstr "Tous les pays"
 
@@ -1707,6 +1706,7 @@ msgstr "Retour"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
 msgid "Back at"
 msgstr "Retour à"
 
@@ -1986,6 +1986,7 @@ msgstr "Carte dans le fil"
 #. module: ocd_live
 #: model:ir.actions.act_window,name:ocd_live.ocd_live_category_action
 #: model:ir.ui.menu,name:ocd_live.ocd_live_category_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives
 #: model_terms:ir.ui.view,arch_db:ocd_live.ocd_live_category_view_list
 msgid "Categories"
 msgstr "Catégories"
@@ -2361,6 +2362,7 @@ msgstr "Nombre"
 #: code:addons/ocd_live/models/ocd_live_settings.py:0
 #: model:ir.actions.act_window,name:ocd_live.ocd_country_action
 #: model:ir.ui.menu,name:ocd_live.ocd_live_country_menu
+#: model_terms:ir.ui.view,arch_db:ocd_live.country_find
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives
 #: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_list
 #: model_terms:ir.ui.view,arch_db:ocd_live.view_ocd_country_search
@@ -3990,6 +3992,7 @@ msgstr "Lives et studio de %s"
 #. module: ocd_live
 #: model:ocd.voice.prompt,name:ocd_live.voice_prompt_directory
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_countries
 msgid "Lives by country"
 msgstr "Lives par pays"
 
@@ -4001,6 +4004,7 @@ msgstr "Les lives sont réservables à partir du %s."
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
 msgid "Lives checked now · until"
 msgstr "Lives vérifiés en ce moment · jusqu'à"
 
@@ -4046,6 +4050,7 @@ msgstr "Lives aujourd'hui"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
 msgid "Lives, one per screen: swipe up for the next one"
 msgstr "Les lives, un par écran : glisse vers le haut pour le suivant"
 
@@ -4491,9 +4496,21 @@ msgid "No checking window is set for the directory."
 msgstr "Aucun créneau de vérification n'est réglé pour l'annuaire."
 
 #. module: ocd_live
+#. odoo-python
+#: code:addons/ocd_live/controllers/directory.py:0
+msgid "No country found for « %s ». Try its name in English, or its code (CM, TG…)."
+msgstr "Aucun pays trouvé pour « %s ». Essaie son nom en anglais, ou son code (CM, TG…)."
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.phone_field
 msgid "No country found."
 msgstr "Aucun pays trouvé."
+
+#. module: ocd_live
+#. odoo-javascript
+#: code:addons/ocd_live/static/src/interactions/country_find.js:0
+msgid "No country with this name: try in English, or its code (CM, TG…)."
+msgstr "Aucun pays de ce nom : essaie en anglais, ou son code (CM, TG…)."
 
 #. module: ocd_live
 #: model_terms:ir.actions.act_window,help:ocd_live.ocd_directory_listing_action
@@ -6181,6 +6198,11 @@ msgid "Search a country or a code"
 msgstr "Chercher un pays ou un indicatif"
 
 #. module: ocd_live
+#: model_terms:ir.ui.view,arch_db:ocd_live.country_find
+msgid "Search your country"
+msgstr "Cherche ton pays"
+
+#. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.website_search_box_input
 msgid "Search..."
 msgstr "Rechercher..."
@@ -6196,11 +6218,6 @@ msgstr "Secret du lien personnel du vendeur. Le changer désactive l'ancien lien
 #: code:addons/ocd_live/static/src/settings/settings.xml:0
 msgid "Sections of the settings"
 msgstr "Sections des paramètres"
-
-#. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
-msgid "See"
-msgstr "Voir"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives
@@ -6221,12 +6238,6 @@ msgstr "Voir mon espace"
 #: model_terms:ir.ui.view,arch_db:ocd_live.pay
 msgid "See my ticket"
 msgstr "Voir mon ticket"
-
-#. module: ocd_live
-#. odoo-python
-#: code:addons/ocd_live/controllers/directory.py:0
-msgid "See the live of %s"
-msgstr "Voir le live de %s"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.listing_status
@@ -7358,11 +7369,6 @@ msgstr "Les listes d'attente des jours passés."
 #: code:addons/ocd_live/models/ocd_directory_listing.py:0
 msgid "The window of this link is over."
 msgstr "Le créneau de ce lien est terminé."
-
-#. module: ocd_live
-#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
-msgid "Their shop"
-msgstr "Sa boutique"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.space
@@ -9171,6 +9177,7 @@ msgstr "demain à %s"
 
 #. module: ocd_live
 #: model_terms:ir.ui.view,arch_db:ocd_live.lives
+#: model_terms:ir.ui.view,arch_db:ocd_live.lives_country
 msgid "· next lives and replays"
 msgstr "· prochains lives et replays"
 

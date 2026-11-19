@@ -31,6 +31,8 @@ class TestOcdProgramme(HttpCase, OcdShopCommon):
         tomorrow = self._live(self.fatou, now + timedelta(days=1), slot=1)
         self.authenticate(None, None)
         self.assertIn("/lives/programme", self.url_open("/lives").text, "From the feed of the lives")
+        self.assertIn("/lives/programme?pays=cm", self.url_open("/lives/cm").text,
+                      "From the lives of a country: the programme of this country")
         page = self.url_open("/lives/programme?pays=tous").text
         self.assertEqual(page.count("o_ocd_programme_day "), 7, "7 days")
         self.assertIn("Live now", page)

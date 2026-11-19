@@ -154,6 +154,28 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · Les cartes sur la page d'un pays, « Cherche ton pays », les catégories dans l'onglet Lives
+Demandés par l'équipe en regardant la démo. `ocd_live` 20.0.1.27.0 et `ocd_live_shop` 20.0.1.48.0, sans
+migration.
+- **La page d'un pays** (`/lives/<pays>`, ouverte par les pays de l'accueil) n'est plus une liste : les
+  mêmes cartes que l'onglet Lives (ses lives en cours, au studio, ses prochains lives, ses replays), avec
+  ses catégories, « Où ? » et où vend chaque vendeur sur sa carte (« 2 magasins · Akwa », en congé),
+  « Programme des lives » du pays, « Je suis en live » en haut sur grand écran. Sous les filtres, les
+  cartes sont l'une sous l'autre et la page défile, sur téléphone aussi. « 1 live » au lieu de « 1 lives ».
+- **« Cherche ton pays »** sur l'accueil : les pays viennent au fil de la frappe, avec leur drapeau et
+  leurs lives, par leur nom sans les accents (« cote » trouve la Côte d'Ivoire), leur nom anglais, leur
+  code (CM) ou un nom courant (Ivory Coast, RDC, USA, Dubaï…) ; les flèches choisissent, Entrée ouvre.
+  « Tous les pays » ouvre la nouvelle page `/lives/pays` : tous les pays, filtrés à la frappe ; sans
+  JavaScript, la recherche y mène (un seul pays trouvé ouvre sa page).
+- **Les catégories dans l'onglet Lives**, sous les pays, plus discrètes (la catégorie choisie en
+  orange) : les lives d'une catégorie dans tous les pays ; changer de pays garde la catégorie, et les
+  cartes chargées en défilant sont de la même catégorie.
+- Contrôlé dans le navigateur en français à 390, 820, 1366 × 657 et 1914 px ; `tools/captures/mise-en-page.js` :
+  toutes les règles tenues. Tests : 3 nouveaux (la recherche du pays, la page d'un pays avec les cartes, les
+  catégories du fil), 1 complété (le programme depuis la page d'un pays) ; la suite complète sur une base
+  neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO sans échec**.
+- **Sur un serveur** : `-u ocd_live,ocd_live_shop`.
+
 ### 19 novembre 2026 · Trois écrans qui tiennent à toute taille : le fil des lives, l'accueil, « À vérifier »
 Après des captures de l'équipe : ces écrans grandissent avec les données (les pays, les lives, une
 colonne de plus à chaque chantier), et leur mise en page cassait sur grand écran. Reproduits sur la démo,

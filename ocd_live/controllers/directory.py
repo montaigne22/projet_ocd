@@ -5,6 +5,8 @@ from odoo.http import request
 from . import common, feed
 
 LISTING_STATES = {"queued": "pending", "to_check": "pending", "published": "live"}
+# The cards of the page of a country, at most (its lives first): the others are in the feed
+COUNTRY_CARDS = 60
 
 
 class OcdLiveDirectory(http.Controller):
@@ -15,28 +17,41 @@ class OcdLiveDirectory(http.Controller):
 
     @http.route(
         "/lives", type="http", auth="public", website=True, sitemap=True, methods=["GET"],
-        ocd_cache=20, ocd_cache_params=("pays", "page"),
+        ocd_cache=20, ocd_cache_params=("pays", "page", "categorie"),
     )
-    def directory(self, note=None, error=None, pays=None, page=None, **kwargs):
+    def directory(self, note=None, error=None, pays=None, page=None, categorie=None, **kwargs):
         """The feed of the lives: the country of the person first, then the other countries.
-        `pays` puts another country first; `page` gives the next cards without JavaScript."""
+        `pays` puts another country first; `categorie` keeps the lives of a category; `page`
+        gives the next cards without JavaScript."""
         first = feed.first_country(pays)
+        category = self._category(categorie)
         number = int(page) if page and str(page).isdigit() and int(page) > 0 else 1
-        result = feed.page(first, offset=(number - 1) * feed.PAGE_SIZE)
+        result = feed.page(first, offset=(number - 1) * feed.PAGE_SIZE, category=category)
         code = (first.code or "").lower() if first else ""
-        more_url = f"/lives?pays={code}&page={number + 1}" if result["next"] is not None else False
+        more_url = feed.lives_url(code, category, number + 1) if result["next"] is not None else False
         return request.render("ocd_live.lives", common.page_values(
             "directory",
             nav="lives",
             bottom_cta=self._live_cta(),
             first=first,
-            bar=feed.country_bar(first, result["feed"]),
+            category=category,
+            categories=[{"label": request.env._("All"), "href": feed.lives_url(code), "on": not category}] + [
+                {"label": row.name, "href": feed.lives_url(code, row), "on": row == category}
+                for row in request.env["ocd.live.category"].sudo().search([])
+            ],
+            bar=feed.country_bar(first, result["feed"], category),
             cards=result["cards"],
             next_offset=result["next"],
             more_url=more_url,
             since=fields.Datetime.to_string(common.now()),
             **self._feed_values(note=note, error=error),
         ))
+
+    def _category(self, categorie):
+        """The category asked (?categorie=), else none."""
+        if not categorie or not str(categorie).isdigit():
+            return request.env["ocd.live.category"]
+        return request.env["ocd.live.category"].sudo().browse(int(categorie)).exists()
 
     def _feed_values(self, note=None, error=None):
         """Values of the cards of the feed (the card « closed » has the alert form)."""
@@ -50,12 +65,13 @@ class OcdLiveDirectory(http.Controller):
         }
 
     @http.route(
-        "/lives/flux", type="jsonrpc", auth="public", website=True, ocd_cache=20, ocd_cache_params=("offset", "pays"),
+        "/lives/flux", type="jsonrpc", auth="public", website=True, ocd_cache=20,
+        ocd_cache_params=("offset", "pays", "categorie"),
     )
-    def directory_feed(self, offset=0, pays=None):
-        """The next cards of the feed, while the person scrolls."""
+    def directory_feed(self, offset=0, pays=None, categorie=None):
+        """The next cards of the feed, while the person scrolls (of the category chosen)."""
         first = feed.first_country(pays)
-        result = feed.page(first, offset=offset)
+        result = feed.page(first, offset=offset, category=self._category(categorie))
         html = request.env["ir.qweb"]._render("ocd_live.feed_cards", {
             "cards": result["cards"], "request": request, **self._feed_values(),
         })
@@ -138,37 +154,50 @@ class OcdLiveDirectory(http.Controller):
         return request.redirect("/lives?note=1")
 
     @http.route(
+        "/lives/pays", type="http", auth="public", website=True, sitemap=True, methods=["GET"],
+        ocd_cache=30, ocd_cache_params=("q",),
+    )
+    def directory_countries(self, q=None, **kwargs):
+        """Every country offered with its lives now: « All countries » of the home page, and the
+        search of a country without JavaScript (a single country found opens its page)."""
+        env = request.env
+        rows = common.country_rows(common.default_country())
+        found = common.find_countries(rows, q)
+        if q and len(found) == 1:
+            return request.redirect(f"/lives/{found[0]['flag']}")
+        return request.render("ocd_live.lives_countries", common.page_values(
+            False,
+            nav="lives",
+            back="/ocd",
+            header_title=env._("All countries"),
+            rows=found,
+            q=q or "",
+            countries_json=common.countries_json(rows),
+            nothing=env._("No country found for « %s ». Try its name in English, or its code (CM, TG…).", q)
+            if q and not found else "",
+        ))
+
+    @http.route(
         "/lives/<string:code>", type="http", auth="public", website=True, sitemap=False, methods=["GET"],
         ocd_cache=20, ocd_cache_params=("categorie",),
     )
     def directory_country(self, code, categorie=None, **kwargs):
+        """The lives of a country with the cards of the feed: its lives now, at the studio, its
+        next lives, its replays, by category (and « Where? » with the shop)."""
         country = request.env["res.country"].sudo().search([("code", "=", (code or "").upper())], limit=1)
         if not country or len(code) != 2:
             raise request.not_found()
-        listings, _counts = common.live_counts()
-        listings = listings.filtered(lambda listing: listing.country_id == country)
-        categories = request.env["ocd.live.category"].sudo().search([])
-        category = categories.filtered(lambda c: str(c.id) == categorie)[:1]
-        shown = listings.filtered(lambda listing: listing.category_id == category) if category else listings
-        # Hook: the shop filters them by place (« Where? ») and orders them from the nearest
-        shown = self._ocd_directory_filter(country, shown)
+        env = request.env
         now = common.now()
-        rows = []
-        for listing in shown:
-            name = listing.title or listing.partner_id.name
-            since = max(1, int((now - (listing.checked_at or listing.window_start or now)).total_seconds() // 60))
-            rows.append({
-                "listing": listing,
-                "name": name,
-                "initials": common.initials(name),
-                "meta": request.env._(
-                    "%(category)s · for %(minutes)s min", category=listing.category_id.name or "", minutes=since
-                ),
-                "shop_url": self._shop_url(listing.partner_id),
-                "aria": request.env._("See the live of %s", name),
-                "where": False,
-            })
-        self._ocd_directory_rows(rows)
+        categories = env["ocd.live.category"].sudo().search([])
+        category = categories.filtered(lambda c: str(c.id) == categorie)[:1]
+        items = feed.country_items(country, now)
+        if category:
+            items = [item for item in items if feed.item_category(item) == category]
+        # Hook: the shop keeps the vendors of a place (« Where? ») and orders them from the nearest
+        items = self._ocd_directory_items(country, items)[:COUNTRY_CARDS]
+        cards = self._ocd_directory_cards(feed.cards(items, now))
+        lives = sum(1 for item in items if item["kind"] in ("live", "studio"))
         return request.render("ocd_live.lives_country", common.page_values(
             False,
             nav="lives",
@@ -176,27 +205,28 @@ class OcdLiveDirectory(http.Controller):
             back="/lives",
             header_h1=country.name,
             header_flag=country.code.lower(),
-            header_count=request.env._("%s lives", len(shown)),
+            header_count=(env._("1 live") if lives == 1 else env._("%s lives", lives)) if lives else False,
             country=country,
-            chips=[{"label": request.env._("All"), "href": self._ocd_directory_url(code, None), "on": not category}] + [
+            chips=[{"label": env._("All"), "href": self._ocd_directory_url(code, None), "on": not category}] + [
                 {"label": c.name, "href": self._ocd_directory_url(code, c.id), "on": c == category}
                 for c in categories
             ],
-            rows=rows,
-            windows=common.windows_info(),
+            cards=cards,
+            since=fields.Datetime.to_string(now),
             categorie=category.id if category else False,
+            **self._feed_values(),
             **self._ocd_directory_values(country),
         ))
 
     # === HOOKS OF THE SHOP (« Where? », chantier 20) === #
 
-    def _ocd_directory_filter(self, country, listings):
-        """The listings shown, in their order (the shop keeps those of a place)."""
-        return listings
+    def _ocd_directory_items(self, country, items):
+        """The items of the page of a country, in their order (the shop keeps those of a place)."""
+        return items
 
-    def _ocd_directory_rows(self, rows):
-        """Add to the rows of the listings what the shop knows (where the vendor sells)."""
-        return rows
+    def _ocd_directory_cards(self, cards):
+        """Add to the cards of the page of a country what the shop knows (where the vendor sells)."""
+        return cards
 
     def _ocd_directory_values(self, country):
         """More values for the page (the filter « Where? » of the shop)."""

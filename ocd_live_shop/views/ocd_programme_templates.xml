@@ -12,6 +12,16 @@
         </xpath>
     </template>
 
+    <!-- « Programme » from the lives of a country: the programme of this country (and its category) -->
+    <template id="lives_country_programme_link" inherit_id="ocd_live.lives_country" name="OCD Live: the programme from the lives of a country">
+        <xpath expr="//div[hasclass('o_ocd_feed_state')]" position="inside">
+            <a t-attf-href="/lives/programme?pays=#{country.code.lower()}#{('&amp;categorie=%s' % categorie) if categorie else ''}"
+               class="o_ocd_programme_link">
+                <t t-call="ocd_live.icon" icon.f="calendar"/><span>Programme of the lives</span>
+            </a>
+        </xpath>
+    </template>
+
     <!-- One live of the programme: its hour, its vendor, where, « Tell me » -->
     <template id="programme_row" name="OCD Live: a live of the programme">
         <div t-attf-class="o_ocd_programme_row #{'o_ocd_programme_live' if row['live'] else ''}">

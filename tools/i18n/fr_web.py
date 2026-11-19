@@ -24,6 +24,11 @@ WEB = {
     "No live here right now. Here are the lives of the other countries, below.":
         "Pas de live ici pour l'instant. Voici les lives des autres pays, plus bas.",
     "Nothing to check right now.": "Rien à vérifier en ce moment.",
+    "No country found for « %s ». Try its name in English, or its code (CM, TG…).":
+        "Aucun pays trouvé pour « %s ». Essaie son nom en anglais, ou son code (CM, TG…).",
+    "No country with this name: try in English, or its code (CM, TG…).":
+        "Aucun pays de ce nom : essaie en anglais, ou son code (CM, TG…).",
+    "Search your country": "Cherche ton pays",
     "Nothing waiting:": "Rien en attente :",
     # The payment page says « your hour » only for a booking (not for a pass or a formula)
     "<b>The payment did not go through.</b>": "<b>Le paiement n'est pas passé.</b>",

@@ -446,6 +446,108 @@ body.o_ocd_body {
         font-variant-numeric: tabular-nums;
     }
 }
+// « Search your country » (country_find.js): the countries as the person types
+.o_ocd_country_find {
+    position: relative;
+    margin-top: 14px;
+}
+.o_ocd_country_find_box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 0 18px;
+    border: 2px solid $ocd-line;
+    border-radius: 999px;
+    background: #FFFFFF;
+    &:focus-within {
+        border-color: $ocd-ink;
+    }
+    .o_ocd_icon {
+        flex: none;
+        width: 20px;
+        height: 20px;
+        color: $ocd-muted;
+    }
+}
+.o_ocd_country_find_input {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: $ocd-ink;
+    // 16 px at least: a phone does not zoom on the field
+    font-size: 16px;
+    font-weight: 600;
+    &::placeholder {
+        color: $ocd-muted;
+        font-weight: 500;
+    }
+}
+// The box shows the focus (its border): no second frame inside it
+.o_ocd_app .o_ocd_country_find_input:focus,
+.o_ocd_app .o_ocd_country_find_input:focus-visible {
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+.o_ocd_country_find_list {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    max-height: 340px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    border-radius: 18px;
+    background: #FFFFFF;
+    box-shadow: 0 14px 34px rgba($ocd-ink, 0.16), 0 0 0 1px $ocd-line;
+    a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 46px;
+        padding: 0 12px;
+        border-radius: 12px;
+        color: $ocd-ink;
+        font-weight: 600;
+        text-decoration: none;
+        &:hover, &[aria-selected="true"] {
+            background: $ocd-sand;
+            color: $ocd-ink;
+        }
+    }
+    .o_ocd_country_find_count {
+        margin-left: auto;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        border-radius: 11px;
+        background: $ocd-red-live;
+        color: #FFFFFF;
+        font-size: 12.5px;
+        line-height: 22px;
+        text-align: center;
+    }
+}
+.o_ocd_country_find_none {
+    padding: 12px;
+    color: $ocd-muted;
+    font-size: 14.5px;
+}
+// The page of all the countries
+.o_ocd_countries_page {
+    .o_ocd_country_find {
+        margin-top: 0;
+    }
+    .o_ocd_countries_list {
+        margin-top: 4px;
+    }
+}
 // « All countries » after the countries with lives: the feed of the lives
 .o_ocd_chip.o_ocd_chip_all {
     border-style: dashed;
@@ -2380,8 +2482,8 @@ body.o_ocd_body {
     .o_ocd_home {
         display: grid;
         grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-        grid-template-areas: "title choices" "count choices" "chips choices";
-        grid-template-rows: auto auto 1fr;
+        grid-template-areas: "title choices" "count choices" "chips choices" "find choices";
+        grid-template-rows: auto auto auto 1fr;
         column-gap: 48px;
         align-items: start;
         padding-top: 48px;
@@ -2398,6 +2500,10 @@ body.o_ocd_body {
         }
         > .o_ocd_chips {
             grid-area: chips;
+        }
+        > .o_ocd_country_find {
+            grid-area: find;
+            max-width: 460px;
         }
     }
     .o_ocd_choice {
@@ -2840,6 +2946,42 @@ body.o_ocd_body {
         text-align: center;
     }
 }
+// The categories under the countries: lighter, so that the country stays the first choice
+.o_ocd_feed_cats {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 0 12px 10px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+.o_ocd_feed_cat {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 13px;
+    border: 1.5px solid $ocd-line;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-weight: 600;
+    font-size: 13.5px;
+    text-decoration: none;
+    white-space: nowrap;
+    &:hover {
+        border-color: $ocd-ink;
+        color: $ocd-ink;
+    }
+    &.o_ocd_on {
+        border-color: $ocd-orange;
+        background: $ocd-orange-pale;
+        color: $ocd-orange-dark;
+        font-weight: 800;
+    }
+}
 .o_ocd_feed_state {
     display: flex;
     align-items: center;
@@ -2856,6 +2998,46 @@ body.o_ocd_body {
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+    }
+}
+// The page of a country: its categories and « Where? » above the cards of the feed
+.o_ocd_country_lives {
+    > .o_ocd_chips {
+        margin: 0;
+        padding: 4px 12px 10px;
+    }
+    > .o_ocd_lives_where {
+        padding: 0 12px 10px;
+    }
+    > .o_ocd_feed_wrap > .o_ocd_info {
+        margin: 0 12px;
+    }
+}
+// Under its filters, the cards one under the other and the page scrolls (feed.js: grid), on a
+// phone too: a box under the filters would leave too little room to a card
+.o_ocd_feed_page {
+    .o_ocd_feed {
+        height: auto !important;
+        min-height: 0;
+        overflow: visible;
+        overscroll-behavior: auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        border-radius: 0;
+        box-shadow: none;
+        background: none;
+        scroll-snap-type: none;
+    }
+    .o_ocd_feed_card {
+        height: auto;
+        border-radius: 22px;
+        box-shadow: 0 0 0 1px $ocd-line;
+        background: #FFFFFF;
+        scroll-snap-align: none;
+    }
+    .o_ocd_feed_person {
+        min-height: 520px;
     }
 }
 // For a tablet and a computer only (ocd_large.scss): the phone has its button at the bottom of

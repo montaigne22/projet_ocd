@@ -26,7 +26,8 @@
                     <h1 class="visually-hidden">Lives by country</h1>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
                     <div class="o_ocd_feed_wrap" t-att-data-first="first.code.lower() if first else ''"
-                         t-att-data-next="next_offset if next_offset is not None else ''" t-att-data-since="since">
+                         t-att-data-next="next_offset if next_offset is not None else ''" t-att-data-since="since"
+                         t-att-data-categorie="category.id if category else None">
                         <!-- On a tablet and a computer, the head stays at the top while the page scrolls -->
                         <div class="o_ocd_feed_head">
                         <nav class="o_ocd_feed_bar" aria-label="Countries">
@@ -38,6 +39,12 @@
                                     <b t-if="chip['count']" class="o_ocd_feed_chip_count" t-out="chip['count']"/>
                                 </a>
                             </t>
+                        </nav>
+                        <!-- What is sold: the lives of a category, in every country (the country kept) -->
+                        <nav class="o_ocd_feed_cats" aria-label="Categories">
+                            <a t-foreach="categories" t-as="row" t-att-href="row['href']"
+                               t-attf-class="o_ocd_feed_cat #{'o_ocd_on' if row['on'] else ''}"
+                               t-att-aria-current="'true' if row['on'] else None" t-out="row['label']"/>
                         </nav>
                         <div class="o_ocd_feed_state">
                             <div t-if="windows['open']" class="o_ocd_state_line o_ocd_state_open">
@@ -184,6 +191,8 @@
                     <p t-if="card['where'] or card.get('zone')" class="o_ocd_feed_where">
                         <t t-out="' · '.join(part for part in (card['where'], card.get('zone')) if part)"/>
                     </p>
+                    <!-- Where the vendor sells, or on holiday (the page of a country, with the shop) -->
+                    <p t-if="card.get('place')" class="o_ocd_feed_where o_ocd_feed_place" t-out="card['place']"/>
                     <div class="o_ocd_feed_actions">
                         <a t-if="card['watch_url']" t-att-href="card['watch_url']" class="o_ocd_cta o_ocd_feed_watch"
                            t-att-target="'_blank' if card['external'] else None"
@@ -262,8 +271,8 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Lives of the country</t>
         <t t-call="ocd_live.app">
-            <div class="o_ocd_frame">
-                <main class="o_ocd_main">
+            <div class="o_ocd_frame o_ocd_feed_frame">
+                <main class="o_ocd_main o_ocd_feed_main o_ocd_country_lives">
                     <div class="o_ocd_chips">
                         <t t-foreach="chips" t-as="chip">
                             <a t-att-href="chip['href']" t-att-class="'o_ocd_chip o_ocd_on' if chip['on'] else 'o_ocd_chip'"
@@ -272,29 +281,29 @@
                     </div>
                     <!-- « Where? » of the shop (chantier 20) -->
                     <div class="o_ocd_lives_where"/>
-                    <div class="o_ocd_people">
-                        <t t-foreach="rows" t-as="row">
-                            <div class="o_ocd_person">
-                                <t t-set="person_href" t-value="row['shop_url'] or row['listing'].url"/>
-                                <a t-att-href="person_href" class="o_ocd_person_main"
-                                   t-att-target="None if row['shop_url'] else '_blank'"
-                                   t-att-rel="None if row['shop_url'] else 'noopener'">
-                                    <span class="o_ocd_avatar">
-                                        <t t-out="row['initials']"/>
-                                        <i class="o_ocd_avatar_live" aria-hidden="true"/>
-                                    </span>
-                                    <span class="o_ocd_person_text">
-                                        <b t-out="row['name']"/>
-                                        <small t-out="row['meta']"/>
-                                        <small t-if="row.get('where')" class="o_ocd_person_where" t-out="row['where']"/>
-                                        <span t-if="row['shop_url']" class="o_ocd_person_shop">Their shop</span>
-                                    </span>
+                    <!-- The cards of the feed (lives now, next lives, replays of the country): the
+                         same script plays their videos and turns their products. Under the filters,
+                         the cards one under the other and the page scrolls, on a phone too -->
+                    <div class="o_ocd_feed_wrap o_ocd_feed_page" data-first="" data-next="" t-att-data-since="since">
+                        <div class="o_ocd_feed_head">
+                            <div class="o_ocd_feed_state">
+                                <div t-if="windows['open']" class="o_ocd_state_line o_ocd_state_open">
+                                    <i aria-hidden="true"/>
+                                    <span>Lives checked now · until <t t-out="windows['end']"/></span>
+                                </div>
+                                <div t-else="" class="o_ocd_state_line o_ocd_state_closed">
+                                    <i aria-hidden="true"/>
+                                    <span>Back at <t t-out="windows['next']"/> · next lives and replays</span>
+                                </div>
+                                <a href="/lives/pass" class="o_ocd_cta o_ocd_feed_live_cta">
+                                    <span class="o_ocd_rec" aria-hidden="true"/><span>I am live</span>
                                 </a>
-                                <a t-att-href="row['listing'].url" target="_blank" rel="noopener" class="o_ocd_pill"
-                                   t-att-aria-label="row['aria']">See</a>
                             </div>
-                        </t>
-                        <div t-if="not rows" class="o_ocd_info">
+                        </div>
+                        <div t-if="cards" class="o_ocd_feed" tabindex="0" aria-label="Lives, one per screen: swipe up for the next one">
+                            <t t-call="ocd_live.feed_cards"/>
+                        </div>
+                        <div t-else="" class="o_ocd_info">
                             <t t-if="windows['open']">No live checked here for now. Come back in a few minutes.</t>
                             <t t-else="">The lives come back at <t t-out="windows['next']"/>.</t>
                         </div>

@@ -52,6 +52,32 @@ ZONE_CONTINENTS = {
 KNOWN_SIZES = {"TG": 8, "CM": 9, "BJ": 10, "CI": 10, "SN": 9}
 
 
+# The names a person types for a country beside its name and its code (« Search your country »)
+ALIASES = {
+    "CI": ("Ivory Coast", "Cote dIvoire", "Abidjan"),
+    "CD": ("RDC", "DRC", "Congo Kinshasa", "Kinshasa"),
+    "CG": ("Congo Brazzaville", "Brazzaville"),
+    "CF": ("Centrafrique", "RCA", "CAR"),
+    "CV": ("Cap Vert", "Cape Verde"),
+    "SZ": ("Swaziland",),
+    "ZA": ("Afrique du Sud", "South Africa"),
+    "GB": ("UK", "Angleterre", "England", "Royaume Uni", "Grande Bretagne"),
+    "US": ("USA", "Etats Unis", "Amerique", "America"),
+    "AE": ("UAE", "Emirats", "Dubai"),
+    "NL": ("Hollande", "Holland", "Pays Bas"),
+    "DE": ("Allemagne", "Germany"),
+    "BE": ("Belgique", "Belgium"),
+    "CH": ("Suisse", "Switzerland"),
+    "MA": ("Maroc", "Morocco"),
+    "DZ": ("Algerie", "Algeria"),
+    "TN": ("Tunisie", "Tunisia"),
+    "EG": ("Egypte", "Egypt"),
+    "GQ": ("Guinee Equatoriale", "Equatorial Guinea"),
+    "GW": ("Guinee Bissau", "Guinea Bissau"),
+    "GN": ("Guinee Conakry", "Conakry"),
+}
+
+
 def continent(code):
     """Continent of the country `code` (ISO): africa, europe, americas, asia or oceania."""
     code = (code or "").upper()

@@ -33,12 +33,15 @@ class OcdLiveBooking(http.Controller):
     )
     def home(self, **kwargs):
         listings, counts = common.live_counts()
+        first = common.default_country()
         return request.render("ocd_live.home", common.page_values(
             "home",
             nav="home",
             live_total=len(listings),
             # The page in memory is kept per country of the visitor (page_cache._key)
-            chips=common.country_chips(counts, common.default_country()),
+            chips=common.country_chips(counts, first),
+            # « Search your country »: every country offered, found as the person types
+            countries_json=common.countries_json(common.country_rows(first)),
             studio_place=", ".join(filter(None, [common.studio_city(), common.company().country_id.name])),
         ))
 

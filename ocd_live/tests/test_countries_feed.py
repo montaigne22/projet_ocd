@@ -131,9 +131,59 @@ class TestOcdLiveFeed(HttpCase):
             home = self.url_open("/reserver").text
             links = re.findall(r'<a\b[^>]*\bclass="o_ocd_chip[^"]*"[^>]*>', home)
             chips = [re.search(r'href="/lives/?([a-z]*)"', link).group(1) for link in links]
-            self.assertEqual(chips, ["cm", "tg", "fr", ""],
+            self.assertEqual(chips, ["cm", "tg", "fr", "pays"],
                              "Cameroon (2 lives), Togo (1), France (the visitor), then « All countries »")
             self.assertIn("o_ocd_chip_all", links[-1])
+
+    def test_the_lives_of_a_category(self):
+        """The categories of the Lives tab: the lives of a category in every country, the country
+        chosen kept, the next cards of the same category."""
+        with freeze_time(self.in_window):
+            food = self.env.ref("ocd_live.category_food")
+            other = self.env["ocd.live.category"].search([("id", "!=", food.id)], limit=1)
+            togo, cameroon = self._listing(self.togo), self._listing(self.cameroon)
+            cameroon.category_id = other
+            page = self.url_open(f"/lives?pays=cm&categorie={food.id}").text
+            keys = self._keys(page)
+            self.assertIn(f"l{togo.id}", keys)
+            self.assertNotIn(f"l{cameroon.id}", keys, "Another category: not in the feed")
+            self.assertIn(f"/lives?pays=tg&amp;categorie={food.id}", page, "A country chosen keeps the category")
+            self.assertIn('class="o_ocd_feed_cat o_ocd_on"', page)
+            result = self.make_jsonrpc_request("/lives/flux", {"offset": 0, "pays": "cm", "categorie": str(other.id)})
+            keys = self._keys(result["html"])
+            self.assertIn(f"l{cameroon.id}", keys)
+            self.assertNotIn(f"l{togo.id}", keys, "The next cards: of the same category")
+
+    def test_search_your_country(self):
+        """« Search your country »: by its name, without the accents, its English name, its code or
+        a name people type (Ivory Coast); a single country found opens its page."""
+        from odoo.addons.ocd_live.controllers import common
+        self.assertEqual(common.fold("Côte d'Ivoire"), "cotedivoire")
+        for typed, code in (("cote divoire", "ci"), ("ivory", "ci"), ("CM", "cm"), ("rdc", "cd"), ("Togo", "tg")):
+            response = self.url_open(f"/lives/pays?q={typed}", allow_redirects=False)
+            self.assertEqual(response.status_code, 303, typed)
+            self.assertTrue(response.headers["Location"].endswith(f"/lives/{code}"), typed)
+        several = self.url_open("/lives/pays?q=gu").text
+        for code in ("gn", "gq", "gw"):
+            self.assertIn(f'href="/lives/{code}"', several, "Several countries found: the list of them")
+        self.assertNotIn('href="/lives/cm"', several)
+        self.assertIn("No country found", self.url_open("/lives/pays?q=zzz").text)
+        every = self.url_open("/lives/pays").text
+        self.assertGreater(every.count('class="o_ocd_chip"'), 50, "All the countries offered")
+        home = self.url_open("/reserver").text
+        self.assertIn('action="/lives/pays"', home, "The search of the home page, without JavaScript too")
+        self.assertIn("ivorycoast", home, "The names typed, for the search as the person types")
+
+    def test_the_lives_of_a_country_with_the_cards_of_the_feed(self):
+        with freeze_time(self.in_window):
+            listing = self._listing(self.cameroon)
+            page = self.url_open("/lives/cm").text
+            self.assertIn(f'data-key="l{listing.id}"', page, "The card of the feed")
+            self.assertIn("o_ocd_feed_page", page, "The cards one under the other, the page scrolls")
+            self.assertIn("1 live", page)
+            other = self.env["ocd.live.category"].search([("id", "!=", listing.category_id.id)], limit=1)
+            page = self.url_open(f"/lives/cm?categorie={other.id}").text
+            self.assertNotIn(f'data-key="l{listing.id}"', page, "Another category: not this live")
 
     def test_next_pages_and_new_lives(self):
         with freeze_time(self.in_window):

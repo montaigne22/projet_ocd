@@ -39,6 +39,7 @@
         <svg t-elif="icon == 'close'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
         <svg t-elif="icon == 'shield'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
         <svg t-elif="icon == 'flag'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4M4 4h12l-2 4 2 4H4"/></svg>
+        <svg t-elif="icon == 'search'" class="o_ocd_icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
     </template>
 
     <template id="tile_icon" name="OCD Live: pictogram of a choice">
@@ -434,7 +435,47 @@ Disallow: /*/reserver/
                                 <span class="o_ocd_chip_count" t-out="chip['count']"/>
                             </a>
                         </t>
-                        <a href="/lives" class="o_ocd_chip o_ocd_chip_all">All countries</a>
+                        <a href="/lives/pays" class="o_ocd_chip o_ocd_chip_all">All countries</a>
+                    </div>
+                    <t t-call="ocd_live.country_find"/>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <!-- « Search your country »: the countries come as the person types (country_find.js), with
+         their flag and their lives now; without JavaScript, the page of all the countries.
+         Parameters: countries_json (common.countries_json), q (what was typed). -->
+    <template id="country_find" name="OCD Live: search your country">
+        <form action="/lives/pays" method="get" class="o_ocd_country_find" role="search" t-att-data-countries="countries_json">
+            <label for="o_ocd_country_q" class="visually-hidden">Search your country</label>
+            <div class="o_ocd_country_find_box">
+                <t t-call="ocd_live.icon" icon.f="search"/>
+                <input id="o_ocd_country_q" type="search" name="q" class="o_ocd_country_find_input" t-att-value="q or None"
+                       placeholder="Search your country" autocomplete="off" autocapitalize="words" enterkeyhint="search"
+                       role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="o_ocd_country_list"/>
+            </div>
+            <ul id="o_ocd_country_list" class="o_ocd_country_find_list" role="listbox" aria-label="Countries" hidden=""/>
+        </form>
+    </template>
+
+    <!-- All the countries: « All countries » of the home page, the search without JavaScript -->
+    <template id="lives_countries" name="OCD Live: all the countries">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">All countries</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_countries_page">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Lives by country</h1>
+                    <t t-call="ocd_live.country_find"/>
+                    <div t-if="nothing" class="o_ocd_info" role="status" t-out="nothing"/>
+                    <div class="o_ocd_chips o_ocd_chips_wrap o_ocd_countries_list">
+                        <a t-foreach="rows" t-as="row" t-attf-href="/lives/#{row['flag']}" class="o_ocd_chip"
+                           t-att-data-names="' '.join(row['names'])">
+                            <span t-attf-class="o_ocd_flag o_ocd_flag_#{row['flag']}"/>
+                            <span t-out="row['country'].name"/>
+                            <span t-if="row['count']" class="o_ocd_chip_count" t-out="row['count']"/>
+                        </a>
                     </div>
                 </main>
             </div>

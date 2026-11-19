@@ -46,9 +46,10 @@ export class OcdLiveFeed extends Interaction {
         this.gridQuery = window.matchMedia(GRID);
     }
 
-    /** True on a tablet and a computer: the page scrolls, the feed is a grid. */
+    /** True on a tablet and a computer, and on the page of a country (its filters above the
+     * cards): the page scrolls, the feed is a grid. */
     get grid() {
-        return this.gridQuery.matches;
+        return this.el.classList.contains("o_ocd_feed_page") || this.gridQuery.matches;
     }
 
     start() {
@@ -121,7 +122,11 @@ export class OcdLiveFeed extends Interaction {
      * and a computer. */
     scrollToCard(card, behavior = this.motion()) {
         if (this.grid) {
-            card.scrollIntoView({ block: "start", behavior }); // under the head: scroll-margin-top
+            // Under the head when it stays at the top of the page (its countries and categories)
+            const head = this.el.querySelector(".o_ocd_feed_head");
+            const sticky = head && getComputedStyle(head).position === "sticky";
+            const top = card.getBoundingClientRect().top + window.scrollY - (sticky ? head.offsetHeight + 12 : 12);
+            window.scrollTo({ top: Math.max(0, top), behavior });
         } else {
             // The feed only: scrollIntoView would also move the page under the bar
             this.scrollerEl.scrollTo({ top: card.offsetTop, behavior });
@@ -218,7 +223,11 @@ export class OcdLiveFeed extends Interaction {
         }
         this.loading = true;
         try {
-            const result = await this.waitFor(rpc("/lives/flux", { offset: this.next, pays: this.first }));
+            const result = await this.waitFor(rpc("/lives/flux", {
+                offset: this.next,
+                pays: this.first,
+                categorie: this.el.dataset.categorie || null,
+            }));
             const holder = document.createElement("div");
             holder.innerHTML = result.html;
             const known = new Set(this.cards().map((card) => card.dataset.key));

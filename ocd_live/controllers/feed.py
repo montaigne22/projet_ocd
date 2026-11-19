@@ -93,14 +93,18 @@ def _sort_moment(kind, moment):
     return stamp if kind == "next" else -stamp
 
 
-def ordered(first, now=None):
+def ordered(first, now=None, category=None):
     """The items of the feed in their order, with a card per country between the countries:
     a list of dicts {key, kind, record, country}. The country of the person comes first (with a
-    card that says when it has no live), then the other countries, the most lives first."""
+    card that says when it has no live), then the other countries, the most lives first. With a
+    `category`, only its lives."""
     now = now or common.now()
     by_country = defaultdict(list)
     for key, kind, record, country, moment in _raw_items(now):
-        by_country[country].append({"key": key, "kind": kind, "record": record, "country": country, "moment": moment})
+        item = {"key": key, "kind": kind, "record": record, "country": country, "moment": moment}
+        if category and item_category(item) != category:
+            continue
+        by_country[country].append(item)
     for rows in by_country.values():
         rows.sort(key=lambda item: (KIND_ORDER[item["kind"]], _sort_moment(item["kind"], item["moment"])))
 
@@ -126,9 +130,38 @@ def ordered(first, now=None):
     return feed
 
 
-def country_bar(first, feed):
+def country_items(country, now=None):
+    """The items of one country in the order of the feed (its lives now, at the studio, its next
+    lives, its replays), for the page of the country: the same cards as the feed."""
+    now = now or common.now()
+    rows = [
+        {"key": key, "kind": kind, "record": record, "country": item_country, "moment": moment}
+        for key, kind, record, item_country, moment in _raw_items(now) if item_country == country
+    ]
+    rows.sort(key=lambda item: (KIND_ORDER[item["kind"]], _sort_moment(item["kind"], item["moment"])))
+    return rows
+
+
+def item_category(item):
+    """The category of an item: the one of the link sent for a live now, else the one of the vendor."""
+    record = item["record"]
+    return record.category_id if item["kind"] == "live" else record.partner_id.ocd_category_id
+
+
+def item_vendor(item):
+    return item["record"].partner_id
+
+
+def cards(items, now=None):
+    """The cards of `items` (of the feed or of a country)."""
+    now = now or common.now()
+    tz_name = common.viewer_tz()
+    return [_card(item, tz_name, now) for item in items]
+
+
+def country_bar(first, feed, category=None):
     """The countries of the bar above the feed: the one of the person, then the others in the
-    order of the feed, each with its number of lives now."""
+    order of the feed, each with its number of lives now (of the category chosen, kept)."""
     counts = defaultdict(int)
     order = [first] if first else []
     for item in feed:
@@ -142,7 +175,7 @@ def country_bar(first, feed):
             "country": country,
             "flag": (country.code or "").lower(),
             "count": counts[country],
-            "href": f"/lives?pays={(country.code or '').lower()}",
+            "href": lives_url((country.code or "").lower(), category),
             "on": country == first,
         }
         for country in order if country
@@ -314,10 +347,20 @@ def preview_card(vendor):
     return card
 
 
-def page(first, offset=0, limit=PAGE_SIZE, now=None):
+def lives_url(code, category=None, page=None):
+    """The address of the feed: a country first, a category, a page (without JavaScript)."""
+    params = [f"pays={code}"] if code else []
+    if category:
+        params.append(f"categorie={category.id}")
+    if page:
+        params.append(f"page={page}")
+    return "/lives" + ("?" + "&".join(params) if params else "")
+
+
+def page(first, offset=0, limit=PAGE_SIZE, now=None, category=None):
     """A page of the feed: its cards and where the next page starts (None at the end)."""
     now = now or common.now()
-    feed = ordered(first, now)
+    feed = ordered(first, now, category)
     tz_name = common.viewer_tz()
     offset = max(0, int(offset or 0))
     limit = min(max(1, int(limit or PAGE_SIZE)), 20)

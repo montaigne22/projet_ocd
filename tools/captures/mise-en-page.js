@@ -65,7 +65,7 @@ async function feed(browser, [width, height]) {
                 const el = document.querySelector(`[data-country-start="${code}"]`);
                 return el.getBoundingClientRect().top - document.querySelector('.o_ocd_feed_head').getBoundingClientRect().bottom;
             }, code);
-            check(gap >= 0 && gap <= 60, `${size}: the country picked (${code}) under the head (${Math.round(gap)}px)`);
+            check(gap >= 0 && gap <= 40, `${size}: the country picked (${code}) under the head (${Math.round(gap)}px)`);
         }
     } else {
         check(info.ctaBottom && !info.ctaTop, `${size}: « I am live » at the bottom of the phone`);

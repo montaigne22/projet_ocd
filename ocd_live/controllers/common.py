@@ -1,5 +1,7 @@
+import json
 import logging
 import re
+import unicodedata
 from datetime import date, datetime, time, timedelta
 from urllib.parse import urlencode
 
@@ -562,6 +564,49 @@ def country_chips(counts, first=None):
     # Stable: among the countries with as many lives, the one of the visitor stays first
     rows.sort(key=lambda row: -row["count"])
     return rows
+
+
+def fold(text):
+    """A text to compare with what a person types: without accents, capitals, spaces nor signs
+    (« Côte d'Ivoire » and « cote divoire » give « cotedivoire »)."""
+    text = unicodedata.normalize("NFKD", text or "").encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]", "", text)
+
+
+def country_rows(first=None):
+    """Every country offered (`first`, the one of the visitor, first), with its lives now and the
+    names it is found by: its name in the language of the page, in English, its code."""
+    _listings, counts = live_counts()
+    found = directory_countries(first)
+    english = {country.id: country.name for country in found.with_context(lang="en_US")}
+    rows = []
+    for country in found:
+        typed = (country.name, english.get(country.id), country.code, *countries.ALIASES.get(country.code, ()))
+        names = dict.fromkeys(fold(name) for name in typed if name)
+        rows.append({
+            "country": country,
+            "flag": (country.code or "").lower(),
+            "count": counts.get(country, 0),
+            "names": list(names),
+        })
+    return rows
+
+
+def find_countries(rows, query):
+    """The rows of `country_rows` a search finds: a name that starts with what is typed first,
+    then a name that contains it. Everything when nothing is typed."""
+    typed = fold(query)
+    if not typed:
+        return rows
+    starts = [row for row in rows if any(name.startswith(typed) for name in row["names"])]
+    contains = [row for row in rows if row not in starts and any(typed in name for name in row["names"])]
+    return starts + contains
+
+
+def countries_json(rows):
+    """The countries for the search of the page (country_find.js): code, name, lives now, names."""
+    return json.dumps([[row["flag"], row["country"].name, row["count"], " ".join(row["names"])] for row in rows],
+                      ensure_ascii=False, separators=(",", ":"))
 
 
 class FormErrors(UserError):
