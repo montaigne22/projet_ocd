@@ -4800,6 +4800,8 @@
         border: 2px solid $ocd-line;
         border-radius: 16px;
         padding: 10px 12px;
+        // The figure takes the width of its tile (cqi): an amount is never cut (« FC / FA »)
+        container-type: inline-size;
         small {
             color: $ocd-muted;
             font-size: 13.5px;
@@ -4807,10 +4809,11 @@
         > b {
             font-family: $ocd-display;
             font-weight: 800;
-            font-size: 24px;
+            font-size: 20px;
+            font-size: clamp(14px, 11.5cqi, 24px);
             line-height: 1.1;
             font-variant-numeric: tabular-nums;
-            overflow-wrap: anywhere;
+            white-space: nowrap;
         }
     }
     .o_ocd_figures_trend {
@@ -5187,6 +5190,7 @@
     .o_ocd_app {
         .o_ocd_figures_tile > b {
             font-size: 21px;
+            font-size: clamp(14px, 11.5cqi, 21px);
         }
         .o_ocd_figures_summary form {
             max-width: 480px;

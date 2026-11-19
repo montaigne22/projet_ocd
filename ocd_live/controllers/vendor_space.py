@@ -17,6 +17,9 @@ CARD_IMAGE_MAX_BYTES = 10 * 1024 * 1024
 # The pages of the space a button of the back office opens directly
 TEAM_VIEW_PAGES = {"chiffres": "/ocd/espace/moi/chiffres"}
 
+# The next lives of « My space » shown at once (the next one and two after it)
+LIVES_SHOWN = 3
+
 
 class OcdVendorSpace(http.Controller):
     """Space of the vendor: next lives, lives left to place, directory pass and WhatsApp
@@ -267,6 +270,12 @@ class OcdVendorSpace(http.Controller):
             flag=(vendor.country_id.code or "").lower(),
             vendor_line=" · ".join(filter(None, [vendor.ocd_category_id.name, vendor.city, vendor.phone])),
             lives=[self._live_card(booking) for booking in bookings],
+            # The next lives shown at once; the others behind a button, the page stays short
+            lives_shown=LIVES_SHOWN,
+            more_lives_label=(
+                env._("See my other live") if len(bookings) - LIVES_SHOWN == 1
+                else env._("See my %s other lives", len(bookings) - LIVES_SHOWN)
+            ) if len(bookings) > LIVES_SHOWN else "",
             move_limit=company.ocd_move_limit_hours,
             credits=[self._credit_card(credit) for credit in credits],
             pass_end=common.day_text(vendor.ocd_pass_end_date, "d MMMM") if vendor.ocd_pass_active else False,

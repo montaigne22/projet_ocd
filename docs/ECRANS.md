@@ -29,7 +29,7 @@ téléphone garde son design. Captures dans `docs/captures/maquette-responsive-*
 | `Payer` Payer la réservation | `/ocd/payer/<commande>` : formulaire de paiement d'Odoo, tous les fournisseurs configurés | ✅ |
 | `Ticket` Ticket de réservation | `/ocd/ticket/<réservation>` | ✅ |
 | `Connexion` Retrouver son espace | `/ocd/connexion` (lien ou code WhatsApp) | ✅ |
-| `MonEspace` Mon espace vendeur | `/ocd/espace/<jeton>`, `ocd_space_templates.xml` | ✅ |
+| `MonEspace` Mon espace vendeur | `/ocd/espace/<jeton>`, `ocd_space_templates.xml` ; le menu de l'espace en onglets sur téléphone et tablette, à gauche sur ordinateur ; les trois prochains lives, les autres derrière « Voir mes N autres lives » | ✅ |
 
 ## Site : annuaire des lives
 

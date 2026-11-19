@@ -8,9 +8,11 @@
 // - home: only the countries with a live and the one of the visitor, then « All countries »;
 // - the page of a country: its cards not cut, never one card stretched over the page;
 // - « To check »: no column squeezed under 280 px, no card wider than its column, no empty
-//   column on the board.
+//   column on the board;
+// - with OCD_SPACE_LINK (the personal link of a vendor of the demo): « My space » has every entry
+//   of the computer on a phone and a tablet, no heading covered, no amount cut in « My figures ».
 //
-//   OCD_URL=http://127.0.0.1:8069 node tools/captures/mise-en-page.js
+//   OCD_URL=http://127.0.0.1:8069 [OCD_SPACE_LINK=/ocd/espace/<token>] node tools/captures/mise-en-page.js
 // (a base with lives and things to check: the demo, ocd_live_demo; the back office as admin)
 const { chromium } = require('playwright');
 const BASE = process.env.OCD_URL || 'http://127.0.0.1:8069';
@@ -127,6 +129,45 @@ async function home(browser, [width, height]) {
     await page.context().close();
 }
 
+// The space of a vendor, from the personal link of a vendor of the demo (OCD_SPACE_LINK, e.g.
+// /ocd/espace/<token>): the entries of the menu are the same at every size (the phone too), no
+// heading under the block that follows it, no amount cut in « My figures »
+const SPACE_LINK = process.env.OCD_SPACE_LINK;
+const spaceEntries = {};
+
+async function space(browser, [width, height]) {
+    const page = await (await browser.newContext({ viewport: { width, height }, locale: 'fr-FR' })).newPage();
+    await page.goto(`${BASE}${SPACE_LINK}`, { waitUntil: 'load' });
+    await page.goto(`${BASE}/ocd/espace/moi`, { waitUntil: 'load' });
+    await page.waitForTimeout(1000);
+    const size = `my space ${width}x${height}`;
+    const info = await page.evaluate(() => {
+        const menu = document.querySelector('.o_ocd_space_menu');
+        const shown = (el) => el.getBoundingClientRect().width > 0 && getComputedStyle(el).display !== 'none';
+        const covered = [...document.querySelectorAll('.o_ocd_section')].filter((heading) => {
+            const next = heading.nextElementSibling;
+            return next && shown(next) && next.getBoundingClientRect().top < heading.getBoundingClientRect().bottom - 1;
+        }).map((heading) => heading.textContent.trim());
+        return {
+            over: document.documentElement.scrollWidth - innerWidth,
+            menu: menu && shown(menu),
+            entries: menu ? [...menu.querySelectorAll('a')].filter((a) => !a.classList.contains('o_ocd_space_menu_more'))
+                .map((a) => a.getAttribute('href')) : [],
+            covered,
+        };
+    });
+    spaceEntries[width] = info.entries;
+    check(info.over <= 0, `${size}: nothing wider than the page (${info.over}px)`);
+    check(info.menu, `${size}: the menu of the space is there`);
+    check(!info.covered.length, `${size}: no heading under the block that follows it ${info.covered.join(', ')}`);
+    await page.goto(`${BASE}/ocd/espace/moi/chiffres`, { waitUntil: 'load' });
+    await page.waitForTimeout(800);
+    const cut = await page.evaluate(() => [...document.querySelectorAll('.o_ocd_figures_tile > b')]
+        .filter((b) => b.scrollWidth > b.clientWidth + 1).map((b) => b.textContent.trim()));
+    check(!cut.length, `${size}: no amount cut in « My figures » ${cut.join(', ')}`);
+    await page.context().close();
+}
+
 async function board(browser, [width, height]) {
     const page = await (await browser.newContext({ viewport: { width, height }, locale: 'fr-FR' })).newPage();
     await page.goto(`${BASE}/web/login`, { waitUntil: 'load' });
@@ -164,6 +205,16 @@ async function board(browser, [width, height]) {
         await feed(browser, size);
         await home(browser, size);
         await country(browser, size);
+    }
+    if (SPACE_LINK) {
+        for (const size of [[390, 844], [820, 1180], [1440, 900]]) {
+            await space(browser, size);
+        }
+        const large = spaceEntries[1440] || [];
+        for (const width of [390, 820]) {
+            const missing = large.filter((href) => !(spaceEntries[width] || []).includes(href));
+            check(!missing.length, `my space ${width}: every entry of the computer ${missing.join(' ')}`);
+        }
     }
     for (const size of BACK_SIZES) {
         await board(browser, size);

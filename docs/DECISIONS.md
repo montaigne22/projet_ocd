@@ -14,7 +14,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   bandes vides). Quatre organisations, une par type de page (maquettes `RespListes`, `RespFiche`,
   `RespParcours`, `RespEspace`) : les listes en grilles larges, les fiches photo à gauche et
   informations à droite, les parcours formulaire à gauche et récapitulatif à droite, les espaces avec
-  leur menu à gauche (des onglets sur tablette). Le téléphone garde le design validé.
+  leur menu à gauche (des onglets sur tablette). Le téléphone garde le design validé. **Depuis le 19
+  novembre 2026**, le téléphone a aussi le menu de l'espace, en onglets qui défilent sous l'en-tête :
+  toutes les pages de l'espace à toutes les tailles (chaque module ajoute la sienne au même menu ;
+  « Mes clips » et « OCD Business » manquaient sur téléphone).
 - **Les écrans qui grandissent avec les données tiennent à toute taille** (le 19 novembre 2026, après
   des captures de l'équipe) : aussi un portable (1366 × 657) et un zoom à 125 %, contrôlés par
   `tools/captures/mise-en-page.js` qui échoue si une règle casse.

@@ -29,6 +29,8 @@ WEB = {
     "No country with this name: try in English, or its code (CM, TG…).":
         "Aucun pays de ce nom : essaie en anglais, ou son code (CM, TG…).",
     "Search your country": "Cherche ton pays",
+    "See my %s other lives": "Voir mes %s autres lives",
+    "See my other live": "Voir mon autre live",
     "Nothing waiting:": "Rien en attente :",
     # The payment page says « your hour » only for a booking (not for a pass or a formula)
     "<b>The payment did not go through.</b>": "<b>Le paiement n'est pas passé.</b>",

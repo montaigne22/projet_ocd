@@ -277,10 +277,13 @@
                     </div>
 
                     <section t-if="lives or credits" class="o_ocd_space_block o_ocd_space_lives">
+                    <!-- After the first lives, the others behind « See my other lives » (without
+                         JavaScript: a box ticked by its label) -->
+                    <input t-if="more_lives_label" type="checkbox" id="o_ocd_more_lives" class="o_ocd_more_lives_toggle"/>
                     <t t-foreach="lives" t-as="live">
                         <h2 t-if="live_first" class="o_ocd_section">My next live</h2>
                         <h2 t-if="live_index == 1" class="o_ocd_section">Then</h2>
-                        <div class="o_ocd_live_card">
+                        <div class="o_ocd_live_card" t-att-data-more="'1' if live_index &gt;= lives_shown else None">
                             <div class="o_ocd_live_card_head">
                                 <span>
                                     <b t-out="live['when']"/>
@@ -304,6 +307,8 @@
                             <small t-if="live_first and live['paid']" class="o_ocd_muted">You can move your live until <t t-out="move_limit"/> h before.</small>
                         </div>
                     </t>
+                    <label t-if="more_lives_label" for="o_ocd_more_lives" class="o_ocd_button o_ocd_button_line o_ocd_more_lives"
+                           t-out="more_lives_label"/>
 
                     <t t-if="credits">
                         <h2 class="o_ocd_section">Lives to place</h2>

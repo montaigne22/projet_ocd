@@ -544,8 +544,12 @@ zoom pour le back-office ; le script échoue si une règle casse (carte coupée,
 écrasée, liste des pays trop longue) :
 
 ```bash
-OCD_URL=http://127.0.0.1:8069 node tools/captures/mise-en-page.js
+OCD_URL=http://127.0.0.1:8069 OCD_SPACE_LINK=/ocd/espace/<jeton> node tools/captures/mise-en-page.js
 ```
+
+Avec `OCD_SPACE_LINK` (le lien personnel d'un vendeur de la démo), il contrôle aussi « Mon espace » : les
+mêmes entrées de menu sur téléphone, tablette et ordinateur, aucun titre recouvert, aucun montant coupé
+dans « Mes chiffres ».
 
 ## Modèles WhatsApp
 

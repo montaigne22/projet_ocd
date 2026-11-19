@@ -2,9 +2,9 @@ import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
 
 /**
- * The menu of the space of a vendor, as tabs on a tablet: the tabs scroll sideways, and the page
- * opened may be one of the last ones (« My figures », « My reviews »). Its tab is brought into
- * view, without moving the page. On the phone and the computer the menu does not scroll: nothing
+ * The menu of the space of a vendor, as tabs on a phone and a tablet: the tabs scroll sideways,
+ * and the page opened may be one of the last ones (« My figures », « My reviews »). Its tab is
+ * brought into view, without moving the page. On a computer the menu does not scroll: nothing
  * changes.
  */
 export class OcdSpaceMenu extends Interaction {

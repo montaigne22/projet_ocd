@@ -154,6 +154,24 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · « Moi » sur téléphone : toutes les entrées, plus court, plus rien qui se chevauche
+Après une remarque de l'équipe. `ocd_live` 20.0.1.28.0 et `ocd_live_shop` 20.0.1.48.1, sans migration.
+- **Toutes les entrées sur téléphone** : le menu de l'espace (un seul, chaque module y ajoute sa page)
+  était caché sur téléphone, où « Mes clips » et « OCD Business » (hors fin de formule) manquaient. Il
+  est maintenant en onglets qui défilent sous l'en-tête, sur chaque page de l'espace ; l'onglet de la
+  page ouverte est amené à l'écran.
+- **Plus court** : « Mon espace » montrait tous les prochains lives, chacun avec ses boutons (4 700 px de
+  haut pour 7 lives). Le prochain et les deux suivants, puis « Voir mes 4 autres lives » (sans
+  JavaScript aussi) : 3 600 px, onglets compris.
+- **Plus rien qui se chevauche** : le titre « Mon shop » passait sous ses boutons (le bloc n'était pas
+  dans le flux de la page). Les montants de « Mes chiffres » ne se coupent plus (« 559 000 FC / FA ») :
+  leur taille suit la largeur de la tuile.
+- **Contrôle** : `tools/captures/mise-en-page.js` contrôle aussi « Mon espace » avec le lien d'un vendeur
+  de la démo (les mêmes entrées à 390, 820 et 1440 px, aucun titre recouvert, aucun montant coupé) : toutes
+  les règles tenues. Test : 1 nouveau ; la suite complète sur une base neuve : **TODO_FULL sans échec**, la
+  démo : **TODO_DEMO sans échec**.
+- **Sur un serveur** : `-u ocd_live,ocd_live_shop`.
+
 ### 19 novembre 2026 · Correctif : une seule carte sur toute la largeur dans la page d'un pays
 Sur ordinateur, la page d'un pays (Côte d'Ivoire, capture de l'équipe) étirait sa carte sur toute la
 largeur : la règle « une colonne » du téléphone l'emportait aussi sur grand écran. Elle ne vaut plus que

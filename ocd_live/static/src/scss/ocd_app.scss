@@ -2103,6 +2103,31 @@ body.o_ocd_body {
     letter-spacing: 0 !important;
     color: $ocd-muted !important;
 }
+// « My space »: the lives after the first ones, behind « See my other lives » (a box ticked by
+// its label, without JavaScript); the page stays short on a phone
+.o_ocd_more_lives_toggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+.o_ocd_live_card[data-more] {
+    display: none !important;
+}
+.o_ocd_more_lives_toggle:checked ~ .o_ocd_live_card[data-more] {
+    display: flex !important;
+}
+.o_ocd_more_lives_toggle:checked ~ .o_ocd_more_lives {
+    display: none;
+}
+.o_ocd_more_lives {
+    cursor: pointer;
+}
+.o_ocd_more_lives_toggle:focus-visible ~ .o_ocd_more_lives {
+    outline: 3px solid $ocd-orange;
+    outline-offset: 2px;
+}
 .o_ocd_live_card {
     display: flex;
     flex-direction: column;

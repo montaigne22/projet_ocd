@@ -147,9 +147,49 @@ $ocd-frame-wide: 1360px !default;
 }
 
 // --- The spaces: the menu of the space ---
-// On a phone, nothing: the menu at the bottom and « My space » lead to the pages.
+// On a phone, its pages as tabs that scroll sideways, under the header: every page of the space,
+// as on a tablet and a computer (each module adds its own: clips, OCD Business, figures...)
 .o_ocd_space_menu {
-    display: none;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 6px 12px 8px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    a {
+        flex: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 36px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1.5px solid $ocd-line;
+        font-weight: 700;
+        font-size: 13.5px;
+        white-space: nowrap;
+        color: $ocd-ink !important;
+        text-decoration: none;
+        .o_ocd_icon {
+            width: 16px;
+            height: 16px;
+        }
+        &.o_ocd_on {
+            background: $ocd-ink;
+            border-color: $ocd-ink;
+            color: #FFFFFF !important;
+        }
+    }
+    .o_ocd_space_menu_who,
+    .o_ocd_space_menu_more {
+        display: none;
+    }
 }
 .o_ocd_space_layout,
 .o_ocd_space_body {
@@ -302,11 +342,13 @@ $ocd-frame-wide: 1360px !default;
 }
 
 // --- My space: its blocks in two columns on a computer, the lives on the left ---
+// Below, in the flow of the page (its spaces between them): every block, a section or not (« My
+// shop » is a div: alone, its heading went under the buttons that follow it)
 @media (max-width: $ocd-desktop - 1px) {
     .o_ocd_space > .o_ocd_space_head,
     .o_ocd_space > .o_ocd_space_side,
-    .o_ocd_space > .o_ocd_space_side > section.o_ocd_space_block,
-    .o_ocd_space > section.o_ocd_space_block {
+    .o_ocd_space > .o_ocd_space_side > .o_ocd_space_block,
+    .o_ocd_space > .o_ocd_space_block {
         display: contents;
     }
 }

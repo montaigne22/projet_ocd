@@ -393,6 +393,23 @@ class TestOcdLiveWebsite(HttpCase):
         self.assertIn(f'data-landing-route="/ocd/payer/{order.id}', response.text)
         self.assertIn("o_ocd_body", response.text, "The frame of OCD Live")
 
+    def test_my_space_stays_short_with_every_entry(self):
+        """« My space » on a phone: the next live and two after it, the others behind « See my
+        other lives »; the menu of the space (every page of it) is on the page at every size."""
+        for offset in range(5):
+            start = self.company._ocd_slot_starts(self.day + timedelta(days=offset))[0]
+            self.env["ocd.live.booking"].create({
+                "partner_id": self.vendor.id, "start_datetime": start, "slot_count": self.discovery.ocd_slot_count,
+                "product_id": self.discovery.id, "mode": "studio", "state": "confirmed",
+            })
+        self.authenticate(None, None)
+        self.url_open(f"/ocd/espace/{self.vendor._ocd_get_space_token()}")
+        page = self.url_open("/ocd/espace/moi").text
+        self.assertEqual(page.count('data-more="1"'), 2, "Two lives behind the button")
+        self.assertIn("See my 2 other lives", page)
+        self.assertIn('for="o_ocd_more_lives"', page, "Without JavaScript too")
+        self.assertIn('class="o_ocd_space_menu"', page)
+
     def test_shared_link_opens_the_live(self):
         """The announcement of a live gives the page of this live (/lives/tg/<id>), not the
         lives of the whole country: its day and hour before it, « Watch » during it. Also for a
