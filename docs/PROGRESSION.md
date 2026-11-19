@@ -161,7 +161,7 @@ l'espace. Il est maintenant sur chacune, par défaut (une page de l'espace qui n
 de boutons collée en bas d'une page reste au-dessus de lui. `tools/captures/mise-en-page.js` ouvre chaque
 page du menu de l'espace sur téléphone et vérifie qu'elle l'a : toutes les règles tenues. `ocd_live`
 20.0.1.28.1 et `ocd_live_shop` 20.0.1.48.2 (un test complété), sans migration ; la suite complète sur une
-base neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO sans échec**.
+base neuve : **726 sans échec**, la démo : **22 sans échec**.
 **Sur le serveur** : `-u ocd_live,ocd_live_shop`.
 
 ### 19 novembre 2026 · « Moi » sur téléphone : toutes les entrées, plus court, plus rien qui se chevauche
