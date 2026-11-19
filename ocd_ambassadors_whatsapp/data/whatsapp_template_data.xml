@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates to create at Meta (category Utility, language French) with the same names and texts,
+         on the WhatsApp number of OCD Live, then synchronised. Never « code » in the texts (rule of Meta). -->
+    <data noupdate="1">
+
+        <!-- The parcels shared by the ambassador and delivered since the last message: once a day, in the evening -->
+        <record id="template_ambassador_delivered" model="whatsapp.template">
+            <field name="name">OCD Live: parcels of an ambassador delivered</field>
+            <field name="template_name">ocd_ambassadeur_livres</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, des colis partagés par toi ont été livrés : {{2}}, pour {{3}} de gains, confirmés dans {{4}} jours s'ils sont gardés. Touche « Mon espace » pour les voir.</field>
+            <field name="button_url_value">{{ 'ambassadeur' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon espace', 'url': '{base_url}/{{1}}', 'url_example': 'ambassadeur'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.name or \'\').split(\' \')[0] }}', 'sample_value': 'Grâce'}),
+                (0, 0, {'sequence': 2, 'value': '{{ ctx.get(\'ocd_amb_count\') }}', 'sample_value': '3 colis'}),
+                (0, 0, {'sequence': 3, 'value': '{{ ctx.get(\'ocd_amb_amount\') }}', 'sample_value': '2 650 FCFA'}),
+                (0, 0, {'sequence': 4, 'value': '{{ ctx.get(\'ocd_amb_days\') }}', 'sample_value': '7'}),
+            ]"/>
+        </record>
+
+        <!-- The payout made, on the payout day of the shop -->
+        <record id="template_ambassador_paid" model="whatsapp.template">
+            <field name="name">OCD Live: payout of an ambassador made</field>
+            <field name="template_name">ocd_ambassadeur_versement</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_payout"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="body">Bonjour, ton versement d'ambassadeur OCD Live de {{1}} est parti sur ton Mobile Money {{2}}, référence {{3}}. Merci pour tes partages, touche « Mon argent » pour le détail.</field>
+            <field name="button_url_value">{{ 'ambassadeur/argent' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon argent', 'url': '{base_url}/{{1}}', 'url_example': 'ambassadeur/argent'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object._ocd_ambassador_amount_text() }}', 'sample_value': '3 450 FCFA'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.momo or \'\' }}', 'sample_value': '+237 6 77 40 12 18'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.payment_reference or object.name }}', 'sample_value': 'OM-93107'}),
+            ]"/>
+        </record>
+
+        <!-- The payout number changed: the number of the account is told before the payout leaves -->
+        <record id="template_ambassador_number" model="whatsapp.template">
+            <field name="name">OCD Live: payout number of an ambassador changed</field>
+            <field name="template_name">ocd_ambassadeur_numero</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Bonjour {{1}}, le numéro de tes versements d'ambassadeur OCD Live est maintenant {{2}}. Ce n'est pas toi ? Touche « Mon argent » et écris à OCD Live avant le prochain versement.</field>
+            <field name="button_url_value">{{ 'ambassadeur/argent' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon argent', 'url': '{base_url}/{{1}}', 'url_example': 'ambassadeur/argent'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.name or \'\').split(\' \')[0] }}', 'sample_value': 'Grâce'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.ocd_payout_momo or \'\' }}', 'sample_value': '+237 6 55 11 22 33'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

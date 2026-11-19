@@ -1,0 +1,357 @@
+// The pages of the ambassadors (chantier 11, design Ambassadeurs). Colours and fonts ($ocd-*) come
+// from ocd_live/static/src/scss/ocd_tokens.scss. The phone first; two columns from the tablet.
+
+.o_ocd_app {
+    .o_ocd_amb {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+    .o_ocd_amb_head {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .o_ocd_amb_muted {
+        color: $ocd-muted;
+        font-size: 13.5px;
+    }
+    .o_ocd_amb_h2 {
+        margin: 6px 0 0;
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 19px;
+    }
+    .o_ocd_amb_big {
+        font-family: $ocd-display;
+        font-weight: 800;
+        font-size: 30px;
+        line-height: 1.1;
+        color: $ocd-ink;
+    }
+    .o_ocd_amb_panes,
+    .o_ocd_amb_pane {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+    // Become an ambassador
+    .o_ocd_amb_hero {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-radius: 22px;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        padding: 18px;
+        .o_ocd_h1 {
+            color: #FFFFFF;
+            margin: 0;
+        }
+    }
+    .o_ocd_amb_badge {
+        align-self: flex-start;
+        border-radius: 8px;
+        background: $ocd-orange-pale;
+        color: $ocd-orange-dark;
+        font-weight: 800;
+        font-size: 12.5px;
+        padding: 3px 8px;
+    }
+    .o_ocd_amb_steps {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: amb;
+        li {
+            display: grid;
+            grid-template-columns: 30px minmax(0, 1fr);
+            column-gap: 8px;
+            counter-increment: amb;
+            &::before {
+                content: counter(amb);
+                grid-row: span 2;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background: $ocd-orange;
+                color: $ocd-ink;
+                display: grid;
+                place-items: center;
+                font-weight: 800;
+                font-size: 14px;
+            }
+            span {
+                color: $ocd-muted;
+                font-size: 13.5px;
+            }
+        }
+    }
+    .o_ocd_amb_gain,
+    .o_ocd_amb_money {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 18px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        padding: 14px;
+        min-width: 0;
+    }
+    .o_ocd_amb_check {
+        display: grid;
+        grid-template-columns: 24px minmax(0, 1fr);
+        gap: 8px;
+        align-items: start;
+        font-size: 14px;
+        input {
+            width: 22px;
+            height: 22px;
+            margin: 1px 0 0;
+            accent-color: $ocd-ink;
+        }
+    }
+    .o_ocd_amb_rules {
+        border-radius: 14px;
+        background: $ocd-sand;
+        padding: 10px 14px;
+        font-size: 14px;
+        summary {
+            font-weight: 700;
+            cursor: pointer;
+        }
+        ul {
+            margin: 8px 0 0;
+            padding-left: 18px;
+        }
+    }
+    // The space
+    .o_ocd_amb_tabs {
+        flex-wrap: wrap;
+    }
+    .o_ocd_amb_tiles {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .o_ocd_amb_tile {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        border-radius: 14px;
+        background: $ocd-sand;
+        padding: 10px 12px;
+        small {
+            color: $ocd-muted;
+            font-size: 12.5px;
+        }
+        b {
+            font-family: $ocd-display;
+            font-weight: 800;
+            font-size: 20px;
+        }
+    }
+    .o_ocd_amb_sale {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 12px 14px;
+        min-width: 0;
+        font-size: 14px;
+    }
+    .o_ocd_amb_sale_head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+        min-width: 0;
+        b {
+            min-width: 0;
+        }
+        .o_ocd_step_pill {
+            flex: none;
+        }
+    }
+    .o_ocd_amb_sum {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 16px;
+        background: $ocd-sand;
+        padding: 12px 14px;
+        font-size: 14px;
+        > span {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            min-width: 0;
+            b {
+                flex: none;
+                white-space: nowrap;
+            }
+        }
+    }
+    .o_ocd_amb_total {
+        border-top: 1px solid $ocd-line;
+        padding-top: 6px;
+        font-weight: 800;
+    }
+    .o_ocd_amb_neg {
+        color: $ocd-red-dark;
+    }
+    .o_ocd_amb_line {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid $ocd-line;
+        font-size: 14px;
+        b {
+            flex: none;
+            white-space: nowrap;
+        }
+    }
+    .o_ocd_amb_card {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border: 2px solid $ocd-line;
+        border-radius: 18px;
+        padding: 12px 14px;
+        min-width: 0;
+    }
+    .o_ocd_amb_link {
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+    // The products to share
+    .o_ocd_amb_products {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+    .o_ocd_amb_product {
+        display: grid;
+        grid-template-columns: 64px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        border: 2px solid $ocd-line;
+        border-radius: 16px;
+        padding: 8px 10px;
+        min-width: 0;
+        img {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: $ocd-sand;
+        }
+        .o_ocd_button {
+            min-width: 0;
+            padding-inline: 12px;
+        }
+    }
+    .o_ocd_amb_product_text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .o_ocd_amb_earn {
+        align-self: flex-start;
+        border-radius: 8px;
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+        font-weight: 800;
+        font-size: 12.5px;
+        padding: 2px 8px;
+    }
+    // Share
+    .o_ocd_amb_image {
+        display: block;
+        width: 100%;
+        max-width: 420px;
+        height: auto;
+        border-radius: 18px;
+        background: $ocd-sand;
+    }
+    .o_ocd_amb_text {
+        height: auto;
+        min-height: 110px;
+        resize: vertical;
+        line-height: 1.4;
+        padding-block: 10px;
+    }
+    // The share buttons of the space: the look of the page, not the one of the header
+    .o_ocd_amb .o_ocd_share {
+        margin-left: 0;
+        justify-content: center;
+    }
+    .o_ocd_amb .o_ocd_share.o_ocd_cta {
+        width: 100%;
+        min-height: 56px;
+        background: $ocd-orange;
+        color: $ocd-ink;
+    }
+    .o_ocd_amb_buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        > * {
+            min-width: 0;
+        }
+    }
+}
+
+// « Grâce recommends this product to you », on the product page
+.o_ocd_amb_reco {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    background: $ocd-orange-pale;
+    color: $ocd-orange-dark;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    &[hidden] {
+        display: none;
+    }
+    i {
+        flex: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: $ocd-orange;
+        color: #FFFFFF;
+        display: grid;
+        place-items: center;
+        font-style: normal;
+        font-weight: 800;
+        font-size: 12px;
+    }
+}
+
+@media (min-width: $ocd-tablet) {
+    .o_ocd_app {
+        .o_ocd_amb_panes {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+            align-items: start;
+            gap: 20px;
+        }
+        .o_ocd_amb_products {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+}

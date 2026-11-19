@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Why the team closes the account of an ambassador -->
+    <record id="refuse_reason_ambassador_own" model="ocd.listing.refuse.reason">
+        <field name="name">Orders of their own</field>
+        <field name="message">Your account of ambassador is closed: orders made by you or for you with your links.</field>
+        <field name="applies_to">ambassador</field>
+        <field name="sequence">610</field>
+    </record>
+    <record id="refuse_reason_ambassador_spam" model="ocd.listing.refuse.reason">
+        <field name="name">Messages to strangers</field>
+        <field name="message">Your account of ambassador is closed: messages sent in mass to people who did not ask for them.</field>
+        <field name="applies_to">ambassador</field>
+        <field name="sequence">620</field>
+    </record>
+    <record id="refuse_reason_ambassador_momo" model="ocd.listing.refuse.reason">
+        <field name="name">Mobile Money of another person</field>
+        <field name="message">Your account of ambassador is closed: one account per person, paid on their own Mobile Money.</field>
+        <field name="applies_to">ambassador</field>
+        <field name="sequence">630</field>
+    </record>
+    <record id="refuse_reason_ambassador_returns" model="ocd.listing.refuse.reason">
+        <field name="name">Too many returns</field>
+        <field name="message">Your account of ambassador is closed: too many parcels refused at the door or returned.</field>
+        <field name="applies_to">ambassador</field>
+        <field name="sequence">640</field>
+    </record>
+
+</odoo>

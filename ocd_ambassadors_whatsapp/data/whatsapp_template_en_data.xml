@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The English versions (same names at Meta, language en) -->
+    <data noupdate="1">
+
+        <record id="template_ambassador_delivered_en" model="whatsapp.template">
+            <field name="name">OCD Live: parcels of an ambassador delivered (English)</field>
+            <field name="template_name">ocd_ambassadeur_livres</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Hello {{1}}, parcels you shared were delivered: {{2}}, for {{3}} of gains, confirmed in {{4}} days if they are kept. Tap « My space » to see them.</field>
+            <field name="button_url_value">{{ 'ambassadeur' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My space', 'url': '{base_url}/{{1}}', 'url_example': 'ambassadeur'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.name or \'\').split(\' \')[0] }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ ctx.get(\'ocd_amb_count\') }}', 'sample_value': '3 parcels'}),
+                (0, 0, {'sequence': 3, 'value': '{{ ctx.get(\'ocd_amb_amount\') }}', 'sample_value': '2,650 FCFA'}),
+                (0, 0, {'sequence': 4, 'value': '{{ ctx.get(\'ocd_amb_days\') }}', 'sample_value': '7'}),
+            ]"/>
+        </record>
+
+        <record id="template_ambassador_paid_en" model="whatsapp.template">
+            <field name="name">OCD Live: payout of an ambassador made (English)</field>
+            <field name="template_name">ocd_ambassadeur_versement</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_payout"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="body">Hello, your payout of ambassador of OCD Live of {{1}} left on your Mobile Money {{2}}, reference {{3}}. Thank you for your shares, tap « My money » for the detail.</field>
+            <field name="button_url_value">{{ 'ambassadeur/argent' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My money', 'url': '{base_url}/{{1}}', 'url_example': 'ambassadeur/argent'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object._ocd_ambassador_amount_text() }}', 'sample_value': '3,450 FCFA'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.momo or \'\' }}', 'sample_value': '+237 6 77 40 12 18'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.payment_reference or object.name }}', 'sample_value': 'OM-93107'}),
+            ]"/>
+        </record>
+
+        <record id="template_ambassador_number_en" model="whatsapp.template">
+            <field name="name">OCD Live: payout number of an ambassador changed (English)</field>
+            <field name="template_name">ocd_ambassadeur_numero</field>
+            <field name="lang_code">en</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">Hello {{1}}, the number of your payouts of ambassador of OCD Live is now {{2}}. It is not you? Tap « My money » and write to OCD Live before the next payout.</field>
+            <field name="button_url_value">{{ 'ambassadeur/argent' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'My money', 'url': '{base_url}/{{1}}', 'url_example': 'ambassadeur/argent'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.name or \'\').split(\' \')[0] }}', 'sample_value': 'Grace'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.ocd_payout_momo or \'\' }}', 'sample_value': '+237 6 55 11 22 33'}),
+            ]"/>
+        </record>
+
+    </data>
+</odoo>

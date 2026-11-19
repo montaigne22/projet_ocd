@@ -1,0 +1,16 @@
+from . import (
+    account_move,
+    ocd_ambassador_gain,
+    ocd_automation,
+    ocd_listing_refuse_reason,
+    ocd_live_settings,
+    ocd_live_verification,
+    ocd_payout,
+    ocd_vendor_count,
+    ocd_vendor_figures,
+    product_template,
+    res_company,
+    res_partner,
+    sale_order,
+    stock_picking,
+)

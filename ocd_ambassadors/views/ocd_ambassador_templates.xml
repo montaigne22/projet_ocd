@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The pages of the ambassadors (chantier 11, design Ambassadeurs): become an ambassador, the
+     login, « My ambassador space », « My money », the products to share, « Share », « My links »;
+     « Grâce recommends this product » on the product; « Sold thanks to the ambassadors » in « My
+     figures » of a vendor. -->
+<odoo>
+
+    <!-- The login of an ambassador: the same pages as the vendors, with its words -->
+    <template id="space_login_ambassador" inherit_id="ocd_live.space_login" name="OCD Live: login of an ambassador">
+        <xpath expr="//h1[@t-else='']" position="before">
+            <h1 t-elif="target == 'ambassadeur'" class="o_ocd_h1">Your ambassador space.</h1>
+        </xpath>
+        <xpath expr="//div[@t-elif=&quot;target == 'livrer'&quot;]" position="before">
+            <div t-elif="target == 'ambassadeur'" class="o_ocd_info">Give the WhatsApp number of your account of ambassador: a code arrives on WhatsApp. Not an ambassador yet? <a href="/ambassadeurs">Become one</a></div>
+        </xpath>
+    </template>
+
+    <template id="space_login_code_ambassador" inherit_id="ocd_live.space_login_code" name="OCD Live: code of an ambassador">
+        <xpath expr="//button[@t-else='']" position="before">
+            <button t-elif="target == 'ambassadeur'" type="submit" class="o_ocd_cta">Open my ambassador space</button>
+        </xpath>
+    </template>
+
+    <!-- === BECOME AN AMBASSADOR === -->
+
+    <template id="signup_page" name="OCD Live: become an ambassador">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Ambassadors</t>
+        <t t-call="ocd_live.app">
+            <form action="/ambassadeurs" method="post" class="o_ocd_frame o_ocd_focus o_ocd_narrow" novalidate="novalidate">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <main class="o_ocd_main o_ocd_amb">
+                    <div class="o_ocd_focus_side">
+                        <div class="o_ocd_amb_hero">
+                            <span class="o_ocd_amb_badge">For everybody, without a boutique</span>
+                            <h1 class="o_ocd_h1">Share, and earn on each parcel delivered</h1>
+                            <span t-out="title_line"/>
+                        </div>
+                        <ol class="o_ocd_amb_steps">
+                            <li><b>Choose a product</b><span>The best sellers, the promos, the ones in live tonight.</span></li>
+                            <li><b>Share it</b><span>WhatsApp status, a contact, TikTok: the image and the text are ready, with your link.</span></li>
+                            <li><b>Receive your gains every Monday</b><span t-out="payout_line"/></li>
+                        </ol>
+                        <div class="o_ocd_amb_gain">
+                            <small><b>Example</b></small>
+                            <b class="o_ocd_amb_big" t-out="example"/>
+                            <small t-out="example_line"/>
+                        </div>
+                    </div>
+                    <div class="o_ocd_focus_main">
+                        <div t-if="sent" class="o_ocd_ok o_ocd_ok_big" role="status">
+                            <b>Request sent.</b>
+                            <span>The team of OCD Live opens your account and tells you on WhatsApp.</span>
+                        </div>
+                        <div t-elif="closed" class="o_ocd_info" role="status">The program of the ambassadors is closed for now. Come back soon.</div>
+                        <t t-else="">
+                            <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                            <div class="o_ocd_field">
+                                <label for="amb-name" class="o_ocd_label">Your name</label>
+                                <input id="amb-name" name="name" class="o_ocd_input" maxlength="80" required="required"
+                                       autocomplete="name" t-att-value="values.get('name', '')"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="amb-phone" class="o_ocd_label">Your WhatsApp</label>
+                                <t t-call="ocd_live.phone_field" field_id.f="amb-phone"/>
+                            </div>
+                            <div class="o_ocd_field">
+                                <label for="amb-momo" class="o_ocd_label">Your Mobile Money, for your gains</label>
+                                <input id="amb-momo" name="momo" type="tel" inputmode="tel" class="o_ocd_input" maxlength="20"
+                                       t-att-value="values.get('momo', '')" placeholder="The same number if empty"/>
+                                <small class="o_ocd_amb_muted">In your name: it is checked before the first payout.</small>
+                            </div>
+                            <label class="o_ocd_amb_check">
+                                <input type="checkbox" name="charter" value="1" t-att-checked="'checked' if values.get('charter') else None"/>
+                                <span>I share honestly: the real price, no messages in mass to strangers, never a purchase with my own link. I am 18 or more.</span>
+                            </label>
+                            <details class="o_ocd_amb_rules">
+                                <summary>The charter</summary>
+                                <ul>
+                                    <li>A gain is due only for a parcel delivered with its code and kept.</li>
+                                    <li>Your own purchases, and the ones of your own boutique, never count.</li>
+                                    <li>One account per person, paid on your own Mobile Money.</li>
+                                    <li>Too many parcels refused or returned pause the account; the gains due are kept.</li>
+                                    <li>Messages in mass to people who did not ask for them close the account.</li>
+                                </ul>
+                            </details>
+                            <button type="submit" class="o_ocd_cta">
+                                <t t-if="invited">Ask to become an ambassador</t>
+                                <t t-else="">Become an ambassador</t>
+                            </button>
+                            <small class="o_ocd_amb_muted">You receive a code on WhatsApp to log in, like the vendors, then your gains and your payouts on WhatsApp. One account per number. <a href="/ambassadeur/connexion">I already have an account</a></small>
+                        </t>
+                    </div>
+                </main>
+            </form>
+        </t>
+    </template>
+
+    <!-- === THE SPACE === -->
+
+    <template id="space_frame" name="OCD Live: the frame of the space of an ambassador">
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_amb">
+                    <div class="o_ocd_amb_head">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small" t-out="additional_title"/>
+                        <small class="o_ocd_amb_muted"><t t-out="ambassador.name"/> · <t t-out="home_link"/></small>
+                    </div>
+                    <nav class="o_ocd_chips o_ocd_amb_tabs" aria-label="My ambassador space">
+                        <a t-foreach="tabs" t-as="row" t-att-href="row['url']"
+                           t-attf-class="o_ocd_chip #{'o_ocd_on' if row['key'] == tab else ''}"
+                           t-att-aria-current="'page' if row['key'] == tab else None" t-out="row['label']"/>
+                    </nav>
+                    <div t-foreach="notes" t-as="note" class="o_ocd_alert" role="status" t-out="note"/>
+                    <t t-out="0"/>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="space_home" name="OCD Live: my ambassador space">
+        <t t-call="ocd_ambassadors.space_frame">
+            <div class="o_ocd_amb_panes">
+                <div class="o_ocd_amb_pane">
+                    <div class="o_ocd_amb_money">
+                        <small><b t-out="to_pay_title"/></small>
+                        <b class="o_ocd_amb_big" t-out="to_pay"/>
+                        <small t-out="to_pay_line"/>
+                    </div>
+                    <div class="o_ocd_amb_tiles">
+                        <div class="o_ocd_amb_tile">
+                            <small>Waiting</small>
+                            <b t-out="waiting"/>
+                            <small t-out="waiting_line"/>
+                        </div>
+                        <div class="o_ocd_amb_tile">
+                            <small>Last 7 days</small>
+                            <b t-out="week['orders']"/>
+                            <small t-out="week['line']"/>
+                        </div>
+                    </div>
+                    <a href="/ambassadeur/produits" class="o_ocd_cta">Products to share</a>
+                </div>
+                <div class="o_ocd_amb_pane">
+                    <h2 class="o_ocd_amb_h2">My sales</h2>
+                    <div t-foreach="rows" t-as="row" class="o_ocd_amb_sale">
+                        <div class="o_ocd_amb_sale_head">
+                            <b t-out="row['title']"/>
+                            <span t-attf-class="o_ocd_step_pill o_ocd_step_pill_#{row['pill']}" t-out="row['label']"/>
+                        </div>
+                        <small t-if="row['detail']" class="o_ocd_amb_muted" t-out="row['detail']"/>
+                        <small t-out="row['line']"/>
+                    </div>
+                    <div t-if="not rows" class="o_ocd_info">No sale yet: share a product, your contacts order with your link.</div>
+                    <small class="o_ocd_amb_muted">You see the first name and the district of your customers, never their number.</small>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="space_money" name="OCD Live: my money of ambassador">
+        <t t-call="ocd_ambassadors.space_frame">
+            <div t-if="message" class="o_ocd_ok" role="status" t-out="message"/>
+            <div class="o_ocd_amb_panes">
+                <div class="o_ocd_amb_pane">
+                    <div class="o_ocd_amb_money">
+                        <small><b t-out="next_title"/></small>
+                        <b class="o_ocd_amb_big" t-out="to_pay"/>
+                    </div>
+                    <div t-if="lines" class="o_ocd_amb_sum">
+                        <span t-foreach="lines" t-as="line">
+                            <span t-out="line['label']"/>
+                            <b t-attf-class="#{'o_ocd_amb_neg' if line['negative'] else ''}" t-out="line['amount']"/>
+                        </span>
+                        <span class="o_ocd_amb_total"><span>To pay</span><b t-out="to_pay"/></span>
+                    </div>
+                    <div t-foreach="blocks" t-as="block" class="o_ocd_info" role="status" t-out="block"/>
+                    <small class="o_ocd_amb_muted" t-out="confirm_line"/>
+                </div>
+                <div class="o_ocd_amb_pane">
+                    <h2 class="o_ocd_amb_h2">Payouts made</h2>
+                    <div t-foreach="payouts" t-as="row" class="o_ocd_amb_line">
+                        <span t-out="row['label']"/><b t-out="row['amount']"/>
+                    </div>
+                    <div class="o_ocd_amb_line"><span>Since the start</span><b t-out="paid_total"/></div>
+                    <form action="/ambassadeur/numero" method="post" class="o_ocd_amb_card">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <b>My payout number</b>
+                        <span t-out="momo_line"/>
+                        <small class="o_ocd_amb_muted" t-out="hold_line"/>
+                        <label for="amb-momo-new" class="o_ocd_label">New Mobile Money number</label>
+                        <t t-call="ocd_live.phone_field" field_id.f="amb-momo-new"/>
+                        <button type="submit" class="o_ocd_button">Change my number</button>
+                    </form>
+                    <small t-if="id_line" class="o_ocd_amb_muted" t-out="id_line"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="space_products" name="OCD Live: the products to share">
+        <t t-call="ocd_ambassadors.space_frame">
+            <nav class="o_ocd_chips" aria-label="Products">
+                <a t-foreach="product_tabs" t-as="row" t-att-href="row['url']"
+                   t-attf-class="o_ocd_chip #{'o_ocd_on' if row['on'] else ''}" t-out="row['label']"/>
+            </nav>
+            <form action="/ambassadeur/produits" method="get" class="o_ocd_amb_search" role="search">
+                <input type="hidden" name="vue" t-att-value="product_tab"/>
+                <input type="search" name="q" class="o_ocd_input" maxlength="60" t-att-value="search"
+                       placeholder="Search a product, a boutique" aria-label="Search a product, a boutique"/>
+            </form>
+            <div class="o_ocd_amb_products">
+                <div t-foreach="rows" t-as="row" class="o_ocd_amb_product">
+                    <img t-att-src="row['image']" alt="" loading="lazy" decoding="async" width="64" height="64"/>
+                    <span class="o_ocd_amb_product_text">
+                        <b t-out="row['product'].name"/>
+                        <small class="o_ocd_amb_muted"><t t-out="row['vendor']"/> · <s t-if="row['was']" t-out="row['was']"/> <t t-out="row['price']"/></small>
+                        <span class="o_ocd_amb_earn" t-out="row['earn']"/>
+                    </span>
+                    <a t-att-href="row['share_url']" class="o_ocd_button o_ocd_button_dark">Share</a>
+                </div>
+            </div>
+            <div t-if="not rows" class="o_ocd_info">No product here for now.</div>
+            <a t-if="more_url" t-att-href="more_url" class="o_ocd_button o_ocd_button_wide">See more</a>
+            <small class="o_ocd_amb_muted">The products sold on OCD Live, the ones of your country first (not the vendors in direct contact on WhatsApp: the sale does not go through the site). A product sold out leaves the list; your link stays good and leads to the boutique.</small>
+            <a href="/ambassadeur/liens" class="o_ocd_button o_ocd_button_wide">Share a boutique or a live</a>
+        </t>
+    </template>
+
+    <template id="space_share" name="OCD Live: share a product">
+        <t t-call="ocd_ambassadors.space_frame">
+            <div class="o_ocd_amb_panes">
+                <div class="o_ocd_amb_pane">
+                    <img t-att-src="image" class="o_ocd_amb_image" t-att-alt="product.name" width="1080" height="1350"/>
+                    <small class="o_ocd_amb_muted">The image is drawn by OCD Live with the price of now: a new price, a new image. The price cannot be changed.</small>
+                    <div t-if="own" class="o_ocd_alert" role="status">This product is from your own boutique: it earns you nothing as an ambassador.</div>
+                    <span class="o_ocd_amb_earn" t-else="" t-out="earn"/>
+                </div>
+                <div class="o_ocd_amb_pane">
+                    <label for="amb-text" class="o_ocd_label">The text</label>
+                    <textarea id="amb-text" class="o_ocd_input o_ocd_amb_text" rows="4" t-att-maxlength="600"
+                              t-att-data-link="link" t-out="text"/>
+                    <small class="o_ocd_amb_muted">You may change the text; the link is added at the end if it is missing.</small>
+                    <button type="button" class="o_ocd_cta o_ocd_share o_ocd_amb_share" t-att-data-url="url" t-att-data-text="text"
+                            t-att-data-image="image">Put it in my WhatsApp status</button>
+                    <div class="o_ocd_amb_buttons">
+                        <a t-att-href="whatsapp_url" target="_blank" rel="noopener" class="o_ocd_button o_ocd_button_dark o_ocd_amb_wa">Send to a contact</a>
+                        <button type="button" class="o_ocd_button o_ocd_amb_copy" t-att-data-copy="url">Copy the link</button>
+                        <a t-att-href="image" t-att-download="'ocd-live-%s.jpg' % product.id" class="o_ocd_button">Save the image</a>
+                        <button t-if="clip" type="button" class="o_ocd_button o_ocd_clip_share_file" t-att-data-video="clip['video']"
+                                t-att-data-name="clip['name']" t-att-data-text="text" t-att-data-link="url"
+                                t-att-data-download="clip['video']">▶ The clip of the live</button>
+                    </div>
+                    <div class="o_ocd_ok o_ocd_share_done o_ocd_amb_copied" role="status" hidden="hidden">Copied: paste it where you want.</div>
+                    <small t-if="clip" class="o_ocd_amb_muted">The clip of 30 seconds of the live where the product was shown, with the same link.</small>
+                    <small class="o_ocd_amb_muted" t-out="link_line"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="space_links" name="OCD Live: my links of ambassador">
+        <t t-call="ocd_ambassadors.space_frame">
+            <div class="o_ocd_amb_card">
+                <b>My link to the shop</b>
+                <span class="o_ocd_amb_link" t-out="home_link"/>
+                <div class="o_ocd_amb_buttons">
+                    <button type="button" class="o_ocd_button o_ocd_button_dark o_ocd_share" t-att-data-url="home_url">Share</button>
+                    <button type="button" class="o_ocd_button o_ocd_amb_copy" t-att-data-copy="home_url">Copy the link</button>
+                </div>
+            </div>
+            <form action="/ambassadeur/liens" method="get" class="o_ocd_amb_card">
+                <b>The link of any page</b>
+                <small class="o_ocd_amb_muted">A boutique, a live, the programme: paste its address, your link is made.</small>
+                <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                <input type="url" name="page" class="o_ocd_input" t-att-value="page_value" inputmode="url"
+                       placeholder="https://…/ocd/boutique/12" aria-label="Address of the page"/>
+                <button type="submit" class="o_ocd_button">Make my link</button>
+                <t t-if="made">
+                    <span class="o_ocd_amb_link" t-out="made_short"/>
+                    <div class="o_ocd_amb_buttons">
+                        <button type="button" class="o_ocd_button o_ocd_button_dark o_ocd_share" t-att-data-url="made">Share</button>
+                        <button type="button" class="o_ocd_button o_ocd_amb_copy" t-att-data-copy="made">Copy the link</button>
+                    </div>
+                </t>
+            </form>
+            <div class="o_ocd_ok o_ocd_share_done o_ocd_amb_copied" role="status" hidden="hidden">Copied: paste it where you want.</div>
+            <small class="o_ocd_amb_muted" t-out="days_line"/>
+        </t>
+    </template>
+
+    <!-- === « GRÂCE RECOMMENDS THIS PRODUCT » === -->
+
+    <!-- Filled by the script from a small cookie of the link: the page stays the same for all, kept in memory -->
+    <template id="product_recommended" inherit_id="ocd_live_shop.product" name="OCD Live: recommended by an ambassador">
+        <xpath expr="//input[@name='product_template_id']" position="after">
+            <div class="o_ocd_amb_reco" t-att-data-product="template.id" role="note" hidden="hidden">
+                <i aria-hidden="true"/><span class="o_ocd_amb_reco_text">%s recommends this product to you</span>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- === MY FIGURES OF A VENDOR === -->
+
+    <template id="vendor_figures_ambassadors" inherit_id="ocd_live_shop.vendor_figures" name="OCD Live: the ambassadors in my figures">
+        <xpath expr="//section[@id='resume']" position="before">
+            <t t-set="ambassador_figures" t-value="request.env['ocd.vendor.figures']._ocd_ambassador_figures(vendor, figures['days'])"/>
+            <section t-if="ambassador_figures" class="o_ocd_figures_card o_ocd_figures_ambassadors" id="ambassadeurs">
+                <div class="o_ocd_figures_sec">
+                    <h2>Sold thanks to the ambassadors</h2>
+                    <small t-out="period_label"/>
+                </div>
+                <b class="o_ocd_amb_big" t-out="ambassador_figures['amount']"/>
+                <small t-out="ambassador_figures['line']"/>
+                <span class="o_ocd_figures_kv">
+                    <span t-foreach="ambassador_figures['rows']" t-as="row"><t t-out="row['name']"/> <b t-out="row['pieces']"/> <t t-out="row['by']"/></span>
+                </span>
+                <p class="o_ocd_note">You pay nothing: OCD Live pays the ambassadors on its commission. Their names and numbers stay with OCD Live.</p>
+            </section>
+        </xpath>
+    </template>
+
+</odoo>

@@ -46,6 +46,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Clips automatiques (chantier 8) : chaque produit montré dans un live devient un clip vertical de 30 secondes avec son lien court, à partager sur les statuts, TikTok et Reels ; la vidéo du live envoyée par l'équipe par morceaux, vérifiée ; « Mes clips » du vendeur, « Vu en live » sur la fiche produit et le replay, visites et ventes de chaque clip | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | OCD Express (chantier 9) : la livraison avec code pour tous les vendeurs des réseaux, sans boutique ; connexion par numéro, « Nouveau colis » (accord du client, montant ou valeur, qui paie la livraison, ouvrir avant de payer, ramassage ou point OCD), deux vagues et capacité, un passage de ramassage par expéditeur (photo, « pas pris », expéditeur absent), page de suivi du client (code, « Je confirme », « Pas là ? », position, souci 48 h, « Ce n'est pas pour moi »), retours rendus contre un code, « Mon argent » (versé le jour ouvré suivant une fois l'argent chez OCD, dettes plafonnées, nouveau numéro retenu 48 h), plafonds et vérifications dans « À vérifier », clients effacés après 6 mois ; manque de caisse des livreurs en dette | ✅ fait, testé (6 modèles WhatsApp à faire approuver par Meta, sur un numéro à part) |
 | Points relais (chantier 10) : « En point relais » à la livraison du shop (moins cher qu'à la porte, les points relais ouverts et pas pleins de la ville), la page du client (code et QR de retrait, jusqu'à quand, itinéraire, « livrez-la chez moi »), « Mon point relais » (connexion par numéro, colis gardés sur ses places, gains du mois, congé, recevoir en comptant chaque colis, remettre contre le code ou le QR, payé avant ou sur le téléphone du client, jamais en espèces), l'arrêt du livreur (déposer, reprendre les colis pas retirés), 7 jours puis retour, 150 F par colis remis versés chaque mois, colis perdu remboursé et retenu, pause après 2 pertes ; la page `/points-relais` pour devenir partenaire, le magasin vérifié d'un vendeur point relais (A.6) ; OCD Express au point relais (choisi par l'expéditeur ou par le client) ; back-office, « À vérifier », réglages | ✅ fait, testé (4 modèles WhatsApp à faire approuver par Meta, et 1 sur le numéro d'OCD Express) |
+| Ambassadeurs (chantier 11) : chacun partage un produit avec son lien personnel (`/a/<code>`) et gagne 5 % des articles une fois le colis livré avec son code et gardé, payés par OCD sur sa commission (le client paie le même prix, le vendeur rien) ; inscription par numéro vérifié, « Mon espace ambassadeur » (ventes et leur état), « Mon argent » (versé chaque lundi dès 2 000 F, nouveau numéro retenu 48 h), « Produits à partager », « Partager » (image au prix du moment avec le lien, texte, statut WhatsApp, clip du live), « Mes liens » ; « Grâce te recommande ce produit » ; un gain par colis, une facture à la confirmation, un avoir pour un retour ; contre la fraude : jamais sur ses propres achats, 5 commandes d'un client par mois, pause au-delà de 30 % de retours, un Mobile Money par personne, pièce d'identité au-delà de 50 000 F ; « Vendu grâce aux ambassadeurs » dans Mes chiffres ; back-office, « À vérifier », réglages | ✅ fait, testé (3 modèles WhatsApp à faire approuver par Meta) |
 | Paiement automatique dans l'UEMOA (chantier 5) : CinetPay (module `payment_cinetpay` : Mobile Money, Wave, carte ; UEMOA, Cameroun, Guinée, RD Congo) et Flutterwave (module d'Odoo) ; l'état lu chez CinetPay, revérifié toutes les 10 minutes ; le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production ; clés manquantes et mode test dits dans les Paramètres | ✅ fait, testé (clés des comptes à saisir) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
@@ -122,6 +123,9 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    `ocd_colis_non_retire_relais` et `ocd_relais_arrivage` (français et anglais, Utilitaire) : le colis qui
    attend au point relais, le rappel avant la fin, le colis pas retiré (au client), les colis qui arrivent
    (au point relais) ; et sur le numéro d'OCD Express, `ocd_express_point_relais` (français et anglais).
+   **Avec les ambassadeurs**, aussi `ocd_ambassadeur_livres`, `ocd_ambassadeur_versement` et
+   `ocd_ambassadeur_numero` (français et anglais, Utilitaire) : les colis partagés livrés du jour, le
+   versement fait, le numéro de versement changé (à l'ambassadeur).
 3. **Paiement dans l'UEMOA** (équipe) : ouvrir les comptes CinetPay et Flutterwave (documents de
    l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
    pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
@@ -145,6 +149,50 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 19 novembre 2026 · Ambassadeurs (chantier 11)
+Maquette `Ambassadeurs` validée avec ses choix recommandés (« robuste, optimisé et fonctionnel »), codée
+dans deux nouveaux modules, `ocd_ambassadors` et `ocd_ambassadors_whatsapp` (20.0.1.0.0), et un point
+d'accroche dans `ocd_live_shop` (20.0.1.46.0 : le détail d'un reversement ne compte comme ventes ni les
+gains des ambassadeurs, ni ceux des points relais).
+- **L'ambassadeur** : `/ambassadeurs` (nom, WhatsApp, Mobile Money, la charte) ; le code reçu sur
+  WhatsApp prouve le numéro et ouvre le compte ; « Mon espace ambassadeur » (à verser lundi, en attente,
+  les 7 derniers jours, ses ventes : en route, livrée, retour demandé, confirmée, retournée, pas de gain et
+  pourquoi ; le prénom et le quartier des clients, jamais leur numéro), « Mon argent » (le prochain
+  versement ligne par ligne, pourquoi il attend, les versements faits, changer de numéro), « Produits à
+  partager » (plus vendus, promos, en live ce soir, nouveautés, recherche, ce qu'on gagne, ceux de son
+  pays d'abord, en stock, jamais ses propres produits), « Partager » (l'image dessinée par OCD Live au prix
+  du moment avec son lien et son QR, le texte modifiable, statut WhatsApp, un contact, copier, enregistrer,
+  le clip du live quand il existe), « Mes liens » (le lien du shop, celui de n'importe quelle page).
+- **Le lien** `/a/<code>` : le dernier lien ouvert compte 7 jours sur le téléphone, puis sur le panier,
+  pour tous les articles ; à la confirmation, l'ambassadeur, le taux et le plafond du jour sont inscrits
+  sur la commande. Une visite par téléphone et par jour ; ni les aperçus des liens, ni l'ambassadeur, ni
+  la vendeuse sur ses produits, ni l'équipe. La fiche produit dit « Grâce te recommande ce produit » par
+  son script, à partir d'un petit cookie : la page reste en mémoire pour les foules.
+- **L'argent** : un gain par colis (index unique), confirmé 7 jours après la livraison avec le code par
+  une facture d'achat de l'ambassadeur (une seule par gain, index unique), un retour plus tard repris par
+  un avoir ; versé avec les reversements du shop chaque lundi dès 2 000 F, jamais un solde négatif.
+- **Contre la fraude** : jamais sur ses propres achats (numéro, Mobile Money, contact, sa boutique), 5
+  commandes par mois d'un même client, pause automatique au-delà de 30 % de retours sur 10 colis, un
+  Mobile Money par personne (sinon « À vérifier »), nouveau numéro retenu 48 h et dit au numéro du
+  compte, pièce d'identité au-delà de 50 000 F gagnés, comptes jamais vérifiés effacés après 7 jours.
+- **Le vendeur** voit « Vendu grâce aux ambassadeurs » dans « Mes chiffres » (combien, pas qui). **Le
+  back-office** : Shop › Ambassadeurs (la liste et ses chiffres, l'onglet Ambassadeur de la fiche, « Voir
+  son espace », les gains colis par colis), la colonne Ambassadeurs de « À vérifier » (compte demandé, à
+  vérifier, en pause, pièce d'identité, retour demandé), Paramètres › Ambassadeurs, trois automatisations.
+- **WhatsApp** : un message le soir, une fois par jour, avec les colis livrés depuis le dernier ; le
+  versement fait ; le numéro de versement changé.
+- Contrôlé dans le navigateur en français sur la démo (`ocd_base`, où Grâce Mbia a quatre ventes
+  d'exemple) à 390, 820 et 1440 px, sans débordement : `/ambassadeurs`, la fiche produit ouverte par un
+  lien, « Mon espace ambassadeur », « Mon argent », « Produits à partager », « Partager », « Mes liens »,
+  « Mes chiffres » d'une vendeuse.
+- Tests : 15 dans `ocd_ambassadors` (les règles), 5 pour ses pages, 4 dans `ocd_ambassadors_whatsapp` ;
+  **la suite complète** sur une base neuve (tous les modules OCD avec les deux nouveaux, et les tests de
+  `payment_cinetpay` et `whatsapp_cloud`) : **703 sans échec** ; la démo sur une autre base neuve,
+  installée en une fois avec tous les modules : **22 sans échec**.
+- **À installer sur un serveur** : `-i ocd_ambassadors` (`ocd_ambassadors_whatsapp` s'installe avec), et
+  **à mettre à jour** : `-u ocd_live_shop`. **Modèles WhatsApp à soumettre à Meta** :
+  `ocd_ambassadeur_livres`, `ocd_ambassadeur_versement`, `ocd_ambassadeur_numero` (français et anglais).
 
 ### 19 novembre 2026 · Ambassadeurs (chantier 11) : la maquette, à valider
 Pas de maquette pour ce chantier : proposée avant tout code, dans

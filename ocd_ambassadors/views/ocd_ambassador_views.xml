@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The ambassadors in the back office (design Ambassadeurs): the list, their tab on the form of
+     the contact, their gains parcel by parcel. -->
+<odoo>
+
+    <record id="res_partner_view_list_ocd_ambassador" model="ir.ui.view">
+        <field name="name">res.partner.view.list.ocd.ambassador</field>
+        <field name="model">res.partner</field>
+        <field name="priority">96</field>
+        <field name="arch" type="xml">
+            <list string="Ambassadors" decoration-warning="ocd_ambassador_state in ('to_check', 'requested')"
+                  decoration-muted="ocd_ambassador_state in ('closed', 'new')" decoration-danger="ocd_ambassador_state == 'paused'">
+                <field name="name"/>
+                <field name="phone" optional="show"/>
+                <field name="country_id" optional="show"/>
+                <field name="ocd_ambassador_code" optional="hide"/>
+                <field name="ocd_ambassador_since" optional="hide"/>
+                <field name="ocd_ambassador_visit_count"/>
+                <field name="ocd_ambassador_order_count"/>
+                <field name="ocd_ambassador_delivered_count"/>
+                <field name="ocd_ambassador_return_count"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="ocd_ambassador_month_amount"/>
+                <field name="ocd_ambassador_to_pay"/>
+                <field name="ocd_ambassador_state" widget="badge" decoration-success="ocd_ambassador_state == 'active'"
+                       decoration-warning="ocd_ambassador_state in ('to_check', 'requested')"
+                       decoration-danger="ocd_ambassador_state == 'paused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="res_partner_view_search_ocd_ambassador" model="ir.ui.view">
+        <field name="name">res.partner.view.search.ocd.ambassador</field>
+        <field name="model">res.partner</field>
+        <field name="priority">96</field>
+        <field name="arch" type="xml">
+            <search string="Ambassadors">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="ocd_ambassador_code"/>
+                <filter name="active_ambassadors" string="Active" domain="[('ocd_ambassador_state', '=', 'active')]"/>
+                <filter name="waiting" string="Waiting for the team"
+                        domain="[('ocd_ambassador_state', 'in', ('to_check', 'paused', 'requested'))]"/>
+                <filter name="closed" string="Closed" domain="[('ocd_ambassador_state', '=', 'closed')]"/>
+                <group>
+                    <filter name="group_state" string="State" context="{'group_by': 'ocd_ambassador_state'}"/>
+                    <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="res_partner_action_ocd_ambassador" model="ir.actions.act_window">
+        <field name="name">Ambassadors</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('ocd_ambassador_state', 'not in', (False, 'new'))]</field>
+        <field name="context">{'search_default_active_ambassadors': 1}</field>
+        <field name="search_view_id" ref="res_partner_view_search_ocd_ambassador"/>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('res_partner_view_list_ocd_ambassador')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No ambassador yet</p>
+            <p>Anyone signs up on the page /ambassadeurs of the site, with their WhatsApp number and their Mobile Money.</p>
+        </field>
+    </record>
+
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit.ocd.ambassadors</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ocd_live.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="ocd_ambassador" string="Ambassador" groups="ocd_live.group_ocd_live_user"
+                      invisible="not ocd_ambassador_state">
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button name="action_ocd_ambassador_open" type="object" string="Open the account" class="btn-primary"
+                                invisible="ocd_ambassador_state not in ('requested', 'to_check', 'paused')"/>
+                        <button name="action_ocd_ambassador_pause" type="object" string="Pause"
+                                invisible="ocd_ambassador_state not in ('active', 'to_check')"
+                                confirm="Their links still work, nothing is earned; the gains due are kept until you open the account again."/>
+                        <button name="action_ocd_ambassador_close" type="object" string="Close the account"
+                                invisible="ocd_ambassador_state in ('closed', False)"
+                                confirm="No new gain; the gains due are paid a last time."/>
+                        <button name="action_ocd_ambassador_id_checked" type="object" string="Identity seen"
+                                invisible="ocd_ambassador_id_checked"/>
+                        <button name="action_ocd_ambassador_view_gains" type="object" string="See their gains"/>
+                        <button name="action_ocd_ambassador_view_space" type="object" string="See their space"
+                                invisible="ocd_ambassador_state not in ('active', 'to_check', 'paused')"/>
+                    </div>
+                    <group>
+                        <group string="The ambassador">
+                            <field name="ocd_ambassador_state" readonly="1"/>
+                            <field name="ocd_ambassador_note" invisible="not ocd_ambassador_note"/>
+                            <field name="ocd_ambassador_code"/>
+                            <field name="ocd_ambassador_since"/>
+                            <field name="ocd_ambassador_charter_at"/>
+                            <field name="ocd_payout_momo"/>
+                            <field name="ocd_ambassador_momo_since" invisible="not ocd_ambassador_momo_since"/>
+                            <field name="ocd_ambassador_id_checked"/>
+                        </group>
+                        <group string="Their sales">
+                            <field name="ocd_ambassador_visit_count"/>
+                            <field name="ocd_ambassador_order_count"/>
+                            <field name="ocd_ambassador_delivered_count"/>
+                            <field name="ocd_ambassador_return_count"/>
+                            <field name="ocd_ambassador_month_amount"/>
+                            <field name="ocd_ambassador_to_pay"/>
+                            <field name="ocd_ambassador_earned_total"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="ocd_ambassador_gain_view_list" model="ir.ui.view">
+        <field name="name">ocd.ambassador.gain.view.list</field>
+        <field name="model">ocd.ambassador.gain</field>
+        <field name="arch" type="xml">
+            <list string="Gains of the ambassadors" create="false" edit="false"
+                  decoration-muted="state in ('cancelled', 'refused')" decoration-danger="state == 'taken_back'"
+                  decoration-warning="return_asked">
+                <field name="create_date" string="Ordered" widget="date"/>
+                <field name="ambassador_id"/>
+                <field name="order_id"/>
+                <field name="picking_id" optional="show"/>
+                <field name="products_label" optional="show"/>
+                <field name="customer_label" optional="hide"/>
+                <field name="rate" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="amount" sum="Total"/>
+                <field name="delivered_at" optional="show"/>
+                <field name="confirm_on" optional="show"/>
+                <field name="return_asked" optional="hide"/>
+                <field name="reason" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'confirmed'"
+                       decoration-info="state in ('ordered', 'delivered')" decoration-warning="state == 'held'"
+                       decoration-danger="state == 'taken_back'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_ambassador_gain_view_form" model="ir.ui.view">
+        <field name="name">ocd.ambassador.gain.view.form</field>
+        <field name="model">ocd.ambassador.gain</field>
+        <field name="arch" type="xml">
+            <form string="Gain of an ambassador" create="false" edit="false">
+                <header>
+                    <button name="action_ocd_return_done" type="object" string="Return made: no gain"
+                            invisible="state not in ('held', 'delivered', 'confirmed')"
+                            confirm="Nothing is due on this parcel; a confirmed gain is taken from the next payout."/>
+                    <button name="action_ocd_return_refused" type="object" string="No return: keep the gain"
+                            invisible="not return_asked"/>
+                    <field name="state" widget="statusbar" statusbar_visible="ordered,delivered,confirmed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="ambassador_id"/>
+                            <field name="order_id"/>
+                            <field name="picking_id"/>
+                            <field name="products_label"/>
+                            <field name="customer_label"/>
+                            <field name="reason" invisible="not reason"/>
+                            <field name="return_asked" invisible="not return_asked"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="rate"/>
+                            <field name="amount"/>
+                            <field name="delivered_at"/>
+                            <field name="confirm_on"/>
+                            <field name="confirmed_at"/>
+                            <field name="bill_id"/>
+                            <field name="refund_id" invisible="not refund_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="ocd_ambassador_gain_view_search" model="ir.ui.view">
+        <field name="name">ocd.ambassador.gain.view.search</field>
+        <field name="model">ocd.ambassador.gain</field>
+        <field name="arch" type="xml">
+            <search string="Gains of the ambassadors">
+                <field name="ambassador_id"/>
+                <field name="order_id"/>
+                <field name="picking_id"/>
+                <filter name="open" string="Waiting" domain="[('state', 'in', ('ordered', 'delivered', 'held'))]"/>
+                <filter name="return_asked" string="Return asked" domain="[('return_asked', '=', True)]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="refused" string="Did not count" domain="[('state', '=', 'refused')]"/>
+                <separator/>
+                <filter name="this_month" string="This month" date="create_date"/>
+                <group>
+                    <filter name="group_ambassador" string="Ambassador" context="{'group_by': 'ambassador_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_reason" string="Why" context="{'group_by': 'reason'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ocd_ambassador_gain_action" model="ir.actions.act_window">
+        <field name="name">Gains of the ambassadors</field>
+        <field name="res_model">ocd.ambassador.gain</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="ocd_ambassador_gain_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No gain yet</p>
+            <p>A gain is written for each parcel of an order brought by the link of an ambassador.</p>
+        </field>
+    </record>
+
+    <record id="sale_order_view_form" model="ir.ui.view">
+        <field name="name">sale.order.view.form.inherit.ocd.ambassadors</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_term_id" position="after">
+                <field name="ocd_ambassador_id" invisible="not ocd_ambassador_id"/>
+                <field name="ocd_ambassador_reason" invisible="not ocd_ambassador_reason"/>
+            </field>
+        </field>
+    </record>
+
+    <menuitem id="ocd_ambassadors_menu" name="Ambassadors" parent="ocd_live_shop.ocd_live_shop_menu_shop" sequence="45"/>
+    <menuitem id="ocd_ambassadors_list_menu" name="Ambassadors" parent="ocd_ambassadors_menu"
+              action="res_partner_action_ocd_ambassador" sequence="10"/>
+    <menuitem id="ocd_ambassadors_gains_menu" name="Gains of the ambassadors" parent="ocd_ambassadors_menu"
+              action="ocd_ambassador_gain_action" sequence="20"/>
+
+</odoo>

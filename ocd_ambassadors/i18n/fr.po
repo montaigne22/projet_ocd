@@ -1,0 +1,2280 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 05:48+0000\n"
+"PO-Revision-Date: 2026-11-19 05:48+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: ocd_ambassadors
+#: model:ir.module.module,description:base.module_ocd_ambassadors
+msgid ""
+"\n"
+"Ambassadors\n"
+"===========\n"
+"\n"
+"- Anyone signs up on /ambassadeurs with their WhatsApp number (checked by a code)\n"
+"  and their Mobile Money; the charter is accepted. Program open to all, on\n"
+"  invitation or closed (settings).\n"
+"- « My ambassador space »: to pay next Monday, waiting, the sales of the week and\n"
+"  their state; « My money » (the detail of the payout, the returns taken back,\n"
+"  the payouts made, a new number held 48 h); « Products to share » (best sellers,\n"
+"  promos, live tonight, what one earns); « Share » (the image drawn by OCD Live at\n"
+"  the price of now with the personal link, the text, the WhatsApp status, a\n"
+"  contact, the clip of the live); « My links » (any page of the site).\n"
+"- The personal link /a/<code> is kept 7 days on the phone; the last link opened\n"
+"  counts, for all the articles of the order; the ambassador, the rate and the cap\n"
+"  are written on the order when it is confirmed. Robots and the ambassador's own\n"
+"  visits are not counted. « Grâce recommends this product » on the product page.\n"
+"- The gain: 5 % of the articles (not the delivery), at most 3 000 F per parcel and\n"
+"  never more than the commission of OCD on the article, paid by OCD. One gain per\n"
+"  parcel: earned when delivered with the code, confirmed 7 days later (a bill of\n"
+"  the ambassador), a return later taken back (a credit note); paid with the\n"
+"  payouts of the shop every week, never a balance below zero.\n"
+"- Against fraud: never on their own purchases (number, Mobile Money, account,\n"
+"  their boutique), 5 orders of a customer per month, paused by itself above 30 %\n"
+"  of returns, one Mobile Money per person, identity seen above 50 000 F, a new\n"
+"  payout number held 48 h. « To check » of the team, settings, automations.\n"
+"- The vendor sees « Sold thanks to the ambassadors » in « My figures ».\n"
+msgstr ""
+"\n"
+"Ambassadeurs\n"
+"============\n"
+"\n"
+"- Chacun s'inscrit sur /ambassadeurs avec son numéro WhatsApp (vérifié par un code)\n"
+"  et son Mobile Money ; la charte est acceptée. Programme ouvert à tous, sur\n"
+"  invitation ou fermé (réglages).\n"
+"- « Mon espace ambassadeur » : à verser lundi, en attente, les ventes de la semaine\n"
+"  et leur état ; « Mon argent » (le détail du versement, les retours retirés, les\n"
+"  versements faits, un nouveau numéro retenu 48 h) ; « Produits à partager » (les\n"
+"  plus vendus, les promos, en live ce soir, ce qu'on gagne) ; « Partager » (l'image\n"
+"  faite par OCD Live au prix du moment avec le lien personnel, le texte, le statut\n"
+"  WhatsApp, un contact, le clip du live) ; « Mes liens » (n'importe quelle page du\n"
+"  site).\n"
+"- Le lien personnel /a/<code> est gardé 7 jours sur le téléphone ; le dernier lien\n"
+"  ouvert compte, pour tous les articles de la commande ; l'ambassadeur, le taux et\n"
+"  le plafond sont inscrits sur la commande à sa confirmation. Les robots et les\n"
+"  propres visites de l'ambassadeur ne comptent pas. « Grâce te recommande ce\n"
+"  produit » sur la fiche produit.\n"
+"- Le gain : 5 % des articles (pas la livraison), au plus 3 000 F par colis et jamais\n"
+"  plus que la commission d'OCD sur l'article, payé par OCD. Un gain par colis :\n"
+"  gagné à la livraison avec le code, confirmé 7 jours plus tard (une facture de\n"
+"  l'ambassadeur), un retour plus tard repris (un avoir) ; versé avec les\n"
+"  reversements du shop chaque semaine, jamais un solde négatif.\n"
+"- Contre la fraude : jamais sur ses propres achats (numéro, Mobile Money, compte, sa\n"
+"  boutique), 5 commandes d'un même client par mois, mis en pause tout seul au-delà\n"
+"  de 30 % de retours, un Mobile Money par personne, pièce d'identité au-delà de\n"
+"  50 000 F, un nouveau numéro de versement retenu 48 h. « À vérifier » de l'équipe,\n"
+"  réglages, automatisations.\n"
+"- Le vendeur voit « Vendu grâce aux ambassadeurs » dans « Mes chiffres ».\n"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "% of returns"
+msgstr "% de retours"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "%(active)s ambassadors active, %(waiting)s waiting for the team."
+msgstr "%(active)s ambassadeurs actifs, %(waiting)s en attente de l'équipe."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%(amount)s confirmed on %(day)s"
+msgstr "%(amount)s confirmés le %(day)s"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "%(bad)s parcels refused or returned on %(count)s: paused by itself."
+msgstr "%(bad)s colis refusés ou retournés sur %(count)s : mis en pause tout seul."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%(count)s parcels delivered less than %(days)s days ago"
+msgstr "%(count)s colis livrés il y a moins de %(days)s jours"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s delivered"
+msgstr "%s livrés"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "%s earned since the start"
+msgstr "%s gagnés depuis le début"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s if it is delivered and kept"
+msgstr "%s s'il est livré et gardé"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s in your next payout"
+msgstr "%s dans ton prochain versement"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s on the way"
+msgstr "%s en route"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: code:addons/ocd_ambassadors/models/ocd_vendor_figures.py:0
+msgid "%s orders"
+msgstr "%s commandes"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s paid"
+msgstr "%s versés"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_vendor_figures.py:0
+msgid "%s sold"
+msgstr "%s vendus"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s visits"
+msgstr "%s visites"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s waits for the decision of the team"
+msgstr "%s attend la décision de l'équipe"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s · waits before a payout"
+msgstr "%s · attend avant un versement"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "%s, returned"
+msgstr "%s, retourné"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_cap
+msgid "0: no cap."
+msgstr "0 : pas de plafond."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "1 delivered"
+msgstr "1 livré"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "1 on the way"
+msgstr "1 en route"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: code:addons/ocd_ambassadors/models/ocd_vendor_figures.py:0
+msgid "1 order"
+msgstr "1 commande"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "1 parcel delivered less than %s days ago"
+msgstr "1 colis livré il y a moins de %s jours"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_vendor_figures.py:0
+msgid "1 sold"
+msgstr "1 vendu"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "1 visit"
+msgstr "1 visite"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "<b>Choose a product</b><span>The best sellers, the promos, the ones in live tonight.</span>"
+msgstr "<b>Choisis un produit</b><span>Les plus vendus, les promos, ceux en live ce soir.</span>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_links
+msgid "<b>My link to the shop</b>"
+msgstr "<b>Mon lien vers le shop</b>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_money
+msgid "<b>My payout number</b>"
+msgstr "<b>Mon numéro de versement</b>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "<b>Receive your gains every Monday</b>"
+msgstr "<b>Reçois tes gains chaque lundi</b>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid ""
+"<b>Request sent.</b>\n"
+"                            <span>The team of OCD Live opens your account and tells you on WhatsApp.</span>"
+msgstr ""
+"<b>Demande envoyée.</b>\n"
+"                            <span>L'équipe d'OCD Live ouvre ton compte et te prévient sur WhatsApp.</span>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "<b>Share it</b><span>WhatsApp status, a contact, TikTok: the image and the text are ready, with your link.</span>"
+msgstr "<b>Partage-le</b><span>Statut WhatsApp, un contact, TikTok : l'image et le texte sont prêts, avec ton lien.</span>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_links
+msgid ""
+"<b>The link of any page</b>\n"
+"                <small class=\"o_ocd_amb_muted\">A boutique, a live, the programme: paste its address, your link is made.</small>"
+msgstr ""
+"<b>Le lien de n'importe quelle page</b>\n"
+"                <small class=\"o_ocd_amb_muted\">Une boutique, un live, le programme : colle son adresse, ton lien est fait.</small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.product_recommended
+msgid "<i aria-hidden=\"true\"/><span class=\"o_ocd_amb_reco_text\">%s recommends this product to you</span>"
+msgstr "<i aria-hidden=\"true\"/><span class=\"o_ocd_amb_reco_text\">%s te recommande ce produit</span>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "<small class=\"o_ocd_amb_muted\">In your name: it is checked before the first payout.</small>"
+msgstr "<small class=\"o_ocd_amb_muted\">À ton nom : il est vérifié avant le premier versement.</small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "<small class=\"o_ocd_amb_muted\">The image is drawn by OCD Live with the price of now: a new price, a new image. The price cannot be changed.</small>"
+msgstr "<small class=\"o_ocd_amb_muted\">L'image est faite par OCD Live avec le prix du moment : un nouveau prix, une nouvelle image. Le prix ne se change pas.</small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_products
+msgid "<small class=\"o_ocd_amb_muted\">The products sold on OCD Live, the ones of your country first (not the vendors in direct contact on WhatsApp: the sale does not go through the site). A product sold out leaves the list; your link stays good and leads to the boutique.</small>"
+msgstr "<small class=\"o_ocd_amb_muted\">Les produits vendus sur OCD Live, ceux de ton pays d'abord (pas ceux des vendeurs en contact direct sur WhatsApp : la vente ne passe pas par le site). Un produit épuisé quitte la liste ; ton lien reste bon et mène à la boutique.</small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "<small class=\"o_ocd_amb_muted\">You may change the text; the link is added at the end if it is missing.</small>"
+msgstr "<small class=\"o_ocd_amb_muted\">Tu peux changer le texte ; le lien est ajouté à la fin s'il manque.</small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_home
+msgid "<small class=\"o_ocd_amb_muted\">You see the first name and the district of your customers, never their number.</small>"
+msgstr "<small class=\"o_ocd_amb_muted\">Tu vois le prénom et le quartier de tes clients, jamais leur numéro.</small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "<small><b>Example</b></small>"
+msgstr "<small><b>Exemple</b></small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_home
+msgid "<small>Last 7 days</small>"
+msgstr "<small>7 derniers jours</small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_home
+msgid "<small>Waiting</small>"
+msgstr "<small>En attente</small>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "<span class=\"o_ocd_amb_badge\">For everybody, without a boutique</span>"
+msgstr "<span class=\"o_ocd_amb_badge\">Pour tout le monde, sans boutique</span>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "<span>I share honestly: the real price, no messages in mass to strangers, never a purchase with my own link. I am 18 or more.</span>"
+msgstr "<span>Je partage honnêtement : le vrai prix, pas de messages en masse à des inconnus, jamais d'achat avec mon propre lien. J'ai 18 ans ou plus.</span>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_money
+msgid "<span>Since the start</span>"
+msgstr "<span>Depuis le début</span>"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_money
+msgid "<span>To pay</span>"
+msgstr "<span>À verser</span>"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "A gain is confirmed %s days after the delivery. A return later is taken from the next payout; below the minimum, or nothing, it waits for the next week: nothing is lost, nothing is paid too much."
+msgstr "Un gain est confirmé %s jours après la livraison. Un retour plus tard est retiré du versement suivant ; sous le minimum, ou s'il ne reste rien, il attend la semaine d'après : rien n'est perdu, rien n'est versé en trop."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "A gain is due only for a parcel delivered with its code and kept."
+msgstr "Un gain n'est dû que pour un colis livré avec son code et gardé."
+
+#. module: ocd_ambassadors
+#: model:ir.model.constraint,message:ocd_ambassadors.constraint_account_move_unique_ocd_ambassador_move
+msgid "A gain is paid or taken back once."
+msgstr "Un gain est versé ou repris une seule fois."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.actions.act_window,help:ocd_ambassadors.ocd_ambassador_gain_action
+msgid "A gain is written for each parcel of an order brought by the link of an ambassador."
+msgstr "Un gain est écrit pour chaque colis d'une commande apportée par le lien d'un ambassadeur."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "A new number waits %s hours before the first payout, and the number of your account is told on WhatsApp: if it is not you, you stop it."
+msgstr "Un nouveau numéro attend %s heures avant le premier versement, et le numéro de ton compte est prévenu sur WhatsApp : si ce n'est pas toi, tu l'arrêtes."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_partner__ocd_ambassador_momo_since
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_users__ocd_ambassador_momo_since
+msgid "A new payout number waits the hours of the settings before the first payout."
+msgstr "Un nouveau numéro de versement attend les heures des réglages avant le premier versement."
+
+#. module: ocd_ambassadors
+#: model:ir.model.constraint,message:ocd_ambassadors.constraint_ocd_ambassador_gain_unique_parcel
+msgid "A parcel gives one gain at most."
+msgstr "Un colis donne un gain au plus."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "A return taken back is more than your gains: it waits for your next gains."
+msgstr "Un retour repris dépasse tes gains : il attend tes prochains gains."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Above %s earned, the team sees your identity document before the next payout (once)."
+msgstr "Au-delà de %s gagnés, l'équipe voit ta pièce d'identité avant le versement suivant (une seule fois)."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "Accept"
+msgstr "Accepter"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "Account asked"
+msgstr "Compte demandé"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Account of ambassador opened by %s."
+msgstr "Compte d'ambassadeur ouvert par %s."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__reason__paused
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__sale_order__ocd_ambassador_reason__paused
+msgid "Account paused"
+msgstr "Compte en pause"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_partner__ocd_ambassador_state__active
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.res_partner_view_search_ocd_ambassador
+msgid "Active"
+msgstr "Actif"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_links
+msgid "Address of the page"
+msgstr "Adresse de la page"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_confirm_days
+msgid "After the delivery with the code: the gain is then paid. A return later is taken from the next payout."
+msgstr "Après la livraison avec le code : le gain est alors versé. Un retour plus tard est retiré du versement suivant."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "Already paid: taken from the next payout if the return is made."
+msgstr "Déjà versé : retiré du prochain versement si le retour est fait."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_account_bank_statement_line__ocd_ambassador_kind
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_account_move__ocd_ambassador_kind
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__ambassador_id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_state
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_state
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_sale_order__ocd_ambassador_id
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "Ambassador"
+msgstr "Ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_sale_order__ocd_ambassador_cap
+msgid "Ambassador Cap Per Parcel"
+msgstr "Plafond par colis de l'ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_sale_order__ocd_ambassador_rate
+msgid "Ambassador Rate (%)"
+msgstr "Taux de l'ambassadeur (%)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_since
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_since
+msgid "Ambassador Since"
+msgstr "Ambassadeur depuis"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Ambassador paused: too many returns"
+msgstr "Ambassadeur en pause : trop de retours"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model:ir.actions.act_window,name:ocd_ambassadors.res_partner_action_ocd_ambassador
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_automation__group__ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_listing_refuse_reason__applies_to__ambassador
+#: model:ir.ui.menu,name:ocd_ambassadors.ocd_ambassadors_list_menu
+#: model:ir.ui.menu,name:ocd_ambassadors.ocd_ambassadors_menu
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.res_partner_view_list_ocd_ambassador
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.res_partner_view_search_ocd_ambassador
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Ambassadors"
+msgstr "Ambassadeurs"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_cap
+msgid "Ambassadors: At Most Per Parcel"
+msgstr "Ambassadeurs : au plus par colis"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_confirm_days
+msgid "Ambassadors: Confirmed After (Days)"
+msgstr "Ambassadeurs : confirmé après (jours)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_rate
+msgid "Ambassadors: Gain (%)"
+msgstr "Ambassadeurs : gain (%)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_id_above
+msgid "Ambassadors: Identity Checked Above"
+msgstr "Ambassadeurs : pièce d'identité au-delà de"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_min_payout
+msgid "Ambassadors: Minimum Payout"
+msgstr "Ambassadeurs : versement minimum"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_momo_hold_hours
+msgid "Ambassadors: New Payout Number Waits (Hours)"
+msgstr "Ambassadeurs : nouveau numéro de versement retenu (heures)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_customer_month
+msgid "Ambassadors: Orders Of A Customer Per Month"
+msgstr "Ambassadeurs : commandes d'un client par mois"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_pause_rate
+msgid "Ambassadors: Paused Above (% Of Returns)"
+msgstr "Ambassadeurs : en pause au-delà de (% de retours)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_pause_min
+msgid "Ambassadors: Paused From (Parcels)"
+msgstr "Ambassadeurs : en pause à partir de (colis)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_open
+msgid "Ambassadors: Program"
+msgstr "Ambassadeurs : programme"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__ocd_ambassador_link_days
+msgid "Ambassadors: The Link Counts (Days)"
+msgstr "Ambassadeurs : le lien compte (jours)"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Ambassadors: the sales brought by their shares"
+msgstr "Ambassadeurs : les ventes apportées par leurs partages"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_link_days
+msgid "An order placed this long after the link was opened counts for the ambassador (the last link opened)."
+msgstr "Une commande passée jusqu'à ce délai après l'ouverture du lien compte pour l'ambassadeur (le dernier lien ouvert)."
+
+#. module: ocd_ambassadors
+#: model:ir.model.constraint,message:ocd_ambassadors.constraint_res_partner_unique_ocd_ambassador_code
+msgid "Another ambassador has this code."
+msgstr "Un autre ambassadeur a ce code."
+
+#. module: ocd_ambassadors
+#: model:ir.module.module,summary:base.module_ocd_ambassadors
+msgid "Anyone shares a product of OCD Live with their personal link and earns a share of the articles once the parcel is delivered with its code and kept, paid every week on their Mobile Money"
+msgstr "Chacun partage un produit d'OCD Live avec son lien personnel et gagne une part des articles une fois le colis livré avec son code et gardé, versée chaque semaine sur son Mobile Money"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.actions.act_window,help:ocd_ambassadors.res_partner_action_ocd_ambassador
+msgid "Anyone signs up on the page /ambassadeurs of the site, with their WhatsApp number and their Mobile Money."
+msgstr "Chacun s'inscrit sur la page /ambassadeurs du site, avec son numéro WhatsApp et son Mobile Money."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__products_label
+msgid "Articles"
+msgstr "Articles"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Ask to become an ambassador"
+msgstr "Demander à devenir ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_partner__ocd_ambassador_state__requested
+msgid "Asked"
+msgstr "Demandé"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Asked to become an ambassador on the site."
+msgstr "A demandé à devenir ambassadeur sur le site."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "At most per parcel"
+msgstr "Au plus par colis"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_ocd_automation
+msgid "Automation Of OCD Live"
+msgstr "Automatisation d'OCD Live"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Become an ambassador"
+msgstr "Devenir ambassadeur"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_login_ambassador
+msgid "Become one"
+msgstr "Le devenir"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_momo_hold_hours
+msgid "Before the first payout on a new number; the number of the account is told on WhatsApp."
+msgstr "Avant le premier versement sur un nouveau numéro ; le numéro du compte est prévenu sur WhatsApp."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Below %s, it waits for the next payout day."
+msgstr "Sous %s, il attend le prochain jour de versement."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_min_payout
+msgid "Below, the gains wait for the next payout day."
+msgstr "En dessous, les gains attendent le prochain jour de versement."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Best sellers"
+msgstr "Plus vendus"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__bill_id
+msgid "Bill"
+msgstr "Facture"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__reason__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Cancelled: no gain."
+msgstr "Annulé : pas de gain."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_money
+msgid "Change my number"
+msgstr "Changer mon numéro"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_charter_at
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_charter_at
+msgid "Charter Accepted At"
+msgstr "Charte acceptée le"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "Close the account"
+msgstr "Fermer le compte"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_company__ocd_ambassador_open__closed
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_partner__ocd_ambassador_state__closed
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.res_partner_view_search_ocd_ambassador
+msgid "Closed"
+msgstr "Fermé"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Closed by the team."
+msgstr "Fermé par l'équipe."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Closed: no new gain, the gains already due are paid."
+msgstr "Fermé : plus de nouveau gain, les gains déjà dus sont versés."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_code
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_code
+msgid "Code Of The Links"
+msgstr "Code des liens"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_res_company
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,actions:ocd_ambassadors.automation_ambassador_gains
+msgid ""
+"Confirm the gains kept: a bill each, paid with the payouts of the shop every week.\n"
+"In the evening, tell each ambassador the parcels delivered since the last message, once a day.\n"
+"Remove the accounts asked whose number was never checked (7 days)."
+msgstr ""
+"Confirmer les gains gardés : une facture chacun, versée avec les reversements du shop chaque semaine.\n"
+"Le soir, dire à chaque ambassadeur les colis livrés depuis le dernier message, une fois par jour.\n"
+"Supprimer les comptes demandés dont le numéro n'a jamais été vérifié (7 jours)."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__state__confirmed
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+msgid "Confirmed"
+msgstr "Confirmé"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__confirmed_at
+msgid "Confirmed At"
+msgstr "Confirmé le"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__confirm_on
+msgid "Confirmed On"
+msgstr "Confirmé le"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_links
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "Copied: paste it where you want."
+msgstr "Copié : colle-le où tu veux."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_links
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "Copy the link"
+msgstr "Copier le lien"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.res_partner_view_search_ocd_ambassador
+msgid "Country"
+msgstr "Pays"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__bad_outcome
+msgid "Counts in the rate of returns of the ambassador."
+msgstr "Compte dans le taux de retours de l'ambassadeur."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__refund_id
+msgid "Credit Note"
+msgstr "Avoir"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__customer_label
+msgid "Customer"
+msgstr "Client"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__state__delivered
+msgid "Delivered"
+msgstr "Livré"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_delivered_count
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_delivered_count
+msgid "Delivered (30 Days)"
+msgstr "Livrés (30 jours)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__delivered_at
+msgid "Delivered At"
+msgstr "Livré le"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__state__refused
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+msgid "Did not count"
+msgstr "N'a pas compté"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_ocd_listing_refuse_reason
+msgid "Directory Link Refusal Reason"
+msgstr "Motif de refus"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_account_move__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_automation__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_listing_refuse_reason__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_live_settings__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_live_verification__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_payout__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_vendor_count__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_vendor_figures__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_product_template__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_sale_order__display_name
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_stock_picking__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Each link counts for you %s days on the phone that opens it, for everything ordered there; the last link opened counts."
+msgstr "Chaque lien compte pour toi %s jours sur le téléphone qui l'ouvre, pour tout ce qui y est commandé ; le dernier lien ouvert compte."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_earned_total
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_earned_total
+msgid "Earned Since The Start"
+msgstr "Gagné depuis le début"
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,when:ocd_ambassadors.automation_ambassador_gains
+msgid "Every hour"
+msgstr "Chaque heure"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_company__ocd_ambassador_open__all
+msgid "Everybody"
+msgstr "Tout le monde"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_open
+msgid "Everybody: the account opens once the number is checked. Invited: the team opens it. Closed: no new gain (the gains already due are paid)."
+msgstr "Tout le monde : le compte s'ouvre une fois le numéro vérifié. Sur invitation : l'équipe l'ouvre. Fermé : plus de nouveau gain (les gains déjà dus sont versés)."
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_ocd_vendor_figures
+msgid "Figures Of A Vendor"
+msgstr "Chiffres d'un vendeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_ocd_vendor_count
+msgid "Figures Of A Vendor, Day By Day"
+msgstr "Chiffres d'un vendeur, jour par jour"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (contacts)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_listing_refuse_reason__applies_to
+msgid "For"
+msgstr "Pour"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__amount
+msgid "Gain"
+msgstr "Gain"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_ocd_ambassador_gain
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_account_bank_statement_line__ocd_ambassador_gain_id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_account_move__ocd_ambassador_gain_id
+msgid "Gain Of An Ambassador"
+msgstr "Gain d'un ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__account_move__ocd_ambassador_kind__earning
+#: model:product.template,name:ocd_ambassadors.product_ambassador_gain
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_form
+msgid "Gain of an ambassador"
+msgstr "Gain d'un ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:product.template,name:ocd_ambassadors.product_ambassador_taken_back
+msgid "Gain of an ambassador taken back"
+msgstr "Gain d'un ambassadeur repris"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_ambassador_gain.py:0
+msgid "Gain on %(parcel)s (%(products)s)"
+msgstr "Gain sur %(parcel)s (%(products)s)"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Gain on the articles"
+msgstr "Gain sur les articles"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__account_move__ocd_ambassador_kind__taken_back
+msgid "Gain taken back"
+msgstr "Gain repris"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_gain_ids
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_gain_ids
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_sale_order__ocd_ambassador_gain_ids
+msgid "Gains Of The Ambassador"
+msgstr "Gains de l'ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_told_on
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_told_on
+msgid "Gains Of The Day Told On"
+msgstr "Gains du jour dits le"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_month_amount
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_month_amount
+msgid "Gains This Month"
+msgstr "Gains du mois"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_partner__ocd_ambassador_to_pay
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_users__ocd_ambassador_to_pay
+msgid "Gains confirmed and not paid yet, minus the returns taken back."
+msgstr "Gains confirmés et pas encore versés, moins les retours repris."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_id_above
+msgid "Gains confirmed since the start: above, the team sees an identity document before the next payout. 0: never."
+msgstr "Gains confirmés depuis le début : au-delà, l'équipe voit une pièce d'identité avant le versement suivant. 0 : jamais."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,name:ocd_ambassadors.automation_ambassador_gains
+msgid "Gains confirmed, returns watched"
+msgstr "Gains confirmés, retours surveillés"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Gains of %s"
+msgstr "Gains de %s"
+
+#. module: ocd_ambassadors
+#: model:ir.actions.act_window,name:ocd_ambassadors.ocd_ambassador_gain_action
+#: model:ir.ui.menu,name:ocd_ambassadors.ocd_ambassadors_gains_menu
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_list
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+msgid "Gains of the ambassadors"
+msgstr "Gains des ambassadeurs"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Gains since the start: the team sees an identity document once before the next payout. 0: never."
+msgstr "Gains depuis le début : l'équipe voit une pièce d'identité une fois avant le versement suivant. 0 : jamais."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_login_ambassador
+msgid "Give the WhatsApp number of your account of ambassador: a code arrives on WhatsApp. Not an ambassador yet?"
+msgstr "Donne le numéro WhatsApp de ton compte d'ambassadeur : un code arrive sur WhatsApp. Pas encore ambassadeur ?"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Give your Mobile Money number."
+msgstr "Donne ton numéro Mobile Money."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_automation__group
+msgid "Group"
+msgstr "Groupe"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "I already have an account"
+msgstr "J'ai déjà un compte"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_account_move__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_automation__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_listing_refuse_reason__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_live_settings__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_live_verification__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_payout__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_vendor_count__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_vendor_figures__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_product_template__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_company__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_sale_order__id
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_stock_picking__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_id_checked
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_id_checked
+msgid "Identity Seen (Ambassador)"
+msgstr "Pièce d'identité vue (ambassadeur)"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "Identity seen"
+msgstr "Pièce vue"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Identity seen above"
+msgstr "Pièce d'identité au-delà de"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "Identity to see"
+msgstr "Pièce d'identité à voir"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__message_has_error
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "In live tonight"
+msgstr "En live ce soir"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "In promo"
+msgstr "En promo"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__amount
+msgid "In the currency of OCD, at most the cap of the day."
+msgstr "Dans la devise d'OCD, au plus le plafond du jour."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_partner__ocd_ambassador_code
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_users__ocd_ambassador_code
+msgid "In the personal links of the ambassador: ocdlive.com/a/GRACE7."
+msgstr "Dans les liens personnels de l'ambassadeur : ocdlive.com/a/GRACE7."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_company__ocd_ambassador_open__invited
+msgid "Invited by the team"
+msgstr "Sur invitation de l'équipe"
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,tools:ocd_ambassadors.automation_ambassador_gains
+#: model:ocd.automation,tools:ocd_ambassadors.automation_ambassador_money
+msgid "Invoicing, code of OCD Live."
+msgstr "Facturation, code d'OCD Live."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_vendor_count__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_sale_order__ocd_ambassador_at
+msgid "Link Opened At"
+msgstr "Lien ouvert le"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Look at %(product)s of %(vendor)s: %(price)s on OCD Live, delivered with a code. %(link)s"
+msgstr "Regarde %(product)s de %(vendor)s : %(price)s sur OCD Live, livré avec un code. %(link)s"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_links
+msgid "Make my link"
+msgstr "Faire mon lien"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Messages in mass to people who did not ask for them close the account."
+msgstr "Des messages en masse à des personnes qui ne les ont pas demandés ferment le compte."
+
+#. module: ocd_ambassadors
+#: model:ocd.listing.refuse.reason,name:ocd_ambassadors.refuse_reason_ambassador_spam
+msgid "Messages to strangers"
+msgstr "Messages à des inconnus"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "Mobile Money %s"
+msgstr "Mobile Money %s"
+
+#. module: ocd_ambassadors
+#: model:ocd.listing.refuse.reason,name:ocd_ambassadors.refuse_reason_ambassador_momo
+msgid "Mobile Money of another person"
+msgstr "Mobile Money d'une autre personne"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_frame
+msgid "My ambassador space"
+msgstr "Mon espace ambassadeur"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "My links"
+msgstr "Mes liens"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "My money"
+msgstr "Mon argent"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_home
+msgid "My sales"
+msgstr "Mes ventes"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_money
+msgid "New Mobile Money number"
+msgstr "Nouveau numéro Mobile Money"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "New payout number: %(new)s (was %(old)s)."
+msgstr "Nouveau numéro de versement : %(new)s (avant : %(old)s)."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "New payout number: wait"
+msgstr "Nouveau numéro de versement : attente"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.actions.act_window,help:ocd_ambassadors.res_partner_action_ocd_ambassador
+msgid "No ambassador yet"
+msgstr "Pas encore d'ambassadeur"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__state__cancelled
+msgid "No gain"
+msgstr "Pas de gain"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.actions.act_window,help:ocd_ambassadors.ocd_ambassador_gain_action
+msgid "No gain yet"
+msgstr "Pas encore de gain"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "No new gain; the gains due are paid a last time."
+msgstr "Plus de nouveau gain ; les gains dus sont versés une dernière fois."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "No number yet"
+msgstr "Pas encore de numéro"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_products
+msgid "No product here for now."
+msgstr "Aucun produit ici pour l'instant."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_form
+msgid "No return: keep the gain"
+msgstr "Pas de retour : garder le gain"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_home
+msgid "No sale yet: share a product, your contacts order with your link."
+msgstr "Pas encore de vente : partage un produit, tes contacts commandent avec ton lien."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "Not confirmed: it waits for the return."
+msgstr "Pas confirmé : il attend le retour."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Not on the delivery; never more than the commission of OCD on the article. Paid by OCD: the customer pays the same price, the vendor pays nothing."
+msgstr "Pas sur la livraison ; jamais plus que la commission d'OCD sur l'article. Payé par OCD : le client paie le même prix, le vendeur ne paie rien."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Noted: your new number waits %s hours before a payout, the number of your account is told."
+msgstr "C'est noté : ton nouveau numéro attend %s heures avant un versement, le numéro de ton compte est prévenu."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_form
+msgid "Nothing is due on this parcel; a confirmed gain is taken from the next payout."
+msgstr "Rien n'est dû sur ce colis ; un gain confirmé est retiré du prochain versement."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "Nothing waiting for the ambassadors."
+msgstr "Rien en attente pour les ambassadeurs."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Nothing waiting."
+msgstr "Rien en attente."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Number never checked."
+msgstr "Numéro jamais vérifié."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur d'envoi"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_partner__ocd_ambassador_state__new
+msgid "Number to check"
+msgstr "Numéro à vérifier"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_ocd_live_verification
+msgid "OCD Live Checks"
+msgstr "Vérifications OCD Live"
+
+#. module: ocd_ambassadors
+#: model:ir.module.module,shortdesc:base.module_ocd_ambassadors
+msgid "OCD Live: Ambassadors"
+msgstr "OCD Live : Ambassadeurs"
+
+#. module: ocd_ambassadors
+#: model:ir.actions.server,name:ocd_ambassadors.ir_cron_ambassadors_ir_actions_server
+msgid "OCD Live: gains of the ambassadors"
+msgstr "OCD Live : gains des ambassadeurs"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_rate
+msgid "Of the articles of the order (not the delivery), never more than the commission of OCD on the article."
+msgstr "Des articles de la commande (pas la livraison), jamais plus que la commission d'OCD sur l'article."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,when:ocd_ambassadors.automation_ambassador_money
+msgid "On the payout day of the shop"
+msgstr "Le jour de versement du shop"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "On the payout day of the shop, on their Mobile Money; below, it waits."
+msgstr "Le jour de versement du shop, sur leur Mobile Money ; en dessous, il attend."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__state__ordered
+msgid "On the way"
+msgstr "En route"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "On your Mobile Money %s"
+msgstr "Sur ton Mobile Money %s"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "On your Mobile Money, from %s."
+msgstr "Sur ton Mobile Money, dès %s."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "One account per person, paid on your own Mobile Money."
+msgstr "Un compte par personne, versé sur ton propre Mobile Money."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_ambassador_gain.py:0
+msgid "Only the team of OCD Live decides on the gains of the ambassadors."
+msgstr "Seule l'équipe d'OCD Live décide des gains des ambassadeurs."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Only the team of OCD Live manages the ambassadors."
+msgstr "Seule l'équipe d'OCD Live gère les ambassadeurs."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "Open again"
+msgstr "Rouvrir"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_login_code_ambassador
+msgid "Open my ambassador space"
+msgstr "Ouvrir mon espace ambassadeur"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "Open the account"
+msgstr "Ouvrir le compte"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__order_id
+msgid "Order"
+msgstr "Commande"
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,name:ocd_ambassadors.automation_ambassador_order
+msgid "Order brought by an ambassador"
+msgstr "Commande apportée par un ambassadeur"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Order it on OCD Live"
+msgstr "Commande-le sur OCD Live"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_list
+msgid "Ordered"
+msgstr "Commandé"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Ordered while the program was closed."
+msgstr "Commandé pendant que le programme était fermé."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Ordered while your account was paused."
+msgstr "Commandé pendant que ton compte était en pause."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Ordered with your own number: your own purchase does not count."
+msgstr "Commandé avec ton propre numéro : ton propre achat ne compte pas."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_order_count
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_order_count
+msgid "Orders (30 Days)"
+msgstr "Commandes (30 jours)"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Orders of a customer per month"
+msgstr "Commandes d'un client par mois"
+
+#. module: ocd_ambassadors
+#: model:ocd.listing.refuse.reason,name:ocd_ambassadors.refuse_reason_ambassador_own
+msgid "Orders of their own"
+msgstr "Commandes pour soi-même"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Paid every week from"
+msgstr "Versé chaque semaine dès"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__picking_id
+msgid "Parcel"
+msgstr "Colis"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_pause_rate
+msgid "Parcels refused at the door or returned, on the last parcels of the ambassador. 0: never."
+msgstr "Colis refusés à la porte ou retournés, sur les derniers colis de l'ambassadeur. 0 : jamais."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Parcels refused at the door or returned: the links still work, nothing is earned, the gains due are kept. 0: never."
+msgstr "Colis refusés à la porte ou retournés : les liens marchent encore, rien ne se gagne, les gains dus sont gardés. 0 : jamais."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Paste the address of a page of OCD Live (a boutique, a live, the programme)."
+msgstr "Colle l'adresse d'une page d'OCD Live (une boutique, un live, le programme)."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "Pause"
+msgstr "Mettre en pause"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_partner__ocd_ambassador_state__paused
+msgid "Paused"
+msgstr "En pause"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "Paused by itself above"
+msgstr "Mis en pause tout seul au-delà de"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Paused by the team."
+msgstr "Mis en pause par l'équipe."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,actions:ocd_ambassadors.automation_ambassador_money
+msgid ""
+"Pay the gains confirmed minus the returns taken back, from the minimum of the settings.\n"
+"Never a balance below zero, nor to an account paused or to check, nor on a new number before its hours, nor above the gains of the settings without an identity seen.\n"
+"Pause an account above the rate of returns of the settings."
+msgstr ""
+"Verser les gains confirmés moins les retours repris, dès le minimum des réglages.\n"
+"Jamais un solde négatif, ni à un compte en pause ou à vérifier, ni sur un nouveau numéro avant ses heures, ni au-delà des gains des réglages sans pièce d'identité vue.\n"
+"Mettre en pause un compte au-delà du taux de retours des réglages."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_momo_since
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_momo_since
+msgid "Payout Number Since"
+msgstr "Numéro de versement depuis"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_money
+msgid "Payouts made"
+msgstr "Versements faits"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_products
+msgid "Products"
+msgstr "Produits"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_home
+msgid "Products to share"
+msgstr "Produits à partager"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__reason__closed
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__sale_order__ocd_ambassador_reason__closed
+msgid "Program or account closed"
+msgstr "Programme ou compte fermé"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "Put it in my WhatsApp status"
+msgstr "Mettre en statut WhatsApp"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__rate
+msgid "Rate (%)"
+msgstr "Taux (%)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__bad_outcome
+msgid "Refused Or Returned"
+msgstr "Refusé ou retourné"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__reason__returned
+msgid "Refused at the door or returned"
+msgstr "Refusé à la porte ou retourné"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Refused at the door or returned: no gain."
+msgstr "Refusé à la porte ou retourné : pas de gain."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__return_asked
+msgid "Return Asked"
+msgstr "Retour demandé"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__state__held
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+msgid "Return asked"
+msgstr "Retour demandé"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_form
+msgid "Return made: no gain"
+msgstr "Retour fait : pas de gain"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_ambassador_gain.py:0
+msgid "Return of %(parcel)s (%(products)s)"
+msgstr "Retour de %(parcel)s (%(products)s)"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Returned"
+msgstr "Retourné"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_return_count
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_return_count
+msgid "Returns (30 Days)"
+msgstr "Retours (30 jours)"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,tools:ocd_ambassadors.automation_ambassador_order
+msgid "Sales, code of OCD Live."
+msgstr "Ventes, code d'OCD Live."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "Save the image"
+msgstr "Enregistrer l'image"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_products
+msgid "Search a product, a boutique"
+msgstr "Chercher un produit, une boutique"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "See an identity document in their name before the next payout (once)."
+msgstr "Voir une pièce d'identité à son nom avant le prochain versement (une seule fois)."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_products
+msgid "See more"
+msgstr "Voir plus"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "See the ambassador"
+msgstr "Voir l'ambassadeur"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+msgid "See the order"
+msgstr "Voir la commande"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "See their gains"
+msgstr "Voir ses gains"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "See their space"
+msgstr "Voir son espace"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "Send to a contact"
+msgstr "Envoyer à un contact"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_ocd_live_settings
+msgid "Settings Page Of OCD Live"
+msgstr "Page des paramètres d'OCD Live"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_links
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_products
+msgid "Share"
+msgstr "Partager"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_products
+msgid "Share a boutique or a live"
+msgstr "Partager une boutique ou un live"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Share, and earn on each parcel delivered"
+msgstr "Partage, et gagne sur chaque colis livré"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.vendor_figures_ambassadors
+msgid "Sold thanks to the ambassadors"
+msgstr "Vendu grâce aux ambassadeurs"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__state
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.res_partner_view_search_ocd_ambassador
+msgid "State"
+msgstr "État"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__state__taken_back
+msgid "Taken back"
+msgstr "Repris"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "The account of ambassador of %s is not open."
+msgstr "Le compte d'ambassadeur de %s n'est pas ouvert."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "The ambassador"
+msgstr "L'ambassadeur"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "The ambassadors"
+msgstr "Les ambassadeurs"
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,scope:ocd_ambassadors.automation_ambassador_money
+msgid "The ambassadors."
+msgstr "Les ambassadeurs."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "The charter"
+msgstr "La charte"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "The clip of 30 seconds of the live where the product was shown, with the same link."
+msgstr "Le clip de 30 secondes du live où le produit a été montré, avec le même lien."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__confirm_on
+msgid "The day the gain is confirmed, if kept."
+msgstr "Le jour où le gain est confirmé, s'il est gardé."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,trigger:ocd_ambassadors.automation_ambassador_gains
+msgid "The days of the settings after the delivery with the code."
+msgstr "Les jours des réglages après la livraison avec le code."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__customer_label
+msgid "The first name, the initial and the district: never the number."
+msgstr "Le prénom, l'initiale et le quartier : jamais le numéro."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_ambassador_gain.py:0
+msgid "The gain %s is already decided."
+msgstr "Le gain %s est déjà décidé."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,scope:ocd_ambassadors.automation_ambassador_gains
+msgid "The gains of the ambassadors."
+msgstr "Les gains des ambassadeurs."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,trigger:ocd_ambassadors.automation_ambassador_order
+msgid "The last link of an ambassador opened on the phone, within the days of the settings."
+msgstr "Le dernier lien d'un ambassadeur ouvert sur le téléphone, dans les jours des réglages."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_sale_order__ocd_ambassador_id
+msgid "The last link of an ambassador opened on this phone before the order."
+msgstr "Le dernier lien d'un ambassadeur ouvert sur ce téléphone avant la commande."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "The last link opened on the phone counts; the gain is confirmed after the delivery with the code, a return later is taken from the next payout."
+msgstr "Le dernier lien ouvert sur le téléphone compte ; le gain est confirmé après la livraison avec le code, un retour plus tard est retiré du versement suivant."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "The link and the confirmation"
+msgstr "Le lien et la confirmation"
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,name:ocd_ambassadors.automation_ambassador_money
+msgid "The money of the ambassadors"
+msgstr "L'argent des ambassadeurs"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "The number of the account is told on WhatsApp."
+msgstr "Le numéro du compte est prévenu sur WhatsApp."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_customer_month
+msgid "The orders of the same customer that count for the same ambassador in a month. 0: no limit."
+msgstr "Les commandes d'un même client qui comptent pour un même ambassadeur dans un mois. 0 : pas de limite."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "The orders of the same customer that count for the same ambassador. 0: no limit."
+msgstr "Les commandes d'un même client qui comptent pour un même ambassadeur. 0 : pas de limite."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,scope:ocd_ambassadors.automation_ambassador_order
+msgid "The orders of the shop."
+msgstr "Les commandes du shop."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,trigger:ocd_ambassadors.automation_ambassador_money
+msgid "The payouts of the shop."
+msgstr "Les reversements du shop."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "The program"
+msgstr "Le programme"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "The program of the ambassadors is closed for now."
+msgstr "Le programme des ambassadeurs est fermé pour l'instant."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "The program of the ambassadors is closed for now. Come back soon."
+msgstr "Le programme des ambassadeurs est fermé pour l'instant. Reviens bientôt."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_company__ocd_ambassador_pause_min
+msgid "The rate of returns counts from this number of parcels."
+msgstr "Le taux de retours compte à partir de ce nombre de colis."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_ocd_ambassador_gain__rate
+msgid "The rate of the day of the order."
+msgstr "Le taux du jour de la commande."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "The same number if empty"
+msgstr "Le même numéro si vide"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "The team checks your account before your next payout: your gains are kept."
+msgstr "L'équipe vérifie ton compte avant ton prochain versement : tes gains sont gardés."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "The team sees your identity document once before the payout."
+msgstr "L'équipe voit ta pièce d'identité une fois avant le versement."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "The text"
+msgstr "Le texte"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Their Mobile Money is the one of %s."
+msgstr "Son Mobile Money est celui de %s."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "Their links still work, nothing is earned; the gains due are kept until you open the account again."
+msgstr "Ses liens marchent encore, rien ne se gagne ; les gains dus sont gardés jusqu'à la réouverture du compte."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__reason__own
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__sale_order__ocd_ambassador_reason__own
+msgid "Their own purchase"
+msgstr "Son propre achat"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.view_partner_form
+msgid "Their sales"
+msgstr "Ses ventes"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "This customer already ordered several times this month with your links."
+msgstr "Ce client a déjà commandé plusieurs fois ce mois-ci avec tes liens."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "This is already your number."
+msgstr "C'est déjà ton numéro."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+msgid "This month"
+msgstr "Ce mois-ci"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "This number can no longer open an account of ambassador: write to OCD Live."
+msgstr "Ce numéro ne peut plus ouvrir de compte d'ambassadeur : écris à OCD Live."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "This product is from your own boutique: it earns you nothing as an ambassador."
+msgstr "Ce produit est de ta propre boutique : il ne te rapporte rien comme ambassadeur."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Tick that you share honestly and that you are 18 or more."
+msgstr "Coche que tu partages honnêtement et que tu as 18 ans ou plus."
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_to_pay
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_to_pay
+msgid "To Pay"
+msgstr "À verser"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_verification.py:0
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__res_partner__ocd_ambassador_state__to_check
+msgid "To check"
+msgstr "À vérifier"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "To pay on %s"
+msgstr "À verser %s"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__told
+msgid "Told To The Ambassador"
+msgstr "Dit à l'ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_ambassador_gain__reason__limit
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__sale_order__ocd_ambassador_reason__limit
+msgid "Too many orders of the same customer this month"
+msgstr "Trop de commandes du même client ce mois-ci"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Too many parcels refused or returned pause the account; the gains due are kept."
+msgstr "Trop de colis refusés ou retournés mettent le compte en pause ; les gains dus sont gardés."
+
+#. module: ocd_ambassadors
+#: model:ocd.listing.refuse.reason,name:ocd_ambassadors.refuse_reason_ambassador_returns
+msgid "Too many returns"
+msgstr "Trop de retours"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_list
+msgid "Total"
+msgstr "Total"
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Type your Mobile Money number, with the same country."
+msgstr "Tape ton numéro Mobile Money, avec le même pays."
+
+#. module: ocd_ambassadors
+#: model:ir.model,name:ocd_ambassadors.model_ocd_payout
+msgid "Vendor Payout"
+msgstr "Reversement au vendeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields.selection,name:ocd_ambassadors.selection__ocd_vendor_count__kind__ambassador_visit
+msgid "Visit By An Ambassador"
+msgstr "Visite par un ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_visit_count
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_visit_count
+msgid "Visits (30 Days)"
+msgstr "Visites (30 jours)"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+msgid "Waiting"
+msgstr "En attente"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.res_partner_view_search_ocd_ambassador
+msgid "Waiting for the team"
+msgstr "En attente de l'équipe"
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,when:ocd_ambassadors.automation_ambassador_order
+msgid "When an order is confirmed after the link of an ambassador"
+msgstr "Quand une commande est confirmée après le lien d'un ambassadeur"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_ocd_ambassador_gain__reason
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_partner__ocd_ambassador_note
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_res_users__ocd_ambassador_note
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.ocd_ambassador_gain_view_search
+msgid "Why"
+msgstr "Pourquoi"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,field_description:ocd_ambassadors.field_sale_order__ocd_ambassador_reason
+msgid "Why It Did Not Count"
+msgstr "Pourquoi elle n'a pas compté"
+
+#. module: ocd_ambassadors
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_partner__ocd_ambassador_note
+#: model:ir.model.fields,help:ocd_ambassadors.field_res_users__ocd_ambassador_note
+msgid "Why the account is to check, paused or closed."
+msgstr "Pourquoi le compte est à vérifier, en pause ou fermé."
+
+#. module: ocd_ambassadors
+#: model:ocd.automation,actions:ocd_ambassadors.automation_ambassador_order
+msgid ""
+"Write the ambassador on the order with the rate and the cap of the day, never changed after.\n"
+"Refuse their own purchase, the orders of a customer above the limit of the month, an account paused or closed.\n"
+"Write a gain per parcel: nothing is due before the delivery with the code."
+msgstr ""
+"Inscrire l'ambassadeur sur la commande avec le taux et le plafond du jour, jamais changés ensuite.\n"
+"Refuser son propre achat, les commandes d'un client au-delà de la limite du mois, un compte en pause ou fermé.\n"
+"Écrire un gain par colis : rien n'est dû avant la livraison avec le code."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Write your name."
+msgstr "Écris ton nom."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "You earn %s"
+msgstr "Tu gagnes %s"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "You earn %s on each piece delivered and kept."
+msgstr "Tu gagnes %s sur chaque pièce livrée et gardée."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.vendor_figures_ambassadors
+msgid "You pay nothing: OCD Live pays the ambassadors on its commission. Their names and numbers stay with OCD Live."
+msgstr "Tu ne paies rien : OCD Live paie les ambassadeurs sur sa commission. Leurs noms et leurs numéros restent chez OCD Live."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "You receive a code on WhatsApp to log in, like the vendors, then your gains and your payouts on WhatsApp. One account per number."
+msgstr "Tu reçois un code sur WhatsApp pour te connecter, comme les vendeurs, puis tes gains et tes versements sur WhatsApp. Un compte par numéro."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "You share a product of OCD Live with your link. Your contact orders within %(days)s days: when their parcel is delivered and they keep it, you earn %(rate)s of the articles."
+msgstr "Tu partages un produit d'OCD Live avec ton lien. Ton contact commande dans les %(days)s jours : quand son colis est livré et qu'il le garde, tu gagnes %(rate)s des articles."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Your Mobile Money, for your gains"
+msgstr "Ton Mobile Money, pour tes gains"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Your WhatsApp"
+msgstr "Ton WhatsApp"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Your account is checked by the team before the payout."
+msgstr "Ton compte est vérifié par l'équipe avant le versement."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Your account is not open yet."
+msgstr "Ton compte n'est pas encore ouvert."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Your account is paused: the team calls you."
+msgstr "Ton compte est en pause : l'équipe t'appelle."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Your account is paused: your links still work, nothing is earned for now. %s"
+msgstr "Ton compte est en pause : tes liens marchent encore, rien ne se gagne pour l'instant. %s"
+
+#. module: ocd_ambassadors
+#: model:ocd.listing.refuse.reason,message:ocd_ambassadors.refuse_reason_ambassador_spam
+msgid "Your account of ambassador is closed: messages sent in mass to people who did not ask for them."
+msgstr "Ton compte d'ambassadeur est fermé : des messages envoyés en masse à des personnes qui ne les ont pas demandés."
+
+#. module: ocd_ambassadors
+#: model:ocd.listing.refuse.reason,message:ocd_ambassadors.refuse_reason_ambassador_momo
+msgid "Your account of ambassador is closed: one account per person, paid on their own Mobile Money."
+msgstr "Ton compte d'ambassadeur est fermé : un compte par personne, versé sur son propre Mobile Money."
+
+#. module: ocd_ambassadors
+#: model:ocd.listing.refuse.reason,message:ocd_ambassadors.refuse_reason_ambassador_own
+msgid "Your account of ambassador is closed: orders made by you or for you with your links."
+msgstr "Ton compte d'ambassadeur est fermé : des commandes faites par toi ou pour toi avec tes liens."
+
+#. module: ocd_ambassadors
+#: model:ocd.listing.refuse.reason,message:ocd_ambassadors.refuse_reason_ambassador_returns
+msgid "Your account of ambassador is closed: too many parcels refused at the door or returned."
+msgstr "Ton compte d'ambassadeur est fermé : trop de colis refusés à la porte ou retournés."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_login_ambassador
+msgid "Your ambassador space."
+msgstr "Ton espace ambassadeur."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Your gains confirmed come here."
+msgstr "Tes gains confirmés arrivent ici."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "Your link: %s"
+msgstr "Ton lien : %s"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Your name"
+msgstr "Ton nom"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/res_partner.py:0
+msgid "Your new number waits until %s."
+msgstr "Ton nouveau numéro attend jusqu'au %s."
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.signup_page
+msgid "Your own purchases, and the ones of your own boutique, never count."
+msgstr "Tes propres achats, et ceux de ta propre boutique, ne comptent jamais."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_vendor_figures.py:0
+msgid "by %s ambassadors"
+msgstr "par %s ambassadeurs"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_vendor_figures.py:0
+msgid "by 1 ambassador"
+msgstr "par 1 ambassadeur"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "days after the delivery"
+msgstr "jours après la livraison"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "days the link counts"
+msgstr "jours où le lien compte"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "delivered on %s"
+msgstr "livré le %s"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "for a wax dress at %s delivered and kept. Your contact pays the same price as on the site."
+msgstr "pour une robe en wax à %s livrée et gardée. Ton contact paie le même prix que sur le site."
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "hours"
+msgstr "heures"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_links
+msgid "https://…/ocd/boutique/12"
+msgstr "https://…/ocd/boutique/12"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "live"
+msgstr "live"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "new"
+msgstr "new"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_live_settings.py:0
+msgid "on parcels at least"
+msgstr "sur colis au moins"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "promo"
+msgstr "promo"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_vendor_figures.py:0
+msgid "your products shared by %s ambassadors"
+msgstr "tes produits partagés par %s ambassadeurs"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/models/ocd_vendor_figures.py:0
+msgid "your products shared by 1 ambassador"
+msgstr "tes produits partagés par 1 ambassadeur"
+
+#. module: ocd_ambassadors
+#. odoo-python
+#: code:addons/ocd_ambassadors/controllers/ambassador.py:0
+msgid "− %s: already confirmed, taken from your next payout"
+msgstr "− %s : déjà confirmé, retiré de ton prochain versement"
+
+#. module: ocd_ambassadors
+#: model_terms:ir.ui.view,arch_db:ocd_ambassadors.space_share
+msgid "▶ The clip of the live"
+msgstr "▶ Le clip du live"

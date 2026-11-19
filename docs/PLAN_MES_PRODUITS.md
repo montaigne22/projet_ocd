@@ -294,7 +294,7 @@ plan. OCD Vote (4) et OCD Tickets (6) n'ont pas de lien avec lui.
 | 8. Clips automatiques | Partager un produit, catalogue (1.3, 1.7) | Les clips d'un produit s'affichent dans « Mes produits » (« ▶ 3 clips » sous le produit, « Mes clips » dans son menu « Plus »), prêts à partager avec leur texte au prix du moment (fait le 18 novembre 2026) |
 | 9. OCD Express | Les lieux (M) | Le lieu où le livreur prend les colis d'un expéditeur : son quartier et son point de repère (ceux de sa fiche, vérifiés au premier passage) ; fait le 18 novembre 2026 |
 | 10. Points relais | Les lieux (M), A.6 | Un point relais est un lieu (ses horaires, son itinéraire, son téléphone) ; A.6 fait avec le chantier 10 le 19 novembre 2026 |
-| 11. Ambassadeurs | Partager un produit (1.3) | Le lien de partage reçoit ensuite le lien personnel de l'ambassadeur |
+| 11. Ambassadeurs | Partager un produit (1.3) | L'image de partage d'un produit (1.3) porte le lien personnel de l'ambassadeur, au prix du moment ; fait le 19 novembre 2026 |
 | 12. OCD Business | Plusieurs lieux, stock par magasin, équipe du vendeur, statistiques | Ce qui est réservé à la formule est décidé (section OCD Business) ; l'interrupteur (B.1) est déjà fait quand le chantier 12 commence |
 | 13. Diaspora | Retrait en magasin (A.1) | Un proche retire en magasin ce qu'on lui a acheté : le code part sur son WhatsApp |
 | 14. Live sur la plateforme | Préparer son prochain live (3.2) | Les produits préparés s'affichent dans le lecteur du live |

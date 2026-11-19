@@ -73,7 +73,7 @@ class OcdPayout(models.Model):
         for payout in self:
             sales = commission = fees = 0.0
             company = payout.company_id
-            bills = payout.move_ids.filtered(lambda move: move.move_type == "in_invoice")
+            bills = payout._ocd_breakdown_bills()
             for parcel in bills.ocd_picking_id:
                 currency = parcel.ocd_currency_id or company.currency_id
                 date = parcel.ocd_delivered_at or fields.Datetime.now()
@@ -85,6 +85,12 @@ class OcdPayout(models.Model):
             payout.amount_sales = sales
             payout.amount_commission = -commission
             payout.amount_fees = fees
+
+    def _ocd_breakdown_bills(self):
+        """The bills of the sales and the deliveries of the vendor in the payout (not the earnings
+        of a relay point; extended by the ambassadors)."""
+        self.ensure_one()
+        return self.move_ids.filtered(lambda move: move.move_type == "in_invoice" and not move.ocd_relay_kind)
 
     @api.model
     def ocd_summary(self):

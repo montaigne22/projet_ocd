@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The templates sent by the automations of the ambassadors (OCD Live › Automations) -->
+<odoo>
+
+    <record id="ocd_ambassadors.automation_ambassador_gains" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_ambassador_delivered'), ref('template_ambassador_delivered_en')])]"/>
+    </record>
+
+    <record id="ocd_ambassadors.automation_ambassador_money" model="ocd.automation">
+        <field name="template_ids" eval="[Command.set([ref('template_ambassador_paid'), ref('template_ambassador_paid_en'),
+                                                       ref('template_ambassador_number'), ref('template_ambassador_number_en')])]"/>
+    </record>
+
+</odoo>

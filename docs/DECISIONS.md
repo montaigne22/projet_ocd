@@ -697,6 +697,51 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   - **dans `ocd_live_shop`** et non dans un nouveau module : le point relais touche le choix de la
     livraison, le colis, la tournée, le dispatch et les reversements du shop ; OCD Express et WhatsApp
     l'étendent dans leurs modules.
+- **Ambassadeurs** (chantier 11 ; maquette `Ambassadeurs` validée le 19 novembre 2026 avec les choix
+  recommandés, pensée d'abord pour tenir face à la fraude) :
+  - **qui** : tout le monde avec un numéro WhatsApp dans un pays où le shop livre, dès 18 ans (la
+    charte cochée) ; le compte s'ouvre quand le code reçu sur WhatsApp prouve le numéro (programme
+    ouvert à tous, sur invitation ou fermé : réglage) ; un vendeur ou un livreur aussi, jamais sur ses
+    propres produits. Un ambassadeur est un **contact à part**, trouvé par son numéro parmi les
+    ambassadeurs seulement : le client, le vendeur ou le livreur qu'il est aussi gardent leur contact,
+    les contrôles comparent les numéros ;
+  - **combien, payé par qui** : 5 % des articles (pas la livraison), au plus 3 000 F par colis, jamais
+    plus que la commission d'OCD sur l'article (un vendeur à 3 % donne 3 %), **payés par OCD sur sa
+    commission** : le client paie le prix du site, le vendeur ne paie rien. Plus tard : un bonus d'un
+    vendeur sur ses produits ;
+  - **sur quoi** : le **dernier lien ouvert** sur le téléphone compte 7 jours (la session, puis le
+    panier), pour **tous les articles** de la commande ; à la confirmation, l'ambassadeur, le taux et
+    le plafond du jour sont **inscrits sur la commande** et n'en changent plus ; seulement les produits
+    vendus sur le site (pas les vendeurs en contact direct) ; les aperçus des liens (robots), les
+    propres visites de l'ambassadeur, la vendeuse sur ses produits et l'équipe ne comptent pas ;
+  - **quand c'est gagné** : **un gain par colis** (index unique), rien avant la livraison avec le
+    code, confirmé 7 jours après s'il est gardé : alors une **facture d'achat de l'ambassadeur** (une
+    seule fois par gain, index unique sur les pièces) ; un retour demandé avant la confirmation la
+    retient pour l'équipe ; un retour fait après (garantie, 30 jours) donne un **avoir** retiré du
+    versement suivant. Les montants de l'espace se relisent dans ces pièces, jamais dans un compteur ;
+  - **le versement** : avec les reversements du shop, **chaque lundi**, dès 2 000 F, sur son Mobile
+    Money ; jamais un solde négatif (il attend les gains suivants), ni à un compte en pause ou à
+    vérifier, ni sur un nouveau numéro avant 48 h (le numéro du compte est prévenu sur WhatsApp), ni
+    au-delà de 50 000 F gagnés sans pièce d'identité vue (une fois) ;
+  - **contre la fraude** : jamais sur ses propres achats (son numéro, son Mobile Money, son contact,
+    sa boutique) ; **5 commandes par mois** d'un même client pour un même ambassadeur (le contact ou
+    le numéro) ; **pause automatique** au-delà de 30 % de colis refusés ou retournés sur ses 10
+    derniers colis au moins (ses liens marchent, rien ne se gagne, les gains dus sont gardés) ;
+    **un Mobile Money par personne** (partagé : « À vérifier ») ; les comptes demandés dont le numéro
+    n'est jamais vérifié sont effacés après 7 jours. L'équipe ouvre, met en pause ou ferme dans « À
+    vérifier » (colonne Ambassadeurs) ;
+  - **ce que voit le client** : « Grâce te recommande ce produit » (le prénom seulement), écrit par le
+    script de la fiche à partir d'un petit cookie du lien : la page reste la même pour tous, gardée en
+    mémoire pour les foules ;
+  - **les vendeurs** : tous leurs produits vendus sur OCD Live sont à partager, sans rien payer et sans
+    refus possible ; ils voient « Vendu grâce aux ambassadeurs » dans « Mes chiffres », jamais qui ;
+  - **les messages** : un WhatsApp par jour au plus (le soir, les colis livrés depuis le dernier),
+    le versement fait, le numéro de versement changé ; jamais un message par colis ;
+  - **les impôts** : des commissions versées à des particuliers, à voir avec le comptable avant
+    d'ouvrir (retenue ou non, relevé de l'année) ;
+  - **dans deux modules** (`ocd_ambassadors`, `ocd_ambassadors_whatsapp`), qui s'appuient sur les
+    commandes, les colis et les reversements du shop sans les changer, sauf un point d'accroche du
+    détail des reversements (`_ocd_breakdown_bills`).
 
 ## WhatsApp
 

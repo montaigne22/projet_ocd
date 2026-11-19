@@ -435,13 +435,57 @@ les factures), `relay_settings.py` (la section des Paramètres), `controllers/re
 relais, devenir point relais) ; dans `ocd_express`, `_ocd_express_relay_rate`, `_ocd_express_to_relay` et
 les overrides `_ocd_relay_lost_*` ; dans les modules WhatsApp, `_ocd_relay_notify`.
 
+## Ambassadeurs (modules `ocd_ambassadors` et `ocd_ambassadors_whatsapp`)
+
+Chacun partage un produit avec son lien personnel et gagne une part des articles une fois le colis
+livré avec son code et gardé (décisions dans [`DECISIONS.md`](DECISIONS.md), Shop et livraisons).
+
+Mise en route :
+
+1. **OCD Live › Paramètres › Ambassadeurs** : le programme (ouvert à tous, sur invitation, fermé), le
+   gain (5 %), le plafond par colis (3 000 F), les jours du lien et de la confirmation (7 et 7), le
+   versement minimum (2 000 F, le jour de versement du shop), la pièce d'identité (50 000 F), la pause
+   (30 % de retours sur 10 colis), les commandes d'un client par mois (5), le nouveau numéro (48 h).
+2. **WhatsApp** : soumettre `ocd_ambassadeur_livres`, `ocd_ambassadeur_versement` et
+   `ocd_ambassadeur_numero` (français et anglais, Utilitaire) ; la connexion passe par le message
+   d'Authentification déjà soumis.
+3. **Le comptable** : les gains sont des factures d'achat des ambassadeurs (produit « Gain d'un
+   ambassadeur »), les retours des avoirs (« Gain d'un ambassadeur repris ») ; la question d'une
+   retenue sur les commissions versées à des particuliers est à poser avant d'ouvrir.
+4. Faire connaître `/ambassadeurs` (un ambassadeur se connecte sur `/ambassadeur/connexion`).
+
+Le parcours : `/a/<code>[/<produit>]` garde le lien dans la session du téléphone (clé `ocd_ambassador`,
+dans les clés qui laissent les pages en mémoire) et pose le petit cookie `ocd_reco` que lit la fiche
+produit ; le panier note l'ambassadeur (`_verify_cart_after_update`) ; à la confirmation,
+`sale.order._ocd_ambassador_attribute` inscrit l'ambassadeur, le taux et le plafond, ou pourquoi la
+commande ne compte pas, puis écrit un `ocd.ambassador.gain` par colis ; `stock.picking._ocd_deliver` et
+`write` (étape `returned` ou `cancelled`) le font avancer ; la tâche « OCD Live : gains des ambassadeurs »
+(`_cron_ocd_ambassadors`, toutes les heures) confirme les gains dus (une facture chacun), prévient le
+soir les ambassadeurs (une fois par jour) et efface les comptes jamais vérifiés. Les reversements du shop
+versent les gains chaque semaine (`ocd.payout._ocd_may_pay`) ; l'équipe tranche les retours dans « À
+vérifier » ou sur le gain (Shop › Ambassadeurs › Gains des ambassadeurs).
+
+Pour aider un ambassadeur : sa fiche › onglet Ambassadeur › **Voir son espace** (lien signé pour la
+personne de l'équipe connectée).
+
+Les pages : `/ambassadeurs`, `/ambassadeur/connexion`, `/ambassadeur` (ses ventes), `/ambassadeur/argent`
+(et `/ambassadeur/numero`), `/ambassadeur/produits`, `/ambassadeur/partager/<produit>`, `/ambassadeur/liens`,
+`/a/<code>/<produit>/image.jpg` (l'image de partage, dessinée une fois, versionnée par la photo et le
+prix).
+
+Code : `ocd_ambassadors/models/ocd_ambassador_gain.py` (les gains, leurs pièces, la tâche),
+`sale_order.py` (le lien, l'attribution, les refus), `res_partner.py` (l'ambassadeur, l'inscription, le
+Mobile Money, ce qui retient le versement, la pause), `ocd_payout.py`, `product_template.py` (les produits
+à partager, ce qu'on gagne), `controllers/ambassador.py` ; `ocd_ambassadors_whatsapp` (les trois
+messages).
+
 ## Tests
 
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp,attachment_s3 \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/ocd_express,/ocd_express_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp,ocd_ambassadors,ocd_ambassadors_whatsapp,attachment_s3 \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/ocd_express,/ocd_express_whatsapp,/ocd_ambassadors,/ocd_ambassadors_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud --stop-after-init
 ```
 
 Les tests des clips font de vraies vidéos avec ffmpeg (sources `lavfi`, quelques secondes). Ajouter

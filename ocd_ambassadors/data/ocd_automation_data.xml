@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The automations of the ambassadors in the catalogue of the team (OCD Live › Automations) -->
+<odoo>
+
+    <record id="automation_ambassador_order" model="ocd.automation">
+        <field name="code">ambassador_order</field>
+        <field name="name">Order brought by an ambassador</field>
+        <field name="sequence">70</field>
+        <field name="group">ambassadors</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="when">When an order is confirmed after the link of an ambassador</field>
+        <field name="trigger">The last link of an ambassador opened on the phone, within the days of the settings.</field>
+        <field name="scope">The orders of the shop.</field>
+        <field name="actions">Write the ambassador on the order with the rate and the cap of the day, never changed after.
+Refuse their own purchase, the orders of a customer above the limit of the month, an account paused or closed.
+Write a gain per parcel: nothing is due before the delivery with the code.</field>
+        <field name="tools">Sales, code of OCD Live.</field>
+    </record>
+
+    <record id="automation_ambassador_gains" model="ocd.automation">
+        <field name="code">ambassador_gains</field>
+        <field name="name">Gains confirmed, returns watched</field>
+        <field name="sequence">71</field>
+        <field name="group">ambassadors</field>
+        <field name="kind">cron</field>
+        <field name="cron_id" ref="ir_cron_ambassadors"/>
+        <field name="model_id" ref="model_ocd_ambassador_gain"/>
+        <field name="when">Every hour</field>
+        <field name="trigger">The days of the settings after the delivery with the code.</field>
+        <field name="scope">The gains of the ambassadors.</field>
+        <field name="actions">Confirm the gains kept: a bill each, paid with the payouts of the shop every week.
+In the evening, tell each ambassador the parcels delivered since the last message, once a day.
+Remove the accounts asked whose number was never checked (7 days).</field>
+        <field name="tools">Invoicing, code of OCD Live.</field>
+    </record>
+
+    <record id="automation_ambassador_money" model="ocd.automation">
+        <field name="code">ambassador_money</field>
+        <field name="name">The money of the ambassadors</field>
+        <field name="sequence">72</field>
+        <field name="group">ambassadors</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="ocd_live_shop.model_ocd_payout"/>
+        <field name="when">On the payout day of the shop</field>
+        <field name="trigger">The payouts of the shop.</field>
+        <field name="scope">The ambassadors.</field>
+        <field name="actions">Pay the gains confirmed minus the returns taken back, from the minimum of the settings.
+Never a balance below zero, nor to an account paused or to check, nor on a new number before its hours, nor above the gains of the settings without an identity seen.
+Pause an account above the rate of returns of the settings.</field>
+        <field name="tools">Invoicing, code of OCD Live.</field>
+    </record>
+
+</odoo>
