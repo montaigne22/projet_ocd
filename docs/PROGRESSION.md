@@ -178,7 +178,7 @@ pas.
   navigateur en français à chaque taille. Remarqué au passage, pas changé : sur tablette (820 px), la
   barre de menus du haut du back-office déborde sur toutes ses pages.
 - Tests : 1 nouveau (l'accueil ne nomme que les pays utiles), 1 complété (le fil et ses éléments pour
-  grand écran) ; la suite complète sur une base neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO
+  grand écran) ; la suite complète sur une base neuve : **722 sans échec**, la démo : **22
   sans échec**.
 - **Sur un serveur** : `-u ocd_live` (`python3 tools/versions.py --db <base>` le dit).
 
