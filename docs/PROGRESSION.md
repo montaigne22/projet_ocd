@@ -160,7 +160,7 @@ largeur : la règle « une colonne » du téléphone l'emportait aussi sur grand
 pour le téléphone ; à partir de la tablette, les colonnes du fil (3 cartes de 412 px à 1914 px).
 `tools/captures/mise-en-page.js` contrôle maintenant aussi la page d'un pays (aucune carte coupée, aucune
 plus large que 640 px) : **88 règles tenues**. `ocd_live` 20.0.1.27.1, sans migration ; la suite complète
-sur une base neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO sans échec**.
+sur une base neuve : **725 sans échec**, la démo : **22 sans échec**.
 **Sur le serveur** : `-u ocd_live`.
 
 ### 19 novembre 2026 · Les cartes sur la page d'un pays, « Cherche ton pays », les catégories dans l'onglet Lives
