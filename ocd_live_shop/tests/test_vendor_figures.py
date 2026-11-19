@@ -208,6 +208,7 @@ class TestOcdVendorFigures(HttpCase, OcdShopCommon):
                      "Sales per product", "Receive the summary of my week", "o_ocd_figures_heat"):
             self.assertIn(text, page)
         self.assertIn("/reserver/", page, "Book a live on the best hour")
+        self.assertIn('class="o_ocd_nav"', page, "The menu at the bottom of the phone: back to the home page")
         self.assertIn("670000000", self.estelle.phone)
         self.assertNotIn("670000000", page, "Never the numbers of the customers")
         page = self.url_open("/ocd/espace/moi/chiffres?periode=7&vue=pas-vendus").text

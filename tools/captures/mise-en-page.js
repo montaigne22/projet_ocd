@@ -10,7 +10,8 @@
 // - « To check »: no column squeezed under 280 px, no card wider than its column, no empty
 //   column on the board;
 // - with OCD_SPACE_LINK (the personal link of a vendor of the demo): « My space » has every entry
-//   of the computer on a phone and a tablet, no heading covered, no amount cut in « My figures ».
+//   of the computer on a phone and a tablet, each page of it with the menu at the bottom on a
+//   phone, no heading covered, no amount cut in « My figures ».
 //
 //   OCD_URL=http://127.0.0.1:8069 [OCD_SPACE_LINK=/ocd/espace/<token>] node tools/captures/mise-en-page.js
 // (a base with lives and things to check: the demo, ocd_live_demo; the back office as admin)
@@ -160,6 +161,17 @@ async function space(browser, [width, height]) {
     check(info.over <= 0, `${size}: nothing wider than the page (${info.over}px)`);
     check(info.menu, `${size}: the menu of the space is there`);
     check(!info.covered.length, `${size}: no heading under the block that follows it ${info.covered.join(', ')}`);
+    if (width < 768) {
+        // On a phone, every page of the space keeps the menu at the bottom (back to the home page)
+        for (const href of info.entries) {
+            await page.goto(`${BASE}${href}`, { waitUntil: 'load' });
+            const nav = await page.evaluate(() => {
+                const el = document.querySelector('.o_ocd_nav');
+                return !!el && getComputedStyle(el).display !== 'none' && !!el.querySelector('a[href="/ocd"]');
+            });
+            check(nav, `${size}: ${href} has the menu at the bottom`);
+        }
+    }
     await page.goto(`${BASE}/ocd/espace/moi/chiffres`, { waitUntil: 'load' });
     await page.waitForTimeout(800);
     const cut = await page.evaluate(() => [...document.querySelectorAll('.o_ocd_figures_tile > b')]

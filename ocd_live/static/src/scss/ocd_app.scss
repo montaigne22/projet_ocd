@@ -1148,6 +1148,12 @@ body.o_ocd_body {
 .o_ocd_main .o_ocd_actions {
     margin: 0 -18px -24px;
 }
+// With the menu at the bottom of the phone: the buttons of the page stick above it, not under it
+@media (max-width: $ocd-tablet - 1px) {
+    .o_ocd_app:has(.o_ocd_nav) .o_ocd_actions {
+        bottom: 74px;
+    }
+}
 .o_ocd_summary {
     position: sticky;
     bottom: 0;

@@ -154,6 +154,16 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · Correctif : le menu du bas sur toutes les pages de l'espace
+Sur téléphone, « Mes chiffres » (capture de l'équipe) n'avait pas le menu du bas : impossible de revenir à
+l'accueil d'un toucher. Seules « Mon espace » et « Ma carte dans le fil » le demandaient, sur 21 pages de
+l'espace. Il est maintenant sur chacune, par défaut (une page de l'espace qui ne dit rien l'a) ; une barre
+de boutons collée en bas d'une page reste au-dessus de lui. `tools/captures/mise-en-page.js` ouvre chaque
+page du menu de l'espace sur téléphone et vérifie qu'elle l'a : toutes les règles tenues. `ocd_live`
+20.0.1.28.1 et `ocd_live_shop` 20.0.1.48.2 (un test complété), sans migration ; la suite complète sur une
+base neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO sans échec**.
+**Sur le serveur** : `-u ocd_live,ocd_live_shop`.
+
 ### 19 novembre 2026 · « Moi » sur téléphone : toutes les entrées, plus court, plus rien qui se chevauche
 Après une remarque de l'équipe. `ocd_live` 20.0.1.28.0 et `ocd_live_shop` 20.0.1.48.1, sans migration.
 - **Toutes les entrées sur téléphone** : le menu de l'espace (un seul, chaque module y ajoute sa page)

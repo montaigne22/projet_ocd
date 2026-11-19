@@ -17,7 +17,9 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   leur menu à gauche (des onglets sur tablette). Le téléphone garde le design validé. **Depuis le 19
   novembre 2026**, le téléphone a aussi le menu de l'espace, en onglets qui défilent sous l'en-tête :
   toutes les pages de l'espace à toutes les tailles (chaque module ajoute la sienne au même menu ;
-  « Mes clips » et « OCD Business » manquaient sur téléphone).
+  « Mes clips » et « OCD Business » manquaient sur téléphone). Et le menu du bas (Accueil, Lives, Shop,
+  Moi) sur toutes les pages de l'espace, pas seulement sur « Mon espace » : on revient à l'accueil de
+  partout ; les boutons collés en bas d'une page restent au-dessus de lui.
 - **Les écrans qui grandissent avec les données tiennent à toute taille** (le 19 novembre 2026, après
   des captures de l'équipe) : aussi un portable (1366 × 657) et un zoom à 125 %, contrôlés par
   `tools/captures/mise-en-page.js` qui échoue si une règle casse.

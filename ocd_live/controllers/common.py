@@ -363,9 +363,12 @@ def page_values(voice_key, **values):
     prompt = request.env["ocd.voice.prompt"].sudo()
     if voice_key:
         prompt = prompt.search([("key", "=", voice_key)], limit=1)
-    # A page of the space of a vendor (space_page): its menu beside it on a large screen
+    # A page of the space of a vendor (space_page): its menu beside it on a large screen, and on
+    # the phone the menu at the bottom (« Me » lit), from every page of the space
     if values.get("space_page") and not values.get("space_vendor"):
         values["space_vendor"] = current_vendor()
+    if values.get("space_page") and "nav" not in values:
+        values["nav"] = "me"
     if values.get("space_vendor"):
         values["space_initials"] = initials(values["space_vendor"].name)
     return {
