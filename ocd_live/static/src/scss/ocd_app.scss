@@ -3022,8 +3022,6 @@ body.o_ocd_body {
         overflow: visible;
         overscroll-behavior: auto;
         display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 12px;
         border-radius: 0;
         box-shadow: none;
         background: none;
@@ -3036,8 +3034,18 @@ body.o_ocd_body {
         background: #FFFFFF;
         scroll-snap-align: none;
     }
-    .o_ocd_feed_person {
-        min-height: 520px;
+}
+// A phone: one column. From a tablet, the columns of the feed (ocd_large.scss): never one card
+// stretched over the width of the screen
+@media (max-width: $ocd-tablet - 1px) {
+    .o_ocd_feed_page {
+        .o_ocd_feed {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 12px;
+        }
+        .o_ocd_feed_person {
+            min-height: 520px;
+        }
     }
 }
 // For a tablet and a computer only (ocd_large.scss): the phone has its button at the bottom of

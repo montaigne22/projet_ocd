@@ -154,6 +154,15 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · Correctif : une seule carte sur toute la largeur dans la page d'un pays
+Sur ordinateur, la page d'un pays (Côte d'Ivoire, capture de l'équipe) étirait sa carte sur toute la
+largeur : la règle « une colonne » du téléphone l'emportait aussi sur grand écran. Elle ne vaut plus que
+pour le téléphone ; à partir de la tablette, les colonnes du fil (3 cartes de 412 px à 1914 px).
+`tools/captures/mise-en-page.js` contrôle maintenant aussi la page d'un pays (aucune carte coupée, aucune
+plus large que 640 px) : **88 règles tenues**. `ocd_live` 20.0.1.27.1, sans migration ; la suite complète
+sur une base neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO sans échec**.
+**Sur le serveur** : `-u ocd_live`.
+
 ### 19 novembre 2026 · Les cartes sur la page d'un pays, « Cherche ton pays », les catégories dans l'onglet Lives
 Demandés par l'équipe en regardant la démo. `ocd_live` 20.0.1.27.0 et `ocd_live_shop` 20.0.1.48.0, sans
 migration.

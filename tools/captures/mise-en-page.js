@@ -6,6 +6,7 @@
 //   above the cards on a large screen and at the bottom on a phone, a country picked brings its
 //   band under the head;
 // - home: only the countries with a live and the one of the visitor, then « All countries »;
+// - the page of a country: its cards not cut, never one card stretched over the page;
 // - « To check »: no column squeezed under 280 px, no card wider than its column, no empty
 //   column on the board.
 //
@@ -73,6 +74,39 @@ async function feed(browser, [width, height]) {
     await page.context().close();
 }
 
+async function country(browser, [width, height]) {
+    // The page of a country: the cards of the feed under its filters, never one card over the width
+    const page = await (await browser.newContext({ viewport: { width, height }, locale: 'fr-FR' })).newPage();
+    await page.goto(`${BASE}/ocd`, { waitUntil: 'load' });
+    const link = await page.$('.o_ocd_home .o_ocd_chip:not(.o_ocd_chip_all)');
+    if (!link) {
+        await page.context().close();
+        return;
+    }
+    const href = await link.getAttribute('href');
+    await page.goto(`${BASE}${href}`, { waitUntil: 'load' });
+    await page.waitForTimeout(1200);
+    const size = `${href} ${width}x${height}`;
+    const info = await page.evaluate(() => {
+        const cards = [...document.querySelectorAll('.o_ocd_feed_person')];
+        const widths = cards.map((card) => card.getBoundingClientRect().width);
+        return {
+            over: document.documentElement.scrollWidth - innerWidth,
+            cards: cards.length,
+            cut: cards.filter((card) => card.scrollHeight > card.clientHeight + 1).length,
+            narrowest: widths.length ? Math.min(...widths) : null,
+            widest: widths.length ? Math.max(...widths) : null,
+        };
+    });
+    check(info.over <= 0, `${size}: nothing wider than the page (${info.over}px)`);
+    check(!info.cut, `${size}: no card cut (${info.cut})`);
+    if (info.cards && width >= 768) {
+        check(info.narrowest >= 320, `${size}: cards 320 px wide at least (${Math.round(info.narrowest)})`);
+        check(info.widest <= 640, `${size}: no card stretched over the page (${Math.round(info.widest)})`);
+    }
+    await page.context().close();
+}
+
 async function home(browser, [width, height]) {
     const page = await (await browser.newContext({ viewport: { width, height }, locale: 'fr-FR' })).newPage();
     await page.goto(`${BASE}/ocd`, { waitUntil: 'load' });
@@ -129,6 +163,7 @@ async function board(browser, [width, height]) {
     for (const size of SITE_SIZES) {
         await feed(browser, size);
         await home(browser, size);
+        await country(browser, size);
     }
     for (const size of BACK_SIZES) {
         await board(browser, size);
