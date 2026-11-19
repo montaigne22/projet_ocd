@@ -33,11 +33,18 @@
     margin-left: auto;
     font-weight: 600;
 }
+// The columns with something waiting, 280 px at least each: when they do not hold on the screen
+// (many columns, a browser zoom), the board scrolls sideways as a whole
 .o_ocd_verification_columns {
     flex: 1;
     min-height: 0;
     display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(280px, 400px);
+    justify-content: start;
     gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
 }
 .o_ocd_verification_column {
     min-width: 0;
@@ -45,7 +52,34 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    overflow-x: hidden;
     overflow-y: auto;
+}
+// The columns with nothing waiting: named in one line, they take no place on the board
+.o_ocd_verification_quiet {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+    padding: 0 2px;
+    font-size: 13px;
+    color: $ocd-bo-muted;
+}
+.o_ocd_verification_quiet_title {
+    font-weight: 700;
+}
+.o_ocd_verification_quiet_item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: $ocd-bo-text;
+    white-space: nowrap;
+}
+.o_ocd_verification_all_done {
+    align-self: flex-start;
+    padding: 18px 22px;
+    font-size: 14px;
 }
 .o_ocd_verification_column_head {
     display: flex;
@@ -57,6 +91,7 @@
     font-weight: 700;
 }
 .o_ocd_verification_count {
+    flex: none;
     min-width: 22px;
     box-sizing: border-box;
     padding: 0 7px;
@@ -84,6 +119,10 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    flex: none;
+    min-width: 0;
+    // A long link or name goes to the next line, never past the card
+    overflow-wrap: anywhere;
     padding: 11px 12px;
     background: #FFFFFF;
     border: 1px solid $ocd-bo-border;
@@ -167,6 +206,8 @@
     color: $ocd-yellow-text;
 }
 .o_ocd_verification_select {
+    width: 100%;
+    max-width: 100%;
     height: 32px;
     padding: 0 6px;
     border: 1px solid $ocd-bo-input;
@@ -184,6 +225,7 @@
 .o_ocd_verification_button {
     min-height: 32px;
     padding: 0 9px;
+    white-space: nowrap;
     border: 1px solid $ocd-bo-input;
     border-radius: 7px;
     background: #FFFFFF;
@@ -229,13 +271,12 @@
         color: $ocd-red-dark;
     }
 }
-@include media-breakpoint-down(xl) {
-    .o_ocd_verification_columns {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-}
+// A phone: one column under the other
 @include media-breakpoint-down(md) {
     .o_ocd_verification_columns {
-        grid-template-columns: minmax(0, 1fr) !important;
+        grid-auto-flow: row;
+        grid-template-columns: minmax(0, 1fr);
+        grid-auto-columns: auto;
+        overflow-x: visible;
     }
 }

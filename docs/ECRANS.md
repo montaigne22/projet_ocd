@@ -21,7 +21,7 @@ téléphone garde son design. Captures dans `docs/captures/maquette-responsive-*
 
 | Écran du design | Où | État |
 |---|---|---|
-| `Main` Accueil OCD Live | `/ocd`, `ocd_live/views/ocd_booking_templates.xml` (`home`) | ✅ |
+| `Main` Accueil OCD Live | `/ocd`, `ocd_live/views/ocd_booking_templates.xml` (`home`) ; les pays où il y a un live, puis celui du visiteur, puis « Tous les pays » | ✅ |
 | `Jour` Choisir le jour | `/reserver/<mode>`, modèle `booking_day` | ✅ |
 | `Heure` Choisir l'heure | `/reserver/<mode>/<jour>`, modèle `booking_hour` (prix selon l'heure) | ✅ |
 | `Paquet` Choisir le paquet | `/reserver/<mode>/<jour>/<heure>`, modèle `booking_package` | ✅ |
@@ -35,7 +35,7 @@ téléphone garde son design. Captures dans `docs/captures/maquette-responsive-*
 
 | Écran du design | Où | État |
 |---|---|---|
-| `Lives` Lives par pays | `/lives`, `ocd_directory_templates.xml` | ✅ |
+| `Lives` Lives par pays | `/lives`, `ocd_directory_templates.xml` ; sur tablette et ordinateur, une grille qui suit le défilement de la page (colonnes de 320 px au moins, un bandeau par pays sur toute la largeur, la barre des pays et « Je suis en live » en haut) | ✅ |
 | `LivesPays` Lives d'un pays | `/lives/<pays>` | ✅ |
 | `Pass` Pass annuaire | `/lives/pass` | ✅ |
 | `EnvoyerLien` Envoyer le lien de son live | `/lives/envoyer` | ✅ |
@@ -103,7 +103,7 @@ Le design n'a pas d'écran pour ces pages : elles prennent l'allure d'OCD Live p
 | `BoDashboard` Tableau de bord | action `ocd_live.dashboard`, `ocd_live/static/src/dashboard/`, modèle `ocd.live.dashboard` (le shop et WhatsApp ajoutent leurs chiffres) | ✅ |
 | `BoReservations` Réservations | action `ocd_live.planning`, `static/src/planning/`, modèle `ocd.live.planning` | ✅ |
 | `Regie` Régie du live en cours | action `ocd_live_shop.regie`, `ocd_live_shop/static/src/regie/`, modèle `ocd.live.regie` | ✅ |
-| `BoVerification` À vérifier | action `ocd_live.verification` (liens, produits, vendeurs), modèle `ocd.live.verification` | ✅ |
+| `BoVerification` À vérifier | action `ocd_live.verification` (liens, produits, vendeurs), modèle `ocd.live.verification` ; seules les colonnes avec quelque chose à vérifier sur le tableau (280 px au moins, le tableau défile de côté), les autres en une ligne « Rien en attente » | ✅ |
 | `BoCommandes` Commandes du shop | action `ocd_live_shop.orders`, modèle `ocd.live.orders` | ✅ |
 | `BoDispatch` Dispatch | action `ocd_live_shop.dispatch`, modèle `ocd.live.dispatch` | ✅ |
 | `BoLivraison` Fiche d'une livraison | vue `stock_picking_view_form_ocd_parcel` | ✅ |

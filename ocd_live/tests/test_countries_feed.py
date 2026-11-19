@@ -109,6 +109,31 @@ class TestOcdLiveFeed(HttpCase):
             keys = self._keys(response.text)
             self.assertEqual(keys[0], "none-SN", "No live in Senegal: said, then the others")
             self.assertIn("o_ocd_feed_bar", response.text)
+            # On a tablet and a computer: the head stays at the top with « I am live » in it,
+            # and the sentences of the phone (« swipe up ») have their version for the page
+            self.assertIn('class="o_ocd_feed_head"', response.text)
+            self.assertIn('href="/lives/pass" class="o_ocd_cta o_ocd_feed_live_cta"', response.text)
+            self.assertIn("Here are the lives of the other countries, below.", response.text)
+
+    def test_home_names_the_countries_with_lives_only(self):
+        """The home page names the countries with a live (the most first) and the one of the
+        visitor even without a live, then « All countries »: never the long list of the countries
+        offered, most of them without a live."""
+        with freeze_time(self.in_window):
+            other = self.env["res.partner"].create({
+                "name": "Ewondo Mode", "ocd_is_vendor": True, "ocd_vendor_state": "approved",
+                "country_id": self.env.ref("base.cm").id, "phone": "+237 670000042",
+            })
+            self._listing(self.togo)
+            self._listing(self.cameroon)
+            self._listing(other)
+            self.opener.cookies.set("tz", "Europe/Paris")  # a visitor in France
+            home = self.url_open("/reserver").text
+            links = re.findall(r'<a\b[^>]*\bclass="o_ocd_chip[^"]*"[^>]*>', home)
+            chips = [re.search(r'href="/lives/?([a-z]*)"', link).group(1) for link in links]
+            self.assertEqual(chips, ["cm", "tg", "fr", ""],
+                             "Cameroon (2 lives), Togo (1), France (the visitor), then « All countries »")
+            self.assertIn("o_ocd_chip_all", links[-1])
 
     def test_next_pages_and_new_lives(self):
         with freeze_time(self.in_window):

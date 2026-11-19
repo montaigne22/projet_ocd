@@ -550,12 +550,16 @@ def live_counts():
     return listings, counts
 
 
-def country_chips(counts):
-    """Return the countries of the directory, the ones with the most lives first."""
+def country_chips(counts, first=None):
+    """Return the countries with lives right now, the most first, then `first` (the country of
+    the visitor) even without a live: never the long list of all the countries offered, most of
+    them without a live (« All countries » opens the feed of the lives)."""
     rows = [
         {"country": country, "flag": country.code.lower(), "count": counts.get(country, 0)}
-        for country in directory_countries()
+        for country in directory_countries(first)
+        if counts.get(country, 0) or country == first
     ]
+    # Stable: among the countries with as many lives, the one of the visitor stays first
     rows.sort(key=lambda row: -row["count"])
     return rows
 

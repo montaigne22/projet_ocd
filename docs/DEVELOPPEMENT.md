@@ -537,6 +537,15 @@ Puis la démo sur une autre base neuve : les mêmes modules et `ocd_live_demo`, 
 tests d'`ocd_live` se lancent sur une base sans elle).
 Les tests du site (HttpCase) ont besoin d'un port libre (`--http-port=8079` si la démo tourne sur 8069).
 
+La mise en page des écrans qui grandissent avec les données (le fil des lives, l'accueil, « À vérifier »)
+se contrôle sur la démo, serveur lancé, à 390, 820, 1024, 1366 × 657, 1440 et 1914 px, et à 125 % de
+zoom pour le back-office ; le script échoue si une règle casse (carte coupée, débordement, colonne
+écrasée, liste des pays trop longue) :
+
+```bash
+OCD_URL=http://127.0.0.1:8069 node tools/captures/mise-en-page.js
+```
+
 ## Modèles WhatsApp
 
 Les textes des modèles (`data/whatsapp_template_data.xml`) suivent les règles de Meta, vérifiées par

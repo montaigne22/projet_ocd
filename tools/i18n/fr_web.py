@@ -15,6 +15,16 @@ WEB = {
     "<b>Payment received</b>": "<b>Paiement reçu</b>",
     "<b>The payment did not go through.</b>\n                        <span>Refused or cancelled on the phone, or not enough money. Nothing was taken. Your hour is still held.</span>":
         "<b>Le paiement n'est pas passé.</b>\n                        <span>Refusé ou annulé sur le téléphone, ou solde insuffisant. Rien n'a été débité. Ton heure est encore gardée.</span>",
+    # The screens that grow with the data (feed of the lives, home page, « To check »)
+    "<span class=\"o_ocd_feed_hint\">Meanwhile: the next lives and the replays. Swipe up.</span>\n                <span class=\"o_ocd_feed_on_large o_ocd_help\">Meanwhile: the next lives and the replays, below.</span>":
+        "<span class=\"o_ocd_feed_hint\">En attendant : les prochains lives et les replays. Glisse vers le haut.</span>\n                <span class=\"o_ocd_feed_on_large o_ocd_help\">En attendant : les prochains lives et les replays, plus bas.</span>",
+    "<span class=\"o_ocd_rec\" aria-hidden=\"true\"/><span>I am live</span>":
+        "<span class=\"o_ocd_rec\" aria-hidden=\"true\"/><span>Je suis en live</span>",
+    "All countries": "Tous les pays",
+    "No live here right now. Here are the lives of the other countries, below.":
+        "Pas de live ici pour l'instant. Voici les lives des autres pays, plus bas.",
+    "Nothing to check right now.": "Rien à vérifier en ce moment.",
+    "Nothing waiting:": "Rien en attente :",
     # The payment page says « your hour » only for a booking (not for a pass or a formula)
     "<b>The payment did not go through.</b>": "<b>Le paiement n'est pas passé.</b>",
     "Refused or cancelled on the phone, or not enough money. Nothing was taken.":

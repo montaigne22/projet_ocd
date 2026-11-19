@@ -17,8 +17,19 @@
                     <span t-out="data.banner.text"/>
                     <span t-if="data.average" class="o_ocd_verification_average" t-out="data.average"/>
                 </div>
-                <div class="o_ocd_verification_columns" t-att-style="'grid-template-columns: repeat(' + data.columns.length + ', minmax(0, 1fr))'">
-                    <div t-foreach="data.columns" t-as="column" t-key="column.key" class="o_ocd_verification_column">
+                <div t-if="this.quietColumns().length" class="o_ocd_verification_quiet">
+                    <span class="o_ocd_verification_quiet_title">Nothing waiting:</span>
+                    <span t-foreach="this.quietColumns()" t-as="column" t-key="column.key" class="o_ocd_verification_quiet_item">
+                        <span t-out="column.label"/>
+                        <span class="o_ocd_verification_count">0</span>
+                    </span>
+                </div>
+                <div t-if="!this.busyColumns().length" class="o_ocd_verification_empty o_ocd_verification_all_done">
+                    Nothing to check right now.
+                </div>
+                <!-- More columns than the screen holds: the board scrolls sideways, a card is never squeezed -->
+                <div t-else="" class="o_ocd_verification_columns">
+                    <div t-foreach="this.busyColumns()" t-as="column" t-key="column.key" class="o_ocd_verification_column">
                         <div class="o_ocd_verification_column_head">
                             <span t-out="column.label"/>
                             <span t-att-class="{ 'o_ocd_verification_count': true, 'o_ocd_waiting': !column.done and column.items.length }"

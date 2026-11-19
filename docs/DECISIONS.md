@@ -15,6 +15,22 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   `RespParcours`, `RespEspace`) : les listes en grilles larges, les fiches photo à gauche et
   informations à droite, les parcours formulaire à gauche et récapitulatif à droite, les espaces avec
   leur menu à gauche (des onglets sur tablette). Le téléphone garde le design validé.
+- **Les écrans qui grandissent avec les données tiennent à toute taille** (le 19 novembre 2026, après
+  des captures de l'équipe) : aussi un portable (1366 × 657) et un zoom à 125 %, contrôlés par
+  `tools/captures/mise-en-page.js` qui échoue si une règle casse.
+  - **le fil des lives** sur tablette et ordinateur : la page défile, jamais une boîte dans la page (sa
+    hauteur coupait les cartes d'un écran bas) ; des colonnes de 320 px au moins (la photo du produit
+    garde sa moitié, les textes passent sur deux lignes au lieu d'être coupés), alignées sur l'en-tête ;
+    chaque pays commence sa ligne sous un bandeau à son nom, et choisir un pays amène à ce bandeau ;
+    la barre des pays reste en haut avec « Je suis en live », jamais posé sur les cartes ; le téléphone
+    ne change pas ;
+  - **l'accueil** nomme les pays où il y a un live (les plus actifs d'abord), puis celui du visiteur
+    même sans live, puis « Tous les pays » : jamais la liste des 112 pays proposés, presque tous à 0 ;
+    la page gardée en mémoire l'est déjà par pays du visiteur ;
+  - **« À vérifier »** : seules les colonnes qui ont quelque chose à vérifier prennent une place, 280 px
+    au moins ; les autres sont nommées en une ligne au-dessus (« Rien en attente : … ») ; quand les
+    colonnes ne tiennent pas, le tableau défile de côté, une carte n'est jamais écrasée. Chaque chantier
+    peut ajouter sa colonne sans rien casser.
 - **Deux thèmes** : celui du site (vendeurs, clients) et celui du back-office (équipe). Ils lisent les
   mêmes couleurs et polices, dans un seul fichier : `ocd_live/static/src/scss/ocd_tokens.scss`.
 - **Données de démonstration** dans un module à part, `ocd_live_demo` : le désinstaller retire tout.

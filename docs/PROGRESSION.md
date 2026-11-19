@@ -154,6 +154,34 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · Trois écrans qui tiennent à toute taille : le fil des lives, l'accueil, « À vérifier »
+Après des captures de l'équipe : ces écrans grandissent avec les données (les pays, les lives, une
+colonne de plus à chaque chantier), et leur mise en page cassait sur grand écran. Reproduits sur la démo,
+corrigés dans `ocd_live` (20.0.1.26.0, sans migration : seuls les écrans changent). Le téléphone ne change
+pas.
+- **Le fil des lives** sur tablette et ordinateur : sur un portable (1366 × 657), la boîte du fil faisait
+  406 px de haut pour des cartes de 540 : noms et boutons coupés, deux défilements l'un dans l'autre.
+  Maintenant la page défile (le script suit la page : lives suivants, vidéo, pays de la barre) ; des
+  colonnes de 320 px au moins, alignées sur l'en-tête (la photo du produit n'est plus une bande de
+  40 px, plus de « Camerc » ni de « Regarder sur Tik… ») ; chaque pays commence sa ligne sous un bandeau
+  à son nom (choisir le Togo n'affiche plus d'abord des replays du Cameroun), sans « Glisse vers le
+  haut » ; la barre des pays reste en haut avec « Je suis en live », qui ne flotte plus sur les cartes.
+- **L'accueil** n'affiche plus les 112 pays (dont 109 à 0, 2 000 px de pastilles) : les pays où il y a un
+  live, les plus actifs d'abord, puis celui du visiteur, puis « Tous les pays » ; « En direct maintenant
+  · 3 » ensemble.
+- **« À vérifier »** : 12 colonnes de 137 px, dont 8 vides, écrasaient les cartes (liens coupés au milieu
+  des mots, boutons sur deux lignes, barres de défilement dans les colonnes au zoom). Maintenant seules
+  les colonnes avec quelque chose à vérifier sont sur le tableau, 280 px au moins, les autres en une ligne
+  « Rien en attente : … » ; si elles ne tiennent pas, le tableau défile de côté.
+- **Contrôle** : `tools/captures/mise-en-page.js` vérifie ces règles sur la démo à 390, 820, 1024,
+  1366 × 657, 1440 et 1914 px, et à 125 % de zoom pour le back-office : **60 règles tenues**. Vu dans le
+  navigateur en français à chaque taille. Remarqué au passage, pas changé : sur tablette (820 px), la
+  barre de menus du haut du back-office déborde sur toutes ses pages.
+- Tests : 1 nouveau (l'accueil ne nomme que les pays utiles), 1 complété (le fil et ses éléments pour
+  grand écran) ; la suite complète sur une base neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO
+  sans échec**.
+- **Sur un serveur** : `-u ocd_live` (`python3 tools/versions.py --db <base>` le dit).
+
 ### 19 novembre 2026 · Outil : les modules à mettre à jour sur un serveur
 `python3 tools/versions.py --db <base> --conf <odoo.conf>` compare les versions installées dans une base
 à celles du code récupéré, et donne la commande `odoo` à lancer : les modules à mettre à jour (`-u`), ceux

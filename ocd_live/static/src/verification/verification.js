@@ -7,7 +7,8 @@ import { standardActionServiceProps } from "@web/webclient/actions/action_plugin
 /**
  * What the team checks, on one board as in the validated design (BoVerification): live links,
  * new products and new vendors, then what was checked today. A refusal sends its reason to
- * the vendor.
+ * the vendor. Each module adds its column: only the columns with something waiting take a place
+ * on the board, the others are named in one line above it.
  */
 export class OcdLiveVerification extends Component {
     static template = "ocd_live.Verification";
@@ -26,6 +27,16 @@ export class OcdLiveVerification extends Component {
 
     async load() {
         this.data.set(await this.orm.call("ocd.live.verification", "get_verification_data", []));
+    }
+
+    /** The columns with something in them: wide enough for their cards, side by side. */
+    busyColumns() {
+        return this.data().columns.filter((column) => column.items.length);
+    }
+
+    /** The columns with nothing waiting: one line above the board, never a column of space. */
+    quietColumns() {
+        return this.data().columns.filter((column) => !column.items.length);
     }
 
     open(item) {

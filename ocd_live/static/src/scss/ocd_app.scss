@@ -446,6 +446,12 @@ body.o_ocd_body {
         font-variant-numeric: tabular-nums;
     }
 }
+// « All countries » after the countries with lives: the feed of the lives
+.o_ocd_chip.o_ocd_chip_all {
+    border-style: dashed;
+    color: $ocd-orange-dark;
+    font-weight: 700;
+}
 .o_ocd_chips {
     display: flex;
     gap: 8px;
@@ -2851,6 +2857,11 @@ body.o_ocd_body {
             text-overflow: ellipsis;
         }
     }
+}
+// For a tablet and a computer only (ocd_large.scss): the phone has its button at the bottom of
+// the screen, and swipes from card to card
+.o_ocd_feed_live_cta, .o_ocd_feed_on_large {
+    display: none !important;
 }
 .o_ocd_feed_new {
     flex: none;

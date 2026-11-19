@@ -37,7 +37,8 @@ class OcdLiveBooking(http.Controller):
             "home",
             nav="home",
             live_total=len(listings),
-            chips=common.country_chips(counts),
+            # The page in memory is kept per country of the visitor (page_cache._key)
+            chips=common.country_chips(counts, common.default_country()),
             studio_place=", ".join(filter(None, [common.studio_city(), common.company().country_id.name])),
         ))
 

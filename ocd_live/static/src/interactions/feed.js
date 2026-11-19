@@ -6,12 +6,17 @@ import { _t } from "@web/core/l10n/translation";
 const NEW_LIVES_DELAY = 60000;
 const LOAD_AHEAD = 3; // cards still to see when the next ones are asked
 const SLIDE_DELAY = 4500; // the carousel of the products turns by itself until the person touches it
+// From a tablet ($ocd-tablet): the cards side by side and the page scrolls, not the feed
+const GRID = "(min-width: 768px)";
 
 /**
  * Feed of the lives, one card per screen (like TikTok): the cards snap while the person swipes,
  * the next ones are loaded before the end, the bar shows the country of the card on screen and
  * the address keeps the card (back or reload come back to it). Arrow keys and Page Up/Down go
  * from card to card. Without JavaScript, the page and its « See more lives » link still work.
+ *
+ * On a tablet and a computer, the cards are a grid and the page scrolls (no box inside the page,
+ * whose height would cut the cards of a short screen): the same, followed on the page.
  *
  * The media of the card on screen comes alive: its short video plays without sound (a tap pauses
  * it, the speaker turns the sound on for the next ones too), the carousel of its products turns
@@ -38,6 +43,12 @@ export class OcdLiveFeed extends Interaction {
         this.sound = false;
         this.slideRun = 0;
         this.autoplay = !this.reducedMotion() && !navigator.connection?.saveData;
+        this.gridQuery = window.matchMedia(GRID);
+    }
+
+    /** True on a tablet and a computer: the page scrolls, the feed is a grid. */
+    get grid() {
+        return this.gridQuery.matches;
     }
 
     start() {
@@ -46,6 +57,9 @@ export class OcdLiveFeed extends Interaction {
         this.addListener(window, "resize", () => this.fit());
         // Not a dynamic content: a scroll must not refresh the page content
         this.addListener(this.scrollerEl, "scroll.noUpdate", (ev) => this.onScroll(ev), { passive: true, capture: true });
+        this.addListener(window, "scroll.noUpdate", () => this.onPageScroll(), { passive: true });
+        // A window turned or resized across the size of a tablet: the cards are watched again
+        this.addListener(this.gridQuery, "change.noUpdate", () => this.watch());
         // The videos and the carousels say when they play, pause or are touched (captured: these
         // events do not bubble up to the feed)
         for (const event of ["playing", "pause", "ended"]) {
@@ -54,11 +68,7 @@ export class OcdLiveFeed extends Interaction {
         this.addListener(this.scrollerEl, "pointerdown.noUpdate", (ev) => this.onSlidesTouch(ev), { passive: true });
         this.addListener(this.scrollerEl, "wheel.noUpdate", (ev) => this.onSlidesTouch(ev), { passive: true });
         this.addListener(document, "visibilitychange.noUpdate", () => this.onVisibility());
-        this.observer = new IntersectionObserver((entries) => this.onVisible(entries), {
-            root: this.scrollerEl,
-            threshold: 0.6,
-        });
-        this.cards().forEach((card) => this.observer.observe(card));
+        this.watch();
         this.restore();
         this.waitForTimeout(() => this.checkNew(), NEW_LIVES_DELAY);
     }
@@ -74,8 +84,25 @@ export class OcdLiveFeed extends Interaction {
         return [...this.scrollerEl.querySelectorAll(".o_ocd_feed_card")];
     }
 
-    /** The feed fills the screen between the bar and the menu at the bottom. */
+    /** The cards seen: in the feed on a phone, on the screen on a tablet and a computer. */
+    watch() {
+        this.fit();
+        this.observer?.disconnect();
+        this.seen = new Set();
+        this.observer = new IntersectionObserver((entries) => this.onVisible(entries), {
+            root: this.grid ? null : this.scrollerEl,
+            threshold: 0.6,
+        });
+        this.cards().forEach((card) => this.observer.observe(card));
+    }
+
+    /** The feed fills the screen between the bar and the menu at the bottom (phone). On a tablet
+     * and a computer, it takes the height of its cards and the page scrolls. */
     fit() {
+        if (this.grid) {
+            this.scrollerEl.style.height = "";
+            return;
+        }
         const top = this.scrollerEl.getBoundingClientRect().top + window.scrollY;
         const bottom = document.querySelector(".o_ocd_bottom")?.offsetHeight || 0;
         const height = Math.max(360, window.innerHeight - top - bottom);
@@ -86,15 +113,41 @@ export class OcdLiveFeed extends Interaction {
         const key = new URLSearchParams(window.location.search).get("live");
         const card = key && this.scrollerEl.querySelector(`[data-key="${CSS.escape(key)}"]`);
         if (card) {
-            this.scrollerEl.scrollTop = card.offsetTop;
+            this.scrollToCard(card, "auto");
+        }
+    }
+
+    /** Show a card at the top: of the feed on a phone, of the page (under its head) on a tablet
+     * and a computer. */
+    scrollToCard(card, behavior = this.motion()) {
+        if (this.grid) {
+            card.scrollIntoView({ block: "start", behavior }); // under the head: scroll-margin-top
+        } else {
+            // The feed only: scrollIntoView would also move the page under the bar
+            this.scrollerEl.scrollTo({ top: card.offsetTop, behavior });
         }
     }
 
     onVisible(entries) {
+        if (!this.grid) {
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    this.activate(entry.target);
+                }
+            }
+            return;
+        }
+        // A grid shows several cards: the first one seen (top left) leads the bar and plays
         for (const entry of entries) {
             if (entry.isIntersecting) {
-                this.activate(entry.target);
+                this.seen.add(entry.target);
+            } else {
+                this.seen.delete(entry.target);
             }
+        }
+        const first = this.cards().find((card) => this.seen.has(card));
+        if (first) {
+            this.activate(first);
         }
     }
 
@@ -110,7 +163,11 @@ export class OcdLiveFeed extends Interaction {
                 chip.classList.toggle("o_ocd_on", on);
                 if (on) {
                     chip.setAttribute("aria-current", "true");
-                    chip.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+                    // The bar only: scrollIntoView would also stop the page that is scrolling
+                    this.barEl.scrollTo({
+                        left: chip.offsetLeft - (this.barEl.clientWidth - chip.offsetWidth) / 2,
+                        behavior: this.motion(),
+                    });
                 } else {
                     chip.removeAttribute("aria-current");
                 }
@@ -139,7 +196,18 @@ export class OcdLiveFeed extends Interaction {
             return;
         }
         const { scrollTop, clientHeight, scrollHeight } = this.scrollerEl;
-        if (scrollHeight - scrollTop - clientHeight < clientHeight * LOAD_AHEAD) {
+        if (!this.grid && scrollHeight - scrollTop - clientHeight < clientHeight * LOAD_AHEAD) {
+            this.load();
+        }
+    }
+
+    /** On a tablet and a computer: the next lives are asked before the bottom of the page. */
+    onPageScroll() {
+        if (!this.grid) {
+            return;
+        }
+        const left = this.scrollerEl.getBoundingClientRect().bottom - window.innerHeight;
+        if (left < window.innerHeight * 1.5) {
             this.load();
         }
     }
@@ -163,6 +231,15 @@ export class OcdLiveFeed extends Interaction {
                 this.observer.observe(card);
             }
             this.next = result.next;
+            const pending = this.pending;
+            this.pending = null;
+            this.waitForTimeout(() => {
+                if (pending?.isConnected) {
+                    this.scrollToCard(pending);
+                }
+                // A large screen may still show the bottom of the feed: the next ones then
+                this.onPageScroll();
+            }, 0);
         } catch {
             // Network hiccup: asked again at the next scroll
         } finally {
@@ -343,8 +420,7 @@ export class OcdLiveFeed extends Interaction {
         const index = cards.findIndex((card) => card.dataset.key === this.activeKey);
         const target = cards[Math.min(Math.max(index + offset, 0), cards.length - 1)];
         if (target) {
-            // The feed only: scrollIntoView would also move the page under the bar
-            this.scrollerEl.scrollTo({ top: target.offsetTop, behavior: this.motion() });
+            this.scrollToCard(target);
             target.focus({ preventScroll: true });
         }
     }
@@ -354,7 +430,8 @@ export class OcdLiveFeed extends Interaction {
     }
 
     onKey(ev) {
-        if (ev.target.closest("input, select, textarea, summary")) {
+        // A grid: the keys scroll the page as everywhere else
+        if (this.grid || ev.target.closest("input, select, textarea, summary")) {
             return;
         }
         const moves = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 };
@@ -372,13 +449,20 @@ export class OcdLiveFeed extends Interaction {
             || (country === this.first ? this.cards()[0] : null);
         if (start) {
             ev.preventDefault();
-            this.scrollerEl.scrollTo({ top: start.offsetTop, behavior: this.motion() });
+            this.scrollToCard(start);
+            // The last card loaded cannot reach the top: its next cards, then it again
+            this.pending = start;
+            this.load();
         }
     }
 
     backToTop(ev) {
         ev.preventDefault();
-        this.scrollerEl.scrollTo({ top: 0, behavior: this.motion() });
+        if (this.grid) {
+            window.scrollTo({ top: 0, behavior: this.motion() });
+        } else {
+            this.scrollerEl.scrollTo({ top: 0, behavior: this.motion() });
+        }
     }
 
     async checkNew() {
