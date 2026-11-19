@@ -39,7 +39,9 @@ export class OcdExpressParcelForm extends Interaction {
             amountBox.hidden = prepaid;
             valueBox.hidden = !prepaid;
         }
-        const fee = parseFloat(this.el.dataset.fee) || 0;
+        // At a relay point (chantier 10): the price of the relay points
+        const chosen = this.el.querySelector("select[name='place']")?.selectedOptions[0];
+        const fee = parseFloat(chosen?.dataset.fee || this.el.dataset.fee) || 0;
         const rate = parseFloat(this.el.dataset.rate) || 0;
         const minimum = parseFloat(this.el.dataset.min) || 0;
         const goods = prepaid ? 0 : this.read("amount");

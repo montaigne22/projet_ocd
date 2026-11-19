@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The relay points in the back office (chantier 10, design PointsRelais): their list, their form
+     (a place with its places, its parcels, its earnings and losses), the parcels at a relay point. -->
+<odoo>
+
+    <record id="ocd_vendor_place_view_list_relay" model="ir.ui.view">
+        <field name="name">ocd.vendor.place.list.relay</field>
+        <field name="model">ocd.vendor.place</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'to_check'" decoration-muted="state == 'refused' or not relay_open">
+                <field name="name"/>
+                <field name="district_id"/>
+                <field name="vendor_id" string="Held By"/>
+                <field name="relay_holder_kind"/>
+                <field name="relay_held_count"/>
+                <field name="relay_capacity"/>
+                <field name="relay_back_count" optional="show"/>
+                <field name="relay_given_count"/>
+                <field name="relay_month_amount" sum="Total"/>
+                <field name="relay_lost_count" optional="show"/>
+                <field name="relay_open" widget="boolean_toggle" readonly="1"/>
+                <field name="state" widget="badge" decoration-success="state == 'approved'"
+                       decoration-warning="state == 'to_check'" decoration-danger="state == 'refused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ocd_vendor_place_view_form_relay" model="ir.ui.view">
+        <field name="name">ocd.vendor.place.form.relay</field>
+        <field name="model">ocd.vendor.place</field>
+        <field name="inherit_id" ref="ocd_vendor_place_view_form"/>
+        <field name="arch" type="xml">
+            <button name="action_ocd_open_map" position="after">
+                <button name="action_ocd_relay_parcels" type="object" string="See its parcels" invisible="not relay"/>
+                <button name="action_ocd_relay_pause" type="object" string="Pause the relay point"
+                        invisible="not relay or not relay_open" groups="ocd_live.group_ocd_live_user"
+                        confirm="It receives no new parcel; the parcels it keeps wait for their customers."/>
+                <button name="action_ocd_relay_resume" type="object" string="Open the relay point again"
+                        invisible="not relay or relay_open and not relay_pause_note" groups="ocd_live.group_ocd_live_user"/>
+            </button>
+            <field name="hour_ids" position="before">
+                <group string="Relay point" name="relay">
+                    <group>
+                        <field name="relay"/>
+                        <field name="relay_holder_kind" invisible="not relay"/>
+                        <field name="relay_open" invisible="not relay"/>
+                        <field name="relay_pause_note" invisible="not relay_pause_note"/>
+                        <field name="relay_capacity" invisible="not relay"/>
+                        <field name="relay_business" invisible="not relay"/>
+                        <field name="relay_visited" invisible="not relay"/>
+                        <field name="relay_id_checked" invisible="not relay"/>
+                    </group>
+                    <group invisible="not relay">
+                        <field name="relay_held_count"/>
+                        <field name="relay_coming_count"/>
+                        <field name="relay_back_count"/>
+                        <field name="relay_given_count"/>
+                        <field name="relay_month_amount"/>
+                        <field name="relay_lost_count"/>
+                        <field name="relay_currency_id" invisible="1"/>
+                    </group>
+                </group>
+            </field>
+        </field>
+    </record>
+
+    <record id="ocd_relay_action" model="ir.actions.act_window">
+        <field name="name">Relay points</field>
+        <field name="res_model">ocd.vendor.place</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('relay', '=', True)]</field>
+        <field name="context">{'default_relay': True, 'default_kind': 'store'}</field>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('ocd_vendor_place_view_list_relay')}),
+            Command.create({'view_mode': 'form', 'view_id': ref('ocd_vendor_place_view_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No relay point yet</p>
+            <p>The shops ask on the page /points-relais and the team visits them; a vendor makes their verified store a relay point from « My stores ».</p>
+        </field>
+    </record>
+
+    <!-- A parcel picked up at a relay point -->
+    <record id="stock_picking_view_form_ocd_parcel_relay" model="ir.ui.view">
+        <field name="name">stock.picking.form.ocd.parcel.relay</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_picking_view_form_ocd_parcel"/>
+        <field name="arch" type="xml">
+            <button name="action_ocd_return" position="after">
+                <button name="action_ocd_relay_lost" type="object" string="Lost at the relay point"
+                        invisible="not ocd_relay_id or ocd_relay_lost or ocd_stage != 'at_relay' and not ocd_relay_back"
+                        groups="ocd_live.group_ocd_live_manager"
+                        confirm="OCD pays the parcel back and takes it from the earnings of the relay point. Continue?"/>
+            </button>
+            <field name="ocd_collect" position="before">
+                <field name="ocd_relay_id" readonly="1" invisible="not ocd_relay_id"/>
+                <field name="ocd_relay_received_at" readonly="1" invisible="not ocd_relay_received_at"/>
+                <field name="ocd_relay_deadline" readonly="1" invisible="not ocd_relay_deadline"/>
+                <field name="ocd_relay_back" readonly="1" invisible="not ocd_relay_back"/>
+                <field name="ocd_relay_taken_back_at" readonly="1" invisible="not ocd_relay_taken_back_at"/>
+                <field name="ocd_relay_lost" readonly="1" invisible="not ocd_relay_lost"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

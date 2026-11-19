@@ -14,6 +14,7 @@ from .delivery_login import current_courier, remember_courier
 from .member_session import HOME, current_member, member_header_link
 
 OPEN_STAGES = ("to_prepare", "ready", "picked", "on_the_way", "problem")
+# A parcel left at a relay point is no longer in the hands of the courier nor of the vendor
 # Label and colour of the step of a parcel, as in the design
 PILLS = {
     "to_prepare": "prep",
@@ -368,13 +369,56 @@ class OcdDeliveryApp(http.Controller):
 
     def _tour_step_list(self, cards, partner=None):
         """The steps, in their order. A step of another module gives its own `template` (OCD
-        Express: a pick-up of several parcels at a sender, a return)."""
+        Express: a pick-up of several parcels at a sender, a return). The parcels of a relay point
+        make one stop there, after the pick-ups: drop them, take back the ones not picked up
+        (chantier 10)."""
         steps = []
+        relays = {}
         for card in cards:
             if card["to_pick"]:
                 steps.append({"kind": "pickup", "card": card})
+            if card["parcel"].ocd_relay_id and partner and partner.ocd_is_courier:
+                relays.setdefault(card["parcel"].ocd_relay_id, []).append(card)
+                continue
             steps.append({"kind": "deliver", "card": card})
+        if partner and partner.ocd_is_courier:
+            back = request.env["stock.picking"].sudo().search([
+                ("ocd_relay_back", "=", True), ("ocd_courier_id", "=", partner.id),
+            ])
+            for relay in back.ocd_relay_id:
+                relays.setdefault(relay, [])
+            for relay, relay_cards in relays.items():
+                steps.append(self._relay_step(relay, relay_cards, back.filtered(lambda p, r=relay: p.ocd_relay_id == r)))
         return steps
+
+    def _relay_step(self, relay, cards, back):
+        """A stop at a relay point: the parcels to drop (counted by the relay point on its phone),
+        the parcels not picked up to take back."""
+        env = request.env
+        parcels = env["stock.picking"].browse([card["parcel"].id for card in cards]).sudo()
+        to_leave = parcels.filtered(lambda p: p.ocd_stage in ("ready", "picked"))
+        on_the_way = parcels.filtered(lambda p: p.ocd_stage == "on_the_way")
+        waiting = parcels.filtered(lambda p: p.ocd_stage == "to_prepare")
+        phone = re.sub(r"\D", "", relay._ocd_phone() or "")
+        drop = parcels - waiting
+        return {
+            "kind": "relay",
+            "template": "ocd_live_shop.tour_relay",
+            "relay": relay,
+            "title": env._("Relay point %s", relay.name),
+            "count_label": env._("%s parcels", len(drop)) if len(drop) != 1 else env._("1 parcel"),
+            "place": relay._ocd_relay_line(),
+            "directions": relay._ocd_directions_url(),
+            "drop_line": env._("Drop: %s", ", ".join(parcels.mapped(lambda p: p.sale_id.name or p.name)))
+            if parcels else "",
+            "back_line": env._("Take back: %(count)s parcels not picked up (%(names)s)", count=len(back),
+                               names=", ".join(back.mapped(lambda p: p.sale_id.name or p.name))) if back else "",
+            "waiting_line": env._("First the pick-up at the vendors.") if waiting and not drop else "",
+            "to_leave": bool(to_leave),
+            "on_the_way": bool(on_the_way),
+            "back": bool(back),
+            "phone": phone if len(phone) >= 8 else "",
+        }
 
     # === PIECES HELD TO TRY (chantier 20, design MettreDeCote) === #
 
@@ -571,6 +615,41 @@ class OcdDeliveryApp(http.Controller):
             raise request.not_found()
         partner.ocd_courier_available = not partner.ocd_courier_available
         return request.redirect(f"/ocd/livrer/{token}")
+
+    @http.route(
+        "/ocd/livrer/<string:token>/relais/<int:place_id>/<string:action>",
+        type="http", auth="public", website=True, methods=["POST"], sitemap=False,
+    )
+    def act_relay(self, token, place_id, action, **post):
+        """The courier at a relay point: he leaves with its parcels, he took back the parcels not
+        picked up."""
+        partner = self._partner(token)
+        relay = request.env["ocd.vendor.place"].sudo().browse(place_id).exists()
+        if not partner.ocd_is_courier or not relay.relay:
+            raise request.not_found()
+        env = request.env
+        Picking = env["stock.picking"].sudo()
+        try:
+            if action == "partir":
+                parcels = Picking.search([("ocd_relay_id", "=", relay.id), ("ocd_courier_id", "=", partner.id),
+                                          ("ocd_stage", "in", ("ready", "picked"))])
+                if not parcels:
+                    raise UserError(env._("No parcel to take to this relay point."))
+                parcels.action_ocd_leave()
+                message = env._("Good way! %s counts the parcels when you arrive.", relay.name)
+            elif action == "repris":
+                parcels = Picking.search([("ocd_relay_id", "=", relay.id), ("ocd_courier_id", "=", partner.id),
+                                          ("ocd_relay_back", "=", True)])
+                if not parcels:
+                    raise UserError(env._("No parcel to take back at this relay point."))
+                parcels._ocd_relay_take_back(partner)
+                message = env._("You took back %s parcels: they go back to their vendors.", len(parcels)) \
+                    if len(parcels) != 1 else env._("You took back 1 parcel: it goes back to its vendor.")
+            else:
+                raise request.not_found()
+        except UserError as exc:
+            return self._render(token, partner, error=exc.args[0])
+        return self._render(token, partner, message=message)
 
     @http.route(
         "/ocd/livrer/<string:token>/colis/<int:picking_id>/<string:action>",

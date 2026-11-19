@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The relay points (chantier 10, design PointsRelais): « My relay point » (receive, keep, hand
+     over), the page to become a relay point, the stop of the courier at a relay point. -->
+<odoo>
+
+    <!-- The login of a relay point: the same pages as the vendors, with its words -->
+    <template id="space_login_relay" inherit_id="ocd_live.space_login" name="OCD Live: login of a relay point">
+        <xpath expr="//h1[@t-else='']" position="before">
+            <h1 t-elif="target == 'relais'" class="o_ocd_h1">Your relay point.</h1>
+        </xpath>
+        <xpath expr="//div[@t-elif=&quot;target == 'livrer'&quot;]" position="before">
+            <div t-elif="target == 'relais'" class="o_ocd_info">For the shops that keep the parcels of OCD Live: give the number of the relay point.</div>
+        </xpath>
+    </template>
+
+    <template id="space_login_code_relay" inherit_id="ocd_live.space_login_code" name="OCD Live: code of a relay point">
+        <xpath expr="//button[@t-else='']" position="before">
+            <button t-elif="target == 'relais'" type="submit" class="o_ocd_cta">Open my relay point</button>
+        </xpath>
+    </template>
+
+    <template id="relay_home" name="OCD Live: my relay point">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">My relay point</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_rl">
+                    <div class="o_ocd_rl_head">
+                        <h1 class="o_ocd_h1 o_ocd_h1_small">My relay point</h1>
+                        <span t-attf-class="o_ocd_step_pill o_ocd_step_pill_#{state}" t-out="state_label"/>
+                    </div>
+                    <span class="o_ocd_rl_muted" t-out="intro"/>
+                    <nav t-if="len(places) &gt; 1" class="o_ocd_chips" aria-label="Relay points">
+                        <a t-foreach="places" t-as="row" t-attf-href="/ocd/point-relais?lieu=#{row.id}"
+                           t-attf-class="o_ocd_chip #{'o_ocd_on' if row == relay else ''}" t-out="row.name"/>
+                    </nav>
+                    <div t-if="message" class="o_ocd_ok" role="status" t-out="message"/>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div t-if="paused_note" class="o_ocd_alert" role="status" t-out="paused_note"/>
+                    <!-- On a tablet and a computer: the figures and the actions on the left, the parcels on the right -->
+                    <div class="o_ocd_rl_panes">
+                        <div class="o_ocd_rl_pane">
+                            <div class="o_ocd_rl_tiles">
+                                <div class="o_ocd_rl_tile">
+                                    <small>Kept</small>
+                                    <b t-out="kept_label"/>
+                                    <span class="o_ocd_rl_bar" role="presentation"><i t-attf-style="width: #{kept_percent}%"/></span>
+                                    <small t-out="kept_line"/>
+                                </div>
+                                <div class="o_ocd_rl_tile">
+                                    <small>This month</small>
+                                    <b t-out="month_amount"/>
+                                    <small t-out="month_line"/>
+                                </div>
+                            </div>
+                            <a t-attf-href="/ocd/point-relais/remettre?lieu=#{relay.id}" class="o_ocd_cta">Hand a parcel over</a>
+                            <a t-if="coming_title" t-attf-href="/ocd/point-relais/recevoir?lieu=#{relay.id}" class="o_ocd_rl_coming">
+                                <span><b t-out="coming_title"/><small>Count each parcel when it arrives: it is in your care once counted.</small></span>
+                                <span class="o_ocd_step_pill o_ocd_step_pill_prep" t-out="coming_line"/>
+                            </a>
+                            <div class="o_ocd_rl_buttons">
+                                <form action="/ocd/point-relais/conge" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="lieu" t-att-value="relay.id"/>
+                                    <button t-if="relay.relay_open" type="submit" name="recevoir" value="0" class="o_ocd_button">On holiday</button>
+                                    <button t-else="" type="submit" name="recevoir" value="1" class="o_ocd_button o_ocd_button_dark">I receive parcels again</button>
+                                </form>
+                            </div>
+                            <small class="o_ocd_rl_muted">« On holiday »: no new parcel, the ones kept wait for their customers.</small>
+                            <div t-if="hours" class="o_ocd_rl_hours">
+                                <b>Opening hours</b>
+                                <span t-foreach="hours" t-as="line" t-out="line"/>
+                                <small class="o_ocd_rl_muted">To change them, write to the team of OCD Live.</small>
+                            </div>
+                        </div>
+                        <div class="o_ocd_rl_pane">
+                            <nav class="o_ocd_chips" aria-label="Parcels">
+                                <a t-foreach="tabs" t-as="row" t-attf-href="/ocd/point-relais?lieu=#{relay.id}&amp;vue=#{row['key']}"
+                                   t-attf-class="o_ocd_chip #{'o_ocd_on' if row['key'] == tab else ''}" t-out="row['label']"/>
+                            </nav>
+                            <t t-foreach="rows" t-as="row">
+                                <a t-if="tab == 'garde'" t-attf-href="/ocd/point-relais/remettre?lieu=#{relay.id}&amp;colis=#{row['parcel'].id}" class="o_ocd_rl_row">
+                                    <span><b t-out="row['title']"/><small t-out="row['line']"/></span>
+                                    <span t-attf-class="o_ocd_step_pill o_ocd_step_pill_#{row['pill']}" t-out="row['pill_label']"/>
+                                </a>
+                                <div t-else="" class="o_ocd_rl_row">
+                                    <span><b t-out="row['title']"/><small t-out="row['line']"/></span>
+                                    <span t-attf-class="o_ocd_step_pill o_ocd_step_pill_#{row['pill']}" t-out="row['pill_label']"/>
+                                </div>
+                            </t>
+                            <div t-if="not rows" class="o_ocd_info" t-out="empty"/>
+                            <a t-if="tab == 'recevoir' and rows" t-attf-href="/ocd/point-relais/recevoir?lieu=#{relay.id}" class="o_ocd_button o_ocd_button_dark">Receive these parcels</a>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="relay_receive" name="OCD Live: receive the parcels at a relay point">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Receive</t>
+        <t t-call="ocd_live.app">
+            <form action="/ocd/point-relais/recevoir" method="post" class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="lieu" t-att-value="relay.id"/>
+                <main class="o_ocd_main o_ocd_rl">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Receive</h1>
+                    <span class="o_ocd_rl_muted" t-out="courier_line"/>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div t-if="rows" class="o_ocd_rl_list">
+                        <div t-foreach="rows" t-as="row" class="o_ocd_rl_count">
+                            <label class="o_ocd_check">
+                                <input type="checkbox" name="recu" t-att-value="row['parcel'].id"/>
+                                <span><b t-out="row['title']"/></span>
+                            </label>
+                            <details class="o_ocd_rl_damaged">
+                                <summary>Damaged or open</summary>
+                                <label class="o_ocd_check">
+                                    <input type="checkbox" name="abime" t-att-value="row['parcel'].id"/>
+                                    <span>I refuse it: it goes back with the courier</span>
+                                </label>
+                                <input type="text" t-attf-name="note_#{row['parcel'].id}" class="o_ocd_input" maxlength="200"
+                                       placeholder="What is wrong (open box, wet, crushed)"/>
+                            </details>
+                        </div>
+                    </div>
+                    <div t-else="" class="o_ocd_info" t-out="empty"/>
+                    <p class="o_ocd_note">Tick each parcel you have in your hands. A parcel not ticked stays with the courier: never take a parcel you did not see.</p>
+                </main>
+                <div t-if="rows" class="o_ocd_actions">
+                    <button type="submit" class="o_ocd_cta">I received the ticked parcels</button>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="relay_hand_over" name="OCD Live: hand a parcel over at a relay point">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Hand a parcel over</t>
+        <t t-call="ocd_live.app">
+            <div class="o_ocd_frame o_ocd_narrow o_ocd_wide">
+                <main class="o_ocd_main o_ocd_rl">
+                    <h1 class="o_ocd_h1 o_ocd_h1_small">Hand a parcel over</h1>
+                    <div t-if="message" class="o_ocd_ok" role="status" t-out="message"/>
+                    <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                    <div class="o_ocd_rl_panes">
+                        <div class="o_ocd_rl_pane">
+                            <!-- The QR of the customer, read by the camera of the phone -->
+                            <div class="o_ocd_rl_scanner">
+                                <button type="button" class="o_ocd_button o_ocd_button_dark o_ocd_rl_camera" hidden="hidden">Scan their QR</button>
+                                <video class="o_ocd_rl_video" playsinline="playsinline" muted="muted" hidden="hidden"/>
+                                <small class="o_ocd_rl_hint o_ocd_rl_muted" data-blocked="The camera did not open: allow it in the browser, or choose the parcel and type the code.">The customer shows the QR of their page, or gives their code.</small>
+                                <form action="/ocd/point-relais/remettre" method="post" class="o_ocd_rl_qr_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="lieu" t-att-value="relay.id"/>
+                                    <input type="hidden" name="qr"/>
+                                </form>
+                            </div>
+                            <form t-if="parcel" action="/ocd/point-relais/remettre" method="post" class="o_ocd_rl_handover">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="lieu" t-att-value="relay.id"/>
+                                <input type="hidden" name="colis" t-att-value="parcel.id"/>
+                                <div class="o_ocd_rl_parcel">
+                                    <span><b t-out="parcel_title"/><small t-out="parcel_line"/></span>
+                                    <span t-if="paid" class="o_ocd_step_pill o_ocd_step_pill_done">Paid</span>
+                                </div>
+                                <div t-if="pay" class="o_ocd_rl_pay">
+                                    <b t-out="pay['label']"/>
+                                    <img t-if="pay['src']" t-att-src="pay['src']" alt="QR code of the payment"/>
+                                    <small>The customer scans it and pays on their phone (Mobile Money). Touch « Check » once « Paid » shows: the code is accepted after the payment.</small>
+                                    <a t-attf-href="/ocd/point-relais/remettre?lieu=#{relay.id}&amp;colis=#{parcel.id}" class="o_ocd_button">Check the payment</a>
+                                </div>
+                                <div t-else="" class="o_ocd_field o_ocd_field_big">
+                                    <label for="rl-code" class="o_ocd_label">Code given by the customer</label>
+                                    <input id="rl-code" name="code" class="o_ocd_input o_ocd_code" inputmode="numeric" maxlength="4"
+                                           autocomplete="off" required="required" t-att-value="code"/>
+                                </div>
+                                <button t-if="not pay" type="submit" class="o_ocd_cta">Hand it over</button>
+                                <small class="o_ocd_rl_muted">The code gives the parcel, not a name: someone else may come for the customer. 3 wrong codes lock the parcel; the team unlocks it.</small>
+                            </form>
+                            <p class="o_ocd_note">No cash at the relay point: you never keep the money of somebody else.</p>
+                        </div>
+                        <div class="o_ocd_rl_pane">
+                            <b class="o_ocd_rl_title">Choose the parcel</b>
+                            <a t-foreach="rows" t-as="row" t-attf-href="/ocd/point-relais/remettre?lieu=#{relay.id}&amp;colis=#{row['parcel'].id}"
+                               t-attf-class="o_ocd_rl_row #{'o_ocd_on' if parcel and row['parcel'] == parcel else ''}">
+                                <span><b t-out="row['title']"/><small t-out="row['line']"/></span>
+                                <span t-attf-class="o_ocd_step_pill o_ocd_step_pill_#{row['pill']}" t-out="row['pill_label']"/>
+                            </a>
+                            <div t-if="not rows" class="o_ocd_info">No parcel waiting for its customer.</div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="relay_become" name="OCD Live: become a relay point">
+        <!-- Title of the tab of the browser -->
+        <t t-set="additional_title">Relay points</t>
+        <t t-call="ocd_live.app">
+            <form action="/points-relais" method="post" class="o_ocd_frame o_ocd_focus o_ocd_narrow" novalidate="novalidate">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <main class="o_ocd_main o_ocd_rl">
+                    <div class="o_ocd_focus_side">
+                        <div class="o_ocd_rl_hero">
+                            <span class="o_ocd_rl_badge">For the shops of the neighbourhood</span>
+                            <h1 class="o_ocd_h1" t-out="title"/>
+                            <span>The customers come to you for their parcel, and see your shop. Your money is paid every month on your Mobile Money.</span>
+                        </div>
+                        <div class="o_ocd_rl_needs">
+                            <b>What it takes</b>
+                            <span>A shop open at least 6 days out of 7, with fixed hours.</span>
+                            <span t-out="capacity_line"/>
+                            <span>A phone with WhatsApp, and your identity document.</span>
+                        </div>
+                    </div>
+                    <div class="o_ocd_focus_main">
+                        <div t-if="sent" class="o_ocd_ok o_ocd_ok_big" role="status">
+                            <b>Request sent.</b>
+                            <span>The team of OCD Live calls you, then comes to see your shop before opening it.</span>
+                        </div>
+                        <t t-else="">
+                        <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
+                        <div class="o_ocd_field">
+                            <label for="rl-shop" class="o_ocd_label">Name of the shop</label>
+                            <input id="rl-shop" name="shop" class="o_ocd_input" maxlength="80" required="required" t-att-value="values.get('shop', '')"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="rl-name" class="o_ocd_label">Your name</label>
+                            <input id="rl-name" name="name" class="o_ocd_input" maxlength="80" required="required" t-att-value="values.get('name', '')" autocomplete="name"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="rl-phone" class="o_ocd_label">Your WhatsApp</label>
+                            <t t-call="ocd_live.phone_field" field_id.f="rl-phone"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="rl-district" class="o_ocd_label">District of the shop</label>
+                            <select id="rl-district" name="district_id" class="o_ocd_input" required="required">
+                                <option value="">Choose</option>
+                                <t t-foreach="districts" t-as="row">
+                                    <option t-att-value="row.id" t-att-selected="'selected' if str(row.id) == str(values.get('district_id')) else None">
+                                        <t t-out="row.name"/>, <t t-out="city.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="rl-landmark" class="o_ocd_label">Landmark</label>
+                            <input id="rl-landmark" name="landmark" class="o_ocd_input" maxlength="200" placeholder="e.g. opposite the bakery" t-att-value="values.get('landmark', '')"/>
+                        </div>
+                        <div class="o_ocd_field">
+                            <label for="rl-business" class="o_ocd_label">What your shop sells</label>
+                            <input id="rl-business" name="business" class="o_ocd_input" maxlength="300" placeholder="e.g. phone credit, Mobile Money" t-att-value="values.get('business', '')"/>
+                        </div>
+                        <button type="submit" class="o_ocd_cta">Ask to become a relay point</button>
+                        <small class="o_ocd_rl_muted">The team comes to see your shop before opening it. You are a vendor on OCD Live with a verified store? In « My stores », tick « My store is a relay point ».</small>
+                        </t>
+                    </div>
+                </main>
+            </form>
+        </t>
+    </template>
+
+    <!-- The stop of the courier at a relay point: drop the parcels, take back the ones not picked up -->
+    <template id="tour_relay" name="OCD Live: a stop at a relay point">
+        <div t-attf-class="o_ocd_parcel #{'o_ocd_parcel_on' if step_first else ''}">
+            <div class="o_ocd_parcel_head">
+                <span class="o_ocd_step_number" t-out="step['number']"/>
+                <b t-out="step['title']"/>
+                <span class="o_ocd_step_pill o_ocd_step_pill_route" t-out="step['count_label']"/>
+            </div>
+            <span class="o_ocd_parcel_place" t-out="step['place']"/>
+            <a t-if="step['directions']" t-att-href="step['directions']" target="_blank" rel="noopener"
+               class="o_ocd_parcel_button o_ocd_parcel_wide">Itinerary to the relay point</a>
+            <span t-if="step['drop_line']" class="o_ocd_parcel_items" t-out="step['drop_line']"/>
+            <span t-if="step['back_line']" class="o_ocd_parcel_items" t-out="step['back_line']"/>
+            <span t-if="step['waiting_line']" class="o_ocd_parcel_hint" t-out="step['waiting_line']"/>
+            <form t-if="step['to_leave']" t-attf-action="#{base}/relais/#{step['relay'].id}/partir" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <button class="o_ocd_parcel_go o_ocd_parcel_wide">I leave for the relay point</button>
+            </form>
+            <span t-if="step['on_the_way']" class="o_ocd_parcel_hint">The relay point counts the parcels on its phone: your tour updates.</span>
+            <form t-if="step['back']" t-attf-action="#{base}/relais/#{step['relay'].id}/repris" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <button class="o_ocd_parcel_button o_ocd_parcel_wide">I took these parcels back</button>
+            </form>
+            <a t-if="step['phone']" t-attf-href="tel:+#{step['phone']}" class="o_ocd_parcel_button">Call the relay point</a>
+        </div>
+    </template>
+
+</odoo>

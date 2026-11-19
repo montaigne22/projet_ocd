@@ -655,6 +655,48 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   - **manque de caisse d'un livreur** (pour tous les colis, pas seulement Express) : un écart négatif à la
     caisse du soir devient une dette du livreur, avec une activité pour le responsable, jusqu'à « Manque
     réglé ».
+- **Points relais** (chantier 10 ; maquette `PointsRelais` validée le 19 novembre 2026 avec les choix
+  recommandés) :
+  - **qui** : des boutiques partenaires (kiosques de transfert et de crédit, pressings, boutiques de
+    téléphones) choisies et **visitées par l'équipe** avant d'ouvrir ; et le **magasin vérifié et ouvert au
+    public** d'un vendeur qui le veut (plan, A.6), pour tous les vendeurs (réglable), jamais chez un vendeur
+    qui vend depuis chez lui. Un point relais est un **lieu** (la fiche des magasins), pas un nouveau
+    modèle : ses horaires, son itinéraire et son téléphone sont ceux du lieu ; le partenaire est un
+    contact « tient un point relais » qui se connecte par son numéro, comme l'équipe d'un vendeur ;
+  - **le prix** : un tarif « point relais » par ville dans les Tarifs de livraison (500 F à Douala, 1 000 F
+    à la porte), pour le shop et pour OCD Express ; seulement pour les colis portés par les livreurs OCD
+    (ni un vendeur qui livre lui-même, ni une agence), et seulement quand le colis part de la ville du point
+    relais. Sans tarif pour une ville, ses points relais ne sont pas proposés ;
+  - **ce que gagne le point relais** : 150 F par colis remis au client, rien pour un colis repris ; une
+    facture d'achat par colis (`ocd_relay_kind` = `earning`), versée **chaque mois** avec les reversements
+    (un vendeur point relais, avec les siens) ;
+  - **payer au point relais** : payé avant, ou **sur le téléphone du client au comptoir** (le QR de
+    paiement à l'écran du point relais, le code accepté après le paiement) ; **jamais d'espèces** au
+    lancement : le point relais ne garde l'argent de personne (sinon une caisse du soir chez chaque
+    partenaire). À revoir si les clients le demandent ;
+  - **le délai** : 7 jours, jusqu'à la fermeture du point relais le dernier jour, rappel 2 jours avant ;
+    puis le colis repart (shop : comme un colis retourné, remboursé s'il était payé en ligne ; Express :
+    rendu à l'expéditeur contre son code, 500 F), il attend au point relais que le livreur le reprenne ;
+  - **les places** : 25 colis par défaut, réglable par point relais ; plein, en congé ou en pause, il n'est
+    plus proposé ; les colis qu'il garde attendent leurs clients ;
+  - **le code, pas le nom** : le code de livraison (ou le QR de la page du client, qui le porte) donne le
+    colis, quelqu'un d'autre peut venir pour le client ; 3 codes faux bloquent le colis ; le code n'est
+    jamais dans le WhatsApp (règle de Meta) ; le client est prévenu quand le point relais a **compté** le
+    colis, pas quand le livreur part ; le point relais coche chaque colis qu'il a en main, un colis abîmé
+    refusé reste au livreur comme problème ;
+  - **OCD Express** : livrer au point relais, au choix de l'expéditeur (le quartier du point relais
+    devient celui du client) ou du client sur sa page tant que le livreur n'est pas parti (le prix du point
+    relais remplace celui de la porte) ; le message vient du numéro d'OCD Express. Déposer ses colis à un
+    point relais au lieu du ramassage : plus tard ;
+  - **un colis perdu au point relais** : OCD rembourse (le client par l'équipe ; l'expéditeur Express au
+    plus le plafond des réglages) et le retient sur les gains du point relais (un avoir, `loss`) ; **en
+    pause après 2 pertes**, rouvert par l'équipe seulement ; **pas de caution** au lancement (un reversement
+    négatif n'est jamais payé, il attend les colis suivants) ;
+  - **où commencer** : Douala, 5 ou 6 points relais dans les quartiers des livreurs, avec un accord signé
+    (modèle à faire relire par un juriste) ;
+  - **dans `ocd_live_shop`** et non dans un nouveau module : le point relais touche le choix de la
+    livraison, le colis, la tournée, le dispatch et les reversements du shop ; OCD Express et WhatsApp
+    l'étendent dans leurs modules.
 
 ## WhatsApp
 

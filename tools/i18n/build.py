@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import potlib  # noqa: E402
 
 ns = {}
-for name in ("fr_web.py", "fr_rest.py", "fr_shop.py", "fr_other.py", "fr_bo2.py", "fr_bo3.py", "fr_site_shop.py", "fr_rates.py", "fr_bo4.py", "fr_site_frame.py", "fr_ticket.py", "fr_countries.py", "fr_media.py", "fr_cards.py", "fr_vendor_space.py", "fr_vote.py", "fr_payments.py", "fr_tickets.py", "fr_evenings.py", "fr_storage.py", "fr_clips.py", "fr_express.py"):
+for name in ("fr_web.py", "fr_rest.py", "fr_shop.py", "fr_other.py", "fr_bo2.py", "fr_bo3.py", "fr_site_shop.py", "fr_rates.py", "fr_bo4.py", "fr_site_frame.py", "fr_ticket.py", "fr_countries.py", "fr_media.py", "fr_cards.py", "fr_vendor_space.py", "fr_vote.py", "fr_payments.py", "fr_tickets.py", "fr_evenings.py", "fr_storage.py", "fr_clips.py", "fr_express.py", "fr_relay.py"):
     exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), name), encoding="utf-8").read(), ns)
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
@@ -19,9 +19,9 @@ SCREENS = [ns["SETTINGS"], ns["SHOP_SETTINGS"], ns["AUTOMATIONS"], ns["WHATSAPP_
            ns["NO_ODOO"], ns["PAGES_AND_ENGLISH"]]
 MODULES = {
     "ocd_live": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SITE"], ns["SITE_FRAME"], ns["TICKET"], ns["COUNTRIES"], ns["CARDS"], ns["CURRENCIES"], ns["LIVE_PAGE"], ns["SPEED"], *SCREENS],
-    "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], ns["SHOP_COURIER_LOGIN"], ns["SHOP_COUNTRIES"], ns["MEDIA_SHOP"], ns["CARDS"], ns["CARDS_SHOP"], ns["CURRENCIES_SHOP"], ns["VENDOR_SPACE"], ns["PAYMENTS_SHOP"], ns["PROMO_SHOP"], ns["CLIPS_SHOP"], ns["SHOP_EXPRESS"], *SCREENS],
+    "ocd_live_shop": [ns["SHOP"], ns["SHOP2"], ns["SHOP3"], ns["SITE_SHOP"], ns["RATES"], ns["SHOP_COURIER_LOGIN"], ns["SHOP_COUNTRIES"], ns["MEDIA_SHOP"], ns["CARDS"], ns["CARDS_SHOP"], ns["CURRENCIES_SHOP"], ns["VENDOR_SPACE"], ns["PAYMENTS_SHOP"], ns["PROMO_SHOP"], ns["CLIPS_SHOP"], ns["SHOP_EXPRESS"], ns["RELAY"], ns["RELAY_SHOP"], *SCREENS],
     "ocd_live_whatsapp": [ns["WHATSAPP"], ns["CARDS_WHATSAPP"], *SCREENS],
-    "ocd_live_shop_whatsapp": [ns["SHOP_WHATSAPP"], ns["MEDIA_SHOP_WHATSAPP"], ns["VENDOR_SPACE"], *SCREENS],
+    "ocd_live_shop_whatsapp": [ns["SHOP_WHATSAPP"], ns["MEDIA_SHOP_WHATSAPP"], ns["VENDOR_SPACE"], ns["RELAY_WHATSAPP"], *SCREENS],
     "ocd_live_recruitment": [ns["RECRUITMENT"], ns["RECRUITMENT3"], ns["RECRUITMENT_FRAME"]],
     "ocd_delivery_togo": [ns["TOGO"]],
     "ocd_live_demo": [ns["DEMO"], ns["RATES_DEMO"], ns["CARDS_DEMO"]],
@@ -43,8 +43,8 @@ MODULES = {
     "ocd_clips_whatsapp": [ns["CLIPS_WHATSAPP"]],
     "whatsapp_cloud": [ns["WA_CLOUD_VIDEO"]],
     "ocd_express": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SHOP"], ns["SHOP2"], ns["SHOP3"],
-                    ns["SITE_SHOP"], ns["VENDOR_SPACE"], ns["SHOP_EXPRESS"], ns["EXPRESS"], *SCREENS],
-    "ocd_express_whatsapp": [ns["WHATSAPP"], ns["SHOP_WHATSAPP"], ns["EXPRESS_WHATSAPP"], *SCREENS],
+                    ns["SITE_SHOP"], ns["VENDOR_SPACE"], ns["SHOP_EXPRESS"], ns["EXPRESS"], ns["RELAY"], ns["RELAY_EXPRESS"], *SCREENS],
+    "ocd_express_whatsapp": [ns["WHATSAPP"], ns["SHOP_WHATSAPP"], ns["EXPRESS_WHATSAPP"], ns["RELAY_WHATSAPP"], ns["RELAY_EXPRESS_WHATSAPP"], *SCREENS],
     "ocd_tickets_whatsapp": [ns["WHATSAPP"], ns["SHOP_WHATSAPP"], ns["VOTE_WHATSAPP"], ns["TICKETS_WHATSAPP"], *SCREENS],
 }
 ns["DESCRIPTIONS"]["theme_ocd"] = ns["THEME_DESCRIPTION"]

@@ -29,4 +29,23 @@
         <field name="list_price">0</field>
     </record>
 
+    <!-- The relay points (chantier 10): what they earn per parcel handed over, a parcel lost -->
+    <record id="product_relay_earning" model="product.template">
+        <field name="name">Parcel handed over by a relay point</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
+    <record id="product_relay_loss" model="product.template">
+        <field name="name">Parcel lost at a relay point</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="ocd_live.product_category_lives"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="True"/>
+        <field name="list_price">0</field>
+    </record>
+
 </odoo>

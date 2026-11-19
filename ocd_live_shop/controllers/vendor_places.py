@@ -113,6 +113,13 @@ class OcdVendorPlaces(http.Controller):
                 "departure": place == departure,
                 "photo": place_photo_url(place, 256),
                 "poster": place.kind == "store" and place.state == "approved",
+                # A.6 of the plan (chantier 10): a verified store keeps the parcels of the others
+                "relay_offer": place.kind == "store" and place.state == "approved"
+                and common.company().ocd_relay_vendor_stores and common.company().ocd_relay_enabled,
+                "relay_line": env._("%(kept)s parcels kept on %(places)s · %(amount)s this month",
+                                    kept=place.relay_held_count, places=place.relay_capacity,
+                                    amount=common.money(place.relay_month_amount, place.company_id.currency_id))
+                if place.relay else "",
             })
         sends_parcels = vendor.ocd_sale_mode == "ocd" and (
             vendor.ocd_delivery_mode or common.company().ocd_default_delivery_mode
@@ -367,6 +374,27 @@ class OcdVendorPlaces(http.Controller):
         if vendor.ocd_departure_place_id == place:
             vendor.sudo().ocd_departure_place_id = False
         return request.redirect("/ocd/espace/moi/magasins")
+
+    @http.route("/ocd/espace/moi/magasins/<int:place_id>/relais", type="http", auth="public", website=True,
+                methods=["POST"], sitemap=False)
+    def place_relay(self, place_id, relais=None, **post):
+        """« My store is a relay point » (A.6 of the plan, chantier 10): it keeps the parcels of the
+        customers of the other vendors, for the earnings of the settings."""
+        vendor = self._vendor()
+        if not vendor:
+            return request.redirect("/ocd/connexion")
+        place = self._own_place(vendor, place_id)
+        company = common.company()
+        on = relais == "1"
+        if on and not (place.kind == "store" and place.state == "approved" and company.ocd_relay_vendor_stores):
+            raise request.not_found()
+        if not on and place._ocd_relay_parcels("held") | place._ocd_relay_parcels("coming") | place._ocd_relay_parcels("back"):
+            # The parcels it keeps wait for their customers: it only stops receiving new ones
+            place.sudo().write({"relay_open": False})
+        else:
+            place.sudo().write({"relay": on, "relay_open": on or place.relay_open,
+                                "relay_capacity": place.relay_capacity or company.ocd_relay_capacity})
+        return request.redirect(f"/ocd/espace/moi/magasins?enregistre=1#lieu-{place.id}")
 
     @http.route("/ocd/espace/moi/magasins/depart", type="http", auth="public", website=True, methods=["POST"],
                 sitemap=False)

@@ -63,7 +63,8 @@ class OcdVendorPlace(models.Model):
             "refused": "ocd_live_shop_whatsapp.template_store_refused",
         }
         places = first_of_each(
-            self.filtered(lambda p: p.kind == "store" and p.state in templates),
+            # A relay point held by a partner (not a vendor): the team calls them after the visit
+            self.filtered(lambda p: p.kind == "store" and p.state in templates and p.vendor_id.ocd_is_vendor),
             lambda p: (p.vendor_id.id, p.state),
         )
         Partner = self.env["res.partner"]

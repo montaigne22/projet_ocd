@@ -8,6 +8,7 @@ from odoo import fields, http
 from odoo.exceptions import UserError
 from odoo.http import request
 
+from odoo.addons.ocd_live import tools
 from odoo.addons.ocd_live.controllers import common
 
 from .sender import money
@@ -49,15 +50,18 @@ class OcdExpressTracking(http.Controller):
         sender = parcel.ocd_express_sender_id
         courier = parcel.ocd_courier_id
         stage = parcel.ocd_stage
-        reached = {"to_prepare": 0, "ready": 0, "picked": 0, "on_the_way": 1, "problem": 1, "delivered": 3}.get(stage, -1)
+        relay = parcel.ocd_relay_id
+        reached = {"to_prepare": 0, "ready": 0, "picked": 0, "on_the_way": 1, "at_relay": 2, "problem": 1,
+                   "delivered": 3}.get(stage, -1)
         if parcel.ocd_express_confirm == "waiting" and reached == 0:
             reached = -1
-        labels = [env._("Confirmed"), env._("On the way"), env._("At your door"), env._("Delivered")]
+        labels = [env._("Confirmed"), env._("On the way"),
+                  env._("At the relay point") if relay else env._("At your door"), env._("Delivered")]
         steps = [{"label": label, "state": "on" if index < reached or index == reached == 3 else
                   "now" if index == reached else ""} for index, label in enumerate(labels)]
         to_pay = parcel.ocd_cod_amount if parcel.ocd_cod_state == "to_collect" else 0.0
         pay_url = False
-        if to_pay and stage == "on_the_way" and parcel.company_id.ocd_cod_online:
+        if to_pay and stage in ("on_the_way", "at_relay") and parcel.company_id.ocd_cod_online:
             try:
                 pay_url = parcel._ocd_payment_url()
             except UserError:
@@ -75,12 +79,17 @@ class OcdExpressTracking(http.Controller):
             steps=steps,
             to_pay=money(to_pay) if to_pay else "",
             paid=parcel.ocd_cod_state in ("collected", "remitted"),
-            code=parcel.sudo().ocd_delivery_code if stage == "on_the_way" else "",
-            courier_name=(courier.name or "").split(" ")[0] if courier and stage in ("picked", "on_the_way") else "",
+            code=parcel.sudo().ocd_delivery_code if stage == ("at_relay" if relay else "on_the_way") else "",
+            relay=self._relay_values(parcel) if relay else False,
+            relays=[{"id": place.id, "label": place._ocd_relay_line(), "name": place.name}
+                    for place in parcel._ocd_express_relay_points()] if not relay and open_parcel else [],
+            relay_fee=self._relay_fee(parcel) if not relay and open_parcel else "",
+            courier_name=(courier.name or "").split(" ")[0]
+            if courier and stage in ("picked", "on_the_way") and not relay else "",
             courier_phone=phone,
             pay_url=pay_url,
-            moments=self._moments(parcel) if open_parcel and stage != "on_the_way" else [],
-            can_confirm=open_parcel and parcel.ocd_express_confirm == "waiting",
+            moments=self._moments(parcel) if open_parcel and stage != "on_the_way" and not relay else [],
+            can_confirm=open_parcel and not relay and parcel.ocd_express_confirm == "waiting",
             can_answer=open_parcel,
             claim_open=parcel._ocd_express_claim_open(),
             claim_hours=parcel.company_id.ocd_express_claim_hours,
@@ -93,7 +102,7 @@ class OcdExpressTracking(http.Controller):
                 else env._("for %s", parcel.partner_id.name),
             ) if part),
             call_label=env._("Call %s", (courier.name or "").split(" ")[0])
-            if courier and phone and stage in ("picked", "on_the_way") else "",
+            if courier and phone and stage in ("picked", "on_the_way") and not relay else "",
             claim_line=env._("Within %s hours of the delivery. The team of OCD Live calls you back.",
                              parcel.company_id.ocd_express_claim_hours),
             claim_state=self._claim_state(parcel),
@@ -110,10 +119,40 @@ class OcdExpressTracking(http.Controller):
             return env._("The team of OCD Live checked the problem you reported.")
         return ""
 
+    def _relay_values(self, parcel):
+        """The relay point where the customer picks the parcel up (chantier 10)."""
+        env = request.env
+        relay = parcel.ocd_relay_id
+        phone = "".join(char for char in (relay._ocd_phone() or "") if char.isdigit())
+        waiting = parcel.ocd_stage == "at_relay"
+        return {
+            "name": relay.name,
+            "line": relay._ocd_relay_line(),
+            "deadline": env._("Pick it up before %s", parcel._ocd_relay_deadline_text()) if waiting else "",
+            "directions": relay._ocd_directions_url(),
+            "phone": phone if len(phone) >= 8 else "",
+            "qr": tools.qr_data_uri(parcel._ocd_relay_qr_text(), box_size=6) if waiting else False,
+        }
+
+    def _relay_fee(self, parcel):
+        """What the customer pays for the delivery at a relay point, when they pay it."""
+        relays = parcel._ocd_express_relay_points()
+        if not relays or parcel.ocd_express_fee_by != "customer":
+            return ""
+        try:
+            _rate, fee = parcel._ocd_express_relay_rate(parcel.ocd_express_sender_id, relays[:1])
+        except UserError:
+            return ""
+        return request.env._("Delivery at a relay point: %s instead of %s", money(fee), money(parcel.ocd_express_fee))
+
     def _when_line(self, parcel):
         env = request.env
         if parcel.ocd_stage == "delivered":
             return env._("Delivered. Thank you!")
+        if parcel.ocd_stage == "at_relay":
+            return env._("Waits for you at the relay point %s.", parcel.ocd_relay_id.name)
+        if parcel.ocd_stage == "on_the_way" and parcel.ocd_relay_id:
+            return env._("On its way to the relay point %s.", parcel.ocd_relay_id.name)
         if parcel.ocd_stage in ("returned", "cancelled"):
             return env._("This parcel goes back to %s.", parcel.ocd_express_sender_id.name)
         if parcel.ocd_stage == "on_the_way":
@@ -162,6 +201,10 @@ class OcdExpressTracking(http.Controller):
                     raise UserError(env._("The position of the phone could not be read.")) from None
                 parcel._ocd_express_set_position(latitude, longitude)
                 message = env._("Thank you: the courier sees where you are.")
+            elif action == "relais":
+                relay = env["ocd.vendor.place"].sudo().browse(int(post.get("relay_id") or 0)).exists()
+                parcel._ocd_express_to_relay(relay)
+                message = env._("Noted: your parcel waits for you at the relay point %s.", relay.name)
             elif action == "souci":
                 parcel._ocd_express_report_claim(common.clean_text(post.get("note"), 500))
                 message = env._("Noted: the team of OCD Live calls you back.")

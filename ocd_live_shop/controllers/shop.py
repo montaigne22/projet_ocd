@@ -17,6 +17,9 @@ from odoo.addons.website_sale.controllers.main import WebsiteSale
 from . import shop_common
 from . import where as where_filter
 
+# The steps of a parcel picked up at a relay point where the page shows the relay point
+OPEN_STAGES_TRACKING = ("to_prepare", "ready", "picked", "on_the_way", "at_relay")
+
 # Products of the shop shown at once from the nearest vendor, then « See more » (chantier 20)
 NEAR_PAGE = 24
 
@@ -552,8 +555,11 @@ class OcdShop(WebsiteSale):
         goods = common.money(sum(lines.mapped("price_total")), order.currency_id)
         district = districts.filtered(lambda d: d.id == district_id)[:1]
         blocks = self._ocd_collect_blocks(order, values)
-        collect = self._ocd_collect_choice(blocks)
-        method = self._ocd_rate_preview(order, country, city, district, collect=collect)
+        relay = self._ocd_relay_block(order, values, country, city, district)
+        relay_on = bool(relay and relay["on"])
+        collect = {} if relay_on else self._ocd_collect_choice(blocks)
+        method = self._ocd_rate_preview(order, country, city, district, collect=collect,
+                                        relay=relay["relay"] if relay_on else False)
         home = self._ocd_home_fees(order, country, city, district, [block["vendor"] for block in blocks])
         for block in blocks:
             block.update(home.get(block["vendor"].id, {}))
@@ -569,8 +575,10 @@ class OcdShop(WebsiteSale):
             step_total=3,
             step_label=env._("Step %(step)s of %(total)s", step=1, total=3),
             order=order,
-            title=env._("How do you get your order?") if blocks else env._("Where do we deliver?"),
+            title=env._("How do you get your order?") if blocks or relay else env._("Where do we deliver?"),
             blocks=blocks,
+            relay=relay or self._ocd_relay_empty(),
+            relay_on=relay_on,
             collect_only=collect_only,
             collect_note=env._(
                 "The store writes to you on WhatsApp when it is ready, with your code. You have %s days to come.",
@@ -652,6 +660,54 @@ class OcdShop(WebsiteSale):
             })
         return blocks
 
+    # === AT A RELAY POINT (chantier 10, design PointsRelais) === #
+
+    def _ocd_relay_empty(self):
+        return {"offered": False, "on": False, "relay": request.env["ocd.vendor.place"], "rows": [], "fee": "",
+                "home_fee": "", "home_note": "", "note": ""}
+
+    def _ocd_relay_block(self, order, values, country, city, district):
+        """« At a relay point » for the whole order: the relay points of the city of the customer
+        (the ones of their district first) when every parcel can go there, and the choice of the
+        customer (sent with the form, else kept on the cart)."""
+        env = request.env
+        if not self._ocd_carrier() or not city:
+            return False
+        relays = order._ocd_relay_points(city, district)
+        if not relays:
+            return False
+        if "recevoir" in values:
+            on = values.get("recevoir") == "relais"
+            chosen_id = int(values["relais"]) if str(values.get("relais") or "").isdigit() else 0
+        else:
+            on = bool(order.ocd_relay_id)
+            chosen_id = order.ocd_relay_id.id
+        chosen = relays.filtered(lambda relay: relay.id == chosen_id)[:1]
+        if on and not chosen and len(relays) == 1:
+            chosen = relays
+        quotes = order._ocd_delivery_quotes(relay=chosen or relays[:1])
+        fee = sum(quote["price"] for quote in quotes)
+        home = order._ocd_delivery_quotes(partner=self._ocd_preview_partner(country, city, district), relay=False)
+        home_ok = bool(home) and not any(quote["error"] for quote in home)
+        home_fee = sum(quote["price"] for quote in home) if home_ok else 0.0
+        area = district.name or city.name
+        return {
+            "offered": True,
+            "on": on,
+            "relay": chosen,
+            "fee": common.money(fee, order.currency_id) if fee else env._("Free"),
+            "note": env._("You come when you want, for %s days", order.company_id.ocd_relay_days),
+            "home_fee": (common.money(home_fee, order.currency_id) if home_fee else env._("Free")) if home_ok else "",
+            "home_note": env._("At your place, in %s", area) if area else "",
+            "rows": [{
+                "id": relay.id,
+                "name": relay.name,
+                "line": relay._ocd_relay_line(),
+                "vendor": relay.relay_holder_kind == "vendor",
+                "checked": relay == chosen,
+            } for relay in relays],
+        }
+
     def _ocd_collect_choice(self, blocks):
         """{vendor: store} of the parcels picked up in a store."""
         return {block["vendor"]: block["store"] for block in blocks if block["collect"] and block["store"]}
@@ -674,7 +730,8 @@ class OcdShop(WebsiteSale):
         if not city:
             note = request.env._("Choose your city: the price shows here.")
             return {vendor.id: {"home_fee": "", "home_note": note} for vendor in vendors}
-        quotes = order._ocd_delivery_quotes(partner=self._ocd_preview_partner(country, city, district), collect={})
+        quotes = order._ocd_delivery_quotes(partner=self._ocd_preview_partner(country, city, district), collect={},
+                                            relay=False)
         fees = {}
         for quote in quotes:
             if quote["vendor"] not in vendors:
@@ -705,6 +762,16 @@ class OcdShop(WebsiteSale):
                     "error": False,
                 })
                 continue
+            if quote["operator"] == "relay":
+                rows.append({
+                    "vendor_id": vendor.id or 0,
+                    "title": title,
+                    "sub": quote["error"] or env._("taken to the relay point by an OCD courier"),
+                    "fee": (common.money(quote["price"], order.currency_id) if quote["price"] else env._("Free"))
+                    if not quote["error"] else "",
+                    "error": quote["error"],
+                })
+                continue
             sub = " · ".join(part for part in (
                 env._("from %s", quote["origin"].name) if quote["origin"] else "",
                 {
@@ -724,24 +791,28 @@ class OcdShop(WebsiteSale):
             })
         return rows
 
-    def _ocd_rate_preview(self, order, country, city, district, collect=None):
+    def _ocd_rate_preview(self, order, country, city, district, collect=None, relay=False):
         """The delivery and its price for the address being typed and the parcels picked up in a
-        store (`collect`: {vendor: store}); the price is checked again by Odoo when the address is
-        saved."""
+        store (`collect`: {vendor: store}) or at the relay point `relay`; the price is checked
+        again by Odoo when the address is saved."""
         partner = self._ocd_preview_partner(country, city, district)
         goods = order._compute_amount_total_without_delivery()
         carrier_ocd = self._ocd_carrier()
         if carrier_ocd:
-            quotes = order._ocd_delivery_quotes(partner=partner, collect=collect or {})
+            quotes = order._ocd_delivery_quotes(partner=partner, collect=collect or {}, relay=relay or False)
             rows = self._ocd_parcel_rows(order, quotes)
             collect_only = bool(quotes) and all(quote["operator"] == "store" for quote in quotes)
             if not city and not collect_only:
                 return False
             ok = bool(quotes) and not any(quote["error"] for quote in quotes)
             fee = sum(quote["price"] for quote in quotes) if ok else 0.0
+            if relay:
+                name = request.env._("At the relay point %s", relay.name)
+            else:
+                name = request.env._("Picked up at the store") if collect_only else carrier_ocd.name
             return {
                 "carrier": carrier_ocd,
-                "name": request.env._("Picked up at the store") if collect_only else carrier_ocd.name,
+                "name": name,
                 "note": request.env._("One price per parcel: each vendor delivers from their city.")
                 if len(quotes) > 1 else (rows[0]["sub"] if rows else ""),
                 "fee": (common.money(fee, order.currency_id) if fee else request.env._("Free")) if ok else "",
@@ -771,7 +842,8 @@ class OcdShop(WebsiteSale):
         }
 
     @http.route("/ocd/livraison/tarif", type="jsonrpc", auth="public", website=True)
-    def ocd_delivery_rate(self, country_id=None, city_id=None, district_id=None, collect=None):
+    def ocd_delivery_rate(self, country_id=None, city_id=None, district_id=None, collect=None, relay_mode=None,
+                          relay_id=None):
         """The price of the delivery while the customer types the address or chooses to pick a
         parcel up (`collect`: {vendor id: store id, 0 for delivered})."""
         order = request.cart
@@ -788,10 +860,18 @@ class OcdShop(WebsiteSale):
                 values[f"recevoir_{vendor_id}"] = "retrait" if str(store_id or "").isdigit() and int(store_id) else "livraison"
                 values[f"magasin_{vendor_id}"] = str(store_id or "")
         blocks = self._ocd_collect_blocks(order, values)
-        chosen = self._ocd_collect_choice(blocks)
-        method = self._ocd_rate_preview(order, country, city, district, collect=chosen)
+        relay = self._ocd_relay_block(order, {
+            "recevoir": "relais" if relay_mode == "relais" else "livraison", "relais": str(relay_id or ""),
+        }, country, city, district)
+        relay_on = bool(relay and relay["on"] and relay["relay"])
+        chosen = {} if relay_on else self._ocd_collect_choice(blocks)
+        method = self._ocd_rate_preview(order, country, city, district, collect=chosen,
+                                        relay=relay["relay"] if relay_on else False)
         return {
             "districts": [{"id": d.id, "name": d.name} for d in districts],
+            "relay": {key: (relay or self._ocd_relay_empty())[key]
+                      for key in ("offered", "on", "rows", "fee", "home_fee", "home_note", "note")},
+            "relay_on": relay_on,
             "method": {key: method[key] for key in ("name", "note", "fee", "total", "rows", "ok")} if method else False,
             "home": {str(key): value for key, value in self._ocd_home_fees(
                 order, country, city, district, [block["vendor"] for block in blocks]).items()},
@@ -837,8 +917,15 @@ class OcdShop(WebsiteSale):
         for block in blocks:
             if f"recevoir_{block['key']}" in post and post[f"recevoir_{block['key']}"] == "retrait" and not block["store"]:
                 errors[f"magasin_{block['key']}"] = env._("Choose the store where you pick it up.")
-        collect = self._ocd_collect_choice(blocks)
-        collect_only = self._ocd_is_collect_only(order, collect)
+        # At a relay point (chantier 10): one relay point for the whole order
+        city = env["res.city"].sudo().browse(int(post.get("city_id") or 0)).exists()
+        district = env["res.city.district"].sudo().browse(int(post.get("district_id") or 0)).exists()
+        relay_block = self._ocd_relay_block(order, post, country, city, district)
+        relay = relay_block["relay"] if relay_block and relay_block["on"] else env["ocd.vendor.place"]
+        if post.get("recevoir") == "relais" and not relay:
+            errors["relais"] = env._("Choose the relay point where you pick it up.")
+        collect = {} if relay else self._ocd_collect_choice(blocks)
+        collect_only = bool(relay) or self._ocd_is_collect_only(order, collect)
         landmark = common.clean_text(post.get("delivery_landmark"), 200)
         if not landmark and not collect_only:
             errors["delivery_landmark"] = env._("Give a well-known place near your home: the courier uses it.")
@@ -846,6 +933,7 @@ class OcdShop(WebsiteSale):
             return self._ocd_render_delivery(order, values=post, errors=errors)
         try:
             order._ocd_set_collect_places(env["ocd.vendor.place"].sudo().union(*collect.values()))
+            order._ocd_set_relay(relay)
         except UserError as exc:
             return self._ocd_render_delivery(order, values=post, error=exc.args[0])
         form_data = {
@@ -936,6 +1024,10 @@ class OcdShop(WebsiteSale):
                 "sub": line.pickup_place_id._ocd_address_line(),
                 "amount": env._("Free"),
             } if line.operator == "store" and line.pickup_place_id else {
+                "label": env._("At the relay point %s", line.relay_place_id.name),
+                "sub": line.relay_place_id._ocd_address_line(),
+                "amount": common.money(line.amount, order.currency_id) if line.amount else env._("Free"),
+            } if line.operator == "relay" and line.relay_place_id else {
                 "label": env._("Delivery of the parcel of %s", line.vendor_id.name) if line.vendor_id
                 else env._("Delivery of the parcel of OCD Live"),
                 "sub": env._("from %s", line.origin_city_id.name) if line.origin_city_id else "",
@@ -955,6 +1047,12 @@ class OcdShop(WebsiteSale):
         counter, on the phone of the customer or in cash where the vendor takes it."""
         env = request.env
         lines = order.ocd_delivery_line_ids
+        if lines and all(line.operator == "relay" for line in lines):
+            return {
+                "counter_label": env._("Pay at the relay point"),
+                "counter_help": env._("At the relay point: on your phone with Mobile Money, never in cash. Your code "
+                                      "is accepted once the payment is confirmed."),
+            }
         stores = lines.filtered(lambda line: line.operator == "store")
         if not stores:
             return {"counter_label": False, "counter_help": False}
@@ -1000,6 +1098,8 @@ class OcdShop(WebsiteSale):
             title = env._("Your order is on the way")
         elif open_parcels and not open_parcels.filtered(lambda p: not (p.ocd_collect and p.ocd_stage == "ready")):
             title = env._("Ready at the store")
+        elif open_parcels and not open_parcels.filtered(lambda p: p.ocd_stage != "at_relay"):
+            title = env._("Waiting for you at the relay point")
         else:
             title = env._("Thank you %s, your order is confirmed", first_name)
         paid = order.transaction_ids.filtered(lambda tx: tx.state == "done").sorted("id")[-1:]
@@ -1007,12 +1107,14 @@ class OcdShop(WebsiteSale):
             pay_line = env._("paid with %s", paid.payment_method_id.name or paid.provider_id.name)
         elif parcels.filtered(lambda p: p.ocd_cod_state == "to_collect"):
             to_pay = parcels.filtered(lambda p: p.ocd_cod_state == "to_collect")
-            pay_line = env._("to pay at the counter") if all(to_pay.mapped("ocd_collect")) else env._("to pay at the delivery")
+            pay_line = env._("to pay at the counter") if all(
+                parcel.ocd_collect or parcel.ocd_relay_id for parcel in to_pay) else env._("to pay at the delivery")
         else:
             pay_line = ""
         shipping = order.partner_shipping_id
         delivered_all = bool(parcels) and not open_parcels
         collect_only = bool(parcels) and all(parcels.mapped("ocd_collect"))
+        relay = parcels.ocd_relay_id[:1] if parcels and all(parcels.mapped("ocd_relay_id")) else False
         return {
             "order": order,
             "access_token": access_token,
@@ -1035,7 +1137,8 @@ class OcdShop(WebsiteSale):
             "return_label": env._("Ask for a return (%s days)", order.company_id.ocd_return_days),
             "return_requested": bool(order.ocd_return_requested_at),
             "address_name": shipping.name,
-            "address_line": env._("Picked up at the store, with your code") if collect_only else " · ".join(part for part in (
+            "address_line": env._("Picked up at the relay point %s, with your code", relay.name) if relay else
+            env._("Picked up at the store, with your code") if collect_only else " · ".join(part for part in (
                 ", ".join(part for part in (shipping.district_id.name, shipping.city_id.name or shipping.city) if part),
                 shipping.delivery_landmark,
             ) if part),
@@ -1067,6 +1170,8 @@ class OcdShop(WebsiteSale):
     def _ocd_parcel_row(self, parcel):
         if parcel.ocd_collect:
             return self._ocd_collect_row(parcel)
+        if parcel.ocd_relay_id:
+            return self._ocd_relay_row(parcel)
         env = request.env
         stage = parcel.ocd_stage
         steps = [
@@ -1117,6 +1222,79 @@ class OcdShop(WebsiteSale):
             "call_aria": env._("Call %s", courier.name) if courier else "",
             "code": parcel.sudo().ocd_delivery_code if stage == "on_the_way" else False,
             "done_line": done_line,
+        }
+
+    def _ocd_relay_row(self, parcel):
+        """A parcel picked up at a relay point (design PointsRelais): on its way there, waiting with
+        the code and the QR of the customer, the relay point and the day it waits until, picked up."""
+        env = request.env
+        stage = parcel.ocd_stage
+        relay = parcel.sudo().ocd_relay_id
+        vendor = parcel.ocd_vendor_id
+        pills = {
+            "to_prepare": ("prep", env._("Being prepared")),
+            "ready": ("ready", env._("Prepared")),
+            "picked": ("ready", env._("Picked up")),
+            "on_the_way": ("route", env._("On its way to the relay point")),
+            "at_relay": ("ready", env._("At the relay point")),
+            "delivered": ("done", env._("Picked up")),
+            "problem": ("problem", env._("Delivery to set again")),
+            "returned": ("problem", env._("Not picked up: gone back")),
+            "cancelled": ("problem", env._("Cancelled")),
+        }
+        pill, pill_label = pills.get(stage, ("prep", env._("Being prepared")))
+        items = ", ".join(
+            f"{move.product_id.name} × {int(move.product_uom_qty)}" if move.product_uom_qty != 1 else move.product_id.name
+            for move in parcel.move_ids
+        )
+        done_line = ""
+        if stage == "delivered" and parcel.ocd_delivered_at:
+            done_line = env._("Picked up at %s. Code checked.", common.to_viewer(parcel.ocd_delivered_at).strftime("%H:%M"))
+        elif stage == "returned":
+            done_line = env._("Not picked up in time: the parcel goes back. Paid online, OCD Live refunds you.")
+        elif stage == "problem":
+            done_line = env._("The parcel could not reach the relay point. OCD Live calls you.")
+        phone = re.sub(r"\D", "", relay._ocd_phone() or "")
+        waiting = stage == "at_relay"
+        code = parcel.sudo().ocd_delivery_code if waiting else False
+        team = re.sub(r"\D", "", common.company().phone or "")
+        home_url = False
+        if len(team) >= 8 and stage in OPEN_STAGES_TRACKING:
+            text = env._("Hello, I will not be able to go to the relay point %(relay)s for my order %(order)s: can you "
+                         "deliver it to my place?", relay=relay.name, order=parcel.sale_id.name or parcel.name)
+            home_url = f"https://wa.me/{team}?{urlencode({'text': text})}"
+        return {
+            "parcel": parcel,
+            "collect": True,
+            "relay": True,
+            "title": env._("Parcel of %s", vendor.name) if vendor else env._("Parcel of OCD Live"),
+            "sub": items,
+            "pill": pill,
+            "pill_label": pill_label,
+            "steps": [
+                {"key": "prepared", "label": env._("Prepared"), "on": bool(parcel.ocd_ready_at) or stage not in ("to_prepare",)},
+                {"key": "route", "label": env._("On the way"), "on": stage in ("on_the_way", "at_relay", "delivered")},
+                {"key": "relay", "label": env._("At the relay point"), "on": stage in ("at_relay", "delivered")},
+                {"key": "done", "label": env._("Picked up"), "on": stage == "delivered"},
+            ],
+            "initials": "",
+            "who": "",
+            "phone": "",
+            "call_aria": "",
+            "code": code,
+            "qr": tools.qr_data_uri(parcel._ocd_relay_qr_text(), box_size=6) if code else False,
+            "home_url": home_url,
+            "home_label": env._("I will not be able to go: deliver it to my place (OCD Live on WhatsApp)"),
+            "done_line": done_line,
+            "store": {
+                "name": relay.name,
+                "line": relay._ocd_relay_line(),
+                "deadline": env._("Pick it up before %s", parcel._ocd_relay_deadline_text())
+                if waiting and parcel.ocd_relay_deadline else
+                env._("The relay point writes to you on WhatsApp when your parcel arrives."),
+                "directions": relay._ocd_directions_url(),
+                "phone": phone if len(phone) >= 8 else "",
+            } if relay and stage in OPEN_STAGES_TRACKING else False,
         }
 
     def _ocd_collect_row(self, parcel):

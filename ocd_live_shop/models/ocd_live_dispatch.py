@@ -10,7 +10,7 @@ from .stock_picking import OPEN_STAGES
 COLUMNS = [
     ("prep", ("to_prepare",)),
     ("ready", ("ready", "picked")),
-    ("route", ("on_the_way",)),
+    ("route", ("on_the_way", "at_relay")),
     ("done", ("delivered",)),
     ("problem", ("problem",)),
 ]

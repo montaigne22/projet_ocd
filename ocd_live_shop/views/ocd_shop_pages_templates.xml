@@ -465,7 +465,7 @@
         <!-- Title of the tab of the browser -->
         <t t-set="additional_title">Delivery</t>
         <t t-call="ocd_live.app">
-            <form action="/ocd/livraison" method="post" t-attf-class="o_ocd_frame o_ocd_narrow o_ocd_wide o_ocd_delivery_form #{'o_ocd_collect_only' if collect_only else ''}" novalidate="novalidate">
+            <form action="/ocd/livraison" method="post" t-attf-class="o_ocd_frame o_ocd_narrow o_ocd_wide o_ocd_delivery_form #{'o_ocd_collect_only' if collect_only else ''} #{'o_ocd_relay_on' if relay_on else ''}" novalidate="novalidate">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <input t-if="len(countries) &lt; 2" type="hidden" name="delivery_country_id" t-att-value="country.id"/>
                 <!-- On a tablet and a computer: the address on the left, the delivery and the total on the right -->
@@ -473,6 +473,49 @@
                     <h1 class="o_ocd_h1" t-out="title"/>
                     <div t-if="error" class="o_ocd_alert" role="alert" t-out="error"/>
                     <div class="o_ocd_pane_main o_ocd_delivery_address">
+                    <!-- At a relay point (chantier 10, design PointsRelais): for the whole order, the
+                         relay points of the city of the customer, the ones of their district first;
+                         hidden when none can take the order -->
+                    <fieldset class="o_ocd_collect o_ocd_relay_choice" t-att-hidden="None if relay['offered'] else 'hidden'">
+                        <legend class="o_ocd_label">Where you get your order</legend>
+                        <div class="o_ocd_collect_modes">
+                            <label class="o_ocd_collect_opt">
+                                <input type="radio" name="recevoir" value="livraison" class="o_ocd_relay_mode"
+                                       t-att-checked="None if relay['on'] else 'checked'"/>
+                                <span class="o_ocd_collect_text">
+                                    <b>Delivered to me</b>
+                                    <small class="o_ocd_relay_home_note" t-out="relay['home_note']"/>
+                                </span>
+                                <b class="o_ocd_collect_fee o_ocd_relay_home_fee" t-out="relay['home_fee']"/>
+                            </label>
+                            <label class="o_ocd_collect_opt">
+                                <input type="radio" name="recevoir" value="relais" class="o_ocd_relay_mode"
+                                       t-att-checked="'checked' if relay['on'] else None"/>
+                                <span class="o_ocd_collect_text">
+                                    <b>At a relay point</b>
+                                    <small class="o_ocd_relay_note" t-out="relay['note']"/>
+                                </span>
+                                <b class="o_ocd_collect_fee o_ocd_relay_fee" t-out="relay['fee']"/>
+                            </label>
+                        </div>
+                        <div class="o_ocd_collect_stores o_ocd_relay_points" t-att-hidden="None if relay['on'] else 'hidden'">
+                            <div class="o_ocd_collect_list o_ocd_relay_list">
+                                <t t-foreach="relay['rows']" t-as="row">
+                                    <label class="o_ocd_collect_opt o_ocd_collect_store">
+                                        <input type="radio" name="relais" t-att-value="row['id']" class="o_ocd_relay_place"
+                                               t-att-checked="'checked' if row['checked'] else None"/>
+                                        <span class="o_ocd_collect_text">
+                                            <b t-out="row['name']"/>
+                                            <small t-out="row['line']"/>
+                                            <span t-if="row['vendor']" class="o_ocd_badge_ok">Store of a vendor</span>
+                                        </span>
+                                    </label>
+                                </t>
+                            </div>
+                            <span t-if="errors.get('relais')" class="o_ocd_error" role="alert" t-out="errors['relais']"/>
+                            <p class="o_ocd_note">A full relay point or on holiday is not offered. You pay before, or on your phone at the counter: never in cash, the relay point keeps no money.</p>
+                        </div>
+                    </fieldset>
                     <!-- Pick up in a store (design RetraitMagasin): per vendor who has a store,
                          « Delivered to me » or « I come and get it » in one of their stores that
                          has the whole parcel (the others shown, not chosen) -->
@@ -568,7 +611,7 @@
                             <span t-if="errors.get('district_id')" class="o_ocd_error" role="alert" t-out="errors['district_id']"/>
                         </div>
                     </div>
-                    <div class="o_ocd_field">
+                    <div class="o_ocd_field o_ocd_delivery_landmark">
                         <label for="d-landmark" class="o_ocd_label">Landmark</label>
                         <input id="d-landmark" name="delivery_landmark" class="o_ocd_input" t-att-value="landmark" autocomplete="off"
                                placeholder="e.g. opposite the pharmacy" required="required"
@@ -794,7 +837,13 @@
                                 <a t-if="row['phone']" t-attf-href="tel:+#{row['phone']}" class="o_ocd_link o_ocd_tracking_call"
                                    t-att-aria-label="row['call_aria']">Call</a>
                             </div>
-                            <div t-if="row['code'] and row.get('collect')" class="o_ocd_tracking_code">
+                            <div t-if="row['code'] and row.get('relay')" class="o_ocd_tracking_code o_ocd_tracking_relay">
+                                <span>Your pickup code</span>
+                                <b t-out="row['code']"/>
+                                <img t-if="row.get('qr')" t-att-src="row['qr']" class="o_ocd_tracking_qr" alt="QR code to show at the counter"/>
+                                <small>Show this QR or give your code at the counter. Someone else may pick it up for you: give them your code.</small>
+                            </div>
+                            <div t-elif="row['code'] and row.get('collect')" class="o_ocd_tracking_code">
                                 <span>Your pickup code</span>
                                 <b t-out="row['code']"/>
                                 <small>Give it at the counter.</small>
@@ -813,6 +862,7 @@
                                     <a t-att-href="row['store']['directions']" target="_blank" rel="noopener" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">Itinerary</a>
                                     <a t-if="row['store']['phone']" t-attf-href="tel:+#{row['store']['phone']}" class="o_ocd_cta o_ocd_cta_line o_ocd_cta_small">Call</a>
                                 </div>
+                                <a t-if="row.get('home_url')" t-att-href="row['home_url']" target="_blank" rel="noopener" class="o_ocd_link" t-out="row['home_label']"/>
                             </div>
                             <span t-if="row['done_line']" t-attf-class="o_ocd_parcel_note #{'o_ocd_parcel_note_ok' if row['parcel'].ocd_stage == 'delivered' else 'o_ocd_parcel_note_warn'}"
                                   role="status" t-out="row['done_line']"/>

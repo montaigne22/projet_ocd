@@ -2,7 +2,7 @@
     "name": "OCD Express: WhatsApp",
     "summary": "The messages of OCD Express: the parcel announced and on the way to the customer, "
     "the parcels picked up, what happened to a parcel and the payout to the sender",
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Marketing/WhatsApp",
     "author": "RollBackk",
     "license": "LGPL-3",

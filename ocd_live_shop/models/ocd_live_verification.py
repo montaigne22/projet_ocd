@@ -23,8 +23,15 @@ class OcdLiveVerification(models.AbstractModel):
             "empty": self.env._("No store waiting."),
             "items": self._ocd_store_items(),
         })
-        # The reports of the customers and the reviews the vendors report (chantier 2)
+        # The shops that ask to become a relay point (chantier 10): visited by the team
         columns.insert(3, {
+            "key": "relay",
+            "label": self.env._("Relay points"),
+            "empty": self.env._("No relay point to visit."),
+            "items": self._ocd_relay_items(),
+        })
+        # The reports of the customers and the reviews the vendors report (chantier 2)
+        columns.insert(4, {
             "key": "report",
             "label": self.env._("Reports"),
             "empty": self.env._("No report waiting."),
@@ -114,7 +121,8 @@ class OcdLiveVerification(models.AbstractModel):
         """The stores the vendors added or moved (BoVerificationMagasins): the front, where, the
         hours, the position taken on the spot to open on the map."""
         _ = self.env._
-        places = self.env["ocd.vendor.place"].search([("state", "=", "to_check")], order="create_date")
+        places = self.env["ocd.vendor.place"].search([("state", "=", "to_check"), ("vendor_id.ocd_is_relay", "=", False)],
+                                                     order="create_date")
         reasons = self._ocd_reasons("store")
         modes = {"ocd": _("sold by OCD"), "direct": _("direct contact")}
         items = []
@@ -146,6 +154,36 @@ class OcdLiveVerification(models.AbstractModel):
                 "open_url": open_url,
                 "ok_label": _("Put online"),
                 "reasons": reasons,
+            })
+        return items
+
+    @api.model
+    def _ocd_relay_items(self):
+        """The shops that ask to become a relay point: the team visits them (the front, the identity
+        of the one who holds it), then opens them."""
+        _ = self.env._
+        places = self.env["ocd.vendor.place"].search([("state", "=", "to_check"), ("vendor_id.ocd_is_relay", "=", True)],
+                                                     order="create_date")
+        items = []
+        for place in places:
+            holder = place.vendor_id
+            facts = [place._ocd_address_line(), place.relay_business, holder.phone]
+            items.append({
+                "key": f"relay_{place.id}",
+                "kind": "relay",
+                "id": place.id,
+                "tag": _("Relay point"),
+                "title": place.name,
+                "sub": " · ".join(part for part in (holder.name, _("asked %s", self._ocd_ago(place.create_date))) if part),
+                "detail": " · ".join(fact for fact in facts if fact),
+                "photo": f"/web/image/ocd.vendor.place/{place.id}/photo/256x256" if place.photo else "",
+                "open_label": _("Open the form"),
+                "open_action": {
+                    "type": "ir.actions.act_window", "res_model": "ocd.vendor.place", "res_id": place.id,
+                    "views": [[False, "form"]], "target": "current",
+                },
+                "ok_label": _("Visited: open it"),
+                "reasons": self._ocd_reasons("store"),
             })
         return items
 
@@ -269,7 +307,8 @@ class OcdLiveVerification(models.AbstractModel):
     @api.model
     def _ocd_models(self):
         return {**super()._ocd_models(), "product": "product.template", "product_change": "product.template",
-                "store": "ocd.vendor.place", "report_product": "product.template", "report_vendor": "res.partner",
+                "store": "ocd.vendor.place", "relay": "ocd.vendor.place", "report_product": "product.template",
+                "report_vendor": "res.partner",
                 "review": "ocd.vendor.review"}
 
     @api.model
@@ -298,6 +337,10 @@ class OcdLiveVerification(models.AbstractModel):
             return self._ocd_record(kind, record_id).action_ocd_approve_change()
         if kind == "store":
             return self._ocd_record(kind, record_id).action_ocd_approve()
+        if kind == "relay":
+            place = self._ocd_record(kind, record_id)
+            place.write({"relay_visited": True})
+            return place.action_ocd_approve()
         if kind != "product":
             return super().ocd_approve(kind, record_id, values)
         product = self._ocd_record(kind, record_id)
@@ -321,7 +364,7 @@ class OcdLiveVerification(models.AbstractModel):
             if not reason:
                 raise UserError(self.env._("Choose the reason sent to the vendor."))
             return self._ocd_record(kind, record_id).action_ocd_refuse_change(reason)
-        if kind == "store":
+        if kind in ("store", "relay"):
             reason = self.env["ocd.listing.refuse.reason"].browse(reason_id).exists()
             if not reason:
                 raise UserError(self.env._("Choose the reason sent to the vendor."))

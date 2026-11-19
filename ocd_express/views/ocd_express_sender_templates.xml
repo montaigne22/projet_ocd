@@ -92,6 +92,11 @@
                                             t-att-value="'d%s' % district.id" t-att-selected="district.id == values.get('district_id')"
                                             t-out="district.name"/>
                                 </optgroup>
+                                <optgroup t-if="relays" label="At a relay point (cheaper): your customer picks it up">
+                                    <option t-foreach="relays" t-as="row" t-att-value="'r%s' % row['relay'].id"
+                                            t-att-data-fee="int(row['fee'])"
+                                            t-att-selected="row['relay'].id == values.get('relay_id')" t-out="row['label']"/>
+                                </optgroup>
                                 <optgroup t-if="other_cities" label="Another city (travel agency, paid in advance)">
                                     <option t-foreach="other_cities" t-as="city" t-att-value="'c%s' % city.id"
                                             t-att-selected="city.id == values.get('city_id') and not values.get('district_id')" t-out="city.name"/>

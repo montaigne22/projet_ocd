@@ -128,6 +128,54 @@ Tell the customer.</field>
         <field name="tools">Scheduled task.</field>
     </record>
 
+    <!-- The relay points (chantier 10) -->
+    <record id="automation_relay_arrived" model="ocd.automation">
+        <field name="code">relay_arrived</field>
+        <field name="name">Parcel at the relay point: tell the customer</field>
+        <field name="sequence">74</field>
+        <field name="group">shop</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">The courier leaves for the relay point; the relay point counts the parcel</field>
+        <field name="trigger">« I leave for the relay point » on the tour, then « I received » at the relay point.</field>
+        <field name="scope">The customers who pick their parcel up at a relay point.</field>
+        <field name="actions">Tell the relay point the parcels coming, once per relay point.
+Tell the customer it waits there and until when, with their code and the itinerary on their page.</field>
+        <field name="tools">Tested code of OCD Live.</field>
+    </record>
+
+    <record id="automation_relay_deadline" model="ocd.automation">
+        <field name="code">relay_deadline</field>
+        <field name="name">Relay point: reminder before the end, then back</field>
+        <field name="sequence">74</field>
+        <field name="group">shop</field>
+        <field name="kind">cron</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="cron_id" ref="ir_cron_relay"/>
+        <field name="when">The days of the settings before the end, at the end</field>
+        <field name="trigger">Every hour.</field>
+        <field name="scope">The parcels kept at a relay point.</field>
+        <field name="actions">Remind the customer; at the end, the parcel goes back (refunded when paid online) and waits at the relay point for the courier, who takes it back on his tour.</field>
+        <field name="tools">Scheduled task.</field>
+    </record>
+
+    <record id="automation_relay_earnings" model="ocd.automation">
+        <field name="code">relay_earnings</field>
+        <field name="name">Relay point: earned per parcel handed over, lost parcels taken back</field>
+        <field name="sequence">74</field>
+        <field name="group">money</field>
+        <field name="kind">code</field>
+        <field name="locked" eval="True"/>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="when">A parcel handed over with its code; a parcel lost at the relay point</field>
+        <field name="trigger">The code of the customer at the relay point; « Lost at the relay point » on the parcel.</field>
+        <field name="scope">The relay points.</field>
+        <field name="actions">A bill of the earnings of the settings for each parcel handed over, paid every month with the payouts.
+A lost parcel: paid back by OCD and taken from the earnings; after the losses of the settings, the relay point is paused for the team.</field>
+        <field name="tools">Tested code of OCD Live, Invoicing.</field>
+    </record>
+
     <record id="automation_low_stock" model="ocd.automation">
         <field name="code">low_stock</field>
         <field name="name">Low stock: tell the vendor</field>

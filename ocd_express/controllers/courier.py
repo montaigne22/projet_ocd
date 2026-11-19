@@ -62,7 +62,7 @@ class OcdExpressDeliveryApp(OcdDeliveryApp):
             steps.append(step)
         returns = request.env["stock.picking"].sudo().search([
             ("ocd_express", "=", True), ("ocd_express_return_state", "=", "to_return"),
-            ("ocd_courier_id", "=", partner.id),
+            ("ocd_courier_id", "=", partner.id), ("ocd_relay_back", "=", False),
         ], order="ocd_express_sender_id, id")
         for sender, parcels in returns.grouped("ocd_express_sender_id").items():
             steps.append(self._return_step(sender, parcels))

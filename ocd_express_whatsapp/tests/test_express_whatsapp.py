@@ -1,5 +1,6 @@
 from datetime import date
 
+from odoo import Command
 from odoo.tests import tagged
 
 from odoo.addons.ocd_express.tests.common import OcdExpressCommon
@@ -95,7 +96,7 @@ class TestOcdExpressWhatsapp(OcdExpressCommon):
         self.env["ir.config_parameter"].sudo().set_str("web.base.url", "https://ocd.example.com")
         data = self.env["ir.model.data"].search([("model", "=", "whatsapp.template"), ("module", "=", "ocd_express_whatsapp")])
         templates = self.env["whatsapp.template"].browse(data.mapped("res_id"))
-        self.assertEqual(len(templates), 12)
+        self.assertEqual(len(templates), 14)
         for template in templates:
             with self.subTest(template=template.name):
                 template._check_for_meta()
@@ -104,3 +105,31 @@ class TestOcdExpressWhatsapp(OcdExpressCommon):
                 self.assertEqual(len(english), 1)
                 self.assertEqual(english.variable_ids.mapped("sequence"), template.variable_ids.mapped("sequence"))
                 self.assertEqual(english.button_url_value, template.button_url_value)
+
+    def test_at_the_relay_point(self):
+        """Chantier 10: the customer is told by OCD Express when the relay point counted the
+        parcel, never by the messages of the shop."""
+        cm = self.env.ref("base.cm")
+        self.company.ocd_relay_enabled = True
+        self.env["ocd.delivery.rate"].create({
+            "operator": "relay", "origin_city_id": self.douala.id, "country_id": cm.id,
+            "city_ids": [Command.set(self.douala.ids)], "price": 500,
+        })
+        holder = self.env["res.partner"].create({"name": "Mama Ngo", "phone": "+237 677330011", "ocd_is_relay": True})
+        relay = self.env["ocd.vendor.place"].create({
+            "name": "Chez Mama Ngo", "vendor_id": holder.id, "kind": "store", "city_id": self.douala.id,
+            "district_id": self.akwa.id, "relay": True, "relay_capacity": 25, "state": "approved",
+        })
+        relay._ocd_set_hours(self.company._ocd_place_default_intervals())
+        parcel = self._create(relay=relay, district=False)
+        self._pick(parcel)
+        parcel.action_ocd_leave()
+        self.assertFalse(self.messages(parcel, "ocd_express_en_route"), "Told when the relay point counted it")
+        relay._ocd_relay_receive(parcel)
+        message = self.messages(parcel, "ocd_express_point_relais")
+        self.assertEqual(len(message), 1)
+        self.assertIn("waits for you at the relay point Chez Mama Ngo", message.body)
+        self.assertNotIn(parcel.sudo().ocd_delivery_code, message.body)
+        self.assertFalse(self.messages(parcel, "ocd_colis_point_relais"), "Not the message of the shop")
+        automation = self.env.ref("ocd_live_shop.automation_relay_arrived")
+        self.assertIn(self.env.ref("ocd_express_whatsapp.template_express_relay"), automation.template_ids)

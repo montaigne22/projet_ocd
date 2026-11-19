@@ -18,6 +18,11 @@
         <field name="template_ids" eval="[Command.set([ref('template_express_state'), ref('template_express_state_en')])]"/>
     </record>
 
+    <!-- The parcel of OCD Express at a relay point: the message of OCD Express, beside the one of the shop -->
+    <record id="ocd_live_shop.automation_relay_arrived" model="ocd.automation">
+        <field name="template_ids" eval="[Command.link(ref('template_express_relay')), Command.link(ref('template_express_relay_en'))]"/>
+    </record>
+
     <record id="ocd_express.automation_express_paid" model="ocd.automation">
         <field name="template_ids" eval="[Command.set([ref('template_express_paid'), ref('template_express_paid_en')])]"/>
     </record>

@@ -195,6 +195,12 @@ class StockPicking(models.Model):
             raise UserError(_("This is your own number: write the number of your customer."))
         if not content:
             raise UserError(_("Write what is in the parcel."))
+        relay = data.get("relay") or self.env["ocd.vendor.place"]
+        if relay:
+            # At a relay point (chantier 10): its district is where the parcel goes
+            if not relay._ocd_relay_available() or relay.city_id not in company.ocd_express_city_ids:
+                raise UserError(_("The relay point %s does not take new parcels now: choose another one.", relay.name))
+            data = dict(data, district=relay.district_id, city=relay.city_id)
         district, city, by_agency = self._ocd_express_destination(data.get("district"), data.get("city"))
         prepaid = bool(data.get("prepaid"))
         fee_by = "customer" if data.get("fee_by") == "customer" else "sender"
@@ -219,7 +225,10 @@ class StockPicking(models.Model):
             "ocd_express_recipient": True,
         }
         probe = self.env["res.partner"].new(recipient_vals)
-        rate, fee = self._ocd_express_rate(sender, probe, by_agency)
+        if relay:
+            rate, fee = self._ocd_express_relay_rate(sender, relay)
+        else:
+            rate, fee = self._ocd_express_rate(sender, probe, by_agency)
         if fee_by == "sender" and currency.compare_amounts(
                 sender._ocd_express_debt(), company.ocd_express_debt_max) > 0 and company.ocd_express_debt_max:
             raise UserError(_(
@@ -237,8 +246,27 @@ class StockPicking(models.Model):
             "ocd_cod_state": "to_collect" if currency.compare_amounts(cod, 0.0) > 0 else "none",
             "ocd_rate_id": rate.id,
             "ocd_by_agency": by_agency,
+            "ocd_relay_id": relay.id,
         }
         return values, recipient_vals, reason
+
+    @api.model
+    def _ocd_express_relay_rate(self, sender, relay):
+        """The rate « relay point » of OCD Live from the city of the sender to `relay`."""
+        company = self.env.company
+        Rate = self.env["ocd.delivery.rate"].sudo()
+        origin_city = sender.city_id or sender.district_id.city_id or company.ocd_express_city_ids[:1]
+        relay_city = relay.city_id or relay.district_id.city_id
+        probe = self.env["res.partner"].new({
+            "country_id": (relay_city.country_id or company.country_id).id, "city_id": relay_city.id,
+            "district_id": relay.district_id.id,
+        })
+        rates = Rate._ocd_rates(company).filtered(lambda r: not r.vendor_id and r.operator == "relay")
+        rate = rates._ocd_best(probe, (origin_city.country_id or company.country_id, origin_city)) \
+            if origin_city == relay_city else Rate
+        if not rate:
+            raise UserError(self.env._("No price of the relay points from your city yet: choose a delivery at the door."))
+        return rate, rate._ocd_converted_price(company.currency_id, company, fields.Date.context_today(self))
 
     @api.model
     def _ocd_express_check_reason(self, sender, amount, parcel=None):
@@ -706,6 +734,9 @@ class StockPicking(models.Model):
                 "ocd_express_return_code": f"{secrets.randbelow(10 ** 6):06d}",
                 "ocd_express_return_attempts": 0,
             }
+            if parcel.ocd_stage == "at_relay":
+                # Kept by a relay point (chantier 10): the courier takes it back there first
+                vals["ocd_relay_back"] = True
             if parcel.ocd_cod_state == "collected" and parcel.ocd_cod_method == "cash":
                 # The courier gives the cash back to the customer with the parcel
                 vals.update({"ocd_cod_state": "to_collect", "ocd_cod_collected_amount": 0.0,
@@ -721,6 +752,52 @@ class StockPicking(models.Model):
             parcel.message_post(body=self.env._("Goes back to the sender."))
             parcel._ocd_express_notify("returned")
         express.ocd_express_sender_id._ocd_express_check_returns()
+
+    # === AT A RELAY POINT (chantier 10) === #
+
+    def _ocd_relay_lost_value(self):
+        """Override of `ocd_live_shop`: the value declared for a parcel of OCD Express, at most the
+        amount of the settings (what OCD pays back to the sender)."""
+        if self.ocd_express:
+            limit = self.company_id.ocd_express_lost_max
+            return min(self.ocd_express_value, limit) if limit else self.ocd_express_value
+        return super()._ocd_relay_lost_value()
+
+    def _ocd_relay_lost_paid_back(self, value):
+        """Override of `ocd_live_shop`: OCD pays the value declared back to the sender, at most
+        the amount of the settings."""
+        if not self.ocd_express:
+            return super()._ocd_relay_lost_paid_back(value)
+        self.action_ocd_express_lost(amount=value, note=self.env._("lost at the relay point %s", self.ocd_relay_id.name))
+        return True
+
+    def _ocd_express_relay_points(self):
+        """The relay points the customer may choose for the parcel (its city, the ones of its
+        district first), while the courier has not left."""
+        self.ensure_one()
+        if not self.ocd_express or self.ocd_stage not in ("to_prepare", "ready", "picked", "problem"):
+            return self.env["ocd.vendor.place"]
+        city = self.partner_id.city_id or self.partner_id.district_id.city_id
+        if city not in self.company_id.ocd_express_city_ids:
+            return self.env["ocd.vendor.place"]
+        return self.env["ocd.vendor.place"]._ocd_relay_points(city, self.partner_id.district_id, self.company_id)
+
+    def _ocd_express_to_relay(self, relay):
+        """The customer picks the parcel up at `relay` (« Not there? »): the price of the relay
+        points; their delivery costs less when they pay it."""
+        self.ensure_one()
+        if relay not in self._ocd_express_relay_points():
+            raise UserError(self.env._("This relay point does not take new parcels now: choose another one."))
+        rate, fee = self._ocd_express_relay_rate(self.ocd_express_sender_id, relay)
+        if self.ocd_stage == "problem":
+            self.action_ocd_retry()
+        cod = self.ocd_goods_amount + (fee if self.ocd_express_fee_by == "customer" else 0.0)
+        self.sudo().write({
+            "ocd_relay_id": relay.id, "ocd_rate_id": rate.id, "ocd_express_fee": fee,
+            "ocd_cod_state": "to_collect" if self.company_id.currency_id.compare_amounts(cod, 0.0) > 0 else "none",
+        })
+        self.message_post(body=self.env._("The customer picks it up at the relay point %s.", relay.name))
+        return True
 
     # === MONEY OF THE SENDER === #
 

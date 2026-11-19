@@ -18,12 +18,13 @@ STAGES = [
     ("ready", "Ready"),
     ("picked", "Picked up"),
     ("on_the_way", "On the way"),
+    ("at_relay", "At the relay point"),
     ("delivered", "Delivered"),
     ("problem", "Problem"),
     ("returned", "Returned"),
     ("cancelled", "Cancelled"),
 ]
-OPEN_STAGES = ("to_prepare", "ready", "picked", "on_the_way", "problem")
+OPEN_STAGES = ("to_prepare", "ready", "picked", "on_the_way", "at_relay", "problem")
 PROBLEM_REASONS = [
     ("unreachable", "Customer unreachable"),
     ("absent", "Customer absent"),
@@ -279,6 +280,8 @@ class StockPicking(models.Model):
                 mode, courier, note = picking._ocd_parcel_from_zones()
             # Picked up by the customer in a store (chantier 20): the vendor hands it over there
             collect = bool(line) and line.operator == "store" and bool(line.pickup_place_id)
+            # Picked up at a relay point (chantier 10): an OCD courier takes the parcel there
+            relay = line.relay_place_id if line and line.operator == "relay" else self.env["ocd.vendor.place"]
             picking.write({
                 "ocd_is_parcel": True,
                 "ocd_delivery_mode": mode,
@@ -292,6 +295,7 @@ class StockPicking(models.Model):
                 "ocd_cod_state": "none" if picking.sale_id._ocd_is_paid_online() else "to_collect",
                 "ocd_rate_id": line.rate_id.id if line else False,
                 "ocd_by_agency": bool(line) and line.operator == "agency",
+                "ocd_relay_id": relay.id,
             })
             if note:
                 picking.message_post(body=note)
@@ -307,6 +311,11 @@ class StockPicking(models.Model):
         if line.operator == "vendor" and vendor:
             return "vendor", vendor, False
         mode = "stock" if not vendor or vendor.ocd_delivery_mode == "stock" else "pickup"
+        if line.operator == "relay" and line.relay_place_id:
+            # The courier of the district of the relay point takes it there, with its other parcels
+            relay = line.relay_place_id
+            courier = Partner._ocd_find_courier(relay.district_id)
+            return mode, courier, self.env._("Picked up by the customer at the relay point %s.", relay.name)
         if line.operator == "agency":
             # An OCD courier of the district of departure takes the parcel to the travel agency
             origin_district = self.env["res.city.district"]
@@ -435,8 +444,12 @@ class StockPicking(models.Model):
         """Check the code given by the customer. Return a tuple (delivered, attempts left). A
         parcel picked up at the store is handed over once ready, and paid."""
         self.ensure_one()
-        self._ocd_check_stage(("on_the_way", "ready") if self.ocd_collect else ("on_the_way",))
-        if self.ocd_collect and self.ocd_cod_state == "to_collect":
+        if self.ocd_relay_id:
+            # At a relay point: handed over there only (chantier 10)
+            self._ocd_check_stage(("at_relay",))
+        else:
+            self._ocd_check_stage(("on_the_way", "ready") if self.ocd_collect else ("on_the_way",))
+        if (self.ocd_collect or self.ocd_relay_id) and self.ocd_cod_state == "to_collect":
             raise UserError(self.env._("Collect the payment first, then type the code of the customer."))
         if self.ocd_code_locked:
             raise UserError(self.env._("This parcel is locked after too many wrong codes. Call the team."))
@@ -619,6 +632,9 @@ class StockPicking(models.Model):
         self.ensure_one()
         company = self.company_id
         methods = []
+        if self.ocd_relay_id:
+            # A relay point keeps no money: paid on the phone of the customer at the counter
+            return ["online"] if company.ocd_cod_online else methods
         if collector and collector == self.ocd_vendor_id and not self.ocd_vendor_id.ocd_vendor_collects:
             return methods
         if company.ocd_cod_cash:

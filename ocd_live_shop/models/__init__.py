@@ -47,3 +47,5 @@ from . import ocd_live_couriers
 from . import ocd_live_settings
 from . import ocd_automation
 from . import vendor_figures
+from . import relay_point
+from . import relay_settings

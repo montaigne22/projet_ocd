@@ -41,6 +41,25 @@
             ]"/>
         </record>
 
+        <!-- The parcel waits at a relay point (chantier 10): told when the relay point counted it, then the reminder -->
+        <record id="template_express_relay" model="whatsapp.template">
+            <field name="name">OCD Express: parcel at the relay point</field>
+            <field name="template_name">ocd_express_point_relais</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, ton colis de {{2}} t'attend au point relais {{3}}, quartier {{4}}, jusqu'au {{5}}. Touche « Voir mon colis » pour savoir comment le retirer et voir l'itinéraire.</field>
+            <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Voir mon colis', 'url': '{base_url}/{{1}}', 'url_example': 'express/suivi/42/AbC123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ (object.partner_id.name or \'\').split(\' \')[0] }}', 'sample_value': 'Grâce'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.ocd_express_sender_id.name }}', 'sample_value': 'Mode Afi'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_relay_id.name }}', 'sample_value': 'Chez Mama Ngo'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.ocd_relay_id.district_id.name or object.ocd_relay_id.city_id.name }}', 'sample_value': 'Akwa'}),
+                (0, 0, {'sequence': 5, 'value': '{{ object._ocd_relay_deadline_text(\'fr_FR\') }}', 'sample_value': 'mardi 1 décembre à 20:00'}),
+            ]"/>
+        </record>
+
         <!-- The parcels the courier took at the sender: a courier who is not the one of the message is reported -->
         <record id="template_express_picked" model="whatsapp.template">
             <field name="name">OCD Express: parcels picked up</field>

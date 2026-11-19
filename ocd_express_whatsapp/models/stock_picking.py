@@ -34,8 +34,18 @@ class StockPicking(models.Model):
         message, with their page (the code is on it, never in the message)."""
         express = self.filtered("ocd_express")
         super(StockPicking, self - express)._ocd_send_code()
-        for parcel in express.filtered(lambda p: not p.partner_id.ocd_express_optout):
+        # At a relay point: the customer is told when the relay point has counted the parcel
+        for parcel in express.filtered(lambda p: not p.partner_id.ocd_express_optout and not p.ocd_relay_id):
             self.env["res.partner"]._ocd_whatsapp_send("ocd_express_whatsapp.template_express_on_the_way", parcel)
+
+    def _ocd_relay_notify(self, event):
+        """Override of `ocd_live_shop_whatsapp`: the customer of OCD Express hears about the relay
+        point from the number of OCD Express, with their page."""
+        express = self.filtered("ocd_express")
+        super(StockPicking, self - express)._ocd_relay_notify(event)
+        if event in ("relay_arrived", "relay_reminder"):
+            for parcel in express.filtered(lambda p: not p.partner_id.ocd_express_optout):
+                self.env["res.partner"]._ocd_whatsapp_send("ocd_express_whatsapp.template_express_relay", parcel)
 
     def _ocd_notify_customer(self, event):
         """Override of `ocd_live_shop_whatsapp`: nothing else goes to the customer of OCD Express."""

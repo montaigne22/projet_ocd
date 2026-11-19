@@ -352,7 +352,7 @@ Mise en route (avant d'inviter les premiers expéditeurs) :
    capacité, délais, **point OCD** (adresse du studio) et **Mobile Money d'OCD** (où un expéditeur envoie ce
    qu'il doit, avec la référence `EXD-<numéro>` de sa page).
 5. **WhatsApp** : un numéro à part pour OCD Express (WhatsApp › Comptes : un second compte), choisi dans le
-   champ « Compte » des 12 modèles d'OCD Express (6 en français, 6 en anglais), puis « Soumettre à Meta ».
+   champ « Compte » des 14 modèles d'OCD Express (7 en français, 7 en anglais), puis « Soumettre à Meta ».
 6. **Inviter** : un expéditeur demande sur `/express/demande` ; l'équipe ouvre son compte dans « À
    vérifier » (colonne OCD Express) ou sur sa fiche (onglet OCD Express).
 
@@ -386,6 +386,54 @@ capacité), `res_partner.py` (l'expéditeur, son solde, ses retours), `ocd_payou
 `_ocd_cash_remitted`, `_ocd_prepare_domain`, `_ocd_payable_moves`, `_ocd_may_pay`, `_ocd_after_paid`,
 `_tour_step_list` (une étape avec son propre gabarit) ; dans `ocd_live`, `_login_pages` (les pages de
 connexion de tous les modules réunies).
+
+## Points relais (chantier 10, dans `ocd_live_shop`)
+
+Un point relais est un **lieu** (`ocd.vendor.place`) avec `relay` coché : une boutique partenaire, tenue
+par un contact « Tient un point relais » (`ocd_is_relay`), ou le magasin vérifié d'un vendeur (A.6).
+Décisions dans [`DECISIONS.md`](DECISIONS.md), Shop et livraisons.
+
+Mise en route :
+
+1. **OCD Live › Livraisons › Tarifs de livraison** : un tarif « **Point relais** » par ville (ville de
+   départ et villes servies, 500 F à Douala). Sans lui, les points relais de la ville ne sont pas proposés.
+2. **OCD Live › Paramètres › Points relais** : allumer, gain par colis remis (150 F), jours de garde (7) et
+   rappel (2 jours avant), places par défaut (25), magasins des vendeurs, pause après (2 colis perdus).
+   La section dit combien de points relais sont ouverts, à visiter, et les tarifs « point relais ».
+3. **Les points relais** : une boutique demande sur `/points-relais` (elle arrive dans « À vérifier »,
+   colonne Points relais : l'équipe la visite, puis l'ouvre) ; ou l'équipe la crée dans OCD Live ›
+   Livraisons › **Points relais** (le contact qui la tient, son téléphone et son Mobile Money pour les
+   versements du mois, le quartier, les horaires, les places). Un vendeur coche « Mon magasin est un point
+   relais » dans « Mes magasins » (magasin vérifié et ouvert au public).
+4. **WhatsApp** : soumettre `ocd_colis_point_relais`, `ocd_colis_rappel_relais`,
+   `ocd_colis_non_retire_relais`, `ocd_relais_arrivage` et, sur le numéro d'OCD Express,
+   `ocd_express_point_relais` (français et anglais).
+
+Le parcours d'un colis : à la livraison, le client choisit un point relais (`ocd_relay_id` sur la commande,
+puis sur chaque colis) ; le livreur le prend chez le vendeur, puis « Je pars au point relais » sur sa
+tournée (étape « Point relais » de `_tour_step_list`) ; le point relais compte les colis
+(`_ocd_relay_receive` : étape `at_relay`, jusqu'au `ocd_relay_deadline`, WhatsApp au client) et les remet
+contre le code (`_ocd_relay_hand_over`, ou le QR `OCD-<colis>-<code>` de la page du client), une fois payés
+(en ligne ou sur le téléphone du client au comptoir). La tâche « OCD Live : colis aux points relais »
+(`_cron_ocd_relay`, toutes les heures) relance et fait repartir les colis pas retirés
+(`ocd_relay_back`) jusqu'à « J'ai repris ces colis » du livreur.
+
+L'argent : un colis remis donne une facture d'achat au contact du point relais (`ocd_relay_kind` =
+`earning`, produit « Colis remis par un point relais ») ; un colis perdu (« Perdu au point relais » sur le
+colis, responsable d'OCD Live) donne un avoir (`loss`) et une activité de remboursement (OCD Express :
+l'expéditeur est remboursé comme un colis perdu par OCD). Les reversements du shop les réunissent, chaque
+mois pour un partenaire.
+
+Les pages : `/ocd/point-relais/connexion` (numéro et code WhatsApp, ou depuis Mon espace pour un vendeur),
+`/ocd/point-relais` (Mon point relais, `/conge`), `/ocd/point-relais/recevoir`, `/ocd/point-relais/remettre`
+(`?colis=<id>`) ; `/points-relais` ; le choix au paiement par `/ocd/livraison/tarif` (`relay_mode`,
+`relay_id`) et `/ocd/livraison` (`recevoir=relais`, `relais=<id>`) ; la tournée `/ocd/livrer/<jeton>/relais/<id>/partir`
+et `/repris` ; Express : `/express/suivi/<id>/<jeton>/relais`.
+
+Code : `ocd_live_shop/models/relay_point.py` (le lieu, le partenaire, la commande, le colis, les tarifs,
+les factures), `relay_settings.py` (la section des Paramètres), `controllers/relay_space.py` (Mon point
+relais, devenir point relais) ; dans `ocd_express`, `_ocd_express_relay_rate`, `_ocd_express_to_relay` et
+les overrides `_ocd_relay_lost_*` ; dans les modules WhatsApp, `_ocd_relay_notify`.
 
 ## Tests
 

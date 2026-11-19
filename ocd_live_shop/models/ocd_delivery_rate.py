@@ -18,7 +18,10 @@ OPERATORS = [
     ("courier", "An OCD courier delivers"),
     ("agency", "Sent through a travel agency"),
     ("store", "The customer picks it up at the store"),
+    ("relay", "The customer picks it up at a relay point"),
 ]
+# The operators of a rate: a relay point has its own rates of OCD Live (chantier 10)
+RATE_OPERATORS = [*OPERATORS[:3], OPERATORS[4]]
 
 
 class OcdDeliveryRate(models.Model):
@@ -41,7 +44,7 @@ class OcdDeliveryRate(models.Model):
         domain=[("ocd_is_vendor", "=", True)],
         help="Empty: a rate of OCD Live, for its couriers or for a travel agency.",
     )
-    operator = fields.Selection(selection=OPERATORS[:3], string="Who Delivers", required=True, default="courier")
+    operator = fields.Selection(selection=RATE_OPERATORS, string="Who Delivers", required=True, default="courier")
     origin_country_id = fields.Many2one(
         comodel_name="res.country",
         string="From Country",
@@ -289,7 +292,8 @@ class OcdDeliveryRate(models.Model):
            which are in the OCD stock, use the rates of OCD Live from their city.
         """
         own_rates = rates.filtered(lambda r: r.vendor_id and r.vendor_id == vendor)
-        ocd_rates = rates.filtered(lambda r: not r.vendor_id)
+        # The rates of the relay points price a parcel picked up at a relay point only
+        ocd_rates = rates.filtered(lambda r: not r.vendor_id and r.operator != "relay")
         mode = (vendor.ocd_delivery_mode or company.ocd_default_delivery_mode) if vendor else "stock"
         if vendor and mode == "vendor":
             rate = own_rates._ocd_best(partner)

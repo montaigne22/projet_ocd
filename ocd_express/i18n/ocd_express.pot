@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-18 18:44+0000\n"
-"PO-Revision-Date: 2026-11-18 18:44+0000\n"
+"POT-Creation-Date: 2026-11-19 04:20+0000\n"
+"PO-Revision-Date: 2026-11-19 04:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -219,11 +219,6 @@ msgid "<small class=\"o_ocd_ex_muted\">Give it only when you have the parcel in 
 msgstr ""
 
 #. module: ocd_express
-#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
-msgid "<small class=\"o_ocd_ex_muted\">In cash to the courier, or on your phone (Mobile Money): the courier shows you the payment. Never on the personal number of the courier.</small>"
-msgstr ""
-
-#. module: ocd_express
 #: model_terms:ir.ui.view,arch_db:ocd_express.landing_page
 msgid "<small class=\"o_ocd_ex_muted\">No subscription, no shop on OCD Live needed: you log in with your WhatsApp number, like the vendors of OCD Live. With OCD Business, the delivery costs less.</small>"
 msgstr ""
@@ -251,6 +246,11 @@ msgstr ""
 #. module: ocd_express
 #: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
 msgid "<small class=\"o_ocd_ex_muted\">What OCD pays you back if it loses it.</small>"
+msgstr ""
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "<small class=\"o_ocd_ex_muted\">You come when you want, with your code. Paid on your phone at the counter, never in cash.</small>"
 msgstr ""
 
 #. module: ocd_express
@@ -402,11 +402,6 @@ msgstr ""
 #. module: ocd_express
 #: model_terms:ir.ui.view,arch_db:ocd_express.sender_parcel
 msgid "<span>They confirm they are there or choose another time. When the parcel leaves, they receive their page, with the delivery code.</span>"
-msgstr ""
-
-#. module: ocd_express
-#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
-msgid "<span>To pay at the door</span>"
 msgstr ""
 
 #. module: ocd_express
@@ -627,9 +622,26 @@ msgid "Asked"
 msgstr ""
 
 #. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.sender_form
+msgid "At a relay point (cheaper): your customer picks it up"
+msgstr ""
+
+#. module: ocd_express
 #. odoo-python
 #: code:addons/ocd_express/controllers/sender.py:0
 msgid "At most %s per parcel; above, the team checks it first."
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "At the relay point"
+msgstr ""
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "At the relay point: on your phone with Mobile Money, never in cash. Your code is accepted once the payment is confirmed."
 msgstr ""
 
 #. module: ocd_express
@@ -671,6 +683,7 @@ msgstr ""
 
 #. module: ocd_express
 #: model_terms:ir.ui.view,arch_db:ocd_express.tour_pickup
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
 msgid "Call"
 msgstr ""
 
@@ -1064,6 +1077,12 @@ msgstr ""
 
 #. module: ocd_express
 #. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Delivery at a relay point: %s instead of %s"
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
 #: code:addons/ocd_express/controllers/sender.py:0
 msgid "Delivery in %s"
 msgstr ""
@@ -1373,6 +1392,11 @@ msgid "In The Parcel"
 msgstr ""
 
 #. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "In cash to the courier, or on your phone (Mobile Money): the courier shows you the payment. Never on the personal number of the courier."
+msgstr ""
+
+#. module: ocd_express
 #. odoo-python
 #: code:addons/ocd_express/controllers/sender.py:0
 msgid "In progress · %s"
@@ -1402,6 +1426,11 @@ msgstr ""
 #. module: ocd_express
 #: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__message_is_follower
 msgid "Is Follower"
+msgstr ""
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Itinerary"
 msgstr ""
 
 #. module: ocd_express
@@ -1697,6 +1726,12 @@ msgid "No payout yet."
 msgstr ""
 
 #. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "No price of the relay points from your city yet: choose a delivery at the door."
+msgstr ""
+
+#. module: ocd_express
 #: model:ir.model.fields,field_description:ocd_express.field_stock_picking__ocd_express_not_taken
 msgid "Not Taken At The Pick-Up"
 msgstr ""
@@ -1741,6 +1776,11 @@ msgid "Not there?"
 msgstr ""
 
 #. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Not there? I pick it up at a relay point"
+msgstr ""
+
+#. module: ocd_express
 #: model:ir.model.fields,field_description:ocd_express.field_ocd_express_pickup__note
 msgid "Note"
 msgstr ""
@@ -1767,6 +1807,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_express/controllers/tracking.py:0
 msgid "Noted: you will receive no more message from OCD Express."
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Noted: your parcel waits for you at the relay point %s."
 msgstr ""
 
 #. module: ocd_express
@@ -1988,6 +2034,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_express/controllers/sender.py:0
 msgid "On its way to OCD: %s"
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "On its way to the relay point %s."
 msgstr ""
 
 #. module: ocd_express
@@ -2308,6 +2360,17 @@ msgid "Photo of the parcels closed"
 msgstr ""
 
 #. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Pick it up at this relay point"
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Pick it up before %s"
+msgstr ""
+
+#. module: ocd_express
 #. odoo-python
 #: code:addons/ocd_express/models/stock_picking.py:0
 msgid "Pick the parcel %s up first."
@@ -2514,6 +2577,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_express/controllers/sender.py:0
 msgid "Problems · %s"
+msgstr ""
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "QR code to show at the counter"
 msgstr ""
 
 #. module: ocd_express
@@ -2827,6 +2895,11 @@ msgid "Show an identity document to the team of OCD Live, then send the parcel a
 msgstr ""
 
 #. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Show this QR or give your code at the counter. Someone else may pick it up for you: give them your code."
+msgstr ""
+
+#. module: ocd_express
 #: model:ir.model.fields,field_description:ocd_express.field_res_partner__ocd_express_social
 #: model:ir.model.fields,field_description:ocd_express.field_res_users__ocd_express_social
 msgid "Social Networks"
@@ -2929,6 +3002,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_express/models/ocd_live_settings.py:0
 msgid "The customer pays on their phone, never in cash. 0: never."
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The customer picks it up at the relay point %s."
 msgstr ""
 
 #. module: ocd_express
@@ -3072,6 +3151,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_express/controllers/sender.py:0
 msgid "The prices in %s"
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "The relay point %s does not take new parcels now: choose another one."
 msgstr ""
 
 #. module: ocd_express
@@ -3252,6 +3337,12 @@ msgstr ""
 #. module: ocd_express
 #. odoo-python
 #: code:addons/ocd_express/models/stock_picking.py:0
+msgid "This relay point does not take new parcels now: choose another one."
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
 msgid "Tick that your customer agrees to receive the messages of OCD Express."
 msgstr ""
 
@@ -3332,6 +3423,16 @@ msgid "To give back"
 msgstr ""
 
 #. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "To pay at the door"
+msgstr ""
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "To pay at the relay point"
+msgstr ""
+
+#. module: ocd_express
 #. odoo-python
 #: code:addons/ocd_express/controllers/sender.py:0
 msgid "To pick up"
@@ -3383,8 +3484,20 @@ msgid "Vendor Payout"
 msgstr ""
 
 #. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "Waits for %(customer)s at %(relay)s until %(until)s."
+msgstr ""
+
+#. module: ocd_express
 #: model:ir.model.fields.selection,name:ocd_express.selection__stock_picking__ocd_express_money_state__waiting
 msgid "Waits for the money"
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/tracking.py:0
+msgid "Waits for you at the relay point %s."
 msgstr ""
 
 #. module: ocd_express
@@ -3591,6 +3704,11 @@ msgstr ""
 
 #. module: ocd_express
 #: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "You may open the parcel at the counter before paying."
+msgstr ""
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
 msgid "You may open the parcel in front of the courier before paying."
 msgstr ""
 
@@ -3652,6 +3770,11 @@ msgstr ""
 #. module: ocd_express
 #: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
 msgid "Your code appears here when the courier leaves to deliver."
+msgstr ""
+
+#. module: ocd_express
+#: model_terms:ir.ui.view,arch_db:ocd_express.tracking_page
+msgid "Your code appears here when the relay point has your parcel."
 msgstr ""
 
 #. module: ocd_express
@@ -3847,6 +3970,12 @@ msgstr ""
 
 #. module: ocd_express
 #. odoo-python
+#: code:addons/ocd_express/models/stock_picking.py:0
+msgid "lost at the relay point %s"
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
 #: code:addons/ocd_express/models/ocd_live_settings.py:0
 msgid "months"
 msgstr ""
@@ -3927,6 +4056,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/ocd_express/models/stock_picking.py:0
 msgid "refused by the team of OCD Live"
+msgstr ""
+
+#. module: ocd_express
+#. odoo-python
+#: code:addons/ocd_express/controllers/sender.py:0
+msgid "relay point %s"
 msgstr ""
 
 #. module: ocd_express

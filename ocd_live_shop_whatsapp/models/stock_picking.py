@@ -15,6 +15,12 @@ EVENT_TEMPLATES = {
     "collect_ready": "ocd_live_shop_whatsapp.template_parcel_collect_ready",
     "collect_reminder": "ocd_live_shop_whatsapp.template_parcel_collect_reminder",
     "collect_expired": "ocd_live_shop_whatsapp.template_parcel_collect_expired",
+    # Picked up at a relay point (chantier 10)
+    "relay_expired": "ocd_live_shop_whatsapp.template_parcel_relay_expired",
+}
+RELAY_TEMPLATES = {
+    "relay_arrived": "ocd_live_shop_whatsapp.template_parcel_relay_arrived",
+    "relay_reminder": "ocd_live_shop_whatsapp.template_parcel_relay_reminder",
 }
 
 
@@ -36,7 +42,9 @@ class StockPicking(models.Model):
     def _ocd_send_code(self):
         """Override of `ocd_live_shop` to send the code of the parcel to the customer."""
         super()._ocd_send_code()
-        self._ocd_send("ocd_live_shop_whatsapp.template_parcel_on_the_way")
+        # At a relay point: the customer is told when the relay point has counted the parcel
+        self.filtered(lambda picking: not picking.ocd_relay_id)._ocd_send(
+            "ocd_live_shop_whatsapp.template_parcel_on_the_way")
 
     def _ocd_remind_vendor(self):
         """Override of `ocd_live_shop` to remind the vendor on WhatsApp."""
@@ -47,6 +55,12 @@ class StockPicking(models.Model):
         super()._ocd_notify_customer(event)
         if event in EVENT_TEMPLATES:
             self._ocd_send(EVENT_TEMPLATES[event])
+
+    def _ocd_relay_notify(self, event):
+        """Override of `ocd_live_shop`: the parcel at the relay point, the reminder."""
+        super()._ocd_relay_notify(event)
+        if event in RELAY_TEMPLATES and self:
+            self._ocd_send(RELAY_TEMPLATES[event])
 
     def _ocd_whatsapp_keep(self, template):
         """The transfers to which the message of `template` still goes."""

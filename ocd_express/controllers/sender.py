@@ -26,7 +26,7 @@ SENDER_COOKIE = "ocd_express"
 HOME = "/express/envois"
 LOGIN = "/express/connexion"
 TABS = {"en_cours": "open", "livres": "done", "problemes": "problem", "retournes": "returned"}
-OPEN = ("to_prepare", "ready", "picked", "on_the_way")
+OPEN = ("to_prepare", "ready", "picked", "on_the_way", "at_relay")
 
 page_cache.PERSONAL_COOKIES.add(SENDER_COOKIE)
 
@@ -294,6 +294,7 @@ class OcdExpressSender(http.Controller):
             "ready": ("wait", env._("To pick up")),
             "picked": ("route", env._("Picked up")),
             "on_the_way": ("route", env._("On the way")),
+            "at_relay": ("route", env._("At the relay point")),
             "delivered": ("done", env._("Delivered · code checked")),
             "problem": ("bad", reasons.get(parcel.ocd_problem_reason) or env._("Problem")),
             "returned": ("bad", env._("Returned")),
@@ -305,6 +306,8 @@ class OcdExpressSender(http.Controller):
         css, label = self._status(parcel)
         customer = parcel.partner_id
         place = customer.district_id.name or customer.city_id.name or ""
+        if parcel.ocd_relay_id:
+            place = env._("relay point %s", parcel.ocd_relay_id.name)
         if parcel.ocd_cod_state == "none":
             amount = env._("already paid")
         elif parcel.ocd_stage == "delivered" and parcel.ocd_cod_collected_amount:
@@ -327,9 +330,14 @@ class OcdExpressSender(http.Controller):
             detail = env._("Give the courier your return code: %s", parcel._ocd_express_return_code())
         elif parcel.ocd_express_not_taken and parcel.ocd_stage == "ready":
             detail = env._("Not taken: %s", parcel.ocd_express_not_taken)
+        elif parcel.ocd_stage == "at_relay":
+            detail = env._("Waits for %(customer)s at %(relay)s until %(until)s.",
+                           customer=(customer.name or "").split(" ")[0], relay=parcel.ocd_relay_id.name,
+                           until=parcel._ocd_relay_deadline_text())
         steps = []
         order = ["created", "picked", "on_the_way", "delivered"]
-        reached = {"to_prepare": 0, "ready": 0, "picked": 1, "on_the_way": 2, "problem": 2, "delivered": 3}.get(
+        reached = {"to_prepare": 0, "ready": 0, "picked": 1, "on_the_way": 2, "at_relay": 2, "problem": 2,
+                   "delivered": 3}.get(
             parcel.ocd_stage, -1)
         labels = [env._("Created"), env._("Picked up"), env._("On the way"), env._("Delivered")]
         for index, _key in enumerate(order):
@@ -343,7 +351,7 @@ class OcdExpressSender(http.Controller):
             "line": " · ".join(part for part in (place, amount, (parcel.ocd_courier_id.name or "").split(" ")[0]
                                                   if parcel.ocd_stage in ("picked", "on_the_way") else "") if part),
             "detail": detail,
-            "steps": steps if parcel.ocd_stage in ("ready", "picked", "on_the_way") else [],
+            "steps": steps if parcel.ocd_stage in ("ready", "picked", "on_the_way", "at_relay") else [],
             "editable": parcel._ocd_express_editable(),
         }
 
@@ -422,7 +430,7 @@ class OcdExpressSender(http.Controller):
             today_label=env._("%s parcels", len(today)) if len(today) != 1 else env._("1 parcel"),
             today_line=env._("%(delivered)s delivered · %(route)s on the way",
                              delivered=len(delivered_today),
-                             route=len(today.filtered(lambda p: p.ocd_stage == "on_the_way"))),
+                             route=len(today.filtered(lambda p: p.ocd_stage in ("on_the_way", "at_relay")))),
             collected=money(collected),
             suspended=sender.ocd_express_state == "suspended",
         )
@@ -443,13 +451,14 @@ class OcdExpressSender(http.Controller):
                 "amount": int(parcel.ocd_goods_amount) if parcel.ocd_goods_amount else "",
                 "value": int(parcel.ocd_express_value) if parcel.ocd_express_value else "",
                 "fee_by": parcel.ocd_express_fee_by, "can_open": parcel.ocd_express_can_open,
-                "consent": True, "dropoff": parcel.ocd_express_dropoff,
+                "consent": True, "dropoff": parcel.ocd_express_dropoff, "relay_id": parcel.ocd_relay_id.id,
             }
         company = common.company()
         slot = company._ocd_express_plan()
         return {
             "values": values,
             "parcel": parcel,
+            "relays": self._relays(sender, parcel),
             "districts": self._districts(),
             "other_cities": self._other_cities(),
             "dial_rows": common.dial_rows(country),
@@ -471,6 +480,24 @@ class OcdExpressSender(http.Controller):
             "point_line": env._("OCD point: %s", company.ocd_express_point) if company.ocd_express_point else "",
         }
 
+    def _relays(self, sender, parcel=None):
+        """The relay points of the city of the sender, with their price (chantier 10)."""
+        company = common.company()
+        Picking = request.env["stock.picking"].sudo()
+        city = sender.city_id or sender.district_id.city_id or company.ocd_express_city_ids[:1]
+        rows = []
+        for relay in request.env["ocd.vendor.place"]._ocd_relay_points(city, company=company):
+            try:
+                _rate, fee = Picking._ocd_express_relay_rate(sender, relay)
+            except UserError:
+                continue
+            rows.append({"relay": relay, "fee": fee, "label": " · ".join(part for part in (
+                relay.name, relay.district_id.name, money(fee)) if part)})
+        if parcel and parcel.ocd_relay_id and parcel.ocd_relay_id not in [row["relay"] for row in rows]:
+            relay = parcel.ocd_relay_id
+            rows.append({"relay": relay, "fee": parcel.ocd_express_fee, "label": relay.name})
+        return rows
+
     def _local_fee(self, sender):
         company = common.company()
         Rate = request.env["ocd.delivery.rate"].sudo()
@@ -487,6 +514,9 @@ class OcdExpressSender(http.Controller):
         place = post.get("place") or ""
         district = District.browse(int(place[1:])).exists() if place.startswith("d") and place[1:].isdigit() else District
         city = City.browse(int(place[1:])).exists() if place.startswith("c") and place[1:].isdigit() else City
+        # At a relay point (chantier 10): « r<id> »
+        relay = env["ocd.vendor.place"].sudo().browse(int(place[1:])).exists() \
+            if place.startswith("r") and place[1:].isdigit() else env["ocd.vendor.place"]
 
         def amount(key):
             raw = (post.get(key) or "").replace(" ", "").replace(" ", "").replace(".", "").replace(",", "")
@@ -507,6 +537,8 @@ class OcdExpressSender(http.Controller):
             "city": city,
             "district_id": district.id,
             "city_id": city.id,
+            "relay": relay if relay.relay else env["ocd.vendor.place"],
+            "relay_id": relay.id,
             "landmark": common.clean_text(post.get("landmark"), 120),
             "content": common.clean_text(post.get("content"), 120),
             "prepaid": post.get("prepaid") == "1",

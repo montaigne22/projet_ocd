@@ -2,7 +2,7 @@
 
 Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 
-## Où en est le projet (18 novembre 2026)
+## Où en est le projet (19 novembre 2026)
 
 | Domaine | État |
 |---|---|
@@ -45,6 +45,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Programme et événements (chantier 7) et prix promo (3.1) : « Mettre en promo » dans Mes produits (prix barré = le plus bas des 14 derniers jours, jusqu'à une date, partout le même prix) ; le programme des lives des 7 prochains jours (guide télé sur ordinateur) ; les grands événements d'une soirée ou de plusieurs jours (Vendredi noir, Tabaski…) où les vendeurs invités participent avec un live et leurs promos, vérifiées par l'équipe, « Me prévenir sur WhatsApp » | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | Clips automatiques (chantier 8) : chaque produit montré dans un live devient un clip vertical de 30 secondes avec son lien court, à partager sur les statuts, TikTok et Reels ; la vidéo du live envoyée par l'équipe par morceaux, vérifiée ; « Mes clips » du vendeur, « Vu en live » sur la fiche produit et le replay, visites et ventes de chaque clip | ✅ fait, testé (2 modèles WhatsApp à faire approuver par Meta) |
 | OCD Express (chantier 9) : la livraison avec code pour tous les vendeurs des réseaux, sans boutique ; connexion par numéro, « Nouveau colis » (accord du client, montant ou valeur, qui paie la livraison, ouvrir avant de payer, ramassage ou point OCD), deux vagues et capacité, un passage de ramassage par expéditeur (photo, « pas pris », expéditeur absent), page de suivi du client (code, « Je confirme », « Pas là ? », position, souci 48 h, « Ce n'est pas pour moi »), retours rendus contre un code, « Mon argent » (versé le jour ouvré suivant une fois l'argent chez OCD, dettes plafonnées, nouveau numéro retenu 48 h), plafonds et vérifications dans « À vérifier », clients effacés après 6 mois ; manque de caisse des livreurs en dette | ✅ fait, testé (6 modèles WhatsApp à faire approuver par Meta, sur un numéro à part) |
+| Points relais (chantier 10) : « En point relais » à la livraison du shop (moins cher qu'à la porte, les points relais ouverts et pas pleins de la ville), la page du client (code et QR de retrait, jusqu'à quand, itinéraire, « livrez-la chez moi »), « Mon point relais » (connexion par numéro, colis gardés sur ses places, gains du mois, congé, recevoir en comptant chaque colis, remettre contre le code ou le QR, payé avant ou sur le téléphone du client, jamais en espèces), l'arrêt du livreur (déposer, reprendre les colis pas retirés), 7 jours puis retour, 150 F par colis remis versés chaque mois, colis perdu remboursé et retenu, pause après 2 pertes ; la page `/points-relais` pour devenir partenaire, le magasin vérifié d'un vendeur point relais (A.6) ; OCD Express au point relais (choisi par l'expéditeur ou par le client) ; back-office, « À vérifier », réglages | ✅ fait, testé (4 modèles WhatsApp à faire approuver par Meta, et 1 sur le numéro d'OCD Express) |
 | Paiement automatique dans l'UEMOA (chantier 5) : CinetPay (module `payment_cinetpay` : Mobile Money, Wave, carte ; UEMOA, Cameroun, Guinée, RD Congo) et Flutterwave (module d'Odoo) ; l'état lu chez CinetPay, revérifié toutes les 10 minutes ; le Mobile Money vérifié par l'équipe s'efface devant un Mobile Money automatique en production ; clés manquantes et mode test dits dans les Paramètres | ✅ fait, testé (clés des comptes à saisir) |
 | Tout le site sur tablette et ordinateur : la largeur de l'écran utilisée (listes en grilles, fiches en deux colonnes, parcours avec récapitulatif à droite, espaces avec leur menu à gauche) ; le téléphone inchangé | ✅ fait, testé |
 | Frais de livraison selon le vendeur : un prix par colis, de la ville du vendeur au quartier du client | ✅ fait, testé |
@@ -86,7 +87,8 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 1. **Tarifs à saisir par l'équipe avant l'ouverture**, pas à pas dans [`LIVRAISONS.md`](LIVRAISONS.md)
    (OCD Live › Livraisons › Tarifs de livraison) :
    livreurs OCD par ville, agences vers les autres villes et pays, bornes des prix des vendeurs, part
-   d'OCD sur les livraisons des vendeurs, ville du stock. Les modes de livraison sans prix ont donné des
+   d'OCD sur les livraisons des vendeurs, ville du stock, et un tarif « point relais » par ville où des
+   points relais ouvrent. Les modes de livraison sans prix ont donné des
    tarifs archivés : les compléter puis les activer. Sans tarif, le shop refuse l'adresse (jamais de
    livraison à un prix inconnu).
 2. **WhatsApp chez Meta** (équipe) : connecter le numéro d'OCD Live (WhatsApp › Comptes), puis soumettre
@@ -116,6 +118,10 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    `ocd_express_en_route`, `ocd_express_pris`, `ocd_express_etat`, `ocd_express_versement` et
    `ocd_express_numero` (français et anglais, Utilitaire) : le colis annoncé et en route au client, les
    colis pris, les nouvelles d'un colis, le versement fait et le numéro de versement changé à l'expéditeur.
+   **Avec les points relais**, aussi `ocd_colis_point_relais`, `ocd_colis_rappel_relais`,
+   `ocd_colis_non_retire_relais` et `ocd_relais_arrivage` (français et anglais, Utilitaire) : le colis qui
+   attend au point relais, le rappel avant la fin, le colis pas retiré (au client), les colis qui arrivent
+   (au point relais) ; et sur le numéro d'OCD Express, `ocd_express_point_relais` (français et anglais).
 3. **Paiement dans l'UEMOA** (équipe) : ouvrir les comptes CinetPay et Flutterwave (documents de
    l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
    pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
@@ -139,6 +145,56 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 19 novembre 2026 · Points relais (chantier 10)
+Maquette `PointsRelais` validée avec ses choix recommandés, codée dans `ocd_live_shop` (20.0.1.45.0),
+`ocd_live_shop_whatsapp` (20.0.1.29.0), `ocd_express` (20.0.1.2.0) et `ocd_express_whatsapp` (20.0.1.1.0).
+Un point relais est un **lieu** (`ocd.vendor.place`, la fiche des magasins) marqué « point relais » : une
+boutique partenaire tenue par un contact « tient un point relais », ou le magasin vérifié d'un vendeur.
+- **Le client** : à la livraison, « Livrée chez moi » ou « **En point relais** » (500 F au lieu de 1 000 F à
+  Douala, tarif « point relais » de la ville), les points relais de sa ville, ceux de son quartier
+  d'abord, ouverts, pas en congé et pas pleins ; seulement pour les colis portés par les livreurs OCD.
+  Sa page de suivi : le point relais, l'itinéraire, l'appeler, jusqu'à quand, le **code et le QR** à
+  montrer au comptoir, « Je ne pourrai pas y aller : livrez-la chez moi » (OCD Live sur WhatsApp).
+  WhatsApp quand le point relais a compté le colis, et 2 jours avant la fin (sans le code).
+- **Le point relais** (`/ocd/point-relais`, connexion par son numéro et un code WhatsApp, ou depuis son
+  espace pour un vendeur) : colis gardés sur ses places, gains du mois, « En congé », horaires ;
+  « Recevoir » (cocher chaque colis compté, refuser un colis abîmé qui reste au livreur comme problème) ;
+  « Remettre » (le QR du client lu par la caméra, ou le colis et son code ; à payer d'abord sur le
+  téléphone du client, QR de paiement au comptoir ; 3 codes faux bloquent le colis) ; « À rendre » au
+  livreur. Pas d'espèces : le point relais ne garde jamais l'argent des autres.
+- **Le livreur** : un arrêt par point relais dans sa tournée, « Je pars au point relais » (le point relais
+  est prévenu une fois), puis « J'ai repris ces colis » pour ceux pas retirés.
+- **L'argent** : 150 F par colis remis, une facture du point relais versée chaque mois avec les
+  reversements ; un colis perdu : OCD rembourse (le client par l'équipe, l'expéditeur Express au plus le
+  plafond des réglages) et un avoir le retient sur ses gains ; en pause pour l'équipe après 2 pertes.
+  Après 7 jours (jusqu'à la fermeture du dernier jour), le colis repart : remboursé s'il était payé en
+  ligne, rendu à l'expéditeur Express contre son code.
+- **Devenir point relais** : la page `/points-relais` (une demande dans « À vérifier », colonne Points
+  relais, ouverte par l'équipe après sa visite) ; dans « Mes magasins », « **Mon magasin est un point
+  relais** » pour un magasin vérifié ouvert au public (A.6, réglable).
+- **OCD Express** : l'expéditeur choisit « En point relais (moins cher) » dans le quartier de son client,
+  le client peut aussi le choisir sur sa page tant que le livreur n'est pas parti (« Pas là ? Je le
+  retire en point relais ») ; la page de suivi montre le point relais, le code et le QR une fois le colis
+  compté ; le message vient du numéro d'OCD Express.
+- **Back-office** : OCD Live › Livraisons › **Points relais** (colis gardés, à recevoir, à reprendre,
+  pertes, mettre en pause, « Perdu au point relais » sur le colis), « À vérifier », le dispatch et le
+  tableau de bord comptent les colis au point relais, Paramètres › **Points relais** (gain, jours, rappel,
+  places, magasins des vendeurs, pause après), trois automatisations.
+- Contrôlé dans le navigateur en français sur la démo (`ocd_base`) à 390, 820 et 1440 px, sans
+  débordement : l'étape de livraison (le choix et la liste), la page de suivi au point relais, Mon point
+  relais, Recevoir, Remettre, la tournée avec l'arrêt au point relais, `/points-relais`, et pour OCD
+  Express « Nouveau colis » (le point relais et son prix), Mes colis, la page du client au point relais
+  et le choix d'un point relais.
+- Tests : 14 nouveaux dans `ocd_live_shop` (le prix et qui peut y aller, de la livraison à la remise, un
+  colis refusé, le rappel puis le retour, plein, congé ou en pause, la perte et la pause, le versement
+  du mois, la demande, et les pages), 7 dans `ocd_express`, 1 dans `ocd_express_whatsapp` ; **la suite
+  complète** sur une base neuve : TESTS_COUNT.
+- **À mettre à jour sur un serveur** : `-u ocd_live_shop,ocd_live_shop_whatsapp,ocd_express,ocd_express_whatsapp`,
+  puis un tarif « point relais » par ville (Livraisons › Tarifs de livraison) et les premiers points
+  relais. **Modèles WhatsApp à soumettre à Meta** : `ocd_colis_point_relais`, `ocd_colis_rappel_relais`,
+  `ocd_colis_non_retire_relais`, `ocd_relais_arrivage` (français et anglais), et sur le numéro d'OCD
+  Express `ocd_express_point_relais` (français et anglais).
 
 ### 18 novembre 2026 · Points relais (chantier 10) : la maquette, à valider
 Pas de maquette pour ce chantier : proposée avant tout code, dans

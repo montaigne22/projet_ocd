@@ -17,18 +17,35 @@
                             </span>
                             <b t-if="when_line" t-out="when_line"/>
                             <div t-if="to_pay" class="o_ocd_ex_sum">
-                                <span><span>To pay at the door</span><b t-out="to_pay"/></span>
-                                <small class="o_ocd_ex_muted">In cash to the courier, or on your phone (Mobile Money): the courier shows you the payment. Never on the personal number of the courier.</small>
+                                <span><span t-if="relay">To pay at the relay point</span><span t-else="">To pay at the door</span><b t-out="to_pay"/></span>
+                                <small t-if="relay" class="o_ocd_ex_muted">At the relay point: on your phone with Mobile Money, never in cash. Your code is accepted once the payment is confirmed.</small>
+                                <small t-else="" class="o_ocd_ex_muted">In cash to the courier, or on your phone (Mobile Money): the courier shows you the payment. Never on the personal number of the courier.</small>
                             </div>
                             <div t-elif="paid" class="o_ocd_ok" role="status"><b>Paid. Thank you!</b></div>
                             <div t-if="claim_state" class="o_ocd_info" role="status" t-out="claim_state"/>
                             <a t-if="pay_url" t-att-href="pay_url" class="o_ocd_button o_ocd_button_dark">Pay on my phone</a>
-                            <small t-if="parcel.ocd_express_can_open and parcel.ocd_stage not in ('delivered', 'returned', 'cancelled')">You may open the parcel in front of the courier before paying.</small>
+                            <t t-if="parcel.ocd_express_can_open and parcel.ocd_stage not in ('delivered', 'returned', 'cancelled')">
+                                <small t-if="relay">You may open the parcel at the counter before paying.</small>
+                                <small t-else="">You may open the parcel in front of the courier before paying.</small>
+                            </t>
+                            <!-- At a relay point (chantier 10): where, until when, the QR to show -->
+                            <div t-if="relay" class="o_ocd_ex_relay">
+                                <b t-out="relay['name']"/>
+                                <small t-out="relay['line']"/>
+                                <strong t-if="relay['deadline']" t-out="relay['deadline']"/>
+                                <img t-if="relay['qr']" t-att-src="relay['qr']" class="o_ocd_ex_relay_qr" alt="QR code to show at the counter"/>
+                                <small t-if="relay['qr']" class="o_ocd_ex_muted">Show this QR or give your code at the counter. Someone else may pick it up for you: give them your code.</small>
+                                <div class="o_ocd_ex_buttons">
+                                    <a t-att-href="relay['directions']" target="_blank" rel="noopener" class="o_ocd_button">Itinerary</a>
+                                    <a t-if="relay['phone']" t-attf-href="tel:+#{relay['phone']}" class="o_ocd_button">Call</a>
+                                </div>
+                            </div>
                             <t t-if="code">
                                 <span class="o_ocd_label">Your code for this parcel</span>
                                 <span class="o_ocd_ex_code" t-out="code"/>
                                 <small class="o_ocd_ex_muted">Give it only when you have the parcel in your hands and you paid.</small>
                             </t>
+                            <small t-elif="can_answer and relay" class="o_ocd_ex_muted">Your code appears here when the relay point has your parcel.</small>
                             <small t-elif="can_answer" class="o_ocd_ex_muted">Your code appears here when the courier leaves to deliver.</small>
                         </div>
                         <div class="o_ocd_ex_col">
@@ -38,7 +55,7 @@
                             </form>
                             <div class="o_ocd_ex_buttons">
                                 <a t-if="call_label" t-attf-href="tel:+#{courier_phone}" class="o_ocd_button o_ocd_button_dark" t-out="call_label"/>
-                                <form t-if="can_answer" t-attf-action="#{base}/position" method="post" class="o_ocd_ex_position">
+                                <form t-if="can_answer and not relay" t-attf-action="#{base}/position" method="post" class="o_ocd_ex_position">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                     <input type="hidden" name="latitude"/>
                                     <input type="hidden" name="longitude"/>
@@ -56,6 +73,20 @@
                                     </label>
                                     <small class="o_ocd_ex_muted">Someone else may receive it for you: give them your code.</small>
                                     <button type="submit" class="o_ocd_button o_ocd_button_dark">Choose this time</button>
+                                </form>
+                            </details>
+                            <details t-if="relays" class="o_ocd_ex_rules">
+                                <summary>Not there? I pick it up at a relay point</summary>
+                                <form t-attf-action="#{base}/relais" method="post" class="o_ocd_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <label t-foreach="relays" t-as="row" class="o_ocd_ex_check">
+                                        <input type="radio" name="relay_id" t-att-value="row['id']" required="required"
+                                               t-att-checked="'checked' if row_first else None"/>
+                                        <span><b t-out="row['name']"/> · <t t-out="row['label']"/></span>
+                                    </label>
+                                    <small t-if="relay_fee" class="o_ocd_ex_muted" t-out="relay_fee"/>
+                                    <small class="o_ocd_ex_muted">You come when you want, with your code. Paid on your phone at the counter, never in cash.</small>
+                                    <button type="submit" class="o_ocd_button o_ocd_button_dark">Pick it up at this relay point</button>
                                 </form>
                             </details>
                             <details t-if="claim_open" class="o_ocd_ex_rules">

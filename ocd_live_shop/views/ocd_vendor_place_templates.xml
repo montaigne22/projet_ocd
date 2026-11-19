@@ -38,6 +38,22 @@
                             <small t-if="row['refusal']" class="o_ocd_error" t-out="row['refusal']"/>
                             <small t-if="row['place'].state == 'to_check' and row['place'].kind == 'store'" class="o_ocd_my_product_fact">The team checks it: it shows in your boutique then.</small>
                             <small t-if="row['hidden']" class="o_ocd_my_product_fact">Not shown to your customers: one place without OCD Business. Write to OCD Live.</small>
+                            <!-- A.6 of the plan (chantier 10): the store keeps the parcels of the other vendors -->
+                            <form t-if="row['relay_offer'] or row['place'].relay" t-attf-action="/ocd/espace/moi/magasins/#{row['place'].id}/relais"
+                                  method="post" class="o_ocd_place_relay">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <t t-if="row['place'].relay">
+                                    <span><span class="o_ocd_step_pill o_ocd_my_status_approved">Relay point</span> <small t-out="row['relay_line']"/></span>
+                                    <span class="o_ocd_place_relay_buttons">
+                                        <a href="/ocd/point-relais" class="o_ocd_button">My relay point</a>
+                                        <button name="relais" value="0" class="o_ocd_link">Stop being a relay point</button>
+                                    </span>
+                                </t>
+                                <t t-else="">
+                                    <small class="o_ocd_my_product_fact">My store is a relay point: it keeps the parcels of the customers of the other vendors, paid for each parcel handed over.</small>
+                                    <button name="relais" value="1" class="o_ocd_button">Make it a relay point</button>
+                                </t>
+                            </form>
                             <div class="o_ocd_place_actions">
                                 <a t-attf-href="/ocd/espace/moi/magasins/#{row['place'].id}" class="o_ocd_button">
                                     <t t-if="row['status'] == 'refused'">Correct and send again</t>

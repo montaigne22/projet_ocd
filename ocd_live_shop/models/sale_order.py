@@ -119,10 +119,12 @@ class SaleOrder(models.Model):
             groups[vendor] = groups.get(vendor, 0.0) + line.price_total
         return groups
 
-    def _ocd_delivery_quotes(self, partner=None, collect=None):
+    def _ocd_delivery_quotes(self, partner=None, collect=None, relay=None):
         """The delivery of each parcel of the order to `partner` (the delivery address by
         default), as `ocd.delivery.rate._ocd_quote` gives it; free for a parcel picked up in a
-        store (`collect`: {vendor: store} being chosen, else the stores chosen on the order)."""
+        store (`collect`: {vendor: store} being chosen, else the stores chosen on the order); at
+        the price of the relay points for an order picked up at a relay point (`relay` being
+        chosen, else the one of the order; chantier 10)."""
         self.ensure_one()
         partner = partner if partner is not None else self.partner_shipping_id
         Rate = self.env["ocd.delivery.rate"]
@@ -133,6 +135,13 @@ class SaleOrder(models.Model):
         for line in self.order_line.filtered(lambda l: not l.is_delivery and not l.display_type and l.product_id):
             pieces = quantities.setdefault(line.ocd_vendor_id, {})
             pieces[line.product_id] = pieces.get(line.product_id, 0) + line.product_uom_qty
+        relay = self.ocd_relay_id if relay is None else relay
+        if relay:
+            return [
+                Rate._ocd_relay_quote(vendor, relay, amount, self.currency_id, self.company_id, date=date,
+                                      rates=rates, quantities=quantities.get(vendor))
+                for vendor, amount in self._ocd_delivery_groups().items()
+            ]
         quotes = []
         for vendor, amount in self._ocd_delivery_groups().items():
             if collect is not None:
@@ -168,6 +177,7 @@ class SaleOrder(models.Model):
                 "allow_cod": quote["allow_cod"],
                 "description": quote["description"] or False,
                 "pickup_place_id": quote["place"].id if quote.get("place") else False,
+                "relay_place_id": quote["relay"].id if quote.get("relay") else False,
             } for quote in quotes])
 
     def set_delivery_line(self, carrier, amount):

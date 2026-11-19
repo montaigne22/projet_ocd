@@ -476,5 +476,73 @@
             ]"/>
         </record>
 
+        <!-- Relay points (chantier 10): the parcel at the relay point, the reminder, the parcel gone
+             back (to the customer); the parcels the courier brings (to the relay point). The code
+             is never in the message: the button opens the page with the code and the itinerary -->
+        <record id="template_parcel_relay_arrived" model="whatsapp.template">
+            <field name="name">OCD Live: parcel at the relay point</field>
+            <field name="template_name">ocd_colis_point_relais</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} vous attend au point relais {{3}}, quartier {{4}}, jusqu'au {{5}}. Touchez « Ma commande » pour savoir comment la retirer et voir l'itinéraire.</field>
+            <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Ma commande', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin or object.name }}', 'sample_value': 'S00042'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_relay_id.name }}', 'sample_value': 'Chez Mama Ngo'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object.ocd_relay_id.district_id.name or object.ocd_relay_id.city_id.name }}', 'sample_value': 'Akwa'}),
+                (0, 0, {'sequence': 5, 'value': '{{ object._ocd_relay_deadline_text(\'fr_FR\') }}', 'sample_value': 'mardi 1 décembre à 20:00'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_relay_reminder" model="whatsapp.template">
+            <field name="name">OCD Live: parcel to pick up at the relay point before the end</field>
+            <field name="template_name">ocd_colis_rappel_relais</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} vous attend encore au point relais {{3}} jusqu'au {{4}}. Passé ce délai, elle repart chez le vendeur. Touchez « Ma commande » pour voir l'itinéraire.</field>
+            <field name="button_url_value">{{ object._ocd_tracking_path() }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Ma commande', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/suivi/12?access_token=abc123'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin or object.name }}', 'sample_value': 'S00042'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_relay_id.name }}', 'sample_value': 'Chez Mama Ngo'}),
+                (0, 0, {'sequence': 4, 'value': '{{ object._ocd_relay_deadline_text(\'fr_FR\') }}', 'sample_value': 'mardi 1 décembre à 20:00'}),
+            ]"/>
+        </record>
+
+        <record id="template_parcel_relay_expired" model="whatsapp.template">
+            <field name="name">OCD Live: parcel not picked up at the relay point</field>
+            <field name="template_name">ocd_colis_non_retire_relais</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="partner_field">partner_id</field>
+            <field name="body">Bonjour {{1}}, votre commande {{2}} n'a pas été retirée à temps au point relais {{3}} : elle repart chez le vendeur. Si vous l'aviez payée en ligne, l'équipe OCD Live vous rembourse.</field>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ object.partner_id.name }}', 'sample_value': 'Estelle'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.sale_id.name or object.origin or object.name }}', 'sample_value': 'S00042'}),
+                (0, 0, {'sequence': 3, 'value': '{{ object.ocd_relay_id.name }}', 'sample_value': 'Chez Mama Ngo'}),
+            ]"/>
+        </record>
+
+        <record id="template_relay_incoming" model="whatsapp.template">
+            <field name="name">OCD Live: parcels coming to the relay point</field>
+            <field name="template_name">ocd_relais_arrivage</field>
+            <field name="lang_code">fr</field>
+            <field name="model_id" ref="ocd_live_shop.model_ocd_vendor_place"/>
+            <field name="partner_field">vendor_id</field>
+            <field name="body">Bonjour, {{1}} colis arrivent à votre point relais {{2}} avec {{3}}, livreur OCD. Touchez « Mon point relais » pour les compter à leur arrivée.</field>
+            <field name="button_url_value">{{ 'ocd/point-relais' }}</field>
+            <field name="button_ids" eval="[(0, 0, {'button_type': 'url', 'name': 'Mon point relais', 'url': '{base_url}/{{1}}', 'url_example': 'ocd/point-relais'})]"/>
+            <field name="variable_ids" eval="[
+                (0, 0, {'sequence': 1, 'value': '{{ ctx.get(\'ocd_relay_count\') or object._ocd_relay_incoming_count() }}', 'sample_value': '6'}),
+                (0, 0, {'sequence': 2, 'value': '{{ object.name }}', 'sample_value': 'Chez Mama Ngo'}),
+                (0, 0, {'sequence': 3, 'value': '{{ ctx.get(\'ocd_relay_courier\') or \'Junior\' }}', 'sample_value': 'Junior'}),
+            ]"/>
+        </record>
+
     </data>
 </odoo>

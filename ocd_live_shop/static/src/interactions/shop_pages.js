@@ -371,7 +371,55 @@ export class OcdDeliveryForm extends Interaction {
         ".o_ocd_delivery_country": { "t-on-change": this.changeCountry },
         ".o_ocd_collect_mode": { "t-on-change": this.changeCollect },
         ".o_ocd_collect_place": { "t-on-change": () => this.refresh(false) },
+        ".o_ocd_relay_mode": { "t-on-change": this.changeRelay },
+        ".o_ocd_relay_list": { "t-on-change": () => this.refresh(false) },
     };
+
+    changeRelay(ev) {
+        // At a relay point: the list of the relay points, no address nor store to choose
+        const on = ev.currentTarget.value === "relais";
+        this.el.querySelector(".o_ocd_relay_points").hidden = !on;
+        this.el.classList.toggle("o_ocd_relay_on", on);
+        this.refresh(false);
+    }
+
+    relayChoice() {
+        const mode = this.el.querySelector(".o_ocd_relay_mode:checked");
+        const place = this.el.querySelector(".o_ocd_relay_place:checked");
+        return { mode: mode ? mode.value : "livraison", id: place ? parseInt(place.value) : 0 };
+    }
+
+    renderRelay(relay, relayOn) {
+        // The relay points of the city chosen; the choice kept when it is still there
+        const box = this.el.querySelector(".o_ocd_relay_choice");
+        if (!box) {
+            return;
+        }
+        box.hidden = !relay.offered;
+        box.querySelector(".o_ocd_relay_fee").textContent = relay.fee || "";
+        box.querySelector(".o_ocd_relay_home_fee").textContent = relay.home_fee || "";
+        box.querySelector(".o_ocd_relay_home_note").textContent = relay.home_note || "";
+        const list = box.querySelector(".o_ocd_relay_list");
+        const chosen = this.relayChoice().id;
+        list.replaceChildren(...(relay.rows || []).map((row) => {
+            const label = document.createElement("label");
+            label.className = "o_ocd_collect_opt o_ocd_collect_store";
+            const input = Object.assign(document.createElement("input"), {
+                type: "radio", name: "relais", value: row.id, className: "o_ocd_relay_place",
+                checked: row.id === chosen || row.checked,
+            });
+            const text = document.createElement("span");
+            text.className = "o_ocd_collect_text";
+            const name = document.createElement("b");
+            name.textContent = row.name;
+            const line = document.createElement("small");
+            line.textContent = row.line;
+            text.append(name, line);
+            label.append(input, text);
+            return label;
+        }));
+        this.el.classList.toggle("o_ocd_relay_on", !!(relay.offered && relayOn));
+    }
 
     changeCollect(ev) {
         const block = ev.currentTarget.closest(".o_ocd_collect");
@@ -385,7 +433,7 @@ export class OcdDeliveryForm extends Interaction {
     collectChoice() {
         // {vendor id: store id, 0 when delivered}
         const choice = {};
-        for (const block of this.el.querySelectorAll(".o_ocd_collect")) {
+        for (const block of this.el.querySelectorAll(".o_ocd_collect[data-vendor-id]")) {
             const mode = block.querySelector(".o_ocd_collect_mode:checked");
             const store = block.querySelector(".o_ocd_collect_place:checked");
             choice[block.dataset.vendorId] = mode && mode.value === "retrait" && store ? parseInt(store.value) : 0;
@@ -415,6 +463,8 @@ export class OcdDeliveryForm extends Interaction {
                 city_id: parseInt(city.value) || false,
                 district_id: cityChanged ? false : parseInt(district.value) || false,
                 collect: this.collectChoice(),
+                relay_mode: this.relayChoice().mode,
+                relay_id: this.relayChoice().id,
             }));
         } catch {
             return; // Network hiccup: the price is checked again when the form is sent
@@ -429,12 +479,15 @@ export class OcdDeliveryForm extends Interaction {
             district.classList.toggle("d-none", none);
             this.el.querySelector(".o_ocd_delivery_no_district").classList.toggle("d-none", !none);
         }
-        for (const block of this.el.querySelectorAll(".o_ocd_collect")) {
+        for (const block of this.el.querySelectorAll(".o_ocd_collect[data-vendor-id]")) {
             const home = (result.home || {})[block.dataset.vendorId] || {};
             block.querySelector(".o_ocd_collect_home_fee").textContent = home.home_fee || "";
             block.querySelector(".o_ocd_collect_home_note").textContent = home.home_note || "";
         }
         this.el.classList.toggle("o_ocd_collect_only", !!result.collect_only);
+        if (result.relay) {
+            this.renderRelay(result.relay, this.relayChoice().mode === "relais");
+        }
         const method = result.method;
         this.el.querySelector(".o_ocd_delivery_name").textContent = method ? method.name : "";
         this.el.querySelector(".o_ocd_delivery_note").textContent = method ? method.note : result.none;
@@ -1371,6 +1424,72 @@ export class OcdVariantsForm extends Interaction {
     }
 }
 
+/**
+ * A relay point hands a parcel over (chantier 10): the camera of the phone reads the QR of the
+ * customer (BarcodeDetector) and sends it; without a camera, the parcel is chosen and its code
+ * typed.
+ */
+export class OcdRelayScanner extends Interaction {
+    static selector = ".o_ocd_rl_scanner";
+    dynamicContent = {
+        ".o_ocd_rl_camera": { "t-on-click": this.startCamera },
+    };
+
+    start() {
+        const button = this.el.querySelector(".o_ocd_rl_camera");
+        if ("BarcodeDetector" in window && navigator.mediaDevices?.getUserMedia) {
+            button.hidden = false;
+        }
+    }
+
+    destroy() {
+        this.stopCamera();
+    }
+
+    async startCamera() {
+        const hint = this.el.querySelector(".o_ocd_rl_hint");
+        try {
+            this.detector = new window.BarcodeDetector({ formats: ["qr_code"] });
+            this.stream = await this.waitFor(navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" }, audio: false,
+            }));
+        } catch {
+            hint.textContent = hint.dataset.blocked;
+            return;
+        }
+        const video = this.el.querySelector(".o_ocd_rl_video");
+        video.srcObject = this.stream;
+        video.hidden = false;
+        await video.play();
+        this.el.querySelector(".o_ocd_rl_camera").hidden = true;
+        this.scanTimer = setInterval(() => this.detect(video), 350);
+    }
+
+    stopCamera() {
+        clearInterval(this.scanTimer);
+        this.stream?.getTracks().forEach((track) => track.stop());
+    }
+
+    async detect(video) {
+        if (this.sent || document.hidden || video.readyState < 2) {
+            return;
+        }
+        try {
+            const codes = await this.detector.detect(video);
+            const text = codes[0]?.rawValue;
+            if (text) {
+                this.sent = true;
+                this.stopCamera();
+                const form = this.el.querySelector(".o_ocd_rl_qr_form");
+                form.querySelector("input[name='qr']").value = text;
+                form.submit();
+            }
+        } catch {
+            // A frame not readable: the next one
+        }
+    }
+}
+
 registry
     .category("public.interactions")
     .add("ocd_live_shop.colour_photo", OcdColourPhoto)
@@ -1388,4 +1507,5 @@ registry
     .add("ocd_live_shop.autosubmit", OcdAutoSubmit)
     .add("ocd_live_shop.live_prepare", OcdLivePrepare)
     .add("ocd_live_shop.variants_form", OcdVariantsForm)
-    .add("ocd_live_shop.member_stock", OcdMemberStock);
+    .add("ocd_live_shop.member_stock", OcdMemberStock)
+    .add("ocd_live_shop.relay_scanner", OcdRelayScanner);
