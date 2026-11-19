@@ -173,7 +173,7 @@ migration.
 - Contrôlé dans le navigateur en français à 390, 820, 1366 × 657 et 1914 px ; `tools/captures/mise-en-page.js` :
   toutes les règles tenues. Tests : 3 nouveaux (la recherche du pays, la page d'un pays avec les cartes, les
   catégories du fil), 1 complété (le programme depuis la page d'un pays) ; la suite complète sur une base
-  neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO sans échec**.
+  neuve : **725 sans échec**, la démo : **22 sans échec**.
 - **Sur un serveur** : `-u ocd_live,ocd_live_shop`.
 
 ### 19 novembre 2026 · Trois écrans qui tiennent à toute taille : le fil des lives, l'accueil, « À vérifier »
