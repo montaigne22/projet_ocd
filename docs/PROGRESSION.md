@@ -162,7 +162,7 @@ d'avant. Elle vise maintenant la première phrase d'aide du formulaire, présent
 le module s'installe avant ou après la mise à jour d'`ocd_live`. `ocd_business` 20.0.1.1.0, sans
 migration (seule la vue change). Reproduit puis vérifié sur une copie de la base de test remise dans le
 même état (ancienne page de paiement, puis module resté « à installer ») ; un test nouveau (13 dans le
-module) ; la suite complète sur une base neuve : **TODO_FULL sans échec**, la démo : **TODO_DEMO sans
+module) ; la suite complète sur une base neuve : **721 sans échec**, la démo : **22 sans
 échec**.
 **Sur le serveur** : reprendre l'installation, `-i ocd_business -u ocd_live,ocd_live_shop,ocd_express`.
 
