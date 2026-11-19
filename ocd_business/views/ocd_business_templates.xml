@@ -171,10 +171,12 @@
 
     <!-- The payment page: « I paid » keeps the formula, the way back to it -->
     <template id="pay_business" inherit_id="ocd_live.pay" name="OCD Live: pay OCD Business">
-        <xpath expr="//form[hasclass('o_ocd_announce')]//small[@t-if='order.ocd_booking_ids']" position="before">
+        <!-- The first help line of « I paid » (the hour of a booking): found before and after ocd_live
+             20.0.1.25.0, so the module installs even before ocd_live is updated -->
+        <xpath expr="(//form[hasclass('o_ocd_announce')]//small)[1]" position="before">
             <small t-if="order._ocd_business_lines()">Your features of OCD Business then stay while the team checks the payment.</small>
         </xpath>
-        <xpath expr="//form[hasclass('o_ocd_announce')]//small[@t-if='order.ocd_booking_ids']" position="attributes">
+        <xpath expr="(//form[hasclass('o_ocd_announce')]//small)[2]" position="attributes">
             <attribute name="t-if"/>
             <attribute name="t-elif">order.ocd_booking_ids</attribute>
         </xpath>

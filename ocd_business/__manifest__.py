@@ -27,7 +27,7 @@ OCD Business
 - « My space » › OCD Business, the line before and after the end, the way to the
   formula from each feature it keeps, the page /business, the back office.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Website/Website",
     "author": "RollBackk",
     "license": "LGPL-3",

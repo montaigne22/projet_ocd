@@ -1,6 +1,7 @@
 from datetime import timedelta
 from unittest.mock import patch
 
+from lxml import etree
 from psycopg2 import IntegrityError
 
 from odoo import Command
@@ -200,6 +201,25 @@ class TestOcdBusiness(OcdBusinessCommon):
         self.assertEqual((period.kind, period.date_end), ("offered", self._today() + timedelta(days=20)))
         self._order()
         self.assertEqual(self.brenda.ocd_business_until, self._today() + timedelta(days=50), "The paid days follow")
+
+    def test_the_payment_page_before_and_after_ocd_live_is_updated(self):
+        """A server installs OCD Business before or after updating ocd_live (20.0.1.25.0 split the help of
+        « I paid »): the payment page of the formula applies to both."""
+        arch = self.env.ref("ocd_business.pay_business").arch
+        for helps in (
+            "<small>Your hour</small>",
+            '<small t-if="order.ocd_booking_ids">Your hour</small><small t-else="">Checked</small>',
+        ):
+            source = etree.fromstring(
+                f'<t><form class="o_ocd_announce"><button/>{helps}</form>'
+                f'<a href="/ocd/espace/moi" class="o_ocd_cta">Back</a></t>')
+            # Applying moves the nodes of the specs: a fresh copy each time
+            self.env["ir.ui.view"].apply_inheritance_specs(source, etree.fromstring(arch))
+            smalls = source.xpath("//small")
+            self.assertEqual(smalls[0].get("t-if"), "order._ocd_business_lines()")
+            self.assertIsNone(smalls[1].get("t-if"))
+            self.assertEqual(smalls[1].get("t-elif"), "order.ocd_booking_ids")
+            self.assertIn("/ocd/espace/moi/business", source.xpath("//a")[0].get("t-att-href"))
 
     def test_settings(self):
         sections = {section["key"]: section for section in self.env["ocd.live.settings"]._ocd_sections()}
