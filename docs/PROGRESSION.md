@@ -150,6 +150,25 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 19 novembre 2026 · OCD Business (chantier 12) : la maquette, à valider
+Pas de maquette pour ce chantier : proposée avant tout code, dans
+[`prototype/design-valide/OcdBusiness.dc.html`](../prototype/design-valide/OcdBusiness.dc.html), relue avec
+ce qui existe (l'interrupteur « Formule Business » du chantier 17 que lisent déjà les magasins, l'équipe,
+les chiffres et les nouveautés ; le pass de l'annuaire, des jours prépayés avec rappel et renouvellement ;
+le paiement d'OCD Live ; les factures ; WhatsApp).
+- **Le vendeur** : la formule (plusieurs magasins et leur stock, son équipe, ses chiffres en détail, ses
+  nouveautés chaque semaine, OCD Express ; ce qui fait vendre reste pour tous), 1, 3 ou 12 mois payés
+  d'avance, jamais prélevés ; la formule active, renouveler (des jours ajoutés après la date), ses
+  paiements et leurs factures ; la fin qui approche, et ce qui se met en pause sans rien effacer ;
+  l'entrée vers la formule depuis chaque fonction réservée.
+- **WhatsApp** : la formule payée, la fin qui approche (7 jours avant et la veille), la fin.
+- **La page publique** `/business` pour les commerçants qui ne font pas de lives. **Le back-office** : les
+  formules, « Offrir des jours » avec un motif, les réglages (prix, offre de lancement, rappels, limites).
+- **Choix à valider** (en bas de la maquette) : le prix, une commission plus basse, OCD Express compris, le
+  lancement, les rappels, les limites, la page publique.
+- Contrôlée en la rendant dans un navigateur. Aucun module ne change : rien à mettre à jour sur un serveur,
+  aucun modèle WhatsApp à soumettre.
+
 ### 19 novembre 2026 · Correctif : `ocd_debranding` ne s'installait pas sur une base déjà réglée
 Sur le serveur de préproduction, l'installation s'arrêtait sur `ocd_debranding/data/ocd_debranding_data.xml`
 (« duplicate key value violates unique constraint ir_config_parameter_key_uniq ») : le nom de
@@ -157,7 +176,8 @@ l'application (`web.web_app_name`) existait déjà, enregistré depuis les Param
 le créait une deuxième fois. Le module ne crée plus ce paramètre : une fonction appelée à chaque
 installation et mise à jour met « OCD Live » seulement quand aucun nom n'est choisi (vide ou « Odoo ») et
 garde le nom choisi par l'équipe. `ocd_debranding` 20.0.1.2.0, sans migration (le paramètre existant est
-gardé). Reproduit puis vérifié sur une base de test dans le même état ; un test nouveau (6 dans le module).
+gardé). Reproduit puis vérifié sur une base de test dans le même état ; un test nouveau (6 dans le module) ;
+la suite complète sur une base neuve : **704 sans échec**.
 **Sur le serveur** : reprendre l'installation ou `-u ocd_debranding`.
 
 ### 19 novembre 2026 · Ambassadeurs (chantier 11)

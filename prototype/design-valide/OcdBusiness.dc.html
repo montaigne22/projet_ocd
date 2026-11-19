@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>OCD Business</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400..800&amp;display=swap">
+<link rel="stylesheet" href="resp.css">
+<style>
+.phone{width:390px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px 18px 20px;background:#FFFFFF;border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:15.5px;line-height:1.4}
+.back{display:flex;align-items:center;gap:10px}
+.back i{width:44px;height:44px;border-radius:50%;background:#F5F2EE;display:grid;place-items:center;font-style:normal;font-weight:800}
+.small{font-size:13.5px}
+.muted{color:#665F58}
+.lnk{text-decoration:underline;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:8px;background:#15130F;color:#FFF;font-weight:800;font-size:12.5px;padding:3px 8px}
+.badge.soft{background:#FFF0E3;color:#B84F00}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn2{display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px;border-radius:14px;border:2px solid #E7E2DC;font-weight:800;font-size:15px;text-align:center;padding:0 10px}
+.btn2.dark{background:#15130F;border-color:#15130F;color:#FFF}
+.btn2.on{border-color:#F46A00;background:#FFF0E3}
+.hero{display:flex;flex-direction:column;gap:10px;border-radius:22px;background:#15130F;color:#FFF;padding:18px}
+.hero .d{font-size:27px;line-height:1.1}
+.step3{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start}
+.step3 b.n{width:30px;height:30px;border-radius:50%;background:#F46A00;color:#15130F;display:grid;place-items:center;font-size:14px}
+.price{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC}
+.price:last-child{border-bottom:0}
+.sum{display:flex;flex-direction:column;gap:4px;border-radius:16px;background:#F5F2EE;padding:12px 14px;font-size:14.5px}
+.sum span{display:flex;justify-content:space-between}
+.sum .tot{border-top:1px solid #E7E2DC;padding-top:6px;font-weight:800}
+.parcel{display:flex;flex-direction:column;gap:6px;border:2px solid #E7E2DC;border-radius:18px;padding:12px 14px}
+.parcel.go{border-color:#F46A00}
+.parcel .h1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.st{display:inline-flex;align-items:center;border-radius:8px;padding:2px 8px;font-size:12.5px;font-weight:800;white-space:nowrap}
+.st.wait{background:#FFF0CC;color:#6B4500}.st.grey{background:#EEF0F2;color:#15130F}.st.route{background:#15130F;color:#FFF}
+.st.done{background:#DCF2E5;color:#0A5A31}.st.bad{background:#FCE4E4;color:#8E1220}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:11.5px;font-weight:700;color:#665F58}
+.steps i{display:block;height:5px;border-radius:99px;background:#E7E2DC;margin-bottom:3px}
+.steps i.on{background:#0F7A43}.steps i.now{background:#F46A00}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{border-radius:14px;background:#F5F2EE;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.tile b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px}
+.money{display:flex;flex-direction:column;gap:6px;border-radius:20px;background:#DCF2E5;padding:16px;color:#0A5A31}
+.money .d{font-size:32px;color:#15130F}
+.code{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:40px;letter-spacing:.18em;text-align:center;border-radius:16px;border:2px dashed #F46A00;padding:6px 0}
+.label{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;border:2px solid #15130F;border-radius:14px;padding:10px;font-size:13.5px}
+.qr{width:96px;height:96px;border-radius:8px;background:repeating-linear-gradient(90deg,#15130F 0 6px,#FFF 6px 10px),#FFF;border:4px solid #FFF;box-shadow:0 0 0 1px #15130F}
+.wa{width:330px;border-radius:18px;background:#E5DDD5;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.wa .bot{align-self:flex-start;background:#FFF;border-radius:12px 12px 12px 2px;padding:8px 10px;max-width:92%}
+.wa .bt{background:#FFF;border-radius:10px;text-align:center;color:#1F7A4D;font-weight:700;padding:8px}
+.rule{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#F5F2EE;padding:12px 14px;font-size:14px}
+.rule b{font-size:15px}
+.bo{background:#FFF;border:1px solid #E3E6E9;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.bobtn{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid #AEB4BA;font-weight:700;font-size:13.5px;background:#FFF}
+.bobtn.p{background:#F46A00;border-color:#F46A00;color:#FFF}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{border:1px solid #E3E6E9;border-radius:10px;padding:8px 12px;display:flex;flex-direction:column}
+.kpi b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px}
+.kpi span{font-size:12px;font-weight:600;color:#5A6068}
+.setrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #EEF0F2}
+.setrow .in{height:auto;min-height:34px;padding:6px 12px;box-sizing:border-box;border-radius:8px;border-width:1px;font-size:14px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#665F58;padding:8px 10px;border-bottom:2px solid #E7E2DC}
+table.t td{padding:9px 10px;border-bottom:1px solid #E7E2DC;vertical-align:middle}
+table.t td.r,table.t th.r{text-align:right;white-space:nowrap}
+table.t td:last-child{white-space:nowrap}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:14px;background:#FFF8E6;border:1px dashed #F0C987;padding:12px 14px;font-size:14px;color:#6B4500}
+.q b{color:#15130F}
+.check{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:14px}
+.check i{width:24px;height:24px;border-radius:7px;background:#15130F;color:#FFF;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:14px}
+.pt{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;border:2px solid #E7E2DC;border-radius:16px;padding:10px 12px}
+.pt.on{border-color:#F46A00;background:#FFF8F2}
+.pt .dot{box-sizing:border-box;width:22px;height:22px;border-radius:50%;border:2px solid #AEB4BA;margin-top:2px}
+.pt.on .dot{border:7px solid #F46A00}
+.opt{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;border:2px solid #E7E2DC;border-radius:16px;padding:12px}
+.opt.on{border-color:#F46A00;background:#FFF8F2}
+.opt .dot{box-sizing:border-box;width:22px;height:22px;border-radius:50%;border:2px solid #AEB4BA}
+.opt.on .dot{border:7px solid #F46A00}
+.map{height:120px;border-radius:16px;background:linear-gradient(135deg,#EDE7DF 0 30%,#E3DCD2 30% 31%,#EDE7DF 31% 64%,#E3DCD2 64% 65%,#EDE7DF 65%);position:relative}
+.map i{position:absolute;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#F46A00;box-shadow:0 0 0 3px #FFF}
+.map i.me{background:#15130F;border-radius:50%;transform:none;width:16px;height:16px}
+.bar{height:8px;border-radius:99px;background:#E7E2DC;overflow:hidden}
+.bar i{display:block;height:100%;background:#F46A00;border-radius:99px}
+.scan{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #E7E2DC;font-size:14.5px}
+.scan:last-child{border-bottom:0}
+.scan i{width:24px;height:24px;border-radius:7px;border:2px solid #AEB4BA;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px}
+.scan i.ok{background:#0F7A43;border-color:#0F7A43;color:#FFF}
+.gain{display:flex;flex-direction:column;gap:4px;border-radius:18px;background:#DCF2E5;padding:14px;color:#0A5A31}
+.gain .d{font-size:26px;color:#15130F}
+.prod{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;border:2px solid #E7E2DC;border-radius:16px;padding:8px 10px}
+.prod .ph{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#F4B183,#C55A11)}
+.prod .ph.b{background:linear-gradient(135deg,#9DC3E6,#2E75B6)}.prod .ph.g{background:linear-gradient(135deg,#A9D18E,#548235)}.prod .ph.k{background:linear-gradient(135deg,#B4A7D6,#5B4A9B)}
+.earn{display:inline-flex;align-items:center;border-radius:8px;background:#DCF2E5;color:#0A5A31;font-weight:800;font-size:12.5px;padding:2px 8px;margin-top:4px;white-space:nowrap}
+.sharebtn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 12px;border-radius:12px;background:#15130F;color:#FFF;font-weight:800;font-size:14px}
+.img{position:relative;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#F4B183 0 50%,#15130F 50%);height:330px;color:#FFF}
+.img .tag{position:absolute;left:14px;right:14px;bottom:66px;display:flex;flex-direction:column;gap:2px}
+.img .tag b{font-family:'Bricolage Grotesque',sans-serif;font-size:26px}
+.img .foot{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700}
+.img .mini{width:44px;height:44px;border-radius:6px;background:repeating-linear-gradient(90deg,#15130F 0 4px,#FFF 4px 7px);border:3px solid #FFF}
+.text{border:2px dashed #E7E2DC;border-radius:14px;padding:10px 12px;font-size:14px}
+.reco{display:flex;align-items:center;gap:8px;border-radius:12px;background:#FFF0E3;color:#B84F00;font-weight:700;font-size:14px;padding:8px 12px}
+.reco i{width:26px;height:26px;border-radius:50%;background:#F46A00;color:#FFF;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:12px}
+.line{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #E7E2DC;font-size:14px}
+.line:last-child{border-bottom:0}
+</style>
+</head>
+<body>
+<!-- OCD Business (chantier 12 de la feuille de route) : la formule mensuelle des vendeurs organisés.
+     OCD touche une commission sur chaque vente : ce qui fait vendre reste pour tous. La formule réunit ce
+     qui sert les vendeurs organisés (plusieurs lieux et le stock par magasin, l'équipe du vendeur, les
+     statistiques détaillées, les nouveautés chaque semaine) et OCD Express ; ce qui est réservé est décidé
+     (PLAN_MES_PRODUITS.md, « OCD Business »), l'interrupteur « Formule Business » existe déjà (B.1,
+     chantier 17) : ce chantier vend la formule. On réutilise le pass de l'annuaire (des jours prépayés,
+     achetés comme un produit avec le formulaire de paiement d'OCD Live, rappel et renouvellement), les
+     paiements (CamPay, CinetPay, Flutterwave, Mobile Money vérifié), les factures, les messages WhatsApp.
+     Maquette proposée le 19 novembre 2026, à valider avec ses choix (en bas).
+     Données d'exemple : Brenda Wax (deux magasins à Douala, une vendeuse, 140 ventes par mois) ; Awa
+     Mensah (un magasin, pas de live) ; le jeudi 19 novembre. -->
+<div class="board">
+
+<span class="cap">Téléphone · 390 px · le vendeur : la formule, l'acheter, la renouveler</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+
+  <!-- 1. La formule -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">OCD Business</span></div>
+    <div class="hero">
+      <span class="badge soft" style="align-self:flex-start">Pour les vendeurs organisés</span>
+      <span class="d">Plusieurs magasins, une équipe, tes chiffres en détail</span>
+      <span class="small" style="color:#E7E2DC">Ce qui fait vendre reste gratuit pour tous. OCD Business ajoute ce qui sert quand tu grandis.</span>
+    </div>
+    <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+      <b>Avec OCD Business</b>
+      <div class="check"><i>✓</i><span><b>Plusieurs magasins</b> et le stock de chacun ; les clients voient « Disponible à Akwa »</span></div>
+      <div class="check"><i>✓</i><span><b>Ton équipe</b> : 5 personnes, chacune son magasin, sans les prix ni l'argent</span></div>
+      <div class="check"><i>✓</i><span><b>Tes chiffres en détail</b> : chaque live, tes meilleures heures, tes clients fidèles, chaque produit</span></div>
+      <div class="check"><i>✓</i><span><b>Tes nouveautés chaque semaine</b> à ceux qui te suivent (une fois par mois sans la formule)</span></div>
+      <div class="check"><i>✓</i><span><b>OCD Express</b> : tes colis hors boutique, compte ouvert tout de suite</span></div>
+    </div>
+    <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+      <b>Pour tous, toujours</b>
+      <span class="small muted">Ta boutique, tes produits, un magasin, le retrait en magasin, les promos, les lives, les clips, les ambassadeurs, les reversements.</span>
+    </div>
+    <div class="opt"><span class="dot"></span><span><b>1 mois</b><br><span class="small muted">30 jours</span></span><b>10 000 F</b></div>
+    <div class="opt on"><span class="dot"></span><span><b>3 mois</b> <span class="badge soft">−10 %</span><br><span class="small muted">90 jours · 9 000 F par mois</span></span><b>27 000 F</b></div>
+    <div class="opt"><span class="dot"></span><span><b>12 mois</b> <span class="badge soft">2 mois offerts</span><br><span class="small muted">365 jours · 8 334 F par mois</span></span><b>100 000 F</b></div>
+    <span class="cta">Payer 27 000 F</span>
+    <span class="small muted">Mobile Money, Wave ou carte, avec le paiement d'OCD Live. Pas de prélèvement : tu renouvelles quand tu veux, on te prévient avant la fin.</span>
+  </div>
+
+  <!-- 2. Active -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">OCD Business</span><span class="st done" style="margin-left:auto">Active</span></div>
+    <div class="money"><span class="small"><b>Ta formule</b></span><span class="d">jusqu'au 17 février</span><span class="small">3 mois payés le 19 novembre · renouveler ajoute des jours après cette date</span></div>
+    <div class="tiles">
+      <div class="tile"><span class="small muted">Magasins</span><b>2 sur 5</b><span class="small muted">Akwa, Bonapriso</span></div>
+      <div class="tile"><span class="small muted">Ton équipe</span><b>1 personne</b><span class="small muted">sur 5</span></div>
+    </div>
+    <span class="btn2 dark">Renouveler</span>
+    <b>Paiements</b>
+    <div class="line"><span>19 nov. · 3 mois · CamPay</span><b>27 000 F</b></div>
+    <div class="line"><span>20 oct. · 1 mois · Mobile Money</span><b>10 000 F</b></div>
+    <div class="line"><span>Offert pendant le lancement</span><b>2 mois</b></div>
+    <span class="small muted">Chaque paiement a sa facture, dans « Mes factures ». Un prix changé vaut pour le paiement suivant, jamais pour les jours déjà payés.</span>
+  </div>
+
+  <!-- 3. Avant la fin, la fin -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">Mon espace</span></div>
+    <div class="q" style="font-size:14px"><span><b>Ta formule OCD Business se termine dimanche 22 novembre.</b> Renouvelle-la pour garder tes deux magasins visibles, ton équipe et tes chiffres en détail.</span><span class="btn2 dark" style="align-self:flex-start;min-height:38px">Renouveler</span></div>
+    <span class="small muted">Dans l'espace du vendeur, 7 jours avant la fin.</span>
+    <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+      <b>Si la formule s'arrête</b>
+      <div class="line"><span>Ton 2e magasin</span><span class="small">masqué aux clients ; les commandes partent toujours de son stock</span></div>
+      <div class="line"><span>Ton équipe</span><span class="small">en pause, rien n'est supprimé</span></div>
+      <div class="line"><span>Tes chiffres en détail</span><span class="small">cachés ; les chiffres de chaque produit restent</span></div>
+      <div class="line"><span>Tes nouveautés</span><span class="small">une fois par mois</span></div>
+      <span class="small muted">Tout revient dès que tu renouvelles. Rien n'est jamais effacé.</span>
+    </div>
+    <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+      <b>Mes chiffres</b>
+      <div class="tiles"><div class="tile"><span class="small muted">Ventes, 30 jours</span><b>412 000 F</b></div><div class="tile"><span class="small muted">Pièces</span><b>140</b></div></div>
+      <div class="check"><i>B</i><span><b>Le détail avec OCD Business</b><br><span class="small muted">Ce que rapporte chaque live, tes meilleures heures, tes clients fidèles.</span></span></div>
+      <span class="lnk small">Voir OCD Business</span>
+    </div>
+    <span class="small muted">Chaque fonction réservée dit ce qu'elle apporte et mène à la formule (Mes chiffres, Mes magasins, Mon équipe, Mes abonnés).</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">WhatsApp au vendeur (nouveaux modèles Utilitaire, à soumettre à Meta) · un commerçant sans boutique</span>
+<div style="display:flex;gap:20px;align-items:flex-start">
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="wa">
+      <div class="bot">Bonjour Brenda, ta formule OCD Business est payée : <b>3 mois</b>, jusqu'au <b>mercredi 17 février</b>. Merci ! Touche le bouton pour ta facture.</div>
+      <span class="bt">Ma formule</span>
+    </div>
+    <span class="small muted" style="width:330px">Dès que le paiement est confirmé par le fournisseur (ou vérifié par l'équipe pour le Mobile Money).</span>
+    <div class="wa">
+      <div class="bot">Bonjour Brenda, ta formule OCD Business se termine le <b>dimanche 22 novembre</b>. Renouvelle-la pour garder tes magasins, ton équipe et tes chiffres. Touche le bouton pour renouveler.</div>
+      <span class="bt">Renouveler</span>
+    </div>
+    <span class="small muted" style="width:330px">7 jours avant, puis la veille. À la fin, un dernier message dit ce qui est en pause, et que rien n'est effacé.</span>
+  </div>
+
+  <!-- 4. La page publique : pour les commerçants sans live -->
+  <div class="phone">
+    <div class="back"><i>←</i><span class="d" style="font-size:19px">OCD Business</span></div>
+    <div class="hero">
+      <span class="d">Ta boutique en ligne, tes magasins, tes livraisons</span>
+      <span class="small" style="color:#E7E2DC">Pour les commerçants, même sans live : tes produits sur OCD Live, livrés avec un code, l'argent versé après la livraison.</span>
+    </div>
+    <div class="step3"><b class="n">1</b><span><b>Ouvre ta boutique</b><br><span class="small muted">Gratuit : tes produits, un magasin, une commission sur chaque vente.</span></span></div>
+    <div class="step3"><b class="n">2</b><span><b>Grandis avec la formule</b><br><span class="small muted">Tes autres magasins, ton équipe, tes chiffres, OCD Express.</span></span></div>
+    <div class="step3"><b class="n">3</b><span><b>10 000 F par mois</b><br><span class="small muted">Sans engagement, payé quand tu veux.</span></span></div>
+    <span class="cta">Ouvrir ma boutique</span>
+    <span class="small muted">Tu vends déjà sur OCD Live ? « Mon espace » › OCD Business.</span>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Back-office · l'équipe : les formules, les réglages</span>
+<div class="screen" style="width:1300px;box-sizing:border-box;padding:20px 24px;display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:18px">
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="bo">
+      <b>OCD Live › Vendeurs › OCD Business</b>
+      <div class="kpis">
+        <div class="kpi"><b>38</b><span>formules actives</span></div>
+        <div class="kpi"><b>352 000 F</b><span>payés ce mois</span></div>
+        <div class="kpi"><b>6</b><span>se terminent cette semaine</span></div>
+        <div class="kpi"><b>71 %</b><span>renouvelées le mois dernier</span></div>
+      </div>
+      <table class="t">
+        <tr><th>Vendeur</th><th>Jusqu'au</th><th class="r">Magasins</th><th class="r">Équipe</th><th class="r">Payé (12 mois)</th><th>État</th></tr>
+        <tr><td><b>Brenda Wax</b><br><span class="small muted">Douala</span></td><td>17 févr.</td><td class="r">2</td><td class="r">1</td><td class="r">37 000 F</td><td><span class="st done">Active</span></td></tr>
+        <tr><td><b>Kossi Tech</b><br><span class="small muted">Lomé</span></td><td>22 nov.</td><td class="r">3</td><td class="r">2</td><td class="r">20 000 F</td><td><span class="st wait">Se termine dimanche</span></td></tr>
+        <tr><td><b>Ama Pagnes</b><br><span class="small muted">Lomé</span></td><td>14 nov.</td><td class="r">2</td><td class="r">0</td><td class="r">10 000 F</td><td><span class="st grey">Terminée · 1 magasin masqué</span></td></tr>
+        <tr><td><b>Awa Mensah</b><br><span class="small muted">Lomé</span></td><td>3 janv.</td><td class="r">1</td><td class="r">0</td><td class="r">offert</td><td><span class="st done">Offerte (lancement)</span></td></tr>
+      </table>
+      <span class="small muted">La fiche du vendeur : sa formule jusqu'au, ses paiements et leurs factures, « Offrir des jours » (avec un motif, dans l'historique), ses magasins et son équipe.</span>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="bo">
+      <b>Réglages · OCD Business</b>
+      <div class="setrow"><span>Fonctions offertes à tous</span><span class="in">Oui, jusqu'au 1er décembre</span></div>
+      <div class="setrow"><span>Prix d'un mois</span><span class="in">10 000 F</span></div>
+      <div class="setrow"><span>Prix de 3 mois</span><span class="in">27 000 F</span></div>
+      <div class="setrow"><span>Prix de 12 mois</span><span class="in">100 000 F</span></div>
+      <div class="setrow"><span>Au lancement, offert à ceux qui l'utilisent</span><span class="in">2 mois</span></div>
+      <div class="setrow"><span>Rappels avant la fin</span><span class="in">7 jours et la veille</span></div>
+      <div class="setrow"><span>Magasins et équipe au plus</span><span class="in">5 et 5</span></div>
+      <span class="small muted">Les prix sont dans la devise de chaque pays (comme le pass de l'annuaire). Un prix changé vaut pour les paiements suivants.</span>
+    </div>
+  </div>
+</div>
+
+<span class="cap" style="margin-top:18px">Pour que ça tienne en vrai</span>
+<div style="display:grid;grid-template-columns:repeat(3,430px);gap:14px">
+  <div class="rule"><b>Payé d'avance, jamais prélevé</b><span>Des jours achetés comme le pass de l'annuaire : la formule court jusqu'à une date. Renouveler avant la fin ajoute des jours après cette date, jamais de jours perdus ; pas de prélèvement, rien à annuler.</span></div>
+  <div class="rule"><b>Les jours suivent le paiement confirmé</b><span>Le fournisseur confirme le paiement (ou l'équipe vérifie le Mobile Money) : alors seulement la date avance, une seule fois par paiement. Un paiement en attente ne donne rien ; un remboursement retire ses jours.</span></div>
+  <div class="rule"><b>Rien n'est effacé à la fin</b><span>Les magasins en plus sont masqués aux clients (leur stock sert toujours les commandes), l'équipe est en pause, les chiffres en détail sont cachés : tout revient avec la formule.</span></div>
+  <div class="rule"><b>Le lancement sans coupure</b><span>« Offertes à tous » jusqu'à une date ; ce jour-là, les vendeurs qui les utilisent (deux magasins, une équipe, les chiffres ouverts ces 30 jours) reçoivent les mois offerts des réglages, et sont prévenus.</span></div>
+  <div class="rule"><b>Une facture par paiement</b><span>Une facture de vente d'OCD au vendeur, dans « Mes factures » et la comptabilité : la formule est un chiffre d'affaires d'OCD, à part des commissions.</span></div>
+  <div class="rule"><b>Un seul endroit décide</b><span>Toutes les fonctions réservées lisent la même règle (« le vendeur a OCD Business aujourd'hui ») : la date de sa formule, ou l'offre de lancement. L'équipe offre des jours avec un motif, gardé dans l'historique.</span></div>
+</div>
+
+<span class="cap" style="margin-top:18px">Choix à valider</span>
+<div class="q" style="width:1300px;box-sizing:border-box">
+  <span><b>1. Le prix :</b> <i>proposé : 10 000 F par mois, 27 000 F les 3 mois (−10 %), 100 000 F les 12 mois (2 mois offerts), réglables, dans la devise de chaque pays.</i> Le plan prévoyait de fixer le prix après un essai avec 5 à 10 vendeurs : on garde ces prix comme réglages de départ.</span>
+  <span><b>2. Une commission plus basse avec la formule ?</b> <i>proposé : non au lancement (la commission reste celle du vendeur) ; à revoir après 3 mois avec les chiffres.</i></span>
+  <span><b>3. OCD Express compris :</b> <i>proposé : le compte OCD Express ouvert tout de suite (sans invitation) et le petit ramassage gratuit ; les colis gardent leur prix.</i></span>
+  <span><b>4. Le lancement :</b> <i>proposé : les fonctions restent offertes à tous jusqu'à une date choisie par l'équipe ; ce jour-là, 2 mois offerts à ceux qui les utilisent, prévenus sur WhatsApp ; pas d'essai gratuit ensuite.</i></span>
+  <span><b>5. Les rappels :</b> <i>proposé : 7 jours avant et la veille, sur WhatsApp et dans l'espace ; un message à la fin.</i></span>
+  <span><b>6. Les limites :</b> <i>proposé : 5 magasins et 5 personnes dans l'équipe avec la formule (réglables, et par vendeur) ; 1 magasin sans.</i></span>
+  <span><b>7. La page publique :</b> <i>proposé : /business pour les commerçants qui ne font pas de lives, qui mène à l'ouverture d'une boutique.</i></span>
+  <span><b>Effort :</b> ~2 semaines (la formule, l'achat et le renouvellement par le paiement d'OCD Live, les rappels, la fin et le lancement, les entrées depuis les fonctions réservées, la page publique, le back-office, les factures). Nouveaux modèles WhatsApp à soumettre à Meta : la formule payée, la fin qui approche, la fin (au vendeur).</span>
+</div>
+
+</div>
+</body>
+</html>
