@@ -2,7 +2,7 @@
 
 Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 
-## Où en est le projet (19 novembre 2026)
+## Où en est le projet (20 novembre 2026)
 
 | Domaine | État |
 |---|---|
@@ -60,7 +60,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
 | Togo (villes, quartiers, livraison) | ✅ fait |
 | Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements, OCD Express) ; installées en une fois avec les modules, avec leurs factures et reversements | ✅ fait, testé |
-| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), OCD Express (Nadège Mode : ses colis à chaque étape, deux passages par jour, un retour, un souci, son argent versé chaque jour ouvré ; une demande à vérifier), scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
+| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), OCD Express (Nadège Mode : ses colis à chaque étape, deux passages par jour, un retour, un souci, son argent versé chaque jour ouvré ; une demande à vérifier), magasins, équipe, retrait au magasin, point relais, ventes des lives, avis, abonnés, promo, signalement, chiffres sur 90 jours, scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 | Grand public : pages publiques gardées en mémoire quelques secondes, photos et vidéos par un CDN, questions répétées des pages réduites ; modèle de rapport de charge ([`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md)) | ✅ fait, testé (à mesurer sur les vrais serveurs) |
 
@@ -153,6 +153,32 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 20 novembre 2026 · La démo montre la boutique en entier : magasins, retrait, point relais, ventes des lives
+Ce qui a été livré pour la boutique n'avait pas de données de démo : une présentation montrait des pages
+vides. `ocd_live_demo` 20.0.1.7.0 (migration : la mise à jour met tout en place), tenu à jour par l'action
+planifiée comme le reste, chaque chose une seule fois, tout retiré à la désinstallation
+([`DEMO.md`](DEMO.md)).
+- **Magasins et équipe** : Brenda a deux magasins à Douala (Akwa, d'où partent ses colis, et Bonapriso,
+  tenu par Aïcha Njoya de son équipe, active chaque matin), ses pièces réparties entre les deux ; Fatou
+  vend de chez elle, Kossi a son magasin au Grand Marché de Lomé, celui d'Ama attend l'équipe.
+- **Retrait au magasin et point relais** : chaque jour, Hervé retire un pagne au magasin d'Akwa (le code,
+  le comptoir le lendemain) ; la chemise de Carine va au point relais **Chez Rose** (Bonamoussadi), qui la
+  compte et la remet avec le code, et gagne sa part ; Ruth demande à essayer une robe à Bonapriso, Aïcha
+  accepte. **Alimentation Ngo** demande à devenir point relais.
+- **Les ventes des lives** : pendant chaque live de Brenda et de Fatou, des visites de la boutique, des
+  commandes comptées pour le live (livrées le lendemain) et un abonné : « Mes chiffres » montre la part
+  des lives, le meilleur live et le jour où ses lives vendent le plus.
+- **La vie de la boutique** : un avis après la plupart des livraisons, qui colle au parcours du colis et au
+  produit ; abonnés, « Préviens-moi » sur la robe bleue L, vendeurs vérifiés, un signalement et la promo
+  de Brenda chaque semaine, les prochains lives préparés pour l'animatrice, un nom à vérifier, un produit
+  refusé, les itinéraires et appels des magasins, 90 jours de visites, contacts et lives ouverts.
+
+La démo active le retrait au magasin, les pièces à essayer et les points relais si l'équipe ne l'a pas fait,
+et les remet comme avant à sa désinstallation. Vérifié à l'écran (espace de Brenda, fiche produit, boutique,
+« À vérifier »). La suite complète sur une base neuve : **726 sans échec**, la démo : **24 sans
+échec**.
+**Sur le serveur** : `-u ocd_live_demo` (seulement là où la démo est installée).
 
 ### 19 novembre 2026 · Correctif : le menu du bas sur toutes les pages de l'espace
 Sur téléphone, « Mes chiffres » (capture de l'équipe) n'avait pas le menu du bas : impossible de revenir à

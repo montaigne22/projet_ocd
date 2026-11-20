@@ -17,6 +17,7 @@ from odoo.addons.ocd_live_demo.hooks import (
     PARAM_EXPRESS,
     PARAM_OPEN_DATE,
     PARAM_REPLAY_URL,
+    PARAM_SHOP,
     OcdLiveDemo,
     uninstall_hook,
 )
@@ -186,6 +187,103 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
                 self.assertFalse(payouts.filtered(lambda p: p.date < tomorrow and p.state != "paid"),
                                  "The payouts of the days before are paid")
                 self.assertTrue(payouts.filtered(lambda p: p.date == tomorrow and p.state == "draft"))
+
+    def test_stores_team_and_life_of_the_shop(self):
+        """The stores of the vendors and the pieces of each one, the team of Brenda, the relay
+        point, and the life of the shop: followers, reviews, alerts, a report, the promo of the
+        week, a change to check, a product refused, the figures of the last months."""
+        demo = OcdLiveDemo(self.env)
+        brenda, fatou = self.env.ref("ocd_live_demo.vendor_brenda"), self.env.ref("ocd_live_demo.vendor_fatou")
+        akwa, bonapriso = demo.demo_place("akwa"), demo.demo_place("bonapriso")
+        self.assertEqual((akwa.state, bonapriso.state), ("approved", "approved"))
+        self.assertEqual(brenda._ocd_departure_place(), akwa, "Her parcels leave from Akwa")
+        self.assertTrue(bonapriso._ocd_location() and bonapriso.ocd_stock_count, "Pieces in each store")
+        self.assertEqual(self._free_stock()[("Bleu", "M")], 3, "The website counts the pieces of every store")
+        self.assertEqual(demo.demo_place("fatou_home").kind, "home")
+        self.assertEqual(demo.demo_place("kossi_store").state, "approved")
+        self.assertEqual(demo.demo_place("ama_store").state, "to_check", "A store waits for the team")
+        member = self.env["ocd.vendor.member"].search([("vendor_id", "=", brenda.id)])
+        self.assertEqual((member.partner_id, member.place_id), (self.env.ref("ocd_live_demo.member_aicha"), bonapriso))
+        self.assertEqual(member.state, "active", "She opens her store space every morning")
+        relay = demo.demo_place(scenario.RELAY_PLACE[0])
+        self.assertTrue(relay.relay and relay.state == "approved")
+        asked = self.env["ocd.vendor.place"].search([("vendor_id", "=", self.env.ref("ocd_live_demo.relay_ngo").id)])
+        self.assertEqual((asked.relay, asked.state), (True, "to_check"), "A shop asks to become a relay point")
+        parcels = self._parcels()
+        self.assertTrue(parcels.filtered("ocd_collect"), "Orders picked up at the store of Akwa")
+        self.assertTrue(parcels.filtered(lambda p: p.ocd_relay_id == relay), "Orders to the relay point")
+        self.assertTrue(parcels.filtered(lambda p: p.ocd_relay_id and p.ocd_stage == "delivered"),
+                        "Picked up at the relay point")
+        followers = self.env["ocd.vendor.follower"].search([("vendor_id", "=", brenda.id)])
+        self.assertEqual(len(followers), len(scenario.FOLLOWERS["vendor_brenda"]))
+        reviews = self.env["ocd.vendor.review"].search([("vendor_id", "=", brenda.id)])
+        self.assertGreaterEqual(len(reviews), 3, "Her note shows from 3 reviews")
+        late = reviews.filtered(lambda review: "retard" in (review.comment or ""))
+        self.assertTrue(all(review.picking_id.ocd_reminded_at for review in late), "Only a late parcel is said late")
+        self.assertFalse(reviews.filtered(lambda review: "robe" in (review.comment or "").lower()
+                                          and "Robe en wax" not in review.product_ids.mapped("name")),
+                         "The word of the buyer fits the product")
+        self.assertTrue(self.env["ocd.vendor.review"].search([("vendor_id", "=", fatou.id)]))
+        self.assertEqual(len(self.env["ocd.stock.alert"].search([("product_id", "=", demo.variant("product_wax_dress", "Bleu", "L").id)])), 3)
+        self.assertTrue(all(self.env.ref(f"ocd_live_demo.{xmlid}").ocd_verified for xmlid in scenario.VERIFIED))
+        self.assertTrue(self.env["ocd.report"].search([("product_id", "=", self.env.ref("ocd_live_demo.product_kente").id),
+                                                       ("state", "=", "new")]))
+        promo = self.env["ocd.product.promo"].search([
+            ("product_tmpl_id", "=", self.env.ref("ocd_live_demo.product_wax_pagne").id),
+            ("date_start", "<=", fields.Datetime.now()), ("date_end", ">", fields.Datetime.now()),
+        ])
+        self.assertTrue(promo, "The promo of the week")
+        self.assertEqual(self.env.ref("ocd_live_demo.product_powerbank").ocd_change_state, "to_check")
+        self.assertEqual(self.env.ref("ocd_live_demo.product_honey_soap").ocd_review_state, "refused")
+        days = self.env["ocd.vendor.count"].search_count([("vendor_id", "=", brenda.id), ("kind", "=", "visit")])
+        self.assertGreaterEqual(days, scenario.FIGURES_DAYS - 2, "Her visits day by day")
+        self.assertTrue(self.env["ocd.vendor.place.tap"].search_count([("place_id", "=", akwa.id)]))
+        # Her lives sell: the customers who came during a live ordered, the boutique was visited,
+        # a viewer followed her
+        now = fields.Datetime.now()
+        lived = self.env["ocd.live.booking"].search([
+            ("partner_id", "=", brenda.id), ("state", "in", ("confirmed", "done")),
+            ("start_datetime", ">=", now - timedelta(days=scenario.SHOP_PAST_DAYS - 1)), ("end_datetime", "<", now),
+        ])
+        self.assertTrue(lived, "Brenda goes live three times a week")
+        for live in lived:
+            sold = self.env["sale.order.line"].search([("ocd_live_id", "=", live.id), ("state", "=", "sale")])
+            self.assertEqual(len(sold.order_id), len(scenario.LIVE_SALES["vendor_brenda"]), "Orders of the live")
+            self.assertGreaterEqual(live.ocd_visit_count, scenario.LIVE_VISITS[0])
+            self.assertTrue(self.env["ocd.vendor.follower"].search_count([
+                ("vendor_id", "=", brenda.id), ("followed_at", ">=", live.start_datetime),
+                ("followed_at", "<=", live.end_datetime),
+            ]), "A viewer followed her during the live")
+        next_live = self.env["ocd.live.booking"].search([
+            ("partner_id", "=", brenda.id), ("state", "=", "confirmed"), ("start_datetime", ">", fields.Datetime.now()),
+        ], order="start_datetime", limit=1)
+        if next_live and next_live.start_datetime < fields.Datetime.now() + timedelta(days=3):
+            self.assertTrue(next_live._ocd_prepared_products(), "Her next live is prepared for the control room")
+        # Nothing twice when the demo runs again
+        demo.keep_current()
+        self.assertEqual(len(self.env["ocd.vendor.place"].search([("vendor_id", "=", brenda.id)])), 2)
+        self.assertEqual(len(self.env["ocd.vendor.follower"].search([("vendor_id", "=", brenda.id)])), len(followers))
+
+    def test_a_day_with_the_store_and_the_relay_point(self):
+        """The next day: the order of Hervé ready at the store of Akwa, picked up the morning after;
+        the parcel of Carine counted by the relay point in the evening; a piece held to try."""
+        demo = OcdLiveDemo(self.env)
+        tomorrow = demo.shop_today(fields.Datetime.now()) + timedelta(days=1)
+        with freeze_time(self._douala(tomorrow, 18, 30)):
+            demo.keep_shop(fields.Datetime.now())
+            of_the_day = self._parcels().filtered(lambda p: p.sale_id.date_order >= self._douala(tomorrow, 0, 0))
+            collect = of_the_day.filtered("ocd_collect")
+            self.assertEqual(collect.ocd_stage, "ready", "Waiting at the counter with its code")
+            relay = of_the_day.filtered("ocd_relay_id")
+            self.assertEqual(relay.ocd_stage, "at_relay", "Counted by the relay point")
+            self.assertTrue(relay.ocd_relay_deadline)
+            hold = self.env["ocd.product.hold"].search([("partner_id", "=", self.env.ref("ocd_live_demo.customer_ruth").id)],
+                                                       order="id desc", limit=1)
+            self.assertIn(hold.state, ("accepted", "requested", "expired", "taken", "cancelled"))
+        with freeze_time(self._douala(tomorrow + timedelta(days=1), 13, 0)):
+            demo.keep_shop(fields.Datetime.now())
+            self.assertEqual(collect.ocd_stage, "delivered", "Picked up at the counter")
+            self.assertEqual(relay.ocd_stage, "delivered", "Picked up at the relay point")
 
     def test_ocd_express_of_the_demo(self):
         """Nadège Mode sends her parcels with OCD Express: the parcels of the last week delivered
@@ -567,6 +665,11 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
             [("module", "=", "ocd_live_demo"), ("model", "=", "product.template")]
         ).mapped("res_id")
         self.assertFalse(self.env["stock.quant"].search([("product_id.product_tmpl_id", "in", templates)]))
+        # The stores, the team and the life of the shop
+        for model in ("ocd.vendor.place", "ocd.vendor.member", "ocd.vendor.follower", "ocd.vendor.review"):
+            self.assertFalse(self.env[model].with_context(active_test=False).search([("vendor_id", "in", partners.ids)]), model)
+        self.assertFalse(self.env["ocd.vendor.count"].search([("vendor_id", "in", partners.ids)]))
+        self.assertFalse(self.env["ir.config_parameter"].get_str(PARAM_SHOP))
         if "ocd.express.pickup" in self.env:
             self.assertFalse(express.exists(), "The parcels of OCD Express")
             self.assertFalse(customers.exists(), "Their customers")

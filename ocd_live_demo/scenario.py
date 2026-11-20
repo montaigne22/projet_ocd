@@ -172,7 +172,17 @@ SHOP_DAY = [
     ("12:15", "customer_ruth", (("product_wax_dress", (("Rouge", "M"), ("Bleu", "XL")), 1),), "online"),
     ("13:20", "customer_bertrand", (("product_wax_pagne", None, 1),), "absent"),
     ("16:50", "customer_sandrine", (("product_shea_butter", None, 2),), "cash"),
+    # Added after the first ones (the steps already played keep their number): picked up at the
+    # store of Brenda in Akwa (free), ready an hour later with the code, picked up the next
+    # morning and paid on the phone at the counter
+    ("14:10", "customer_herve", (("product_wax_pagne", None, 1),), "collect"),
+    # At the relay point « Chez Rose » in Bonamoussadi (cheaper than at the door): the courier
+    # takes it there at the end of the afternoon, picked up the next day at lunch time
+    ("15:20", "customer_carine", (("product_wax_shirt", None, 1),), "relay"),
 ]
+# Where the orders of these stories go: the store of the vendor, the relay point
+SHOP_COLLECT_STORE = "akwa"
+SHOP_RELAY = "relay_rose"
 # The steps of a parcel: minutes after the order, or "+1 HH:MM" the next day
 STORIES = {
     # An OCD courier picks the parcel up at the vendor, the customer pays cash at the door
@@ -190,7 +200,41 @@ STORIES = {
     "vendor": (("ready", 60), ("leave", 90), ("deliver_online", 150)),
     # Ordered in the evening from a vendor who delivers herself: the next morning
     "vendor_evening": (("ready", "+1 08:30"), ("leave", "+1 09:30"), ("deliver_online", "+1 10:30")),
+    # Picked up at the store: ready (the code sent), picked up the next morning, paid on the phone
+    "collect": (("collect_ready", 55), ("counter", "+1 10:20")),
+    # To a relay point: prepared, taken there by the courier, counted by the relay point, picked
+    # up the next day with the code (paid on the phone: a relay point keeps no money)
+    "relay": (("ready", 40), ("pick_up", 70), ("leave", 80), ("relay_receive", 125), ("relay_hand_over", "+1 12:30")),
+    # Ordered during an evening live: prepared the next morning, delivered before noon
+    "live": (("ready", "+1 09:20"), ("pick_up", "+1 10:15"), ("leave", "+1 10:25"), ("deliver_online", "+1 11:35")),
 }
+# A review after a delivery: most buyers give one, half an hour after (stars, word), in turn
+REVIEW_AFTER_MINUTES = 35
+REVIEWS = [
+    (5, "Très belle qualité, livrée à l'heure. Je recommande !"),
+    (4, "Bien reçu, le livreur a appelé avant. Un peu d'attente."),
+    (5, ""),
+]
+# What the buyer says of the product (added to REVIEWS for a parcel delivered at home)
+REVIEWS_BY_PRODUCT = {
+    "product_wax_dress": ((4, "Belle robe, la taille taille un peu petit."),
+                          (5, "Parfait, je recommanderai pour ma sœur.")),
+    "product_wax_shirt": ((5, "Chemise bien coupée, mon mari l'adore."),),
+    "product_wax_pagne": ((5, "Le tissu est magnifique, conforme aux photos."),),
+    "product_shea_butter": ((5, "Karité bien pur, ma peau dit merci."),),
+}
+# What the buyer says of the way the parcel came (instead of the ones above)
+REVIEWS_BY_STORY = {
+    "late": ((3, "Correct, mais le colis est arrivé en retard."),
+             (4, "Un jour de retard, mais on m'a prévenue. Bel article.")),
+    "absent": ((4, "Le livreur est repassé le lendemain comme je l'avais demandé."),
+               (5, "J'étais absent, ils sont revenus après 17 h. Parfait.")),
+    "collect": ((5, "Retirée au magasin d'Akwa en cinq minutes, très bon accueil."), (5, "")),
+    "relay": ((5, "Récupéré chez Rose en rentrant du travail, très pratique."),),
+    "live": ((5, "Commandé pendant le live, reçu le lendemain matin. Top !"), (5, "Encore plus beau qu'en live !")),
+}
+# One parcel in REVIEW_SKIP has no review (not every buyer gives one)
+REVIEW_SKIP = 3
 VENDOR_EVENING_FROM = "16:00"
 # The WhatsApp conversations of each order: (when, with whom, kind, text or template). Kinds:
 # "template" (a message of OCD Live), "in" (written by the contact), "wait" (written by the
@@ -233,6 +277,16 @@ SHOP_TALKS = [
         (2, "vendor", "template", "ocd_live_shop_whatsapp.template_parcel_to_prepare"),
         ("+1 08:35", "vendor", "in", "C'est prêt, je pars à 9 h 30."),
         ("+1 08:40", "vendor", "out", "Merci Fatou ! {first} attend son colis ce matin."),
+    ),
+    (  # Hervé picks up at the store of Akwa
+        (2, "customer", "template", "whatsapp_cloud_sale.template_order_confirmed"),
+        (40, "customer", "in", "Bonjour, je peux passer au magasin d'Akwa demain matin ?"),
+        (44, "customer", "out", "Bonjour {first}, oui : le magasin ouvre à 8 h. Montrez votre code au comptoir."),
+    ),
+    (  # Carine at the relay point
+        (2, "customer", "template", "whatsapp_cloud_sale.template_order_confirmed"),
+        (150, "customer", "in", "C'est bien chez Rose, à côté du carrefour Kotto ?"),
+        (153, "customer", "out", "Oui {first}, chez Rose, à côté du carrefour Kotto. Votre colis vous attend 7 jours."),
     ),
 ]
 CASH_HANDOVER = "19:30"
@@ -341,3 +395,100 @@ def express_phones():
     """The WhatsApp numbers (digits) of the customers of OCD Express of the demo: examples, no
     message goes to them."""
     return {"".join(char for char in phone if char.isdigit()) for _name, phone, _district, _landmark in EXPRESS_CUSTOMERS}
+
+
+# === THE STORES, THE TEAM AND THE LIFE OF THE SHOP ===
+# The places of the vendors (chantier 17): key, vendor, kind, name, district, landmark, position,
+# state. Brenda has two stores in Douala (Akwa, where her parcels leave from; Bonapriso, held by
+# Aïcha of her team), Fatou sells from home, Kossi has his store in Lomé; the store of Ama waits for
+# the check of the team.
+PLACES = [
+    ("akwa", "vendor_brenda", "store", "Brenda Wax Akwa", "delivery_cameroon.district_douala_akwa",
+     "En face de la pharmacie du Port", (4.0511, 9.6942), "approved"),
+    ("bonapriso", "vendor_brenda", "store", "Brenda Wax Bonapriso", "delivery_cameroon.district_douala_bonapriso",
+     "Rue Njo-Njo, à côté de la boulangerie", (4.0335, 9.6965), "approved"),
+    ("fatou_home", "vendor_fatou", "home", "Fatou Karité", "delivery_cameroon.district_douala_makepe",
+     "Makepe Missoké", (4.0732, 9.7455), "approved"),
+    ("kossi_store", "vendor_kossi", "store", "Kossi Tech, Grand Marché", None,
+     "Grand Marché de Lomé, allée des téléphones", (6.1319, 1.2228), "approved"),
+    ("ama_store", "vendor_ama", "store", "Ama Pagnes, Assigamé", None,
+     "Marché d'Assigamé, rangée des pagnes", (6.1305, 1.2236), "to_check"),
+]
+# The relay point of the demo (chantier 10): a shop of the neighbourhood held by a partner of OCD
+# Live, where the courier of Bonamoussadi brings the parcels of the customers who chose it
+RELAY_PLACE = ("relay_rose", "Chez Rose", "delivery_cameroon.district_douala_bonamoussadi",
+               "Carrefour Kotto, à côté de la pharmacie", (4.0598, 9.7397), 30)
+# A shop that asks to become a relay point, waiting for the visit of the team (« To check »):
+# (holder, shop, district, landmark, what the shop does)
+RELAY_REQUEST = ("relay_ngo", "Alimentation Ngo", "delivery_cameroon.district_douala_logpom",
+                 "Face à la station Total de Logpom",
+                 "Alimentation ouverte de 7 h à 22 h, tous les jours. Je connais tout le quartier.")
+# The city of the places without a district (Lomé)
+PLACE_CITIES = {"kossi_store": "ocd_delivery_togo.city_tg_lome", "ama_store": "ocd_delivery_togo.city_tg_lome"}
+# The pieces of each store of Brenda (the website counts them all: the same as before)
+PLACE_STOCK = {
+    "product_wax_dress": {
+        "akwa": {"Bleu": {"S": 4, "M": 2, "L": 0, "XL": 1}, "Rouge": {"S": 3, "M": 2, "L": 0, "XL": 0}},
+        "bonapriso": {"Bleu": {"S": 1, "M": 1}, "Rouge": {"S": 1}},
+    },
+    "product_wax_shirt": {"akwa": 4, "bonapriso": 2},
+    "product_wax_pagne": {"akwa": 3, "bonapriso": 1},
+}
+# The person of her team who holds the store of Bonapriso (chantier 22)
+TEAM = [("vendor_brenda", "member_aicha", "Aïcha Njoya", "bonapriso")]
+# She opens her store space when she opens the store (Douala)
+TEAM_VISIT = "08:10"
+# A piece held to try at the store of Bonapriso, every day (A.7): asked at 10:00, accepted by Aïcha
+HOLD = ("customer_ruth", "product_wax_dress", ("Rouge", "S"), "bonapriso", "10:05", "10:25")
+# The visits of the stores thanks to OCD (itinerary, call, WhatsApp) each day: (kind, how many)
+PLACE_TAPS = {"akwa": (("itinerary", 3), ("call", 1), ("whatsapp", 2)),
+              "bonapriso": (("itinerary", 1), ("whatsapp", 1)),
+              "kossi_store": (("itinerary", 2), ("call", 2), ("whatsapp", 1))}
+# Who follows whom (chantier 1): vendor, followers
+FOLLOWERS = {
+    "vendor_brenda": ("customer_estelle", "customer_ruth", "customer_sandrine", "customer_herve", "customer_carine"),
+    "vendor_awa": ("customer_estelle", "customer_bertrand", "customer_ruth"),
+    "vendor_kossi": ("customer_herve", "customer_bertrand"),
+    "vendor_fatou": ("customer_sandrine", "customer_estelle"),
+}
+# They followed this many days ago, in turn
+FOLLOWED_DAYS_AGO = (82, 64, 47, 31, 19)
+# « Tell me » when a size is back (sold out): the blue dress in L
+STOCK_ALERTS = (("product_wax_dress", ("Bleu", "L"), ("customer_estelle", "customer_sandrine", "customer_carine")),)
+# The vendors checked by the team (« Verified vendor »)
+VERIFIED = ("vendor_brenda", "vendor_fatou", "vendor_kossi", "vendor_awa")
+# A product reported by a customer, waiting for the team (« To check »)
+REPORT = ("product_kente", "customer_bertrand", "fake", "Le même kente est vendu deux fois moins cher ailleurs, "
+                                                        "je pense que ce n'est pas du tissé main.")
+# The promo of the week of Brenda (3.1), from Monday to Sunday: (product, price)
+PROMO = ("product_wax_pagne", 0.8)
+# The products prepared for the next lives of Brenda (21): what the host shows, in this order
+PREPARED = ("vendor_brenda", ("product_wax_dress", "product_wax_shirt", "product_wax_pagne"),
+            "Je commence par la robe bleue, puis la chemise. Montrer le pagne en dernier.")
+# A product on sale whose new name waits for the team, and a product refused, to correct
+CHANGE = ("product_powerbank", "Batterie externe 20 000 mAh, charge rapide")
+# The figures of the vendors day by day (chantier 3): visits of the boutique, WhatsApp contacts,
+# lives opened from OCD; the last 90 days, more for the vendors of the shop
+FIGURES_DAYS = 90
+FIGURES = {
+    "vendor_brenda": (38, 9, 26), "vendor_fatou": (17, 5, 11), "vendor_kossi": (24, 8, 19),
+    "vendor_awa": (21, 6, 15), "vendor_ama": (14, 4, 10), "vendor_papa": (12, 4, 9),
+}
+FIGURES_OTHERS = (6, 2, 5)
+# The sales of the lives of the vendors of the shop (« My figures » › « My lives »): during each
+# live, the boutique is visited, customers order (counted for the live: they came during it) and
+# a viewer follows. (minutes after the start, products as in SHOP_DAY), the customers in turn.
+LIVE_SALES = {
+    "vendor_brenda": ((20, (("product_wax_dress", (("Bleu", "M"), ("Rouge", "S"), ("Bleu", "S")), 1),)),
+                      (45, (("product_wax_shirt", None, 1), ("product_wax_pagne", None, 1)))),
+    "vendor_fatou": ((25, (("product_shea_butter", None, 2),)),),
+}
+LIVE_CUSTOMERS = ("customer_estelle", "customer_ruth", "customer_carine", "customer_herve", "customer_sandrine",
+                  "customer_bertrand")
+# Visits of the boutique during a live: from LIVE_VISITS[0], up to LIVE_VISITS[1] more; the
+# visits and the new follower are counted at these minutes after the start
+LIVE_VISITS = (28, 40)
+# The lives of the week behind sell, from the first day of the demo
+LIVE_PAST_DAYS = PAST_DAYS
+LIVE_VISITS_AFTER = 50
+LIVE_FOLLOW_AFTER = 35

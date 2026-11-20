@@ -226,6 +226,45 @@
         <field name="district_id" ref="delivery_cameroon.district_douala_bonaberi"/>
         <field name="delivery_landmark">Après le pont, à gauche</field>
     </record>
+    <!-- She picks her orders up at the relay point « Chez Rose » near her office -->
+    <record id="customer_carine" model="res.partner">
+        <field name="name">Carine Ebongue</field>
+        <field name="phone">+237 694000109</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_bonamoussadi"/>
+        <field name="delivery_landmark">Carrefour Kotto, bureaux de la Camtel</field>
+    </record>
+    <!-- Of the team of Brenda: she holds the store of Bonapriso (« My store ») -->
+    <record id="member_aicha" model="res.partner">
+        <field name="name">Aïcha Njoya</field>
+        <field name="phone">+237 699123456</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_bonapriso"/>
+    </record>
+    <!-- A partner of OCD Live: her shop of the neighbourhood is a relay point (chantier 10) -->
+    <record id="relay_rose" model="res.partner">
+        <field name="name">Rose Ekollo</field>
+        <field name="phone">+237 677330021</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_bonamoussadi"/>
+        <field name="delivery_landmark">Carrefour Kotto, à côté de la pharmacie</field>
+        <field name="ocd_is_relay" eval="True"/>
+        <field name="ocd_payout_frequency">monthly</field>
+        <field name="ocd_payout_momo">+237 677330021</field>
+    </record>
+    <record id="relay_ngo" model="res.partner">
+        <field name="name">Pauline Ngo</field>
+        <field name="phone">+237 677412085</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_logpom"/>
+        <field name="ocd_is_relay" eval="True"/>
+        <field name="ocd_payout_frequency">monthly</field>
+        <field name="ocd_payout_momo">+237 677412085</field>
+    </record>
     <record id="courier_ekwalla" model="res.partner">
         <field name="name">Junior Ekwalla</field>
         <field name="phone">+237 655000103</field>
@@ -478,6 +517,18 @@
         <field name="is_published" eval="True"/>
         <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/gateau_chocolat.jpg"/>
     </record>
+    <!-- A product refused by the team, with its reason: the vendor corrects it and sends it again -->
+    <record id="product_honey_soap" model="product.template">
+        <field name="name">Savon noir au miel</field>
+        <field name="type">consu</field>
+        <field name="list_price">2000</field>
+        <field name="taxes_id" eval="[Command.clear()]"/>
+        <field name="ocd_vendor_id" ref="vendor_fatou"/>
+        <field name="ocd_review_state">refused</field>
+        <field name="ocd_refuse_reason_id" ref="ocd_live_shop.refuse_reason_product_photo"/>
+        <field name="is_published" eval="False"/>
+        <field name="image_1920" type="bytes" file="ocd_live_demo/static/img/savon_noir.jpg"/>
+    </record>
     <!-- A product added by a vendor from the space: to check by the team -->
     <record id="product_pineapple_cake" model="product.template">
         <field name="name">Gâteau à l'ananas</field>
@@ -660,6 +711,16 @@
         <field name="city_ids" eval="[Command.set([ref('delivery_cameroon.city_cm_douala')])]"/>
         <field name="price">1000</field>
         <field name="description">Delivered within 24 to 48 hours</field>
+    </record>
+    <!-- At a relay point in Douala: cheaper than at the door -->
+    <record id="rate_douala_relay" model="ocd.delivery.rate">
+        <field name="operator">relay</field>
+        <field name="origin_country_id" ref="base.cm"/>
+        <field name="origin_city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_ids" eval="[Command.set([ref('delivery_cameroon.city_cm_douala')])]"/>
+        <field name="price">500</field>
+        <field name="description">Picked up at the relay point, waits 7 days</field>
     </record>
     <record id="rate_cameroon_agency" model="ocd.delivery.rate">
         <field name="operator">agency</field>

@@ -10,6 +10,7 @@ from odoo.tools import SQL, BinaryBytes
 from odoo.tools.misc import file_open
 
 from . import scenario
+from .shop_life import PARAM_SHOP, SETUP, DemoShopLife
 
 _logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ MOMO_MESSAGE = (
 OPEN_LINKS = ("queued", "to_check", "published")
 
 
-class OcdLiveDemo:
+class OcdLiveDemo(DemoShopLife):
     """Scenario of the demo (scenario.py): installed once, then kept on the days around today
     by the scheduled action of the demo (keep_current)."""
 
@@ -200,7 +201,11 @@ class OcdLiveDemo:
         self.step("the payment to check", self.keep_payment_to_check, now)
         self.step("the waiting list", self.keep_waitlist)
         self.step("OCD Express", self.express_setup)
+        self.step("the settings of the shop", self.shop_settings)
+        self.step("the stores of the vendors", self.keep_places)
+        self.step("the team of Brenda", self.keep_team)
         self.step("the shop in Douala", self.keep_shop, now)
+        self.step("the life of the shop", self.keep_life, now)
         self.step("the old records of the demo", self.prune, now)
         self.remember_channel_messages(last_message)
 
@@ -606,7 +611,7 @@ class OcdLiveDemo:
         released.unlink()
         orders.unlink()
         self.env["ocd.live.demo.event"].sudo().search([
-            ("create_date", "<", now - timedelta(days=scenario.KEEP_STEPS_DAYS)),
+            ("create_date", "<", now - timedelta(days=scenario.KEEP_STEPS_DAYS)), ("key", "not like", SETUP + "%"),
         ]).unlink()
 
     # Stock of the products followed in stock: set on the quants without stock moves, so that
@@ -638,26 +643,40 @@ class OcdLiveDemo:
         if not warehouse:
             return
         location = warehouse.lot_stock_id
-        Quant = self.env["stock.quant"].sudo()
         for xmlid, quantities in self.STOCK.items():
-            for variant in self.ref(xmlid).product_variant_ids:
-                if isinstance(quantities, dict):
-                    names = variant.product_template_attribute_value_ids.mapped("name")
-                    sizes = quantities.get(next((name for name in names if name in quantities), None), {})
-                    target = sizes.get(next((name for name in names if name in sizes), ""), 0)
-                else:
-                    target = quantities
-                quants = Quant.search([("product_id", "=", variant.id), ("location_id", "=", location.id)])
-                free = sum(quants.mapped("quantity")) - sum(quants.mapped("reserved_quantity"))
-                if target > free:
-                    Quant._update_available_quantity(variant, location, target - free)
+            # In the stores of the vendor when it has them (the website counts them all)
+            for place_location, place_quantities in (self.place_stock(xmlid) or {location: quantities}).items():
+                self.top_up(xmlid, place_quantities, place_location)
 
-    def order(self, partner, lines):
-        """A shop order priced with the delivery of OCD Live (one price per parcel), confirmed."""
+    def top_up(self, xmlid, quantities, location):
+        """The free pieces of the variants of `xmlid` at `location` back to `quantities` (a number,
+        or {colour: {size: number}})."""
+        Quant = self.env["stock.quant"].sudo()
+        for variant in self.ref(xmlid).product_variant_ids:
+            if isinstance(quantities, dict):
+                names = variant.product_template_attribute_value_ids.mapped("name")
+                sizes = quantities.get(next((name for name in names if name in quantities), None), {})
+                target = sizes.get(next((name for name in names if name in sizes), ""), 0)
+            else:
+                target = quantities
+            quants = Quant.search([("product_id", "=", variant.id), ("location_id", "=", location.id)])
+            free = sum(quants.mapped("quantity")) - sum(quants.mapped("reserved_quantity"))
+            if target > free:
+                Quant._update_available_quantity(variant, location, target - free)
+
+    def order(self, partner, lines, collect=None, relay=None, live=None):
+        """A shop order priced with the delivery of OCD Live (one price per parcel), confirmed;
+        picked up at the store `collect`, or at the relay point `relay`, when it can; counted for
+        the live `live` when the customer came during it."""
         order = self.SaleOrder.create({
             "partner_id": partner.id,
             "order_line": [Command.create({"product_id": product.id, "product_uom_qty": qty}) for product, qty in lines],
+            "ocd_live_seen_ids": [Command.link(live.id)] if live else [],
         })
+        if collect:
+            self.step("the store chosen", order._ocd_set_collect_places, collect)
+        elif relay:
+            self.step("the relay point chosen", order._ocd_set_relay, relay)
         carrier = self.env.ref("ocd_live_shop.carrier_ocd", raise_if_not_found=False)
         if carrier and carrier.is_published:
             rate = carrier.rate_shipment(order)
@@ -721,6 +740,7 @@ class OcdLiveDemo:
                         moment = scenario.when(ordered, step_time)
                         steps.append((moment, f"{key}:{vendor.id}:{number}:{name}", self.shop_parcel_step,
                                       (key, vendor, name, self.shop_utc(moment))))
+                    steps.extend(self.review_steps(key, index, day, vendor, story, ordered))
                 delivered = next(
                     (scenario.when(ordered, step_time) for name, step_time in scenario.STORIES[stories[0][1]]
                      if name.startswith("deliver")),
@@ -730,12 +750,16 @@ class OcdLiveDemo:
                     moment = scenario.when(ordered, talk[0])
                     steps.append((moment, f"{key}:talk:{number}", self.shop_talk,
                                   (key, talk, self.shop_utc(moment), delivered)))
+            steps.extend(self.life_steps(day, at))
             steps.append((at(scenario.PAYOUTS_PREPARED), f"shop:{day}:payouts", self.shop_payouts, (day,)))
             steps.append((at(scenario.PAYOUTS_PAID), f"shop:{day}:paid", self.shop_pay, (day,)))
             moment = at(scenario.CASH_HANDOVER)
             steps.append((moment, f"shop:{day}:cash", self.shop_cash, (self.shop_utc(moment),)))
             if self.express() and self.company._ocd_express_working_day(day):
                 steps.extend(self.express_plan(day, at))
+        # The lives sell from the first week of the studio kept (« My figures » of the vendor)
+        for offset in range(-scenario.LIVE_PAST_DAYS, 1):
+            steps.extend(self.live_steps(today + timedelta(days=offset)))
         return sorted(steps, key=lambda step: step[0])
 
     def keep_shop(self, now):
@@ -765,17 +789,31 @@ class OcdLiveDemo:
             })
         self.keep_stock()
 
-    def shop_order(self, key, day, index, ordered):
-        """An order of the day, placed at its hour (one parcel per vendor)."""
-        _hour, customer, lines, _story = scenario.SHOP_DAY[index]
+    def order_lines(self, lines, *parts):
+        """The products of an order of the scenario, the variant chosen by `parts` (the day...)."""
         order_lines = []
         for product_xmlid, variants, quantity in lines:
             if variants:
-                product = self.variant(product_xmlid, *variants[scenario.number(day, index) % len(variants)])
+                product = self.variant(product_xmlid, *variants[scenario.number(*parts) % len(variants)])
             else:
                 product = self.product(f"{MODULE}.{product_xmlid}")
             order_lines.append((product, quantity))
-        order = self.order(self.ref(customer), order_lines)
+        return order_lines
+
+    def shop_order(self, key, day, index, ordered):
+        """An order of the day, placed at its hour (one parcel per vendor)."""
+        _hour, customer, lines, story = scenario.SHOP_DAY[index]
+        # The vendors restock before each order: the store chosen has the whole order
+        self.keep_stock()
+        order = self.order(
+            self.ref(customer), self.order_lines(lines, day, index),
+            collect=self.collect_store() if story == "collect" else None,
+            relay=self.relay_point() if story == "relay" else None,
+        )
+        return self.dated_order(order, ordered)
+
+    def dated_order(self, order, ordered):
+        """The order placed at `ordered` (Douala), its parcels prepared from then."""
         moment = self.shop_utc(ordered)
         order.date_order = moment
         if order.picking_ids:
@@ -1335,6 +1373,36 @@ def post_init_hook(env):
     OcdLiveDemo(env).run()
 
 
+def _uninstall_shop_life(env, partner_ids):
+    """The stores, the team and the life of the shop of the demo (shop_life.py): its holds, reviews,
+    followers, alerts, reports, figures, promos and the places of its vendors with their stock."""
+    domain = [("partner_id", "in", partner_ids)]
+    holds = env["ocd.product.hold"].sudo().search(["|", ("partner_id", "in", partner_ids), ("vendor_id", "in", partner_ids)])
+    hold_pickings = holds.picking_id
+    hold_pickings.filtered(lambda picking: picking.state not in ("done", "cancel")).action_cancel()
+    holds.unlink()
+    hold_pickings.filtered(lambda picking: picking.state == "cancel").unlink()
+    env["ocd.vendor.review"].sudo().search(["|", ("partner_id", "in", partner_ids), ("vendor_id", "in", partner_ids)]).unlink()
+    env["ocd.vendor.follower"].sudo().with_context(active_test=False).search(
+        ["|", ("partner_id", "in", partner_ids), ("vendor_id", "in", partner_ids)]).unlink()
+    env["ocd.stock.alert"].sudo().with_context(active_test=False).search(domain).unlink()
+    env["ocd.report"].sudo().search(["|", ("partner_id", "in", partner_ids), ("vendor_id", "in", partner_ids)]).unlink()
+    env.cr.execute(SQL("DELETE FROM ocd_vendor_count WHERE vendor_id IN %s", tuple(partner_ids)))
+    members = env["ocd.vendor.member"].sudo().with_context(active_test=False).search(
+        ["|", ("vendor_id", "in", partner_ids), ("partner_id", "in", partner_ids)])
+    members.unlink()
+    places = env["ocd.vendor.place"].sudo().with_context(active_test=False).search([("vendor_id", "in", partner_ids)])
+    if places:
+        env["res.partner"].sudo().browse(partner_ids).write({"ocd_departure_place_id": False})
+        locations = places.location_id
+        # Their pieces: set on the quants by the demo, removed with them (no stock move to undo)
+        env["stock.quant"].sudo().search([("location_id", "in", locations.ids)]).unlink()
+        # The parcels kept by the relay point of the demo (removed with their orders afterwards)
+        env["stock.picking"].sudo().search([("ocd_relay_id", "in", places.ids)]).write({"ocd_relay_id": False})
+        places.unlink()
+        locations.write({"active": False})
+
+
 def uninstall_hook(env):
     """Cancel and remove everything the demo created around its contacts; Odoo then removes
     the records of the module (contacts, products, hosts, prices of the hours)."""
@@ -1357,6 +1425,7 @@ def uninstall_hook(env):
         bills.with_context(force_delete=True).unlink()
         if "ocd.express.pickup" in env:
             _uninstall_express(env, partner_ids)
+        _uninstall_shop_life(env, partner_ids)
         orders = env["sale.order"].sudo().with_context(active_test=False).search(domain)
         pickings = orders.picking_ids
         pickings.filtered(lambda p: p.state not in ("done", "cancel")).action_cancel()
@@ -1423,6 +1492,14 @@ def uninstall_hook(env):
             if saved.get("momo") and company.ocd_express_momo_number == scenario.EXPRESS_MOMO:
                 values["ocd_express_momo_number"] = False
             company.write(values)
+    previous = params.search([("key", "=", PARAM_SHOP)])
+    if previous:
+        # The settings of the shop the demo turned on (pick up at the store, pieces to try,
+        # relay points): back as the team had them
+        saved = json.loads(previous.value or "{}")
+        company = env["res.company"].sudo().browse(saved.pop("company", None) or []).exists()
+        if company:
+            company.write({name: value for name, value in saved.items() if name in company._fields})
     previous = params.search([("key", "=", PARAM_OPEN_DATE)])
     if previous:
         # The demo had opened the bookings from its day: the date set by the team comes back
@@ -1432,5 +1509,5 @@ def uninstall_hook(env):
             company.ocd_booking_open_date = fields.Date.to_date(saved["date"])
     params.search([("key", "in", (
         PARAM_MESSAGES, PARAM_MOMO, PARAM_COD, PARAM_WHATSAPP, PARAM_OPEN_DATE, PARAM_EXPRESS,
-        PARAM_REPLAY_URL, PARAM_REPLAY_MINUTES, PARAM_LIVE_URL,
+        PARAM_REPLAY_URL, PARAM_REPLAY_MINUTES, PARAM_LIVE_URL, PARAM_SHOP,
     ))]).unlink()

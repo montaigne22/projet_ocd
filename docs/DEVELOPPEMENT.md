@@ -77,7 +77,9 @@ sans animatrice), les replays de la semaine passée avec les produits montrés, 
 vérifier ; la boutique de Douala heure par heure (six commandes par jour, colis à chaque étape, un colis
 en retard, un client absent, espèces remises chaque soir, reversements préparés et payés chaque jour si la
 comptabilité existe, conversations WhatsApp du jour ; robe en 2 couleurs et 4 tailles, « Plus que 3 »,
-tailles épuisées) ; avec `ocd_express` (installé avant ou après la démo), une expéditrice d'OCD Express et
+tailles épuisées ; magasins de Brenda à Akwa et Bonapriso avec son équipe, retrait au magasin, point relais,
+pièce à essayer, ventes pendant les lives, avis, abonnés, promo et signalement de la semaine, 90 jours de
+chiffres) ; avec `ocd_express` (installé avant ou après la démo), une expéditrice d'OCD Express et
 ses colis de chaque jour ouvré (deux passages du livreur, un retour rendu contre le code, un souci
 signalé, un colis au-dessus de sa limite à vérifier, son argent versé chaque jour ouvré) et une demande
 d'ouverture de compte. Une action planifiée (toutes les 15 minutes) la tient sur les jours autour
@@ -90,8 +92,11 @@ et ouvre les réservations sans date d'ouverture. Aucun message WhatsApp ne part
 les numéros sont des exemples : `ocd_live_demo_whatsapp` s'installe avec elle quand WhatsApp est là.
 Le stock est posé sans mouvement de stock et les colis livrés ne valident pas le transfert : la
 désinstallation de `ocd_live_demo` retire tout (contacts, produits, photos, stocks, lives, commandes,
-paiements, factures, reversements, tarifs, fenêtres) et remet les moyens de paiement et la date
-d'ouverture comme avant.
+paiements, factures, reversements, tarifs, fenêtres, magasins, équipe, avis, abonnés, chiffres) et remet
+les moyens de paiement, la date d'ouverture et les réglages de la boutique qu'elle avait activés
+(retrait au magasin, pièces à essayer, points relais) comme avant. Ce qui ne se fait qu'une fois
+(un magasin, l'équipe, les abonnés…) est noté `setup:…` dans `ocd.live.demo.event` et jamais purgé :
+un magasin retiré par l'équipe pendant une présentation ne revient pas.
 
 Installée **en une fois** avec les modules (ce que font les tests), la démo charge elle-même le plan
 comptable qu'Odoo n'aurait chargé qu'à la fin de l'installation : les colis des jours passés ont leurs

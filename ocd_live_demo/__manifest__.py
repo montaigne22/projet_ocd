@@ -43,7 +43,7 @@ Uninstalling the module cancels and removes all these records, and puts the paym
 methods, the opening date of the bookings and the settings of OCD Express back as they
 were.
 """,
-    "version": "20.0.1.6.0",
+    "version": "20.0.1.7.0",
     "category": "Hidden",
     "author": "RollBackk",
     "license": "LGPL-3",

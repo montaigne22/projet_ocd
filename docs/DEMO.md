@@ -44,8 +44,24 @@ pays. Les lives réservés passent dessus ; le vendeur d'un live à distance le 
 des exemples : les remplacer par les vrais comptes d'OCD Live.
 
 Clients à Douala : Estelle Ngono (Akwa), Hervé Kuete (Bonabéri), Sandrine Fouda (Makepe), Ruth Mbarga
-(Akwa), Bertrand Atangana (Bonamoussadi). Livreurs OCD : Junior Ekwalla, Raoul Nyobe, Christelle Mbarga
+(Akwa), Bertrand Atangana (Bonamoussadi), Carine Ebongue (Bonamoussadi). Livreurs OCD : Junior Ekwalla, Raoul Nyobe, Christelle Mbarga
 (en repos).
+
+**Les magasins et les points relais** :
+
+| Lieu | Qui | Où | Ce qu'il montre |
+|---|---|---|---|
+| Brenda Wax Akwa | Brenda | Akwa, en face de la pharmacie du Port | ses colis partent d'ici ; retrait au comptoir |
+| Brenda Wax Bonapriso | **Aïcha Njoya**, de l'équipe de Brenda | Bonapriso, rue Njo-Njo | Aïcha ouvre son espace magasin chaque matin à 8 h 10 et accepte les pièces à essayer |
+| Fatou Karité | Fatou | Makepe, chez elle | une vendeuse sans magasin |
+| Kossi Tech, Grand Marché | Kossi | Lomé | un magasin au Togo |
+| Ama Pagnes, Assigamé | Ama | Lomé | **à vérifier** par l'équipe (pas de photo de la devanture) |
+| Chez Rose (point relais) | Rose Ekollo | Bonamoussadi, carrefour Kotto | garde les colis des clients du quartier, payée par colis remis |
+| Alimentation Ngo | Pauline Ngo | Logpom, face à la station Total | **demande à devenir point relais** : la visite attend l'équipe |
+
+Les pièces de Brenda sont réparties entre ses deux magasins (robe bleue M : 2 à Akwa, 1 à Bonapriso ;
+L épuisée partout). La démo active le retrait au magasin, les pièces à essayer et les points relais, si
+l'équipe ne l'a pas fait.
 
 **OCD Express** (quand `ocd_express` est installé, avant ou après la démo) : **Nadège Mode** (Akwa,
 `@nadege.mode` sur Instagram et TikTok), sans boutique sur OCD Live, envoie ses colis avec OCD Express
@@ -77,6 +93,23 @@ des exemples, si l'équipe ne l'a pas fait.
   les conversations WhatsApp qui vont avec, les espèces remises par les livreurs à 19 h 30, les
   reversements de Brenda et Fatou préparés à 7 h et payés par l'équipe à 10 h le lendemain (Mobile
   Money). Le stock reste à son niveau : « Plus que 3 » en bleu M, tailles épuisées, savon noir épuisé.
+- **Les ventes des lives** : pendant chaque live de Brenda (lundi, vendredi et samedi à 20 h à Douala)
+  la boutique reçoit 28 à 67 visites, deux clientes venues du live commandent (une robe à 20 h 20,
+  une chemise et un pagne à 20 h 45 ; livrées le lendemain à 11 h 35) et une personne s'abonne ; pendant
+  ceux de Fatou, une commande de karité (livrée par Fatou le lendemain matin). « Mes chiffres » montre
+  la part des ventes venue des lives, le meilleur live et « Tes lives du lundi à 20:00 vendent 2 fois
+  plus que les autres ».
+- **La vie de la boutique** : un avis de la plupart des acheteurs une demi-heure après la livraison,
+  qui colle à l'histoire du colis (en retard, client absent, retiré au magasin, au point relais,
+  commandé en live) et au produit ; les abonnés de Brenda, Fatou, Awa et Kossi ; trois clientes
+  attendent la robe bleue en L (« Préviens-moi ») ; Brenda, Fatou, Kossi et Awa sont des vendeurs
+  vérifiés ; chaque semaine **un signalement** d'un client (l'écharpe en kente d'Akua, « faux ») et
+  **la promo de la semaine** de Brenda (pagne wax à −20 % du lundi au dimanche soir) ; ses lives des
+  trois prochains jours **préparés** pour l'animatrice (robe, chemise, pagne, et sa note) ; un
+  **nouveau nom à vérifier** (la batterie externe de Kossi) et un **produit refusé** à corriger (le savon
+  au miel de Fatou : photo refusée) ; les itinéraires, appels et messages WhatsApp des magasins des 14
+  derniers jours ; les visites de boutique, contacts WhatsApp et lives ouverts depuis OCD des 90
+  derniers jours (plus le vendredi et le samedi, en hausse sur trois mois).
 - **OCD Express** (ci-dessous) : les colis de Nadège chaque jour ouvré (du lundi au samedi), les deux
   passages de Junior chez elle, son argent compté une fois arrivé chez OCD et versé chaque jour ouvré.
 
@@ -94,7 +127,11 @@ retirés ; un colis laissé ouvert les jours d'avant est livré le soir de sa co
 | 10 h 30 | Hervé (Bonabéri) | Chemise wax (Brenda) | En route à 12 h 40, le code envoyé ; « il est où le livreur ? » ; livré à 13 h 40, espèces. |
 | 12 h 15 | Ruth (Akwa) | Robe en wax (Brenda) | Demande si elle peut payer par Mobile Money ; livrée à 15 h 25, payée sur son téléphone (QR code). |
 | 13 h 20 | Bertrand (Bonamoussadi) | Pagne wax (Brenda) | **Absent** à 16 h 30 ; demande de repasser après 17 h : livré le lendemain à 17 h 50. |
+| 10 h 05 | Ruth (Akwa) | Robe rouge en S, **à essayer** au magasin de Bonapriso | Aïcha accepte à 10 h 25 : la pièce est mise de côté pour Ruth. |
+| 14 h 10 | Hervé (Bonabéri) | Pagne wax (Brenda), **retrait au magasin d'Akwa** | Prêt à 15 h 05, le code envoyé ; Hervé le retire le lendemain à 10 h 20, payé sur le téléphone. |
+| 15 h 20 | Carine (Bonamoussadi) | Chemise wax (Brenda), **au point relais Chez Rose** | Prête à 16 h, partie à 16 h 40, comptée par Rose à 17 h 25 ; Carine la retire le lendemain à 12 h 30 avec son code ; Rose gagne sa part. |
 | 16 h 50 | Sandrine (Makepe) | Beurre de karité (Fatou) | Fatou le prépare le lendemain matin : partie à 9 h 30, livré à 10 h 30. |
+| 20 h 20 et 20 h 45, soirs de live | Deux clientes venues du live de Brenda | Robe ; chemise et pagne | Comptées pour le live ; parties le lendemain à 10 h 25, livrées à 11 h 35. |
 
 Ainsi, à toute heure, le dispatch a un colis en retard et un client absent (celui de la veille, puis
 celui du jour), et au fil de la journée des colis à préparer, prêts, en route et livrés ; les livreurs
@@ -143,7 +180,9 @@ l'argent attend un souci, et « Mes colis » des colis à chaque étape.
 ### 2. La boutique d'un vendeur
 - **Ama Pagnes** ou **Kossi Tech** : prochain live et « Me prévenir sur WhatsApp », dernier replay,
   produits, « Écrire à Ama sur WhatsApp » (vente directe).
-- **Brenda Wax** : boutique vendue par OCD, « Une question ? Écrire à OCD Live », paiement sur le site.
+- **Brenda Wax** : boutique vendue par OCD, « Vendeur vérifié », sa note (4,5 environ, une trentaine
+  d'avis), ses 5 abonnés et « Suivre », ses deux magasins avec itinéraire, appel et WhatsApp, les avis
+  des acheteurs (« Récupéré chez Rose… », « Retirée au magasin d'Akwa… »).
 
 ### 3. Le replay · boutique de Brenda › « Revoir »
 - Le live se lit dans la page ; les produits montrés à la seconde : toucher « Robe en wax » saute au
@@ -151,7 +190,10 @@ l'argent attend un souci, et « Mes colis » des colis à chaque étape.
 
 ### 4. Le shop, à Douala · `/shop`
 - **Robe en wax** : la photo change avec la couleur (rouge), « Plus que 3 » en bleu M, taille L épuisée
-  (« Préviens-moi sur WhatsApp »), le savon noir épuisé.
+  (« Préviens-moi sur WhatsApp »), le savon noir épuisé. « Dans ses magasins » : la pièce choisie à
+  Akwa et à Bonapriso (« Plus qu'une »), « Mettre de côté pour l'essayer ».
+- **Pagne wax** : la promo de la semaine (−20 %, prix barré, jusqu'au dimanche soir).
+- À la livraison : chez soi, **retrait au magasin** (Akwa) ou **point relais** (Chez Rose).
 - Panier, adresse à Akwa (point de repère), un prix de livraison par colis, paiement à la livraison.
   La commande passée pendant la présentation arrive dans le dispatch avec celles de la journée.
 
@@ -165,6 +207,11 @@ l'argent attend un souci, et « Mes colis » des colis à chaque étape.
   paiement propose CamPay (s'il est installé et configuré).
 - Pour montrer l'espace d'un vendeur de la démo : back-office › Vendeurs › Kossi Tech › **Voir son
   espace** (aucun code WhatsApp ne part vers un numéro de la démo).
+- **L'espace de Brenda** : « Mes chiffres » (ventes, visites, la part des lives, « Mes lives » avec
+  visites, pièces, ventes et abonnés de chaque live, meilleures heures, clientes fidèles, ses magasins) ;
+  « Mes magasins » (Akwa d'où partent les colis, les itinéraires et appels de la semaine, « En faire un
+  point relais ») ; « Mon équipe » (Aïcha, active, à Bonapriso) ; « Mes avis » ; ses prochains lives
+  « 3 produits prêts » pour l'animatrice ; « Mes produits » (la promo du pagne).
 - Dans l'espace : **« Changer ma carte »** › « Ma carte dans le fil » : la carte telle que le fil la
   montre, le choix (automatique, vidéo courte, mes produits, image) et l'envoi d'une vidéo filmée au
   téléphone ou d'une image.
@@ -179,7 +226,10 @@ l'argent attend un souci, et « Mes colis » des colis à chaque étape.
   live sans animatrice, les espèces d'un livreur.
 - **Lives › Réservations** (planning) : la semaine pleine, le samedi complet ; le live de Kossi en
   « Paiement à vérifier » → « Paiement reçu : marquer payé ».
-- **Lives › À vérifier** : publier le lien en attente ; il apparaît aussitôt dans le fil.
+- **Lives › À vérifier** : publier le lien en attente ; il apparaît aussitôt dans le fil. Le même
+  tableau a le nouveau nom de la batterie de Kossi (« Accepter la modification »), le magasin d'Ama
+  (« Voir sur la carte », « Mettre en ligne »), la demande de point relais d'Alimentation Ngo, le
+  signalement de l'écharpe en kente (« Rien à faire » ou « Retirer le produit… ») et le nouveau vendeur.
 - **Live à distance**, sur sa fiche (Lives › Réservations) ou dans la **Régie** : le compte d'OCD du live,
   l'état du vendeur (« Invité à 14:15, pas encore prêt », « Prêt depuis 14:20 », « Problème : … »), Appeler,
   WhatsApp et « Vendeur appelé ». Cliquer « Je suis prêt » sur la page du vendeur : la régie passe au vert.
@@ -261,6 +311,8 @@ S'y ajoute le live du studio en cours, d'après la semaine ci-dessus.
 
 Désinstaller `ocd_live_demo` (Applications) : contacts, produits, photos, lives, commandes, colis,
 paiements, conversations et fenêtres de la démo sont retirés, avec les colis OCD Express de Nadège, ses
-passages, ses clients et ses versements ; les moyens de paiement, la date d'ouverture des réservations
-et les réglages d'OCD Express que la démo avait remplis (Douala, point OCD, Mobile Money d'OCD)
-reviennent comme avant. `ocd_live_demo_whatsapp` part avec elle.
+passages, ses clients et ses versements, les magasins, le point relais et la demande de point relais,
+l'équipe de Brenda, les pièces mises de côté, avis, abonnés, alertes, signalements et chiffres de la
+démo ; les moyens de paiement, la date d'ouverture des réservations, les réglages d'OCD Express que la
+démo avait remplis (Douala, point OCD, Mobile Money d'OCD) et ceux de la boutique (retrait au magasin,
+pièces à essayer, points relais) reviennent comme avant. `ocd_live_demo_whatsapp` part avec elle.
