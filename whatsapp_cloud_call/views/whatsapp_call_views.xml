@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="whatsapp_call_view_list" model="ir.ui.view">
+        <field name="name">whatsapp.call.list</field>
+        <field name="model">whatsapp.call</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-danger="state in ('lost', 'failed')"
+                  decoration-warning="state in ('missed', 'voicemail')" decoration-muted="state == 'completed'">
+                <field name="start_date"/>
+                <field name="partner_id"/>
+                <field name="number" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'answered'"
+                       decoration-info="state == 'ringing'" decoration-warning="state in ('missed', 'voicemail')"
+                       decoration-danger="state in ('lost', 'failed')"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="wait_display"/>
+                <field name="duration_display"/>
+                <field name="reconnect_count" optional="hide"/>
+                <field name="ended_by" optional="hide"/>
+                <field name="account_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="whatsapp_call_view_form" model="ir.ui.view">
+        <field name="name">whatsapp.call.form</field>
+        <field name="model">whatsapp.call</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <header>
+                    <button name="action_open_conversation" type="object" string="Open the Conversation"
+                            class="btn-primary" invisible="not channel_id"/>
+                    <field name="state" widget="statusbar" statusbar_visible="ringing,answered,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="number"/>
+                            <field name="channel_id"/>
+                            <field name="account_id"/>
+                            <field name="direction"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="answer_date"/>
+                            <field name="end_date"/>
+                            <field name="wait_display"/>
+                            <field name="duration_display"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="End">
+                            <field name="ended_by"/>
+                            <field name="end_cause"/>
+                            <field name="reconnect_count"/>
+                            <field name="declined_user_ids" widget="many2many_tags"/>
+                            <field name="voicemail_attachment_id"/>
+                        </group>
+                        <group string="Seen by">
+                            <field name="server_seen"/>
+                            <field name="server_uuid"/>
+                            <field name="meta_seen"/>
+                            <field name="wacid"/>
+                            <field name="meta_status"/>
+                            <field name="meta_duration"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="whatsapp_call_view_search" model="ir.ui.view">
+        <field name="name">whatsapp.call.search</field>
+        <field name="model">whatsapp.call</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="number"/>
+                <field name="user_id"/>
+                <filter name="filter_to_call_back" string="To Call Back"
+                        domain="[('state', 'in', ('missed', 'voicemail', 'lost'))]"/>
+                <filter name="filter_now" string="Now" domain="[('state', 'in', ('ringing', 'answered'))]"/>
+                <filter name="filter_completed" string="Completed" domain="[('state', '=', 'completed')]"/>
+                <filter name="filter_lost" string="Lost or Failed" domain="[('state', 'in', ('lost', 'failed'))]"/>
+                <separator/>
+                <filter name="filter_today" string="Today"
+                        domain="[('start_date', '&gt;=', 'today')]"/>
+                <filter name="filter_start_date" string="Called on" date="start_date"/>
+                <group>
+                    <filter name="group_user" string="Agent" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by': 'start_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="whatsapp_call_view_graph" model="ir.ui.view">
+        <field name="name">whatsapp.call.graph</field>
+        <field name="model">whatsapp.call</field>
+        <field name="arch" type="xml">
+            <graph string="Calls" type="bar" stacked="1">
+                <field name="start_date" interval="day"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="whatsapp_call_view_pivot" model="ir.ui.view">
+        <field name="name">whatsapp.call.pivot</field>
+        <field name="model">whatsapp.call</field>
+        <field name="arch" type="xml">
+            <pivot string="Calls">
+                <field name="user_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="duration" type="measure"/>
+                <field name="wait_duration" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="whatsapp_call_action" model="ir.actions.act_window">
+        <field name="name">Calls</field>
+        <field name="res_model">whatsapp.call</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No call yet</p>
+            <p>The customers call the WhatsApp number of the company; each call, answered or not, is recorded here and in the conversation of the customer.</p>
+        </field>
+    </record>
+</odoo>

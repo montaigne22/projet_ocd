@@ -1,0 +1,1081 @@
+# Translation of Odoo Server.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-20 23:10+0000\n"
+"PO-Revision-Date: 2026-11-20 23:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: whatsapp_cloud_call
+#: model:ir.module.module,description:base.module_whatsapp_cloud_call
+msgid ""
+"\n"
+"WhatsApp calls for Odoo Community\n"
+"=================================\n"
+"\n"
+"The customers call the WhatsApp number of the company (the phone icon in WhatsApp). The calls\n"
+"go through a call server of the company (FreeSWITCH, SIP over TLS with Meta), which rings the\n"
+"agents in their browser, in Odoo (WebRTC):\n"
+"\n"
+"- Settings of the calls at Meta from the WhatsApp account: calls enabled, call icon, call\n"
+"  hours (the opening hours of the team and its public holidays), SIP server, SRTP, webhook of\n"
+"  the calls; the SIP password given by Meta kept for the call server.\n"
+"- Queue on the call server: music, all the free agents ring together, the agent of the\n"
+"  conversation first; an agent cut off (network, closed tab) gets the call back while the\n"
+"  customer waits; voicemail when nobody answers, posted in the conversation.\n"
+"- The call server works without Odoo: the agents and their passwords are copied every minute\n"
+"  on the server; when Odoo does not answer, all the connected agents ring.\n"
+"- Phone of the agents in the top bar: take the calls or not, ringing, name of the customer and\n"
+"  their conversation, answer, decline, mute, hang up; a second call is refused while busy.\n"
+"- History: each call (wait, duration, agent, outcome) and a line in the conversation; a missed\n"
+"  call or a voicemail waits for an answer of the team (reminders of WhatsApp).\n"
+"- Monitoring: the call server reports every minute, the managers are alerted when it is\n"
+"  silent; a call seen by Meta and not by the call server is \"lost\" and reported.\n"
+"- TURN credentials for the agents (coturn), valid 12 hours.\n"
+"\n"
+"The configuration of the call server is in the freeswitch folder of the module.\n"
+msgstr ""
+"\n"
+"Appels WhatsApp pour Odoo Community\n"
+"===================================\n"
+"\n"
+"Les clients appellent le numéro WhatsApp de l'entreprise (l'icône du téléphone dans WhatsApp). Les\n"
+"appels passent par un serveur d'appels de l'entreprise (FreeSWITCH, SIP sur TLS avec Meta), qui fait\n"
+"sonner les conseillers dans leur navigateur, dans Odoo (WebRTC) :\n"
+"\n"
+"- Réglages des appels chez Meta depuis le compte WhatsApp : appels activés, icône d'appel, heures\n"
+"  d'appel (les heures d'ouverture de l'équipe et ses jours fériés), serveur SIP, SRTP, webhook des\n"
+"  appels ; le mot de passe SIP donné par Meta gardé pour le serveur d'appels.\n"
+"- File d'attente sur le serveur d'appels : musique, tous les conseillers libres sonnent ensemble, le\n"
+"  conseiller de la conversation d'abord ; un conseiller coupé (réseau, onglet fermé) récupère l'appel\n"
+"  pendant que le client attend ; messagerie quand personne ne décroche, posée dans la conversation.\n"
+"- Le serveur d'appels marche sans Odoo : les conseillers et leurs mots de passe sont recopiés chaque\n"
+"  minute sur le serveur ; quand Odoo ne répond pas, tous les conseillers connectés sonnent.\n"
+"- Téléphone des conseillers dans la barre du haut : prendre les appels ou non, sonnerie, nom du client\n"
+"  et sa conversation, décrocher, refuser, couper le micro, raccrocher ; un deuxième appel est refusé\n"
+"  pendant un appel.\n"
+"- Historique : chaque appel (attente, durée, conseiller, fin) et une ligne dans la conversation ; un\n"
+"  appel manqué ou un message attend une réponse de l'équipe (rappels de WhatsApp).\n"
+"- Surveillance : le serveur d'appels se signale chaque minute, les responsables sont prévenus quand il\n"
+"  se tait ; un appel vu par Meta et pas par le serveur d'appels est « perdu » et signalé.\n"
+"- Identifiants TURN pour les conseillers (coturn), valables 12 heures.\n"
+"\n"
+"La configuration du serveur d'appels est dans le dossier freeswitch du module.\n"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid " (until %s)"
+msgstr " (jusqu'au %s)"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "%(hours)s h %(minutes)02d min"
+msgstr "%(hours)s h %(minutes)02d min"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "%(minutes)s min %(seconds)02d s"
+msgstr "%(minutes)s min %(seconds)02d s"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "%(type)s: %(reason)s"
+msgstr "%(type)s : %(reason)s"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "%s s"
+msgstr "%s s"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+msgid "<span class=\"o_form_label me-2\">Agents connected then:</span>"
+msgstr "<span class=\"o_form_label me-2\">Conseillers connectés alors :</span>"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+msgid "<span class=\"o_form_label me-2\">Last report:</span>"
+msgstr "<span class=\"o_form_label me-2\">Dernier signe :</span>"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_callback_permission
+msgid "A customer who calls allows the company to call them back (Meta, 7 days)."
+msgstr "Un client qui appelle permet à l'entreprise de le rappeler (Meta, 7 jours)."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_max_wait
+msgid "A customer who waits this long without an agent leaves a message."
+msgstr "Un client qui attend aussi longtemps sans conseiller laisse un message."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_host
+msgid "Address of the Call Server"
+msgstr "Adresse du serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__ended_by__agent
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Agent"
+msgstr "Conseiller"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__reconnect_count
+msgid "Agent Cut Off"
+msgstr "Conseiller coupé"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Agent cut off %s time(s), the call came back."
+msgstr "Conseiller coupé %s fois, l'appel est revenu."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Answer"
+msgstr "Décrocher"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__user_id
+msgid "Answered by"
+msgstr "Pris par"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
+msgid "Answered by %s."
+msgstr "Pris par %s."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
+msgid "Answered by a colleague."
+msgstr "Pris par un collègue."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__answer_date
+msgid "Answered on"
+msgstr "Décroché le"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "At Meta"
+msgstr "Chez Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__wacid
+msgid "Call ID at Meta"
+msgstr "Identifiant de l'appel chez Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__server_uuid
+msgid "Call ID on the Call Server"
+msgstr "Identifiant de l'appel sur le serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_icon_visibility
+msgid "Call Icon"
+msgstr "Icône d'appel"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_limit_warning
+msgid "Call Limit Warning"
+msgstr "Alerte de limite pour les appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_callback_permission
+msgid "Call back the Customers who Called"
+msgstr "Rappeler les clients qui ont appelé"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Call failed (%s)."
+msgstr "Appel échoué (%s)."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Call lost: the call server did not take it. Call the customer back or write to them."
+msgstr "Appel perdu : le serveur d'appels ne l'a pas pris. Rappelez le client ou écrivez-lui."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Call of %(duration)s, answered by %(agent)s (waited %(wait)s)."
+msgstr "Appel de %(duration)s, pris par %(agent)s (attente %(wait)s)."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Call of %s"
+msgstr "Appel de %s"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__ended_by__system
+msgid "Call server"
+msgstr "Serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
+msgid "Call: %s"
+msgstr "Appel : %s"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__start_date
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Called on"
+msgstr "Appelé le"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+#: model:ir.actions.act_window,name:whatsapp_cloud_call.whatsapp_call_action
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_enabled
+#: model:ir.ui.menu,name:whatsapp_cloud_call.whatsapp_menu_calls
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_graph
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_pivot
+msgid "Calls"
+msgstr "Appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_meta_state
+msgid "Calls at Meta"
+msgstr "Appels chez Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_use_hours
+msgid "Calls during the Opening Hours Only"
+msgstr "Appels seulement aux heures d'ouverture"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "Calls: settings sent to Meta (%s)."
+msgstr "Appels : réglages envoyés à Meta (%s)."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Click anywhere on the page to allow the ringing."
+msgstr "Cliquez n'importe où sur la page pour permettre la sonnerie."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Close"
+msgstr "Fermer"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__direction__outbound
+msgid "Company calls"
+msgstr "L'entreprise appelle"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__completed
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Completed"
+msgstr "Fini"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_agents
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__registrations
+msgid "Connected Agents"
+msgstr "Conseillers connectés"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.js:0
+msgid "Connecting to the call server..."
+msgstr "Connexion au serveur d'appels..."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
+msgid "Connection lost: the call comes back to you or goes to a colleague."
+msgstr "Connexion perdue : l'appel vous revient ou passe à un collègue."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Connection unstable..."
+msgstr "Connexion instable..."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__channel_id
+msgid "Conversation"
+msgstr "Conversation"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__partner_id
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__ended_by__customer
+msgid "Customer"
+msgstr "Client"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__direction__inbound
+msgid "Customer calls"
+msgstr "Le client appelle"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_srtp__dtls
+msgid "DTLS (WebRTC)"
+msgstr "DTLS (WebRTC)"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Day"
+msgstr "Jour"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Decline"
+msgstr "Refuser"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__declined_user_ids
+msgid "Declined by"
+msgstr "Refusé par"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__direction
+msgid "Direction"
+msgstr "Sens"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_meta_state__disabled
+msgid "Disabled"
+msgstr "Désactivés"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_discuss_channel
+msgid "Discussion Channel"
+msgstr "Canal de discussion"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_discuss_channel__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_users__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__duration_display
+msgid "Duration"
+msgstr "Durée"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__duration
+msgid "Duration (s)"
+msgstr "Durée (s)"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__meta_duration
+msgid "Duration at Meta (s)"
+msgstr "Durée chez Meta (s)"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_meta_state__ok
+msgid "Enabled at Meta"
+msgstr "Activés chez Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_srtp
+msgid "Encryption of the Voice"
+msgstr "Chiffrement de la voix"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
+msgid "End"
+msgstr "Fin"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__end_cause
+msgid "End Cause"
+msgstr "Cause de la fin"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__ended_by
+msgid "Ended By"
+msgstr "Fini par"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__end_date
+msgid "Ended on"
+msgstr "Fini le"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "Enter the address of the call server first (Settings > WhatsApp > Calls)."
+msgstr "Saisissez d'abord l'adresse du serveur d'appels (Paramètres › WhatsApp › Appels)."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_meta_state__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__failed
+msgid "Failed"
+msgstr "Échoué"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__spool
+msgid "Files Waiting"
+msgstr "Fichiers en attente"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_sip_password
+msgid "Given by Meta when the SIP server is set: Meta signs its calls with it, and the call server checks it."
+msgstr "Donné par Meta quand le serveur SIP est réglé : Meta signe ses appels avec, le serveur d'appels le vérifie."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Hang up"
+msgstr "Raccrocher"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_icon_visibility__disable_all
+msgid "Hidden"
+msgstr "Cachée"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_srtp
+msgid "How Meta and the call server agree on the keys of the encrypted voice."
+msgstr "Comment Meta et le serveur d'appels s'accordent sur les clés de la voix chiffrée."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "I take the WhatsApp calls"
+msgstr "Je prends les appels WhatsApp"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_discuss_channel__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_users__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__id
+msgid "ID"
+msgstr "ID"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "In call ·"
+msgstr "En ligne ·"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__answered
+msgid "In progress"
+msgstr "En cours"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Keep this page open: the calls ring while it is open. Your colleagues get the call if you do not answer."
+msgstr "Gardez cette page ouverte : les appels sonnent tant qu'elle est ouverte. Vos collègues prennent l'appel si vous ne décrochez pas."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_token
+msgid "Key of the Call Server"
+msgstr "Clé du serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_meta_date
+msgid "Last Exchange with Meta"
+msgstr "Dernier échange avec Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__last_seen
+msgid "Last Report"
+msgstr "Dernier signe"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_last_seen
+msgid "Last Report of the Call Server"
+msgstr "Dernier signe du serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_server__registrations
+msgid "Logins, one per line."
+msgstr "Identifiants, un par ligne."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__lost
+msgid "Lost"
+msgstr "Perdu"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Lost or Failed"
+msgstr "Perdus ou échoués"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__voicemail_attachment_id
+msgid "Message"
+msgstr "Message"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Message of %(name)s.%(ext)s"
+msgstr "Message de %(name)s.%(ext)s"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_meta_message
+msgid "Message of Meta"
+msgstr "Message de Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_server__spool
+msgid "Messages and records of calls kept on the call server until Odoo takes them."
+msgstr "Messages et fiches d'appels gardés sur le serveur d'appels jusqu'à ce qu'Odoo les prenne."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "Meta enables the calls only for a number that may send templates to 2,000 customers a day or more (limit now: %s). Check the account to read it again."
+msgstr "Meta n'active les appels que pour un numéro qui peut envoyer des modèles à 2 000 clients par jour ou plus (limite aujourd'hui : %s). Vérifiez le compte pour la relire."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "Meta gave no SIP password: check the SIP server in the settings, then send them again."
+msgstr "Meta n'a donné aucun mot de passe SIP : vérifiez le serveur SIP dans les réglages, puis renvoyez-les."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_use_hours
+msgid "Meta takes the calls only during the opening hours of the team (Team tab), public holidays closed. Without opening hours, the calls are taken at any time."
+msgstr "Meta ne prend les appels qu'aux heures d'ouverture de l'équipe (onglet Équipe), fermé les jours fériés. Sans heures d'ouverture, les appels sont pris à toute heure."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Microphone off"
+msgstr "Micro coupé"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__missed
+msgid "Missed"
+msgstr "Manqué"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Missed call (waited %s): call the customer back or write to them."
+msgstr "Appel manqué (attente %s) : rappelez le client ou écrivez-lui."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Missed call (waited %s): the customer left a message."
+msgstr "Appel manqué (attente %s) : le client a laissé un message."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Mute"
+msgstr "Couper le micro"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_host
+msgid "Name of the call server (FreeSWITCH), e.g. calls.example.com: its certificate must be for this name (Meta checks it)."
+msgstr "Nom du serveur d'appels (FreeSWITCH), par ex. appels.exemple.com : son certificat doit être à ce nom (Meta le vérifie)."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+msgid "Name of the call server (FreeSWITCH): Meta sends the calls to it, the agents connect to it."
+msgstr "Nom du serveur d'appels (FreeSWITCH) : Meta lui envoie les appels, les conseillers s'y connectent."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/res_config_settings.py:0
+msgid "Never"
+msgstr "Jamais"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+msgid "New Key"
+msgstr "Nouvelle clé"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud_call.whatsapp_call_action
+msgid "No call yet"
+msgstr "Aucun appel pour l'instant"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_voicemail
+msgid "Nobody answers: the customer leaves a message, posted in their conversation."
+msgstr "Personne ne décroche : le client laisse un message, posé dans sa conversation."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.js:0
+msgid "Not connected"
+msgstr "Pas connecté"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__notice_message_id
+msgid "Notice Message"
+msgstr "Ligne dans la conversation"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Now"
+msgstr "En ce moment"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_count
+msgid "Number of Calls"
+msgstr "Nombre d'appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__registration_count
+msgid "Number of Connected Agents"
+msgstr "Nombre de conseillers connectés"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__number
+msgid "Number of the Customer"
+msgstr "Numéro du client"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
+msgid "Open the Conversation"
+msgstr "Ouvrir la conversation"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Open the conversation"
+msgstr "Ouvrir la conversation"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_users__whatsapp_call_sip_password
+msgid "Password of the Phone"
+msgstr "Mot de passe du téléphone"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_res_users__whatsapp_call_sip_password
+msgid "Password of the agent on the call server, given to their phone in Odoo."
+msgstr "Mot de passe du conseiller sur le serveur d'appels, donné à son téléphone dans Odoo."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_icon_visibility
+msgid "Phone icon in the conversation with the company, in WhatsApp."
+msgstr "Icône du téléphone dans la conversation avec l'entreprise, dans WhatsApp."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_wss_port
+msgid "Port of the Agents (WSS)"
+msgstr "Port des conseillers (WSS)"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Read the State at Meta"
+msgstr "Lire l'état chez Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_meta_state__restricted
+msgid "Restricted by Meta"
+msgstr "Limités par Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_srtp__sdes
+msgid "SDES (recommended with FreeSWITCH)"
+msgstr "SDES (conseillé avec FreeSWITCH)"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_sip_password
+msgid "SIP Password of Meta"
+msgstr "Mot de passe SIP de Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_sip_port
+msgid "SIP Port (Meta)"
+msgstr "Port SIP (Meta)"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_turn_secret
+msgid "Same value as static-auth-secret in the configuration of coturn on the call server."
+msgstr "Même valeur que static-auth-secret dans la configuration de coturn sur le serveur d'appels."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_turn_secret
+msgid "Secret of the TURN Relay"
+msgstr "Secret du relais TURN"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
+msgid "Seen by"
+msgstr "Vu par"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__meta_seen
+msgid "Seen by Meta"
+msgstr "Vu par Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__server_seen
+msgid "Seen by the Call Server"
+msgstr "Vu par le serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Send the Calls to Meta"
+msgstr "Envoyer les appels à Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_icon_visibility__default
+msgid "Shown"
+msgstr "Visible"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__silence_alerted
+msgid "Silence Alerted"
+msgstr "Silence signalé"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__state
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "State"
+msgstr "État"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__meta_status
+msgid "Status at Meta"
+msgstr "Statut chez Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_users__whatsapp_call_available
+msgid "Takes the WhatsApp Calls"
+msgstr "Prend les appels WhatsApp"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_res_users__whatsapp_call_available
+msgid "The agent takes the calls (phone of the top bar): the calls ring for them while their page is open."
+msgstr "Le conseiller prend les appels (téléphone de la barre du haut) : les appels sonnent chez lui tant que sa page est ouverte."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
+msgid "The browser refuses the microphone: allow it for this site, then answer again."
+msgstr "Le navigateur refuse le micro : autorisez-le pour ce site, puis décrochez à nouveau."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
+msgid "The call could not be answered: %s"
+msgstr "L'appel n'a pas pu être pris : %s"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.js:0
+msgid "The call server does not answer"
+msgstr "Le serveur d'appels ne répond pas"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "The call server has not reported since %s: the WhatsApp calls may not ring. Check that FreeSWITCH and the copy of the agents (ocd-call-sync) run on it."
+msgstr "Le serveur d'appels ne donne plus signe depuis %s : les appels WhatsApp risquent de ne pas sonner. Vérifiez que FreeSWITCH et la copie des conseillers (ocd-call-sync) y tournent."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
+msgid "The call server refused the connection (%s)."
+msgstr "Le serveur d'appels a refusé la connexion (%s)."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+msgid "The call server stops working until the new key is entered in its configuration. Continue?"
+msgstr "Le serveur d'appels s'arrête de fonctionner tant que la nouvelle clé n'est pas dans sa configuration. Continuer ?"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__server_seen
+msgid "The call server took the call (else only Meta told it)."
+msgstr "Le serveur d'appels a pris l'appel (sinon, seul Meta l'a signalé)."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "The calls ring for the agents of the Team tab who take the calls (phone of the top bar). The address of the call server is in Settings &gt; WhatsApp &gt; Calls. In the webhook of the Meta app, also subscribe to the field calls: Odoo then sees the calls that the call server did not take."
+msgstr "Les appels sonnent chez les conseillers de l'onglet Équipe qui prennent les appels (téléphone de la barre du haut). L'adresse du serveur d'appels est dans Paramètres › WhatsApp › Appels. Dans le webhook de l'app Meta, abonnez-vous aussi au champ calls : Odoo voit alors les appels que le serveur d'appels n'a pas pris."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud_call.whatsapp_call_action
+msgid "The customers call the WhatsApp number of the company; each call, answered or not, is recorded here and in the conversation of the customer."
+msgstr "Les clients appellent le numéro WhatsApp de l'entreprise ; chaque appel, pris ou non, est noté ici et dans la conversation du client."
+
+#. module: whatsapp_cloud_call
+#: model:ir.module.module,summary:base.module_whatsapp_cloud_call
+msgid "The customers call the company from WhatsApp: a FreeSWITCH call server between Meta and the agents, queue, agents who answer in Odoo, history in the conversations"
+msgstr "Les clients appellent l'entreprise depuis WhatsApp : un serveur d'appels FreeSWITCH entre Meta et les conseillers, file d'attente, conseillers qui décrochent dans Odoo, historique dans les conversations"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_enabled
+msgid "The customers can call this number from WhatsApp; the calls go through the call server of the company (Settings > WhatsApp > Calls)."
+msgstr "Les clients peuvent appeler ce numéro depuis WhatsApp ; les appels passent par le serveur d'appels de l'entreprise (Paramètres › WhatsApp › Appels)."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "The settings changed: send them to Meta (button at the top)."
+msgstr "Les réglages ont changé : envoyez-les à Meta (bouton en haut)."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+msgid "The voice of the agents passes through the relay when their network blocks it (coturn on the call server)."
+msgstr "La voix des conseillers passe par le relais quand leur réseau la bloque (coturn sur le serveur d'appels)."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.constraint,message:whatsapp_cloud_call.constraint_whatsapp_call_wacid_uniq
+msgid "This call is already recorded."
+msgstr "Cet appel est déjà noté."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__reconnect_count
+msgid "Times the agent was cut off (network, closed page) and the call came back while the customer waited."
+msgstr "Fois où le conseiller a été coupé (réseau, page fermée) et où l'appel est revenu pendant que le client attendait."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "To Call Back"
+msgstr "À rappeler"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+msgid "To enter in /etc/ocd-call-sync.conf on the call server: it reads the agents with it and tells Odoo the calls."
+msgstr "À saisir dans /etc/ocd-call-sync.conf sur le serveur d'appels : il lit les conseillers avec et signale les appels à Odoo."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_meta_state__pending
+msgid "To send to Meta"
+msgstr "À envoyer à Meta"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Unknown"
+msgstr "Inconnu"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__version
+msgid "Version"
+msgstr "Version"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Voice message left after a call."
+msgstr "Message vocal laissé après un appel."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_voicemail
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__voicemail
+msgid "Voicemail"
+msgstr "Messagerie"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__wait_display
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__ringing
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Waiting"
+msgstr "Attente"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__wait_duration
+msgid "Waiting (s)"
+msgstr "Attente (s)"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_max_wait
+msgid "Waiting before the Voicemail (seconds)"
+msgstr "Attente avant la messagerie (secondes)"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__account_id
+msgid "WhatsApp Account"
+msgstr "Compte WhatsApp"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_account
+msgid "WhatsApp Business Account"
+msgstr "Compte WhatsApp Business"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_call
+msgid "WhatsApp Call"
+msgstr "Appel WhatsApp"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_call_server
+msgid "WhatsApp Call Server"
+msgstr "Serveur d'appels WhatsApp"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_discuss_channel__whatsapp_call_ids
+#: model:ir.module.module,shortdesc:base.module_whatsapp_cloud_call
+msgid "WhatsApp Calls"
+msgstr "Appels WhatsApp"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_webhook_event
+msgid "WhatsApp Webhook Event"
+msgstr "Notification de Meta"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "WhatsApp account %(name)s, calls: %(details)s"
+msgstr "Compte WhatsApp %(name)s, appels : %(details)s"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "WhatsApp account %(name)s: %(count)s call(s) of customers did not reach the call server (lost). Check the call server and its connection with Meta (port, certificate, SIP password); the customers are to call back or to write to."
+msgstr "Compte WhatsApp %(name)s : %(count)s appel(s) de clients ne sont pas arrivés au serveur d'appels (perdus). Vérifiez le serveur d'appels et sa liaison avec Meta (port, certificat, mot de passe SIP) ; les clients sont à rappeler ou à qui écrire."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
+msgid "WhatsApp call"
+msgstr "Appel WhatsApp"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "WhatsApp calls"
+msgstr "Appels WhatsApp"
+
+#. module: whatsapp_cloud_call
+#: model:ir.actions.server,name:whatsapp_cloud_call.ir_cron_check_calls_ir_actions_server
+msgid "WhatsApp: check the calls and the call server"
+msgstr "WhatsApp : vérifier les appels et le serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.js:0
+msgid "You do not take the calls"
+msgstr "Vous ne prenez pas les appels"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.js:0
+msgid "You take the calls"
+msgstr "Vous prenez les appels"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "an agent"
+msgstr "un conseiller"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "call server"
+msgstr "serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "disabled"
+msgstr "désactivés"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
+msgid "e.g. calls.example.com"
+msgstr "par ex. appels.exemple.com"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "enabled"
+msgstr "activés"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "its installation"
+msgstr "son installation"
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "previous call(s)"
+msgstr "appel(s) avant"

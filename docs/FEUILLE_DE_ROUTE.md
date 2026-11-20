@@ -46,6 +46,19 @@ le bouton « Signaler » de la garantie (chantier 2) et de nouvelles mesures.
 | 13 | **Diaspora** | « Acheter pour un proche » : payer en euros par carte, livrer au pays, code de livraison envoyé au proche ; ou retrait en magasin par le proche, avec son code | Devises par pays, paiement par carte, livraison avec code, retrait en magasin (chantier 20) | 2 à 3 semaines |
 | 14 | **Live sur la plateforme** | Lecteur vidéo sur le site avec les produits, le chat et l'achat ; le même live diffusé en même temps sur TikTok, Facebook et YouTube | Page d'un live, régie, produits préparés pour le live (chantier 21) | ~6 semaines, plus un service vidéo payé à la minute |
 
+## Appels WhatsApp (chantier 23, ajouté le 20 novembre 2026)
+
+Les clients appellent OCD Live depuis WhatsApp, sur le numéro des messages ; l'équipe décroche dans
+Odoo. Solution retenue : un serveur d'appels FreeSWITCH entre Meta et l'équipe (la plus robuste, voir
+`DECISIONS.md`). Le détail, les essais et les seuils pour ouvrir : [`APPELS_WHATSAPP.md`](APPELS_WHATSAPP.md).
+
+| # | Étape | Ce que c'est | Effort |
+|---|---|---|---|
+| 23.0 | **Préalables** (équipe) | Limite d'envoi du numéro de 2 000 par jour ou plus, moyen de paiement chez Meta, serveur avec IP fixe, certificat, compte SignalWire, messages enregistrés | Quelques jours ; **à faire** |
+| 23.1 | **Les clients appellent OCD** | Module `whatsapp_cloud_call` et serveur d'appels : réglages chez Meta depuis Odoo, file d'attente, conseiller coupé qui récupère l'appel, messagerie dans la conversation, téléphone dans la barre du haut, historique, surveillance, relais TURN | ~3 semaines ; **fait le 20 novembre 2026**, à essayer sur le vrai serveur |
+| 23.2 | **OCD appelle les gens** | Accord du client, rappeler un appel manqué ou coupé, le livreur qui appelle le client par le numéro d'OCD, l'animatrice qui appelle le vendeur ; payant à la minute | ~2 semaines, après l'essai de 23.1 |
+| 23.3 | **La qualité** | Enregistrement annoncé, chiffres des appels sur le tableau de bord, transfert à un collègue, deuxième serveur | ~2 semaines |
+
 ## Charge
 
 Avec les chantiers ajoutés le 16 novembre, le développement passe d'environ 37 à 63 semaines :

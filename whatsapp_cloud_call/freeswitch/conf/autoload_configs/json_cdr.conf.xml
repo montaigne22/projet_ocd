@@ -1,0 +1,21 @@
+<configuration name="json_cdr.conf" description="JSON CDR">
+  <!-- OCD: the record of each call of a customer goes to Odoo at its end (with the variables
+       ocd_* of the queue). Refused or not delivered: tried again, then kept in cdr-errors,
+       which ocd-call-sync sends again. Add mod_json_cdr to modules.conf.xml. -->
+  <settings>
+    <param name="url" value="$${ocd_odoo_url}/whatsapp/call/server/cdr"/>
+    <param name="cred" value="freeswitch:$${ocd_odoo_token}"/>
+    <param name="auth-scheme" value="basic"/>
+    <param name="encode" value="false"/>
+    <param name="retries" value="3"/>
+    <param name="delay" value="20"/>
+    <param name="log-b-leg" value="false"/>
+    <param name="prefix-a-leg" value="false"/>
+    <param name="log-http-and-disk" value="false"/>
+    <param name="err-log-dir" value="/var/spool/ocd-calls/cdr-errors"/>
+    <param name="disable-100-continue" value="true"/>
+    <param name="enable-cacert-check" value="true"/>
+    <param name="enable-ssl-verifyhost" value="true"/>
+    <param name="timeout" value="10"/>
+  </settings>
+</configuration>

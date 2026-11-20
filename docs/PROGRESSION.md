@@ -58,6 +58,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | WhatsApp : tous les messages des lives, de l'annuaire et des colis, un seul accord, messages demandés toujours envoyés | ✅ fait, testé |
 | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients (site, back-office, erreurs, e-mails) | ✅ fait, testé |
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
+| Appels WhatsApp (chantier 23.1) : les clients appellent le numéro d'OCD depuis WhatsApp ; serveur d'appels FreeSWITCH entre Meta et l'équipe (file d'attente, tous les conseillers libres sonnent ensemble, conseiller coupé qui récupère l'appel, messagerie posée dans la conversation, marche sans Odoo) ; réglages des appels chez Meta depuis le compte WhatsApp ; téléphone des conseillers dans la barre du haut ; historique des appels et ligne dans la conversation ; surveillance du serveur et des appels perdus | ✅ fait, testé (sans vrai appel : le serveur d'appels est à installer, voir `whatsapp_cloud_call/freeswitch/README.md`) |
 | Togo (villes, quartiers, livraison) | ✅ fait |
 | Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements, OCD Express) ; installées en une fois avec les modules, avec leurs factures et reversements | ✅ fait, testé |
 | Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), OCD Express (Nadège Mode : ses colis à chaque étape, deux passages par jour, un retour, un souci, son argent versé chaque jour ouvré ; une demande à vérifier), magasins, équipe, retrait au magasin, point relais, ventes des lives, avis, abonnés, promo, signalement, chiffres sur 90 jours ; quand ils sont installés : formules OCD Business, une ambassadrice et ses gains, Vendredi wax, clips, un concours OCD Vote, un concert et ses billets ; scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
@@ -134,7 +135,12 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
    l'entreprise), saisir leurs clés, publier, faire un premier paiement réel, puis cocher « Live » : pas à
    pas dans [`DEVELOPPEMENT.md`](DEVELOPPEMENT.md) (Paiement dans l'UEMOA). Jusque-là, le Mobile Money
    vérifié par l'équipe reste proposé.
-4. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
+4. **Appels WhatsApp** (équipe, puis équipe technique) : vérifier la limite d'envoi du numéro (2 000
+   destinataires par jour ou plus, sans quoi Meta n'active pas les appels) et le moyen de paiement chez
+   Meta, puis installer le serveur d'appels pas à pas
+   ([`whatsapp_cloud_call/freeswitch/README.md`](../whatsapp_cloud_call/freeswitch/README.md)) et faire les
+   essais de [`APPELS_WHATSAPP.md`](APPELS_WHATSAPP.md) au studio avant d'ouvrir à tous.
+5. **Mise en production** : `list_db = False` dans `odoo.conf` (pas de gestion des bases sur la page
    de connexion), un sous-domaine pour l'équipe si une adresse à la marque est voulue (les adresses du
    back-office gardent `/odoo/`, voir [`DECISIONS.md`](DECISIONS.md)).
 
@@ -153,6 +159,51 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 20 novembre 2026 · Appels WhatsApp : les clients appellent OCD (chantier 23.1)
+Nouveau module `whatsapp_cloud_call` 20.0.1.0.0 (avec `whatsapp_cloud`) et la configuration du serveur
+d'appels dans `whatsapp_cloud_call/freeswitch/`. Feuille de route : [`APPELS_WHATSAPP.md`](APPELS_WHATSAPP.md) ;
+choix dans [`DECISIONS.md`](DECISIONS.md) (WhatsApp).
+- **Réglages chez Meta depuis Odoo** : onglet « Appels » du compte WhatsApp (appels, icône, heures
+  d'appel tirées des heures d'ouverture de l'équipe et de ses jours fériés, rappel des clients qui ont
+  appelé, chiffrement SDES), « Envoyer les appels à Meta », « Lire l'état chez Meta » (limites de Meta
+  en rouge, responsables prévenus) ; le mot de passe SIP donné par Meta gardé pour le serveur ;
+  alerte quand la limite d'envoi du numéro est sous 2 000.
+- **Le serveur d'appels** (FreeSWITCH) : la liaison avec Meta en SIP sur TLS (chaque appel signé par
+  Meta), les conseillers en WebRTC ; la file d'attente en Lua : accueil, musique, le conseiller de la
+  conversation d'abord puis tous les conseillers libres ensemble, appels en même temps sur le numéro ;
+  conseiller coupé (réseau, page fermée) : le client entend « nous vous reconnectons » et l'appel lui
+  revient 30 secondes, puis aux autres ; 3 minutes sans conseiller (30 secondes quand personne n'est
+  connecté) : messagerie de 2 minutes.
+- **Le serveur tient sans Odoo** : `ocd-call-sync` recopie les conseillers et leurs mots de passe toutes
+  les 30 secondes ; sans réponse d'Odoo en 2 secondes, tous les conseillers connectés sonnent ; les
+  messages et les fiches d'appels qu'Odoo n'a pas pris sont renvoyés ensuite.
+- **Le téléphone des conseillers** dans la barre du haut : « Je prends les appels », sonnerie, nom du
+  client et sa conversation, Décrocher, Refuser, Couper le micro, Raccrocher ; deuxième appel refusé
+  pendant un appel (il passe aux collègues) ; avertissement avant de quitter la page ; relais TURN de
+  12 heures donné par Odoo.
+- **Historique** : WhatsApp › Appels (liste, graphique, tableau croisé) et une ligne dans la conversation
+  (« Appel de 3 min 12 s, pris par Afi ») ; appel manqué ou message laissé : la conversation attend une
+  réponse (rappels et escalade de WhatsApp) ; le conseiller qui décroche prend la conversation ; les
+  derniers appels dans le panneau du client.
+- **Surveillance** : sans signe du serveur pendant 5 minutes, les responsables sont prévenus (une fois) ;
+  un appel vu par Meta (webhook « calls ») et jamais par le serveur est « perdu » au bout de 10 minutes,
+  signalé dans la conversation et aux responsables.
+
+Tests : `whatsapp_cloud_call` **31 sans échec** (avec ceux de `whatsapp_cloud` : 111) ; le serveur d'appels
+sans FreeSWITCH (service de copie, échanges des scripts avec Odoo, décisions de la file d'attente, et le
+script de la file joué de bout en bout avec un faux FreeSWITCH : appel pris, conseiller coupé puis
+reconnecté, personne de connecté, messagerie gardée quand Odoo ne répond pas, client qui raccroche,
+attente dépassée) : `python3 -m unittest discover -s whatsapp_cloud_call/freeswitch/tests -p "test_*.py"`,
+**8 sans échec**, dont **63 vérifications** en Lua ; le téléphone vérifié dans Chromium avec un appel simulé
+(`tools/captures/softphone.js` : sonnerie, décroché, micro coupé, deuxième appel refusé, raccroché,
+refusé ; en français). La suite complète du projet avec le module : **757 tests**, dont deux échecs vus
+puis traités : un test du module (le panneau du client avec les autres modules, corrigé ; le module repassé
+avec tous les modules OCD : 31 sans échec) et `test_two_lives_a_day_at_most` (`ocd_live_shop`), sans lien
+avec les appels : il échoue entre 23 h et minuit UTC (il compare des jours en UTC pour une vendeuse à
+UTC+1), à corriger à part. **Pas encore de vrai appel** : le serveur est à installer
+([`whatsapp_cloud_call/freeswitch/README.md`](../whatsapp_cloud_call/freeswitch/README.md)), puis les
+essais au studio. **Sur le serveur Odoo** : `-i whatsapp_cloud_call`.
 
 ### 20 novembre 2026 · La démo des modules autour de la boutique : Business, ambassadrice, événements, clips, vote, billets
 `ocd_live_demo` 20.0.1.8.0 (migration). Quand ils sont installés, avant ou après la démo

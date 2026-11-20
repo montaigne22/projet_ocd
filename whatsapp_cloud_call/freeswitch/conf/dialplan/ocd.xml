@@ -1,0 +1,36 @@
+<include>
+  <!-- OCD: a customer calls on WhatsApp (profile ocd_whatsapp, user of Meta signed): the
+       queue (scripts/ocd_whatsapp_inbound.lua) -->
+  <context name="ocd_whatsapp">
+    <extension name="ocd_whatsapp_inbound">
+      <condition field="destination_number" expression="^\+?\d{6,15}$">
+        <action application="set" data="rtp_secure_media_inbound=$${ocd_srtp}"/>
+        <action application="set" data="rtp_secure_media=$${ocd_srtp}"/>
+        <action application="set" data="hangup_after_bridge=false"/>
+        <action application="set" data="continue_on_fail=true"/>
+        <action application="lua" data="ocd_whatsapp_inbound.lua"/>
+      </condition>
+    </extension>
+    <extension name="ocd_whatsapp_refused">
+      <condition field="destination_number" expression="^.*$">
+        <action application="respond" data="404"/>
+      </condition>
+    </extension>
+  </context>
+
+  <!-- the agents call nothing (phase 1), except *9196: their voice comes back (test of the
+       microphone and of the network) -->
+  <context name="ocd_agents">
+    <extension name="ocd_agents_echo">
+      <condition field="destination_number" expression="^\*9196$">
+        <action application="answer"/>
+        <action application="echo"/>
+      </condition>
+    </extension>
+    <extension name="ocd_agents_refused">
+      <condition field="destination_number" expression="^.*$">
+        <action application="hangup" data="CALL_REJECTED"/>
+      </condition>
+    </extension>
+  </context>
+</include>

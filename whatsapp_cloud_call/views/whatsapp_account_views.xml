@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="whatsapp_account_view_form_calls" model="ir.ui.view">
+        <field name="name">whatsapp.account.form.calls</field>
+        <field name="model">whatsapp.account</field>
+        <field name="inherit_id" ref="whatsapp_cloud.whatsapp_account_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_call_send_settings" type="object" string="Send the Calls to Meta"
+                        invisible="not id or (not call_enabled and call_meta_state == 'disabled')"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_calls" type="object" class="oe_stat_button" icon="fa-phone"
+                        invisible="not call_enabled and not call_count">
+                    <field name="call_count" widget="statinfo" string="Calls"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='team']" position="after">
+                <page string="Calls" name="calls">
+                    <div class="alert alert-warning" role="alert" invisible="not call_limit_warning">
+                        <field name="call_limit_warning"/>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="call_meta_state != 'pending'">
+                        The settings changed: send them to Meta (button at the top).
+                    </div>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="call_meta_state not in ('error', 'restricted')">
+                        <field name="call_meta_message"/>
+                    </div>
+                    <group>
+                        <group string="At Meta">
+                            <field name="call_enabled"/>
+                            <field name="call_icon_visibility" invisible="not call_enabled"/>
+                            <field name="call_use_hours" invisible="not call_enabled"/>
+                            <field name="call_callback_permission" invisible="not call_enabled"/>
+                            <field name="call_srtp" invisible="not call_enabled"/>
+                        </group>
+                        <group string="Waiting">
+                            <field name="call_max_wait" invisible="not call_enabled"/>
+                            <field name="call_voicemail" invisible="not call_enabled"/>
+                        </group>
+                        <group string="State">
+                            <field name="call_meta_state" widget="badge"
+                                   decoration-success="call_meta_state == 'ok'"
+                                   decoration-info="call_meta_state == 'pending'"
+                                   decoration-danger="call_meta_state in ('error', 'restricted')"/>
+                            <field name="call_meta_date"/>
+                            <field name="call_sip_password" password="True" groups="base.group_system"/>
+                            <button name="action_call_read_settings" type="object" string="Read the State at Meta"
+                                    class="btn-link ps-0" invisible="not id"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        The calls ring for the agents of the Team tab who take the calls (phone of the top bar). The address of the call server is in Settings &gt; WhatsApp &gt; Calls. In the webhook of the Meta app, also subscribe to the field calls: Odoo then sees the calls that the call server did not take.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

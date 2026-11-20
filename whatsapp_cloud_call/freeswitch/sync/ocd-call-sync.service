@@ -1,0 +1,18 @@
+[Unit]
+Description=OCD: copy of the WhatsApp agents from Odoo, voicemails and records sent to Odoo
+After=network-online.target freeswitch.service
+Wants=network-online.target
+
+[Service]
+User=freeswitch
+Group=freeswitch
+ExecStart=/usr/bin/python3 /usr/local/lib/ocd/ocd_call_sync.py --conf /etc/ocd-call-sync.conf
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/etc/freeswitch/directory/ocd /var/lib/freeswitch/ocd /var/spool/ocd-calls
+
+[Install]
+WantedBy=multi-user.target

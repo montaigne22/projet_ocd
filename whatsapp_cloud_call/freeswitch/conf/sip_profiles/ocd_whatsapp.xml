@@ -1,0 +1,61 @@
+<!-- OCD: the link with Meta (WhatsApp calls). SIP over TLS only, port 5061.
+
+     Meta sends an INVITE for each call of a customer; the call server asks Meta to sign it
+     (digest, the SIP password given by Meta, copied by ocd-call-sync into
+     directory/ocd/meta.xml). Meta sends no REGISTER and does not take re-INVITEs: no session
+     timer, no transfer, no hold sent to Meta. -->
+<profile name="ocd_whatsapp">
+  <aliases>
+  </aliases>
+  <gateways>
+    <!-- phase 2 (the company calls the customers): a gateway to wa.meta.vc -->
+  </gateways>
+  <domains>
+    <domain name="$${ocd_sip_domain}" alias="false" parse="false"/>
+  </domains>
+  <settings>
+    <param name="debug" value="0"/>
+    <param name="sip-trace" value="no"/>
+    <param name="sip-capture" value="no"/>
+    <param name="context" value="ocd_whatsapp"/>
+    <param name="dialplan" value="XML"/>
+    <param name="user-agent-string" value="OCD"/>
+
+    <param name="sip-ip" value="$${local_ip_v4}"/>
+    <param name="rtp-ip" value="$${local_ip_v4}"/>
+    <param name="ext-sip-ip" value="$${external_sip_ip}"/>
+    <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
+    <!-- plain SIP port, closed by the firewall: TLS only -->
+    <param name="sip-port" value="5070"/>
+    <param name="tls" value="true"/>
+    <param name="tls-only" value="true"/>
+    <param name="tls-sip-port" value="5061"/>
+    <param name="tls-bind-params" value="transport=tls"/>
+    <param name="tls-cert-dir" value="$${certs_dir}"/>
+    <param name="tls-version" value="tlsv1.2,tlsv1.3"/>
+    <param name="tls-verify-date" value="true"/>
+    <param name="tls-verify-policy" value="none"/>
+
+    <!-- each INVITE of Meta is signed with the SIP password of the number -->
+    <param name="auth-calls" value="true"/>
+    <param name="challenge-realm" value="$${ocd_sip_domain}"/>
+    <param name="disable-register" value="true"/>
+    <param name="disable-transfer" value="true"/>
+    <param name="manage-presence" value="false"/>
+    <!-- Meta answers 500 to a re-INVITE: never refresh the session -->
+    <param name="enable-timer" value="false"/>
+    <param name="enable-100rel" value="false"/>
+
+    <!-- the dialplan chooses the encryption before the SDP is read -->
+    <param name="inbound-late-negotiation" value="true"/>
+    <param name="inbound-codec-negotiation" value="generous"/>
+    <param name="inbound-codec-prefs" value="OPUS,PCMA,PCMU"/>
+    <param name="outbound-codec-prefs" value="OPUS,PCMA,PCMU"/>
+    <param name="dtmf-type" value="rfc2833"/>
+    <param name="rfc2833-pt" value="126"/>
+    <!-- a customer who listens in silence sends few packets: hang up only after 2 minutes -->
+    <param name="rtp-timeout-sec" value="120"/>
+    <param name="rtp-hold-timeout-sec" value="1800"/>
+    <param name="local-network-acl" value="localnet.auto"/>
+  </settings>
+</profile>

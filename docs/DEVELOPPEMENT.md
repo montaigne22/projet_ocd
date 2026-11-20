@@ -116,6 +116,8 @@ module › Mettre à jour, ou en ligne de commande) :
 odoo -c odoo.conf -d <base> -u whatsapp_cloud,whatsapp_cloud_sale,ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp --stop-after-init
 ```
 
+Avec les appels WhatsApp, ajouter `whatsapp_cloud_call`.
+
 **À chaque récupération du code, mettre à jour les modules.** Sans cela, le code appelle des pages qui
 n'existent pas encore dans la base, et le site répond « Page introuvable » (404) ; c'est arrivé sur « Moi »
 avec la page de l'équipe. La version d'un module augmente quand ses vues ou ses données changent, pour les
@@ -532,9 +534,20 @@ lancement), `sale_order.py` (le paiement, la facture, l'annulation), `controller
 Chaque module a ses tests (`tests/`). Lancer tous les tests OCD sur une base neuve :
 
 ```bash
-odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp,ocd_ambassadors,ocd_ambassadors_whatsapp,ocd_business,ocd_business_whatsapp,attachment_s3 \
-     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/ocd_express,/ocd_express_whatsapp,/ocd_ambassadors,/ocd_ambassadors_whatsapp,/ocd_business,/ocd_business_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud --stop-after-init
+odoo -c odoo.conf -d ocd_tests -i ocd_live,ocd_live_shop,ocd_live_whatsapp,ocd_live_shop_whatsapp,ocd_live_recruitment,ocd_delivery_togo,ocd_debranding,ocd_vote,ocd_vote_whatsapp,ocd_tickets,ocd_tickets_whatsapp,ocd_soirees,ocd_soirees_whatsapp,ocd_clips,ocd_clips_whatsapp,ocd_express,ocd_express_whatsapp,ocd_ambassadors,ocd_ambassadors_whatsapp,ocd_business,ocd_business_whatsapp,attachment_s3,whatsapp_cloud_call \
+     --test-tags /ocd_live,/ocd_live_shop,/ocd_live_whatsapp,/ocd_live_shop_whatsapp,/ocd_live_recruitment,/ocd_delivery_togo,/ocd_debranding,/ocd_vote,/ocd_vote_whatsapp,/ocd_tickets,/ocd_tickets_whatsapp,/ocd_soirees,/ocd_soirees_whatsapp,/ocd_clips,/ocd_clips_whatsapp,/ocd_express,/ocd_express_whatsapp,/ocd_ambassadors,/ocd_ambassadors_whatsapp,/ocd_business,/ocd_business_whatsapp,/attachment_s3,/payment_cinetpay,/whatsapp_cloud,/whatsapp_cloud_call --stop-after-init
 ```
+
+Le serveur d'appels WhatsApp a ses tests sans FreeSWITCH ni Odoo (service de copie des conseillers,
+échanges des scripts Lua avec Odoo, décisions de la file d'attente ; Lua avec `lua5.3` quand il est là) :
+
+```bash
+python3 -m unittest discover -s whatsapp_cloud_call/freeswitch/tests -p "test_*.py"
+```
+
+Le téléphone des conseillers se vérifie dans Chromium avec un appel simulé (JsSIP remplacé par un faux) :
+`OCD_URL=http://127.0.0.1:8069 OCD_CALL_ID=<id d'un appel> node tools/captures/softphone.js` (admin
+conseiller d'un compte avec appels, adresse du serveur d'appels saisie).
 
 Les tests des clips font de vraies vidéos avec ffmpeg (sources `lavfi`, quelques secondes). Ajouter
 `/whatsapp_cloud_sale` pour les tests de la commande sur WhatsApp. Avec OCD, un test de

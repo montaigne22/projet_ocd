@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_calls" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.whatsapp.calls</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="whatsapp_cloud.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='whatsapp_cloud']" position="inside">
+                <block title="Calls" name="whatsapp_calls" groups="base.group_system">
+                    <setting help="Name of the call server (FreeSWITCH): Meta sends the calls to it, the agents connect to it.">
+                        <field name="whatsapp_call_host" placeholder="e.g. calls.example.com"/>
+                        <div class="content-group mt-2">
+                            <div class="row">
+                                <label for="whatsapp_call_sip_port" class="col-lg-4 o_light_label"/>
+                                <field name="whatsapp_call_sip_port"/>
+                            </div>
+                            <div class="row">
+                                <label for="whatsapp_call_wss_port" class="col-lg-4 o_light_label"/>
+                                <field name="whatsapp_call_wss_port"/>
+                            </div>
+                        </div>
+                    </setting>
+                    <setting help="To enter in /etc/ocd-call-sync.conf on the call server: it reads the agents with it and tells Odoo the calls.">
+                        <field name="whatsapp_call_token" widget="CopyClipboardChar"/>
+                        <div class="mt-2">
+                            <span class="o_form_label me-2">Last report:</span>
+                            <field name="whatsapp_call_last_seen" class="w-auto"/>
+                        </div>
+                        <div>
+                            <span class="o_form_label me-2">Agents connected then:</span>
+                            <field name="whatsapp_call_agents" class="w-auto"/>
+                        </div>
+                        <button name="action_whatsapp_call_new_token" type="object" string="New Key"
+                                class="btn-link ps-0" icon="oi-arrow-right"
+                                confirm="The call server stops working until the new key is entered in its configuration. Continue?"/>
+                    </setting>
+                    <setting help="The voice of the agents passes through the relay when their network blocks it (coturn on the call server).">
+                        <field name="whatsapp_call_turn_secret" password="True"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

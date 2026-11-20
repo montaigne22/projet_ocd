@@ -834,6 +834,15 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   change que les textes restés tels que le module les avait écrits, et jamais celui d'un modèle approuvé par
   Meta (c'est le texte que Meta envoie). Odoo refuse de soumettre un texte que Meta refuserait (variable au
   début ou à la fin, deux variables sans mots entre elles).
+- **Appels WhatsApp : la solution la plus robuste** (choisie le 20 novembre 2026) : un serveur d'appels
+  FreeSWITCH entre Meta et l'équipe, piloté par Odoo, plutôt que décrocher directement dans le navigateur
+  par l'API de Meta. Le lien avec Meta part d'un serveur à la connexion stable (Meta ne reconnecte pas un
+  appel côté entreprise) ; un conseiller coupé récupère l'appel pendant que le client attend ; une file
+  d'attente quand tout le monde est pris ; le serveur continue sans Odoo (dernière copie des conseillers).
+  FreeSWITCH plutôt qu'Asterisk : ses paquets officiels sont tenus à jour (Asterisk est retiré de
+  Debian 12). Détails et étapes : [`APPELS_WHATSAPP.md`](APPELS_WHATSAPP.md).
+- **D'abord les clients qui appellent** (gratuit chez Meta, sans accord à demander) ; les appels d'OCD vers
+  les gens (payants, avec leur accord : rappel, livreur, animatrice) viennent ensuite.
 
 ## Back-office
 

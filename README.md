@@ -33,6 +33,7 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 
 | `whatsapp_cloud` | Conversations WhatsApp dans Odoo, messages automatiques validés par Meta (en-tête texte, PDF ou vidéo), STOP et START |
 | `whatsapp_cloud_sale` | Messages WhatsApp de la commande du shop au client |
+| `whatsapp_cloud_call` | Appels WhatsApp : les clients appellent le numéro de l'entreprise, un serveur d'appels FreeSWITCH entre Meta et l'équipe (file d'attente, conseiller coupé qui récupère l'appel, messagerie dans la conversation, marche sans Odoo), le téléphone des conseillers dans la barre du haut d'Odoo, l'historique des appels ; configuration du serveur dans `whatsapp_cloud_call/freeswitch/` |
 | `payment_campay` | Paiement au Cameroun : MTN MoMo, Orange Money, carte |
 | `payment_cinetpay` | Paiement dans l'UEMOA, au Cameroun, en Guinée et en RD Congo avec CinetPay : Mobile Money (Orange, MTN, Moov, Free, T-Money, Flooz…), Wave, carte ; Flutterwave (module d'Odoo) en second |
 | `delivery_cameroon` | Villes et quartiers du Cameroun, point de repère obligatoire dans l'adresse |
@@ -47,6 +48,8 @@ Le dépôt contient tous les modules nécessaires. `disable_odoo_online` (OCA, n
 - [`docs/FEUILLE_DE_ROUTE.md`](docs/FEUILLE_DE_ROUTE.md) : les chantiers retenus (OCD Express, OCD Business,
   OCD Tickets, OCD Vote, améliorations), dans leur ordre.
 - [`docs/ECRANS.md`](docs/ECRANS.md) : chaque écran du design validé et où il est fait dans le code.
+- [`docs/APPELS_WHATSAPP.md`](docs/APPELS_WHATSAPP.md) : les appels WhatsApp (feuille de route, essais avant
+  d'ouvrir) ; l'installation du serveur d'appels : [`whatsapp_cloud_call/freeswitch/README.md`](whatsapp_cloud_call/freeswitch/README.md).
 - [`docs/DEVELOPPEMENT.md`](docs/DEVELOPPEMENT.md) : installer, lancer, tester, traduire, faire des captures.
 - [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md) : les outils d'Odoo et ce qu'ils font pour OCD Live.
 - [`docs/LIVRAISONS.md`](docs/LIVRAISONS.md) : les frais de livraison (un prix par colis), la mise en

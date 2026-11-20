@@ -1,0 +1,17 @@
+<include>
+  <!-- OCD: WhatsApp calls. Included at the end of vars.xml:
+       <X-PRE-PROCESS cmd="include" data="vars_ocd.xml"/> -->
+
+  <!-- name of the call server: the same as in Odoo (Settings > WhatsApp > Calls) and in its
+       certificate (Meta checks it) -->
+  <X-PRE-PROCESS cmd="set" data="ocd_sip_domain=calls.example.com"/>
+
+  <!-- encryption of the voice with Meta: SDES (keys in the SDP, the setting "SDES" of the
+       account in Odoo). For DTLS, set the account to DTLS and use instead:
+       ocd_srtp=optional:AES_CM_128_HMAC_SHA1_80 with the variable media_webrtc=true in the
+       dialplan (not tried yet with Meta) -->
+  <X-PRE-PROCESS cmd="set" data="ocd_srtp=mandatory:AES_CM_128_HMAC_SHA1_80:AES_CM_128_HMAC_SHA1_32"/>
+
+  <!-- address of Odoo and key of the call server, written by ocd-call-sync -->
+  <X-PRE-PROCESS cmd="include" data="/var/lib/freeswitch/ocd/vars*.xml"/>
+</include>
