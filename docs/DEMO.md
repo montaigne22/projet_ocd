@@ -162,6 +162,37 @@ Les espèces partent à la caisse avec celles du shop à 19 h 30 ; l'argent de N
 heure, « Mon argent » montre le versement du lendemain, les espèces en chemin et un ou deux colis dont
 l'argent attend un souci, et « Mes colis » des colis à chaque étape.
 
+## Les modules autour de la boutique (quand ils sont installés)
+
+Installés avant ou après la démo : l'action planifiée les met en place à son passage suivant (après une
+mise à jour de la démo, l'« Exécuter » dans Paramètres › Technique › Actions planifiées pour les voir
+tout de suite).
+
+- **OCD Business** : Brenda a payé trois mois il y a 40 jours (sa commande, sa facture) ; Kossi a un
+  mois offert par l'équipe (« ses 10 lives au studio en octobre ») ; la formule de **Junior Gadgets
+  finit dans deux jours** (le rappel) ; celle de **Fatou a fini il y a dix jours** (« Renouveler »). Les
+  dates suivent le jour de la présentation. Tant que les fonctions sont offertes à tous (lancement),
+  l'espace le dit ; la page « OCD Business » de Brenda montre sa formule et son paiement.
+- **Les ambassadeurs** : **Grâce Mbia** (Makepe, son lien `GRACE7`) partage la robe, la chemise et le
+  pagne de Brenda ; tous les trois jours une commande de la boutique vient de son lien (Ruth, Hervé
+  puis Estelle) ; ses commandes d'avant sont livrées, ses gains confirmés et **versés le lundi à 10 h**
+  par Mobile Money (enregistrés dans la comptabilité) ; les visites de ses liens sur le dernier mois.
+  **Kevin Tchoumi** (Bonabéri) a demandé à devenir ambassadeur : il attend l'équipe (« À vérifier »).
+- **Les grands événements** : **« Vendredi wax »** chaque vendredi de 19 h à 23 h (heure de Douala),
+  au Cameroun, les inscriptions jusqu'à midi : Brenda y est acceptée avec ses promos (robe −25 %,
+  chemise −20 %) et son live du vendredi soir ; Fatou a envoyé son karité à −20 %, **à vérifier** ;
+  Estelle, Carine et Hervé ont demandé à être prévenues. Les deux prochains vendredis sont toujours
+  là (`/evenements`).
+- **Les clips** : chaque replay d'Awa a un clip par produit montré, fait une heure après le live (sa
+  vidéo courte, la photo du produit en image), joué et visité chaque jour (moins quand il vieillit).
+- **OCD Vote** : **« Le meilleur plat de Douala 2026 »**, organisé par Douala Food & Music (vérifié par
+  l'équipe) : quatre plats (le ndolé de Maman Ngo, le poulet DG de Chez Tantine, l'attiéké d'Adjoua, le
+  bissap de Rose), des votes payés à toute heure de la journée (1, 10 ou 50 votes), les votes ferment
+  toujours dans onze jours à 20 h (la finale en live).
+- **OCD Tickets** : **« Nuit de l'Afrobeat »** chaque samedi à 21 h au Palais des Sports de Warda,
+  en vente deux samedis à l'avance : Standard 5 000 F, VIP 15 000 F, Table de 6 (complète au fil des
+  jours) ; des billets vendus chaque jour (payés sur le téléphone) ; Junior à la porte principale.
+
 ## Scénario de présentation (20 minutes)
 
 ### 1. Le visiteur, sur son téléphone · `/lives`
@@ -243,7 +274,20 @@ l'argent attend un souci, et « Mes colis » des colis à chaque étape.
 - **WhatsApp** : les conversations du jour (Estelle, Hervé, Ruth, Bertrand, Brenda, Fatou), un client
   qui attend une réponse, et Awa à qui seul un modèle peut partir (plus de 24 heures).
 
-### 7. OCD Express · `/express`
+### 7. Les modules autour de la boutique (s'ils sont installés)
+- **Grâce, ambassadrice** : back-office › Vendeurs › Ambassadeurs › Grâce Mbia › **Voir son espace** :
+  « Mes ventes » (ses commandes, livrées, confirmées), « Mon argent » (à verser lundi, les versements
+  faits), « Produits à partager ». Kevin dans « À vérifier ».
+- **Vendredi wax** : `/evenements` puis l'événement (le compte à rebours, Brenda au programme, ses
+  promos) ; « À vérifier » : la participation de Fatou à accepter.
+- **OCD Business** : l'espace de Brenda › « OCD Business » (sa formule jusqu'à…, son paiement et sa
+  facture) ; back-office : les formules de Junior (fin proche) et de Fatou (finie).
+- **Clips** : la boutique d'Awa et le replay (les clips de ses gâteaux), « Mes clips » dans son espace.
+- **Vote** : la page du concours (les plats, les votes, le compte à rebours), voter pour un plat.
+- **Billets** : la page de la Nuit de l'Afrobeat (les places, la table complète), acheter un billet ;
+  back-office : les billets vendus, la porte de Junior.
+
+### 8. OCD Express · `/express`
 - **La page** `/express` : le prix dans Douala, les trois étapes, « Demander à envoyer mes colis ».
 - **Nadège** : back-office › Livraisons › Expéditeurs Express › Nadège Mode › onglet OCD Express ›
   **Voir son espace** (aucun code WhatsApp ne part vers un numéro de la démo). « Mes colis » : les colis
@@ -313,6 +357,7 @@ Désinstaller `ocd_live_demo` (Applications) : contacts, produits, photos, lives
 paiements, conversations et fenêtres de la démo sont retirés, avec les colis OCD Express de Nadège, ses
 passages, ses clients et ses versements, les magasins, le point relais et la demande de point relais,
 l'équipe de Brenda, les pièces mises de côté, avis, abonnés, alertes, signalements et chiffres de la
-démo ; les moyens de paiement, la date d'ouverture des réservations, les réglages d'OCD Express que la
+démo, les formules OCD Business de ses vendeurs, les gains et versements de Grâce, les « Vendredi
+wax », les clips d'Awa, le concours et ses votes, les Nuits de l'Afrobeat et leurs billets ; les moyens de paiement, la date d'ouverture des réservations, les réglages d'OCD Express que la
 démo avait remplis (Douala, point OCD, Mobile Money d'OCD) et ceux de la boutique (retrait au magasin,
 pièces à essayer, points relais) reviennent comme avant. `ocd_live_demo_whatsapp` part avec elle.

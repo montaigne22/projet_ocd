@@ -17,4 +17,8 @@ class OcdLiveDemoEvent(models.Model):
         comodel_name="stock.picking", string="Parcel", ondelete="cascade", index="btree_not_null",
     )
 
+    # The record made by a setup of the demo (a big event, a contest...): removed with the demo
+    res_model = fields.Char(string="Model Of The Record")
+    res_id = fields.Integer(string="Record")
+
     _unique_key = models.Constraint("UNIQUE (key)", "A step of the demo takes place once.")

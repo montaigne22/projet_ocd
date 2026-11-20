@@ -264,6 +264,79 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
         self.assertEqual(len(self.env["ocd.vendor.place"].search([("vendor_id", "=", brenda.id)])), 2)
         self.assertEqual(len(self.env["ocd.vendor.follower"].search([("vendor_id", "=", brenda.id)])), len(followers))
 
+    def test_the_modules_around_the_shop(self):
+        """OCD Business, the ambassadors, the big events, the clips, OCD Vote and OCD Tickets, when
+        they are installed: their dates
+        kept from today, nothing twice. Installed after the demo, the scheduled action of the demo
+        sets them up."""
+        demo = OcdLiveDemo(self.env)
+        demo.keep_current()
+        if "ocd.business.period" in self.env:
+            brenda, junior, fatou, kossi = (self.env.ref(f"ocd_live_demo.vendor_{name}")
+                                            for name in ("brenda", "junior", "fatou", "kossi"))
+            today = brenda._ocd_business_today()
+            self.assertEqual(brenda.ocd_business_until, today + timedelta(days=90 - 40 - 1), "In her three months")
+            self.assertTrue(brenda.ocd_business_period_ids.sale_order_id, "Paid with its order")
+            self.assertEqual(junior.ocd_business_until, junior._ocd_business_today() + timedelta(days=2), "Ends soon")
+            self.assertLess(fatou.ocd_business_until, fatou._ocd_business_today(), "Ended: to renew")
+            self.assertEqual(kossi.ocd_business_period_ids.kind, "offered")
+        if "ocd.ambassador.gain" in self.env:
+            grace = self.env.ref("ocd_live_demo.ambassador_grace")
+            self.assertEqual(grace.ocd_ambassador_state, "active")
+            self.assertEqual(self.env.ref("ocd_live_demo.ambassador_kevin").ocd_ambassador_state, "requested",
+                             "Kevin waits for the team")
+            gains = self.env["ocd.ambassador.gain"].search([("ambassador_id", "=", grace.id)])
+            self.assertGreaterEqual(len(gains), len(scenario.AMBASSADOR_PAST), "Her orders of before")
+            self.assertTrue(self.env["ocd.vendor.count"].search_count(
+                [("vendor_id", "=", grace.id), ("kind", "=", "ambassador_visit")]), "The visits by her links")
+            self.assertFalse(gains.filtered(lambda gain: gain.create_date > gain.order_id.date_order + timedelta(hours=1)),
+                             "Her gains of before are dated from their order")
+            if self.env["account.journal"].search_count([("type", "=", "purchase")]):
+                self.assertTrue(gains.filtered(lambda gain: gain.state == "confirmed"))
+                paid = self.env["ocd.payout"].search([("vendor_id", "=", grace.id), ("state", "=", "paid")])
+                self.assertTrue(paid, "Paid on Monday")
+                self.assertTrue(all(bill.payment_state in ("paid", "in_payment") for bill in paid.move_ids),
+                                "Recorded in the accounting: never paid twice")
+        if "ocd.evening" in self.env:
+            evenings = self.env["ocd.evening"].search([("name", "like", scenario.EVENING[0]),
+                                                       ("date_end", ">", fields.Datetime.now())])
+            self.assertEqual(len(evenings), 2, "The next two Fridays")
+            evening = evenings.sorted("date_start")[0]
+            self.assertTrue(evening._ocd_public())
+            states = {p.vendor_id: p.state for p in evening.participation_ids}
+            self.assertEqual(states[self.env.ref("ocd_live_demo.vendor_brenda")], "approved")
+            self.assertEqual(states[self.env.ref("ocd_live_demo.vendor_fatou")], "to_check", "Fatou waits for the team")
+            self.assertTrue(evening.promo_ids.filtered("active"), "The promos of Brenda during the evening")
+            self.assertEqual(len(evening.alert_ids), len(scenario.EVENING_ALERTS))
+        if "ocd.live.clip" in self.env:
+            awa = self.env.ref("ocd_live_demo.vendor_awa")
+            clips = self.env["ocd.live.clip"].search([("vendor_id", "=", awa.id), ("state", "=", "ready")])
+            self.assertTrue(clips, "The clips of the replays of Awa")
+            self.assertTrue(all(clip._ocd_public() for clip in clips), "Shown on the site")
+            self.assertTrue(self.env["ocd.vendor.count"].search_count(
+                [("vendor_id", "=", awa.id), ("kind", "=", "clip_play")]) or clips.made_at >= fields.Datetime.now()
+                - timedelta(days=1), "Played day by day")
+        if "ocd.vote.contest" in self.env:
+            contest = demo.setup_record("vote contest")
+            self.assertTrue(contest and contest._ocd_is_open(), "The votes are open")
+            self.assertEqual(len(contest.candidate_ids.filtered(lambda c: c.state == "approved")), len(scenario.CANDIDATES))
+            self.assertGreater(contest.vote_count, 0, "Votes paid every day")
+            self.assertGreater(contest.date_close, fields.Datetime.now() + timedelta(days=scenario.CONTEST[4] - 1))
+        if "ocd.ticket.controller" in self.env:
+            concerts = self.env["event.event"].search([("name", "=", scenario.CONCERT[0]), ("ocd_state", "=", "approved"),
+                                                       ("date_end", ">", fields.Datetime.now())])
+            self.assertEqual(len(concerts), 2, "The next two Saturdays on sale")
+            first = concerts.sorted("date_begin")[0]
+            self.assertTrue(first._ocd_public() and first.ocd_controller_ids)
+            self.assertGreater(first.ocd_sold_count, 0, "Tickets sold every day")
+        demo.keep_current()
+        if "ocd.evening" in self.env:
+            self.assertEqual(self.env["ocd.evening"].search_count([("name", "like", scenario.EVENING[0]),
+                                                                   ("date_end", ">", fields.Datetime.now())]), 2)
+        if "ocd.ambassador.gain" in self.env:
+            self.assertEqual(self.env["ocd.payout"].search_count([("vendor_id", "=", grace.id)]),
+                             self.env["ocd.payout"].search_count([("vendor_id", "=", grace.id), ("state", "=", "paid")]))
+
     def test_a_day_with_the_store_and_the_relay_point(self):
         """The next day: the order of Hervé ready at the store of Akwa, picked up the morning after;
         the parcel of Carine counted by the relay point in the evening; a piece held to try."""
@@ -644,8 +717,28 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
             cities = self.env.company.ocd_express_city_ids
             if json.loads(self.env["ir.config_parameter"].get_str(PARAM_EXPRESS) or "{}").get("city"):
                 cities -= self.env.ref("delivery_cameroon.city_cm_douala")  # opened by the demo
+        OcdLiveDemo(self.env).keep_current()  # the modules installed after the demo
+        contest = OcdLiveDemo(self.env).setup_record("vote contest") if "ocd.vote.contest" in self.env else None
+        concerts = self.env["event.event"].search([("name", "=", scenario.CONCERT[0])]) \
+            if "ocd.ticket.controller" in self.env else None
+        evenings = self.env["ocd.evening"].search([("name", "like", scenario.EVENING[0])]) \
+            if "ocd.evening" in self.env else None
         uninstall_hook(self.env)
         domain = [("partner_id", "in", partners.ids)]
+        # The modules around the shop
+        if evenings is not None:
+            self.assertTrue(evenings)
+            self.assertFalse(evenings.exists(), "The big events of the demo")
+        if contest is not None:
+            self.assertTrue(contest)
+            self.assertFalse(contest.exists(), "The contest of the demo and its votes")
+        if concerts is not None:
+            self.assertTrue(concerts)
+            self.assertFalse(concerts.exists(), "The concerts of the demo and their tickets")
+        if "ocd.business.period" in self.env:
+            self.assertFalse(self.env["ocd.business.period"].search([("vendor_id", "in", partners.ids)]))
+        if "ocd.ambassador.gain" in self.env:
+            self.assertFalse(self.env["ocd.ambassador.gain"].search([("ambassador_id", "in", partners.ids)]))
         self.assertFalse(orders.exists())
         for model in ("ocd.live.booking", "ocd.live.credit", "ocd.directory.pass", "ocd.directory.listing", "ocd.live.waitlist"):
             self.assertFalse(self.env[model].with_context(active_test=False).search(domain), model)
@@ -660,7 +753,7 @@ class TestOcdLiveDemo(DemoCommon, TransactionCase):
             ), "The conversations of the demo are removed")
         self.assertFalse(self.env["ocd.payout"].search([("vendor_id", "in", partners.ids)]))
         self.assertFalse(self.env["ocd.cash.remittance"].search([("courier_id", "in", partners.ids)]))
-        self.assertFalse(self.env["account.move"].search(domain + [("move_type", "in", ("in_invoice", "in_refund"))]))
+        self.assertFalse(self.env["account.move"].search(domain + [("move_type", "!=", "entry")]))
         templates = self.env["ir.model.data"].search(
             [("module", "=", "ocd_live_demo"), ("model", "=", "product.template")]
         ).mapped("res_id")

@@ -82,7 +82,10 @@ pièce à essayer, ventes pendant les lives, avis, abonnés, promo et signalemen
 chiffres) ; avec `ocd_express` (installé avant ou après la démo), une expéditrice d'OCD Express et
 ses colis de chaque jour ouvré (deux passages du livreur, un retour rendu contre le code, un souci
 signalé, un colis au-dessus de sa limite à vérifier, son argent versé chaque jour ouvré) et une demande
-d'ouverture de compte. Une action planifiée (toutes les 15 minutes) la tient sur les jours autour
+d'ouverture de compte ; avec les autres modules (installés avant ou après elle) : les formules OCD
+Business des vendeurs, une ambassadrice et ses gains versés le lundi, « Vendredi wax » chaque vendredi,
+les clips des replays d'Awa, un concours OCD Vote et ses votes, un concert chaque samedi et ses billets
+(`ocd_live_demo/modules_life.py`). Une action planifiée (toutes les 15 minutes) la tient sur les jours autour
 d'aujourd'hui : rien à refaire avant une présentation. Une vraie vidéo pour ses replays et un vrai compte pour ses lives se
 règlent dans OCD Live › Configuration › Paramètres › Démo. Le scénario de présentation, vendeur par
 vendeur et heure par heure, est dans [`DEMO.md`](DEMO.md).

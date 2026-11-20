@@ -41,7 +41,9 @@ class DemoShopLife:
         try:
             with self.env.cr.savepoint():
                 result = function(*args)
-                Event.create({"key": key})
+                record = result if hasattr(result, "_name") and len(result) == 1 else None
+                Event.create({"key": key, "res_model": record._name if record else False,
+                              "res_id": record.id if record else False})
                 return result
         except Exception:  # noqa: BLE001
             _logger.warning("OCD Live demo: %s could not be set up yet", key, exc_info=True)

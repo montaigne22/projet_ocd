@@ -60,7 +60,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
 | Togo (villes, quartiers, livraison) | ✅ fait |
 | Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements, OCD Express) ; installées en une fois avec les modules, avec leurs factures et reversements | ✅ fait, testé |
-| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), OCD Express (Nadège Mode : ses colis à chaque étape, deux passages par jour, un retour, un souci, son argent versé chaque jour ouvré ; une demande à vérifier), magasins, équipe, retrait au magasin, point relais, ventes des lives, avis, abonnés, promo, signalement, chiffres sur 90 jours, scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
+| Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), OCD Express (Nadège Mode : ses colis à chaque étape, deux passages par jour, un retour, un souci, son argent versé chaque jour ouvré ; une demande à vérifier), magasins, équipe, retrait au magasin, point relais, ventes des lives, avis, abonnés, promo, signalement, chiffres sur 90 jours ; quand ils sont installés : formules OCD Business, une ambassadrice et ses gains, Vendredi wax, clips, un concours OCD Vote, un concert et ses billets ; scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
 | Traductions françaises de tous les modules, descriptions longues comprises | ✅ faites (à compléter à chaque nouvel écran) |
 | Grand public : pages publiques gardées en mémoire quelques secondes, photos et vidéos par un CDN, questions répétées des pages réduites ; modèle de rapport de charge ([`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md)) | ✅ fait, testé (à mesurer sur les vrais serveurs) |
 
@@ -153,6 +153,33 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 20 novembre 2026 · La démo des modules autour de la boutique : Business, ambassadrice, événements, clips, vote, billets
+`ocd_live_demo` 20.0.1.8.0 (migration). Quand ils sont installés, avant ou après la démo
+([`DEMO.md`](DEMO.md)) :
+- **OCD Business** : la formule payée de Brenda (sa commande, sa facture), un mois offert à Kossi, celle
+  de Junior qui finit dans deux jours, celle de Fatou finie ; les dates suivent le jour de la
+  présentation.
+- **Ambassadeurs** : Grâce Mbia et son lien `GRACE7`, une commande de la boutique sur trois jours qui
+  vient d'elle, ses gains confirmés et versés le lundi (Mobile Money, en comptabilité : jamais versé
+  deux fois), les visites de ses liens ; Kevin Tchoumi attend l'équipe.
+- **Grands événements** : « Vendredi wax » chaque vendredi soir au Cameroun, Brenda acceptée avec ses
+  promos, Fatou à vérifier, trois clientes à prévenir ; toujours les deux prochains.
+- **Clips** : un clip par produit montré dans chaque replay d'Awa, joué et visité chaque jour.
+- **OCD Vote** : « Le meilleur plat de Douala 2026 », quatre plats, des votes payés chaque jour, la fin
+  des votes toujours dans onze jours.
+- **OCD Tickets** : « Nuit de l'Afrobeat » chaque samedi, en vente deux semaines avant, des billets
+  vendus chaque jour, une table complète, un contrôleur à la porte.
+
+Ce que la démo met en place une fois garde l'enregistrement qu'elle a créé (`ocd.live.demo.event`) : la
+désinstallation retire ses événements, les formules et les gains de ses contacts. Vérifié à l'écran
+(espace de Grâce, « Mon argent », Vendredi wax, OCD Business de Brenda). La suite complète sur une base
+neuve : **726 sans échec**, la démo : **25 sans échec** ; la mise à jour d'une démo existante vérifiée
+(de 20.0.1.6.0 : magasins, Business et ambassadrice tout de suite, le reste au passage suivant de
+l'action planifiée).
+**Sur le serveur** : `-u ocd_live_demo` (seulement là où la démo est installée), puis « Exécuter »
+l'action planifiée « Démo d'OCD Live » (ou attendre un quart d'heure) pour les événements, le concours,
+les concerts et les clips.
 
 ### 20 novembre 2026 · La démo montre la boutique en entier : magasins, retrait, point relais, ventes des lives
 Ce qui a été livré pour la boutique n'avait pas de données de démo : une présentation montrait des pages

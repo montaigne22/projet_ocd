@@ -10,6 +10,7 @@ from odoo.tools import SQL, BinaryBytes
 from odoo.tools.misc import file_open
 
 from . import scenario
+from .modules_life import DemoModules
 from .shop_life import PARAM_SHOP, SETUP, DemoShopLife
 
 _logger = logging.getLogger(__name__)
@@ -34,7 +35,7 @@ MOMO_MESSAGE = (
 OPEN_LINKS = ("queued", "to_check", "published")
 
 
-class OcdLiveDemo(DemoShopLife):
+class OcdLiveDemo(DemoShopLife, DemoModules):
     """Scenario of the demo (scenario.py): installed once, then kept on the days around today
     by the scheduled action of the demo (keep_current)."""
 
@@ -204,8 +205,11 @@ class OcdLiveDemo(DemoShopLife):
         self.step("the settings of the shop", self.shop_settings)
         self.step("the stores of the vendors", self.keep_places)
         self.step("the team of Brenda", self.keep_team)
+        # Before the orders of the shop: some come from her link
+        self.step("the ambassador", self.setup_ambassadors)
         self.step("the shop in Douala", self.keep_shop, now)
         self.step("the life of the shop", self.keep_life, now)
+        self.step("the modules around the shop", self.keep_modules, now)
         self.step("the old records of the demo", self.prune, now)
         self.remember_channel_messages(last_message)
 
@@ -664,10 +668,11 @@ class OcdLiveDemo(DemoShopLife):
             if target > free:
                 Quant._update_available_quantity(variant, location, target - free)
 
-    def order(self, partner, lines, collect=None, relay=None, live=None):
+    def order(self, partner, lines, collect=None, relay=None, live=None, ambassador=None, linked=None):
         """A shop order priced with the delivery of OCD Live (one price per parcel), confirmed;
         picked up at the store `collect`, or at the relay point `relay`, when it can; counted for
-        the live `live` when the customer came during it."""
+        the live `live` when the customer came during it; for `ambassador` when the customer
+        opened their link at `linked`."""
         order = self.SaleOrder.create({
             "partner_id": partner.id,
             "order_line": [Command.create({"product_id": product.id, "product_uom_qty": qty}) for product, qty in lines],
@@ -682,6 +687,8 @@ class OcdLiveDemo(DemoShopLife):
             rate = carrier.rate_shipment(order)
             if rate.get("success"):
                 order.set_delivery_line(carrier, rate["price"])
+        if ambassador:
+            order.write({"ocd_ambassador_id": ambassador.id, "ocd_ambassador_at": linked})
         order.action_confirm()
         return order
 
@@ -809,6 +816,8 @@ class OcdLiveDemo(DemoShopLife):
             self.ref(customer), self.order_lines(lines, day, index),
             collect=self.collect_store() if story == "collect" else None,
             relay=self.relay_point() if story == "relay" else None,
+            ambassador=self.ambassador_of(day, index),
+            linked=self.shop_utc(ordered - timedelta(minutes=scenario.AMBASSADOR_LINK_MINUTES)),
         )
         return self.dated_order(order, ordered)
 
@@ -1369,6 +1378,45 @@ def _uninstall_express(env, partner_ids):
     customers.unlink()
 
 
+# The records made by a setup of the demo that are removed as they are (with what cascades)
+SETUP_REMOVED = ("ocd.evening", "ocd.live.clip")
+
+
+def _uninstall_modules(env, partner_ids):
+    """What the demo made in the modules around the shop (modules_life.py): the records of its
+    setups (big events...), the formulas of OCD Business of its vendors, the gains of its
+    ambassador. Before the orders: they point to them."""
+    for event in env["ocd.live.demo.event"].sudo().search([("res_model", "in", SETUP_REMOVED), ("res_id", "!=", False)]):
+        if event.res_model in env:
+            env[event.res_model].sudo().browse(event.res_id).exists().unlink()
+    events = env["ocd.live.demo.event"].sudo()
+    if "ocd.vote.contest" in env:
+        contests = env["ocd.vote.contest"].sudo().browse(
+            events.search([("res_model", "=", "ocd.vote.contest")]).mapped("res_id")).exists()
+        votes = env["ocd.vote"].sudo().search(["|", ("contest_id", "in", contests.ids), ("partner_id", "in", partner_ids)])
+        orders = votes.order_id
+        votes.unlink()
+        orders.filtered(lambda order: order.state != "cancel")._action_cancel()
+        orders.unlink()
+        contests.unlink()
+    if "ocd.ticket.controller" in env:
+        concerts = env["event.event"].sudo().browse(
+            events.search([("res_model", "=", "event.event")]).mapped("res_id")).exists()
+        orders = env["sale.order"].sudo().search([("ocd_ticket_event_id", "in", concerts.ids)])
+        env["event.registration"].sudo().search([("event_id", "in", concerts.ids)]).unlink()
+        orders.filtered(lambda order: order.state != "cancel")._action_cancel()
+        orders.unlink()
+        concerts.unlink()
+    if "ocd.business.period" in env:
+        env["ocd.business.period"].sudo().search([("vendor_id", "in", partner_ids)]).unlink()
+    if "ocd.ambassador.gain" in env:
+        env["ocd.ambassador.gain"].sudo().search(
+            ["|", ("ambassador_id", "in", partner_ids), ("order_id.partner_id", "in", partner_ids)]).unlink()
+        # The orders of other customers brought by the link of the demo, during a presentation
+        env["sale.order"].sudo().search([("ocd_ambassador_id", "in", partner_ids)]).write(
+            {"ocd_ambassador_id": False, "ocd_ambassador_at": False})
+
+
 def post_init_hook(env):
     OcdLiveDemo(env).run()
 
@@ -1420,11 +1468,13 @@ def uninstall_hook(env):
         payments.unlink()
         payouts.move_ids.write({"ocd_payout_id": False})
         payouts.unlink()
-        bills = env["account.move"].sudo().search(domain + [("move_type", "in", ("in_invoice", "in_refund"))])
+        # With the invoices of the orders of the demo (OCD Business)
+        bills = env["account.move"].sudo().search(domain + [("move_type", "!=", "entry")])
         bills.filtered(lambda move: move.state == "posted").button_draft()
         bills.with_context(force_delete=True).unlink()
         if "ocd.express.pickup" in env:
             _uninstall_express(env, partner_ids)
+        _uninstall_modules(env, partner_ids)
         _uninstall_shop_life(env, partner_ids)
         orders = env["sale.order"].sudo().with_context(active_test=False).search(domain)
         pickings = orders.picking_ids

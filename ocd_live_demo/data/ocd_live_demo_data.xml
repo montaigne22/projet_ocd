@@ -265,6 +265,37 @@
         <field name="ocd_payout_frequency">monthly</field>
         <field name="ocd_payout_momo">+237 677412085</field>
     </record>
+    <!-- Ambassadors (when ocd_ambassadors is installed: modules_life.py makes them ambassadors) -->
+    <record id="ambassador_grace" model="res.partner">
+        <field name="name">Grâce Mbia</field>
+        <field name="phone">+237 691234570</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_makepe"/>
+        <field name="ocd_payout_frequency">weekly</field>
+        <field name="ocd_payout_momo">+237 691234570</field>
+    </record>
+    <record id="ambassador_kevin" model="res.partner">
+        <field name="name">Kevin Tchoumi</field>
+        <field name="phone">+237 652118844</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city_id" ref="delivery_cameroon.city_cm_douala"/>
+        <field name="district_id" ref="delivery_cameroon.district_douala_bonaberi"/>
+    </record>
+    <!-- The organiser of the contest and of the concert, and its hall (OCD Vote, OCD Tickets) -->
+    <record id="organizer_festival" model="res.partner">
+        <field name="name">Douala Food &amp; Music</field>
+        <field name="is_company" eval="True"/>
+        <field name="phone">+237 699407712</field>
+        <field name="country_id" ref="base.cm"/>
+        <field name="city">Douala</field>
+    </record>
+    <record id="hall_palais" model="res.partner">
+        <field name="name">Palais des Sports de Warda</field>
+        <field name="street">Boulevard de la Liberté, Warda</field>
+        <field name="city">Douala</field>
+        <field name="country_id" ref="base.cm"/>
+    </record>
     <record id="courier_ekwalla" model="res.partner">
         <field name="name">Junior Ekwalla</field>
         <field name="phone">+237 655000103</field>

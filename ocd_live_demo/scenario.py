@@ -492,3 +492,100 @@ LIVE_VISITS = (28, 40)
 LIVE_PAST_DAYS = PAST_DAYS
 LIVE_VISITS_AFTER = 50
 LIVE_FOLLOW_AFTER = 35
+
+# === THE MODULES AROUND THE SHOP, WHEN THEY ARE INSTALLED (modules_life.py) === #
+
+MONTHS = ("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre",
+          "novembre", "décembre")
+# OCD Business (chantier 12), the dates kept from today: (vendor, kind, product of the payment,
+# started days ago, days offered, why). Brenda in the middle of her 3 months, Kossi offered a
+# month, Junior at the end of his month (the reminder), Fatou ended 10 days ago (« Renew »)
+BUSINESS = (
+    ("vendor_brenda", "paid", "ocd_business.product_business_3", 40, 0, ""),
+    ("vendor_kossi", "offered", "", 12, 30, "Offert : ses 10 lives au studio en octobre"),
+    ("vendor_junior", "paid", "ocd_business.product_business_1", 27, 0, ""),
+    ("vendor_fatou", "paid", "ocd_business.product_business_1", 40, 0, ""),
+)
+# The ambassadors (chantier 14): Grâce shares the products of the shop with her link (contact,
+# code, ambassador since days), paid every Monday at this hour; Kevin asked to become one
+AMBASSADOR = ("ambassador_grace", "GRACE7", 75)
+AMBASSADOR_ASKING = "ambassador_kevin"
+AMBASSADOR_PAYOUT = "10:00"
+# One order of the day in turn comes from her link every AMBASSADOR_EVERY days (index in
+# SHOP_DAY: Ruth, Hervé, Estelle), the link opened this many minutes before
+AMBASSADOR_ORDERS = (3, 2, 0)
+AMBASSADOR_EVERY = 3
+AMBASSADOR_LINK_MINUTES = 80
+# The products she shares, and the visits by her links each day for each one (from, up to more)
+AMBASSADOR_SHARED = ("product_wax_dress", "product_wax_shirt", "product_wax_pagne")
+AMBASSADOR_VISITS = (3, 9)
+AMBASSADOR_VISIT_DAYS = 30
+# Her orders before the days of the shop: (days ago, customer, product, quantity), delivered,
+# confirmed and paid with her payout of Monday
+AMBASSADOR_PAST = (
+    (9, "customer_ruth", "product_wax_shirt", 2),
+    (12, "customer_estelle", "product_wax_dress", 1),
+    (16, "customer_herve", "product_wax_pagne", 2),
+    (20, "customer_carine", "product_wax_dress", 1),
+)
+# The big events (chantier 13): « Vendredi wax » each Friday evening in Cameroon (name, weekday,
+# from, to, countries), registrations until noon; Brenda joins (accepted), Fatou waits for the
+# team; customers asked to be told
+EVENING = ("Vendredi wax", 4, 19, 23, ("base.cm",))
+EVENING_DESCRIPTION = ("Chaque vendredi soir, les vendeurs du Cameroun en live avec leurs meilleures promos : "
+                       "pagnes, robes, beauté. Livré à Douala dès le samedi.")
+EVENING_REGISTRATION_UNTIL = 12
+EVENING_MAX_DISCOUNT = 40
+EVENING_VENDORS = (
+    ("vendor_brenda", (("product_wax_dress", 25), ("product_wax_shirt", 20)), True),
+    ("vendor_fatou", (("product_shea_butter", 20),), False),
+)
+EVENING_ALERTS = ("customer_estelle", "customer_carine", "customer_herve")
+# The clips (chantier 15): the replays of Awa, one clip per product shown, made from her short
+# video, an hour after the live; plays and visits each day (fewer as the clip gets older)
+CLIPS_VENDOR = "vendor_awa"
+CLIPS_VIDEO = "awa_gateaux.mp4"
+CLIPS_SECONDS = 28.0
+CLIPS_MADE_AFTER = 70
+CLIPS_PLAYS = (60, 90)
+# OCD Vote (chantier 4): the contest of a food festival of Douala, its organiser checked by the
+# team: (name, what, prize, opened days ago, closes in days), the votes close at this hour
+ORGANIZER = "organizer_festival"
+CONTEST = ("Le meilleur plat de Douala 2026",
+           "Les cuisinières et cuisiniers de Douala présentent leur plat. Vote pour ton préféré : la finale "
+           "se joue en live sur TikTok.",
+           "500 000 F et une semaine de live au studio d'OCD Live", 9, 11)
+CONTEST_CLOSE_HOUR = 20
+CONTEST_IMAGE = "ndole.jpg"
+# The candidates, in this order: (name, a sentence, district, photo of the dish)
+CANDIDATES = (
+    ("Maman Ngo, le ndolé", "Le ndolé de ma grand-mère, aux crevettes et au plantain mûr.", "Akwa", "ndole.jpg"),
+    ("Chez Tantine, le poulet DG", "Le poulet DG de Bonapriso, plantains bien dorés.", "Bonapriso", "poulet_dg.jpg"),
+    ("Adjoua, l'attiéké", "Attiéké et poisson braisé à l'ivoirienne, piment frais.", "Makepe", "attieke.jpg"),
+    ("Bissap de Rose", "Bissap glacé au gingembre et à la menthe, fait chaque matin.", "Bonamoussadi", "bissap.jpg"),
+)
+# The votes paid each day, a close race: (hour of Douala, candidate in the order above, votes, voter)
+VOTES = (
+    ("08:40", 0, 10, "customer_estelle"), ("11:15", 1, 10, "customer_herve"), ("12:50", 2, 1, "customer_ruth"),
+    ("16:20", 2, 10, "customer_sandrine"), ("19:05", 1, 1, "customer_bertrand"), ("20:15", 1, 1, "customer_estelle"),
+    ("21:30", 3, 1, "customer_carine"), ("22:10", 0, 1, "customer_ruth"),
+)
+# OCD Tickets (chantier 5): « Nuit de l'Afrobeat » each Saturday night (name, weekday, hour,
+# hours, kind, about, hall), put on sale two Saturdays ahead; its tickets (name, price, seats,
+# what), the gate, the tickets sold each day (hour, [(ticket, count)], buyer)
+CONCERT = ("Nuit de l'Afrobeat", 5, 21, 6, "Concert",
+           "Six artistes de Douala et d'Abidjan, deux scènes, DJ jusqu'à l'aube. Bar et grillades sur place.",
+           "hall_palais")
+CONCERT_DOORS_BEFORE = 90
+TICKETS = (
+    ("Standard", 5000, 300, "Debout, fosse"),
+    ("VIP", 15000, 40, "Places assises, une boisson offerte"),
+    ("Table de 6", 80000, 6, "6 billets, une table réservée près de la scène"),
+)
+CONTROLLER = ("Junior", "Porte principale", "courier_ekwalla")
+TICKET_SALES = (
+    ("10:20", (("Standard", 2),), "customer_estelle"),
+    ("13:45", (("VIP", 1),), "customer_ruth"),
+    ("18:30", (("Standard", 3),), "customer_herve"),
+    ("21:10", (("Table de 6", 1),), "customer_bertrand"),
+)

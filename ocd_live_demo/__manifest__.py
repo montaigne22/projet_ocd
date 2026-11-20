@@ -33,6 +33,14 @@ Everything needed to present OCD Live, in one module that can be removed:
   (two pick-ups a day, a parcel refused and given back against her return code, a
   problem reported by a customer, a parcel above her limit checked by the team), her
   money paid every working day; a request to open an account, waiting for the team.
+- The stores of the vendors and the team of Brenda, the orders picked up at the store and at a
+  relay point, a piece held to try, the sales of the lives, the reviews, the followers, a report
+  and a promo each week, 90 days of figures.
+- The modules around the shop, when they are installed (before or after the demo): the formulas
+  of OCD Business of the vendors, an ambassador with her gains paid every Monday and a request,
+  « Vendredi wax » each Friday evening with its vendors, promos and people to tell, the clips of the
+  replays of Awa, a contest of OCD Vote with votes paid every day, a concert each Saturday with its
+  tickets sold every day.
 - WhatsApp: the conversations of the day about the orders and the parcels, on an
   archived account; no WhatsApp message is ever sent to the contacts of the demo
   (ocd_live_demo_whatsapp).
@@ -43,7 +51,7 @@ Uninstalling the module cancels and removes all these records, and puts the paym
 methods, the opening date of the bookings and the settings of OCD Express back as they
 were.
 """,
-    "version": "20.0.1.7.0",
+    "version": "20.0.1.8.0",
     "category": "Hidden",
     "author": "RollBackk",
     "license": "LGPL-3",
