@@ -43,7 +43,7 @@ Odoo ◄── Meta        : appel tenté, appel fini (webhook « calls ») : un
 | 0.2 | Moyen de paiement ou ligne de crédit sur le compte WhatsApp Business (Meta Business Suite) | Équipe | Oui |
 | 0.3 | Droits et réglages chez Meta : jeton de l'utilisateur système avec ses trois autorisations, app Meta en mode « Live » (exigé pour le SIP), webhook abonné au champ `calls` ; pas à pas : [`APPELS_WHATSAPP_META.md`](APPELS_WHATSAPP_META.md) | Équipe | Oui |
 | 0.4 | Vérifier que le Togo et le Cameroun sont dans la liste des pays de Meta pour les appels | Équipe | Oui |
-| 0.5 | Un serveur (VPS) Debian 12, 2 cœurs, IP publique fixe, dans un datacenter proche (Europe de l'Ouest ou Afrique) ; un nom, par ex. `appels.ocdlive.com` | Équipe | Oui |
+| 0.5 | Un serveur (VPS) Debian 12, 2 cœurs, IP publique fixe, dans un datacenter proche (Europe de l'Ouest ou Afrique) ; un nom, par ex. `appels.rollbackk.app` | Équipe | Oui |
 | 0.6 | Ports ouverts sur ce serveur : 5061/TCP (Meta), 7443/TCP (agents), 16384-29999/UDP (voix), 3478/UDP+TCP et 443/TCP, ou 5349/TCP quand Traefik ou nginx tient le 443 (relais TURN), 49152-65535/UDP (voix relayée) | Équipe | Oui |
 | 0.7 | Docker sur le serveur (conseillé : FreeSWITCH compilé dans l'image, sans compte), sinon un compte SignalWire gratuit pour les paquets | Équipe | Oui |
 | 0.8 | Trois messages enregistrés (voix de l'équipe, français) : accueil, attente, messagerie | Équipe | Non (une tonalité sinon) |
@@ -63,7 +63,7 @@ Module `whatsapp_cloud_call` (générique, comme `whatsapp_cloud`) et dossier
 | 1.5 | **Le téléphone dans Odoo** | Barre du haut : « Je prends les appels » ou non, la sonnerie, le nom du client et sa conversation, Décrocher, Refuser, Couper le micro, Raccrocher, la durée ; deuxième appel refusé (« occupé ») pendant un appel ; avertissement avant de quitter la page pendant un appel ; reconnexion automatique |
 | 1.6 | **L'historique** | Chaque appel : qui, quand, attente, durée, agent, fin (fini, manqué, messagerie, perdu) ; une ligne dans la conversation (« Appel de 3 min 12 s, pris par Awa ») ; appel manqué ou message laissé : la conversation attend une réponse, avec les rappels et l'escalade de `whatsapp_cloud` ; l'agent qui décroche prend la conversation |
 | 1.7 | **Surveillance** | Le serveur se signale chaque minute : sans nouvelle depuis 5 minutes, les responsables sont prévenus ; un appel vu par Meta et pas par le serveur est « perdu » et signalé ; le dernier contact du serveur et les agents connectés sur la fiche du compte |
-| 1.8 | **Relais TURN** | coturn sur le serveur, ports 3478 et 443 : la voix passe même quand le réseau du studio bloque l'UDP ; des identifiants de 12 h donnés par Odoo à chaque agent |
+| 1.8 | **Relais TURN** | coturn sur le serveur, ports 3478 et 443 (ou 5349 à côté de Traefik) : la voix passe même quand le réseau du studio bloque l'UDP ; des identifiants de 12 h donnés par Odoo à chaque agent |
 | 1.9 | **Docker** | `docker compose` : FreeSWITCH 1.11.3 compilé depuis ses sources dans l'image (aucun compte), ocd-call-sync (socket d'événements de FreeSWITCH), coturn ; réseau du serveur ; santé de chaque conteneur ; certificat renouvelé la nuit sans couper d'appel |
 | 1.10 | **Veille du conseiller** | Pendant une conversation, le conseiller est-il toujours connecté ? Page fermée ou réseau tombé : au bout de 9 secondes l'appel passe aux collègues (FreeSWITCH seul ne le remarque pas toujours) |
 

@@ -10,7 +10,7 @@
 # nightly "apply" then gives them to FreeSWITCH and coturn when no call is going on.
 #
 # Settings in /etc/default/ocd-freeswitch-certs:
-#   OCD_K8S_SECRET=appels-ocdlive-tls     name of the secret (Certificate of cert-manager)
+#   OCD_K8S_SECRET=appels-rollbackk-tls     name of the secret (Certificate of cert-manager)
 #   OCD_K8S_NAMESPACE=ocd                 its namespace
 #   OCD_LIVE_DIR=/etc/ocd-calls/live      where to write the files (the same for the copy)
 #   KUBECONFIG=/etc/rancher/k3s/k3s.yaml  default of k3s
