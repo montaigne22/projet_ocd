@@ -66,6 +66,7 @@ services:
       - --static-auth-secret=${TURN_SECRET:?TURN_SECRET missing in .env}
       - --realm=${OCD_SIP_DOMAIN:?OCD_SIP_DOMAIN missing in .env}
       - --external-ip=${EXTERNAL_IP:?EXTERNAL_IP missing in .env}
+      - --tls-listening-port=${TURN_TLS_PORT:-443}
       - --proc-user=nobody
       - --proc-group=nogroup
     volumes:

@@ -37,11 +37,13 @@ class ResUsers(models.Model):
         servers = [{"urls": [f"stun:{host}:3478"]}]
         secret = self.env["ir.config_parameter"].sudo().get_str(const.PARAM_TURN_SECRET)
         if secret:
+            tls_port = int(self.env["ir.config_parameter"].sudo().get_str(const.PARAM_TURN_TLS_PORT)
+                           or const.DEFAULT_TURN_TLS_PORT)
             expiry = int(time.time() + const.TURN_VALIDITY.total_seconds())
             username = f"{expiry}:{const.AGENT_PREFIX}{self.id}"
             digest = hmac.new(secret.encode(), username.encode(), hashlib.sha1).digest()
             servers.append({
-                "urls": [f"turn:{host}:3478?transport=udp", f"turns:{host}:443?transport=tcp"],
+                "urls": [f"turn:{host}:3478?transport=udp", f"turns:{host}:{tls_port}?transport=tcp"],
                 "username": username,
                 "credential": base64.b64encode(digest).decode(),
             })

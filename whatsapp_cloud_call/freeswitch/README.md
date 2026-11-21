@@ -43,11 +43,11 @@ Pare-feu (nftables ou celui de l'hébergeur), tout le reste fermé :
 | Port | Pour |
 |---|---|
 | 22/TCP | SSH de l'équipe technique (de ses adresses seulement, si possible) |
-| 80/TCP | Let's Encrypt (renouvellement du certificat) |
+| 80/TCP | Let's Encrypt, seulement si rien d'autre ne tient le port 80 (sinon : section 2) |
 | 5061/TCP | Meta (SIP sur TLS) |
 | 7443/TCP | agents (SIP sur WebSocket sécurisé) |
 | 16384-32768/UDP | voix (FreeSWITCH) |
-| 3478/UDP+TCP, 443/TCP | relais TURN (coturn) |
+| 3478/UDP+TCP, 443/TCP (ou 5349/TCP) | relais TURN (coturn) ; 5349 quand nginx tient déjà le 443 |
 | 49152-65535/UDP | voix relayée (coturn) |
 
 Les ports 5070 et 5090 (SIP sans chiffrement des deux profils) et 8021 (socket d'événements)
@@ -62,9 +62,13 @@ reverse proxy d'Odoo ne change pas : le serveur d'appels joint Odoo par son adre
 (nuage gris)**, jamais en nuage orange : Cloudflare ne relaie que le web sur quelques ports, il
 bloquerait le SIP, le port 7443 et la voix.
 
-Si le serveur d'appels partage sa machine avec un nginx qui tient déjà le port 443, coturn ne peut pas
-le prendre : mettre `tls-listening-port=5349` dans sa configuration (et ouvrir 5349/TCP au lieu de
-443). Un serveur dédié évite ce cas.
+**Sur une machine où nginx (ou un autre programme) tient déjà les ports 80 et 443** :
+- le certificat s'obtient sans le port 80 (section 2) ;
+- coturn prend le port **5349** au lieu de 443 : `TURN_TLS_PORT=5349` dans le `.env` (Docker) ou
+  `tls-listening-port=5349` dans `/etc/turnserver.conf`, **et le même dans Odoo** : Paramètres ›
+  WhatsApp › Appels › Port du relais TURN (TLS). Ouvrir 5349/TCP au lieu de 443. Le relais marche
+  pareil ; seuls quelques réseaux très fermés (qui ne laissent sortir que le 443) ne le joindront pas.
+- FreeSWITCH n'utilise ni le 80 ni le 443 : rien d'autre à changer.
 
 ## 2. Le certificat (Let's Encrypt)
 
@@ -85,14 +89,59 @@ Avec Docker, dire au script où est la pile (`/etc/default/ocd-freeswitch-certs`
 printf 'OCD_MODE=docker\nOCD_COMPOSE_FILE=%s/docker/docker-compose.yml\n' "$SRC" > /etc/default/ocd-freeswitch-certs
 ```
 
-Puis, dans les deux cas :
+Puis obtenir le certificat. Trois façons, selon ce qui tient le port 80 de la machine :
+
+**a. Le port 80 est libre** : certbot l'ouvre lui-même le temps de la vérification.
 
 ```bash
 certbot certonly --standalone -d appels.ocdlive.com \
   --deploy-hook "/usr/local/lib/ocd/ocd-freeswitch-certs.sh copy"
+```
+
+**b. nginx tient le port 80** (le cas le plus courant) : nginx sert le petit fichier de vérification
+de Let's Encrypt. Ajouter ce bloc à nginx (par ex. `/etc/nginx/conf.d/appels.conf`) :
+
+```nginx
+server {
+    listen 80;
+    server_name appels.ocdlive.com;
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+    location / { return 404; }
+}
+```
+
+```bash
+mkdir -p /var/www/certbot && nginx -t && systemctl reload nginx
+certbot certonly --webroot -w /var/www/certbot -d appels.ocdlive.com \
+  --deploy-hook "/usr/local/lib/ocd/ocd-freeswitch-certs.sh copy"
+```
+
+(nginx dans un conteneur : monter `/var/www/certbot` dans ce conteneur.) Ce bloc ne sert qu'au
+certificat : nginx ne fait passer aucun appel.
+
+**c. Par le DNS** (aucun port à ouvrir, le domaine chez Cloudflare) : certbot prouve la possession du
+domaine en écrivant un enregistrement DNS temporaire. Il faut un jeton d'API Cloudflare limité à la
+zone, droit « DNS : Modifier » (Cloudflare › Mon profil › Jetons d'API), saisi sur le serveur
+seulement.
+
+```bash
+apt-get install -y python3-certbot-dns-cloudflare
+install -d -m 700 /root/.secrets
+printf 'dns_cloudflare_api_token = %s\n' 'LE-JETON-CLOUDFLARE' > /root/.secrets/cloudflare.ini
+chmod 600 /root/.secrets/cloudflare.ini
+certbot certonly --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini \
+  -d appels.ocdlive.com --deploy-hook "/usr/local/lib/ocd/ocd-freeswitch-certs.sh copy"
+```
+
+Dans les trois cas, ensuite :
+
+```bash
 /usr/local/lib/ocd/ocd-freeswitch-certs.sh copy
 systemctl daemon-reload && systemctl enable --now ocd-freeswitch-certs.timer
 ```
+
+certbot renouvelle tout seul, de la même façon qu'au premier certificat (`certbot renew --dry-run`
+pour l'essayer).
 
 Au renouvellement (tous les 2 mois environ), le certificat est copié, puis appliqué la nuit suivante à
 un moment sans appel : un redémarrage des profils couperait les appels en cours, le script attend
@@ -135,6 +184,7 @@ viennent d'Odoo ou doivent y être recopiées à l'identique : elles sont marqu�
 | `OCD_TOKEN` | `Xy3...` (43 caractères) | La clé du serveur d'appels : Odoo refuse toute demande sans elle | **Odoo** : Paramètres › WhatsApp › Appels › Clé du serveur d'appels (bouton copier). Après « Nouvelle clé » dans Odoo : la recopier ici, puis `docker compose up -d` |
 | `OCD_ESL_PASSWORD` | `9f2c...` | Le mot de passe entre FreeSWITCH et ocd-call-sync, sur le serveur seulement (127.0.0.1) | À inventer : `openssl rand -hex 24`. Nulle part ailleurs, ni dans Odoo |
 | `TURN_SECRET` | `4be1...` | Le secret du relais TURN : Odoo s'en sert pour donner à chaque agent des identifiants de 12 heures, coturn pour les vérifier | À inventer : `openssl rand -hex 32`. **Odoo** : le même dans Paramètres › WhatsApp › Appels › Secret du relais TURN |
+| `TURN_TLS_PORT` | `443` | Le port du relais TURN en TLS | `443`, ou `5349` quand nginx tient déjà le 443 sur la machine. **Odoo** : le même dans Paramètres › WhatsApp › Appels › Port du relais TURN (TLS) |
 | `OCD_SRTP` | `SDES` | Comment Meta et le serveur chiffrent la voix | Le même que dans Odoo, compte WhatsApp, onglet Appels, « Chiffrement de la voix » (SDES conseillé) |
 | `OCD_CERTS_DIR` | `./data/certs` | Le dossier du certificat | Laisser la valeur : le script de la section 2 y écrit |
 | `OCD_SOUNDS_DIR` | `./sounds` | Le dossier des messages enregistrés (section 5) | Laisser la valeur, y poser les fichiers WAV |

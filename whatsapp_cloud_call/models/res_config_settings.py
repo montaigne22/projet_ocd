@@ -27,6 +27,12 @@ class ResConfigSettings(models.TransientModel):
         groups="base.group_system",
         help="Same value as static-auth-secret in the configuration of coturn on the call server.",
     )
+    whatsapp_call_turn_tls_port = fields.Integer(
+        string="Port of the TURN Relay (TLS)", config_parameter=const.PARAM_TURN_TLS_PORT,
+        default=const.DEFAULT_TURN_TLS_PORT,
+        help="443 (passes almost every firewall), or 5349 when another program (nginx) holds the "
+        "port 443 on the call server. The same as TURN_TLS_PORT in its .env.",
+    )
     whatsapp_call_token = fields.Char(
         string="Key of the Call Server", compute="_compute_whatsapp_call_token",
         groups="base.group_system",

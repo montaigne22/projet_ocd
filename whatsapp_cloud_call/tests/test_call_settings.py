@@ -127,6 +127,11 @@ class TestCallSettings(WhatsAppCallCommon):
         turn = self.agent._whatsapp_call_softphone()["ice_servers"][1]
         self.assertTrue(turn["username"].endswith(f":agent{self.agent.id}"))
         self.assertTrue(turn["credential"])
+        self.assertIn("turns:calls.example.com:443?transport=tcp", turn["urls"])
+        # nginx holds 443 on the call server: coturn on 5349
+        self.env["ir.config_parameter"].sudo().set_str(const.PARAM_TURN_TLS_PORT, "5349")
+        turn = self.agent._whatsapp_call_softphone()["ice_servers"][1]
+        self.assertIn("turns:calls.example.com:5349?transport=tcp", turn["urls"])
 
     def test_no_softphone_for_others(self):
         other = self.env["res.users"].create({"name": "Not an Agent", "login": "not.agent"})

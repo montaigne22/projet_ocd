@@ -6,9 +6,12 @@ PARAM_SIP_PORT = "whatsapp_cloud_call.server_sip_port"
 PARAM_WSS_PORT = "whatsapp_cloud_call.server_wss_port"
 PARAM_TOKEN = "whatsapp_cloud_call.server_token"
 PARAM_TURN_SECRET = "whatsapp_cloud_call.turn_secret"
+PARAM_TURN_TLS_PORT = "whatsapp_cloud_call.turn_tls_port"
 
 DEFAULT_SIP_PORT = 5061
 DEFAULT_WSS_PORT = 7443
+# TURN over TLS: 443 passes almost every firewall; 5349 when nginx holds 443 on the machine
+DEFAULT_TURN_TLS_PORT = 443
 
 # The call server reports every 30 seconds: silent for this long, the managers are alerted.
 SERVER_SILENCE = timedelta(minutes=5)

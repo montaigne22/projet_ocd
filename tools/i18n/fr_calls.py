@@ -22,6 +22,9 @@ CALLS = {
     "Silence Alerted": "Silence signalé",
     "Version": "Version",
     "WhatsApp Call Server": "Serveur d'appels WhatsApp",
+    "Port of the TURN Relay (TLS)": "Port du relais TURN (TLS)",
+    "443 (passes almost every firewall), or 5349 when another program (nginx) holds the port 443 on the call server. The same as TURN_TLS_PORT in its .env.":
+        "443 (passe presque tous les pare-feu), ou 5349 quand un autre programme (nginx) tient le port 443 sur le serveur d'appels. Le même que TURN_TLS_PORT dans son .env.",
     "Agent": "Conseiller",
     "Close": "Fermer",
     "Company": "Société",
