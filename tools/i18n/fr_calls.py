@@ -49,6 +49,7 @@ CALLS = {
     "Call ID on the Call Server": "Identifiant de l'appel sur le serveur d'appels",
     "Call Icon": "Icône d'appel",
     "Call Limit Warning": "Alerte de limite pour les appels",
+    "Call Hours Warning": "Alerte sur les heures d'appel",
     "Call back the Customers who Called": "Rappeler les clients qui ont appelé",
     "Call failed (%s).": "Appel échoué (%s).",
     "Call lost: the call server did not take it. Call the customer back or write to them.":
@@ -110,6 +111,8 @@ CALLS = {
     "Message of Meta": "Message de Meta",
     "Meta enables the calls only for a number that may send templates to 2,000 customers a day or more (limit now: %s). Check the account to read it again.":
         "Meta n'active les appels que pour un numéro qui peut envoyer des modèles à 2 000 clients par jour ou plus (limite aujourd'hui : %s). Vérifiez le compte pour la relire.",
+    "The opening hours (Team tab) give a number of hours a day but not when: Meta would get hours placed around noon by Odoo (10 hours: 7:00 to 17:00). In the opening hours, show the columns Work from and Work to of the list (icon at the right of its header) and set them on each day; or untick Calls during the Opening Hours Only.":
+        "Les horaires d'ouverture (onglet Équipe) donnent un nombre d'heures par jour mais pas lesquelles : Meta recevrait des heures placées par Odoo autour de midi (10 heures : de 7 h à 17 h). Dans les horaires d'ouverture, affichez les colonnes Heure de début et Heure de fin de la liste (icône à droite de son en-tête) et remplissez-les pour chaque jour ; ou décochez « Appels seulement aux heures d'ouverture ».",
     "Meta gave no SIP password: check the SIP server in the settings, then send them again.":
         "Meta n'a donné aucun mot de passe SIP : vérifiez le serveur SIP dans les réglages, puis renvoyez-les.",
     "Meta takes the calls only during the opening hours of the team (Team tab), public holidays closed. Without opening hours, the calls are taken at any time.":

@@ -33,7 +33,15 @@ class TestCallSettings(WhatsAppCallCommon):
             self.account._call_settings_payload()
 
     def test_call_hours_from_the_opening_hours(self):
-        calendar = self.env["resource.calendar"].create({"name": "Team"})
+        # Monday to Friday, 8:00 to 12:00 and 13:00 to 17:00 (a new schedule of Odoo 20 only
+        # has hours a day, without the times: see test_call_hours_without_times)
+        calendar = self.env["resource.calendar"].create({
+            "name": "Team",
+            "attendance_ids": [
+                (0, 0, {"dayofweek": day, "hour_from": start, "hour_to": end})
+                for day in "01234" for start, end in ((8.0, 12.0), (13.0, 17.0))
+            ],
+        })
         self.account.resource_calendar_id = calendar
         self.account.company_id.tz = "Africa/Lome"
         hours = self.account._call_hours_payload()
@@ -49,6 +57,36 @@ class TestCallSettings(WhatsAppCallCommon):
         for period in hours["weekly_operating_hours"]:
             per_day[period["day_of_week"]] = per_day.get(period["day_of_week"], 0) + 1
         self.assertLessEqual(max(per_day.values()), 2, "Meta takes 2 periods a day at most")
+        self.assertIn({"day_of_week": "MONDAY", "open_time": "1300", "close_time": "1700"},
+                      hours["weekly_operating_hours"])
+
+    def test_call_hours_without_times(self):
+        """Opening hours with only a number of hours a day (the default in Odoo 20 for a new
+        schedule): not sent to Meta, a warning says how to set the times."""
+        calendar = self.env["resource.calendar"].create({
+            "name": "Team, hours only",
+            "attendance_ids": [
+                (0, 0, {"dayofweek": day, "duration_hours": 10.0}) for day in "012345"
+            ],
+        })
+        self.assertTrue(calendar.attendance_ids[0].duration_based)
+        self.account.resource_calendar_id = calendar
+        self.assertTrue(self.account.call_hours_warning)
+        with self.assertRaises(UserError):
+            self.account._call_hours_payload()
+        # calls at any time: nothing to warn about
+        self.account.call_use_hours = False
+        self.assertFalse(self.account.call_hours_warning)
+        self.assertEqual(self.account._call_hours_payload(), {"status": "DISABLED"})
+        # the times set on each day: sent
+        self.account.call_use_hours = True
+        calendar.attendance_ids.write({"hour_from": 9.0, "hour_to": 19.0})
+        self.assertFalse(calendar.attendance_ids.filtered("duration_based"))
+        self.assertFalse(self.account.call_hours_warning)
+        hours = self.account._call_hours_payload()
+        self.assertEqual(hours["status"], "ENABLED")
+        self.assertIn({"day_of_week": "SATURDAY", "open_time": "0900", "close_time": "1900"},
+                      hours["weekly_operating_hours"])
 
     def test_merge_periods(self):
         day = datetime(2026, 11, 23)

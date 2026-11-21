@@ -86,6 +86,7 @@ class WhatsappAccount(models.Model):
     call_meta_date = fields.Datetime(string="Last Exchange with Meta", readonly=True, copy=False)
     call_count = fields.Integer(string="Number of Calls", compute="_compute_call_count")
     call_limit_warning = fields.Char(compute="_compute_call_limit_warning")
+    call_hours_warning = fields.Char(compute="_compute_call_hours_warning")
 
     def _compute_call_count(self):
         counts = dict(self.env["whatsapp.call"]._read_group(
@@ -105,6 +106,29 @@ class WhatsappAccount(models.Model):
                 if account.call_enabled and limit and limit not in const.CALLING_MIN_TIERS
                 else False
             )
+
+    @api.depends("call_enabled", "call_use_hours", "resource_calendar_id.attendance_ids.duration_based")
+    def _compute_call_hours_warning(self):
+        for account in self:
+            account.call_hours_warning = (
+                account._call_hours_without_times_text()
+                if account.call_enabled and account.call_use_hours and account._call_hours_without_times()
+                else False
+            )
+
+    def _call_hours_without_times(self):
+        """Opening hours given as a number of hours a day, without start and end: Odoo would
+        place them around noon (10 hours: 7:00 to 17:00), not the hours of the team."""
+        self.ensure_one()
+        return bool(self.resource_calendar_id.attendance_ids.filtered("duration_based"))
+
+    def _call_hours_without_times_text(self):
+        return _(
+            "The opening hours (Team tab) give a number of hours a day but not when: Meta would "
+            "get hours placed around noon by Odoo (10 hours: 7:00 to 17:00). In the opening hours, "
+            "show the columns Work from and Work to of the list (icon at the right of its header) "
+            "and set them on each day; or untick Calls during the Opening Hours Only."
+        )
 
     def write(self, vals):
         watched = {
@@ -154,6 +178,8 @@ class WhatsappAccount(models.Model):
         calendar = self.resource_calendar_id
         if not self.call_use_hours or not calendar:
             return {"status": "DISABLED"}
+        if self._call_hours_without_times():
+            raise UserError(self._call_hours_without_times_text())
         tz_name = self.company_id.tz or self.company_id.partner_id.tz or "UTC"
         now = self._to_calendar_tz(fields.Datetime.now())
         today = now.date()
