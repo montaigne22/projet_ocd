@@ -37,7 +37,7 @@ function M.post(settings, path, fields, timeout, file)
   end
   local args = {
     "curl", "-sS", "--max-time", tostring(timeout or 2), "--connect-timeout", "2",
-    "-H", "@" .. settings.headers_file,
+    "-A", "ocd-call-server", "-H", "@" .. settings.headers_file,
   }
   for _, field in ipairs(fields or {}) do
     if file then

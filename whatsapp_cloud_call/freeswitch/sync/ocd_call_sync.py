@@ -265,7 +265,12 @@ class Sync:
         request = urllib.request.Request(
             self.conf["odoo_url"].rstrip("/") + path,
             data=data,
-            headers={"Authorization": f"Bearer {self.conf['token']}", "Content-Type": content_type},
+            headers={
+                "Authorization": f"Bearer {self.conf['token']}",
+                "Content-Type": content_type,
+                # not the one of Python (Python-urllib): refused by Cloudflare (error 1010)
+                "User-Agent": "ocd-call-sync",
+            },
             method="POST",
         )
         timeout = timeout or float(self.conf["timeout"])

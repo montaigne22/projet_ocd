@@ -409,6 +409,13 @@ webhook abonné au champ `calls` ; puis, dans Odoo, « Envoyer les appels à Met
 - Un vrai appel depuis WhatsApp sur un téléphone (pas WhatsApp Web) : il sonne chez l'agent ; il
   apparaît dans **WhatsApp › Appels** et dans la conversation du client.
 - Les lignes `[ocd]` du journal de FreeSWITCH viennent des scripts d'OCD.
+- Le lien avec Odoo : `docker compose logs ocd-call-sync` dit « users reloaded (N agents) » quand la
+  liste des agents change, et Paramètres › WhatsApp › Appels montre le dernier contact du serveur.
+  « Odoo does not answer (HTTP Error 401…) » : la clé du `.env` n'est plus celle d'Odoo (« Nouvelle
+  clé » cliqué : la recopier). « HTTP Error 403 » : Cloudflare (ou un pare-feu) devant Odoo bloque le serveur d'appels. Il se présente comme
+  `ocd-call-sync` et `ocd-call-server` et n'appelle que les adresses `/whatsapp/call/server/` :
+  les laisser passer (Cloudflare : Sécurité › WAF, une règle « Ignorer » sur ce chemin ; le « Bot Fight
+  Mode » du plan gratuit ne s'ignore pas : le couper).
 
 L'essai de bout en bout (un faux Meta, Odoo, un agent dans Chromium) se rejoue avec
 [`tests/e2e/`](tests/e2e/README.md). Les essais au studio avant d'ouvrir à tous sont dans
