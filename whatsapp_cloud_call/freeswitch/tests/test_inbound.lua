@@ -99,7 +99,11 @@ local function run(scenario)
       }
     end,
     route = function(_, call) log.route_call = call; return scenario.odoo_route end,
-    event = function(_, values) log.events[#log.events + 1] = values; return true end,
+    event = function(_, values)
+      values.customer_up = up
+      log.events[#log.events + 1] = values
+      return true
+    end,
     voicemail = function(_, path, values) log.voicemails[#log.voicemails + 1] = values; return scenario.voicemail_ok ~= false end,
   }
   local chunk = assert(loadfile(here .. "/scripts/ocd_whatsapp_inbound.lua"))
@@ -219,6 +223,7 @@ check("8 the call in the log", (log.console or ""):find(
   1, true) ~= nil)
 check("8 codec and SRTP in the log", (log.console or ""):find("answered: codec opus, SRTP AES_CM_128_HMAC_SHA1_80", 1, true) ~= nil)
 check("8 the end in the log", (log.console or ""):find("end: completed, ended by agent, cause NORMAL_CLEARING, hang-up sent to Meta", 1, true) ~= nil)
+check("8 the customer let go before Odoo is told", last_event(log, "ended").customer_up == false and log.hangup == "NORMAL_CLEARING")
 check("8 the number to Odoo", log.route_call.number == "237670000000" and log.route_call.user_ref == "")
 
 -- 9. a customer who hides their number behind a WhatsApp username: their BSUID

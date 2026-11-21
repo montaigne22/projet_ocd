@@ -256,18 +256,19 @@ if session:ready() and outcome == "missed" then
   ended_by = "system"
 end
 
-log("NOTICE", "end: " .. outcome .. ", ended by " .. ended_by .. ", cause " ..
-    (var("last_bridge_hangup_cause") or var("hangup_cause") or "none") ..
+local cause = var("last_bridge_hangup_cause") or var("hangup_cause")
+log("NOTICE", "end: " .. outcome .. ", ended by " .. ended_by .. ", cause " .. (cause or "none") ..
     (session:ready() and ", hang-up sent to Meta" or ", the customer hung up"))
 setvar("ocd_outcome", outcome)
 setvar("ocd_ended_by", ended_by)
 setvar("ocd_wait", waited)
-odoo.event(settings, {
-  event = "ended", call = route.call, wacid = call.wacid, uuid = uuid, agent = answered_agent,
-  outcome = outcome, ended_by = ended_by, wait = waited, talk = state.talk,
-  reconnects = state.reconnects, cause = var("last_bridge_hangup_cause") or var("hangup_cause"),
-  number = call.number, user_ref = call.user_ref, phone_number_id = call.pnid,
-})
+-- the customer is let go first (Meta told at once), Odoo after (up to 3 seconds)
 if session:ready() then
   session:hangup("NORMAL_CLEARING")
 end
+odoo.event(settings, {
+  event = "ended", call = route.call, wacid = call.wacid, uuid = uuid, agent = answered_agent,
+  outcome = outcome, ended_by = ended_by, wait = waited, talk = state.talk,
+  reconnects = state.reconnects, cause = cause,
+  number = call.number, user_ref = call.user_ref, phone_number_id = call.pnid,
+})
