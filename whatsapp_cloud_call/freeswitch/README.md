@@ -53,6 +53,19 @@ Pare-feu (nftables ou celui de l'hébergeur), tout le reste fermé :
 Les ports 5070 et 5090 (SIP sans chiffrement des deux profils) et 8021 (socket d'événements)
 restent **fermés**.
 
+**Pas de reverse proxy** devant le serveur d'appels : Meta parle SIP sur TLS au port 5061 (pas du
+HTTP) et vérifie le certificat du serveur lui-même, la voix passe en UDP sur des milliers de ports, et
+chaque appel porte l'IP publique du serveur. Les ports ci-dessus s'ouvrent directement sur lui. Le
+reverse proxy d'Odoo ne change pas : le serveur d'appels joint Odoo par son adresse HTTPS publique.
+
+**DNS** : un enregistrement A vers l'IP du serveur d'appels. Chez Cloudflare, en **« DNS only »
+(nuage gris)**, jamais en nuage orange : Cloudflare ne relaie que le web sur quelques ports, il
+bloquerait le SIP, le port 7443 et la voix.
+
+Si le serveur d'appels partage sa machine avec un nginx qui tient déjà le port 443, coturn ne peut pas
+le prendre : mettre `tls-listening-port=5349` dans sa configuration (et ouvrir 5349/TCP au lieu de
+443). Un serveur dédié évite ce cas.
+
 ## 2. Le certificat (Let's Encrypt)
 
 Meta vérifie que le certificat est à ce nom et signé par une autorité reconnue. Le même sert aux
