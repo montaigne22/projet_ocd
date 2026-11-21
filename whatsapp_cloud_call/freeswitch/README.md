@@ -33,6 +33,10 @@ serveur, et déplacer un pod coupe les appels en cours.
 
 ## 1. Le serveur
 
+Toutes les commandes de ce guide se lancent en root : `sudo -i` d'abord. Avec `sudo` devant chaque
+commande, les `>` ne marchent pas (la redirection est faite sans les droits de root : « Permission
+denied »).
+
 - Debian 12, 2 cœurs, 2 Go de mémoire, IP publique fixe, dans un datacenter (Europe de l'Ouest ou
   Afrique de l'Ouest, au plus près des clients et de l'équipe).
 - Un nom, par ex. `appels.rollbackk.app`, qui pointe sur cette IP (enregistrement DNS A).
@@ -157,13 +161,14 @@ certificat : nginx ne fait passer aucun appel.
 **c. Par le DNS** (aucun port à ouvrir, le domaine chez Cloudflare) : certbot prouve la possession du
 domaine en écrivant un enregistrement DNS temporaire. Il faut un jeton d'API Cloudflare limité à la
 zone, droit « DNS : Modifier » (Cloudflare › Mon profil › Jetons d'API), saisi sur le serveur
-seulement.
+seulement : `read` le demande sans l'afficher ni le garder dans l'historique.
 
 ```bash
 apt-get install -y python3-certbot-dns-cloudflare
 install -d -m 700 /root/.secrets
-printf 'dns_cloudflare_api_token = %s\n' 'LE-JETON-CLOUDFLARE' > /root/.secrets/cloudflare.ini
-chmod 600 /root/.secrets/cloudflare.ini
+install -m 600 /dev/null /root/.secrets/cloudflare.ini
+read -rsp "Jeton Cloudflare : " CF; echo
+printf 'dns_cloudflare_api_token = %s\n' "$CF" > /root/.secrets/cloudflare.ini; unset CF
 certbot certonly --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini \
   -d appels.rollbackk.app --deploy-hook "/usr/local/lib/ocd/ocd-freeswitch-certs.sh copy"
 ```
