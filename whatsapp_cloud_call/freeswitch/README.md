@@ -35,7 +35,8 @@ serveur, et déplacer un pod coupe les appels en cours.
 
 - Debian 12, 2 cœurs, 2 Go de mémoire, IP publique fixe, dans un datacenter (Europe de l'Ouest ou
   Afrique de l'Ouest, au plus près des clients et de l'équipe).
-- Un nom, par ex. `appels.ocdlive.com`, qui pointe sur cette IP (enregistrement DNS A).
+- Un nom, par ex. `
+appels.rollbackk.app`, qui pointe sur cette IP (enregistrement DNS A).
 - Rien d'autre sur ce serveur : coturn y prend le port 443.
 
 Pare-feu (nftables ou celui de l'hébergeur), tout le reste fermé :
@@ -76,7 +77,8 @@ Traefik tient les ports 80 et 443 de la machine (par le répartiteur de k3s). Le
 tourne **à côté de k3s**, avec Docker (`docker compose`, section 3A), sur le réseau de la machine :
 Traefik ne voit passer aucun appel, il n'y a ni Ingress ni IngressRoute à créer.
 
-1. **DNS** : `appels.ocdlive.com` vers l'IP de la machine, en « DNS only » chez Cloudflare.
+1. **DNS** : `
+appels.rollbackk.app` vers l'IP de la machine, en « DNS only » chez Cloudflare.
 2. **Certificat** : par le DNS (section 2, façon **c**, avec certbot sur la machine), ou par
    **cert-manager** s'il délivre déjà les certificats d'Odoo dans k3s (ci-dessous).
 3. **Relais TURN** : `TURN_TLS_PORT=5349` dans le `.env`, et 5349 dans Odoo (Paramètres › WhatsApp ›
@@ -85,7 +87,8 @@ Traefik ne voit passer aucun appel, il n'y a ni Ingress ni IngressRoute à crée
    ne pas la monter au-delà de 29999 (`OCD_RTP_START`, `OCD_RTP_END` du `.env`).
 5. **Pare-feu** : celui de la section 1, avec 5349/TCP au lieu de 443/TCP.
 
-**Le certificat par cert-manager** : un `Certificate` pour `appels.ocdlive.com` dans k3s (avec
+**Le certificat par cert-manager** : un `Certificate` pour `
+appels.rollbackk.app` dans k3s (avec
 l'émetteur déjà utilisé pour Odoo), dont cert-manager garde le certificat dans un secret. Un script le
 recopie chaque nuit pour FreeSWITCH et coturn :
 
@@ -129,7 +132,8 @@ Puis obtenir le certificat. Trois façons, selon ce qui tient le port 80 de la m
 **a. Le port 80 est libre** : certbot l'ouvre lui-même le temps de la vérification.
 
 ```bash
-certbot certonly --standalone -d appels.ocdlive.com \
+certbot certonly --standalone -d 
+appels.rollbackk.app \
   --deploy-hook "/usr/local/lib/ocd/ocd-freeswitch-certs.sh copy"
 ```
 
@@ -139,7 +143,8 @@ de Let's Encrypt. Ajouter ce bloc à nginx (par ex. `/etc/nginx/conf.d/appels.co
 ```nginx
 server {
     listen 80;
-    server_name appels.ocdlive.com;
+    server_name 
+appels.rollbackk.app;
     location /.well-known/acme-challenge/ { root /var/www/certbot; }
     location / { return 404; }
 }
@@ -147,7 +152,8 @@ server {
 
 ```bash
 mkdir -p /var/www/certbot && nginx -t && systemctl reload nginx
-certbot certonly --webroot -w /var/www/certbot -d appels.ocdlive.com \
+certbot certonly --webroot -w /var/www/certbot -d 
+appels.rollbackk.app \
   --deploy-hook "/usr/local/lib/ocd/ocd-freeswitch-certs.sh copy"
 ```
 
@@ -165,7 +171,8 @@ install -d -m 700 /root/.secrets
 printf 'dns_cloudflare_api_token = %s\n' 'LE-JETON-CLOUDFLARE' > /root/.secrets/cloudflare.ini
 chmod 600 /root/.secrets/cloudflare.ini
 certbot certonly --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini \
-  -d appels.ocdlive.com --deploy-hook "/usr/local/lib/ocd/ocd-freeswitch-certs.sh copy"
+  -d 
+appels.rollbackk.app --deploy-hook "/usr/local/lib/ocd/ocd-freeswitch-certs.sh copy"
 ```
 
 Dans les trois cas, ensuite :
@@ -213,7 +220,8 @@ viennent d'Odoo ou doivent y être recopiées à l'identique : elles sont marqu�
 
 | Ligne | Exemple | Ce que c'est | D'où vient la valeur |
 |---|---|---|---|
-| `OCD_SIP_DOMAIN` | `appels.ocdlive.com` | Le nom du serveur d'appels. Meta lui envoie les appels, les navigateurs des agents s'y connectent, le certificat est à ce nom | Choisi par l'équipe, avec un enregistrement DNS A vers l'IP du serveur. **Odoo** : le même dans Paramètres › WhatsApp › Appels › Adresse du serveur d'appels |
+| `OCD_SIP_DOMAIN` | `
+appels.rollbackk.app` | Le nom du serveur d'appels. Meta lui envoie les appels, les navigateurs des agents s'y connectent, le certificat est à ce nom | Choisi par l'équipe, avec un enregistrement DNS A vers l'IP du serveur. **Odoo** : le même dans Paramètres › WhatsApp › Appels › Adresse du serveur d'appels |
 | `EXTERNAL_IP` | `203.0.113.10` | L'IP publique fixe du serveur : FreeSWITCH l'écrit dans chaque appel pour que la voix revienne au bon endroit | Le tableau de bord de l'hébergeur (adresse IPv4 du serveur) |
 | `OCD_ODOO_URL` | `https://odoo.ocdlive.com` | L'adresse d'Odoo, comme l'équipe l'ouvre (sans `/odoo` à la fin) : le serveur d'appels y lit les agents et y envoie les appels | L'adresse d'Odoo. Elle doit être en HTTPS et joignable depuis le serveur d'appels |
 | `OCD_TOKEN` | `Xy3...` (43 caractères) | La clé du serveur d'appels : Odoo refuse toute demande sans elle | **Odoo** : Paramètres › WhatsApp › Appels › Clé du serveur d'appels (bouton copier). Après « Nouvelle clé » dans Odoo : la recopier ici, puis `docker compose up -d` |
@@ -306,7 +314,8 @@ Le relais TURN :
 ```bash
 apt-get install -y coturn
 cp $SRC/coturn/turnserver.conf /etc/turnserver.conf
-SECRET=$(openssl rand -hex 32); sed -i "s/CHANGE-ME/$SECRET/; s/calls.example.com/appels.ocdlive.com/" /etc/turnserver.conf
+SECRET=$(openssl rand -hex 32); sed -i "s/CHANGE-ME/$SECRET/; s/calls.example.com/
+appels.rollbackk.app/" /etc/turnserver.conf
 echo $SECRET   # à saisir dans Odoo : Paramètres › WhatsApp › Appels › Secret du relais TURN
 install -d -o turnserver -g turnserver /etc/coturn
 /usr/local/lib/ocd/ocd-freeswitch-certs.sh copy
@@ -366,7 +375,9 @@ webhook abonné au champ `calls` ; puis, dans Odoo, « Envoyer les appels à Met
 - Un agent dans Odoo, téléphone de la barre du haut, « Je prends les appels » : point vert ;
   `fs_cli -x "sofia status profile ocd_agents reg"` le montre.
 - Le certificat vu de l'extérieur :
-  `openssl s_client -quiet -verify_hostname appels.ocdlive.com -connect appels.ocdlive.com:5061`.
+  `openssl s_client -quiet -verify_hostname 
+appels.rollbackk.app -connect 
+appels.rollbackk.app:5061`.
 - Un vrai appel depuis WhatsApp sur un téléphone (pas WhatsApp Web) : il sonne chez l'agent ; il
   apparaît dans **WhatsApp › Appels** et dans la conversation du client.
 - Les lignes `[ocd]` du journal de FreeSWITCH viennent des scripts d'OCD.

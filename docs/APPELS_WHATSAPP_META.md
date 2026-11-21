@@ -161,7 +161,8 @@ appels activés n'arriveraient nulle part.
 Plus rien à activer à la main chez Meta : Odoo active les appels sur le numéro et lui déclare le
 serveur d'appels, dans la même demande.
 
-1. **Paramètres › WhatsApp › Appels** : l'adresse du serveur d'appels (ex. `appels.ocdlive.com`) et le
+1. **Paramètres › WhatsApp › Appels** : l'adresse du serveur d'appels (ex. `
+appels.rollbackk.app`) et le
    secret du relais TURN (les mêmes que dans le `.env` du serveur d'appels).
 2. **WhatsApp › Configuration › Comptes**, le compte d'OCD, onglet **Appels** : cocher « Appels »,
    vérifier les heures d'ouverture (onglet Équipe) et les conseillers.

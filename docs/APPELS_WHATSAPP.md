@@ -43,7 +43,8 @@ Odoo ◄── Meta        : appel tenté, appel fini (webhook « calls ») : un
 | 0.2 | Moyen de paiement ou ligne de crédit sur le compte WhatsApp Business (Meta Business Suite) | Équipe | Oui |
 | 0.3 | Droits et réglages chez Meta : jeton de l'utilisateur système avec ses trois autorisations, app Meta en mode « Live » (exigé pour le SIP), webhook abonné au champ `calls` ; pas à pas : [`APPELS_WHATSAPP_META.md`](APPELS_WHATSAPP_META.md) | Équipe | Oui |
 | 0.4 | Vérifier que le Togo et le Cameroun sont dans la liste des pays de Meta pour les appels | Équipe | Oui |
-| 0.5 | Un serveur (VPS) Debian 12, 2 cœurs, IP publique fixe, dans un datacenter proche (Europe de l'Ouest ou Afrique) ; un nom, par ex. `appels.ocdlive.com` | Équipe | Oui |
+| 0.5 | Un serveur (VPS) Debian 12, 2 cœurs, IP publique fixe, dans un datacenter proche (Europe de l'Ouest ou Afrique) ; un nom, par ex. `
+appels.rollbackk.app` | Équipe | Oui |
 | 0.6 | Ports ouverts sur ce serveur : 5061/TCP (Meta), 7443/TCP (agents), 16384-32768/UDP (voix), 3478 et 443 (relais TURN) | Équipe | Oui |
 | 0.7 | Docker sur le serveur (conseillé : FreeSWITCH compilé dans l'image, sans compte), sinon un compte SignalWire gratuit pour les paquets | Équipe | Oui |
 | 0.8 | Trois messages enregistrés (voix de l'équipe, français) : accueil, attente, messagerie | Équipe | Non (une tonalité sinon) |
