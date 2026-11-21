@@ -24,6 +24,14 @@ entre parenthèses.
 Les étapes 1, 2 et 5 servent déjà aux messages WhatsApp : si les messages marchent, il suffit de les
 **vérifier**. Les étapes 3, 4 et 6 sont propres aux appels.
 
+> **Ne pas activer les appels soi-même dans WhatsApp Manager** (interrupteur de l'onglet « Appels » du
+> numéro). Meta le refuse tant que le webhook des appels ou le serveur SIP n'est pas réglé (erreur
+> 2593151 : « To use WhatsApp calling features, you need to configure webhooks or set up Session
+> Initiation Protocol »). Et s'il l'accepte (webhook seul), les appels arrivent sans serveur d'appels
+> pour les faire sonner chez l'équipe : les clients voient l'icône, leurs appels sonnent dans le vide.
+> C'est **Odoo** qui active les appels, à l'étape 7, en même temps qu'il déclare le serveur d'appels,
+> une fois celui-ci installé et démarré.
+
 ---
 
 ## Étape 1 · Le numéro est sur la Cloud API
@@ -140,12 +148,18 @@ pour Odoo).
 **Ce qu'on doit voir** : `calls` et `messages` « Abonné » (Subscribed). L'adresse du webhook est celle
 déjà donnée par Odoo (compte WhatsApp, onglet Connexion, « URL de rappel »).
 
+S'abonner au champ `calls` n'active pas les appels : les clients ne voient rien de nouveau tant que
+l'étape 7 n'est pas faite.
+
 ---
 
 ## Étape 7 · Dans Odoo : envoyer les appels à Meta
 
+Seulement quand le **serveur d'appels est installé et démarré** (avec son certificat) : sans lui, les
+appels activés n'arriveraient nulle part.
+
 Plus rien à activer à la main chez Meta : Odoo active les appels sur le numéro et lui déclare le
-serveur d'appels.
+serveur d'appels, dans la même demande.
 
 1. **Paramètres › WhatsApp › Appels** : l'adresse du serveur d'appels (ex. `appels.ocdlive.com`) et le
    secret du relais TURN (les mêmes que dans le `.env` du serveur d'appels).
@@ -171,6 +185,7 @@ Le message de Meta s'affiche en rouge sur l'onglet Appels du compte.
 
 | Ce que dit Odoo ou Meta | À regarder |
 |---|---|
+| Dans WhatsApp Manager : « error 2593151 ... you need to configure webhooks or set up Session Initiation Protocol » | Les appels ont été activés à la main, avant le réglage. Laisser l'interrupteur désactivé, faire l'étape 6, puis l'étape 7 depuis Odoo |
 | Alerte « limite d'envoi » sur l'onglet, ou Meta refuse (« not eligible ») | Étape 4 |
 | Erreur de droit (« permission », « does not have permission », codes 10 ou 200) | Étape 2 : les trois autorisations du jeton, l'app et le compte WhatsApp en contrôle total. Si tout y est et que Meta refuse encore, demander l'**accès avancé** à `whatsapp_business_management` (Tableau de bord de l'app › Examen de l'app (App Review) › Autorisations et fonctionnalités) : Meta l'exige pour les apps qui servent d'autres entreprises, normalement pas pour celle d'OCD sur ses propres comptes |
 | « Meta n'a donné aucun mot de passe SIP » | Étape 3 (app en Live), puis « Envoyer les appels à Meta » à nouveau |
