@@ -46,7 +46,7 @@ Pare-feu (nftables ou celui de l'hébergeur), tout le reste fermé :
 | 80/TCP | Let's Encrypt, seulement si rien d'autre ne tient le port 80 (sinon : section 2) |
 | 5061/TCP | Meta (SIP sur TLS) |
 | 7443/TCP | agents (SIP sur WebSocket sécurisé) |
-| 16384-32768/UDP | voix (FreeSWITCH) |
+| 16384-29999/UDP | voix (FreeSWITCH ; sous 30000, hors des ports NodePort de Kubernetes) |
 | 3478/UDP+TCP, 443/TCP (ou 5349/TCP) | relais TURN (coturn) ; 5349 quand nginx tient déjà le 443 |
 | 49152-65535/UDP | voix relayée (coturn) |
 
@@ -69,6 +69,41 @@ bloquerait le SIP, le port 7443 et la voix.
   WhatsApp › Appels › Port du relais TURN (TLS). Ouvrir 5349/TCP au lieu de 443. Le relais marche
   pareil ; seuls quelques réseaux très fermés (qui ne laissent sortir que le 443) ne le joindront pas.
 - FreeSWITCH n'utilise ni le 80 ni le 443 : rien d'autre à changer.
+
+### Sur une machine k3s (Traefik)
+
+Traefik tient les ports 80 et 443 de la machine (par le répartiteur de k3s). Le serveur d'appels
+tourne **à côté de k3s**, avec Docker (`docker compose`, section 3A), sur le réseau de la machine :
+Traefik ne voit passer aucun appel, il n'y a ni Ingress ni IngressRoute à créer.
+
+1. **DNS** : `appels.ocdlive.com` vers l'IP de la machine, en « DNS only » chez Cloudflare.
+2. **Certificat** : par le DNS (section 2, façon **c**, avec certbot sur la machine), ou par
+   **cert-manager** s'il délivre déjà les certificats d'Odoo dans k3s (ci-dessous).
+3. **Relais TURN** : `TURN_TLS_PORT=5349` dans le `.env`, et 5349 dans Odoo (Paramètres › WhatsApp ›
+   Appels › Port du relais TURN (TLS)).
+4. **Voix** : la plage 16384-29999 par défaut évite déjà les ports NodePort de k3s (30000-32767) ;
+   ne pas la monter au-delà de 29999 (`OCD_RTP_START`, `OCD_RTP_END` du `.env`).
+5. **Pare-feu** : celui de la section 1, avec 5349/TCP au lieu de 443/TCP.
+
+**Le certificat par cert-manager** : un `Certificate` pour `appels.ocdlive.com` dans k3s (avec
+l'émetteur déjà utilisé pour Odoo), dont cert-manager garde le certificat dans un secret. Un script le
+recopie chaque nuit pour FreeSWITCH et coturn :
+
+```bash
+cp $SRC/tls/ocd-certs-from-k8s.sh /usr/local/lib/ocd/ && chmod 750 /usr/local/lib/ocd/ocd-certs-from-k8s.sh
+cat >> /etc/default/ocd-freeswitch-certs <<'CONF'
+OCD_K8S_SECRET=appels-ocdlive-tls
+OCD_K8S_NAMESPACE=ocd
+OCD_LIVE_DIR=/etc/ocd-calls/live
+CONF
+/usr/local/lib/ocd/ocd-certs-from-k8s.sh
+echo '10 3 * * * root /usr/local/lib/ocd/ocd-certs-from-k8s.sh' > /etc/cron.d/ocd-certs-from-k8s
+```
+
+(Le nom du secret et son espace de noms sont ceux du `Certificate`, `spec.secretName`.) Le script
+écrit le certificat comme certbot (`fullchain.pem`, `privkey.pem`, `chain.pem`) et lance la copie
+quand il a changé ; l'application de la nuit (`ocd-freeswitch-certs.timer`, 3 h 20) le donne ensuite à
+FreeSWITCH et à coturn sans couper d'appel. Il lit k3s avec `/etc/rancher/k3s/k3s.yaml`.
 
 ## 2. Le certificat (Let's Encrypt)
 
@@ -189,10 +224,11 @@ viennent d'Odoo ou doivent y être recopiées à l'identique : elles sont marqu�
 | `OCD_CERTS_DIR` | `./data/certs` | Le dossier du certificat | Laisser la valeur : le script de la section 2 y écrit |
 | `OCD_SOUNDS_DIR` | `./sounds` | Le dossier des messages enregistrés (section 5) | Laisser la valeur, y poser les fichiers WAV |
 
-Deux lignes facultatives, à ne pas mettre sauf besoin : `OCD_SYNC_INTERVAL` (secondes entre deux
-copies des agents, 30 par défaut) et `OCD_AGENT_CANDIDATE_ACL` (`wan_v4.auto` par défaut : les adresses
-publiques des agents ; `localnet.auto` seulement pour un essai où les agents sont sur le même réseau
-que le serveur).
+Lignes facultatives, à ne pas mettre sauf besoin : `OCD_SYNC_INTERVAL` (secondes entre deux copies
+des agents, 30 par défaut), `OCD_RTP_START` et `OCD_RTP_END` (ports UDP de la voix, 16384-29999 par
+défaut : ouvrir la même plage dans le pare-feu) et `OCD_AGENT_CANDIDATE_ACL` (`wan_v4.auto` par
+défaut : les adresses publiques des agents ; `localnet.auto` seulement pour un essai où les agents
+sont sur le même réseau que le serveur).
 
 Après un changement du `.env` : `docker compose up -d` (les conteneurs concernés redémarrent ; de
 préférence quand personne n'est en appel).
@@ -249,6 +285,8 @@ install -d -o freeswitch -g freeswitch -m 750 /etc/freeswitch/directory/ocd /var
   FreeSWITCH interroge un serveur STUN extérieur à chaque rechargement (10 secondes de blocage quand il
   ne répond pas).
 - `fs_cli` avec ce mot de passe : `/etc/fs_cli.conf`, `[default]` puis `password => ...`.
+- `/etc/freeswitch/autoload_configs/switch.conf.xml` : activer `rtp-start-port` à 16384 et
+  `rtp-end-port` à 29999 (lignes en commentaire au départ), la plage ouverte dans le pare-feu.
 
 Le lien avec Odoo (ocd-call-sync) :
 

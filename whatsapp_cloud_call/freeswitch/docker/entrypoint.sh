@@ -7,6 +7,7 @@
 #   EXTERNAL_IP               public IP of the server (else found by STUN)
 #   OCD_SRTP                  SDES (default) or DTLS: encryption of the voice with Meta
 #   OCD_AGENT_CANDIDATE_ACL   ICE candidates of the agents accepted (default wan_v4.auto)
+#   OCD_RTP_START, OCD_RTP_END  UDP ports of the voice (default 16384-29999)
 #
 # The certificate (fullchain + key in agent.pem, as written by ocd-freeswitch-certs.sh) is read
 # from /run/ocd-certs and copied for FreeSWITCH, which writes its own DTLS key next to it.
@@ -53,6 +54,17 @@ if [ -n "${EXTERNAL_IP:-}" ]; then
   IP="$(xml_value "$EXTERNAL_IP")"
   sed -i -E "s#<X-PRE-PROCESS cmd=\"stun-set\" data=\"(external_(rtp|sip)_ip)=[^\"]*\"/>#<X-PRE-PROCESS cmd=\"set\" data=\"\\1=$IP\"/>#" "$CONF/vars.xml"
 fi
+# the ports of the voice: below 30000 by default, out of the ports of the NodePort services of
+# Kubernetes (30000-32767, k3s on the same machine)
+RTP_START="${OCD_RTP_START:-16384}"
+RTP_END="${OCD_RTP_END:-29999}"
+case "$RTP_START$RTP_END" in
+  *[!0-9]*) echo "OCD_RTP_START and OCD_RTP_END are port numbers" >&2; exit 1 ;;
+esac
+sed -i -E \
+  -e "s#(<!-- *)?<param name=\"rtp-start-port\" value=\"[0-9]*\"/>( *-->)?#<param name=\"rtp-start-port\" value=\"$RTP_START\"/>#" \
+  -e "s#(<!-- *)?<param name=\"rtp-end-port\" value=\"[0-9]*\"/>( *-->)?#<param name=\"rtp-end-port\" value=\"$RTP_END\"/>#" \
+  "$CONF/autoload_configs/switch.conf.xml"
 case "${OCD_SRTP:-SDES}" in
   DTLS|dtls) SRTP="optional:AES_CM_128_HMAC_SHA1_80" ;;
   *) SRTP="mandatory:AES_CM_128_HMAC_SHA1_80:AES_CM_128_HMAC_SHA1_32" ;;
