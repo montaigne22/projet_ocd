@@ -1,0 +1,80 @@
+# The call server of OCD for the WhatsApp calls, in Docker: FreeSWITCH, ocd-call-sync, coturn.
+#
+#   cp .env.example .env && nano .env      (the settings of this server)
+#   docker compose build
+#   docker compose up -d
+#   docker compose ps                       (all "healthy")
+#
+# The network of the server itself (network_mode: host): the voice uses thousands of UDP ports,
+# and each call carries the public IP of the server; the network of Docker would break both.
+# Guide: ../README.md (Docker).
+name: ocd-calls
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "20m"
+    max-file: "5"
+
+services:
+  freeswitch:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: ocd-freeswitch:1.11.3-ocd1
+    network_mode: host
+    restart: unless-stopped
+    env_file: .env
+    cap_add:
+      # better timing of the voice (real-time priority)
+      - SYS_NICE
+    volumes:
+      - ${OCD_CERTS_DIR:-./data/certs}:/run/ocd-certs:ro
+      - ${OCD_SOUNDS_DIR:-./sounds}:/usr/share/freeswitch/sounds/ocd:ro
+      - ocd-directory:/etc/freeswitch/directory/ocd
+      - ocd-state:/var/lib/freeswitch/ocd
+      - ocd-spool:/var/spool/ocd-calls
+      - ocd-logs:/var/log/freeswitch
+    stop_grace_period: 30s
+    logging: *logging
+
+  ocd-call-sync:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.sync
+    image: ocd-call-sync:ocd1
+    network_mode: host
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - freeswitch
+    volumes:
+      - ocd-directory:/etc/freeswitch/directory/ocd
+      - ocd-state:/var/lib/freeswitch/ocd
+      - ocd-spool:/var/spool/ocd-calls
+    logging: *logging
+
+  coturn:
+    image: coturn/coturn:4.18.0-debian
+    network_mode: host
+    restart: unless-stopped
+    # root to open the port 443, then coturn becomes "nobody"
+    user: "0:0"
+    command:
+      - -c
+      - /etc/coturn/turnserver.conf
+      - --static-auth-secret=${TURN_SECRET:?TURN_SECRET missing in .env}
+      - --realm=${OCD_SIP_DOMAIN:?OCD_SIP_DOMAIN missing in .env}
+      - --external-ip=${EXTERNAL_IP:?EXTERNAL_IP missing in .env}
+      - --proc-user=nobody
+      - --proc-group=nogroup
+    volumes:
+      - ./turnserver.conf:/etc/coturn/turnserver.conf:ro
+      - ${OCD_CERTS_DIR:-./data/certs}:/run/ocd-certs:ro
+    logging: *logging
+
+volumes:
+  ocd-directory:
+  ocd-state:
+  ocd-spool:
+  ocd-logs:

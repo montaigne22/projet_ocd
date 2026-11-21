@@ -258,7 +258,11 @@ export const whatsappSoftphoneService = {
                         if (session === activeSession && ["disconnected", "failed"].includes(connection.iceConnectionState)) {
                             state.message = _t("Connection lost: the call comes back to you or goes to a colleague.");
                             try {
-                                session.terminate({ status_code: 480 });
+                                // a cause of network for the call server: the customer waits
+                                // for the call to come back (a plain hang-up ends their call)
+                                session.terminate({
+                                    extraHeaders: ['Reason: Q.850;cause=41;text="media lost"'],
+                                });
                             } catch {
                                 onEnded(session);
                             }

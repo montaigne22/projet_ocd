@@ -290,8 +290,15 @@ class WhatsappCall(models.Model):
         if self.state in ("completed", "missed", "voicemail") and self.server_seen and self.end_date:
             # already ended: the record of the call completes the values only
             vals = {}
-            if not self.duration and values.get("talk"):
+            if not self.duration and str(values.get("talk") or "").isdigit():
                 vals["duration"] = int(values["talk"])
+            if not self.ended_by and values.get("ended_by") in ("customer", "agent", "system"):
+                vals["ended_by"] = values["ended_by"]
+            if not self.end_cause and values.get("cause"):
+                vals["end_cause"] = values["cause"][:64]
+            if str(values.get("wait") or "").isdigit() and values.get("event") == "ended":
+                # the time waited for an agent, as the call server counts it
+                vals["wait_duration"] = int(values["wait"])
             if vals:
                 self.write(vals)
             return

@@ -8,7 +8,7 @@ The Lua parts run with lua5.3 (or lua) when it is installed.
 import json
 import os
 import shutil
-import stat
+import socketserver
 import subprocess
 import sys
 import tempfile
@@ -66,6 +66,44 @@ class FakeOdoo(BaseHTTPRequestHandler):
         pass
 
 
+class FakeEventSocket(socketserver.StreamRequestHandler):
+    """The event socket of FreeSWITCH: the password, then the API commands."""
+    commands = []
+    password = "esl-password"
+
+    def reply(self, body, content_type="api/response"):
+        data = body.encode()
+        self.wfile.write(f"Content-Type: {content_type}\nContent-Length: {len(data)}\n\n".encode() + data)
+
+    def handle(self):
+        self.wfile.write(b"Content-Type: auth/request\n\n")
+        while True:
+            line = self.rfile.readline().decode().strip()
+            if not line:
+                if self.rfile.peek(1) if hasattr(self.rfile, "peek") else False:
+                    continue
+                break
+            self.rfile.readline()
+            if line.startswith("auth "):
+                ok = line[5:] == FakeEventSocket.password
+                text = "+OK accepted" if ok else "-ERR invalid"
+                self.wfile.write(f"Content-Type: command/reply\nReply-Text: {text}\n\n".encode())
+                if not ok:
+                    return
+            elif line.startswith("api "):
+                command = line[4:]
+                FakeEventSocket.commands.append(command)
+                if "xmlstatus" in command:
+                    self.reply("<profile><registrations><registration><user>agent5@calls.example.com</user>"
+                               "</registration></registrations></profile>")
+                elif command == "version":
+                    self.reply("FreeSWITCH Version 1.11.3 (git ef32e20)")
+                else:
+                    self.reply("+OK")
+            elif line == "exit":
+                return
+
+
 class TestSync(unittest.TestCase):
 
     @classmethod
@@ -73,34 +111,27 @@ class TestSync(unittest.TestCase):
         cls.server = ThreadingHTTPServer(("127.0.0.1", 0), FakeOdoo)
         cls.url = f"http://127.0.0.1:{cls.server.server_address[1]}"
         threading.Thread(target=cls.server.serve_forever, daemon=True).start()
+        socketserver.ThreadingTCPServer.allow_reuse_address = True
+        cls.esl = socketserver.ThreadingTCPServer(("127.0.0.1", 0), FakeEventSocket)
+        threading.Thread(target=cls.esl.serve_forever, daemon=True).start()
 
     @classmethod
     def tearDownClass(cls):
         cls.server.shutdown()
+        cls.esl.shutdown()
 
     def setUp(self):
         FakeOdoo.requests = []
         FakeOdoo.status = 200
         self.tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmp)
-        # a fake fs_cli: notes the commands, answers the registrations
-        self.fs_log = self.tmp / "fs.log"
-        fs_cli = self.tmp / "fs_cli"
-        fs_cli.write_text(
-            "#!/bin/sh\n"
-            f"echo \"$@\" >> {self.fs_log}\n"
-            "case \"$*\" in\n"
-            "  *xmlstatus*) echo '<profile><registrations><registration><user>agent5@calls.example.com</user>"
-            "</registration></registrations></profile>';;\n"
-            "  *version*) echo 'FreeSWITCH Version 1.10.12';;\n"
-            "esac\n"
-        )
-        fs_cli.chmod(fs_cli.stat().st_mode | stat.S_IEXEC)
+        FakeEventSocket.commands = []
         self.conf = dict(ocd_call_sync.DEFAULTS)
         self.conf.update({
             "odoo_url": self.url,
             "token": "server-key",
-            "fs_cli": str(fs_cli),
+            "esl_port": str(self.esl.server_address[1]),
+            "esl_password": "esl-password",
             "directory_dir": str(self.tmp / "directory"),
             "state_dir": str(self.tmp / "state"),
             "spool_dir": str(self.tmp / "spool"),
@@ -115,7 +146,7 @@ class TestSync(unittest.TestCase):
         self.assertEqual(path, "/whatsapp/call/server/config")
         report = json.loads(body)
         self.assertEqual(report["registrations"], ["agent5"])
-        self.assertIn("1.10.12", report["version"])
+        self.assertIn("1.11.3", report["version"])
         agents = ElementTree.parse(self.tmp / "directory" / "agents.xml").getroot()
         users = [user.get("id") for user in agents.iter("user")]
         self.assertEqual(users, ["agent5"], "Only the logins agent<id>")
@@ -123,7 +154,9 @@ class TestSync(unittest.TestCase):
         meta = ElementTree.parse(self.tmp / "directory" / "meta.xml").getroot()
         self.assertEqual([u.get("id") for u in meta.iter("user")], ["+22890000001", "22890000001"])
         self.assertEqual(meta.find(".//param").get("value"), 'p&"ss<w>')
-        self.assertIn("reloadxml", self.fs_log.read_text())
+        self.assertIn("reloadxml", FakeEventSocket.commands)
+        self.assertIn("reload mod_json_cdr", FakeEventSocket.commands, "The key of Odoo is new")
+        self.assertTrue(ocd_call_sync.healthy(self.conf))
         headers_file = (self.tmp / "state" / "odoo_headers").read_text()
         self.assertEqual(headers_file, "Authorization: Bearer server-key\n")
         self.assertEqual(oct((self.tmp / "state" / "odoo_headers").stat().st_mode & 0o777), "0o640")
@@ -131,9 +164,9 @@ class TestSync(unittest.TestCase):
     def test_nothing_reloaded_when_unchanged(self):
         sync = ocd_call_sync.Sync(self.conf)
         sync.run_once()
-        self.fs_log.write_text("")
+        FakeEventSocket.commands = []
         sync.run_once()
-        self.assertNotIn("reloadxml", self.fs_log.read_text())
+        self.assertNotIn("reloadxml", FakeEventSocket.commands)
 
     def test_odoo_down_keeps_the_last_copy(self):
         sync = ocd_call_sync.Sync(self.conf)
@@ -161,6 +194,37 @@ class TestSync(unittest.TestCase):
         self.assertIn(b"RIFF....WAVE", body)
         self.assertFalse(voicemail.exists())
         self.assertFalse(record.exists())
+
+    def test_freeswitch_down_or_wrong_password(self):
+        """Odoo still told, FreeSWITCH asked again at the next run."""
+        self.conf["esl_password"] = "wrong"
+        self.assertTrue(ocd_call_sync.Sync(self.conf).run_once())
+        report = json.loads(FakeOdoo.requests[0][2])
+        self.assertEqual(report["registrations"], [])
+        self.conf["esl_port"] = "9"
+        sync = ocd_call_sync.Sync(self.conf)
+        self.assertTrue(sync.run_once())
+        self.assertTrue(sync.reload_pending)
+        # FreeSWITCH back: the reload missed is done, although the files did not change
+        self.conf["esl_port"] = str(self.esl.server_address[1])
+        self.conf["esl_password"] = "esl-password"
+        sync.esl = ocd_call_sync.EventSocket("127.0.0.1", self.conf["esl_port"], "esl-password")
+        FakeEventSocket.commands = []
+        sync.run_once()
+        self.assertIn("reloadxml", FakeEventSocket.commands)
+        self.assertFalse(sync.reload_pending)
+
+    def test_configuration_from_the_environment(self):
+        conf = ocd_call_sync.load_conf(str(self.tmp / "missing.conf"), {
+            "OCD_ODOO_URL": "https://odoo.example.com", "OCD_TOKEN": "key", "OCD_ESL_PASSWORD": "pw",
+        })
+        self.assertEqual((conf["odoo_url"], conf["token"], conf["esl_password"]),
+                         ("https://odoo.example.com", "key", "pw"))
+        with self.assertRaises(SystemExit):
+            ocd_call_sync.load_conf(str(self.tmp / "missing.conf"), {"OCD_TOKEN": "key"})
+        old = self.tmp / "old.conf"
+        old.write_text("[ocd]\nodoo_url = https://o\ntoken = k\nfs_password = first\n")
+        self.assertEqual(ocd_call_sync.load_conf(str(old), {})["esl_password"], "first")
 
     def test_strings_for_lua(self):
         self.assertEqual(ocd_call_sync.lua_string('a"b\\c\n'), '"a\\"b\\\\c\\010"')

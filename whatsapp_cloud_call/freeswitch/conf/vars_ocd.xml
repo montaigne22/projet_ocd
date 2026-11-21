@@ -1,6 +1,6 @@
 <include>
-  <!-- OCD: WhatsApp calls. Included at the end of vars.xml:
-       <X-PRE-PROCESS cmd="include" data="vars_ocd.xml"/> -->
+  <!-- OCD: WhatsApp calls. Included at the end of vars.xml (an include of vars_ocd.xml: see the
+       README; no such line in a comment, FreeSWITCH runs them there too) -->
 
   <!-- name of the call server: the same as in Odoo (Settings > WhatsApp > Calls) and in its
        certificate (Meta checks it) -->
@@ -12,6 +12,14 @@
        dialplan (not tried yet with Meta) -->
   <X-PRE-PROCESS cmd="set" data="ocd_srtp=mandatory:AES_CM_128_HMAC_SHA1_80:AES_CM_128_HMAC_SHA1_32"/>
 
-  <!-- address of Odoo and key of the call server, written by ocd-call-sync -->
+  <!-- password of the event socket (127.0.0.1:8021), the same in /etc/ocd-call-sync.conf -->
+  <X-PRE-PROCESS cmd="set" data="ocd_esl_password=CHANGE-ME"/>
+
+  <!-- ICE candidates of the agents accepted: their public addresses (and the TURN relay) -->
+  <X-PRE-PROCESS cmd="set" data="ocd_agent_candidate_acl=wan_v4.auto"/>
+
+  <!-- address of Odoo and key of the call server (written by ocd-call-sync), and in Docker the
+       settings of the environment (written at the start of the container): they replace the
+       values above -->
   <X-PRE-PROCESS cmd="include" data="/var/lib/freeswitch/ocd/vars*.xml"/>
 </include>

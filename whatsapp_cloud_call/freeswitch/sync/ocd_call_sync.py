@@ -11,8 +11,11 @@ Every 30 seconds, on the call server (FreeSWITCH):
 - sends to Odoo the messages left (voicemail) and the records of the calls that Odoo did
   not take when the call ended.
 
-Python 3 only (no library to install). Configuration: /etc/ocd-call-sync.conf (see
-ocd-call-sync.conf.example). Run by systemd (ocd-call-sync.service).
+It talks to FreeSWITCH through its event socket (127.0.0.1:8021): no FreeSWITCH program is
+needed next to it (its own container in Docker). Python 3 only (no library to install).
+Configuration: /etc/ocd-call-sync.conf (see ocd-call-sync.conf.example), or the environment
+(OCD_ODOO_URL, OCD_TOKEN, OCD_ESL_PASSWORD...: Docker). Run by systemd (ocd-call-sync.service)
+or Docker (docker/docker-compose.yml).
 """
 
 import argparse
@@ -20,7 +23,7 @@ import configparser
 import json
 import logging
 import os
-import subprocess
+import socket
 import sys
 import tempfile
 import time
@@ -36,8 +39,9 @@ _logger = logging.getLogger("ocd-call-sync")
 DEFAULTS = {
     "interval": "30",
     "timeout": "10",
-    "fs_cli": "/usr/bin/fs_cli",
-    "fs_password": "",
+    "esl_host": "127.0.0.1",
+    "esl_port": "8021",
+    "esl_password": "",
     "directory_dir": "/etc/freeswitch/directory/ocd",
     "state_dir": "/var/lib/freeswitch/ocd",
     "spool_dir": "/var/spool/ocd-calls",
@@ -45,6 +49,71 @@ DEFAULTS = {
     "hold_music": "local_stream://moh",
     "agents_profile": "ocd_agents",
 }
+
+
+# Settings that the environment may give (Docker), over the configuration file.
+ENVIRONMENT = {
+    "OCD_ODOO_URL": "odoo_url",
+    "OCD_TOKEN": "token",
+    "OCD_ESL_PASSWORD": "esl_password",
+    "OCD_ESL_PORT": "esl_port",
+    "OCD_SYNC_INTERVAL": "interval",
+}
+# Written after each exchange with Odoo; its age tells whether the service works (--health).
+HEALTH_FILE = "sync_ok"
+HEALTH_MAX_AGE = 180
+
+
+class EventSocketError(Exception):
+    pass
+
+
+class EventSocket:
+    """The event socket of FreeSWITCH (inbound): one connection per command, the API answer."""
+
+    def __init__(self, host, port, password, timeout=30):
+        self.host, self.port, self.password, self.timeout = host, int(port), password, timeout
+
+    @staticmethod
+    def _read_message(reader):
+        headers = {}
+        while True:
+            line = reader.readline()
+            if not line:
+                raise EventSocketError("connection closed by FreeSWITCH")
+            line = line.decode("utf-8", "replace").rstrip("\r\n")
+            if not line:
+                if headers:
+                    break
+                continue
+            key, _sep, value = line.partition(":")
+            headers[key.strip().lower()] = value.strip()
+        body = b""
+        length = int(headers.get("content-length") or 0)
+        while len(body) < length:
+            chunk = reader.read(length - len(body))
+            if not chunk:
+                raise EventSocketError("answer cut")
+            body += chunk
+        return headers, body.decode("utf-8", "replace")
+
+    def api(self, command):
+        with socket.create_connection((self.host, self.port), timeout=self.timeout) as sock:
+            reader = sock.makefile("rb")
+            headers, _body = self._read_message(reader)
+            if headers.get("content-type") != "auth/request":
+                raise EventSocketError("not the event socket of FreeSWITCH")
+            sock.sendall(f"auth {self.password}\n\n".encode())
+            headers, _body = self._read_message(reader)
+            if not headers.get("reply-text", "").startswith("+OK"):
+                raise EventSocketError("password of the event socket refused")
+            sock.sendall(f"api {command}\n\n".encode())
+            headers, body = self._read_message(reader)
+            try:
+                sock.sendall(b"exit\n\n")
+            except OSError:
+                pass
+            return body
 
 
 def lua_string(value):
@@ -184,6 +253,11 @@ class Sync:
     def __init__(self, conf):
         self.conf = conf
         self.spool = Path(conf["spool_dir"])
+        self.esl = EventSocket(conf["esl_host"], conf["esl_port"], conf["esl_password"])
+        # a reload that FreeSWITCH did not take (down, wrong password) is asked again; once at
+        # the start of the service, whatever happened before
+        self.reload_pending = True
+        self.cdr_reload_pending = False
 
     # === ODOO === #
 
@@ -207,15 +281,12 @@ class Sync:
     # === FREESWITCH === #
 
     def fs(self, command):
-        args = [self.conf["fs_cli"], "-x", command]
-        if self.conf.get("fs_password"):
-            args[1:1] = ["-p", self.conf["fs_password"]]
+        """A command of FreeSWITCH (event socket); "" when FreeSWITCH does not answer."""
         try:
-            result = subprocess.run(args, capture_output=True, text=True, timeout=10, check=False)
-        except (OSError, subprocess.TimeoutExpired) as error:
-            _logger.warning("fs_cli %s: %s", command, error)
+            return self.esl.api(command)
+        except (OSError, EventSocketError) as error:
+            _logger.warning("FreeSWITCH, %s: %s", command, error)
             return ""
-        return result.stdout
 
     def registrations(self):
         """The agents connected now (profile ocd_agents)."""
@@ -250,12 +321,13 @@ class Sync:
         write_if_changed(state / "settings.lua", settings_lua(data, conf), mode=0o640)
         write_if_changed(state / "odoo_headers", f"Authorization: Bearer {conf['token']}\n", mode=0o640)
         vars_changed = write_if_changed(state / "vars_secret.xml", vars_secret(conf), mode=0o640)
-        if changed or vars_changed:
-            self.fs("reloadxml")
-            _logger.info("FreeSWITCH: users reloaded (%s agents)", len(data.get("agents") or []))
-        if vars_changed:
+        if changed or vars_changed or self.reload_pending:
+            self.reload_pending = "+OK" not in self.fs("reloadxml")
+            if not self.reload_pending:
+                _logger.info("FreeSWITCH: users reloaded (%s agents)", len(data.get("agents") or []))
+        if vars_changed or self.cdr_reload_pending:
             # the address of Odoo or the key changed: the records of the calls follow
-            self.fs("reload mod_json_cdr")
+            self.cdr_reload_pending = "+OK" not in self.fs("reload mod_json_cdr")
         return changed
 
     def send_voicemails(self, files):
@@ -315,11 +387,16 @@ class Sync:
         self.write_files(data)
         self.send_voicemails(voicemails)
         self.send_cdrs(cdrs)
+        write_if_changed(Path(self.conf["state_dir"]) / HEALTH_FILE, f"{int(time.time())}\n", mode=0o644)
         return True
 
     def run(self):
         for folder in ("voicemail", "cdr-errors"):
-            (self.spool / folder).mkdir(parents=True, exist_ok=True)
+            try:
+                (self.spool / folder).mkdir(parents=True, exist_ok=True)
+            except OSError as error:
+                # Docker: the folders are given to FreeSWITCH by its container, a moment later
+                _logger.warning("Folder %s not ready yet: %s", folder, error)
         interval = float(self.conf["interval"])
         while True:
             started = time.monotonic()
@@ -347,24 +424,44 @@ def multipart(fields, path):
     return b"".join(parts), f"multipart/form-data; boundary={boundary}"
 
 
-def load_conf(path):
+def load_conf(path, environ=None):
+    """The configuration file (when it exists), then the environment."""
+    environ = os.environ if environ is None else environ
     parser = configparser.ConfigParser()
-    if not parser.read(path):
-        sys.exit(f"Configuration missing: {path}")
+    parser.read(path)
     conf = dict(DEFAULTS)
     conf.update(parser["ocd"] if parser.has_section("ocd") else {})
-    for key in ("odoo_url", "token"):
+    if conf.get("fs_password") and not conf.get("esl_password"):
+        conf["esl_password"] = conf["fs_password"]  # name of the first versions
+    for variable, key in ENVIRONMENT.items():
+        if environ.get(variable):
+            conf[key] = environ[variable]
+    for key in ("odoo_url", "token", "esl_password"):
         if not conf.get(key):
-            sys.exit(f"{key} missing in {path}")
+            sys.exit(f"{key} missing: in {path} or in the environment ({', '.join(ENVIRONMENT)})")
     return conf
+
+
+def healthy(conf):
+    """Whether the service exchanged with Odoo in the last 3 minutes."""
+    try:
+        written = int((Path(conf["state_dir"]) / HEALTH_FILE).read_text().strip())
+    except (OSError, ValueError):
+        return False
+    return time.time() - written < HEALTH_MAX_AGE
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--conf", default="/etc/ocd-call-sync.conf")
     parser.add_argument("--once", action="store_true", help="One run, then stop.")
+    parser.add_argument("--health", action="store_true", help="Exit 0 when the service works.")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    if args.health:
+        conf = dict(DEFAULTS)
+        conf.update({key: os.environ[var] for var, key in ENVIRONMENT.items() if os.environ.get(var)})
+        return 0 if healthy(conf) else 1
     sync = Sync(load_conf(args.conf))
     if args.once:
         return 0 if sync.run_once() else 1

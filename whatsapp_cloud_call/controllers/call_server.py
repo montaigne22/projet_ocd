@@ -6,7 +6,7 @@ from urllib.parse import parse_qs
 
 from werkzeug.exceptions import BadRequest, Forbidden
 
-from odoo import http
+from odoo import SUPERUSER_ID, http
 from odoo.http import request
 
 from odoo.addons.whatsapp_cloud_call import const
@@ -40,6 +40,11 @@ class WhatsAppCallServer(http.Controller):
                             request.httprequest.remote_addr)
             raise Forbidden()
 
+    def _calls(self):
+        """The calls as OdooBot: what the call server notes in the conversations is signed
+        by it (as the notifications of Meta)."""
+        return request.env(user=SUPERUSER_ID, su=True)["whatsapp.call"]
+
     def _values(self):
         return {key: _clean(value) for key, value in request.httprequest.form.items()}
 
@@ -53,7 +58,7 @@ class WhatsAppCallServer(http.Controller):
             report = json.loads(request.httprequest.get_data() or b"{}")
         except ValueError as error:
             raise BadRequest() from error
-        env = request.env(su=True)
+        env = request.env(user=SUPERUSER_ID, su=True)
         params = env["ir.config_parameter"]
         env["whatsapp.call.server"]._get()._report({
             "registrations": [_clean(r, 64) for r in (report.get("registrations") or [])],
@@ -92,7 +97,7 @@ class WhatsAppCallServer(http.Controller):
         """Who rings for a call; answered as lines "key=value" (read by the script of the
         call server, without a JSON library)."""
         self._check_token()
-        route = request.env["whatsapp.call"].sudo()._server_route(self._values())
+        route = self._calls()._server_route(self._values())
         lines = []
         for key, value in route.items():
             if isinstance(value, list):
@@ -104,7 +109,7 @@ class WhatsAppCallServer(http.Controller):
                 csrf=False, save_session=False)
     def event(self, **kwargs):
         self._check_token()
-        call = request.env["whatsapp.call"].sudo()._server_event(self._values())
+        call = self._calls()._server_event(self._values())
         return request.make_response(f"call={call.id if call else ''}\n",
                                      headers=[("Content-Type", "text/plain")])
 
@@ -118,7 +123,7 @@ class WhatsAppCallServer(http.Controller):
         content = upload.read(const.MAX_VOICEMAIL_SIZE + 1)
         if len(content) > const.MAX_VOICEMAIL_SIZE:
             raise BadRequest()
-        call = request.env["whatsapp.call"].sudo()._server_voicemail(
+        call = self._calls()._server_voicemail(
             self._values(), content, upload.mimetype or "audio/wav"
         )
         if not call:
@@ -140,5 +145,5 @@ class WhatsAppCallServer(http.Controller):
                 data = json.loads((parse_qs(raw).get("cdr") or [request.httprequest.form.get("cdr") or "{}"])[0])
         except ValueError as error:
             raise BadRequest() from error
-        request.env["whatsapp.call"].sudo()._server_cdr(data)
+        self._calls()._server_cdr(data)
         return request.make_response("OK\n", headers=[("Content-Type", "text/plain")])

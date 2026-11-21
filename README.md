@@ -33,7 +33,7 @@ modules Odoo 20 **Community** : aucune application payante n'est nécessaire.
 
 | `whatsapp_cloud` | Conversations WhatsApp dans Odoo, messages automatiques validés par Meta (en-tête texte, PDF ou vidéo), STOP et START |
 | `whatsapp_cloud_sale` | Messages WhatsApp de la commande du shop au client |
-| `whatsapp_cloud_call` | Appels WhatsApp : les clients appellent le numéro de l'entreprise, un serveur d'appels FreeSWITCH entre Meta et l'équipe (file d'attente, conseiller coupé qui récupère l'appel, messagerie dans la conversation, marche sans Odoo), le téléphone des conseillers dans la barre du haut d'Odoo, l'historique des appels ; configuration du serveur dans `whatsapp_cloud_call/freeswitch/` |
+| `whatsapp_cloud_call` | Appels WhatsApp : les clients appellent le numéro de l'entreprise, un serveur d'appels FreeSWITCH entre Meta et l'équipe (file d'attente, conseiller coupé qui récupère l'appel, messagerie dans la conversation, marche sans Odoo), le téléphone des conseillers dans la barre du haut d'Odoo, l'historique des appels ; serveur en Docker (FreeSWITCH compilé dans l'image, sans compte) ou sur le serveur : `whatsapp_cloud_call/freeswitch/` |
 | `payment_campay` | Paiement au Cameroun : MTN MoMo, Orange Money, carte |
 | `payment_cinetpay` | Paiement dans l'UEMOA, au Cameroun, en Guinée et en RD Congo avec CinetPay : Mobile Money (Orange, MTN, Moov, Free, T-Money, Flooz…), Wave, carte ; Flutterwave (module d'Odoo) en second |
 | `delivery_cameroon` | Villes et quartiers du Cameroun, point de repère obligatoire dans l'adresse |

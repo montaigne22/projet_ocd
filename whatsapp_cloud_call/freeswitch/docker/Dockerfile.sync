@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1.7
+#
+# ocd-call-sync: the agents copied from Odoo, the voicemails and the records of the calls sent to
+# Odoo (sync/ocd_call_sync.py). Talks to FreeSWITCH through its event socket (127.0.0.1:8021, same
+# network as the server). Build context: whatsapp_cloud_call/freeswitch.
+ARG DEBIAN_IMAGE=debian:bookworm-20261104-slim
+FROM ${DEBIAN_IMAGE}
+ENV DEBIAN_FRONTEND=noninteractive
+COPY docker/build_ca.sh /usr/local/bin/build_ca.sh
+RUN --mount=type=secret,id=build_ca,required=false \
+    . /usr/local/bin/build_ca.sh \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends python3 ca-certificates \
+    && build_ca_done \
+    && rm -rf /var/lib/apt/lists/* \
+    # the user of FreeSWITCH (same id): the files they share
+    && groupadd --system --gid 4999 freeswitch \
+    && useradd --system --uid 4999 --gid 4999 --no-create-home --shell /usr/sbin/nologin freeswitch
+COPY sync/ocd_call_sync.py /usr/local/lib/ocd/ocd_call_sync.py
+USER 4999:4999
+HEALTHCHECK --interval=60s --timeout=10s --start-period=90s --retries=3 \
+    CMD ["python3", "/usr/local/lib/ocd/ocd_call_sync.py", "--health"]
+ENTRYPOINT ["python3", "-u", "/usr/local/lib/ocd/ocd_call_sync.py"]

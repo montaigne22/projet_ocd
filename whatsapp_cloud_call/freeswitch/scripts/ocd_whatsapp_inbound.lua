@@ -176,6 +176,11 @@ while session:ready() do
       state.reconnects = state.reconnects + 1
       state.reconnect_agent = round_agent ~= "unknown" and round_agent or nil
       state.reconnect_since = os.time()
+      if var("last_bridge_hangup_cause") == "NETWORK_OUT_OF_ORDER" then
+        -- ended by the watch: the agent is gone already, the colleagues ring at once (the agent
+        -- still gets it back if they connect again in the meantime)
+        state.reconnect_since = os.time() - queue.RECONNECT_GRACE
+      end
       setvar("ocd_reconnects", state.reconnects)
       log("NOTICE", "agent " .. round_agent .. " cut off (" .. tostring(var("last_bridge_hangup_cause")) .. ")")
       odoo.event(settings, { event = "agent_lost", call = route.call, wacid = call.wacid, uuid = uuid,
@@ -194,6 +199,9 @@ while session:ready() do
     end
   end
 end
+
+-- the time the customer waited for an agent (the voicemail after it is not counted)
+local waited = os.time() - state.start - state.talk
 
 -- the customer waited without an agent: the voicemail (or a message to call back)
 if session:ready() and outcome == "missed" then
@@ -232,7 +240,6 @@ if session:ready() and outcome == "missed" then
   ended_by = "system"
 end
 
-local waited = os.time() - state.start - state.talk
 setvar("ocd_outcome", outcome)
 setvar("ocd_ended_by", ended_by)
 setvar("ocd_wait", waited)

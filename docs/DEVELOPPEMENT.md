@@ -545,6 +545,9 @@ Le serveur d'appels WhatsApp a ses tests sans FreeSWITCH ni Odoo (service de cop
 python3 -m unittest discover -s whatsapp_cloud_call/freeswitch/tests -p "test_*.py"
 ```
 
+De bout en bout avec le vrai serveur d'appels (Docker), un faux Meta et des agents dans Chromium :
+[`whatsapp_cloud_call/freeswitch/tests/e2e/README.md`](../whatsapp_cloud_call/freeswitch/tests/e2e/README.md).
+
 Le téléphone des conseillers se vérifie dans Chromium avec un appel simulé (JsSIP remplacé par un faux) :
 `OCD_URL=http://127.0.0.1:8069 OCD_CALL_ID=<id d'un appel> node tools/captures/softphone.js` (admin
 conseiller d'un compte avec appels, adresse du serveur d'appels saisie).

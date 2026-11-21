@@ -45,7 +45,7 @@ Odoo ◄── Meta        : appel tenté, appel fini (webhook « calls ») : un
 | 0.4 | Vérifier que le Togo et le Cameroun sont dans la liste des pays de Meta pour les appels | Équipe | Oui |
 | 0.5 | Un serveur (VPS) Debian 12, 2 cœurs, IP publique fixe, dans un datacenter proche (Europe de l'Ouest ou Afrique) ; un nom, par ex. `appels.ocdlive.com` | Équipe | Oui |
 | 0.6 | Ports ouverts sur ce serveur : 5061/TCP (Meta), 7443/TCP (agents), 16384-32768/UDP (voix), 3478 et 443 (relais TURN) | Équipe | Oui |
-| 0.7 | Compte SignalWire gratuit (jeton pour les paquets de FreeSWITCH) | Équipe | Oui |
+| 0.7 | Docker sur le serveur (conseillé : FreeSWITCH compilé dans l'image, sans compte), sinon un compte SignalWire gratuit pour les paquets | Équipe | Oui |
 | 0.8 | Trois messages enregistrés (voix de l'équipe, français) : accueil, attente, messagerie | Équipe | Non (une tonalité sinon) |
 
 ## Phase 1 : les clients appellent OCD (fait dans ce dépôt)
@@ -64,6 +64,14 @@ Module `whatsapp_cloud_call` (générique, comme `whatsapp_cloud`) et dossier
 | 1.6 | **L'historique** | Chaque appel : qui, quand, attente, durée, agent, fin (fini, manqué, messagerie, perdu) ; une ligne dans la conversation (« Appel de 3 min 12 s, pris par Awa ») ; appel manqué ou message laissé : la conversation attend une réponse, avec les rappels et l'escalade de `whatsapp_cloud` ; l'agent qui décroche prend la conversation |
 | 1.7 | **Surveillance** | Le serveur se signale chaque minute : sans nouvelle depuis 5 minutes, les responsables sont prévenus ; un appel vu par Meta et pas par le serveur est « perdu » et signalé ; le dernier contact du serveur et les agents connectés sur la fiche du compte |
 | 1.8 | **Relais TURN** | coturn sur le serveur, ports 3478 et 443 : la voix passe même quand le réseau du studio bloque l'UDP ; des identifiants de 12 h donnés par Odoo à chaque agent |
+| 1.9 | **Docker** | `docker compose` : FreeSWITCH 1.11.3 compilé depuis ses sources dans l'image (aucun compte), ocd-call-sync (socket d'événements de FreeSWITCH), coturn ; réseau du serveur ; santé de chaque conteneur ; certificat renouvelé la nuit sans couper d'appel |
+| 1.10 | **Veille du conseiller** | Pendant une conversation, le conseiller est-il toujours connecté ? Page fermée ou réseau tombé : au bout de 9 secondes l'appel passe aux collègues (FreeSWITCH seul ne le remarque pas toujours) |
+
+**Vu de bout en bout le 21 novembre 2026** (sans Meta : un faux Meta qui appelle comme Meta le décrit,
+la vraie pile Docker, Odoo, des agents dans Chromium) : appel pris et raccroché, voix dans les deux
+sens ; agent coupé (page fermée), le collègue sonne 8 secondes après ; messagerie ; appel pris pendant
+qu'Odoo était arrêté, sa fiche arrivée dans Odoo à son retour ; relais TURN avec les identifiants
+d'Odoo ; renouvellement du certificat. Rejouable : `whatsapp_cloud_call/freeswitch/tests/e2e/`.
 
 **Essai avant d'ouvrir à tous** (2 semaines au studio de Lomé, quelques clients) :
 
@@ -106,4 +114,7 @@ est disponible, attente moyenne sous 1 minute pendant les heures d'appel.
   des agents libres, l'appel sonne dans le vide jusqu'à « sans réponse » (30 à 60 s).
 - **Asterisk** : aussi solide, mais retiré de Debian 12, donc compilé à la main et plus lourd à mettre à
   jour.
+- **Kubernetes** : la voix demande des milliers de ports UDP et l'IP publique fixe du serveur, et
+  déplacer un pod coupe les appels en cours ; Docker sur un serveur dédié garde la mise à jour simple
+  sans ces défauts.
 - **Un service payant (Twilio et autres)** : plus d'abonnement, et la voix des clients chez un tiers.

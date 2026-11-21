@@ -55,7 +55,7 @@ Odoo. Solution retenue : un serveur d'appels FreeSWITCH entre Meta et l'équipe 
 | # | Étape | Ce que c'est | Effort |
 |---|---|---|---|
 | 23.0 | **Préalables** (équipe) | Limite d'envoi du numéro de 2 000 par jour ou plus, moyen de paiement chez Meta, serveur avec IP fixe, certificat, compte SignalWire, messages enregistrés | Quelques jours ; **à faire** |
-| 23.1 | **Les clients appellent OCD** | Module `whatsapp_cloud_call` et serveur d'appels : réglages chez Meta depuis Odoo, file d'attente, conseiller coupé qui récupère l'appel, messagerie dans la conversation, téléphone dans la barre du haut, historique, surveillance, relais TURN | ~3 semaines ; **fait le 20 novembre 2026**, à essayer sur le vrai serveur |
+| 23.1 | **Les clients appellent OCD** | Module `whatsapp_cloud_call` et serveur d'appels : réglages chez Meta depuis Odoo, file d'attente, conseiller coupé qui récupère l'appel, messagerie dans la conversation, téléphone dans la barre du haut, historique, surveillance, relais TURN | ~3 semaines ; **fait le 20 novembre 2026** ; en Docker et vu de bout en bout avec un faux Meta le 21 novembre ; reste le vrai serveur et le vrai Meta |
 | 23.2 | **OCD appelle les gens** | Accord du client, rappeler un appel manqué ou coupé, le livreur qui appelle le client par le numéro d'OCD, l'animatrice qui appelle le vendeur ; payant à la minute | ~2 semaines, après l'essai de 23.1 |
 | 23.3 | **La qualité** | Enregistrement annoncé, chiffres des appels sur le tableau de bord, transfert à un collègue, deuxième serveur | ~2 semaines |
 

@@ -2,8 +2,10 @@
 -- after a ring or a conversation with an agent. Tested with plain Lua (tests/test_queue.lua).
 local M = {}
 
--- How long an agent cut off during a call gets it back alone, before the others ring too.
+-- How long an agent cut off during a call gets it back alone, before the others ring too; when
+-- they are not connected again after the grace (page closed), the others ring at once.
 M.RECONNECT_WINDOW = 30
+M.RECONNECT_GRACE = 8
 -- Ring time of a round: the agent of the conversation alone, then every free agent.
 M.FIRST_TIMEOUT = 15
 M.ROUND_TIMEOUT = 20
@@ -101,9 +103,13 @@ function M.pick(route, state, is_registered)
     end
     return result
   end
-  if state.reconnect_agent and state.now - (state.reconnect_since or 0) < M.RECONNECT_WINDOW then
+  local since = state.now - (state.reconnect_since or 0)
+  if state.reconnect_agent and since < M.RECONNECT_WINDOW then
     -- the agent cut off reconnects: they get the call back alone for a while
-    return registered({ state.reconnect_agent }), M.FIRST_TIMEOUT, "reconnect"
+    local back = registered({ state.reconnect_agent })
+    if #back > 0 or since < M.RECONNECT_GRACE then
+      return back, M.FIRST_TIMEOUT, "reconnect"
+    end
   end
   if state.round == 1 and #route.first > 0 then
     local first = registered(route.first)

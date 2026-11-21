@@ -60,6 +60,12 @@ agents, _, kind = queue.pick(r, { round = 3, now = 110, reconnect_agent = "agent
 check("agent cut off gets the call back alone", same(agents, { "agent7" }) and kind == "reconnect")
 agents, _, kind = queue.pick(r, { round = 4, now = 140, reconnect_agent = "agent7", reconnect_since = 100 }, is_registered)
 check("after the window, everyone", kind == "all" and #agents == 2)
+registered.agent7 = nil
+agents, _, kind = queue.pick(r, { round = 3, now = 104, reconnect_agent = "agent7", reconnect_since = 100 }, is_registered)
+check("agent cut off not back yet: waits a few seconds", #agents == 0 and kind == "reconnect")
+agents, _, kind = queue.pick(r, { round = 4, now = 110, reconnect_agent = "agent7", reconnect_since = 100 }, is_registered)
+check("agent cut off gone (page closed): the others at once", kind == "all" and agents[1] == "agent5")
+registered.agent7 = true
 registered = {}
 agents = queue.pick(r, { round = 2, now = 100 }, is_registered)
 check("nobody connected", #agents == 0)

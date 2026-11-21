@@ -62,6 +62,7 @@ local function run(scenario)
       vars.last_bridge_hangup_cause = step.cause
       vars.originate_disposition = step.answer and "SUCCESS" or (step.disposition or "NO_ANSWER")
       if step.customer_hangs_up then up = false end
+      if step.unregister then scenario.registered[step.unregister] = nil end
     elseif app == "playback" then
       log.played[#log.played + 1] = data
       if data == "local_stream://moh" then clock = clock + 5 end
@@ -186,6 +187,20 @@ log = run({
 check("6 no error " .. tostring(log.error), not log.error)
 check("6 rang until the waiting time", #log.bridges == 3)
 check("6 voicemail", last_event(log, "ended").outcome == "voicemail")
+
+-- 7. the watch ended the leg of an agent gone (page closed): the colleague rings at once
+log = run({
+  registered = { agent5 = true, agent7 = true },
+  odoo_route = queue.parse_lines("call=16\nagents=agent5,agent7\nfirst=agent5\n"),
+  bridges = {
+    { answer = "agent5", talk = 20, cause = "NETWORK_OUT_OF_ORDER", seconds = 30, unregister = "agent5" },
+    { answer = "agent7", talk = 40, cause = "NORMAL_CLEARING", seconds = 45 },
+  },
+})
+check("7 no error " .. tostring(log.error), not log.error)
+check("7 the colleague rang right after", #log.bridges == 2 and log.bridges[2]:find("user/agent7@", 1, true) ~= nil)
+ended = last_event(log, "ended")
+check("7 completed by the colleague, 1 reconnection", ended.outcome == "completed" and ended.agent == "agent7" and ended.reconnects == 1)
 
 os.execute("rm -rf " .. tmp)
 print(string.format("%d checks, %d failures", count, failures))

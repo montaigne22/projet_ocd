@@ -1,0 +1,30 @@
+<!-- Test only: a FreeSWITCH that plays Meta. It calls the call server like Meta does: SIP over
+     TLS on 5061, signed (digest) with the business number and the SIP password of Meta, the
+     voice in SDES, the customer's number in From, the headers x-wa-meta-*. -->
+<profile name="meta">
+  <gateways>
+    <gateway name="ocd">
+      <param name="proxy" value="$${ocd_test_proxy}"/>
+      <param name="realm" value="$${ocd_test_domain}"/>
+      <param name="username" value="+22890000001"/>
+      <param name="password" value="$${meta_password}"/>
+      <param name="register" value="false"/>
+      <param name="register-transport" value="tls"/>
+      <param name="caller-id-in-from" value="true"/>
+    </gateway>
+  </gateways>
+  <settings>
+    <param name="context" value="public"/>
+    <param name="dialplan" value="XML"/>
+    <param name="sip-ip" value="$${local_ip_v4}"/>
+    <param name="rtp-ip" value="$${local_ip_v4}"/>
+    <param name="sip-port" value="5080"/>
+    <param name="tls" value="true"/>
+    <param name="tls-sip-port" value="5081"/>
+    <param name="tls-cert-dir" value="$${certs_dir}"/>
+    <param name="auth-calls" value="false"/>
+    <param name="enable-timer" value="false"/>
+    <param name="inbound-codec-prefs" value="OPUS"/>
+    <param name="outbound-codec-prefs" value="OPUS"/>
+  </settings>
+</profile>

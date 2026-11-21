@@ -58,7 +58,7 @@ Ce fichier est mis à jour à chaque évolution. Le plus récent est en haut.
 | WhatsApp : tous les messages des lives, de l'annuaire et des colis, un seul accord, messages demandés toujours envoyés | ✅ fait, testé |
 | Aucune mention d'Odoo pour l'équipe, les vendeurs et les clients (site, back-office, erreurs, e-mails) | ✅ fait, testé |
 | Recrutement des animatrices (offre sur le site, 5 étapes, embauche) | ✅ fait, testé |
-| Appels WhatsApp (chantier 23.1) : les clients appellent le numéro d'OCD depuis WhatsApp ; serveur d'appels FreeSWITCH entre Meta et l'équipe (file d'attente, tous les conseillers libres sonnent ensemble, conseiller coupé qui récupère l'appel, messagerie posée dans la conversation, marche sans Odoo) ; réglages des appels chez Meta depuis le compte WhatsApp ; téléphone des conseillers dans la barre du haut ; historique des appels et ligne dans la conversation ; surveillance du serveur et des appels perdus | ✅ fait, testé (sans vrai appel : le serveur d'appels est à installer, voir `whatsapp_cloud_call/freeswitch/README.md`) |
+| Appels WhatsApp (chantier 23.1) : les clients appellent le numéro d'OCD depuis WhatsApp ; serveur d'appels FreeSWITCH entre Meta et l'équipe (file d'attente, tous les conseillers libres sonnent ensemble, conseiller coupé qui récupère l'appel, messagerie posée dans la conversation, marche sans Odoo) ; réglages des appels chez Meta depuis le compte WhatsApp ; téléphone des conseillers dans la barre du haut ; historique des appels et ligne dans la conversation ; surveillance du serveur et des appels perdus | ✅ fait, testé, vu de bout en bout avec un faux Meta et la pile Docker (reste : le vrai serveur et le vrai Meta, voir `whatsapp_cloud_call/freeswitch/README.md`) |
 | Togo (villes, quartiers, livraison) | ✅ fait |
 | Données de démonstration désinstallables, qui remplissent tous les écrans (photos, variantes, stock, colis à chaque étape, reversements, OCD Express) ; installées en une fois avec les modules, avec leurs factures et reversements | ✅ fait, testé |
 | Démo de présentation tenue à jour : 15 vendeurs dans 8 pays, lives en cours, semaine du studio, replays, boutique de Douala heure par heure (colis, caisse, reversements, WhatsApp), OCD Express (Nadège Mode : ses colis à chaque étape, deux passages par jour, un retour, un souci, son argent versé chaque jour ouvré ; une demande à vérifier), magasins, équipe, retrait au magasin, point relais, ventes des lives, avis, abonnés, promo, signalement, chiffres sur 90 jours ; quand ils sont installés : formules OCD Business, une ambassadrice et ses gains, Vendredi wax, clips, un concours OCD Vote, un concert et ses billets ; scénario ([`DEMO.md`](DEMO.md)) ; aucun WhatsApp vers ses contacts | ✅ fait, testé |
@@ -159,6 +159,37 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
   modes de livraison d'OCD Live, sinon elle passe avant elles.
 
 ## Journal
+
+### 21 novembre 2026 · Appels WhatsApp : le serveur d'appels en Docker, vu de bout en bout
+`whatsapp_cloud_call` 20.0.1.1.0. Guide : [`whatsapp_cloud_call/freeswitch/README.md`](../whatsapp_cloud_call/freeswitch/README.md).
+- **Docker** (`whatsapp_cloud_call/freeswitch/docker/`) : FreeSWITCH 1.11.3 compilé depuis ses sources
+  dans l'image (spandsp, sofia-sip, 15 modules seulement : **aucun compte ni jeton SignalWire**),
+  ocd-call-sync dans sa propre image, coturn 4.18 ; `docker compose`, réseau du serveur, santé de
+  chaque conteneur, réglages dans `.env` ; la configuration de FreeSWITCH refaite à chaque démarrage
+  à partir de l'image (rien ne dérive). Le certificat renouvelé est appliqué la nuit sans couper
+  d'appel, sur le serveur comme en Docker. Kubernetes déconseillé (ports UDP de la voix, IP fixe,
+  appels coupés quand un pod bouge).
+- **ocd-call-sync parle au socket d'événements** de FreeSWITCH (plus de `fs_cli`), se règle aussi par
+  l'environnement, refait un rechargement manqué, signale sa santé.
+- **Veille du conseiller** : une page fermée ou un réseau tombé laissait la branche du conseiller ouverte
+  sans voix (FreeSWITCH ne le remarque pas toujours, à travers le relais TURN en particulier) et le
+  client attendait dans le silence. Le serveur vérifie maintenant toutes les 3 secondes que le conseiller
+  est connecté ; au bout de 9 secondes, l'appel passe aux collègues. Le navigateur dont la voix ne
+  passe plus raccroche avec une cause « réseau » (l'appel revient au lieu de finir).
+- **Trouvé et corrigé par les essais** : un rechargement de FreeSWITCH bloqué 10 secondes par une
+  question STUN à chaque changement de conseiller (l'IP fixe à la place), la santé du conteneur, les
+  lignes des appels signées « Public user » (OdooBot), l'attente qui comptait aussi la messagerie.
+
+**Vu de bout en bout** (`whatsapp_cloud_call/freeswitch/tests/e2e/`, sans Meta : un faux Meta qui appelle
+comme Meta le décrit, TLS, signature, SDES, en-têtes `x-wa-meta-*`) : appel pris dans Chromium avec le
+vrai téléphone d'Odoo, voix dans les deux sens, fiche « fini » dans Odoo ; agent coupé (page fermée),
+le collègue sonne 8 secondes après ; messagerie posée dans la conversation (18 s de voix) ; appel pris
+pendant qu'Odoo était arrêté, sa fiche arrivée à son retour ; relais TURN avec les identifiants d'Odoo
+(refusés avec un mauvais secret) ; renouvellement du certificat (attendu pendant un appel). Tests :
+`whatsapp_cloud_call` et `whatsapp_cloud` **111 sans échec** ; serveur d'appels sans FreeSWITCH **10 sans
+échec**, dont 68 vérifications en Lua. **Reste** : le vrai serveur et un vrai appel de Meta (les points
+de la fin du guide).
+**Sur le serveur Odoo** : `-u whatsapp_cloud_call`.
 
 ### 20 novembre 2026 · Appels WhatsApp : les clients appellent OCD (chantier 23.1)
 Nouveau module `whatsapp_cloud_call` 20.0.1.0.0 (avec `whatsapp_cloud`) et la configuration du serveur
