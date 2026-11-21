@@ -14,6 +14,31 @@ M.NOBODY_LIMIT = 30
 -- Hang-up causes of the agent's leg meaning "the agent hung up"; any other one means the agent
 -- was cut off (network, closed page, media timeout), and the customer waits for them.
 M.NORMAL_CAUSES = { NORMAL_CLEARING = true }
+-- An agent whose voice does not get through (their leg cut off this soon after they answered)
+-- twice in a call is not rung again for it: the colleagues ring, else the voicemail. Never an
+-- endless loop of rings for an agent who answers but cannot talk (network, relay).
+M.FAILED_ANSWER_SECONDS = 15
+M.MAX_FAILED_ANSWERS = 2
+-- Cut off more often in a call: no more waiting for that agent alone.
+M.MAX_RECONNECTS = 3
+
+-- Whether the agent is no longer rung for this call.
+function M.excluded(state, agent)
+  return ((state.failed or {})[agent] or 0) >= M.MAX_FAILED_ANSWERS
+end
+
+-- An agent cut off after <talk> seconds: noted; true when they still get the call back alone.
+-- state: reconnects (this one counted), failed
+function M.note_cut_off(state, agent, talk)
+  if not agent then
+    return false
+  end
+  state.failed = state.failed or {}
+  if (talk or 0) < M.FAILED_ANSWER_SECONDS then
+    state.failed[agent] = (state.failed[agent] or 0) + 1
+  end
+  return not M.excluded(state, agent) and (state.reconnects or 0) <= M.MAX_RECONNECTS
+end
 
 function M.digits(value)
   return (tostring(value or ""):gsub("%D", ""))
@@ -97,7 +122,7 @@ function M.pick(route, state, is_registered)
   local function registered(list)
     local result = {}
     for _, agent in ipairs(list) do
-      if is_registered(agent) and not contains(result, agent) then
+      if not M.excluded(state, agent) and is_registered(agent) and not contains(result, agent) then
         result[#result + 1] = agent
       end
     end
@@ -118,7 +143,8 @@ function M.pick(route, state, is_registered)
     end
   end
   local everyone = registered(route.agents)
-  if state.reconnect_agent and is_registered(state.reconnect_agent) and not contains(everyone, state.reconnect_agent) then
+  if state.reconnect_agent and not M.excluded(state, state.reconnect_agent)
+      and is_registered(state.reconnect_agent) and not contains(everyone, state.reconnect_agent) then
     table.insert(everyone, 1, state.reconnect_agent)
   end
   return everyone, M.ROUND_TIMEOUT, "all"

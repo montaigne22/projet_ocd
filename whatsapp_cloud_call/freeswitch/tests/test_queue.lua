@@ -98,5 +98,18 @@ check("reconnect window keeps waiting", not queue.should_stop_waiting(w, {
   start = 0, now = 500, talk = 0, reconnect_agent = "agent5", reconnect_since = 490,
 }))
 
+-- an agent whose voice does not get through
+local st = { reconnects = 1 }
+check("cut off after a conversation: gets it back", queue.note_cut_off(st, "agent5", 120) and not queue.excluded(st, "agent5"))
+st.reconnects = 2
+check("first failed answer: gets it back", queue.note_cut_off(st, "agent5", 3))
+st.reconnects = 3
+check("second failed answer: not rung again", not queue.note_cut_off(st, "agent5", 2) and queue.excluded(st, "agent5"))
+local everyone = queue.pick({ agents = { "agent5", "agent7" }, first = {} }, { round = 2, now = 0, failed = st.failed },
+  function() return true end)
+check("excluded agent left out of the round", #everyone == 1 and everyone[1] == "agent7")
+check("too many reconnections: no more waiting alone", not queue.note_cut_off({ reconnects = 4 }, "agent9", 300))
+check("unknown agent: no waiting alone", not queue.note_cut_off({ reconnects = 1 }, nil, 3))
+
 print(string.format("%d checks, %d failures", count, failures))
 os.exit(failures == 0 and 0 or 1)

@@ -369,6 +369,13 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
 - **La file d'attente** : accueil, musique, le conseiller de la conversation d'abord puis tous les
   conseillers libres ensemble ; 3 minutes sans conseiller (30 secondes quand personne n'est connecté) :
   messagerie, posée dans la conversation.
+- **Jamais de boucle** : un conseiller qui décroche mais dont la voix ne passe pas (sa branche
+  coupée moins de 15 secondes après le décroché, deux fois dans le même appel) n'est plus appelé
+  pour cet appel : les collègues sonnent, sinon la messagerie (journal : `cut off again ... not rung
+  again for this call`). Au-delà de 3 coupures dans un appel, on n'attend plus un conseiller seul.
+- **Le décroché** : le téléphone d'Odoo répond dès qu'il a l'adresse du relais TURN (le chemin de
+  la voix quand le direct est bloqué), sinon 3 secondes après son adresse publique (STUN), au plus
+  tard 8 secondes après le clic.
 - **La veille du conseiller** : pendant une conversation, toutes les 3 secondes, le conseiller est-il
   toujours connecté ? Page fermée ou réseau tombé, au bout de 9 secondes sa branche est coupée et
   l'appel passe aux collègues pendant que le client entend « nous vous reconnectons » (vérifié : le
@@ -433,10 +440,9 @@ webhook abonné au champ `calls` ; puis, dans Odoo, « Envoyer les appels à Met
 - **Le conseiller décroche, et ça resonne** (ou le message « Le relais de la voix du serveur d'appels
   ne répond pas ») : son navigateur ne joint pas coturn (STUN/TURN). Sans lui, le navigateur ne
   donne qu'une adresse masquée (`.local`), que FreeSWITCH refuse (journal : `no suitable candidates
-  found`, `INCOMPATIBLE_DESTINATION`) ; avant la version 20.0.1.4.4, le navigateur attendait même
+  found`, `INCOMPATIBLE_DESTINATION`) ; avant la version 20.0.1.4.3, le navigateur attendait même
   10 à 40 secondes avant de décrocher (le temps que ses essais en UDP expirent), et le serveur
-  refaisait sonner au bout de 20. Depuis, il décroche dès sa première adresse publique (STUN, ou le
-  relais par TLS sur le port 5349 quand l'UDP est bloqué), au plus tard 8 secondes après le clic. À regarder :
+  refaisait sonner au bout de 20. À regarder :
   `docker compose ps` (coturn « Up »), `docker compose logs --tail 30 coturn`, les ports 3478 (UDP
   et TCP), 5349 (TCP) et 49152-65535 (UDP) ouverts dans le pare-feu du serveur et chez l'hébergeur.
   Depuis le PC du conseiller, la page « Trickle ICE » des exemples WebRTC

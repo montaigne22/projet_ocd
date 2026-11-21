@@ -188,15 +188,25 @@ while session:ready() do
       break
     elseif action == "reconnect" then
       state.reconnects = state.reconnects + 1
-      state.reconnect_agent = round_agent ~= "unknown" and round_agent or nil
-      state.reconnect_since = os.time()
-      if var("last_bridge_hangup_cause") == "NETWORK_OUT_OF_ORDER" then
-        -- ended by the watch: the agent is gone already, the colleagues ring at once (the agent
-        -- still gets it back if they connect again in the meantime)
-        state.reconnect_since = os.time() - queue.RECONNECT_GRACE
+      local agent = round_agent ~= "unknown" and round_agent or nil
+      local round_talk = math.max(0, os.time() - (tonumber(var("ocd_answer_epoch") or "") or started))
+      local cause = tostring(var("last_bridge_hangup_cause"))
+      if queue.note_cut_off(state, agent, round_talk) then
+        state.reconnect_agent = agent
+        state.reconnect_since = os.time()
+        if cause == "NETWORK_OUT_OF_ORDER" then
+          -- ended by the watch: the agent is gone already, the colleagues ring at once (the
+          -- agent still gets it back if they connect again in the meantime)
+          state.reconnect_since = os.time() - queue.RECONNECT_GRACE
+        end
+        log("NOTICE", "agent " .. round_agent .. " cut off (" .. cause .. ") after " .. round_talk .. " s")
+      else
+        -- the voice of this agent does not get through: the colleagues, else the voicemail
+        state.reconnect_agent = nil
+        log("WARNING", "agent " .. round_agent .. " cut off again (" .. cause .. ") after " .. round_talk ..
+            " s: not rung again for this call")
       end
       setvar("ocd_reconnects", state.reconnects)
-      log("NOTICE", "agent " .. round_agent .. " cut off (" .. tostring(var("last_bridge_hangup_cause")) .. ")")
       odoo.event(settings, { event = "agent_lost", call = route.call, wacid = call.wacid, uuid = uuid,
                              agent = round_agent })
       play("reconnexion")

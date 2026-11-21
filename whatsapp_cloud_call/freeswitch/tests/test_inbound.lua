@@ -247,6 +247,37 @@ log = run({
 })
 check("10 the number and the BSUID", log.route_call.number == "237670000000" and log.route_call.user_ref == "CM.77")
 
+-- 11. an agent answers but their voice does not get through (cut off after 2 s), twice: not
+-- rung again, nobody else connected, the voicemail (never an endless loop)
+log = run({
+  registered = { agent5 = true },
+  odoo_route = queue.parse_lines("call=19\nagents=agent5\nvoicemail=1\nmax_wait=180\n"),
+  bridges = {
+    { answer = "agent5", talk = 2, cause = "MEDIA_TIMEOUT", seconds = 6 },
+    { answer = "agent5", talk = 2, cause = "MEDIA_TIMEOUT", seconds = 6 },
+    { answer = "agent5", talk = 2, cause = "MEDIA_TIMEOUT", seconds = 6 },
+  },
+})
+check("11 no error " .. tostring(log.error), not log.error)
+check("11 the agent rang twice only", #log.bridges == 2)
+check("11 then the voicemail", #log.voicemails == 1 and last_event(log, "ended").outcome == "voicemail")
+check("11 said in the log", (log.console or ""):find("cut off again (MEDIA_TIMEOUT) after 2 s: not rung again", 1, true) ~= nil)
+
+-- 12. a colleague takes over the call of an agent whose voice does not get through
+log = run({
+  registered = { agent5 = true, agent7 = true },
+  odoo_route = queue.parse_lines("call=20\nagents=agent5,agent7\nfirst=agent5\n"),
+  bridges = {
+    { answer = "agent5", talk = 1, cause = "MEDIA_TIMEOUT", seconds = 5 },
+    { answer = "agent5", talk = 1, cause = "MEDIA_TIMEOUT", seconds = 5 },
+    { answer = "agent7", talk = 30, cause = "NORMAL_CLEARING", seconds = 35 },
+  },
+})
+check("12 no error " .. tostring(log.error), not log.error)
+check("12 the colleague alone at the third ring", #log.bridges == 3 and log.bridges[3]:find("user/agent7@", 1, true) ~= nil
+      and not log.bridges[3]:find("user/agent5@", 1, true))
+check("12 completed by the colleague", last_event(log, "ended").outcome == "completed" and last_event(log, "ended").agent == "agent7")
+
 os.execute("rm -rf " .. tmp)
 print(string.format("%d checks, %d failures", count, failures))
 os.exit(failures == 0 and 0 or 1)

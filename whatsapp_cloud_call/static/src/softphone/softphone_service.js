@@ -12,10 +12,12 @@ const MEDIA_LOST_MS = 6000;
 // JsSIP sends the answer only once the browser has gathered all its network addresses (ICE); a
 // STUN or TURN server that does not answer (UDP blocked by a firewall, relay stopped) holds it
 // 10 to 40 seconds, and the call server stops ringing after 20 seconds and rings again (answered,
-// but it rings again). The answer leaves with the first public address (STUN or relay): the
-// call server has a public address, one is enough. At most after this time (a relay over TLS far
-// away takes 2 seconds and more).
+// but it rings again). The call server takes no address sent later (no trickle ICE): the answer
+// leaves with the address of the relay (TURN), the way of the voice when the direct one is
+// blocked; with only the public address (STUN), it waits for the relay a little; at most after
+// ICE_GATHERING_MS (a relay over TLS far away takes 2 seconds and more).
 const ICE_GATHERING_MS = 8000;
+const ICE_RELAY_WAIT_MS = 3000;
 
 /**
  * The phone of the agents: connected to the call server (SIP over WSS, JsSIP) while the agent
@@ -317,14 +319,21 @@ export const whatsappSoftphoneService = {
             state.incoming = null;
             session.on("peerconnection", () => watchMedia(session));
             let iceTimer = null;
+            let relayWait = null;
             let publicAddress = false;
             session.on("icecandidate", (event) => {
                 const type = event.candidate?.type;
-                if (type === "srflx" || type === "relay") {
-                    publicAddress = true;
+                if (type === "relay") {
                     browser.clearTimeout(iceTimer);
+                    browser.clearTimeout(relayWait);
                     event.ready();
-                } else if (!iceTimer) {
+                    return;
+                }
+                if (type === "srflx") {
+                    publicAddress = true;
+                    relayWait ||= browser.setTimeout(() => event.ready(), ICE_RELAY_WAIT_MS);
+                }
+                if (!iceTimer) {
                     iceTimer = browser.setTimeout(() => {
                         if (!publicAddress) {
                             // only the masked address of the computer (".local"): the call
