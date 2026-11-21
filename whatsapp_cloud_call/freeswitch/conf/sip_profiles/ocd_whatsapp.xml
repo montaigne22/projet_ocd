@@ -53,6 +53,10 @@
     <param name="outbound-codec-prefs" value="OPUS,PCMA,PCMU"/>
     <param name="dtmf-type" value="rfc2833"/>
     <param name="rfc2833-pt" value="126"/>
+    <!-- the voice paced by a clock (as in the profiles of FreeSWITCH): without it, a leg waits for
+         the voice of the other side (5 seconds at a time, again and again when it sends RTCP) and
+         reads nothing else meanwhile, the hang-up (BYE) of the customer included -->
+    <param name="rtp-timer-name" value="soft"/>
     <!-- a customer who listens in silence sends few packets: hang up only after 2 minutes -->
     <param name="rtp-timeout-sec" value="120"/>
     <param name="rtp-hold-timeout-sec" value="1800"/>

@@ -1,0 +1,10 @@
+<include>
+  <context name="agent">
+    <extension name="answer">
+      <condition field="destination_number" expression="^.*$">
+        <action application="answer"/>
+        <action application="playback" data="tone_stream://%(1000,0,500);loops=-1"/>
+      </condition>
+    </extension>
+  </context>
+</include>

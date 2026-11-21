@@ -74,10 +74,11 @@ qu'Odoo était arrêté, sa fiche arrivée dans Odoo à son retour ; relais TURN
 d'Odoo ; renouvellement du certificat. Rejouable : `whatsapp_cloud_call/freeswitch/tests/e2e/`.
 
 **Premier vrai appel le 21 novembre 2026** (un client, l'appli WhatsApp, serveur `appels.rollbackk.app`) :
-reçu de Meta, signé, décroché dans Odoo, voix dans les deux sens. À corriger avant les essais : à la
-fin, le raccroché d'un côté n'est pas arrivé de l'autre (téléphone du conseiller resté « En ligne »).
-Diagnostic : journal et trace SIP, [guide du serveur](../whatsapp_cloud_call/freeswitch/README.md),
-section 7. En attendant, le téléphone du conseiller raccroche quand Meta dit à Odoo que l'appel est fini.
+reçu de Meta, signé, décroché dans Odoo, voix dans les deux sens. À la fin, le raccroché du client
+n'est arrivé chez le conseiller qu'une minute plus tard : le serveur d'appels ne lisait pas le « BYE »
+de Meta tant que la voix du client ne venait plus (profils sans horloge de la voix). Corrigé dans la
+version 20.0.1.4.2, vérifié avec un faux Meta et un faux conseiller ; en plus, le téléphone du
+conseiller raccroche quand Meta dit à Odoo que l'appel est fini. À revoir au prochain vrai appel.
 
 **Essai avant d'ouvrir à tous** (2 semaines au studio de Lomé, quelques clients) :
 

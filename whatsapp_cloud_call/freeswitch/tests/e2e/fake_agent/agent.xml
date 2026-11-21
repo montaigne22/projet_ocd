@@ -1,0 +1,26 @@
+<!-- Test only: an agent who signs in to the call server in plain SIP (UDP, port 5090 of the
+     profile ocd_agents, closed to the outside) instead of WebRTC, and answers every call -->
+<profile name="agent">
+  <gateways>
+    <gateway name="ocd">
+      <param name="proxy" value="$${ocd_agents_proxy}"/>
+      <param name="realm" value="$${ocd_test_domain}"/>
+      <param name="from-domain" value="$${ocd_test_domain}"/>
+      <param name="username" value="$${agent_login}"/>
+      <param name="password" value="$${agent_password}"/>
+      <param name="register" value="true"/>
+      <param name="expire-seconds" value="300"/>
+    </gateway>
+  </gateways>
+  <settings>
+    <param name="context" value="agent"/>
+    <param name="dialplan" value="XML"/>
+    <param name="sip-ip" value="$${local_ip_v4}"/>
+    <param name="rtp-ip" value="$${local_ip_v4}"/>
+    <param name="sip-port" value="5084"/>
+    <param name="auth-calls" value="false"/>
+    <param name="rtp-timer-name" value="soft"/>
+    <param name="inbound-codec-prefs" value="OPUS,PCMU"/>
+    <param name="outbound-codec-prefs" value="OPUS,PCMU"/>
+  </settings>
+</profile>

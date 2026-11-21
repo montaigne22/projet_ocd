@@ -12,6 +12,8 @@ de la barre du haut, WebRTC), l'appel est vérifié dans Odoo.
 | `fake_meta/meta.xml` | son profil, avec la passerelle vers le serveur d'appels |
 | `fake_meta/meta_call.lua` | le client : envoie une tonalité de 440 Hz, enregistre ce qu'il entend, raccroche au bout de N secondes |
 | `agent_calls.js` | les deux scénarios dans Chromium (Playwright) |
+| `fake_agent/` | un faux conseiller (l'image en SIP simple sur le port 5090), qui décroche et envoie une tonalité |
+| `customer_hangs_up.sh` | sans Odoo : le client raccroche pendant qu'il parle au conseiller ; le serveur et le conseiller doivent le voir aussitôt |
 
 ## Préparer
 
@@ -56,6 +58,20 @@ Un message laissé (personne de connecté) : `docker exec fake-meta fs_cli -x "b
 {meta_name=vm1,meta_seconds=50,sip_h_x-wa-meta-wacid=wacid.VM1,sip_h_x-wa-meta-phone-number-id=1110001,origination_caller_id_number=+237670000000,rtp_secure_media=mandatory:AES_CM_128_HMAC_SHA1_80,absolute_codec_string=OPUS}sofia/gateway/ocd/+22890000001
 &lua(/opt/fake_meta/meta_call.lua)"` : au bout de 30 secondes la messagerie, le message dans la
 conversation (environ 18 secondes de tonalité).
+
+## Le client raccroche pendant la conversation
+
+Sans Odoo ni navigateur, avec l'image du serveur d'appels déjà construite :
+
+```bash
+CERTS=<certs> IP=<IP de la machine> sh customer_hangs_up.sh
+```
+
+Les trois heures affichées (le client raccroche, le serveur le voit, le conseiller le voit) doivent
+être à quelques millisecondes l'une de l'autre. Avant la version 20.0.1.4.2, sans l'horloge de la
+voix (`rtp-timer-name`) dans les profils, le serveur le voyait 5 secondes plus tard avec ce faux Meta,
+et avec le vrai Meta seulement quand le conseiller raccrochait à son tour (premier vrai appel, le
+21 novembre 2026).
 
 ## Ce qui a été vu le 21 novembre 2026
 

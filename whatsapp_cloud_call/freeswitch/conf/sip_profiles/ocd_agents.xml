@@ -41,6 +41,10 @@
 
     <param name="inbound-codec-prefs" value="OPUS"/>
     <param name="outbound-codec-prefs" value="OPUS"/>
+    <!-- the voice paced by a clock (as in the profiles of FreeSWITCH): without it, a leg waits for
+         the voice of the other side (5 seconds at a time, again and again when it sends RTCP) and
+         reads nothing else meanwhile, the hang-up (BYE) of the customer included -->
+    <param name="rtp-timer-name" value="soft"/>
     <!-- an agent cut off is noticed after 10 seconds without voice (media_timeout of the leg) -->
     <param name="rtp-timeout-sec" value="15"/>
     <param name="rtp-hold-timeout-sec" value="1800"/>

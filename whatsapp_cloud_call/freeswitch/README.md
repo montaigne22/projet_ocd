@@ -452,9 +452,12 @@ L'essai de bout en bout (un faux Meta, Odoo, un agent dans Chromium) se rejoue a
 
 Tout le reste a été vu de bout en bout avec un faux Meta qui appelle comme la documentation de Meta le
 décrit (TLS, signature, SDES, en-têtes `x-wa-meta-*`). **Premier vrai appel le 21 novembre 2026** :
-reçu, signé, décroché dans Odoo, voix dans les deux sens. Mais à la fin, le raccroché du client n'est
-pas arrivé jusqu'au conseiller (son téléphone est resté « En ligne ») : à regarder dans le journal
-(ci-dessus, la trace SIP). Avec le vrai Meta, encore à regarder :
+reçu, signé, décroché dans Odoo, voix dans les deux sens. À la fin, le raccroché du client n'est
+arrivé chez le conseiller qu'une minute plus tard, quand il a raccroché lui-même. La cause était chez
+nous : sans horloge de la voix (`rtp-timer-name`, présent dans les profils d'exemple de FreeSWITCH,
+absent des nôtres), FreeSWITCH attendait la voix du client, qui ne venait plus, et ne lisait pas le
+« BYE » de Meta, pourtant arrivé. Corrigé dans la version 20.0.1.4.2 (les deux profils) ; l'essai
+`tests/e2e/customer_hangs_up.sh` le vérifie. Avec le vrai Meta, encore à regarder :
 
 - Le nom d'utilisateur que Meta met dans sa signature : sans `+` d'après l'exemple de Meta
   (`username="12145551869"`) ; les deux formes sont créées, la ligne `signed as` du journal le dit.
