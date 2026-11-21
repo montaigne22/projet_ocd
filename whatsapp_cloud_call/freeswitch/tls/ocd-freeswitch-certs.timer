@@ -2,7 +2,10 @@
 Description=OCD: apply the certificate of FreeSWITCH at night
 
 [Timer]
-OnCalendar=*-*-* 03:20,03:50,04:20
+# three tries in the night: a call going on at 3:20 puts it off to 3:50, then 4:20
+OnCalendar=*-*-* 03:20
+OnCalendar=*-*-* 03:50
+OnCalendar=*-*-* 04:20
 Persistent=true
 
 [Install]
