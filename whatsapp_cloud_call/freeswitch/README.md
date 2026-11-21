@@ -78,7 +78,9 @@ bloquerait le SIP, le port 7443 et la voix.
 
 Traefik tient les ports 80 et 443 de la machine (par le répartiteur de k3s). Le serveur d'appels
 tourne **à côté de k3s**, avec Docker (`docker compose`, section 3A), sur le réseau de la machine :
-Traefik ne voit passer aucun appel, il n'y a ni Ingress ni IngressRoute à créer.
+Traefik ne voit passer aucun appel, il n'y a ni Ingress ni IngressRoute à créer. Docker et k3s
+cohabitent (k3s a son propre containerd) ; après l'installation de Docker, vérifier que les pods
+répondent toujours (`kubectl get pods -A`, Odoo ouvert dans le navigateur).
 
 1. **DNS** : `appels.rollbackk.app` vers l'IP de la machine, en « DNS only » chez Cloudflare.
 2. **Certificat** : par le DNS (section 2, façon **c**, avec certbot sur la machine), ou par
@@ -114,8 +116,19 @@ FreeSWITCH et à coturn sans couper d'appel. Il lit k3s avec `/etc/rancher/k3s/k
 Meta vérifie que le certificat est à ce nom et signé par une autorité reconnue. Le même sert aux
 agents (WSS) et au relais TURN.
 
+D'abord le dépôt sur le serveur, dans `/opt/ocd-calls/src`. Le dépôt privé, git demande l'utilisateur
+GitHub et, en mot de passe, un jeton GitHub « fine-grained » limité à ce dépôt, droit « Contents :
+Read-only » (GitHub › Settings › Developer settings › Personal access tokens) :
+
 ```bash
-SRC=/opt/ocd-calls/src/whatsapp_cloud_call/freeswitch   # le dépôt, copié sur le serveur
+apt-get install -y git
+git clone --depth 1 https://github.com/montaigne22/projet_ocd.git /opt/ocd-calls/src
+```
+
+Puis le script du certificat :
+
+```bash
+SRC=/opt/ocd-calls/src/whatsapp_cloud_call/freeswitch
 apt-get install -y certbot
 install -d /usr/local/lib/ocd
 cp $SRC/tls/ocd-freeswitch-certs.sh /usr/local/lib/ocd/ && chmod 750 /usr/local/lib/ocd/ocd-freeswitch-certs.sh
@@ -125,7 +138,8 @@ cp $SRC/tls/ocd-freeswitch-certs.service $SRC/tls/ocd-freeswitch-certs.timer /et
 Avec Docker, dire au script où est la pile (`/etc/default/ocd-freeswitch-certs`) :
 
 ```bash
-printf 'OCD_MODE=docker\nOCD_COMPOSE_FILE=%s/docker/docker-compose.yml\n' "$SRC" > /etc/default/ocd-freeswitch-certs
+printf 'OCD_MODE=docker\nOCD_COMPOSE_FILE=%s/docker/docker-compose.yml\nOCD_SIP_DOMAIN=%s\n' \
+  "$SRC" appels.rollbackk.app > /etc/default/ocd-freeswitch-certs
 ```
 
 Puis obtenir le certificat. Trois façons, selon ce qui tient le port 80 de la machine :
@@ -189,8 +203,20 @@ qu'il n'y en ait aucun (vérifié : « Calls in progress », puis appliqué au p
 
 ## 3A. Installation avec Docker (conseillé)
 
+Docker Engine, depuis le dépôt de Docker (Debian 12 n'a pas `docker compose` dans ses paquets) :
+
 ```bash
-apt-get install -y docker.io docker-compose-plugin   # ou Docker Engine de docker.com
+install -m 0755 -d /etc/apt/keyrings
+. /etc/os-release
+curl -fsSL "https://download.docker.com/linux/$ID/gpg" -o /etc/apt/keyrings/docker.asc
+echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/$ID $VERSION_CODENAME stable" > /etc/apt/sources.list.d/docker.list
+apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+Puis la pile :
+
+```bash
+SRC=/opt/ocd-calls/src/whatsapp_cloud_call/freeswitch
 cd $SRC/docker
 cp .env.example .env && chmod 600 .env
 nano .env        # nom du serveur, IP publique, adresse d'Odoo, clé, mots de passe (voir les commentaires)
@@ -204,7 +230,7 @@ docker compose ps         # freeswitch et ocd-call-sync « healthy »
   section 2).
 - Le réseau est celui du serveur (`network_mode: host`) : la voix utilise des milliers de ports UDP et
   chaque appel porte l'IP publique du serveur, que le réseau de Docker casserait.
-- **Mettre à jour** : récupérer le dépôt, puis `docker compose build && docker compose up -d` (de
+- **Mettre à jour** : `git -C /opt/ocd-calls/src pull`, puis `docker compose build && docker compose up -d` (de
   préférence la nuit : le redémarrage de FreeSWITCH coupe les appels en cours).
 - **Journaux** : `docker compose logs -f freeswitch`, `docker compose logs -f ocd-call-sync` ; la
   console de FreeSWITCH : `docker compose exec freeswitch fs_cli`.

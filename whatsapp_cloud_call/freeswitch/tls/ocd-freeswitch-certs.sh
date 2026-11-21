@@ -14,23 +14,39 @@
 #   OCD_SIP_DOMAIN=...           name of the server (default: read in vars_ocd.xml, or in .env)
 #   OCD_COMPOSE_FILE=...         Docker: the docker-compose.yml of the call server
 #   OCD_CERTS_DIR=...            Docker: the folder of the certificate (OCD_CERTS_DIR of .env)
+#
+# As the deploy hook of certbot, the certificate is taken where certbot says (RENEWED_LINEAGE): the
+# first certificate can come before the .env of Docker.
 set -euo pipefail
 [ -f /etc/default/ocd-freeswitch-certs ] && . /etc/default/ocd-freeswitch-certs
 
 MODE="${OCD_MODE:-native}"
 COMPOSE_FILE="${OCD_COMPOSE_FILE:-/opt/ocd-calls/docker/docker-compose.yml}"
 COMPOSE_DIR="$(dirname "$COMPOSE_FILE")"
+
+read_setting() {
+  # read_setting <sed expression> <file>: empty when the file is not there yet
+  if [ -f "$2" ]; then sed -n "$1" "$2" | head -1; fi
+}
+
 if [ "$MODE" = docker ] && [ -z "${OCD_CERTS_DIR:-}" ]; then
-  OCD_CERTS_DIR="$(sed -n 's/^OCD_CERTS_DIR=//p' "$COMPOSE_DIR/.env" | head -1)"
+  OCD_CERTS_DIR="$(read_setting 's/^OCD_CERTS_DIR=//p' "$COMPOSE_DIR/.env")"
 fi
 if [ -z "${OCD_SIP_DOMAIN:-}" ]; then
   if [ "$MODE" = docker ]; then
-    OCD_SIP_DOMAIN="$(sed -n 's/^OCD_SIP_DOMAIN=//p' "$COMPOSE_DIR/.env" | head -1)"
+    OCD_SIP_DOMAIN="$(read_setting 's/^OCD_SIP_DOMAIN=//p' "$COMPOSE_DIR/.env")"
   else
-    OCD_SIP_DOMAIN="$(sed -n 's/.*ocd_sip_domain=\([^"]*\)".*/\1/p' /etc/freeswitch/vars_ocd.xml | head -1)"
+    OCD_SIP_DOMAIN="$(read_setting 's/.*ocd_sip_domain=\([^"]*\)".*/\1/p' /etc/freeswitch/vars_ocd.xml)"
   fi
 fi
-LIVE="${OCD_LIVE_DIR:-/etc/letsencrypt/live/$OCD_SIP_DOMAIN}"
+LIVE="${OCD_LIVE_DIR:-${RENEWED_LINEAGE:-}}"
+if [ -z "$LIVE" ]; then
+  if [ -z "${OCD_SIP_DOMAIN:-}" ]; then
+    echo "Name of the call server unknown: OCD_SIP_DOMAIN=... in /etc/default/ocd-freeswitch-certs" >&2
+    exit 1
+  fi
+  LIVE="/etc/letsencrypt/live/$OCD_SIP_DOMAIN"
+fi
 STAMP=/var/lib/ocd-freeswitch-certs.applied
 
 install_file() {
