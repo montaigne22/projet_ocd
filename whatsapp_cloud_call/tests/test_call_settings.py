@@ -22,10 +22,18 @@ class TestCallSettings(WhatsAppCallCommon):
             "status": "ENABLED",
             "servers": [{"hostname": "calls.example.com", "port": 5061}],
             "webhook_delivery": "ENABLED",
-            "srtp_key_exchange_protocol": "SDES",
         })
+        # in "calling": Meta refuses it in "sip" ("Unexpected key ... on param calling.sip")
+        self.assertEqual(payload["srtp_key_exchange_protocol"], "SDES")
         # no opening hours: the calls at any time
         self.assertEqual(payload["call_hours"], {"status": "DISABLED"})
+
+    def test_payload_calls_disabled(self):
+        self.account.call_enabled = False
+        payload = self.account._call_settings_payload()["calling"]
+        self.assertEqual(payload["status"], "DISABLED")
+        self.assertEqual(payload["sip"]["status"], "DISABLED")
+        self.assertNotIn("srtp_key_exchange_protocol", payload, "SDES only with the SIP server enabled")
 
     def test_payload_needs_the_call_server(self):
         self.env["ir.config_parameter"].sudo().set_str(const.PARAM_HOST, "")

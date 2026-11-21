@@ -428,8 +428,8 @@ décrit (TLS, signature, SDES, en-têtes `x-wa-meta-*`). Avec le vrai Meta, à r
 
 - Le nom d'utilisateur que Meta met dans sa signature (le numéro avec ou sans `+`) : les deux sont
   créés.
-- Le chiffrement SDES (`srtp_key_exchange_protocol`) : Meta le décrit comme à activer. S'il est
-  refusé, passer le compte en DTLS (onglet Appels, `OCD_SRTP=DTLS` avec Docker) et suivre la note de
+- Le chiffrement SDES (`srtp_key_exchange_protocol`, dans `calling` et non dans `calling.sip` : vu
+  avec le vrai Meta, qui refuse la clé dans `sip`). S'il est refusé à l'appel, passer le compte en DTLS (onglet Appels, `OCD_SRTP=DTLS` avec Docker) et suivre la note de
   `vars_ocd.xml`.
 - La signature des appels de Meta : FreeSWITCH la demande par un « 407 » (Meta dit accepter le « 401 »).
   Si les appels de Meta s'arrêtent là (`sofia global siptrace on` pour le voir), mettre `auth-calls` à

@@ -167,8 +167,11 @@ class WhatsappAccount(models.Model):
                 "status": "ENABLED" if self.call_enabled else "DISABLED",
                 "servers": [{"hostname": host, "port": port}],
                 "webhook_delivery": "ENABLED",
-                "srtp_key_exchange_protocol": self.call_srtp,
             }
+            if self.call_enabled:
+                # in "calling", not in "sip" (refused by Meta there: "Unexpected key"); SDES
+                # only with the SIP server enabled
+                calling["srtp_key_exchange_protocol"] = self.call_srtp
         return {"calling": calling}
 
     def _call_hours_payload(self):
