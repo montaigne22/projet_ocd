@@ -10,11 +10,12 @@ const JSSIP_URL = "/whatsapp_cloud_call/static/lib/jssip/jssip.min.js";
 // it back to them (or to a colleague) while the customer waits.
 const MEDIA_LOST_MS = 6000;
 // JsSIP sends the answer only once the browser has gathered all its network addresses (ICE); a
-// STUN or TURN server that does not answer (port closed by a firewall, relay stopped) holds it
-// 40 seconds and more, and the call server stops ringing after 20 seconds and rings again
-// (answered, but it rings again). The answer leaves with the first relay address, else after
-// this time: the call server has a public address, what the browser found by then is enough.
-const ICE_GATHERING_MS = 2000;
+// STUN or TURN server that does not answer (UDP blocked by a firewall, relay stopped) holds it
+// 10 to 40 seconds, and the call server stops ringing after 20 seconds and rings again (answered,
+// but it rings again). The answer leaves with the first public address (STUN or relay): the
+// call server has a public address, one is enough. At most after this time (a relay over TLS far
+// away takes 2 seconds and more).
+const ICE_GATHERING_MS = 8000;
 
 /**
  * The phone of the agents: connected to the call server (SIP over WSS, JsSIP) while the agent
@@ -319,8 +320,8 @@ export const whatsappSoftphoneService = {
             let publicAddress = false;
             session.on("icecandidate", (event) => {
                 const type = event.candidate?.type;
-                publicAddress ||= type === "srflx" || type === "relay";
-                if (type === "relay") {
+                if (type === "srflx" || type === "relay") {
+                    publicAddress = true;
                     browser.clearTimeout(iceTimer);
                     event.ready();
                 } else if (!iceTimer) {

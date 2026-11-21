@@ -433,8 +433,10 @@ webhook abonné au champ `calls` ; puis, dans Odoo, « Envoyer les appels à Met
 - **Le conseiller décroche, et ça resonne** (ou le message « Le relais de la voix du serveur d'appels
   ne répond pas ») : son navigateur ne joint pas coturn (STUN/TURN). Sans lui, le navigateur ne
   donne qu'une adresse masquée (`.local`), que FreeSWITCH refuse (journal : `no suitable candidates
-  found`, `INCOMPATIBLE_DESTINATION`) ; avant la version 20.0.1.4.3, le navigateur attendait même
-  jusqu'à 40 secondes avant de décrocher, et le serveur refaisait sonner au bout de 20. À regarder :
+  found`, `INCOMPATIBLE_DESTINATION`) ; avant la version 20.0.1.4.4, le navigateur attendait même
+  10 à 40 secondes avant de décrocher (le temps que ses essais en UDP expirent), et le serveur
+  refaisait sonner au bout de 20. Depuis, il décroche dès sa première adresse publique (STUN, ou le
+  relais par TLS sur le port 5349 quand l'UDP est bloqué), au plus tard 8 secondes après le clic. À regarder :
   `docker compose ps` (coturn « Up »), `docker compose logs --tail 30 coturn`, les ports 3478 (UDP
   et TCP), 5349 (TCP) et 49152-65535 (UDP) ouverts dans le pare-feu du serveur et chez l'hébergeur.
   Depuis le PC du conseiller, la page « Trickle ICE » des exemples WebRTC
