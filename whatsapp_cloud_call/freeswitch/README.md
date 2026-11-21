@@ -125,6 +125,14 @@ apt-get install -y git
 git clone --depth 1 https://github.com/montaigne22/projet_ocd.git /opt/ocd-calls/src
 ```
 
+Le dossier copié depuis un PC Windows (sans git) : ses fichiers ont souvent les fins de ligne de
+Windows, et les scripts ne démarrent pas (« cannot execute: required file not found »). Les remettre
+au format de Linux, avant la suite :
+
+```bash
+find /opt/ocd-calls/src/whatsapp_cloud_call/freeswitch -type f ! -name '*.wav' ! -path '*/data/*' -exec sed -i 's/\r$//' {} +
+```
+
 Puis le script du certificat :
 
 ```bash
