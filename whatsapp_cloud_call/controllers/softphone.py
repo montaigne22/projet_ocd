@@ -40,6 +40,14 @@ class WhatsAppSoftphone(http.Controller):
             ]) if call.channel_id else 0,
         }
 
+    @http.route("/whatsapp/call/softphone/trace", type="jsonrpc", auth="user")
+    def softphone_trace(self, call_id, trace):
+        """What the phone did when the agent answered (see whatsapp.call phone_trace)."""
+        call = self._get_call(call_id)
+        if call:
+            call._call_add_phone_trace(request.env.user, trace)
+        return True
+
     @http.route("/whatsapp/call/softphone/declined", type="jsonrpc", auth="user")
     def softphone_declined(self, call_id):
         call = self._get_call(call_id)

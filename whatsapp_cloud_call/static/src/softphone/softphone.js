@@ -32,6 +32,9 @@ export class WhatsappSoftphoneSystray extends Component {
         if (!phone.available) {
             return "bg-secondary";
         }
+        if (phone.status === "ready" && phone.microphone === "denied") {
+            return "bg-danger";
+        }
         return { ready: "bg-success", connecting: "bg-warning", error: "bg-danger", off: "bg-secondary" }[
             phone.status
         ];

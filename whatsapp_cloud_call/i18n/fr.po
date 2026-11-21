@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 14:39+0000\n"
-"PO-Revision-Date: 2026-11-21 14:39+0000\n"
+"POT-Creation-Date: 2026-11-21 15:58+0000\n"
+"PO-Revision-Date: 2026-11-21 15:58+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -146,6 +146,12 @@ msgstr "Conseiller coupé"
 #: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
 msgid "Agent cut off %s time(s), the call came back."
 msgstr "Conseiller coupé %s fois, l'appel est revenu."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Allow the microphone when the browser asks (at the top, at the left of the address)."
+msgstr "Autorisez le micro quand le navigateur le demande (en haut, à gauche de l'adresse)."
 
 #. module: whatsapp_cloud_call
 #. odoo-javascript
@@ -327,6 +333,12 @@ msgstr "Connexion au serveur d'appels..."
 
 #. module: whatsapp_cloud_call
 #. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Connecting..."
+msgstr "Connexion..."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
 msgid "Connection lost: the call comes back to you or goes to a colleague."
 msgstr "Connexion perdue : l'appel vous revient ou passe à un collègue."
@@ -385,6 +397,12 @@ msgstr "Refuser"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__declined_user_ids
 msgid "Declined by"
 msgstr "Refusé par"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__phone_trace
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
+msgid "Diagnostic of the Phone"
+msgstr "Diagnostic du téléphone"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__direction
@@ -736,6 +754,12 @@ msgid "Password of the agent on the call server, given to their phone in Odoo."
 msgstr "Mot de passe du conseiller sur le serveur d'appels, donné à son téléphone dans Odoo."
 
 #. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_icon_visibility
 msgid "Phone icon in the conversation with the company, in WhatsApp."
 msgstr "Icône du téléphone dans la conversation avec l'entreprise, dans WhatsApp."
@@ -843,9 +867,21 @@ msgstr "Le conseiller prend les appels (téléphone de la barre du haut) : les a
 
 #. module: whatsapp_cloud_call
 #. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "The browser asks for the microphone: click Allow (at the top, at the left of the address)."
+msgstr "Le navigateur demande le micro : cliquez sur Autoriser (en haut, à gauche de l'adresse)."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
 msgid "The browser refuses the microphone: allow it for this site, then answer again."
 msgstr "Le navigateur refuse le micro : autorisez-le pour ce site, puis décrochez à nouveau."
+
+#. module: whatsapp_cloud_call
+#. odoo-javascript
+#: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
+msgid "The browser refuses the microphone: the calls cannot be answered. Allow it for this site (icon at the left of the address), then reload the page."
+msgstr "Le navigateur refuse le micro : les appels ne peuvent pas être pris. Autorisez-le pour ce site (icône à gauche de l'adresse), puis rechargez la page."
 
 #. module: whatsapp_cloud_call
 #. odoo-javascript
@@ -997,6 +1033,11 @@ msgstr "Attente (s)"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_max_wait
 msgid "Waiting before the Voicemail (seconds)"
 msgstr "Attente avant la messagerie (secondes)"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__phone_trace
+msgid "What the phone of each agent who answered did (version, microphone, network addresses, answer sent, end), to understand a call that did not connect."
+msgstr "Ce qu'a fait le téléphone de chaque conseiller qui a décroché (version, micro, adresses réseau, réponse envoyée, fin), pour comprendre un appel qui n'a pas abouti."
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__account_id

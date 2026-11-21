@@ -278,6 +278,22 @@ check("12 the colleague alone at the third ring", #log.bridges == 3 and log.brid
       and not log.bridges[3]:find("user/agent5@", 1, true))
 check("12 completed by the colleague", last_event(log, "ended").outcome == "completed" and last_event(log, "ended").agent == "agent7")
 
+-- 13. the phone of the agent answers without a usable network address (refused by FreeSWITCH):
+-- twice, then not rung again; the voicemail
+log = run({
+  registered = { agent5 = true },
+  odoo_route = queue.parse_lines("call=21\nagents=agent5\nvoicemail=1\n"),
+  bridges = {
+    { disposition = "INCOMPATIBLE_DESTINATION", seconds = 8 },
+    { disposition = "INCOMPATIBLE_DESTINATION", seconds = 8 },
+    { disposition = "INCOMPATIBLE_DESTINATION", seconds = 8 },
+  },
+})
+check("13 no error " .. tostring(log.error), not log.error)
+check("13 rung twice only", #log.bridges == 2)
+check("13 then the voicemail", #log.voicemails == 1)
+check("13 said in the log", (log.console or ""):find("no usable network address (STUN/TURN of the call server not reached): not rung again", 1, true) ~= nil)
+
 os.execute("rm -rf " .. tmp)
 print(string.format("%d checks, %d failures", count, failures))
 os.exit(failures == 0 and 0 or 1)

@@ -130,3 +130,9 @@ class TestCallServerApi(HttpCase):
         self.assertEqual(info["number"], "+237670000000")
         self.make_jsonrpc_request("/whatsapp/call/softphone/declined", {"call_id": call})
         self.assertIn(self.agent, self.env["whatsapp.call"].browse(call).declined_user_ids)
+        # what the phone did when the agent answered, kept on the call
+        self.make_jsonrpc_request("/whatsapp/call/softphone/trace", {
+            "call_id": call, "trace": "phone 20.0.1.4.6; microphone 120 ms;\nanswer sent 2100 ms (relay)",
+        })
+        trace = self.env["whatsapp.call"].browse(call).phone_trace
+        self.assertIn("Afi Agent: phone 20.0.1.4.6; microphone 120 ms; answer sent 2100 ms (relay)", trace)

@@ -18,6 +18,10 @@ const MEDIA_LOST_MS = 6000;
 // ICE_GATHERING_MS (a relay over TLS far away takes 2 seconds and more).
 const ICE_GATHERING_MS = 8000;
 const ICE_RELAY_WAIT_MS = 3000;
+// The browser still asks for the microphone after this time: the agent is shown where to allow it.
+const MICROPHONE_HINT_MS = 1500;
+// Shown in the menu of the phone and in its diagnostic: the version of the module.
+const SOFTPHONE_VERSION = "20.0.1.4.6";
 
 /**
  * The phone of the agents: connected to the call server (SIP over WSS, JsSIP) while the agent
@@ -33,13 +37,19 @@ export const whatsappSoftphoneService = {
             status: "off", // off, connecting, ready, error
             needsGesture: false,
             incoming: null, // {callId, name, number, channelId, account, previousCalls}
-            active: null, // {callId, name, number, channelId, startedAt, muted, lost}
+            // connecting: answered, the call not established yet (no "In call" before it is)
+            // askingMicrophone: the browser waits for the agent to allow the microphone
+            active: null, // {callId, name, number, channelId, startedAt, muted, lost, connecting, askingMicrophone}
             message: "",
+            // microphone of the browser: "granted", "prompt" (Chrome will ask), "denied"
+            microphone: "unknown",
+            version: SOFTPHONE_VERSION,
         });
         let config = null;
         let ua = null;
         let incomingSession = null;
         let activeSession = null;
+        let localStream = null;
         let audioContext = null;
         let ringer = null;
         let titleTimer = null;
@@ -50,6 +60,36 @@ export const whatsappSoftphoneService = {
         remoteAudio.autoplay = true;
 
         // === SOUND === //
+
+        // === MICROPHONE === //
+
+        async function microphonePermission() {
+            try {
+                const status = await browser.navigator.permissions.query({ name: "microphone" });
+                status.onchange = () => {
+                    state.microphone = status.state;
+                };
+                return status.state;
+            } catch {
+                return "unknown";
+            }
+        }
+
+        /** The microphone allowed when the agent starts taking the calls (Chrome asks then),
+         * not while a call rings: a question of Chrome left unanswered holds the answer of the
+         * call, and the call server rings again after 20 seconds. */
+        async function askMicrophone() {
+            try {
+                const stream = await browser.navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach((track) => track.stop());
+                state.microphone = "granted";
+            } catch {
+                state.microphone = await microphonePermission();
+                if (state.microphone !== "granted") {
+                    state.microphone = "denied";
+                }
+            }
+        }
 
         function unlockAudio() {
             try {
@@ -207,6 +247,7 @@ export const whatsappSoftphoneService = {
                 channelId: false,
                 account: "",
                 previousCalls: 0,
+                ringingSince: Date.now(),
             };
         }
 
@@ -251,15 +292,17 @@ export const whatsappSoftphoneService = {
 
         function watchMedia(session) {
             const connection = session.connection;
-            if (!connection) {
+            if (!connection || session.ocdWatched) {
                 return;
             }
+            session.ocdWatched = true;
             connection.addEventListener("track", (event) => {
                 remoteAudio.srcObject = event.streams[0] || new MediaStream([event.track]);
                 remoteAudio.play().catch(() => {});
             });
             connection.addEventListener("iceconnectionstatechange", () => {
                 const ice = connection.iceConnectionState;
+                session.ocdNote?.(`network ${ice}`);
                 if (ice === "disconnected" || ice === "failed") {
                     if (state.active) {
                         state.active.lost = true;
@@ -297,6 +340,8 @@ export const whatsappSoftphoneService = {
             if (session === activeSession) {
                 activeSession = null;
                 state.active = null;
+                localStream?.getTracks().forEach((track) => track.stop());
+                localStream = null;
                 remoteAudio.srcObject = null;
                 browser.clearTimeout(mediaLostTimer);
                 if (!state.available) {
@@ -315,23 +360,116 @@ export const whatsappSoftphoneService = {
             stopRinging();
             incomingSession = null;
             activeSession = session;
-            state.active = { ...state.incoming, startedAt: Date.now(), muted: false, lost: false };
+            // the diagnostic of this answer, kept on the call in Odoo (whatsapp.call phone_trace)
+            const clicked = Date.now();
+            const traceCallId = state.incoming?.callId;
+            const rung = state.incoming?.ringingSince ? clicked - state.incoming.ringingSince : "?";
+            const trace = [`phone ${SOFTPHONE_VERSION}`, `answered ${rung} ms after the ring`];
+            const seenTypes = new Set();
+            let traceSent = false;
+            session.ocdNote = (text) => trace.push(`${Date.now() - clicked} ms ${text}`);
+            const sendTrace = (end) => {
+                if (traceSent) {
+                    return;
+                }
+                traceSent = true;
+                session.ocdNote(end);
+                if (traceCallId) {
+                    rpc("/whatsapp/call/softphone/trace", { call_id: traceCallId, trace: trace.join("; ") },
+                        { silent: true }).catch(() => {});
+                }
+            };
+            session.on("confirmed", () => session.ocdNote("established"));
+            session.on("ended", (event) => sendTrace(`ended: ${event.cause} (${event.originator})`));
+            state.active = {
+                ...state.incoming, startedAt: Date.now(), muted: false, lost: false, connecting: true,
+                askingMicrophone: false,
+            };
             state.incoming = null;
+            // "In call" once the call server confirms the answer (ACK), the time counted from then
+            session.on("confirmed", () => {
+                if (session === activeSession && state.active) {
+                    state.active.connecting = false;
+                    state.active.startedAt = Date.now();
+                }
+            });
+            session.on("failed", (event) => {
+                sendTrace(`failed: ${event.cause} (${event.originator})`);
+                if (event.cause === browser.JsSIP?.C?.causes?.USER_DENIED_MEDIA_ACCESS) {
+                    notification.add(
+                        _t("The browser refuses the microphone: allow it for this site, then answer again."),
+                        { type: "danger", sticky: true }
+                    );
+                }
+                onEnded(session);
+            });
+            // the microphone first: while the browser asks the agent, nothing goes to the call
+            // server (it rings again after 20 seconds); the agent is shown where to allow it
+            const asking = browser.setTimeout(() => {
+                if (session === activeSession && state.active) {
+                    state.active.askingMicrophone = true;
+                }
+            }, MICROPHONE_HINT_MS);
+            let stream = null;
+            try {
+                stream = await browser.navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                state.microphone = "granted";
+                session.ocdNote("microphone");
+            } catch (error) {
+                state.microphone = "denied";
+                session.ocdNote(`microphone refused (${error?.name || error})`);
+            }
+            browser.clearTimeout(asking);
+            if (session !== activeSession || session.isEnded()) {
+                // the call ended meanwhile (customer gone, rung again)
+                stream?.getTracks().forEach((track) => track.stop());
+                sendTrace("ended while the microphone was asked");
+                return;
+            }
+            if (!stream) {
+                notification.add(
+                    _t("The browser refuses the microphone: allow it for this site, then answer again."),
+                    { type: "danger", sticky: true }
+                );
+                try {
+                    session.terminate({ status_code: 480, reason_phrase: "Microphone refused" });
+                } catch {
+                    // already ended
+                }
+                const callId = state.active?.callId;
+                sendTrace("answer refused: no microphone");
+                onEnded(session);
+                if (callId) {
+                    // as declined: this call is not rung again for this agent
+                    rpc("/whatsapp/call/softphone/declined", { call_id: callId }, { silent: true }).catch(() => {});
+                }
+                return;
+            }
+            state.active.askingMicrophone = false;
+            localStream = stream;
             session.on("peerconnection", () => watchMedia(session));
             let iceTimer = null;
             let relayWait = null;
             let publicAddress = false;
+            const ready = (event, why) => {
+                session.ocdNote(`answer sent (${why})`);
+                event.ready();
+            };
             session.on("icecandidate", (event) => {
                 const type = event.candidate?.type;
+                if (type && !seenTypes.has(type)) {
+                    seenTypes.add(type);
+                    session.ocdNote(`address ${type}${event.candidate?.protocol ? " " + event.candidate.protocol : ""}`);
+                }
                 if (type === "relay") {
                     browser.clearTimeout(iceTimer);
                     browser.clearTimeout(relayWait);
-                    event.ready();
+                    ready(event, "relay");
                     return;
                 }
                 if (type === "srflx") {
                     publicAddress = true;
-                    relayWait ||= browser.setTimeout(() => event.ready(), ICE_RELAY_WAIT_MS);
+                    relayWait ||= browser.setTimeout(() => ready(event, "public address, no relay"), ICE_RELAY_WAIT_MS);
                 }
                 if (!iceTimer) {
                     iceTimer = browser.setTimeout(() => {
@@ -343,13 +481,13 @@ export const whatsappSoftphoneService = {
                                 { type: "danger", sticky: true }
                             );
                         }
-                        event.ready();
+                        ready(event, publicAddress ? "public address" : "no public address");
                     }, ICE_GATHERING_MS);
                 }
             });
             try {
                 session.answer({
-                    mediaConstraints: { audio: true, video: false },
+                    mediaStream: stream,
                     pcConfig: { iceServers: config.ice_servers || [], iceTransportPolicy: "all" },
                 });
             } catch (error) {
@@ -360,15 +498,6 @@ export const whatsappSoftphoneService = {
             if (session.connection) {
                 watchMedia(session);
             }
-            session.on("failed", (event) => {
-                if (event.cause === browser.JsSIP?.C?.causes?.USER_DENIED_MEDIA_ACCESS) {
-                    notification.add(
-                        _t("The browser refuses the microphone: allow it for this site, then answer again."),
-                        { type: "danger", sticky: true }
-                    );
-                }
-                onEnded(session);
-            });
         }
 
         function decline() {
@@ -428,6 +557,8 @@ export const whatsappSoftphoneService = {
             config = result;
             state.available = Boolean(result.available);
             if (state.available) {
+                // not awaited: the agent connects while Chrome asks
+                askMicrophone();
                 await connect();
             } else if (!activeSession) {
                 disconnect();
@@ -469,6 +600,10 @@ export const whatsappSoftphoneService = {
             if (await loadConfig()) {
                 if (state.available) {
                     unlockAudio();
+                    state.microphone = await microphonePermission();
+                    if (state.microphone !== "denied") {
+                        askMicrophone();
+                    }
                     await connect();
                 }
             }

@@ -376,6 +376,11 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
 - **Le décroché** : le téléphone d'Odoo répond dès qu'il a l'adresse du relais TURN (le chemin de
   la voix quand le direct est bloqué), sinon 3 secondes après son adresse publique (STUN), au plus
   tard 8 secondes après le clic.
+- **Le diagnostic du téléphone** : chaque décroché laisse sur la fiche de l'appel (WhatsApp ›
+  Appels, « Diagnostic du téléphone ») ce qu'a fait le téléphone du conseiller : sa version, le
+  micro, les adresses réseau obtenues (host, srflx = STUN, relay = TURN) et quand, la réponse
+  envoyée, l'appel établi, la fin. La version du téléphone est aussi dans son menu (barre du haut) :
+  après une mise à jour, Ctrl+F5 sur la page du conseiller pour la charger.
 - **La veille du conseiller** : pendant une conversation, toutes les 3 secondes, le conseiller est-il
   toujours connecté ? Page fermée ou réseau tombé, au bout de 9 secondes sa branche est coupée et
   l'appel passe aux collègues pendant que le client entend « nous vous reconnectons » (vérifié : le

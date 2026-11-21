@@ -215,6 +215,14 @@ while session:ready() do
         state.reconnect_agent = nil
       end
       local disposition = var("originate_disposition") or ""
+      if disposition == "INCOMPATIBLE_DESTINATION" and #agents == 1 then
+        -- the agent answered, but their phone gave no network address the call server can reach
+        -- (STUN/TURN not reached): counted as an answer that failed
+        queue.note_cut_off(state, agents[1], 0)
+        log("WARNING", "agent " .. agents[1] .. " answered, but their phone gave no usable network address" ..
+            " (STUN/TURN of the call server not reached)" ..
+            (queue.excluded(state, agents[1]) and ": not rung again for this call" or ""))
+      end
       if os.time() - started < 3 then
         -- refused at once (busy, declined, not connected): music before ringing again
         log("DEBUG", "agents did not ring: " .. disposition)

@@ -58,6 +58,17 @@ CALLS = {
         "Appel de %(duration)s, pris par %(agent)s (attente %(wait)s).",
     "Call of %s": "Appel de %s",
     "WhatsApp ID of the Customer": "Identifiant WhatsApp du client",
+    "Allow the microphone when the browser asks (at the top, at the left of the address).":
+        "Autorisez le micro quand le navigateur le demande (en haut, à gauche de l'adresse).",
+    "Connecting...": "Connexion...",
+    "Diagnostic of the Phone": "Diagnostic du téléphone",
+    "Phone": "Téléphone",
+    "The browser asks for the microphone: click Allow (at the top, at the left of the address).":
+        "Le navigateur demande le micro : cliquez sur Autoriser (en haut, à gauche de l'adresse).",
+    "The browser refuses the microphone: the calls cannot be answered. Allow it for this site (icon at the left of the address), then reload the page.":
+        "Le navigateur refuse le micro : les appels ne peuvent pas être pris. Autorisez-le pour ce site (icône à gauche de l'adresse), puis rechargez la page.",
+    "What the phone of each agent who answered did (version, microphone, network addresses, answer sent, end), to understand a call that did not connect.":
+        "Ce qu'a fait le téléphone de chaque conseiller qui a décroché (version, micro, adresses réseau, réponse envoyée, fin), pour comprendre un appel qui n'a pas abouti.",
     "The voice relay of the call server (STUN/TURN, ports 3478 and 5349) does not answer: the call cannot go through. Tell the administrator (coturn on the call server, firewall).":
         "Le relais de la voix du serveur d'appels (STUN/TURN, ports 3478 et 5349) ne répond pas : l'appel ne peut pas passer. Prévenez l'administrateur (coturn sur le serveur d'appels, pare-feu).",
     "ID of the customer for the company at WhatsApp (BSUID), given by Meta also when the customer hides their number behind a WhatsApp username.":

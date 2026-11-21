@@ -19,12 +19,19 @@
                             </label>
                         </div>
                         <div class="small text-muted" t-out="this.statusText"/>
+                        <div class="small text-danger mt-2" t-if="this.softphone.available and this.softphone.microphone === 'denied'">
+                            The browser refuses the microphone: the calls cannot be answered. Allow it for this site (icon at the left of the address), then reload the page.
+                        </div>
+                        <div class="small text-warning mt-2" t-if="this.softphone.available and this.softphone.microphone === 'prompt'">
+                            Allow the microphone when the browser asks (at the top, at the left of the address).
+                        </div>
                         <div class="small text-warning mt-2" t-if="this.softphone.needsGesture">
                             Click anywhere on the page to allow the ringing.
                         </div>
                         <div class="small text-muted mt-2">
                             Keep this page open: the calls ring while it is open. Your colleagues get the call if you do not answer.
                         </div>
+                        <div class="small text-muted mt-1">Phone <t t-out="this.softphone.version"/></div>
                     </div>
                 </t>
             </Dropdown>
@@ -38,6 +45,7 @@
                     <i class="oi oi-fw text-success" data-icon="phone" t-if="this.softphone.incoming"/>
                     <i class="oi oi-fw text-success" data-icon="phone_in_talk" t-else=""/>
                     <span class="small text-muted" t-if="this.softphone.incoming">WhatsApp call</span>
+                    <span class="small text-warning" t-elif="this.softphone.active.connecting">Connecting...</span>
                     <span class="small text-muted" t-else="">In call · <t t-out="this.duration"/></span>
                     <span class="small text-muted ms-auto" t-out="this.call.account"/>
                 </div>
@@ -48,6 +56,9 @@
                 </div>
                 <div class="small text-warning mt-1" t-if="this.softphone.active and this.softphone.active.lost">
                     Connection unstable...
+                </div>
+                <div class="small text-warning mt-1" t-if="this.softphone.active and this.softphone.active.askingMicrophone">
+                    The browser asks for the microphone: click Allow (at the top, at the left of the address).
                 </div>
                 <button class="btn btn-link btn-sm px-0" t-if="this.call.channelId"
                         t-on-click="() => this.softphone.openConversation(this.call.channelId)">

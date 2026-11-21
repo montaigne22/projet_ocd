@@ -117,6 +117,11 @@ class WhatsappCall(models.Model):
     meta_status = fields.Char(string="Status at Meta", readonly=True)
     meta_duration = fields.Integer(string="Duration at Meta (s)", readonly=True)
     notice_message_id = fields.Many2one(comodel_name="mail.message", readonly=True, ondelete="set null")
+    phone_trace = fields.Text(
+        string="Diagnostic of the Phone", readonly=True,
+        help="What the phone of each agent who answered did (version, microphone, network "
+        "addresses, answer sent, end), to understand a call that did not connect.",
+    )
 
     _wacid_uniq = models.UniqueIndex(
         "(account_id, wacid) WHERE wacid IS NOT NULL", "This call is already recorded."
@@ -572,6 +577,15 @@ class WhatsappCall(models.Model):
                 "user_name": call.user_id.name or "",
                 "ended_at_meta": ended_at_meta,
             })
+
+    def _call_add_phone_trace(self, user, trace):
+        """The account of an answer by the phone of an agent, kept on the call."""
+        self.ensure_one()
+        line = "%s %s: %s" % (
+            fields.Datetime.to_string(fields.Datetime.now()), user.name,
+            " ".join(str(trace or "").split())[:1500],
+        )
+        self.sudo().phone_trace = "\n".join(filter(None, [self.phone_trace, line]))[-20000:]
 
     # === ACTIONS === #
 
