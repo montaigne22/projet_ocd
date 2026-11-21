@@ -49,7 +49,8 @@ Le dépôt contient tous les modules nécessaires. `disable_odoo_online` (OCA, n
   OCD Tickets, OCD Vote, améliorations), dans leur ordre.
 - [`docs/ECRANS.md`](docs/ECRANS.md) : chaque écran du design validé et où il est fait dans le code.
 - [`docs/APPELS_WHATSAPP.md`](docs/APPELS_WHATSAPP.md) : les appels WhatsApp (feuille de route, essais avant
-  d'ouvrir) ; l'installation du serveur d'appels : [`whatsapp_cloud_call/freeswitch/README.md`](whatsapp_cloud_call/freeswitch/README.md).
+  d'ouvrir) ; ce qu'il faut activer chez Meta : [`docs/APPELS_WHATSAPP_META.md`](docs/APPELS_WHATSAPP_META.md) ;
+  l'installation du serveur d'appels : [`whatsapp_cloud_call/freeswitch/README.md`](whatsapp_cloud_call/freeswitch/README.md).
 - [`docs/DEVELOPPEMENT.md`](docs/DEVELOPPEMENT.md) : installer, lancer, tester, traduire, faire des captures.
 - [`docs/OUTILS_ODOO.md`](docs/OUTILS_ODOO.md) : les outils d'Odoo et ce qu'ils font pour OCD Live.
 - [`docs/LIVRAISONS.md`](docs/LIVRAISONS.md) : les frais de livraison (un prix par colis), la mise en

@@ -250,39 +250,13 @@ Sans fichier, une tonalité courte le remplace. La musique d'attente est celle d
 
 Convertir un enregistrement : `ffmpeg -i accueil.m4a -ac 1 -ar 16000 accueil.wav`.
 
-## 6. Chez Meta : les droits et les réglages à activer
+## 6. Chez Meta
 
-À faire une fois, dans l'ordre, par la personne qui administre le compte Meta Business d'OCD. Les
-points 1 à 3 servent déjà aux messages WhatsApp : seulement à vérifier.
-
-| # | Où, chez Meta | Quoi | Pourquoi |
-|---|---|---|---|
-| 1 | WhatsApp Manager › Numéros de téléphone | Le numéro est sur la **Cloud API** (pas l'application WhatsApp Business du téléphone) | Les appels de l'API n'existent que sur la Cloud API |
-| 2 | Meta Business Suite › Paramètres de l'entreprise › Utilisateurs › **Utilisateurs système** | Le jeton de l'utilisateur système saisi dans Odoo (compte WhatsApp, onglet Connexion) a les droits **`whatsapp_business_messaging`** et **`whatsapp_business_management`**, et l'utilisateur système a l'app et le compte WhatsApp dans ses éléments, en **contrôle total** | `whatsapp_business_messaging` : recevoir les appels et en parler à Meta. `whatsapp_business_management` : envoyer les réglages d'appel et lire le mot de passe SIP du numéro |
-| 3 | Tableau de bord de l'app (developers.facebook.com) › Examen de l'app › **Autorisations et fonctionnalités** | `whatsapp_business_management` en **accès avancé** (« Advanced access ») | Meta ne donne les réglages d'appel et le mot de passe SIP qu'avec l'accès avancé. En accès standard, « Lire l'état chez Meta » répond une erreur de droit : demander l'accès avancé (formulaire de l'examen de l'app) |
-| 4 | WhatsApp Manager › Vue d'ensemble › **Limite d'envoi** | **2 000 destinataires par jour ou plus** (affichée aussi dans Odoo : compte WhatsApp, onglet Santé, « Limite d'envoi » `TIER_2K` ou plus) | Sans elle, Meta n'active pas les appels. Elle monte d'elle-même avec le volume de messages de bonne qualité envoyés |
-| 5 | Meta Business Suite › Paramètres de l'entreprise › **Paiements** (ou WhatsApp Manager › Moyen de paiement) | Un **moyen de paiement** (carte) ou une ligne de crédit sur le compte WhatsApp | Exigé par Meta pour les appels, même si les appels des clients sont gratuits |
-| 6 | Tableau de bord de l'app › WhatsApp › Configuration › **Webhook** | S'abonner au champ **`calls`** (en plus de `messages` et des autres déjà cochés) | Odoo voit alors les appels que le serveur d'appels n'aurait pas pris (« Appel perdu », responsables prévenus) |
-
-La vérification de l'entreprise par Meta **n'est pas demandée** pour les appels.
-
-Ensuite, **dans Odoo** (rien d'autre à activer chez Meta, Odoo le fait) :
-
-1. **Paramètres › WhatsApp › Appels** : l'adresse du serveur d'appels (`OCD_SIP_DOMAIN`), le secret
-   TURN (`TURN_SECRET`) ; copier la clé dans le `.env` (`OCD_TOKEN`).
-2. **WhatsApp › Configuration › Comptes**, le compte, onglet **Appels** : cocher « Appels », vérifier
-   les heures d'ouverture (onglet Équipe) et les agents, puis **Envoyer les appels à Meta**. Odoo
-   active les appels sur le numéro, déclare le serveur SIP (nom, port 5061, chiffrement, webhook des
-   appels), envoie les heures et l'icône, puis relit l'état et le mot de passe SIP donné par Meta.
-   - « Activés chez Meta » (vert) : c'est prêt.
-   - Une restriction de Meta ou une erreur de droit s'affiche en rouge sur l'onglet, avec le message de
-     Meta ; les responsables WhatsApp sont prévenus.
-3. Dans la minute, ocd-call-sync recopie le mot de passe SIP de Meta sur le serveur d'appels.
-4. Un appel depuis WhatsApp sur un téléphone : l'icône d'appel apparaît dans la conversation avec
-   OCD (quelques minutes après l'activation ; mettre WhatsApp à jour si elle n'apparaît pas).
-
-Plus tard, pour qu'OCD appelle les clients (phase 2 : rappel, livreur, animatrice), Meta demande en
-plus l'accord de chaque client ; rien à activer maintenant.
+Les droits et les réglages à activer chez Meta, étape par étape (où cliquer, ce qu'on doit voir, que
+faire si ça bloque) : **[`docs/APPELS_WHATSAPP_META.md`](../../docs/APPELS_WHATSAPP_META.md)**. En
+bref : le numéro sur la Cloud API, le jeton de l'utilisateur système avec ses trois autorisations, l'app
+Meta en mode « Live » (exigé pour le SIP), une limite d'envoi de 2 000 ou plus, un moyen de paiement, le
+webhook abonné au champ `calls` ; puis, dans Odoo, « Envoyer les appels à Meta ».
 
 ## 7. Vérifier
 
