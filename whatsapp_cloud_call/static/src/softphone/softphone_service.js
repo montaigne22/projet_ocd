@@ -9,6 +9,12 @@ const JSSIP_URL = "/whatsapp_cloud_call/static/lib/jssip/jssip.min.js";
 // The voice of an agent lost for this long (network): the call is left, the call server gives
 // it back to them (or to a colleague) while the customer waits.
 const MEDIA_LOST_MS = 6000;
+// JsSIP sends the answer only once the browser has gathered all its network addresses (ICE); a
+// STUN or TURN server that does not answer (port closed by a firewall, relay stopped) holds it
+// 40 seconds and more, and the call server stops ringing after 20 seconds and rings again
+// (answered, but it rings again). The answer leaves with the first relay address, else after
+// this time: the call server has a public address, what the browser found by then is enough.
+const ICE_GATHERING_MS = 2000;
 
 /**
  * The phone of the agents: connected to the call server (SIP over WSS, JsSIP) while the agent
@@ -309,6 +315,28 @@ export const whatsappSoftphoneService = {
             state.active = { ...state.incoming, startedAt: Date.now(), muted: false, lost: false };
             state.incoming = null;
             session.on("peerconnection", () => watchMedia(session));
+            let iceTimer = null;
+            let publicAddress = false;
+            session.on("icecandidate", (event) => {
+                const type = event.candidate?.type;
+                publicAddress ||= type === "srflx" || type === "relay";
+                if (type === "relay") {
+                    browser.clearTimeout(iceTimer);
+                    event.ready();
+                } else if (!iceTimer) {
+                    iceTimer = browser.setTimeout(() => {
+                        if (!publicAddress) {
+                            // only the masked address of the computer (".local"): the call
+                            // server cannot send the voice back, it refuses the call
+                            notification.add(
+                                _t("The voice relay of the call server (STUN/TURN, ports 3478 and 5349) does not answer: the call cannot go through. Tell the administrator (coturn on the call server, firewall)."),
+                                { type: "danger", sticky: true }
+                            );
+                        }
+                        event.ready();
+                    }, ICE_GATHERING_MS);
+                }
+            });
             try {
                 session.answer({
                     mediaConstraints: { audio: true, video: false },

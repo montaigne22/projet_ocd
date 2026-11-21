@@ -58,6 +58,8 @@ CALLS = {
         "Appel de %(duration)s, pris par %(agent)s (attente %(wait)s).",
     "Call of %s": "Appel de %s",
     "WhatsApp ID of the Customer": "Identifiant WhatsApp du client",
+    "The voice relay of the call server (STUN/TURN, ports 3478 and 5349) does not answer: the call cannot go through. Tell the administrator (coturn on the call server, firewall).":
+        "Le relais de la voix du serveur d'appels (STUN/TURN, ports 3478 et 5349) ne répond pas : l'appel ne peut pas passer. Prévenez l'administrateur (coturn sur le serveur d'appels, pare-feu).",
     "ID of the customer for the company at WhatsApp (BSUID), given by Meta also when the customer hides their number behind a WhatsApp username.":
         "Identifiant du client pour l'entreprise chez WhatsApp (BSUID), donné par Meta même quand le client cache son numéro derrière un nom d'utilisateur WhatsApp.",
     "Call server": "Serveur d'appels",
