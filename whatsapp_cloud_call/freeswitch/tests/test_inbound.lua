@@ -29,6 +29,9 @@ local function run(scenario)
     ["sip_h_x-wa-meta-wacid"] = "wacid.TEST",
     ["sip_h_x-wa-meta-phone-number-id"] = "1110001",
   }
+  for key, value in pairs(scenario.vars or {}) do
+    vars[key] = value ~= false and value or nil
+  end
   local up = true
   local log = { bridges = {}, events = {}, voicemails = {}, played = {} }
   local bridge_index = 0
@@ -85,7 +88,7 @@ local function run(scenario)
         executeString = function() return "+OK" end,
       }
     end,
-    consoleLog = function() end,
+    consoleLog = function(_, text) log.console = (log.console or "") .. text end,
   }
   package.loaded["ocd.odoo"] = {
     load_settings = function()
@@ -95,7 +98,7 @@ local function run(scenario)
         agents = { "agent5", "agent7" }, trunks = { ["1110001"] = { max_wait = 180, voicemail = true } },
       }
     end,
-    route = function() return scenario.odoo_route end,
+    route = function(_, call) log.route_call = call; return scenario.odoo_route end,
     event = function(_, values) log.events[#log.events + 1] = values; return true end,
     voicemail = function(_, path, values) log.voicemails[#log.voicemails + 1] = values; return scenario.voicemail_ok ~= false end,
   }
@@ -201,6 +204,43 @@ check("7 no error " .. tostring(log.error), not log.error)
 check("7 the colleague rang right after", #log.bridges == 2 and log.bridges[2]:find("user/agent7@", 1, true) ~= nil)
 ended = last_event(log, "ended")
 check("7 completed by the colleague, 1 reconnection", ended.outcome == "completed" and ended.agent == "agent7" and ended.reconnects == 1)
+
+-- 8. what Meta sent, in the log
+log = run({
+  registered = { agent5 = true },
+  odoo_route = queue.parse_lines("call=17\nagents=agent5\n"),
+  vars = { sip_network_ip = "157.240.1.1", sip_auth_username = "22890000001",
+           rtp_use_codec_name = "opus", rtp_has_crypto = "AES_CM_128_HMAC_SHA1_80" },
+  bridges = { { answer = "agent5", talk = 10, cause = "NORMAL_CLEARING", seconds = 12 } },
+})
+check("8 no error " .. tostring(log.error), not log.error)
+check("8 the call in the log", (log.console or ""):find(
+  "call of +237670000000 to +22890000001, phone number id 1110001, wacid wacid.TEST, from 157.240.1.1, signed as 22890000001",
+  1, true) ~= nil)
+check("8 codec and SRTP in the log", (log.console or ""):find("answered: codec opus, SRTP AES_CM_128_HMAC_SHA1_80", 1, true) ~= nil)
+check("8 the end in the log", (log.console or ""):find("end: completed, ended by agent, cause NORMAL_CLEARING, hang-up sent to Meta", 1, true) ~= nil)
+check("8 the number to Odoo", log.route_call.number == "237670000000" and log.route_call.user_ref == "")
+
+-- 9. a customer who hides their number behind a WhatsApp username: their BSUID
+log = run({
+  registered = {},
+  odoo_route = nil,
+  vars = { sip_from_user = "CM.1349120865530", ["sip_h_x-wa-meta-user-id"] = false },
+})
+check("9 no error " .. tostring(log.error), not log.error)
+check("9 no number, the BSUID to Odoo", log.route_call.number == "" and log.route_call.user_ref == "CM.1349120865530")
+ended = last_event(log, "ended")
+check("9 the BSUID in the end", ended.number == "" and ended.user_ref == "CM.1349120865530")
+check("9 the BSUID in the record", log.vars.ocd_user_ref == "CM.1349120865530" and log.vars.ocd_from == "")
+check("9 the BSUID in the log", (log.console or ""):find("call of user CM.1349120865530", 1, true) ~= nil)
+
+-- 10. the number and the BSUID header of Meta
+log = run({
+  registered = {},
+  odoo_route = nil,
+  vars = { ["sip_h_x-wa-meta-user-id"] = "CM.77" },
+})
+check("10 the number and the BSUID", log.route_call.number == "237670000000" and log.route_call.user_ref == "CM.77")
 
 os.execute("rm -rf " .. tmp)
 print(string.format("%d checks, %d failures", count, failures))

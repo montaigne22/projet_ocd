@@ -189,10 +189,12 @@ export const whatsappSoftphoneService = {
         function callInfo(session, request) {
             const identity = session.remote_identity;
             const callId = parseInt(request?.getHeader?.("X-OCD-Call") || "0", 10) || false;
+            // no number when the customer hides it (FreeSWITCH then gives 0000000000)
+            const digits = String(identity?.uri?.user || "").replace(/\D/g, "");
             return {
                 callId,
                 name: identity?.display_name || "",
-                number: identity?.uri?.user ? `+${String(identity.uri.user).replace(/\D/g, "")}` : "",
+                number: digits && !/^0+$/.test(digits) ? `+${digits}` : "",
                 channelId: false,
                 account: "",
                 previousCalls: 0,
@@ -408,6 +410,18 @@ export const whatsappSoftphoneService = {
             }
         });
         busService.subscribe("whatsapp.call/update", (payload) => {
+            if (payload.ended_at_meta) {
+                // the customer hung up (told by Meta) and the call server did not see it: the
+                // phone hangs up, which ends the call on the call server too
+                if (activeSession && state.active?.callId === payload.id) {
+                    hangup();
+                } else if (incomingSession && state.incoming?.callId === payload.id) {
+                    const session = incomingSession;
+                    session.terminate({ status_code: 487, reason_phrase: "Request Terminated" });
+                    onEnded(session);
+                }
+                return;
+            }
             if (state.incoming && payload.id === state.incoming.callId && payload.state === "answered" && payload.user_name) {
                 state.message = _t("Answered by %s.", payload.user_name);
             }

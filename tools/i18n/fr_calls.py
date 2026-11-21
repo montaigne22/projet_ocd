@@ -57,6 +57,9 @@ CALLS = {
     "Call of %(duration)s, answered by %(agent)s (waited %(wait)s).":
         "Appel de %(duration)s, pris par %(agent)s (attente %(wait)s).",
     "Call of %s": "Appel de %s",
+    "WhatsApp ID of the Customer": "Identifiant WhatsApp du client",
+    "ID of the customer for the company at WhatsApp (BSUID), given by Meta also when the customer hides their number behind a WhatsApp username.":
+        "Identifiant du client pour l'entreprise chez WhatsApp (BSUID), donné par Meta même quand le client cache son numéro derrière un nom d'utilisateur WhatsApp.",
     "Call server": "Serveur d'appels",
     "Call: %s": "Appel : %s",
     "Called on": "Appelé le",

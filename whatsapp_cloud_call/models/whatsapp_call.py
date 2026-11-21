@@ -1,4 +1,5 @@
 import logging
+import re
 from datetime import UTC, datetime, timedelta
 
 import psycopg2
@@ -13,6 +14,13 @@ from odoo.addons.whatsapp_cloud_call import const
 _logger = logging.getLogger(__name__)
 
 FINAL_STATES = ("completed", "missed", "voicemail", "lost", "failed")
+
+
+def clean_number(value):
+    """The number of a customer, digits only; empty when Meta gives their WhatsApp user ID
+    (BSUID) instead (a customer who hides their number behind a WhatsApp username)."""
+    value = str(value or "").strip()
+    return value.lstrip("+") if re.fullmatch(r"\+?\d{6,15}", value) else ""
 
 
 def format_duration(env, seconds):
@@ -48,6 +56,11 @@ class WhatsappCall(models.Model):
         readonly=True,
     )
     number = fields.Char(string="Number of the Customer", readonly=True)
+    user_ref = fields.Char(
+        string="WhatsApp ID of the Customer", readonly=True,
+        help="ID of the customer for the company at WhatsApp (BSUID), given by Meta also when "
+        "the customer hides their number behind a WhatsApp username.",
+    )
     wacid = fields.Char(string="Call ID at Meta", readonly=True, index=True, copy=False)
     server_uuid = fields.Char(string="Call ID on the Call Server", readonly=True, copy=False)
     direction = fields.Selection(
@@ -115,23 +128,28 @@ class WhatsappCall(models.Model):
             call.duration_display = format_duration(self.env, call.duration) if call.duration else False
             call.wait_display = format_duration(self.env, call.wait_duration) if call.wait_duration else False
 
-    @api.depends("partner_id", "number", "start_date")
+    @api.depends("partner_id", "number", "user_ref", "start_date")
     def _compute_display_name(self):
         for call in self:
-            who = call.partner_id.display_name or (f"+{call.number}" if call.number else _("Unknown"))
-            call.display_name = _("Call of %s", who)
+            call.display_name = _("Call of %s", call._call_customer_label() or _("Unknown"))
+
+    def _call_customer_label(self):
+        """The customer as the team sees them: their contact, else their number, else their
+        WhatsApp ID."""
+        self.ensure_one()
+        return self.partner_id.display_name or (f"+{self.number}" if self.number else self.user_ref or "")
 
     # === FINDING THE CALL === #
 
     @api.model
-    def _call_get_or_create(self, account, wacid, number=None, server_uuid=None):
+    def _call_get_or_create(self, account, wacid, number=None, server_uuid=None, user_ref=None):
         """The call with this ID of Meta (created by the first of the call server or Meta
         to tell it)."""
         call = self.sudo().search([("account_id", "=", account.id), ("wacid", "=", wacid)], limit=1)
         if call:
             return call
         vals = {"account_id": account.id, "wacid": wacid, "number": number or False,
-                "server_uuid": server_uuid or False}
+                "user_ref": user_ref or False, "server_uuid": server_uuid or False}
         try:
             with self.env.cr.savepoint():
                 call = self.sudo().create(vals)
@@ -144,15 +162,20 @@ class WhatsappCall(models.Model):
     def _call_link_conversation(self):
         """The customer and their conversation (created at their first call, like at their
         first message)."""
-        for call in self.filtered(lambda c: c.number and not c.channel_id):
+        for call in self.filtered(lambda c: (c.number or c.user_ref) and not c.channel_id):
             account = call.account_id
+            number, user_ref = call.number or "", call.user_ref or ""
             Partner = self.env["res.partner"].sudo()
-            partner = Partner._whatsapp_find(call.number) or Partner._whatsapp_create_unknown(
-                call.number, None, {}, account
-            )
-            channel = self.env["discuss.channel"].sudo()._whatsapp_get_or_create(
-                account, call.number, None, partner
-            )
+            Channel = self.env["discuss.channel"].sudo()
+            # the customer of the conversation, once known (as for a message)
+            partner = Channel._whatsapp_find(account, number, user_ref).whatsapp_partner_id
+            if not partner.active:
+                partner = Partner._whatsapp_find(number, user_ref) or Partner._whatsapp_create_unknown(
+                    number, user_ref, {}, account
+                )
+            if user_ref and not partner.whatsapp_user_ref:
+                partner.whatsapp_user_ref = user_ref
+            channel = Channel._whatsapp_get_or_create(account, number, user_ref, partner)
             call.write({"partner_id": channel.whatsapp_partner_id.id or partner.id, "channel_id": channel.id})
 
     # === CALL SERVER === #
@@ -197,7 +220,7 @@ class WhatsappCall(models.Model):
             ordered = first | (ordered - first)
         return {
             "call": self.id,
-            "name": self.partner_id.display_name or (f"+{self.number}" if self.number else ""),
+            "name": self._call_customer_label(),
             "channel": self.channel_id.id or "",
             "first": [self._agent_login(user) for user in first],
             "agents": [self._agent_login(user) for user in ordered],
@@ -216,13 +239,16 @@ class WhatsappCall(models.Model):
             _logger.warning("WhatsApp call %s: no account with calls for %s",
                             values.get("wacid"), values.get("phone_number_id"))
             return {}
-        number = "".join(ch for ch in values.get("number") or "" if ch.isdigit())
+        number = clean_number(values.get("number"))
+        user_ref = (values.get("user_ref") or "").strip()[:64]
         call = self._call_get_or_create(
-            account, values.get("wacid") or values.get("uuid"), number, values.get("uuid")
+            account, values.get("wacid") or values.get("uuid"), number, values.get("uuid"), user_ref
         )
         vals = {"server_seen": True}
         if number and not call.number:
             vals["number"] = number
+        if user_ref and not call.user_ref:
+            vals["user_ref"] = user_ref
         if values.get("uuid") and not call.server_uuid:
             vals["server_uuid"] = values["uuid"]
         if call.state == "lost":
@@ -346,6 +372,7 @@ class WhatsappCall(models.Model):
             "uuid": variables.get("uuid") or variables.get("call_uuid"),
             "call": variables.get("ocd_call"),
             "number": variables.get("ocd_from"),
+            "user_ref": variables.get("ocd_user_ref"),
             "phone_number_id": variables.get("ocd_pnid"),
             "agent": variables.get("ocd_answered_agent"),
             "outcome": variables.get("ocd_outcome"),
@@ -375,7 +402,7 @@ class WhatsappCall(models.Model):
         extension = "ogg" if "ogg" in (mimetype or "") else "wav"
         attachment = self.env["ir.attachment"].sudo().create({
             "name": _("Message of %(name)s.%(ext)s",
-                      name=call.partner_id.display_name or call.number or "", ext=extension),
+                      name=call._call_customer_label(), ext=extension),
             "raw": content,
             "mimetype": mimetype or "audio/wav",
             "res_model": "discuss.channel" if channel else "whatsapp.call",
@@ -408,14 +435,19 @@ class WhatsappCall(models.Model):
             if not wacid:
                 continue
             direction = (data.get("direction") or "USER_INITIATED").upper()
-            customer = data.get("from") if direction == "USER_INITIATED" else data.get("to")
-            number = "".join(ch for ch in str(customer or "") if ch.isdigit())
-            call = self._call_get_or_create(account, wacid, number)
+            # the number of the customer, missing when they hide it behind a WhatsApp username:
+            # their WhatsApp user ID (BSUID) then
+            side = "from" if direction == "USER_INITIATED" else "to"
+            number = clean_number(data.get(side))
+            user_ref = str(data.get(f"{side}_user_id") or "").strip()[:64]
+            call = self._call_get_or_create(account, wacid, number, user_ref=user_ref)
             vals = {"meta_seen": True}
             if direction == "BUSINESS_INITIATED":
                 vals["direction"] = "outbound"
             if number and not call.number:
                 vals["number"] = number
+            if user_ref and not call.user_ref:
+                vals["user_ref"] = user_ref
             timestamp = data.get("timestamp") or data.get("start_time")
             if timestamp and str(timestamp).isdigit() and not call.server_seen:
                 vals["start_date"] = datetime.fromtimestamp(int(timestamp), UTC).replace(tzinfo=None)
@@ -428,6 +460,11 @@ class WhatsappCall(models.Model):
                     vals["meta_duration"] = int(data["duration"])
             call.write(vals)
             call._call_link_conversation()
+            if event == "terminate" and call.server_seen and call.state not in FINAL_STATES:
+                # ended at Meta, still going on the call server (the end of Meta did not
+                # reach it): the phone of the agent hangs up, the call server sees it
+                _logger.info("WhatsApp call %s: ended at Meta, the agents' phones hang up.", wacid)
+                call._call_bus_send(ended_at_meta=True)
 
     # === CHECKS === #
 
@@ -524,14 +561,16 @@ class WhatsappCall(models.Model):
             message = channel._whatsapp_notify(call._call_notice_text(), partners=partners)
             call.notice_message_id = message
 
-    def _call_bus_send(self):
-        """Tell the agents of the account that the call changed (the phone of the top bar)."""
+    def _call_bus_send(self, ended_at_meta=False):
+        """Tell the agents of the account that the call changed (the phone of the top bar);
+        ended at Meta: their phone hangs up this call."""
         for call in self:
             call.account_id._get_agents()._bus_send("whatsapp.call/update", {
                 "id": call.id,
                 "state": call.state,
                 "user_id": call.user_id.id,
                 "user_name": call.user_id.name or "",
+                "ended_at_meta": ended_at_meta,
             })
 
     # === ACTIONS === #

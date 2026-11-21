@@ -1,0 +1,20 @@
+<configuration name="logfile.conf" description="File Logging">
+  <!-- OCD: the log of FreeSWITCH (/var/log/freeswitch/freeswitch.log), all the levels (the SIP
+       trace too, "sofia profile ocd_whatsapp siptrace on"); 50 MB a file, 10 files at most.
+       Without DEBUG, also in "docker compose logs freeswitch" (entrypoint) -->
+  <settings>
+    <param name="rotate-on-hup" value="true"/>
+  </settings>
+  <profiles>
+    <profile name="default">
+      <settings>
+        <param name="rollover" value="52428800"/>
+        <param name="maximum-rotate" value="10"/>
+        <param name="uuid" value="true"/>
+      </settings>
+      <mappings>
+        <map name="all" value="console,debug,info,notice,warning,err,crit,alert"/>
+      </mappings>
+    </profile>
+  </profiles>
+</configuration>

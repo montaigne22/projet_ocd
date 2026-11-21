@@ -68,16 +68,24 @@ end
 
 session:setAutoHangup(false)
 
+-- the customer: their number, or only their WhatsApp user ID (BSUID) when they hide their
+-- number behind a WhatsApp username (in the From of Meta and the header x-wa-meta-user-id)
+local from_user = var("sip_from_user") or var("caller_id_number") or ""
 local call = {
   uuid = uuid,
   wacid = queue.safe(var("sip_h_x-wa-meta-wacid") or var("sip_h_X-WA-Meta-WACID") or var("sip_call_id")),
-  number = queue.digits(var("sip_from_user") or var("caller_id_number")),
+  number = from_user:match("^%+?%d+$") and queue.digits(from_user) or "",
+  user_ref = queue.safe(var("sip_h_x-wa-meta-user-id") or var("sip_h_X-WA-Meta-User-ID") or "", 64),
   pnid = queue.safe(var("sip_h_x-wa-meta-phone-number-id") or var("sip_h_X-WA-Meta-Phone-Number-ID") or ""),
   business = queue.digits(var("sip_to_user") or var("destination_number")),
 }
+if call.number == "" and call.user_ref == "" then
+  call.user_ref = queue.safe(from_user, 64)
+end
 local trunk = settings.trunks[call.pnid] or {}
 setvar("ocd_wacid", call.wacid)
 setvar("ocd_from", call.number)
+setvar("ocd_user_ref", call.user_ref)
 setvar("ocd_pnid", call.pnid)
 setvar("ocd_outcome", "missed")
 setvar("ocd_ended_by", "customer")
@@ -89,7 +97,13 @@ setvar("ringback", settings.hold_music)
 setvar("transfer_ringback", settings.hold_music)
 setvar("hold_music", settings.hold_music)
 
+-- what Meta sent, in one line of the log (the first calls with Meta are checked with it)
+log("NOTICE", "call of " .. (call.number ~= "" and "+" .. call.number or "user " .. call.user_ref) ..
+    " to +" .. call.business .. ", phone number id " .. call.pnid .. ", wacid " .. call.wacid ..
+    ", from " .. (var("sip_network_ip") or "?") .. ", signed as " .. (var("sip_auth_username") or "nobody"))
 session:answer()
+log("NOTICE", "answered: codec " .. (var("rtp_use_codec_name") or "?") .. ", SRTP " ..
+    (var("rtp_has_crypto") or "none"))
 if not session:ready() then
   return
 end
@@ -223,11 +237,13 @@ if session:ready() and outcome == "missed" then
       local facts = io.open(dir .. "/" .. uuid .. ".txt", "w")
       if facts then
         facts:write("call=" .. route.call .. "\nwacid=" .. call.wacid .. "\nuuid=" .. uuid ..
-                    "\nnumber=" .. call.number .. "\nphone_number_id=" .. call.pnid .. "\n")
+                    "\nnumber=" .. call.number .. "\nuser_ref=" .. call.user_ref ..
+                    "\nphone_number_id=" .. call.pnid .. "\n")
         facts:close()
       end
       if odoo.voicemail(settings, path, { call = route.call, wacid = call.wacid, uuid = uuid,
-                                          number = call.number, phone_number_id = call.pnid }) then
+                                          number = call.number, user_ref = call.user_ref,
+                                          phone_number_id = call.pnid }) then
         os.remove(path)
         os.remove(dir .. "/" .. uuid .. ".txt")
       end
@@ -240,6 +256,9 @@ if session:ready() and outcome == "missed" then
   ended_by = "system"
 end
 
+log("NOTICE", "end: " .. outcome .. ", ended by " .. ended_by .. ", cause " ..
+    (var("last_bridge_hangup_cause") or var("hangup_cause") or "none") ..
+    (session:ready() and ", hang-up sent to Meta" or ", the customer hung up"))
 setvar("ocd_outcome", outcome)
 setvar("ocd_ended_by", ended_by)
 setvar("ocd_wait", waited)
@@ -247,7 +266,7 @@ odoo.event(settings, {
   event = "ended", call = route.call, wacid = call.wacid, uuid = uuid, agent = answered_agent,
   outcome = outcome, ended_by = ended_by, wait = waited, talk = state.talk,
   reconnects = state.reconnects, cause = var("last_bridge_hangup_cause") or var("hangup_cause"),
-  number = call.number, phone_number_id = call.pnid,
+  number = call.number, user_ref = call.user_ref, phone_number_id = call.pnid,
 })
 if session:ready() then
   session:hangup("NORMAL_CLEARING")

@@ -69,6 +69,15 @@ case "${OCD_SRTP:-SDES}" in
   DTLS|dtls) SRTP="optional:AES_CM_128_HMAC_SHA1_80" ;;
   *) SRTP="mandatory:AES_CM_128_HMAC_SHA1_80:AES_CM_128_HMAC_SHA1_32" ;;
 esac
+# the music while the customer waits: the files of the team in sounds/attente (music, messages,
+# played one after the other in the order of their names, again and again), else the music of
+# FreeSWITCH
+if ls /usr/share/freeswitch/sounds/ocd/attente/*.wav >/dev/null 2>&1; then
+  sed -i -e 's#path="[^"]*"#path="/usr/share/freeswitch/sounds/ocd/attente"#' \
+    -e 's#name="shuffle" value="true"#name="shuffle" value="false"#' \
+    "$CONF/autoload_configs/local_stream.conf.xml"
+  echo "Music while waiting: the files of sounds/attente"
+fi
 cat > "$STATE/vars_env.xml" <<EOF
 <include>
   <X-PRE-PROCESS cmd="set" data="ocd_sip_domain=$(xml_value "$OCD_SIP_DOMAIN")"/>
@@ -91,6 +100,12 @@ fi
 # 4. the files belong to FreeSWITCH (the certificates mounted read-only are left as they are)
 chown -R freeswitch:freeswitch "$CONF" /var/lib/freeswitch /var/log/freeswitch /var/spool/ocd-calls \
   /run/freeswitch /usr/share/freeswitch/scripts
+
+# 5. the log of FreeSWITCH also in "docker compose logs freeswitch": started with -nc, its console
+#    writes nothing; its log file is followed, without the DEBUG lines
+LOG=/var/log/freeswitch/freeswitch.log
+touch "$LOG" && chown freeswitch:freeswitch "$LOG"
+tail -n 0 -F "$LOG" 2>/dev/null | grep --line-buffered -v '\[DEBUG\]' &
 
 exec /usr/bin/freeswitch -u freeswitch -g freeswitch -nonat -nf -nc \
   -run /run/freeswitch -conf /etc/freeswitch -log /var/log/freeswitch -db /var/lib/freeswitch/db

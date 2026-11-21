@@ -31,7 +31,7 @@ class WhatsAppSoftphone(http.Controller):
             return None
         return {
             "id": call.id,
-            "name": call.partner_id.display_name or (f"+{call.number}" if call.number else ""),
+            "name": call._call_customer_label(),
             "number": f"+{call.number}" if call.number else "",
             "channel_id": call.channel_id.id or False,
             "account": call.account_id.name,

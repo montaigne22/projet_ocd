@@ -240,8 +240,11 @@ docker compose ps         # freeswitch et ocd-call-sync « healthy »
   chaque appel porte l'IP publique du serveur, que le réseau de Docker casserait.
 - **Mettre à jour** : `git -C /opt/ocd-calls/src pull`, puis `docker compose build && docker compose up -d` (de
   préférence la nuit : le redémarrage de FreeSWITCH coupe les appels en cours).
-- **Journaux** : `docker compose logs -f freeswitch`, `docker compose logs -f ocd-call-sync` ; la
-  console de FreeSWITCH : `docker compose exec freeswitch fs_cli`.
+- **Journaux** : `docker compose logs -f freeswitch` (sans les lignes DEBUG), `docker compose logs -f
+  ocd-call-sync` ; le journal complet de FreeSWITCH (DEBUG et trace SIP compris, 10 fichiers de 50 Mo
+  au plus) : `docker compose exec freeswitch tail -f /var/log/freeswitch/freeswitch.log` ; la console
+  de FreeSWITCH : `docker compose exec freeswitch fs_cli`. Avant la version 20.0.1.4.0 du module,
+  `docker compose logs freeswitch` ne montrait que le démarrage : lire le fichier.
 - Les versions compilées (FreeSWITCH, sofia-sip, spandsp) sont fixées dans `docker/Dockerfile`
   (arguments `FREESWITCH_REF`...) : les monter pour une nouvelle version, puis reconstruire.
 
@@ -385,8 +388,16 @@ la voix de l'équipe, en français :
 | `messagerie.wav` | personne de disponible | « Nos conseillers sont occupés. Laissez votre message après le bip, nous vous rappelons. » |
 | `indisponible.wav` | personne, et pas de messagerie | « Nos conseillers sont occupés. Écrivez-nous sur WhatsApp, nous vous répondons vite. » |
 
-Sans fichier, une tonalité courte le remplace. La musique d'attente est celle de FreeSWITCH
-(`local_stream://moh`, 16 kHz).
+Sans fichier, une tonalité courte le remplace.
+
+**L'attente** : pendant qu'il attend (et pendant que les conseillers sonnent), le client entend la
+musique de FreeSWITCH. Pour la remplacer par celle de l'équipe, ou y mêler des messages
+(« Merci de patienter, un conseiller va vous répondre »), poser des fichiers WAV dans `sounds/attente/`
+(Docker) : ils passent l'un après l'autre, dans l'ordre de leur nom, en boucle (par ex.
+`1-musique.wav`, `2-patientez.wav`, `3-musique.wav`). Puis `docker compose up -d --force-recreate
+freeswitch` (quand personne n'est en appel). `docker compose logs freeswitch` dit alors « Music while
+waiting: the files of sounds/attente ». Les retirer tous : la musique de FreeSWITCH revient (au
+redémarrage suivant). La musique doit être libre de droits ou à OCD.
 
 Convertir un enregistrement : `ffmpeg -i accueil.m4a -ac 1 -ar 16000 accueil.wav`.
 
@@ -408,7 +419,23 @@ webhook abonné au champ `calls` ; puis, dans Odoo, « Envoyer les appels à Met
   `openssl s_client -quiet -verify_hostname appels.rollbackk.app -connect appels.rollbackk.app:5061`.
 - Un vrai appel depuis WhatsApp sur un téléphone (pas WhatsApp Web) : il sonne chez l'agent ; il
   apparaît dans **WhatsApp › Appels** et dans la conversation du client.
-- Les lignes `[ocd]` du journal de FreeSWITCH viennent des scripts d'OCD.
+- Les lignes `[ocd]` du journal de FreeSWITCH viennent des scripts d'OCD. Chaque appel de Meta en
+  donne trois : `call of +237... to +228..., phone number id ..., wacid ..., from <IP de Meta>, signed
+  as <nom de la signature>`, puis `answered: codec opus, SRTP AES_CM_128_HMAC_SHA1_80`, et à la fin
+  `end: completed, ended by customer, cause ...`. Quand le client raccroche, FreeSWITCH l'écrit aussi :
+  `sofia.c:... Hangup sofia/ocd_whatsapp/... [NORMAL_CLEARING]` (le « BYE » de Meta est arrivé) ;
+  quand le conseiller raccroche : `end: ..., hang-up sent to Meta`.
+
+  ```bash
+  docker compose logs --since 30m freeswitch | grep -aE "\[ocd\]|Hangup|BYE|TIMEOUT"
+  ```
+
+- **La fin d'un appel** : quand Meta dit à Odoo (webhook `calls`) qu'un appel est fini alors que le
+  serveur d'appels le croit encore en cours, le téléphone du conseiller raccroche de lui-même, ce qui
+  finit l'appel sur le serveur. La trace SIP montre si les « BYE » passent entre Meta et le serveur :
+  `docker compose exec freeswitch fs_cli -x "sofia profile ocd_whatsapp siptrace on"` avant l'appel,
+  `... siptrace off` après ; elle est dans `/var/log/freeswitch/freeswitch.log` (elle contient les
+  clés de la voix de cet appel : ne pas la laisser allumée).
 - Le lien avec Odoo : `docker compose logs ocd-call-sync` dit « users reloaded (N agents) » quand la
   liste des agents change, et Paramètres › WhatsApp › Appels montre le dernier contact du serveur.
   « Odoo does not answer (HTTP Error 401…) » : la clé du `.env` n'est plus celle d'Odoo (« Nouvelle
@@ -424,15 +451,25 @@ L'essai de bout en bout (un faux Meta, Odoo, un agent dans Chromium) se rejoue a
 ## Ce qui reste à confirmer avec Meta
 
 Tout le reste a été vu de bout en bout avec un faux Meta qui appelle comme la documentation de Meta le
-décrit (TLS, signature, SDES, en-têtes `x-wa-meta-*`). Avec le vrai Meta, à regarder au premier appel :
+décrit (TLS, signature, SDES, en-têtes `x-wa-meta-*`). **Premier vrai appel le 21 novembre 2026** :
+reçu, signé, décroché dans Odoo, voix dans les deux sens. Mais à la fin, le raccroché du client n'est
+pas arrivé jusqu'au conseiller (son téléphone est resté « En ligne ») : à regarder dans le journal
+(ci-dessus, la trace SIP). Avec le vrai Meta, encore à regarder :
 
-- Le nom d'utilisateur que Meta met dans sa signature (le numéro avec ou sans `+`) : les deux sont
-  créés.
+- Le nom d'utilisateur que Meta met dans sa signature : sans `+` d'après l'exemple de Meta
+  (`username="12145551869"`) ; les deux formes sont créées, la ligne `signed as` du journal le dit.
 - Le chiffrement SDES (`srtp_key_exchange_protocol`, dans `calling` et non dans `calling.sip` : vu
   avec le vrai Meta, qui refuse la clé dans `sip`). S'il est refusé à l'appel, passer le compte en DTLS (onglet Appels, `OCD_SRTP=DTLS` avec Docker) et suivre la note de
   `vars_ocd.xml`.
-- La signature des appels de Meta : FreeSWITCH la demande par un « 407 » (Meta dit accepter le « 401 »).
-  Si les appels de Meta s'arrêtent là (`sofia global siptrace on` pour le voir), mettre `auth-calls` à
+- La signature des appels de Meta : FreeSWITCH la demande par un « 407 », comme dans l'exemple de Meta
+  (vu au premier appel : il passe). Si les appels de Meta s'arrêtaient là (`sofia global siptrace on` pour le voir), mettre `auth-calls` à
   `false` dans `sip_profiles/ocd_whatsapp.xml` et n'ouvrir le port 5061 qu'aux adresses de Meta.
 - Les adresses IP de Meta pour le SIP, à ajouter au pare-feu du port 5061 si on veut le fermer à tous
-  les autres (la signature de chaque appel suffit déjà).
+  les autres (la signature de chaque appel suffit déjà) : les mêmes que celles des webhooks d'après
+  Meta ; la ligne `from` du journal donne celles vues.
+- Les heures d'appel sont envoyées comme le tableau de Meta les décrit (`"0700"`, `"2000"`) ; un
+  exemple de Meta écrit `"07:00"`. Meta a accepté l'envoi ; pour le voir : WhatsApp Manager › Numéros
+  de téléphone › le numéro › Appels, les heures affichées.
+- Un client qui cache son numéro derrière un nom d'utilisateur WhatsApp : Meta donne son identifiant
+  (BSUID) au lieu du numéro (en-tête `x-wa-meta-user-id`, `from_user_id` du webhook). L'appel va à sa
+  conversation (vu avec le faux Meta et dans les tests, pas encore avec un vrai client).

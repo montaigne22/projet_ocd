@@ -71,7 +71,7 @@ end
 function M.route(settings, call)
   local code, body = M.post(settings, "/whatsapp/call/server/route", {
     { "wacid", call.wacid }, { "uuid", call.uuid }, { "number", call.number },
-    { "phone_number_id", call.pnid }, { "business_number", call.business },
+    { "user_ref", call.user_ref }, { "phone_number_id", call.pnid }, { "business_number", call.business },
   }, 2)
   if code ~= 200 then
     return nil
@@ -82,7 +82,7 @@ end
 function M.event(settings, values)
   local fields = {}
   for _, key in ipairs({ "event", "call", "wacid", "uuid", "agent", "outcome", "ended_by", "wait",
-                         "talk", "reconnects", "cause", "number", "phone_number_id" }) do
+                         "talk", "reconnects", "cause", "number", "user_ref", "phone_number_id" }) do
     if values[key] ~= nil then
       fields[#fields + 1] = { key, values[key] }
     end
@@ -93,7 +93,7 @@ end
 
 function M.voicemail(settings, path, values)
   local fields = {}
-  for _, key in ipairs({ "call", "wacid", "uuid", "number", "phone_number_id" }) do
+  for _, key in ipairs({ "call", "wacid", "uuid", "number", "user_ref", "phone_number_id" }) do
     fields[#fields + 1] = { key, values[key] or "" }
   end
   local code = M.post(settings, "/whatsapp/call/server/voicemail", fields, 20, path)

@@ -52,6 +52,48 @@ class TestCalls(WhatsAppCallCommon):
         self.assertTrue(call.partner_id.whatsapp_to_identify)
         self.assertEqual(call.channel_id.whatsapp_partner_id, call.partner_id)
 
+    def test_customer_with_a_hidden_number(self):
+        """A customer who hides their number behind a WhatsApp username: Meta gives their
+        WhatsApp user ID (BSUID), the call goes to their conversation all the same."""
+        channel = self.env["discuss.channel"].sudo()._whatsapp_get_or_create(
+            self.account, False, "CM.1349120865530", self.partner
+        )
+        route = self.Call._server_route({
+            "wacid": "wacid.HIDDEN", "uuid": "uuid-hidden", "number": "",
+            "user_ref": "CM.1349120865530", "phone_number_id": self.account.phone_number_id,
+        })
+        call = self.Call.browse(route["call"])
+        self.assertFalse(call.number)
+        self.assertEqual(call.user_ref, "CM.1349120865530")
+        self.assertEqual(call.channel_id, channel)
+        self.assertEqual(call.partner_id, self.partner)
+        self.assertEqual(route["channel"], channel.id)
+        # Meta tells the same call with the BSUID only
+        self.Call._meta_process(self.account, {"calls": [
+            {"id": "wacid.HIDDEN", "event": "terminate", "status": "COMPLETED", "duration": 12,
+             "from_user_id": "CM.1349120865530"},
+        ]})
+        self.assertEqual(self.Call.search_count([("wacid", "=", "wacid.HIDDEN")]), 1)
+        self.assertFalse(call.number)
+        # an unknown customer who hides their number: a contact to identify, named after the ID
+        self.Call._meta_process(self.account, {"calls": [
+            {"id": "wacid.NEW", "event": "call_created", "direction": "USER_INITIATED",
+             "from_user_id": "CM.NEW99", "from": "CM.NEW99"},
+        ]})
+        new = self.Call.search([("wacid", "=", "wacid.NEW")])
+        self.assertFalse(new.number)
+        self.assertEqual(new.partner_id.whatsapp_user_ref, "CM.NEW99")
+        self.assertTrue(new.partner_id.whatsapp_to_identify)
+        self.assertEqual(new.channel_id.whatsapp_user_ref, "CM.NEW99")
+        self.assertIn("CM.NEW99", new.display_name)
+        # the record of the call server carries it too
+        self.Call._server_cdr({"variables": {"ocd_wacid": "wacid.CDR", "ocd_from": "",
+                                             "ocd_user_ref": "CM.1349120865530",
+                                             "ocd_pnid": self.account.phone_number_id,
+                                             "ocd_outcome": "missed"}})
+        cdr_call = self.Call.search([("wacid", "=", "wacid.CDR")])
+        self.assertEqual(cdr_call.channel_id, channel)
+
     def test_answered_then_completed(self):
         call = self.Call.browse(self.route()["call"])
         self.Call._server_event({
@@ -168,6 +210,28 @@ class TestCalls(WhatsAppCallCommon):
         self.assertEqual(self.Call.search_count([("wacid", "=", "wacid.SAME")]), 1)
         self.assertTrue(call.meta_seen)
         self.assertEqual(call.meta_duration, 55)
+
+    def test_ended_at_meta_hangs_up_the_phones(self):
+        """Meta tells the end of a call still going on the call server (its end did not reach
+        it): the phones of the agents hang up; nothing when the call server ended it first."""
+        call = self.Call.browse(self.route("wacid.GHOST")["call"])
+        self.Call._server_event({"event": "answered", "wacid": "wacid.GHOST",
+                                 "agent": f"agent{self.agent.id}"})
+        Users = type(self.env["res.users"])
+        terminate = {"calls": [{"id": "wacid.GHOST", "event": "terminate", "status": "COMPLETED",
+                                "duration": 80, "from": "237670000000"}]}
+        with patch.object(Users, "_bus_send") as bus:
+            self.Call._meta_process(self.account, terminate)
+        sent = [args for args, _kwargs in bus.call_args_list if args[0] == "whatsapp.call/update"]
+        self.assertTrue(sent)
+        self.assertTrue(all(payload["ended_at_meta"] and payload["id"] == call.id for _n, payload in sent))
+        self.assertEqual(call.state, "answered")
+        # ended by the call server first: nothing more to hang up
+        self.Call._server_event({"event": "ended", "wacid": "wacid.GHOST", "outcome": "completed",
+                                 "talk": "80", "ended_by": "customer"})
+        with patch.object(Users, "_bus_send") as bus:
+            self.Call._meta_process(self.account, terminate)
+        self.assertFalse(bus.call_args_list)
 
     def test_silence_of_the_call_server(self):
         server = self.env["whatsapp.call.server"]._get()
