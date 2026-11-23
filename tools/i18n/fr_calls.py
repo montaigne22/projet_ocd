@@ -61,6 +61,26 @@ CALLS = {
     "Allow the microphone when the browser asks (at the top, at the left of the address).":
         "Autorisez le micro quand le navigateur le demande (en haut, à gauche de l'adresse).",
     "Connecting...": "Connexion...",
+    "Agents who took the calls and were free when the call came.":
+        "Conseillers qui prenaient les appels et étaient libres quand l'appel est arrivé.",
+    "Average Wait (s)": "Attente moyenne (s)",
+    "Average wait of the calls answered during the call hours of the last 14 days. To open the calls to all: under 60 seconds.":
+        "Attente moyenne des appels pris pendant les heures d'appel des 14 derniers jours. Pour ouvrir les appels à tous : moins de 60 secondes.",
+    "Calls (14 days)": "Appels (14 jours)",
+    "Calls Cut": "Appels coupés",
+    "Calls ended missed or in the voicemail although an agent taking the calls was free, among the calls of the call hours of the last 14 days. To open the calls to all: under 5 %.":
+        "Appels finis manqués ou en messagerie alors qu'un conseiller qui prenait les appels était libre, parmi les appels des heures d'appel des 14 derniers jours. Pour ouvrir les appels à tous : moins de 5 %.",
+    "Calls lost or failed, and calls where the agent was cut off (network, closed page), among the calls of the last 14 days. To open the calls to all: under 2 %.":
+        "Appels perdus ou en échec, et appels où le conseiller a été coupé (réseau, page fermée), parmi les appels des 14 derniers jours. Pour ouvrir les appels à tous : moins de 2 %.",
+    "During the Call Hours": "Pendant les heures d'appel",
+    "Free Agents": "Conseillers libres",
+    "The call came while the team works (opening hours of the account).":
+        "L'appel est arrivé pendant que l'équipe travaille (horaires d'ouverture du compte).",
+    "Thresholds Met": "Seuils atteints",
+    "Thresholds to Open the Calls to All (14 days)": "Seuils pour ouvrir les appels à tous (14 jours)",
+    "Under 2 % of calls cut, under 5 % of voicemail while an agent was free, an average wait under 1 minute during the call hours.":
+        "Moins de 2 % d'appels coupés, moins de 5 % de messageries alors qu'un conseiller était libre, une attente moyenne de moins d'une minute pendant les heures d'appel.",
+    "Voicemail while an Agent was Free": "Messagerie alors qu'un conseiller était libre",
     "Diagnostic of the Phone": "Diagnostic du téléphone",
     "Phone": "Téléphone",
     "The browser asks for the microphone: click Allow (at the top, at the left of the address).":

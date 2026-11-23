@@ -233,6 +233,32 @@ class TestCalls(WhatsAppCallCommon):
             self.Call._meta_process(self.account, terminate)
         self.assertFalse(bus.call_args_list)
 
+    def test_thresholds_to_open_the_calls(self):
+        """The thresholds of the trial on the account: calls cut, voicemail while an agent was
+        free, average wait during the call hours."""
+        self.assertFalse(self.account.call_stats_count)
+        now = fields.Datetime.now()
+        calls = self.Call
+        for wacid in ("wacid.S1", "wacid.S2", "wacid.S3"):
+            calls |= self.Call.browse(self.route(wacid)["call"])
+        self.assertEqual(calls.mapped("available_agents"), [2, 2, 2])
+        self.assertTrue(all(calls.mapped("in_hours")))
+        calls[0].write({"state": "completed", "answer_date": now, "wait_duration": 30})
+        calls[1].write({"state": "completed", "answer_date": now, "wait_duration": 50, "reconnect_count": 1})
+        calls[2].write({"state": "voicemail", "wait_duration": 180})
+        # seen by Meta only (lost): no agent known as free
+        self.Call._meta_process(self.account, {"calls": [
+            {"id": "wacid.S4", "event": "call_created", "direction": "USER_INITIATED", "from": "237670000001"},
+        ]})
+        self.Call.search([("wacid", "=", "wacid.S4")]).state = "lost"
+        account = self.account
+        account.invalidate_recordset()
+        self.assertEqual(account.call_stats_count, 4)
+        self.assertAlmostEqual(account.call_stats_cut_rate, 0.5)
+        self.assertAlmostEqual(account.call_stats_voicemail_rate, 1 / 3)
+        self.assertEqual(account.call_stats_wait, 40)
+        self.assertFalse(account.call_stats_ok)
+
     def test_silence_of_the_call_server(self):
         server = self.env["whatsapp.call.server"]._get()
         server.last_seen = fields.Datetime.now() - timedelta(minutes=20)

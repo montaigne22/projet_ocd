@@ -117,6 +117,14 @@ class WhatsappCall(models.Model):
     meta_status = fields.Char(string="Status at Meta", readonly=True)
     meta_duration = fields.Integer(string="Duration at Meta (s)", readonly=True)
     notice_message_id = fields.Many2one(comodel_name="mail.message", readonly=True, ondelete="set null")
+    in_hours = fields.Boolean(
+        string="During the Call Hours", readonly=True,
+        help="The call came while the team works (opening hours of the account).",
+    )
+    available_agents = fields.Integer(
+        string="Free Agents", readonly=True,
+        help="Agents who took the calls and were free when the call came.",
+    )
     phone_trace = fields.Text(
         string="Diagnostic of the Phone", readonly=True,
         help="What the phone of each agent who answered did (version, microphone, network "
@@ -154,7 +162,8 @@ class WhatsappCall(models.Model):
         if call:
             return call
         vals = {"account_id": account.id, "wacid": wacid, "number": number or False,
-                "user_ref": user_ref or False, "server_uuid": server_uuid or False}
+                "user_ref": user_ref or False, "server_uuid": server_uuid or False,
+                "in_hours": account._is_open()}
         try:
             with self.env.cr.savepoint():
                 call = self.sudo().create(vals)
@@ -259,9 +268,14 @@ class WhatsappCall(models.Model):
         if call.state == "lost":
             # the call server took it after all
             vals.update(state="ringing", notice_message_id=False)
+        first = not call.server_seen
         call.write(vals)
         call._call_link_conversation()
-        return call._call_route()
+        route = call._call_route()
+        if first:
+            # the agents free when the call came (thresholds: voicemail while an agent was free)
+            call.available_agents = len(route["agents"])
+        return route
 
     @api.model
     def _server_find(self, values):

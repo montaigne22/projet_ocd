@@ -80,20 +80,31 @@ de Meta tant que la voix du client ne venait plus (profils sans horloge de la vo
 version 20.0.1.4.2, vérifié avec un faux Meta et un faux conseiller ; en plus, le téléphone du
 conseiller raccroche quand Meta dit à Odoo que l'appel est fini. À revoir au prochain vrai appel.
 
-**Essai avant d'ouvrir à tous** (2 semaines au studio de Lomé, quelques clients) :
+**Essai avant d'ouvrir à tous** (2 semaines au studio de Lomé, quelques clients). Chaque essai depuis
+l'appli WhatsApp d'un téléphone (pas WhatsApp Web), pendant les heures d'appel. Après chacun : la fiche
+de l'appel (WhatsApp › Appels) et le journal du serveur d'appels, dans `/home/ubuntu/freeswitch/docker` :
+`docker compose logs --since 15m freeswitch | grep -aE "\[ocd\]|Hangup"`.
 
-1. Appel simple, décroché, raccroché par l'agent puis par le client.
-2. Trois appels en même temps avec deux agents : le troisième attend, puis passe au premier libre.
-3. Coupure du Wi-Fi de l'agent pendant l'appel : le client entend « nous vous reconnectons », l'appel
-   revient.
-4. Odoo arrêté : un appel sonne quand même chez les agents connectés ; à son retour, l'appel est dans
-   l'historique.
-5. Serveur d'appels arrêté : l'appel est « perdu » dans Odoo, les responsables prévenus.
-6. Personne de disponible : la messagerie, le message dans la conversation.
-7. Réseau du studio qui bloque l'UDP : la voix passe par le relais TURN.
+| # | Essai | Comment | Ce qu'on doit voir |
+|---|---|---|---|
+| 1 | Appel simple | Un conseiller décroche, parle 30 s, raccroche. Puis un 2e appel où le client raccroche | L'appel se coupe aussitôt de l'autre côté, les deux fois. Fiche : « Fini », durée, « Fini par » conseiller puis client ; une ligne dans la conversation. Journal : `end: completed, ended by agent` puis `ended by customer` |
+| 2 | Trois appels, deux conseillers | Trois téléphones appellent à la suite ; les deux conseillers décrochent les deux premiers | Le 3e entend la musique d'attente, puis sonne chez le premier conseiller qui raccroche. Fiche du 3e : attente, pris par |
+| 3 | Wi-Fi du conseiller coupé | Pendant l'appel, le conseiller coupe son Wi-Fi 20 s (ou ferme l'onglet) | Le client entend « nous vous reconnectons » ; l'appel revient au conseiller s'il revient dans les 30 s, sinon sonne chez un collègue (8 à 9 s après). Fiche : « Conseiller coupé » 1. Journal : `cut off (...)` |
+| 4 | Odoo arrêté | En heure creuse, Odoo arrêté 2 minutes (k3s : son déploiement à 0), puis un appel | L'appel sonne quand même chez les conseillers connectés (journal : `Odoo did not answer`). Au retour d'Odoo, la fiche de l'appel arrive (copiée par ocd-call-sync) |
+| 5 | Serveur d'appels arrêté | `docker compose stop freeswitch`, un appel, puis `docker compose start freeswitch` | L'appel n'aboutit pas chez le client. Dans Odoo, il passe « Perdu » au bout de 10 minutes et les responsables sont prévenus ; le silence du serveur est aussi signalé au bout de 5 minutes |
+| 6 | Personne de disponible | Tous les conseillers décochent « Je prends les appels », un appel | Accueil, puis la messagerie au bout de 30 s ; le message arrive dans la conversation, qui attend une réponse. Fiche : « Messagerie » |
+| 7 | Réseau qui bloque l'UDP | Sur le PC du conseiller (PowerShell administrateur) : `New-NetFirewallRule -DisplayName "Essai OCD UDP" -Direction Outbound -Protocol UDP -RemotePort 1-52,54-65535 -Action Block`, un appel, puis `Remove-NetFirewallRule -DisplayName "Essai OCD UDP"` | La voix passe dans les deux sens, par le relais. « Diagnostic du téléphone » de la fiche : `address relay tcp`, `answer sent (relay)`, `established` |
 
-**Seuils pour ouvrir** : moins de 2 % d'appels coupés, moins de 5 % de messageries quand une personne
-est disponible, attente moyenne sous 1 minute pendant les heures d'appel.
+**Seuils pour ouvrir** : moins de 2 % d'appels coupés, moins de 5 % de messageries quand un conseiller
+est libre, attente moyenne sous 1 minute pendant les heures d'appel. Odoo les calcule sur les 14 derniers
+jours : compte WhatsApp, onglet Appels, « Seuils pour ouvrir les appels à tous » (vert quand le seuil est
+tenu). Le détail : WhatsApp › Appels, vues graphique et tableau croisé (par conseiller, par jour).
+
+- Appels coupés : les appels perdus ou en échec, et ceux où le conseiller a été coupé (même si l'appel
+  est revenu).
+- Messagerie alors qu'un conseiller était libre : chaque appel note les conseillers libres à son arrivée
+  et s'il tombe pendant les heures d'appel.
+- Attente moyenne : celle des appels pris pendant les heures d'appel.
 
 ## Phase 2 : OCD appelle les gens (payant, avec leur accord)
 

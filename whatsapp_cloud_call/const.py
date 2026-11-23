@@ -34,3 +34,11 @@ NORMAL_CAUSES = ("NORMAL_CLEARING",)
 AGENT_PREFIX = "agent"
 
 MAX_VOICEMAIL_SIZE = 20 * 1024 * 1024
+
+# The thresholds to open the calls to all the customers (docs/APPELS_WHATSAPP.md), measured on
+# the last days: calls cut under 2 %, voicemail while an agent was free under 5 %, average wait
+# under 1 minute during the call hours.
+CALL_STATS_DAYS = 14
+CALL_MAX_CUT_RATE = 0.02
+CALL_MAX_VOICEMAIL_RATE = 0.05
+CALL_MAX_AVERAGE_WAIT = 60

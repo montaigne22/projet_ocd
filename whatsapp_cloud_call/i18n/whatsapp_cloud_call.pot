@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 15:58+0000\n"
-"PO-Revision-Date: 2026-11-21 15:58+0000\n"
+"POT-Creation-Date: 2026-11-23 08:09+0000\n"
+"PO-Revision-Date: 2026-11-23 08:09+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -122,6 +122,11 @@ msgid "Agent cut off %s time(s), the call came back."
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__available_agents
+msgid "Agents who took the calls and were free when the call came."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "Allow the microphone when the browser asks (at the top, at the left of the address)."
@@ -158,6 +163,16 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
 msgid "At Meta"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_stats_wait
+msgid "Average Wait (s)"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_stats_wait
+msgid "Average wait of the calls answered during the call hours of the last 14 days. To open the calls to all: under 60 seconds."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -245,6 +260,16 @@ msgid "Calls"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_stats_count
+msgid "Calls (14 days)"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_stats_cut_rate
+msgid "Calls Cut"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_meta_state
 msgid "Calls at Meta"
 msgstr ""
@@ -252,6 +277,16 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_use_hours
 msgid "Calls during the Opening Hours Only"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_stats_voicemail_rate
+msgid "Calls ended missed or in the voicemail although an agent taking the calls was free, among the calls of the call hours of the last 14 days. To open the calls to all: under 5 %."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_stats_cut_rate
+msgid "Calls lost or failed, and calls where the agent was cut off (network, closed page), among the calls of the last 14 days. To open the calls to all: under 2 %."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -420,6 +455,11 @@ msgid "Duration at Meta (s)"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__in_hours
+msgid "During the Call Hours"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_meta_state__ok
 msgid "Enabled at Meta"
 msgstr ""
@@ -468,6 +508,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__spool
 msgid "Files Waiting"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__available_agents
+msgid "Free Agents"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -858,6 +903,11 @@ msgid "The browser refuses the microphone: the calls cannot be answered. Allow i
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__in_hours
+msgid "The call came while the team works (opening hours of the account)."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
 msgid "The call could not be answered: %s"
@@ -939,6 +989,16 @@ msgid "This call is already recorded."
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_stats_ok
+msgid "Thresholds Met"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Thresholds to Open the Calls to All (14 days)"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__reconnect_count
 msgid "Times the agent was cut off (network, closed page) and the call came back while the customer waited."
 msgstr ""
@@ -961,6 +1021,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
 msgid "Today"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Under 2 % of calls cut, under 5 % of voicemail while an agent was free, an average wait under 1 minute during the call hours."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -989,6 +1054,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_voicemail
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__voicemail
 msgid "Voicemail"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_stats_voicemail_rate
+msgid "Voicemail while an Agent was Free"
 msgstr ""
 
 #. module: whatsapp_cloud_call

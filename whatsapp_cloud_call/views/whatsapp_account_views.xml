@@ -53,6 +53,26 @@
                                     class="btn-link ps-0" invisible="not id"/>
                         </group>
                     </group>
+                    <group string="Thresholds to Open the Calls to All (14 days)" invisible="not call_stats_count">
+                        <group>
+                            <field name="call_stats_count"/>
+                            <field name="call_stats_cut_rate" widget="percentage"
+                                   decoration-success="call_stats_cut_rate &lt; 0.02"
+                                   decoration-danger="call_stats_cut_rate &gt;= 0.02"/>
+                            <field name="call_stats_voicemail_rate" widget="percentage"
+                                   decoration-success="call_stats_voicemail_rate &lt; 0.05"
+                                   decoration-danger="call_stats_voicemail_rate &gt;= 0.05"/>
+                            <field name="call_stats_wait"
+                                   decoration-success="call_stats_wait &lt; 60"
+                                   decoration-danger="call_stats_wait &gt;= 60"/>
+                        </group>
+                        <group>
+                            <field name="call_stats_ok"/>
+                            <div class="text-muted" colspan="2">
+                                Under 2 % of calls cut, under 5 % of voicemail while an agent was free, an average wait under 1 minute during the call hours.
+                            </div>
+                        </group>
+                    </group>
                     <div class="text-muted">
                         The calls ring for the agents of the Team tab who take the calls (phone of the top bar). The address of the call server is in Settings &gt; WhatsApp &gt; Calls. In the webhook of the Meta app, also subscribe to the field calls: Odoo then sees the calls that the call server did not take.
                     </div>

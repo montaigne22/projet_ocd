@@ -85,6 +85,25 @@ class WhatsappAccount(models.Model):
     call_meta_message = fields.Text(string="Message of Meta", readonly=True, copy=False)
     call_meta_date = fields.Datetime(string="Last Exchange with Meta", readonly=True, copy=False)
     call_count = fields.Integer(string="Number of Calls", compute="_compute_call_count")
+    # the thresholds to open the calls to all (const.CALL_STATS_DAYS last days)
+    call_stats_count = fields.Integer(string="Calls (14 days)", compute="_compute_call_stats")
+    call_stats_cut_rate = fields.Float(
+        string="Calls Cut", compute="_compute_call_stats",
+        help="Calls lost or failed, and calls where the agent was cut off (network, closed "
+        "page), among the calls of the last 14 days. To open the calls to all: under 2 %.",
+    )
+    call_stats_voicemail_rate = fields.Float(
+        string="Voicemail while an Agent was Free", compute="_compute_call_stats",
+        help="Calls ended missed or in the voicemail although an agent taking the calls was "
+        "free, among the calls of the call hours of the last 14 days. To open the calls to all: "
+        "under 5 %.",
+    )
+    call_stats_wait = fields.Integer(
+        string="Average Wait (s)", compute="_compute_call_stats",
+        help="Average wait of the calls answered during the call hours of the last 14 days. To "
+        "open the calls to all: under 60 seconds.",
+    )
+    call_stats_ok = fields.Boolean(string="Thresholds Met", compute="_compute_call_stats")
     call_limit_warning = fields.Char(compute="_compute_call_limit_warning")
     call_hours_warning = fields.Char(compute="_compute_call_hours_warning")
 
@@ -94,6 +113,30 @@ class WhatsappAccount(models.Model):
         ))
         for account in self:
             account.call_count = counts.get(account, 0)
+
+    def _compute_call_stats(self):
+        since = fields.Datetime.now() - timedelta(days=const.CALL_STATS_DAYS)
+        for account in self:
+            calls = self.env["whatsapp.call"].sudo().search([
+                ("account_id", "=", account.id), ("direction", "=", "inbound"),
+                ("start_date", ">=", since), ("state", "not in", ("ringing", "answered")),
+            ])
+            cut = calls.filtered(lambda c: c.state in ("lost", "failed") or c.reconnect_count)
+            in_hours = calls.filtered("in_hours")
+            free = in_hours.filtered(lambda c: c.available_agents)
+            voicemail = free.filtered(lambda c: c.state in ("missed", "voicemail"))
+            answered = in_hours.filtered(lambda c: c.state == "completed" and c.answer_date)
+            account.call_stats_count = len(calls)
+            account.call_stats_cut_rate = len(cut) / len(calls) if calls else 0.0
+            account.call_stats_voicemail_rate = len(voicemail) / len(free) if free else 0.0
+            account.call_stats_wait = (
+                round(sum(answered.mapped("wait_duration")) / len(answered)) if answered else 0
+            )
+            account.call_stats_ok = bool(calls) and (
+                account.call_stats_cut_rate < const.CALL_MAX_CUT_RATE
+                and account.call_stats_voicemail_rate < const.CALL_MAX_VOICEMAIL_RATE
+                and account.call_stats_wait < const.CALL_MAX_AVERAGE_WAIT
+            )
 
     @api.depends("messaging_limit", "call_enabled")
     def _compute_call_limit_warning(self):
