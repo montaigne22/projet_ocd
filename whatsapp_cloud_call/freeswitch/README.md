@@ -413,9 +413,31 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
 
 Dans `sounds/` (Docker) ou `/usr/share/freeswitch/sounds/ocd/` (sur le serveur) : **MP3 ou WAV**, la voix
 de l'équipe (ou une voix off), en français. Au démarrage, le serveur prépare chaque fichier : un MP3 est
-converti en WAV (mono, 16 kHz) ; un WAV et un MP3 du même nom : le WAV l'emporte. Les noms : lettres,
-chiffres, `-`, `_`, `.` (pas d'espace, pas d'accent). `docker compose logs freeswitch` dit « Sounds
-ready: N file(s) » (et pourquoi un fichier est écarté).
+converti en WAV (mono, 16 kHz) ; un WAV et un MP3 du même nom : le WAV l'emporte. `docker compose logs
+freeswitch` dit « Sounds ready: N file(s) » (et pourquoi un fichier est écarté).
+
+**Les noms** :
+- les messages du tableau ci-dessous (`accueil`, `enregistrement`, `reconnexion`, `messagerie`,
+  `indisponible`), à la racine de `sounds/` : **ce nom exact, en minuscules**, suivi de `.mp3` ou
+  `.wav` (`Accueil.mp3`, `accueil OCD.mp3` ne sont pas trouvés : une tonalité à la place) ;
+- dans `voix/` et `attente/` : des noms libres, joués dans l'ordre alphabétique (les numéroter :
+  `1-patientez.mp3`, `2-occupes.mp3`) ;
+- partout : lettres sans accent, chiffres, `-`, `_`, `.` ; ni espace ni accent (le fichier est écarté,
+  « Sounds: ... skipped » dans le journal) ;
+- sous Windows, afficher les extensions (Explorateur › Affichage › « Extensions de noms de fichiers ») :
+  sinon un fichier peut s'appeler en vrai `accueil.mp3.mp3`.
+
+```
+sounds/
+├── accueil.mp3
+├── enregistrement.mp3
+├── messagerie.mp3
+├── voix/
+│   ├── 1-patientez.mp3
+│   └── 2-occupes.mp3
+└── attente/
+    └── 1-musique.mp3
+```
 
 | Fichier | Quand | Texte proposé |
 |---|---|---|
