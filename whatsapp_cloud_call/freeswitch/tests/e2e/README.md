@@ -13,7 +13,7 @@ de la barre du haut, WebRTC), l'appel est vérifié dans Odoo.
 | `fake_meta/meta_call.lua` | le client : envoie une tonalité de 440 Hz, enregistre ce qu'il entend, raccroche au bout de N secondes |
 | `agent_calls.js` | les deux scénarios dans Chromium (Playwright) |
 | `fake_agent/` | un faux conseiller (l'image en SIP simple sur le port 5090), qui décroche et envoie une tonalité |
-| `company_calls.js` | l'entreprise appelle : le conseiller appelle le client depuis Chromium, le serveur vérifie avec Odoo, appelle le faux Meta (passerelle TLS) ; un appel non préparé est refusé |
+| `company_calls.js` | l'entreprise appelle : le conseiller appelle le client depuis Chromium, le serveur vérifie avec Odoo, appelle le faux Meta (passerelle TLS) ; le conseiller raccroche ; puis le client raccroche (numéros +237699…) et le téléphone du navigateur est coupé aussitôt par le serveur (« Terminated (remote) ») ; un appel non préparé est refusé |
 | `fake_meta/customer.xml` | le client que l'entreprise appelle : décroche, envoie une tonalité, enregistre ce qu'il entend |
 | `customer_hangs_up.sh` | sans Odoo : le client raccroche pendant qu'il parle au conseiller ; le serveur et le conseiller doivent le voir aussitôt |
 
@@ -69,6 +69,8 @@ va au faux Meta ; à ne jamais mettre en production), puis :
 ```bash
 OCD_URL=http://127.0.0.1:8079 ODOO_DB=e2e META_RECORDINGS=/tmp/meta node company_calls.js
 ```
+
+`META_RECORDINGS` : le dossier de la machine monté sur `/tmp/meta` du faux Meta (ses enregistrements).
 
 L'appel préparé par Odoo (après les vérifications de Meta, testées dans les tests d'Odoo) est écrit
 avec psql : l'API de Meta n'est pas jointe dans cet essai.
