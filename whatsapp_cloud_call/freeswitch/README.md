@@ -130,7 +130,7 @@ Windows, et les scripts ne démarrent pas (« cannot execute: required file not 
 au format de Linux, avant la suite :
 
 ```bash
-find /opt/ocd-calls/src/whatsapp_cloud_call/freeswitch -type f ! -name '*.wav' ! -path '*/data/*' -exec sed -i 's/\r$//' {} +
+find /opt/ocd-calls/src/whatsapp_cloud_call/freeswitch -type f ! -name '*.wav' ! -name '*.mp3' ! -name '*.MP3' ! -path '*/data/*' -exec sed -i 's/\r$//' {} +
 ```
 
 Puis le script du certificat :
@@ -439,6 +439,8 @@ while waiting: the files of sounds/voix, every 30 s ».
 
 Après avoir posé ou changé des fichiers : `docker compose up -d --force-recreate freeswitch` (quand
 personne n'est en appel).
+Les fichiers copiés depuis Windows : la correction des fins de ligne (partie 3A) laisse de côté les
+`.wav` et les `.mp3` ; sinon elle les abîmerait.
 
 **Enregistrer la voix** : un téléphone suffit (pièce calme, à 20 cm, voix posée) ; ou une voix off
 (comédien, service de voix de synthèse dont la licence permet l'usage commercial). Le MP3 est pris tel
