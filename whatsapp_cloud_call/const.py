@@ -67,3 +67,8 @@ CALL_BLOCKED_PREFIXES = {
 # convert it); kept this many days by default, then deleted (0: kept).
 MAX_RECORDING_SIZE = 100 * 1024 * 1024
 DEFAULT_RECORDING_DAYS = 90
+
+# Messages of the calls given in Odoo (MP3 or WAV): at most this size; the voice while waiting
+# comes back every DEFAULT_HOLD_VOICE_EVERY seconds by default.
+MAX_SOUND_SIZE = 20 * 1024 * 1024
+DEFAULT_HOLD_VOICE_EVERY = 30

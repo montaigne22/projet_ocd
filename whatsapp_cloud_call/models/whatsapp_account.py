@@ -3,7 +3,7 @@ from collections import Counter
 from datetime import datetime, time, timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools import format_amount
 
 from odoo.addons.whatsapp_cloud.models.whatsapp_account import WhatsAppApiError
@@ -107,6 +107,16 @@ class WhatsappAccount(models.Model):
     call_stats_ok = fields.Boolean(string="Thresholds Met", compute="_compute_call_stats")
     call_limit_warning = fields.Char(compute="_compute_call_limit_warning")
     call_hours_warning = fields.Char(compute="_compute_call_hours_warning")
+    # Messages heard by the customers who call this number (fetched by the call server)
+    call_sound_ids = fields.One2many(
+        comodel_name="whatsapp.call.sound", inverse_name="account_id", string="Messages of the Calls"
+    )
+    call_hold_voice_every = fields.Integer(
+        string="Voice while Waiting every (seconds)",
+        default=const.DEFAULT_HOLD_VOICE_EVERY,
+        help="The voices while waiting come back this often over the music, one after the other "
+        "(the same moment for all the customers waiting, like a radio).",
+    )
     # Recordings of the calls (phase 3.1)
     call_recording = fields.Boolean(
         string="Record the Calls",
@@ -561,6 +571,12 @@ class WhatsappAccount(models.Model):
         action = self.env["ir.actions.act_window"]._for_xml_id("whatsapp_cloud_call.whatsapp_call_cost_action")
         action["domain"] = [("direction", "=", "outbound"), ("account_id", "=", self.id)]
         return action
+
+    @api.constrains("call_hold_voice_every")
+    def _check_call_hold_voice_every(self):
+        for account in self:
+            if not 10 <= account.call_hold_voice_every <= 600:
+                raise ValidationError(_("The voice while waiting comes back every 10 to 600 seconds."))
 
     def _call_recording_kept(self):
         self.ensure_one()

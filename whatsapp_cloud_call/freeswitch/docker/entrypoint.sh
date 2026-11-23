@@ -108,24 +108,34 @@ chown -R freeswitch:freeswitch "$SOUNDS"
 echo "Sounds ready: $(find "$SOUNDS" -name '*.wav' | wc -l) file(s)"
 # the music while the customer waits: the files of sounds/attente (music, messages, played one
 # after the other in the order of their names, again and again), else the music of FreeSWITCH
+MUSIC_DIR=/usr/share/freeswitch/sounds/music/16000
+SHUFFLE=true
 if ls "$SOUNDS"/attente/*.wav >/dev/null 2>&1; then
-  sed -i -e "s#path=\"[^\"]*\"#path=\"$SOUNDS/attente\"#" \
+  MUSIC_DIR="$SOUNDS/attente"
+  SHUFFLE=false
+  sed -i -e "s#path=\"[^\"]*\"#path=\"$MUSIC_DIR\"#" \
     -e 's#name="shuffle" value="true"#name="shuffle" value="false"#' \
     "$CONF/autoload_configs/local_stream.conf.xml"
   echo "Music while waiting: the files of sounds/attente"
 fi
 # the voice over the music while the customer waits: the files of sounds/voix ("Thank you for
 # waiting..."), one after the other every OCD_HOLD_VOICE_EVERY seconds (30 by default)
+EVERY="${OCD_HOLD_VOICE_EVERY:-30}"
+case "$EVERY" in
+  ''|*[!0-9]*) echo "OCD_HOLD_VOICE_EVERY is a number of seconds" >&2; exit 1 ;;
+esac
 VOICES=$(ls "$SOUNDS"/voix/*.wav 2>/dev/null | tr '\n' ',' | sed 's/,$//')
 if [ -n "$VOICES" ]; then
-  EVERY="${OCD_HOLD_VOICE_EVERY:-30}"
-  case "$EVERY" in
-    ''|*[!0-9]*) echo "OCD_HOLD_VOICE_EVERY is a number of seconds" >&2; exit 1 ;;
-  esac
-  sed -i "s#</directory>#  <param name=\"chime-list\" value=\"$VOICES\"/>\n    <param name=\"chime-freq\" value=\"$EVERY\"/>\n    <param name=\"chime-max\" value=\"60000\"/>\n  </directory>#" \
+  sed -i "0,/<\/directory>/s#</directory>#  <param name=\"chime-list\" value=\"$VOICES\"/>\n    <param name=\"chime-freq\" value=\"$EVERY\"/>\n    <param name=\"chime-max\" value=\"60000\"/>\n  </directory>#" \
     "$CONF/autoload_configs/local_stream.conf.xml"
   echo "Voice while waiting: the files of sounds/voix, every $EVERY s"
 fi
+# the same for ocd-call-sync: the hold stream of a number without its own music or voices in
+# Odoo takes these (file names: letters, digits, - _ . only, see above)
+VOICES_JSON=$(printf '%s' "$VOICES" | sed -e 's/^/"/' -e 's/,/","/g' -e 's/$/"/')
+[ -n "$VOICES" ] || VOICES_JSON=""
+printf '{"music_dir": "%s", "shuffle": %s, "voices": [%s], "every": %s}\n' \
+  "$MUSIC_DIR" "$SHUFFLE" "$VOICES_JSON" "$EVERY" > "$STATE/hold_defaults.json"
 cat > "$STATE/vars_env.xml" <<EOF
 <include>
   <X-PRE-PROCESS cmd="set" data="ocd_sip_domain=$(xml_value "$OCD_SIP_DOMAIN")"/>

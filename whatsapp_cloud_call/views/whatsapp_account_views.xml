@@ -41,6 +41,7 @@
                         <group string="Waiting">
                             <field name="call_max_wait" invisible="not call_enabled"/>
                             <field name="call_voicemail" invisible="not call_enabled"/>
+                            <field name="call_hold_voice_every" invisible="not call_enabled"/>
                             <field name="call_recording" invisible="not call_enabled"/>
                             <field name="call_recording_days" invisible="not call_enabled or not call_recording"/>
                         </group>
@@ -74,6 +75,42 @@
                                 Under 2 % of calls cut, under 5 % of voicemail while an agent was free, an average wait under 1 minute during the call hours.
                             </div>
                         </group>
+                    </group>
+                    <group string="Messages of the Calls" invisible="not call_enabled">
+                        <div class="text-muted" colspan="2">
+                            What the customers who call this number hear, in MP3 or WAV: the call server takes them within a minute, without stopping the calls. Without a message here: the one of the folder sounds of the call server, else a short tone (nothing for the voice while waiting).
+                        </div>
+                        <field name="call_sound_ids" colspan="2" nolabel="1">
+                            <list>
+                                <field name="sequence" widget="handle"/>
+                                <field name="kind"/>
+                                <field name="name"/>
+                                <field name="file_name"/>
+                                <field name="server_state" widget="badge"
+                                       decoration-success="server_state == 'ok'"
+                                       decoration-info="server_state == 'pending'"
+                                       decoration-danger="server_state == 'error'"/>
+                                <field name="server_message" optional="show"/>
+                                <button name="action_listen" type="object" string="Listen" class="btn-link"/>
+                            </list>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="kind"/>
+                                        <field name="name" placeholder="e.g. Thank you for waiting, an agent answers you in a moment."/>
+                                        <field name="file" filename="file_name"
+                                               options="{'accepted_file_extensions': '.mp3,.wav'}"/>
+                                        <field name="file_name" invisible="1"/>
+                                        <field name="sequence" invisible="kind not in ('voix', 'musique')"/>
+                                    </group>
+                                    <group>
+                                        <field name="server_state"/>
+                                        <field name="server_message" invisible="not server_message"/>
+                                        <field name="size"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
                     </group>
                     <div class="alert alert-warning" role="alert" invisible="not call_budget_warning">
                         <field name="call_budget_warning"/>

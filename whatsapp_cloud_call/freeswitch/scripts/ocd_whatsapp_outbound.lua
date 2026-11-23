@@ -75,7 +75,7 @@ end
 -- then the call is recorded from the moment they are put together to the end
 local recording
 if answer.record == "1" then
-  local notice = odoo.sound(settings, "enregistrement")
+  local notice = odoo.sound(settings, "enregistrement", pnid)
   if notice then
     leg[#leg + 1] = "execute_on_answer_notice='playback " .. notice .. "'"
   else

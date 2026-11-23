@@ -20,6 +20,7 @@ or Docker (docker/docker-compose.yml).
 
 import argparse
 import configparser
+import hashlib
 import json
 import logging
 import os
@@ -64,6 +65,15 @@ ENVIRONMENT = {
 }
 # Written after each exchange with Odoo; its age tells whether the service works (--health).
 HEALTH_FILE = "sync_ok"
+# The messages of the calls given in Odoo, per number: <state>/sounds/<phone number ID>/...; the
+# hold stream of each number (music and voices) in <state>/local_stream_ocd.xml (read by
+# local_stream.conf.xml); the settings of the hold music of this server (folder sounds/) written
+# by the entrypoint in hold_defaults.json.
+SOUND_ROLES = ("accueil", "enregistrement", "reconnexion", "messagerie", "indisponible")
+SOUND_LISTS = {"voix": "voix", "musique": "attente"}
+STREAMS_FILE = "local_stream_ocd.xml"
+HOLD_DEFAULTS_FILE = "hold_defaults.json"
+HOLD_DEFAULTS = {"music_dir": "/usr/share/freeswitch/sounds/music/16000", "shuffle": True, "voices": [], "every": 30}
 # A recording is sent once its file has not changed for this long (the call ended); under this
 # size (half a second at 16 kHz), nothing was said: dropped.
 RECORDING_QUIET = 30
@@ -170,6 +180,89 @@ def write_if_changed(path, content, mode=0o640):
     return True
 
 
+class SoundError(Exception):
+    """A message of the calls the call server cannot use (told to Odoo)."""
+
+
+def sound_format(content):
+    """"mp3", "wav" or None, from the first bytes of the file (as Odoo checks it)."""
+    head = bytes(content[:12])
+    if head[:4] == b"RIFF" and head[8:12] == b"WAVE":
+        return "wav"
+    if head[:3] == b"ID3" or (len(head) > 1 and head[0] == 0xFF and head[1] & 0xE0 == 0xE0):
+        return "mp3"
+    return None
+
+
+def sound_path(entry):
+    """Where a message given by Odoo goes in the folder of its number (None: unknown kind)."""
+    kind = str(entry.get("kind") or "")
+    sound_id = "".join(ch for ch in str(entry.get("id") or "") if ch.isdigit())
+    if not sound_id:
+        return None
+    if kind in SOUND_ROLES:
+        return f"{kind}.wav"
+    if kind in SOUND_LISTS:
+        sequence = max(0, min(9999, int(entry.get("sequence") or 0)))
+        return f"{SOUND_LISTS[kind]}/{sequence:04d}-{sound_id}.wav"
+    return None
+
+
+def stream_name(phone_number_id):
+    return "ocd_" + "".join(ch for ch in str(phone_number_id) if ch.isalnum())
+
+
+def hold_streams_xml(streams):
+    """The hold streams of the numbers (local_stream): their music, and their voices over it."""
+    lines = ["<include>"]
+    for name, stream in sorted(streams.items()):
+        lines += [
+            f"  <directory name={quoteattr(name)} path={quoteattr(stream['path'])}>",
+            '    <param name="rate" value="16000"/>',
+            f'    <param name="shuffle" value="{"true" if stream["shuffle"] else "false"}"/>',
+            '    <param name="channels" value="1"/>',
+            '    <param name="interval" value="20"/>',
+            '    <param name="timer-name" value="soft"/>',
+        ]
+        if stream["voices"]:
+            lines += [
+                f'    <param name="chime-list" value={quoteattr(",".join(stream["voices"]))}/>',
+                f'    <param name="chime-freq" value="{int(stream["every"])}"/>',
+                '    <param name="chime-max" value="60000"/>',
+            ]
+        lines.append("  </directory>")
+    lines.append("</include>")
+    return "\n".join(lines) + "\n"
+
+
+def convert_sound(content, target):
+    """The message in WAV for FreeSWITCH: mono, 16 kHz, 16 bits, its loudness evened (sox)."""
+    kind = sound_format(content)
+    if not kind:
+        raise SoundError("not an MP3 or a WAV")
+    sox = shutil.which("sox")
+    if not sox:
+        raise SoundError("sox is missing on the call server (rebuild its images)")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    work = Path(tempfile.mkdtemp(dir=target.parent, prefix=".ocd-"))
+    try:
+        source, output = work / f"in.{kind}", work / "out.wav"
+        source.write_bytes(content)
+        result = subprocess.run(
+            [sox, "-q", str(source), "-r", "16000", "-c", "1", "-b", "16", str(output), "norm", "-3"],
+            capture_output=True, text=True, timeout=300,
+        )
+        if result.returncode or not output.exists() or output.stat().st_size <= 44:
+            reason = (result.stderr or "").strip().splitlines()[-1:] or ["no sound in it"]
+            raise SoundError(f"could not read it: {reason[0][:150]}")
+        os.chmod(output, 0o644)
+        os.replace(output, target)
+    except subprocess.TimeoutExpired as error:
+        raise SoundError("too long to convert") from error
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+
 def valid_login(login):
     """Logins of the agents given by Odoo: agent<id of the user>."""
     login = str(login or "")
@@ -255,14 +348,16 @@ def gateway_names(content):
     return re.findall(r'<gateway name="([^"]+)"', content)
 
 
-def settings_lua(data, conf):
-    """Settings read by the scripts of the queue."""
+def settings_lua(data, conf, holds=None):
+    """Settings read by the scripts of the queue (holds: the hold stream running of each number)."""
+    holds = holds or {}
     settings = {
         "odoo_url": conf["odoo_url"].rstrip("/"),
         "headers_file": str(Path(conf["state_dir"]) / "odoo_headers"),
         "domain": data.get("domain") or "",
         "spool": conf["spool_dir"],
         "sounds": conf["sounds_dir"],
+        "sounds_odoo": str(Path(conf["state_dir"]) / "sounds"),
         "hold_music": conf["hold_music"],
         "agents": [a["login"] for a in data.get("agents") or [] if valid_login(a.get("login"))],
         "trunks": {
@@ -271,6 +366,7 @@ def settings_lua(data, conf):
                 "max_wait": int(t.get("max_wait") or 180),
                 "voicemail": bool(t.get("voicemail", True)),
                 "record": bool(t.get("record", False)),
+                **({"hold": holds[str(t.get("phone_number_id"))]} if str(t.get("phone_number_id")) in holds else {}),
             }
             for t in data.get("trunks") or [] if t.get("phone_number_id")
         },
@@ -301,6 +397,11 @@ class Sync:
         # at start, the gateways written before are checked (rescan adds the missing ones and
         # cuts no call); "reload" when they changed (taken again)
         self.gateways_pending = "rescan"
+        # the messages of the calls: what to tell Odoo (sent with the next report), the hold
+        # streams applied (their settings), a change FreeSWITCH did not take yet
+        self.sound_report = {}
+        self.streams_applied = {}
+        self.streams_pending = True
 
     # === ODOO === #
 
@@ -363,13 +464,13 @@ class Sync:
     def recording_files(self):
         return sorted((self.spool / "recordings").glob("*.wav"))
 
-    def write_files(self, data):
+    def write_files(self, data, holds=None):
         conf = self.conf
         directory = Path(conf["directory_dir"])
         changed = write_if_changed(directory / "agents.xml", directory_agents(data.get("agents") or []))
         changed |= write_if_changed(directory / "meta.xml", directory_meta(data.get("trunks") or []))
         state = Path(conf["state_dir"])
-        write_if_changed(state / "settings.lua", settings_lua(data, conf), mode=0o640)
+        write_if_changed(state / "settings.lua", settings_lua(data, conf, holds), mode=0o640)
         write_if_changed(state / "odoo_headers", f"Authorization: Bearer {conf['token']}\n", mode=0o640)
         vars_changed = write_if_changed(state / "vars_secret.xml", vars_secret(conf), mode=0o640)
         gateways = gateways_meta(data.get("trunks") or [])
@@ -393,6 +494,132 @@ class Sync:
             # the address of Odoo or the key changed: the records of the calls follow
             self.cdr_reload_pending = "+OK" not in self.fs("reload mod_json_cdr")
         return changed
+
+    # === MESSAGES OF THE CALLS === #
+
+    def sync_sounds(self, data):
+        """The messages of each number given in Odoo: fetched when they changed, converted, their
+        hold stream applied without restarting. Return {phone number ID: hold stream running}."""
+        root = Path(self.conf["state_dir"]) / "sounds"
+        defaults = self.hold_defaults()
+        report, streams, numbers = {}, {}, {}
+        for trunk in data.get("trunks") or []:
+            pnid = "".join(ch for ch in str(trunk.get("phone_number_id") or "") if ch.isalnum())
+            if not pnid:
+                continue
+            folder = root / pnid
+            present = self.sync_number_sounds(folder, trunk.get("sounds") or [], report)
+            voices = sorted(str(folder / rel) for rel in present if rel.startswith("voix/"))
+            music = any(rel.startswith("attente/") for rel in present)
+            every = int(trunk.get("hold_voice_every") or defaults["every"])
+            streams[stream_name(pnid)] = {
+                "path": str(folder / "attente") if music else defaults["music_dir"],
+                "shuffle": False if music else bool(defaults["shuffle"]),
+                "voices": voices or list(defaults["voices"]),
+                "every": max(10, min(600, every)),
+            }
+            numbers[stream_name(pnid)] = pnid
+        if root.exists():
+            for child in root.iterdir():
+                if child.is_dir() and stream_name(child.name) not in streams:
+                    shutil.rmtree(child, ignore_errors=True)  # a number without calls any more
+        self.sound_report = report
+        running = self.apply_streams(streams)
+        return {numbers[name]: f"local_stream://{name}" for name in streams if name in running}
+
+    def sync_number_sounds(self, folder, entries, report):
+        """The files of one number; return the paths (in its folder) of the messages ready."""
+        manifest_path = folder / "manifest.json"
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            manifest = {}
+        wanted = {}
+        for entry in entries:
+            rel = sound_path(entry)
+            checksum = str(entry.get("checksum") or "")
+            if not rel or not checksum:
+                continue
+            sound_id = str(entry.get("id"))
+            wanted[rel] = sound_id
+            target = folder / rel
+            if manifest.get(rel) == checksum and target.exists():
+                report[sound_id] = {"checksum": checksum, "state": "ok"}
+                continue
+            try:
+                status, content = self._request("/whatsapp/call/server/sound",
+                                                 f"id={sound_id}".encode(), "application/x-www-form-urlencoded",
+                                                 timeout=120)
+            except (urllib.error.URLError, OSError) as error:
+                _logger.warning("Message %s not fetched: %s", rel, error)
+                continue  # again at the next run
+            if status != 200 or hashlib.sha1(content).hexdigest() != checksum:
+                continue  # changed meanwhile in Odoo: the next run has its new file
+            try:
+                convert_sound(content, target)
+            except SoundError as error:
+                _logger.warning("Message %s of %s refused: %s", rel, folder.name, error)
+                report[sound_id] = {"checksum": checksum, "state": "error", "message": str(error)}
+                continue
+            manifest[rel] = checksum
+            report[sound_id] = {"checksum": checksum, "state": "ok"}
+            _logger.info("Message %s of %s ready", rel, folder.name)
+        if folder.exists():
+            for path in folder.rglob("*.wav"):
+                rel = path.relative_to(folder).as_posix()
+                if rel not in wanted:
+                    path.unlink(missing_ok=True)  # removed or replaced in Odoo
+                    manifest.pop(rel, None)
+        manifest = {rel: checksum for rel, checksum in manifest.items() if rel in wanted}
+        if manifest or manifest_path.exists():
+            write_if_changed(manifest_path, json.dumps(manifest, sort_keys=True), mode=0o644)
+        return [rel for rel in wanted if rel in manifest and (folder / rel).exists()]
+
+    def hold_defaults(self):
+        """The hold music of this server (folder sounds/, read by the entrypoint), else the one of
+        FreeSWITCH."""
+        defaults = dict(HOLD_DEFAULTS)
+        try:
+            given = json.loads((Path(self.conf["state_dir"]) / HOLD_DEFAULTS_FILE).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return defaults
+        if isinstance(given, dict):
+            for key in defaults:
+                if key in given:
+                    defaults[key] = given[key]
+        return defaults
+
+    def running_streams(self):
+        output = self.fs("local_stream show")
+        return {line.split(",", 1)[0].strip() for line in output.splitlines() if "," in line}
+
+    def apply_streams(self, streams):
+        """The hold streams of the numbers, written and started or reloaded in FreeSWITCH (the
+        customers waiting are not cut off); return the names of those running."""
+        path = Path(self.conf["state_dir"]) / STREAMS_FILE
+        changed = write_if_changed(path, hold_streams_xml(streams), mode=0o644)
+        if changed or self.streams_pending:
+            if "+OK" not in self.fs("reloadxml"):
+                self.streams_pending = True
+                return self.running_streams() & set(streams)
+        running = self.running_streams()
+        pending = False
+        for name, stream in streams.items():
+            digest = json.dumps(stream, sort_keys=True)
+            if name in running and self.streams_applied.get(name) == digest:
+                continue
+            command = "reload" if name in running else "start"
+            if "+OK" in self.fs(f"local_stream {command} {name}"):
+                self.streams_applied[name] = digest
+                _logger.info("FreeSWITCH: hold stream %s %s", name, "reloaded" if command == "reload" else "started")
+            else:
+                pending = True
+        for name in running - set(streams):
+            if name.startswith("ocd_"):
+                self.fs(f"local_stream stop {name}")
+                self.streams_applied.pop(name, None)
+        self.streams_pending = pending
+        return self.running_streams() & set(streams)
 
     def send_voicemails(self, files):
         """Messages left that Odoo did not take when the call ended."""
@@ -503,13 +730,19 @@ class Sync:
             "registrations": self.registrations(),
             "version": self.version(),
             "spool": len(voicemails) + len(cdrs) + len(recordings),
+            "sounds": self.sound_report,
         }
         try:
             data = self.fetch_config(report)
         except (urllib.error.URLError, OSError, ValueError, RuntimeError) as error:
             _logger.warning("Odoo does not answer (%s): the last copy of the agents stays", error)
             return False
-        self.write_files(data)
+        try:
+            holds = self.sync_sounds(data)
+        except Exception:  # noqa: BLE001 - the messages never stop the copy of the agents
+            _logger.exception("Messages of the calls not applied")
+            holds = {}
+        self.write_files(data, holds)
         self.send_voicemails(voicemails)
         self.send_cdrs(cdrs)
         self.send_recordings(recordings)

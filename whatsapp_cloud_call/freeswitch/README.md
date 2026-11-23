@@ -411,7 +411,22 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
 
 ## 5. Les messages enregistrés
 
-Dans `sounds/` (Docker) ou `/usr/share/freeswitch/sounds/ocd/` (sur le serveur) : **MP3 ou WAV**, la voix
+**Le plus simple : dans Odoo**, compte WhatsApp, onglet Appels, « Messages des appels » : un message
+par ligne (Accueil, Annonce d'enregistrement, Voix d'attente, Musique d'attente, Conseiller coupé,
+Messagerie, Personne de disponible), un fichier MP3 ou WAV, « Écouter » pour l'entendre ; et « Voix
+d'attente toutes les (secondes) ». Chaque numéro WhatsApp a les siens. ocd-call-sync les prend dans la
+minute : il télécharge les fichiers changés (vérifiés par leur empreinte), les convertit (sox : mono,
+16 kHz, volume égalisé) dans `/var/lib/freeswitch/ocd/sounds/<ID du numéro>/`, et met à jour le flux
+d'attente du numéro (`local_stream://ocd_<ID du numéro>` : sa musique et ses voix) sans redémarrer
+FreeSWITCH ni couper les appels (un client qui attend entend au plus une seconde de silence quand sa
+musique change). Odoo montre l'état de chaque message : « En cours d'envoi », « Sur le serveur
+d'appels », ou « Refusé » avec la raison (pas un MP3 ou un WAV, illisible). Journal :
+`docker compose logs ocd-call-sync | grep -E "Message|hold stream"`.
+
+Ce qu'Odoo ne donne pas pour un numéro vient du dossier `sounds/` du serveur (ci-dessous), sinon une
+tonalité courte (rien pour la voix d'attente, la musique de FreeSWITCH pour la musique).
+
+**Le dossier du serveur** : dans `sounds/` (Docker) ou `/usr/share/freeswitch/sounds/ocd/` (sur le serveur) : **MP3 ou WAV**, la voix
 de l'équipe (ou une voix off), en français. Au démarrage, le serveur prépare chaque fichier : un MP3 est
 converti en WAV (mono, 16 kHz) ; un WAV et un MP3 du même nom : le WAV l'emporte. `docker compose logs
 freeswitch` dit « Sounds ready: N file(s) » (et pourquoi un fichier est écarté).

@@ -34,5 +34,5 @@ class WhatsappCallServer(models.Model):
             "version": str(report.get("version") or "")[:64],
             "registrations": "\n".join(registrations),
             "registration_count": len(registrations),
-            "spool": int(spool) if str(spool or "0").isdigit() else 0,
+            "spool": int(spool) if str(spool).isdigit() else 0,
         })

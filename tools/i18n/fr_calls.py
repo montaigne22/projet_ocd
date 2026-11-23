@@ -1,5 +1,62 @@
 # The WhatsApp calls (whatsapp_cloud_call): the call server, the phone of the agents, the calls
 CALLS = {
+    # The messages of the calls given in Odoo
+    'Being sent':
+        "En cours d'envoi",
+    'Being sent: the call server takes it within a minute. Refused: see the reason.':
+        "En cours d'envoi : le serveur d'appels le prend dans la minute. Refusé : voir la raison.",
+    'Call Server':
+        "Serveur d'appels",
+    'Checksum':
+        'Empreinte',
+    'File (MP3 or WAV)':
+        'Fichier (MP3 ou WAV)',
+    'File Name':
+        'Nom du fichier',
+    'Message of the WhatsApp Calls':
+        'Message des appels WhatsApp',
+    'Messages of the Calls':
+        'Messages des appels',
+    'Music while Waiting':
+        "Musique d'attente",
+    'Nobody Available':
+        'Personne de disponible',
+    'On the call server':
+        "Sur le serveur d'appels",
+    'Order of the voices and of the music.':
+        'Ordre des voix et de la musique.',
+    'Reason':
+        'Raison',
+    'Recording Notice':
+        "Annonce d'enregistrement",
+    'Sequence':
+        'Séquence',
+    'Text':
+        'Texte',
+    'The file of a message is an MP3 or a WAV.':
+        "Le fichier d'un message est un MP3 ou un WAV.",
+    'The file of a message is at most 20 MB.':
+        "Le fichier d'un message fait au plus 20 Mo.",
+    'The voice while waiting comes back every 10 to 600 seconds.':
+        "La voix d'attente revient toutes les 10 à 600 secondes.",
+    'The voices while waiting come back this often over the music, one after the other (the same moment for all the customers waiting, like a radio).':
+        "Les voix d'attente reviennent à cette fréquence par-dessus la musique, l'une après l'autre (au même moment pour tous les clients qui attendent, comme une radio).",
+    'This message is already given for this number: change its file.':
+        'Ce message existe déjà pour ce numéro : changez son fichier.',
+    'Voice while Waiting':
+        "Voix d'attente",
+    'Voice while Waiting every (seconds)':
+        "Voix d'attente toutes les (secondes)",
+    'Welcome':
+        'Accueil',
+    'Welcome: as soon as the call arrives. Recording Notice: after the welcome, and when the customer picks up a call of the company (when the calls are recorded). Voice while Waiting: over the music, every few seconds, one after the other. Music while Waiting: played one after the other. Agent Cut Off: while the call comes back. Voicemail: before the beep. Nobody Available: when there is no voicemail.':
+        "Accueil : dès que l'appel arrive. Annonce d'enregistrement : après l'accueil, et quand le client décroche un appel de l'entreprise (quand les appels sont enregistrés). Voix d'attente : par-dessus la musique, toutes les quelques secondes, l'une après l'autre. Musique d'attente : jouées l'une après l'autre. Conseiller coupé : pendant que l'appel revient. Messagerie : avant le bip. Personne de disponible : quand il n'y a pas de messagerie.",
+    'What the customers who call this number hear, in MP3 or WAV: the call server takes them within a minute, without stopping the calls. Without a message here: the one of the folder sounds of the call server, else a short tone (nothing for the voice while waiting).':
+        "Ce qu'entendent les clients qui appellent ce numéro, en MP3 ou WAV : le serveur d'appels les prend dans la minute, sans couper les appels. Sans message ici : celui du dossier sounds du serveur d'appels, sinon une tonalité courte (rien pour la voix d'attente).",
+    'What the message says (for the team).':
+        "Ce que dit le message (pour l'équipe).",
+    'e.g. Thank you for waiting, an agent answers you in a moment.':
+        'ex. Merci de patienter, un conseiller va vous répondre dans un instant.',
     # Phase 3.1: the recordings of the calls
     'A call has one recording.':
         'Un appel a un seul enregistrement.',

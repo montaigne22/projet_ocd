@@ -5,6 +5,7 @@
 The Lua parts run with lua5.3 (or lua) when it is installed.
 """
 
+import hashlib
 import json
 import math
 import os
@@ -46,6 +47,8 @@ CONFIG = {
 class FakeOdoo(BaseHTTPRequestHandler):
     requests = []
     status = 200
+    config = None  # else CONFIG
+    sounds = {}  # the files of the messages of the calls: id -> bytes
 
     def do_POST(self):
         length = int(self.headers.get("Content-Length") or 0)
@@ -57,8 +60,10 @@ class FakeOdoo(BaseHTTPRequestHandler):
             return
         self.send_response(FakeOdoo.status)
         if self.path == "/whatsapp/call/server/config":
-            payload = json.dumps(CONFIG).encode()
+            payload = json.dumps(FakeOdoo.config or CONFIG).encode()
             self.send_header("Content-Type", "application/json")
+        elif self.path == "/whatsapp/call/server/sound":
+            payload = FakeOdoo.sounds.get(parse_qs(body.decode()).get("id", [""])[0], b"")
         elif self.path == "/whatsapp/call/server/route":
             payload = b"call=12\nname=Awa Ngono\nfirst=\nagents=agent5\nmax_wait=120\nvoicemail=1\nopen=1\n"
         else:
@@ -75,6 +80,7 @@ class FakeEventSocket(socketserver.StreamRequestHandler):
     """The event socket of FreeSWITCH: the password, then the API commands."""
     commands = []
     password = "esl-password"
+    streams = set()  # the hold streams running (local_stream)
 
     def reply(self, body, content_type="api/response"):
         data = body.encode()
@@ -103,6 +109,14 @@ class FakeEventSocket(socketserver.StreamRequestHandler):
                                "</registration></registrations></profile>")
                 elif command == "version":
                     self.reply("FreeSWITCH Version 1.11.3 (git ef32e20)")
+                elif command == "local_stream show":
+                    self.reply("".join(f"{name},/somewhere\n" for name in sorted({"moh"} | FakeEventSocket.streams)))
+                elif command.startswith("local_stream start "):
+                    FakeEventSocket.streams.add(command.split()[-1])
+                    self.reply(f"+OK stream: {command.split()[-1]}")
+                elif command.startswith("local_stream stop "):
+                    FakeEventSocket.streams.discard(command.split()[-1])
+                    self.reply("+OK")
                 else:
                     self.reply("+OK")
             elif line == "exit":
@@ -128,6 +142,9 @@ class TestSync(unittest.TestCase):
     def setUp(self):
         FakeOdoo.requests = []
         FakeOdoo.status = 200
+        FakeOdoo.config = None
+        FakeOdoo.sounds = {}
+        FakeEventSocket.streams = set()
         self.tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmp)
         FakeEventSocket.commands = []
@@ -287,6 +304,134 @@ class TestSync(unittest.TestCase):
         self.assertFalse(old.exists())
         self.assertTrue(old.with_suffix(".refused.wav").exists())
 
+    # === MESSAGES OF THE CALLS === #
+
+    MP3 = b"ID3\x04\x00" + b"\xff\xfb\x90\x00" * 50
+
+    def fake_sox(self):
+        """sox for the tests: writes one second of WAV, fails on a file with BROKEN in it."""
+        path = self.tmp / "sox"
+        path.write_text(
+            f"#!{sys.executable}\n"
+            "import sys, wave\n"
+            "args = sys.argv[1:]\n"
+            "if b'BROKEN' in open(args[1], 'rb').read():\n"
+            "    sys.stderr.write('sox FAIL formats: no handler for this file\\n'); sys.exit(2)\n"
+            "with wave.open(args[8], 'wb') as w:\n"
+            "    w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000); w.writeframes(b'\\0' * 32000)\n"
+        )
+        path.chmod(0o755)
+        return unittest.mock.patch.object(
+            ocd_call_sync.shutil, "which", side_effect=lambda name: str(path) if name == "sox" else None
+        )
+
+    def with_sounds(self, sounds, every=20):
+        config = json.loads(json.dumps(CONFIG))
+        config["trunks"][0]["sounds"] = sounds
+        config["trunks"][0]["hold_voice_every"] = every
+        FakeOdoo.config = config
+
+    def entry(self, sound_id, kind, content, sequence=10):
+        FakeOdoo.sounds[str(sound_id)] = content
+        return {"id": sound_id, "kind": kind, "sequence": sequence, "checksum": hashlib.sha1(content).hexdigest()}
+
+    def fetches(self):
+        return [b for p, _h, b in FakeOdoo.requests if p == "/whatsapp/call/server/sound"]
+
+    def test_messages_fetched_converted_and_hold_stream(self):
+        self.with_sounds([
+            self.entry(1, "accueil", self.MP3),
+            self.entry(2, "voix", self.MP3 + b"2", sequence=1),
+            self.entry(3, "voix", self.MP3 + b"3", sequence=2),
+            self.entry(4, "musique", self.MP3 + b"4"),
+        ])
+        with self.fake_sox():
+            self.assertTrue(ocd_call_sync.Sync(self.conf).run_once())
+            folder = self.tmp / "state" / "sounds" / "1110001"
+            for rel in ("accueil.wav", "voix/0001-2.wav", "voix/0002-3.wav", "attente/0010-4.wav"):
+                self.assertTrue((folder / rel).exists(), rel)
+            streams = (self.tmp / "state" / "local_stream_ocd.xml").read_text()
+            self.assertIn(f'<directory name="ocd_1110001" path="{folder / "attente"}">', streams)
+            self.assertIn('<param name="shuffle" value="false"/>', streams)
+            self.assertIn(f'<param name="chime-list" value="{folder / "voix/0001-2.wav"},{folder / "voix/0002-3.wav"}"/>',
+                          streams)
+            self.assertIn('<param name="chime-freq" value="20"/>', streams)
+            self.assertIn("local_stream start ocd_1110001", FakeEventSocket.commands)
+            settings = (self.tmp / "state" / "settings.lua").read_text()
+            self.assertIn('["hold"] = "local_stream://ocd_1110001"', settings)
+            self.assertIn(f'["sounds_odoo"] = "{self.tmp / "state" / "sounds"}"', settings)
+            # the next run: nothing fetched again, nothing reloaded, Odoo told
+            fetched = len(self.fetches())
+            FakeEventSocket.commands = []
+            sync = ocd_call_sync.Sync(self.conf)
+            sync.streams_applied = {}  # a new service: the streams taken again once
+            self.assertTrue(sync.run_once())
+            self.assertEqual(len(self.fetches()), fetched)
+            self.assertIn("local_stream reload ocd_1110001", FakeEventSocket.commands)
+            FakeEventSocket.commands = []
+            self.assertTrue(sync.run_once())
+            self.assertFalse([c for c in FakeEventSocket.commands if c.startswith("local_stream")
+                              and not c.endswith("show")])
+            report = json.loads([b for p, _h, b in FakeOdoo.requests if p.endswith("/config")][-1])
+            self.assertEqual(report["sounds"]["1"], {"checksum": hashlib.sha1(self.MP3).hexdigest(), "state": "ok"})
+
+    def test_message_changed_removed_or_refused(self):
+        self.with_sounds([self.entry(1, "accueil", self.MP3), self.entry(2, "voix", self.MP3 + b"2")])
+        with self.fake_sox():
+            sync = ocd_call_sync.Sync(self.conf)
+            sync.run_once()
+            folder = self.tmp / "state" / "sounds" / "1110001"
+            # a new welcome, the voice removed, a broken voice, a file that is no sound
+            self.with_sounds([
+                self.entry(1, "accueil", self.MP3 + b"new"),
+                self.entry(5, "voix", self.MP3 + b"BROKEN"),
+                self.entry(6, "messagerie", b"<html>"),
+            ])
+            FakeEventSocket.commands = []
+            sync.run_once()
+            self.assertEqual(len(self.fetches()), 5)
+            self.assertFalse((folder / "voix/0010-2.wav").exists())
+            self.assertFalse((folder / "voix/0010-5.wav").exists())
+            self.assertEqual(sync.sound_report["1"]["state"], "ok")
+            self.assertEqual(sync.sound_report["5"]["state"], "error")
+            self.assertIn("could not read it: sox FAIL", sync.sound_report["5"]["message"])
+            self.assertEqual(sync.sound_report["6"]["message"], "not an MP3 or a WAV")
+            # no voice any more: the stream without them, reloaded
+            self.assertNotIn("chime-list", (self.tmp / "state" / "local_stream_ocd.xml").read_text())
+            self.assertIn("local_stream reload ocd_1110001", FakeEventSocket.commands)
+            # the number without calls any more: its folder and its stream gone
+            config = json.loads(json.dumps(CONFIG))
+            config["trunks"] = []
+            FakeOdoo.config = config
+            sync.run_once()
+            self.assertFalse(folder.exists())
+            self.assertIn("local_stream stop ocd_1110001", FakeEventSocket.commands)
+
+    def test_number_without_messages_takes_the_server_ones(self):
+        state = self.tmp / "state"
+        state.mkdir(parents=True, exist_ok=True)
+        (state / "hold_defaults.json").write_text(json.dumps({
+            "music_dir": "/var/lib/freeswitch/sounds-ocd/attente", "shuffle": False,
+            "voices": ["/var/lib/freeswitch/sounds-ocd/voix/1-patientez.wav"], "every": 30,
+        }))
+        self.with_sounds([], every=45)
+        self.assertTrue(ocd_call_sync.Sync(self.conf).run_once())
+        streams = (state / "local_stream_ocd.xml").read_text()
+        self.assertIn('path="/var/lib/freeswitch/sounds-ocd/attente"', streams)
+        self.assertIn('value="/var/lib/freeswitch/sounds-ocd/voix/1-patientez.wav"', streams)
+        self.assertIn('<param name="chime-freq" value="45"/>', streams)
+        # without the file of the entrypoint (installation without Docker): the music of FreeSWITCH
+        (state / "hold_defaults.json").unlink()
+        self.assertTrue(ocd_call_sync.Sync(self.conf).run_once())
+        streams = (state / "local_stream_ocd.xml").read_text()
+        self.assertIn('path="/usr/share/freeswitch/sounds/music/16000"', streams)
+        self.assertNotIn("chime-list", streams)
+
+    def test_freeswitch_down_keeps_the_music_of_the_server(self):
+        self.conf["esl_password"] = "wrong"
+        self.assertTrue(ocd_call_sync.Sync(self.conf).run_once())
+        self.assertNotIn('["hold"]', (self.tmp / "state" / "settings.lua").read_text())
+
     def test_freeswitch_down_or_wrong_password(self):
         """Odoo still told, FreeSWITCH asked again at the next run."""
         self.conf["esl_password"] = "wrong"
@@ -346,14 +491,20 @@ class TestSync(unittest.TestCase):
         (ready / "accueil.wav").write_bytes(b"RIFF")
         (team / "accueil.wav").write_bytes(b"RIFF")
         (team / "messagerie.wav").write_bytes(b"RIFF")
+        number = self.tmp / "odoo" / "1110001"
+        number.mkdir(parents=True)
+        (number / "messagerie.wav").write_bytes(b"RIFF")
         script = (
             f"package.path = {json.dumps(str(FREESWITCH / 'scripts') + '/?.lua')} .. ';' .. package.path\n"
             "local odoo = require('ocd.odoo')\n"
-            f"local s = {{sounds_ready = {json.dumps(str(ready))}, sounds = {json.dumps(str(team))}}}\n"
-            "print(odoo.sound(s, 'accueil'), odoo.sound(s, 'messagerie'), odoo.sound(s, 'enregistrement'))\n"
+            f"local s = {{sounds_odoo = {json.dumps(str(self.tmp / 'odoo'))}, sounds_ready = {json.dumps(str(ready))},"
+            f" sounds = {json.dumps(str(team))}}}\n"
+            "print(odoo.sound(s, 'accueil', '1110001'), odoo.sound(s, 'messagerie', '1110001'),"
+            " odoo.sound(s, 'messagerie'), odoo.sound(s, 'enregistrement', '1110001'))\n"
         )
         output = subprocess.run([LUA, "-e", script], capture_output=True, text=True, check=True).stdout
-        self.assertEqual(output.split(), [str(ready / "accueil.wav"), str(team / "messagerie.wav"), "nil"])
+        self.assertEqual(output.split(), [str(ready / "accueil.wav"), str(number / "messagerie.wav"),
+                                          str(team / "messagerie.wav"), "nil"])
 
     @unittest.skipUnless(LUA and shutil.which("curl"), "Lua or curl is not installed")
     def test_lua_asks_odoo(self):

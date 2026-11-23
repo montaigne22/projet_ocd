@@ -198,6 +198,15 @@ appels » et « Jours de conservation des enregistrements » (90 par défaut ; 0
 Vu de bout en bout avec un faux Meta : le client entend l'accueil, l'annonce, puis la voix d'attente ;
 les enregistrements arrivent dans Odoo en MP3, avec la conversation seulement.
 
+**Les messages dans Odoo (version 20.0.1.10.0)** : compte WhatsApp, onglet Appels, « Messages des
+appels » : l'accueil, l'annonce d'enregistrement, les voix d'attente, la musique d'attente, le
+conseiller coupé, la messagerie, personne de disponible, en MP3 ou WAV, par numéro WhatsApp, et la
+fréquence de la voix d'attente. Le serveur d'appels les prend dans la minute, les convertit et les
+applique sans redémarrer ; Odoo montre s'ils sont sur le serveur ou refusés (et pourquoi). Le dossier
+`sounds/` du serveur reste le repli. Vu de bout en bout avec un faux Meta : un message ajouté dans la
+fiche du compte arrive sur le serveur en moins d'une minute ; le client entend l'accueil, la musique et
+la voix du numéro ; un message changé ou retiré dans Odoo est appliqué sans redémarrage.
+
 ## Options écartées
 
 - **Décrocher directement dans le navigateur** (sans serveur, par l'API de Meta) : moins de choses à

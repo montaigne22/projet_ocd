@@ -4,7 +4,7 @@ import json
 import logging
 from urllib.parse import parse_qs
 
-from werkzeug.exceptions import BadRequest, Forbidden
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 
 from odoo import SUPERUSER_ID, http
 from odoo.http import request
@@ -65,6 +65,7 @@ class WhatsAppCallServer(http.Controller):
             "version": _clean(report.get("version"), 64),
             "spool": report.get("spool"),
         })
+        env["whatsapp.call.sound"]._server_report(report.get("sounds"))
         accounts = env["whatsapp.account"].search([("call_enabled", "=", True)])
         agents = env["whatsapp.account"]._call_get_agents()
         data = {
@@ -77,6 +78,8 @@ class WhatsAppCallServer(http.Controller):
                     "max_wait": max(account.call_max_wait, 30),
                     "voicemail": account.call_voicemail,
                     "record": account.call_recording,
+                    "sounds": account.call_sound_ids._server_entries(),
+                    "hold_voice_every": account.call_hold_voice_every,
                 }
                 for account in accounts
             ],
@@ -159,6 +162,24 @@ class WhatsAppCallServer(http.Controller):
             # nothing to attach it to: kept on the call server for later
             raise BadRequest()
         return request.make_response("OK\n", headers=[("Content-Type", "text/plain")])
+
+    @http.route("/whatsapp/call/server/sound", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    def sound(self, **kwargs):
+        """The file of a message of the calls (the call server fetches the ones it lacks)."""
+        self._check_token()
+        sound_id = request.httprequest.form.get("id") or ""
+        sound = request.env(user=SUPERUSER_ID, su=True)["whatsapp.call.sound"].browse(
+            int(sound_id) if sound_id.isdigit() else 0
+        ).exists()
+        if not sound:
+            raise NotFound()
+        content = sound._file_content()
+        kind = sound._format(content)
+        return request.make_response(content, headers=[
+            ("Content-Type", "audio/mpeg" if kind == "mp3" else "audio/wav"),
+            ("X-OCD-Checksum", sound.checksum or ""),
+        ])
 
     @http.route("/whatsapp/call/server/cdr", type="http", auth="public", methods=["POST"],
                 csrf=False, save_session=False)

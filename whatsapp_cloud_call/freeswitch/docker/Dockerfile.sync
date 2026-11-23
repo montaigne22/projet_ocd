@@ -10,8 +10,9 @@ COPY docker/build_ca.sh /usr/local/bin/build_ca.sh
 RUN --mount=type=secret,id=build_ca,required=false \
     . /usr/local/bin/build_ca.sh \
     && apt-get update \
-    # lame: the recordings of the calls sent to Odoo in MP3
-    && apt-get install -y --no-install-recommends python3 ca-certificates lame \
+    # lame: the recordings of the calls sent to Odoo in MP3; sox: the messages given in Odoo
+    # (MP3 or WAV) made ready for FreeSWITCH
+    && apt-get install -y --no-install-recommends python3 ca-certificates lame sox libsox-fmt-mp3 \
     && build_ca_done \
     && rm -rf /var/lib/apt/lists/* \
     # the user of FreeSWITCH (same id): the files they share

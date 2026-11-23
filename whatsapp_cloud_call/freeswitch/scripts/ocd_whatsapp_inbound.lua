@@ -30,13 +30,16 @@ local function setvar(name, value)
   session:setVariable(name, tostring(value))
 end
 
+-- The number called (its messages given in Odoo) and its music while waiting: set below
+local number_id = ""
+local hold_music = settings.hold_music
 
--- A prompt of the team (sounds/<name>.wav or .mp3), else a short tone.
+-- A prompt of the number (Odoo), else of the team (sounds/<name>.wav or .mp3), else a short tone.
 local function play(name)
   if not session:ready() then
     return
   end
-  local path = odoo.sound(settings, name)
+  local path = odoo.sound(settings, name, number_id)
   if path then
     session:execute("playback", path)
   else
@@ -50,7 +53,7 @@ local function music(seconds)
     return
   end
   api:executeString("sched_api +" .. seconds .. " none uuid_break " .. uuid .. " all")
-  session:execute("playback", settings.hold_music)
+  session:execute("playback", hold_music)
 end
 
 local function is_registered(agent)
@@ -75,6 +78,9 @@ if call.number == "" and call.user_ref == "" then
   call.user_ref = queue.safe(from_user, 64)
 end
 local trunk = settings.trunks[call.pnid] or {}
+number_id = call.pnid
+-- the hold stream of the number (its music and voices given in Odoo), else the one of the server
+hold_music = trunk.hold or settings.hold_music
 setvar("ocd_wacid", call.wacid)
 setvar("ocd_from", call.number)
 setvar("ocd_user_ref", call.user_ref)
@@ -85,9 +91,9 @@ setvar("ocd_reconnects", 0)
 setvar("ocd_talk", 0)
 setvar("hangup_after_bridge", "false")
 setvar("continue_on_fail", "true")
-setvar("ringback", settings.hold_music)
-setvar("transfer_ringback", settings.hold_music)
-setvar("hold_music", settings.hold_music)
+setvar("ringback", hold_music)
+setvar("transfer_ringback", hold_music)
+setvar("hold_music", hold_music)
 
 -- what Meta sent, in one line of the log (the first calls with Meta are checked with it)
 log("NOTICE", "call of " .. (call.number ~= "" and "+" .. call.number or "user " .. call.user_ref) ..
@@ -113,7 +119,7 @@ play("accueil")
 -- moment an agent answers (not the waiting) to the end
 local recording
 if route.record and session:ready() then
-  local notice = odoo.sound(settings, "enregistrement")
+  local notice = odoo.sound(settings, "enregistrement", number_id)
   if notice then
     session:execute("playback", notice)
   else

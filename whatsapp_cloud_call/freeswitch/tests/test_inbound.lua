@@ -102,7 +102,8 @@ local function run(scenario)
       return {
         odoo_url = "", headers_file = "", domain = "calls.example.com", spool = tmp,
         sounds = tmp .. "/sounds", hold_music = "local_stream://moh",
-        agents = { "agent5", "agent7" }, trunks = { ["1110001"] = { max_wait = 180, voicemail = true } },
+        agents = { "agent5", "agent7" },
+        trunks = { ["1110001"] = { max_wait = 180, voicemail = true, hold = scenario.hold } },
       }
     end,
     route = function(_, call) log.route_call = call; return scenario.odoo_route end,
@@ -112,7 +113,8 @@ local function run(scenario)
       return true
     end,
     voicemail = function(_, path, values) log.voicemails[#log.voicemails + 1] = values; return scenario.voicemail_ok ~= false end,
-    sound = function(settings, name)
+    sound = function(settings, name, number)
+      log.sound_numbers = (log.sound_numbers or "") .. tostring(number) .. ";"
       local path = settings.sounds .. "/" .. name .. ".wav"
       local handle = io.open(path, "rb")
       if handle then handle:close(); return path end
@@ -174,6 +176,18 @@ log = run({
   bridges = { { answer = "agent5", talk = 10, cause = "NORMAL_CLEARING", seconds = 12 } },
 })
 check("1b not recorded unless Odoo asks", not log.recording and not log.recording_facts)
+check("1b the messages of the number called", (log.sound_numbers or ""):find("1110001;", 1, true) == 1)
+check("1b the music of the server", log.vars.ringback == "local_stream://moh" and log.vars.hold_music == "local_stream://moh")
+
+-- 1c. the number has its own music and voices (given in Odoo, its hold stream running)
+log = run({
+  registered = { agent5 = true },
+  hold = "local_stream://ocd_1110001",
+  odoo_route = queue.parse_lines("call=23\nagents=agent5\nfirst=\n"),
+  bridges = { { answer = "agent5", talk = 10, cause = "NORMAL_CLEARING", seconds = 12 } },
+})
+check("1c its hold stream while it rings", log.vars.ringback == "local_stream://ocd_1110001"
+      and log.vars.transfer_ringback == "local_stream://ocd_1110001" and log.vars.hold_music == "local_stream://ocd_1110001")
 
 -- 2. the agent is cut off, reconnects and gets the call back
 log = run({

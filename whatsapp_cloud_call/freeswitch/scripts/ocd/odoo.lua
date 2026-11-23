@@ -16,6 +16,8 @@ function M.load_settings(path)
     sounds = "/usr/share/freeswitch/sounds/ocd",
     -- the messages of sounds/ made ready at the start (WAV, and MP3 decoded): docker/entrypoint.sh
     sounds_ready = "/var/lib/freeswitch/sounds-ocd",
+    -- the messages of each number given in Odoo (ocd-call-sync): sounds_odoo/<phone number ID>/
+    sounds_odoo = "/var/lib/freeswitch/ocd/sounds",
     hold_music = "local_stream://moh",
     agents = {},
     trunks = {},
@@ -70,10 +72,18 @@ function M.post(settings, path, fields, timeout, file)
   return tonumber(code) or 0, body or ""
 end
 
--- A recorded message of the team (<name>.wav): made ready at the start (Docker: WAV or MP3 of
+-- A recorded message (<name>.wav): the one of the number called given in Odoo (fetched by
+-- ocd-call-sync), else the one of the team made ready at the start (Docker: WAV or MP3 of
 -- sounds/), else in the folder of the sounds itself (installation without Docker); nil if none.
-function M.sound(settings, name)
-  for _, dir in ipairs({ settings.sounds_ready or "", settings.sounds or "" }) do
+function M.sound(settings, name, number_id)
+  local dirs = {}
+  local number = tostring(number_id or ""):gsub("[^%w]", "")
+  if number ~= "" and (settings.sounds_odoo or "") ~= "" then
+    dirs[#dirs + 1] = settings.sounds_odoo .. "/" .. number
+  end
+  dirs[#dirs + 1] = settings.sounds_ready or ""
+  dirs[#dirs + 1] = settings.sounds or ""
+  for _, dir in ipairs(dirs) do
     if dir ~= "" then
       local path = dir .. "/" .. name .. ".wav"
       local handle = io.open(path, "rb")

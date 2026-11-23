@@ -28,7 +28,7 @@ agents in their browser, in Odoo (WebRTC):
 
 The configuration of the call server is in the freeswitch folder of the module.
 """,
-    "version": "20.0.1.9.2",
+    "version": "20.0.1.10.0",
     "category": "Marketing",
     "author": "RollBackk",
     "license": "OPL-1",

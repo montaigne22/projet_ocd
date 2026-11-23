@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 16:08+0000\n"
-"PO-Revision-Date: 2026-11-23 16:08+0000\n"
+"POT-Creation-Date: 2026-11-23 20:31+0000\n"
+"PO-Revision-Date: 2026-11-23 20:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -159,6 +159,7 @@ msgstr "Conseiller"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__reconnect_count
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__kind__reconnexion
 msgid "Agent Cut Off"
 msgstr "Conseiller coupé"
 
@@ -249,6 +250,16 @@ msgid "Average wait of the calls answered during the call hours of the last 14 d
 msgstr "Attente moyenne des appels pris pendant les heures d'appel des 14 derniers jours. Pour ouvrir les appels à tous : moins de 60 secondes."
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__server_state__pending
+msgid "Being sent"
+msgstr "En cours d'envoi"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_sound__server_state
+msgid "Being sent: the call server takes it within a minute. Refused: see the reason."
+msgstr "En cours d'envoi : le serveur d'appels le prend dans la minute. Refusé : voir la raison."
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_monthly_budget
 msgid "Budget per Month"
 msgstr "Budget par mois"
@@ -307,6 +318,11 @@ msgstr "Accord demandé le"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_discuss_channel__whatsapp_call_permission_until
 msgid "Call Permission until"
 msgstr "Accord jusqu'au"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__server_state
+msgid "Call Server"
+msgstr "Serveur d'appels"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_callback_permission
@@ -474,6 +490,11 @@ msgid "Calls: settings sent to Meta (%s)."
 msgstr "Appels : réglages envoyés à Meta (%s)."
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__checksum
+msgid "Checksum"
+msgstr "Empreinte"
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "Click anywhere on the page to allow the ringing."
@@ -582,6 +603,7 @@ msgstr "Pays appelé"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -590,6 +612,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -677,6 +700,7 @@ msgstr "Canal de discussion"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_message__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__display_name
 msgid "Display Name"
@@ -765,6 +789,16 @@ msgid "File"
 msgstr "Fichier"
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__file
+msgid "File (MP3 or WAV)"
+msgstr "Fichier (MP3 ou WAV)"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__file_name
+msgid "File Name"
+msgstr "Nom du fichier"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__spool
 msgid "Files Waiting"
 msgstr "Fichiers en attente"
@@ -816,6 +850,7 @@ msgstr "Je prends les appels WhatsApp"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_message__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__id
 msgid "ID"
@@ -879,6 +914,7 @@ msgstr "Dernier signe du serveur d'appels"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
@@ -887,10 +923,12 @@ msgstr "Dernière mise à jour par"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
 #. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
 msgid "Listen"
 msgstr "Écouter"
@@ -923,6 +961,7 @@ msgstr "%(company)s peut-il vous appeler sur WhatsApp ? C'est au sujet de votre 
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__voicemail_attachment_id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__kind
 msgid "Message"
 msgstr "Message"
 
@@ -938,9 +977,20 @@ msgid "Message of Meta"
 msgstr "Message de Meta"
 
 #. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_call_sound
+msgid "Message of the WhatsApp Calls"
+msgstr "Message des appels WhatsApp"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_server__spool
 msgid "Messages and records of calls kept on the call server until Odoo takes them."
 msgstr "Messages et fiches d'appels gardés sur le serveur d'appels jusqu'à ce qu'Odoo les prenne."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_sound_ids
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Messages of the Calls"
+msgstr "Messages des appels"
 
 #. module: whatsapp_cloud_call
 #. odoo-python
@@ -1033,6 +1083,11 @@ msgid "More than 24 hours since the last message of the customer: the permission
 msgstr "Plus de 24 heures depuis le dernier message du client : l'accord pour appeler ne peut se demander que dans les 24 heures qui suivent un message du client."
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__kind__musique
+msgid "Music while Waiting"
+msgstr "Musique d'attente"
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "Mute"
@@ -1074,6 +1129,11 @@ msgstr "Pas encore d'appel de l'entreprise"
 #: model_terms:ir.actions.act_window,help:whatsapp_cloud_call.whatsapp_call_action
 msgid "No call yet"
 msgstr "Aucun appel pour l'instant"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__kind__indisponible
+msgid "Nobody Available"
+msgstr "Personne de disponible"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_voicemail
@@ -1122,6 +1182,11 @@ msgid "Number of the Customer"
 msgstr "Numéro du client"
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__server_state__ok
+msgid "On the call server"
+msgstr "Sur le serveur d'appels"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_monthly_budget
 msgid "Once the calls of the company of the month cost this much, Odoo refuses them until the next month (0: no limit). The calls of the customers are free and always taken."
 msgstr "Quand les appels de l'entreprise du mois coûtent autant, Odoo les refuse jusqu'au mois suivant (0 : pas de limite). Les appels des clients sont gratuits et toujours pris."
@@ -1136,6 +1201,11 @@ msgstr "Ouvrir la conversation"
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "Open the conversation"
 msgstr "Ouvrir la conversation"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_sound__sequence
+msgid "Order of the voices and of the music."
+msgstr "Ordre des voix et de la musique."
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_users__whatsapp_call_sip_password
@@ -1221,6 +1291,11 @@ msgid "Read the State at Meta"
 msgstr "Lire l'état chez Meta"
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__server_message
+msgid "Reason"
+msgstr "Raison"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_recording
 msgid "Record the Calls"
 msgstr "Enregistrer les appels"
@@ -1246,6 +1321,11 @@ msgid "Recording File"
 msgstr "Fichier de l'enregistrement"
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__kind__enregistrement
+msgid "Recording Notice"
+msgstr "Annonce d'enregistrement"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__recording_status__deleted
 msgid "Recording deleted"
 msgstr "Enregistrement supprimé"
@@ -1263,6 +1343,7 @@ msgstr "Enregistrement d'un appel WhatsApp"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__discuss_channel__whatsapp_call_permission__refused
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__server_state__error
 msgid "Refused"
 msgstr "Refusé"
 
@@ -1317,6 +1398,11 @@ msgid "Send the Calls to Meta"
 msgstr "Envoyer les appels à Meta"
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_icon_visibility__default
 msgid "Shown"
 msgstr "Visible"
@@ -1328,6 +1414,7 @@ msgstr "Silence signalé"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__size
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__size
 msgid "Size (bytes)"
 msgstr "Taille (octets)"
 
@@ -1357,6 +1444,11 @@ msgstr "Prenez d'abord les appels WhatsApp (téléphone de la barre du haut) : l
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_users__whatsapp_call_available
 msgid "Takes the WhatsApp Calls"
 msgstr "Prend les appels WhatsApp"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__name
+msgid "Text"
+msgstr "Texte"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_res_users__whatsapp_call_available
@@ -1536,6 +1628,18 @@ msgstr "Les clients peuvent appeler ce numéro depuis WhatsApp ; les appels pass
 
 #. module: whatsapp_cloud_call
 #. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call_sound.py:0
+msgid "The file of a message is an MP3 or a WAV."
+msgstr "Le fichier d'un message est un MP3 ou un WAV."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call_sound.py:0
+msgid "The file of a message is at most 20 MB."
+msgstr "Le fichier d'un message fait au plus 20 Mo."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
 #: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
 msgid "The opening hours (Team tab) give a number of hours a day but not when: Meta would get hours placed around noon by Odoo (10 hours: 7:00 to 17:00). In the opening hours, show the columns Work from and Work to of the list (icon at the right of its header) and set them on each day; or untick Calls during the Opening Hours Only."
 msgstr "Les horaires d'ouverture (onglet Équipe) donnent un nombre d'heures par jour mais pas lesquelles : Meta recevrait des heures placées par Odoo autour de midi (10 heures : de 7 h à 17 h). Dans les horaires d'ouverture, affichez les colonnes Heure de début et Heure de fin de la liste (icône à droite de son en-tête) et remplissez-les pour chaque jour ; ou décochez « Appels seulement aux heures d'ouverture »."
@@ -1555,6 +1659,17 @@ msgstr "La voix des conseillers passe par le relais quand leur réseau la bloque
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
 msgid "The voice relay of the call server (STUN/TURN, ports 3478 and 5349) does not answer: the call cannot go through. Tell the administrator (coturn on the call server, firewall)."
 msgstr "Le relais de la voix du serveur d'appels (STUN/TURN, ports 3478 et 5349) ne répond pas : l'appel ne peut pas passer. Prévenez l'administrateur (coturn sur le serveur d'appels, pare-feu)."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "The voice while waiting comes back every 10 to 600 seconds."
+msgstr "La voix d'attente revient toutes les 10 à 600 secondes."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_hold_voice_every
+msgid "The voices while waiting come back this often over the music, one after the other (the same moment for all the customers waiting, like a radio)."
+msgstr "Les voix d'attente reviennent à cette fréquence par-dessus la musique, l'une après l'autre (au même moment pour tous les clients qui attendent, comme une radio)."
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_recording_days
@@ -1577,6 +1692,11 @@ msgstr "Cet appel n'a pas (ou plus) d'enregistrement."
 #: model:ir.model.constraint,message:whatsapp_cloud_call.constraint_whatsapp_call_wacid_uniq
 msgid "This call is already recorded."
 msgstr "Cet appel est déjà noté."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.constraint,message:whatsapp_cloud_call.constraint_whatsapp_call_sound_single_kind_uniq
+msgid "This message is already given for this number: change its file."
+msgstr "Ce message existe déjà pour ce numéro : changez son fichier."
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_stats_ok
@@ -1646,8 +1766,19 @@ msgid "Voice message left after a call."
 msgstr "Message vocal laissé après un appel."
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__kind__voix
+msgid "Voice while Waiting"
+msgstr "Voix d'attente"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_hold_voice_every
+msgid "Voice while Waiting every (seconds)"
+msgstr "Voix d'attente toutes les (secondes)"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_voicemail
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__voicemail
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__kind__messagerie
 msgid "Voicemail"
 msgstr "Messagerie"
 
@@ -1674,6 +1805,26 @@ msgid "Waiting before the Voicemail (seconds)"
 msgstr "Attente avant la messagerie (secondes)"
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call_sound__kind__accueil
+msgid "Welcome"
+msgstr "Accueil"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_sound__kind
+msgid "Welcome: as soon as the call arrives. Recording Notice: after the welcome, and when the customer picks up a call of the company (when the calls are recorded). Voice while Waiting: over the music, every few seconds, one after the other. Music while Waiting: played one after the other. Agent Cut Off: while the call comes back. Voicemail: before the beep. Nobody Available: when there is no voicemail."
+msgstr "Accueil : dès que l'appel arrive. Annonce d'enregistrement : après l'accueil, et quand le client décroche un appel de l'entreprise (quand les appels sont enregistrés). Voix d'attente : par-dessus la musique, toutes les quelques secondes, l'une après l'autre. Musique d'attente : jouées l'une après l'autre. Conseiller coupé : pendant que l'appel revient. Messagerie : avant le bip. Personne de disponible : quand il n'y a pas de messagerie."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "What the customers who call this number hear, in MP3 or WAV: the call server takes them within a minute, without stopping the calls. Without a message here: the one of the folder sounds of the call server, else a short tone (nothing for the voice while waiting)."
+msgstr "Ce qu'entendent les clients qui appellent ce numéro, en MP3 ou WAV : le serveur d'appels les prend dans la minute, sans couper les appels. Sans message ici : celui du dossier sounds du serveur d'appels, sinon une tonalité courte (rien pour la voix d'attente)."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_sound__name
+msgid "What the message says (for the team)."
+msgstr "Ce que dit le message (pour l'équipe)."
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__phone_trace
 msgid "What the phone of each agent who answered did (version, microphone, network addresses, answer sent, end), to understand a call that did not connect."
 msgstr "Ce qu'a fait le téléphone de chaque conseiller qui a décroché (version, micro, adresses réseau, réponse envoyée, fin), pour comprendre un appel qui n'a pas abouti."
@@ -1681,6 +1832,7 @@ msgstr "Ce qu'a fait le téléphone de chaque conseiller qui a décroché (versi
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__account_id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__account_id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__account_id
 msgid "WhatsApp Account"
 msgstr "Compte WhatsApp"
 
@@ -1801,6 +1953,11 @@ msgstr "serveur d'appels"
 #: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
 msgid "disabled"
 msgstr "désactivés"
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "e.g. Thank you for waiting, an agent answers you in a moment."
+msgstr "ex. Merci de patienter, un conseiller va vous répondre dans un instant."
 
 #. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls

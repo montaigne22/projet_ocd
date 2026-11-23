@@ -6,6 +6,7 @@ from . import (
     whatsapp_call,
     whatsapp_call_rate,
     whatsapp_call_recording,
+    whatsapp_call_sound,
     whatsapp_call_server,
     whatsapp_message,
     whatsapp_webhook_event,
