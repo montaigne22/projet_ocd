@@ -451,6 +451,16 @@ class TestWhatsAppConversation(WhatsAppCommon):
         action = channel.with_user(self.agent).whatsapp_action_send_template()
         self.assertEqual(action["res_model"], "whatsapp.composer")
 
+    def test_actions_of_the_conversation_open_in_the_browser(self):
+        """The buttons of the conversation call these methods directly (not through a button of a
+        form): the web client of Odoo 20 needs the views of a window action, else it fails."""
+        channel = self.receive("Bonjour").channel_id.with_user(self.agent)
+        for method in ("whatsapp_action_send_template", "whatsapp_action_transfer",
+                       "whatsapp_action_link_partner", "whatsapp_action_open_partner"):
+            action = getattr(channel, method)()
+            self.assertEqual(action["type"], "ir.actions.act_window", method)
+            self.assertTrue(action.get("views"), method)
+
     def test_template_sent_by_the_number_of_the_conversation(self):
         second = self.env["whatsapp.account"].create({
             "name": "Shop Yaoundé", "phone_number_id": "1110002", "waba_id": "2220002",

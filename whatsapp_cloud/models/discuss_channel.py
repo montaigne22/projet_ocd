@@ -1022,6 +1022,7 @@ class DiscussChannel(models.Model):
             "name": _("Transfer the Conversation"),
             "res_model": "whatsapp.conversation.assign",
             "view_mode": "form",
+            "views": [(False, "form")],
             "target": "new",
             "context": {"default_channel_id": self.id},
         }
@@ -1037,6 +1038,7 @@ class DiscussChannel(models.Model):
             "name": _("Send a Template"),
             "res_model": "whatsapp.composer",
             "view_mode": "form",
+            "views": [(False, "form")],
             "target": "new",
             "context": {
                 "default_res_model": "res.partner",
@@ -1053,6 +1055,7 @@ class DiscussChannel(models.Model):
             "name": _("Identify the Customer"),
             "res_model": "whatsapp.link.partner",
             "view_mode": "form",
+            "views": [(False, "form")],
             "target": "new",
             "context": {"default_channel_id": self.id},
         }
