@@ -65,12 +65,13 @@ CALLS = {
     "Call the customer through WhatsApp from your phone of the top bar (a call of the company, paid; the customer must have allowed it).":
         "Appeler le client par WhatsApp depuis votre téléphone de la barre du haut (un appel de l'entreprise, payant ; le client doit l'avoir accepté).",
     "Call through WhatsApp": "Appeler par WhatsApp",
+    "Call to %s": "Appel à %s",
     "Call to the customer by %(agent)s: it did not go through (%(cause)s).":
-        "Appel du client par %(agent)s : il n'a pas abouti (%(cause)s).",
+        "Appel au client par %(agent)s : il n'a pas abouti (%(cause)s).",
     "Call to the customer by %s: hung up before they answered.":
-        "Appel du client par %s : raccroché avant sa réponse.",
-    "Call to the customer by %s: no answer.": "Appel du client par %s : pas de réponse.",
-    "Call to the customer of %(duration)s, by %(agent)s.": "Appel du client de %(duration)s, par %(agent)s.",
+        "Appel au client par %s : raccroché avant sa réponse.",
+    "Call to the customer by %s: no answer.": "Appel au client par %s : pas de réponse.",
+    "Call to the customer of %(duration)s, by %(agent)s.": "Appel au client de %(duration)s, par %(agent)s.",
     "Calling through WhatsApp...": "Appel par WhatsApp...",
     "Finish the current call first.": "Terminez d'abord l'appel en cours.",
     "It rings at the customer's...": "Ça sonne chez le client...",

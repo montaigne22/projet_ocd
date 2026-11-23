@@ -144,7 +144,8 @@ class WhatsappCall(models.Model):
     @api.depends("partner_id", "number", "user_ref", "start_date")
     def _compute_display_name(self):
         for call in self:
-            call.display_name = _("Call of %s", call._call_customer_label() or _("Unknown"))
+            label = call._call_customer_label() or _("Unknown")
+            call.display_name = _("Call to %s", label) if call.direction == "outbound" else _("Call of %s", label)
 
     def _call_customer_label(self):
         """The customer as the team sees them: their contact, else their number, else their

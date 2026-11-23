@@ -46,6 +46,7 @@ class TestCallsOut(WhatsAppCallCommon, HttpCase):
         self.assertEqual(action["tag"], "whatsapp_call_dial")
         self.assertEqual(action["params"]["number"], "+237670000000")
         self.assertEqual(call.direction, "outbound")
+        self.assertEqual(call.display_name, f"Call to {self.partner.display_name}")
         self.assertEqual(call.state, "ringing")
         self.assertEqual(call.user_id, self.agent)
         self.assertEqual(call.channel_id, self.channel)
