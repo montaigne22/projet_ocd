@@ -79,8 +79,20 @@ class TestCallPermission(WhatsAppCallCommon):
         with patch(REQUEST, return_value=self.permissions(can_ask=False)), self.assertRaises(UserError):
             channel.whatsapp_action_call_permission_request()
         self.channel.whatsapp_channel_valid_until = fields.Datetime.now() - timedelta(hours=1)
-        with self.assertRaises(UserError):
+        with patch(REQUEST, return_value=self.permissions()), self.assertRaises(UserError):
             channel.whatsapp_action_call_permission_request()
+
+    def test_called_long_ago_nothing_to_ask(self):
+        """The customer called the company (permission for 7 days), then wrote nothing for more
+        than 24 hours: the permission of Meta is enough, no request, no error."""
+        self.channel.whatsapp_channel_valid_until = fields.Datetime.now() - timedelta(hours=30)
+        until = int((datetime.now(UTC) + timedelta(days=4)).timestamp())
+        with patch(REQUEST, return_value=self.permissions("temporary", expiration=until)) as request:
+            self.channel.with_user(self.agent).whatsapp_action_call_permission_request()
+        self.assertEqual([c.args[0] for c in request.call_args_list], ["GET"])
+        self.assertTrue(self.channel._whatsapp_call_allowed())
+        section = next(s for s in self.channel._whatsapp_get_info_sections() if s["title"] == "Calling the Customer")
+        self.assertEqual([b["method"] for b in section["buttons"]], ["whatsapp_action_call"])
 
     def test_already_allowed(self):
         """Meta says the customer allows the calls already (they called): nothing is sent."""
@@ -127,3 +139,52 @@ class TestCallPermission(WhatsAppCallCommon):
         self.channel.whatsapp_call_permission = "permanent"
         section = next(s for s in self.channel._whatsapp_get_info_sections() if s["title"] == "Calling the Customer")
         self.assertEqual([b["method"] for b in section["buttons"]], ["whatsapp_action_call"])
+
+    def old_reply(self, wamid, **reply):
+        """An answer stored as before 20.0.1.6.0: a message of the customer without text."""
+        from odoo.addons.whatsapp_cloud_call.models.whatsapp_message import WhatsappMessage
+
+        data = {
+            "from": "237670000000", "id": wamid, "timestamp": "1795000000", "type": "interactive",
+            "interactive": {"type": "call_permission_reply", "call_permission_reply": reply},
+        }
+        self.env["whatsapp.webhook.event"].create({
+            "account_id": self.account.id,
+            "field": "messages",
+            "state": "done",
+            "payload": json.dumps({"metadata": {"phone_number_id": self.account.phone_number_id},
+                                   "messages": [data]}),
+        })
+        with patch(REQUEST, return_value=mock_response({"messages": [{"id": "wamid.BOT"}]})):
+            message = super(WhatsappMessage, self.env["whatsapp.message"].sudo())._process_incoming(
+                self.account, data, []
+            )
+        message.body = ""
+        message.mail_message_id.body = ""
+        return message
+
+    def test_repair_of_the_permissions_shown_deleted(self):
+        until = int((datetime.now(UTC) + timedelta(days=5)).timestamp())
+        old = self.old_reply("wamid.OLD1", response="accept", is_permanent=False,
+                             expiration_timestamp=str(until), response_source="automatic")
+        self.assertEqual(old.mail_message_id.message_type, "whatsapp_message")
+        self.assertEqual(self.channel.whatsapp_call_permission, "none")
+        Channel = self.env["discuss.channel"]
+        self.assertEqual(Channel._whatsapp_call_permission_repair(), 1)
+        mail = old.mail_message_id
+        self.assertEqual(mail.message_type, "notification")
+        self.assertEqual(mail.author_id, self.env.ref("base.partner_root"))
+        self.assertIn("The customer called: The customer allows the company to call them", str(mail.body))
+        self.assertIn("The customer called", old.body)
+        # the permission given then, still valid: the agent calls without asking
+        self.assertTrue(self.channel._whatsapp_call_allowed())
+        self.assertEqual(self.channel.whatsapp_call_permission_until,
+                         datetime.fromtimestamp(until, UTC).replace(tzinfo=None))
+        # once only
+        self.assertEqual(Channel._whatsapp_call_permission_repair(), 0)
+        # a later answer read by this version: the old one does not change the permission
+        self.channel.write({"whatsapp_call_permission": "refused", "whatsapp_call_permission_reply_id": "wamid.NEW"})
+        old2 = self.old_reply("wamid.OLD2", response="accept", is_permanent=True, response_source="automatic")
+        self.assertEqual(Channel._whatsapp_call_permission_repair(), 1)
+        self.assertEqual(old2.mail_message_id.message_type, "notification")
+        self.assertEqual(self.channel.whatsapp_call_permission, "refused")

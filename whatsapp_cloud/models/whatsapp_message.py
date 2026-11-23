@@ -594,6 +594,7 @@ class WhatsappMessage(models.Model):
             reply = interactive.get(interactive.get("type")) or {}
             content["reply_id"] = reply.get("id")
             content["text"] = reply.get("title") or reply.get("body") or ""
+            content["interactive_type"] = interactive.get("type") or ""
         elif msg_type == "button":
             button = data.get("button") or {}
             content["reply_id"] = button.get("payload")
@@ -622,6 +623,13 @@ class WhatsappMessage(models.Model):
             )
         if referral := data.get("referral"):
             content["referral"] = referral
+        if not content.get("text") and not content.get("attachment") and not content.get("reaction"):
+            # never a message without text in the conversation (shown "This message has been
+            # deleted"): e.g. an answer of a kind not read here
+            content["text"] = _(
+                "(Message of the customer without text: %s)",
+                content.get("interactive_type") or msg_type or "?",
+            )
         return content
 
     @api.model

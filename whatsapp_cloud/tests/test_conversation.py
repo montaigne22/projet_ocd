@@ -451,6 +451,14 @@ class TestWhatsAppConversation(WhatsAppCommon):
         action = channel.with_user(self.agent).whatsapp_action_send_template()
         self.assertEqual(action["res_model"], "whatsapp.composer")
 
+    def test_message_without_text_is_never_empty(self):
+        """An answer of a kind not read here keeps a text: the web client shows a message
+        without text "This message has been deleted"."""
+        message = self.receive(wa_id="wamid.IN9", type="interactive",
+                               interactive={"type": "survey_reply", "survey_reply": {"score": 4}})
+        self.assertIn("survey_reply", message.body)
+        self.assertIn("survey_reply", str(message.mail_message_id.body))
+
     def test_actions_of_the_conversation_open_in_the_browser(self):
         """The buttons of the conversation call these methods directly (not through a button of a
         form): the web client of Odoo 20 needs the views of a window action, else it fails."""

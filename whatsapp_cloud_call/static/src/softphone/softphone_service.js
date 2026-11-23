@@ -21,7 +21,7 @@ const ICE_RELAY_WAIT_MS = 3000;
 // The browser still asks for the microphone after this time: the agent is shown where to allow it.
 const MICROPHONE_HINT_MS = 1500;
 // Shown in the menu of the phone and in its diagnostic: the version of the module.
-const SOFTPHONE_VERSION = "20.0.1.7.0";
+const SOFTPHONE_VERSION = "20.0.1.7.1";
 
 /**
  * The phone of the agents: connected to the call server (SIP over WSS, JsSIP) while the agent

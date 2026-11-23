@@ -351,3 +351,8 @@ sonner les conseillers dans leur navigateur, dans Odoo (WebRTC) :
 
 La configuration du serveur d'appels est dans le dossier freeswitch du module.
 """
+
+# WhatsApp Cloud API (whatsapp_cloud): texts added with the calls
+WA_CLOUD_CALLS = {
+    "(Message of the customer without text: %s)": "(Message du client sans texte : %s)",
+}

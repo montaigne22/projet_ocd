@@ -126,6 +126,13 @@ conversation, avec une ligne pour l'équipe ; elle ne compte pas comme un messag
 retire l'accord après 4 appels sans réponse : noté aussi. À venir : la demande par un modèle (hors des
 24 h), à faire approuver par Meta.
 
+Version 20.0.1.7.1 : quand un client a appelé, l'accord de Meta suffit, même plus de 24 h après son
+dernier message (rien n'est demandé). Avant 20.0.1.6.0, l'accord donné par Meta à chaque appel du client
+arrivait comme un message du client sans texte, affiché « Ce message a été supprimé » (rien n'était
+supprimé) ; la mise à jour 20.0.1.7.1 change ces messages en la ligne « Le client a appelé : … », à leur
+place, et garde l'accord encore valable. Depuis 20.0.2.10.2, WhatsApp Cloud API n'écrit plus jamais un
+message sans texte : « (Message du client sans texte : type) ».
+
 **2.2 fait (version 20.0.1.7.0)** : « Appeler par WhatsApp » dans le panneau « Client » de la conversation
 (quand le client a donné son accord), et « Rappeler » sur la fiche d'un appel. Odoo vérifie chez Meta
 l'accord et les limites, prépare l'appel ; le téléphone du conseiller (barre du haut) l'appelle : « Appel
