@@ -53,7 +53,17 @@ local function agent_leg()
   return nil
 end
 
-if event == "answered" and a_uuid ~= "" and agent ~= "" then
+if event == "outbound_answered" and a_uuid ~= "" then
+  -- the customer picked up a call of the company (the agent's leg is a_uuid)
+  api:execute("uuid_setvar", a_uuid .. " ocd_customer_answered 1")
+  api:execute("uuid_setvar", a_uuid .. " ocd_answer_epoch " .. tostring(os.time()))
+  local settings = odoo.load_settings()
+  local start = tonumber(get(a_uuid, "start_epoch")) or os.time()
+  odoo.event(settings, {
+    event = "answered", call = get(a_uuid, "ocd_call"), uuid = a_uuid, agent = agent,
+    wait = math.max(0, os.time() - start),
+  })
+elseif event == "answered" and a_uuid ~= "" and agent ~= "" then
   api:execute("uuid_setvar", a_uuid .. " ocd_round_agent " .. agent)
   api:execute("uuid_setvar", a_uuid .. " ocd_answer_epoch " .. tostring(os.time()))
   local settings = odoo.load_settings()

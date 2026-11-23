@@ -30,6 +30,9 @@
                 <header>
                     <button name="action_open_conversation" type="object" string="Open the Conversation"
                             class="btn-primary" invisible="not channel_id"/>
+                    <button name="action_call_back" type="object" string="Call Back"
+                            invisible="not channel_id or not number or state in ('ringing', 'answered')"
+                            help="Call the customer through WhatsApp from your phone of the top bar (a call of the company, paid; the customer must have allowed it)."/>
                     <field name="state" widget="statusbar" statusbar_visible="ringing,answered,completed"/>
                 </header>
                 <sheet>

@@ -18,9 +18,16 @@
     </extension>
   </context>
 
-  <!-- the agents call nothing (phase 1), except *9196: their voice comes back (test of the
-       microphone and of the network) -->
+  <!-- the agents call the customers (out<ID of the call in Odoo>: Odoo says whom, and refuses
+       what it did not prepare), and *9196: their voice comes back (test of the microphone and
+       of the network) -->
   <context name="ocd_agents">
+    <extension name="ocd_agents_outbound">
+      <condition field="destination_number" expression="^out(\d{1,12})$">
+        <action application="set" data="ocd_call=$1"/>
+        <action application="lua" data="ocd_whatsapp_outbound.lua"/>
+      </condition>
+    </extension>
     <extension name="ocd_agents_echo">
       <condition field="destination_number" expression="^\*9196$">
         <action application="answer"/>

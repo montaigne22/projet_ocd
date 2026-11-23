@@ -270,7 +270,8 @@ Lignes facultatives, à ne pas mettre sauf besoin : `OCD_SYNC_INTERVAL` (seconde
 des agents, 30 par défaut), `OCD_RTP_START` et `OCD_RTP_END` (ports UDP de la voix, 16384-29999 par
 défaut : ouvrir la même plage dans le pare-feu) et `OCD_AGENT_CANDIDATE_ACL` (`wan_v4.auto` par
 défaut : les adresses publiques des agents ; `localnet.auto` seulement pour un essai où les agents
-sont sur le même réseau que le serveur).
+sont sur le même réseau que le serveur). `OCD_META_SIP` sert seulement aux essais (le faux Meta) :
+jamais en production, où les appels de l'entreprise vont à `wa.meta.vc`.
 
 Après un changement du `.env` : `docker compose up -d` (les conteneurs concernés redémarrent ; de
 préférence quand personne n'est en appel).
@@ -369,6 +370,15 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
 - **La file d'attente** : accueil, musique, le conseiller de la conversation d'abord puis tous les
   conseillers libres ensemble ; 3 minutes sans conseiller (30 secondes quand personne n'est connecté) :
   messagerie, posée dans la conversation.
+- **Les appels de l'entreprise** (phase 2) : le conseiller clique « Appeler par WhatsApp » (conversation)
+  ou « Rappeler » (fiche d'un appel) ; Odoo vérifie l'accord du client chez Meta et prépare l'appel ; le
+  téléphone du conseiller compose `out<numéro de la fiche>`. Le serveur demande alors à Odoo à qui et par
+  quel numéro (`/whatsapp/call/server/outbound`) : sans sa réponse, il refuse (un appel de l'entreprise
+  est payant). Il appelle le client par la passerelle `meta_<ID du numéro>` (vers `wa.meta.vc`, TLS,
+  signée avec le numéro de l'entreprise et le mot de passe SIP de Meta), écrite par ocd-call-sync
+  (`/var/lib/freeswitch/ocd/gateways_meta.xml`) et rechargée quand elle change (journal : `gateways to
+  Meta: meta_...`). Vérifier : `docker compose exec freeswitch fs_cli -x "sofia status gateway"`. Le
+  serveur doit pouvoir sortir vers `wa.meta.vc` port 5061 (TCP).
 - **Jamais de boucle** : un conseiller qui décroche mais dont la voix ne passe pas (sa branche
   coupée moins de 15 secondes après le décroché, deux fois dans le même appel) n'est plus appelé
   pour cet appel : les collègues sonnent, sinon la messagerie (journal : `cut off again ... not rung

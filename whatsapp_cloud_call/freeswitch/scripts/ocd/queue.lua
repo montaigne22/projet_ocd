@@ -205,6 +205,27 @@ function M.should_stop_waiting(route, state)
   return false
 end
 
+-- A call of the company to a customer (outbound): how it ended.
+-- info: answered (the customer picked up), agent_up (the agent's leg still up after the
+-- bridge), cause (hang-up cause of the customer's leg or of the failed call)
+-- Returns outcome ("completed", "missed", "failed") and ended_by ("customer", "agent", "system").
+M.NOT_TAKEN_CAUSES = {
+  NO_ANSWER = true, ALLOTTED_TIMEOUT = true, NO_USER_RESPONSE = true, USER_BUSY = true,
+  CALL_REJECTED = true, SUBSCRIBER_ABSENT = true,
+}
+function M.outbound_end(info)
+  if info.answered then
+    return "completed", info.agent_up and "customer" or "agent"
+  end
+  if not info.agent_up or info.cause == "ORIGINATOR_CANCEL" then
+    return "missed", "agent"
+  end
+  if M.NOT_TAKEN_CAUSES[info.cause or ""] then
+    return "missed", "customer"
+  end
+  return "failed", "system"
+end
+
 -- A shell argument, quoted.
 function M.shell_quote(value)
   return "'" .. tostring(value):gsub("'", "'\\''") .. "'"

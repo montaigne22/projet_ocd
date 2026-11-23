@@ -8,7 +8,10 @@
   <aliases>
   </aliases>
   <gateways>
-    <!-- phase 2 (the company calls the customers): a gateway to wa.meta.vc -->
+    <!-- the company calls the customers: one gateway to Meta per WhatsApp number (meta_<phone
+         number ID>), signed with the business number and the SIP password of Meta; written by
+         ocd-call-sync -->
+    <X-PRE-PROCESS cmd="include" data="/var/lib/freeswitch/ocd/gateways*.xml"/>
   </gateways>
   <domains>
     <domain name="$${ocd_sip_domain}" alias="false" parse="false"/>

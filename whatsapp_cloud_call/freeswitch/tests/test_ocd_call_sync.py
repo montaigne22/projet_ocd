@@ -161,6 +161,35 @@ class TestSync(unittest.TestCase):
         self.assertEqual(headers_file, "Authorization: Bearer server-key\n")
         self.assertEqual(oct((self.tmp / "state" / "odoo_headers").stat().st_mode & 0o777), "0o640")
 
+    def test_gateways_to_meta(self):
+        """The calls of the company: one gateway to Meta per number, signed with the number
+        without "+" and the SIP password of Meta, taken again by the profile when it changes."""
+        sync = ocd_call_sync.Sync(self.conf)
+        sync.run_once()
+        root = ElementTree.parse(self.tmp / "state" / "gateways_meta.xml").getroot()
+        gateway = root.find("gateway")
+        self.assertEqual(gateway.get("name"), "meta_1110001")
+        params = {param.get("name"): param.get("value") for param in gateway.iter("param")}
+        self.assertEqual(params["username"], "22890000001")
+        self.assertEqual(params["from-user"], "+22890000001")
+        self.assertEqual(params["password"], 'p&"ss<w>')
+        self.assertEqual(params["proxy"], "$" + "${ocd_meta_sip}")
+        self.assertEqual(params["from-domain"], "$" + "${ocd_sip_domain}")
+        self.assertEqual(params["register"], "false")
+        self.assertEqual(params["register-transport"], "tls")
+        self.assertIn("sofia profile ocd_whatsapp killgw meta_1110001", FakeEventSocket.commands)
+        self.assertIn("sofia profile ocd_whatsapp rescan", FakeEventSocket.commands)
+        FakeEventSocket.commands = []
+        sync.run_once()
+        self.assertNotIn("sofia profile ocd_whatsapp rescan", FakeEventSocket.commands)
+        # a new copy of the sync (restart): the gateways checked once, none cut
+        FakeEventSocket.commands = []
+        ocd_call_sync.Sync(self.conf).run_once()
+        self.assertIn("sofia profile ocd_whatsapp rescan", FakeEventSocket.commands)
+        self.assertFalse([c for c in FakeEventSocket.commands if "killgw" in c])
+        # a number without its SIP password yet: no gateway
+        self.assertNotIn("gateway", ocd_call_sync.gateways_meta([{"phone_number_id": "1", "number": "228"}]))
+
     def test_nothing_reloaded_when_unchanged(self):
         sync = ocd_call_sync.Sync(self.conf)
         sync.run_once()
@@ -273,7 +302,7 @@ class TestSync(unittest.TestCase):
     @unittest.skipUnless(LUA, "Lua is not installed")
     def test_queue_lua(self):
         """Decisions of the queue, then whole calls through the script with a fake FreeSWITCH."""
-        for script in ("test_queue.lua", "test_inbound.lua"):
+        for script in ("test_queue.lua", "test_inbound.lua", "test_outbound.lua"):
             result = subprocess.run([LUA, str(HERE / script)], capture_output=True, text=True, check=False)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 

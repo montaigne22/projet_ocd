@@ -45,6 +45,8 @@
                     <i class="oi oi-fw text-success" data-icon="phone" t-if="this.softphone.incoming"/>
                     <i class="oi oi-fw text-success" data-icon="phone_in_talk" t-else=""/>
                     <span class="small text-muted" t-if="this.softphone.incoming">WhatsApp call</span>
+                    <span class="small text-warning" t-elif="this.softphone.active.outgoing and this.softphone.active.connecting and this.softphone.active.ringing">It rings at the customer's...</span>
+                    <span class="small text-warning" t-elif="this.softphone.active.outgoing and this.softphone.active.connecting">Calling through WhatsApp...</span>
                     <span class="small text-warning" t-elif="this.softphone.active.connecting">Connecting...</span>
                     <span class="small text-muted" t-else="">In call · <t t-out="this.duration"/></span>
                     <span class="small text-muted ms-auto" t-out="this.call.account"/>

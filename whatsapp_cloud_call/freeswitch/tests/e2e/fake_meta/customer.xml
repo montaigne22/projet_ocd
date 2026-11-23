@@ -1,0 +1,13 @@
+<include>
+  <!-- Test only: the customer called by the company (the call server through its gateway to
+       Meta): answers at once, sends a tone, records what they hear (/tmp/meta/out_<number>.wav),
+       hangs up after 60 s -->
+  <extension name="ocd_test_customer">
+    <condition field="destination_number" expression="^\+?(237\d+)$">
+      <action application="set" data="meta_name=out_$1"/>
+      <action application="set" data="meta_seconds=60"/>
+      <action application="answer"/>
+      <action application="lua" data="/opt/fake_meta/meta_call.lua"/>
+    </condition>
+  </extension>
+</include>

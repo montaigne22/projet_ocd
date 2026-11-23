@@ -23,6 +23,7 @@ import configparser
 import json
 import logging
 import os
+import re
 import socket
 import sys
 import tempfile
@@ -216,6 +217,38 @@ def directory_meta(trunks):
     return "\n".join(lines) + "\n"
 
 
+def gateways_meta(trunks):
+    """Gateways to Meta for the calls of the company (meta_<phone number ID>): signed with the
+    business number without "+" and the SIP password of Meta, From +<number>@<the call server>
+    (Meta checks both); TLS. The $${...} are variables of FreeSWITCH (vars_ocd.xml)."""
+    lines = ["<include>"]
+    for trunk in trunks:
+        pnid = "".join(ch for ch in str(trunk.get("phone_number_id") or "") if ch.isalnum())
+        number = "".join(ch for ch in str(trunk.get("number") or "") if ch.isdigit())
+        password = str(trunk.get("password") or "")
+        if not pnid or not number or not password:
+            continue
+        lines += [
+            f"  <gateway name={quoteattr('meta_' + pnid)}>",
+            '    <param name="proxy" value="$${ocd_meta_sip}"/>',
+            '    <param name="realm" value="wa.meta.vc"/>',
+            f'    <param name="username" value={quoteattr(number)}/>',
+            f'    <param name="password" value={quoteattr(password)}/>',
+            f'    <param name="from-user" value={quoteattr("+" + number)}/>',
+            '    <param name="from-domain" value="$${ocd_sip_domain}"/>',
+            '    <param name="register" value="false"/>',
+            '    <param name="register-transport" value="tls"/>',
+            '    <param name="caller-id-in-from" value="false"/>',
+            "  </gateway>",
+        ]
+    lines.append("</include>")
+    return "\n".join(lines) + "\n"
+
+
+def gateway_names(content):
+    return re.findall(r'<gateway name="([^"]+)"', content)
+
+
 def settings_lua(data, conf):
     """Settings read by the scripts of the queue."""
     settings = {
@@ -258,6 +291,9 @@ class Sync:
         # the start of the service, whatever happened before
         self.reload_pending = True
         self.cdr_reload_pending = False
+        # at start, the gateways written before are checked (rescan adds the missing ones and
+        # cuts no call); "reload" when they changed (taken again)
+        self.gateways_pending = "rescan"
 
     # === ODOO === #
 
@@ -326,10 +362,23 @@ class Sync:
         write_if_changed(state / "settings.lua", settings_lua(data, conf), mode=0o640)
         write_if_changed(state / "odoo_headers", f"Authorization: Bearer {conf['token']}\n", mode=0o640)
         vars_changed = write_if_changed(state / "vars_secret.xml", vars_secret(conf), mode=0o640)
-        if changed or vars_changed or self.reload_pending:
+        gateways = gateways_meta(data.get("trunks") or [])
+        gateways_changed = write_if_changed(state / "gateways_meta.xml", gateways, mode=0o640)
+        if changed or vars_changed or gateways_changed or self.reload_pending:
             self.reload_pending = "+OK" not in self.fs("reloadxml")
             if not self.reload_pending:
                 _logger.info("FreeSWITCH: users reloaded (%s agents)", len(data.get("agents") or []))
+        if gateways_changed:
+            # a number or its SIP password changed: the gateways to Meta are taken again (until
+            # FreeSWITCH answers)
+            self.gateways_pending = "reload"
+        if self.gateways_pending and not self.reload_pending:
+            if self.gateways_pending == "reload":
+                for name in gateway_names(gateways):
+                    self.fs(f"sofia profile ocd_whatsapp killgw {name}")
+            if "+OK" in self.fs("sofia profile ocd_whatsapp rescan"):
+                self.gateways_pending = False
+                _logger.info("FreeSWITCH: gateways to Meta: %s", ", ".join(gateway_names(gateways)) or "none")
         if vars_changed or self.cdr_reload_pending:
             # the address of Odoo or the key changed: the records of the calls follow
             self.cdr_reload_pending = "+OK" not in self.fs("reload mod_json_cdr")

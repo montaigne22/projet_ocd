@@ -7,7 +7,7 @@ import psycopg2
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 from odoo.addons.whatsapp_cloud_call import const
 
@@ -459,6 +459,8 @@ class WhatsappCall(models.Model):
             side = "from" if direction == "USER_INITIATED" else "to"
             number = clean_number(data.get(side))
             user_ref = str(data.get(f"{side}_user_id") or "").strip()[:64]
+            if direction == "BUSINESS_INITIATED":
+                self._call_link_outbound(account, wacid, number, user_ref)
             call = self._call_get_or_create(account, wacid, number, user_ref=user_ref)
             vals = {"meta_seen": True}
             if direction == "BUSINESS_INITIATED":
@@ -485,6 +487,59 @@ class WhatsappCall(models.Model):
                 _logger.info("WhatsApp call %s: ended at Meta, the agents' phones hang up.", wacid)
                 call._call_bus_send(ended_at_meta=True)
 
+    # === CALLS OF THE COMPANY === #
+
+    @api.model
+    def _call_link_outbound(self, account, wacid, number, user_ref):
+        """A call of the company told by Meta: the call prepared in Odoo when the agent clicked
+        (Meta gives its ID only then)."""
+        if self.sudo().search_count([("account_id", "=", account.id), ("wacid", "=", wacid)]):
+            return
+        customer = [("number", "=", number)] if number else [("user_ref", "=", user_ref)]
+        if not (number or user_ref):
+            return
+        call = self.sudo().search([
+            ("account_id", "=", account.id), ("direction", "=", "outbound"), ("wacid", "=", False),
+            ("create_date", ">=", fields.Datetime.now() - const.OUTBOUND_META_LINK),
+            *customer,
+        ], order="id desc", limit=1)
+        if call:
+            call.wacid = wacid
+
+    @api.model
+    def _server_outbound(self, values):
+        """The call server asks whether an agent may make a call of the company (prepared by
+        Odoo when they clicked): whom, through which number; else why not."""
+        call_id = str(values.get("call") or "")
+        call = self.sudo().browse(int(call_id)).exists() if call_id.isdigit() else self.browse()
+        user = self._agent_from_login(values.get("agent"))
+        if (
+            not call or call.direction != "outbound" or call.state != "ringing" or call.server_seen
+            or not user or call.user_id != user
+            or call.create_date < fields.Datetime.now() - const.OUTBOUND_PREPARED_FOR
+        ):
+            _logger.warning("WhatsApp call %s: call of %s refused by Odoo (not prepared).",
+                            call_id, values.get("agent"))
+            return {"error": "Call not prepared by Odoo"}
+        account = call.account_id
+        if not account.call_enabled or not account.sudo().call_sip_password or not call.number:
+            return {"error": "Calls not enabled or no number"}
+        call.write({"server_seen": True, "server_uuid": values.get("uuid") or False})
+        return {
+            "number": call.number,
+            "phone_number_id": account.phone_number_id,
+            "business_number": account._call_business_number(),
+            "srtp": account.call_srtp,
+            "max_ring": const.OUTBOUND_MAX_RING,
+        }
+
+    def action_call_back(self):
+        """Call the customer back (the phone of the top bar calls them through WhatsApp)."""
+        self.ensure_one()
+        if not self.channel_id:
+            raise UserError(_("This call has no conversation."))
+        return self.channel_id.with_user(self.env.user).whatsapp_action_call()
+
     # === CHECKS === #
 
     @api.model
@@ -493,6 +548,7 @@ class WhatsappCall(models.Model):
         server stopped during the call), and the silence of the call server."""
         now = fields.Datetime.now()
         lost = self.sudo().search([
+            ("direction", "=", "inbound"),
             ("meta_seen", "=", True),
             ("server_seen", "=", False),
             ("state", "=", "ringing"),
@@ -517,6 +573,11 @@ class WhatsappCall(models.Model):
         for call in stale:
             call._call_end({"event": "ended", "outcome": "completed" if call.answer_date else "missed",
                             "ended_by": "system", "cause": "NO_END_RECEIVED"})
+        # calls of the company prepared but never placed (phone closed, browser refused)
+        self.sudo().search([
+            ("direction", "=", "outbound"), ("state", "=", "ringing"), ("server_seen", "=", False),
+            ("create_date", "<", now - const.OUTBOUND_PREPARED_FOR),
+        ]).write({"state": "failed", "end_date": now, "ended_by": "system", "end_cause": "NOT_PLACED"})
         self._cron_check_server()
 
     @api.model
@@ -547,6 +608,17 @@ class WhatsappCall(models.Model):
         self.ensure_one()
         env = self.env
         wait = format_duration(env, self.wait_duration)
+        if self.direction == "outbound":
+            agent = self.user_id.name or _("an agent")
+            if self.state == "completed":
+                return _("Call to the customer of %(duration)s, by %(agent)s.",
+                         duration=format_duration(env, self.duration), agent=agent)
+            if self.state == "failed":
+                return _("Call to the customer by %(agent)s: it did not go through (%(cause)s).",
+                         agent=agent, cause=self.end_cause or _("call server"))
+            if self.ended_by == "agent":
+                return _("Call to the customer by %s: hung up before they answered.", agent)
+            return _("Call to the customer by %s: no answer.", agent)
         if self.state == "completed":
             text = _("Call of %(duration)s, answered by %(agent)s (waited %(wait)s).",
                      duration=format_duration(env, self.duration),
@@ -572,7 +644,7 @@ class WhatsappCall(models.Model):
             channel = call.channel_id.sudo()
             channel = channel.with_context(lang=channel.whatsapp_account_id._get_team_lang())
             call = call.with_context(lang=channel.env.lang)
-            if call.state in ("missed", "voicemail", "lost"):
+            if call.direction == "inbound" and call.state in ("missed", "voicemail", "lost"):
                 channel._whatsapp_route_to_agents()
                 partners = channel.whatsapp_user_id.partner_id or None
             else:

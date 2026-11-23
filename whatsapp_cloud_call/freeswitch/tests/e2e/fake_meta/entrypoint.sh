@@ -13,6 +13,9 @@ sed -i -E 's#<X-PRE-PROCESS cmd="stun-set" data="(external_(rtp|sip)_ip)=[^"]*"/
 cp /usr/share/ocd/conf/autoload_configs/modules.conf.xml "$CONF/autoload_configs/"
 cp /usr/share/ocd/conf/autoload_configs/local_stream.conf.xml "$CONF/autoload_configs/"
 cp /opt/fake_meta/meta.xml "$CONF/sip_profiles/meta.xml"
+# the customer the company calls (calls of the company, through the gateway of the call server)
+mkdir -p "$CONF/dialplan/public"
+cp /opt/fake_meta/customer.xml "$CONF/dialplan/public/00_ocd_customer.xml"
 sed -i 's#<!-- <param name="rtp-start-port" value="16384"/> -->#<param name="rtp-start-port" value="40000"/>#; s#<!-- <param name="rtp-end-port" value="32768"/> -->#<param name="rtp-end-port" value="41000"/>#' \
   "$CONF/autoload_configs/switch.conf.xml"
 cat > "$CONF/autoload_configs/event_socket.conf.xml" <<EOF

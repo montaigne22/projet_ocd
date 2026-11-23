@@ -126,6 +126,18 @@ conversation, avec une ligne pour l'équipe ; elle ne compte pas comme un messag
 retire l'accord après 4 appels sans réponse : noté aussi. À venir : la demande par un modèle (hors des
 24 h), à faire approuver par Meta.
 
+**2.2 fait (version 20.0.1.7.0)** : « Appeler par WhatsApp » dans le panneau « Client » de la conversation
+(quand le client a donné son accord), et « Rappeler » sur la fiche d'un appel. Odoo vérifie chez Meta
+l'accord et les limites, prépare l'appel ; le téléphone du conseiller (barre du haut) l'appelle : « Appel
+par WhatsApp... », « Ça sonne chez le client... », puis « En ligne ». Le serveur d'appels demande à Odoo
+s'il peut passer cet appel-là (préparé depuis moins de 2 minutes, par ce conseiller, une seule fois) et
+refuse sans réponse d'Odoo : aucun appel payant qu'Odoo n'a pas voulu. Il appelle le client par la
+passerelle vers Meta du numéro (`wa.meta.vc`, TLS, signé avec le mot de passe SIP de Meta) ; la fin
+(durée, pas de réponse, refus, échec) revient dans Odoo avec une ligne dans la conversation, sans la
+mettre « en attente de réponse ». L'avis de Meta sur cet appel rejoint la même fiche. Vu de bout en bout
+avec un faux Meta (`tests/e2e/company_calls.js`) : voix dans les deux sens, durée, refus d'un appel non
+préparé.
+
 Ce que dit Meta pour la suite (novembre 2026) : un appel de l'entreprise part du serveur d'appels vers
 `sip:+<numéro du client>@wa.meta.vc` (TLS), signé avec le numéro de l'entreprise (sans `+`) et le mot de
 passe SIP de Meta ; 100 appels aboutis au plus par 24 h ; 2 appels sans réponse d'affilée : WhatsApp

@@ -105,6 +105,16 @@ class WhatsAppCallServer(http.Controller):
             lines.append(f"{key}={_clean(value, 512)}")
         return request.make_response("\n".join(lines) + "\n", headers=[("Content-Type", "text/plain")])
 
+    @http.route("/whatsapp/call/server/outbound", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    def outbound(self, **kwargs):
+        """A call of the company placed by an agent: whom, through which number, or why not
+        (lines "key=value"); the call server places nothing that Odoo did not prepare."""
+        self._check_token()
+        answer = self._calls()._server_outbound(self._values())
+        lines = [f"{key}={_clean(value, 256)}" for key, value in answer.items()]
+        return request.make_response("\n".join(lines) + "\n", headers=[("Content-Type", "text/plain")])
+
     @http.route("/whatsapp/call/server/event", type="http", auth="public", methods=["POST"],
                 csrf=False, save_session=False)
     def event(self, **kwargs):

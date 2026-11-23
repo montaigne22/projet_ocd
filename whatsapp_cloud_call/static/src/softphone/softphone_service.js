@@ -21,7 +21,7 @@ const ICE_RELAY_WAIT_MS = 3000;
 // The browser still asks for the microphone after this time: the agent is shown where to allow it.
 const MICROPHONE_HINT_MS = 1500;
 // Shown in the menu of the phone and in its diagnostic: the version of the module.
-const SOFTPHONE_VERSION = "20.0.1.4.6";
+const SOFTPHONE_VERSION = "20.0.1.7.0";
 
 /**
  * The phone of the agents: connected to the call server (SIP over WSS, JsSIP) while the agent
@@ -351,6 +351,71 @@ export const whatsappSoftphoneService = {
             }
         }
 
+        // === DIAGNOSTIC AND NETWORK ADDRESSES (answer and call of the company) === //
+
+        /** The diagnostic of a call by this phone, kept on the call in Odoo (phone_trace). */
+        function makeTracker(callId, start) {
+            const begun = Date.now();
+            const trace = [`phone ${SOFTPHONE_VERSION}`, start];
+            let sent = false;
+            const note = (text) => trace.push(`${Date.now() - begun} ms ${text}`);
+            const send = (end) => {
+                if (sent) {
+                    return;
+                }
+                sent = true;
+                note(end);
+                if (callId) {
+                    rpc("/whatsapp/call/softphone/trace", { call_id: callId, trace: trace.join("; ") },
+                        { silent: true }).catch(() => {});
+                }
+            };
+            return { note, send };
+        }
+
+        /** The network addresses of a call: its SDP leaves with the relay address, else 3
+         * seconds after the public address, at most after ICE_GATHERING_MS (see above). */
+        function iceHandler(note, label) {
+            let iceTimer = null;
+            let relayWait = null;
+            let publicAddress = false;
+            const seenTypes = new Set();
+            const ready = (event, why) => {
+                note(`${label} sent (${why})`);
+                event.ready();
+            };
+            return (event) => {
+                const type = event.candidate?.type;
+                if (type && !seenTypes.has(type)) {
+                    seenTypes.add(type);
+                    note(`address ${type}${event.candidate?.protocol ? " " + event.candidate.protocol : ""}`);
+                }
+                if (type === "relay") {
+                    browser.clearTimeout(iceTimer);
+                    browser.clearTimeout(relayWait);
+                    ready(event, "relay");
+                    return;
+                }
+                if (type === "srflx") {
+                    publicAddress = true;
+                    relayWait ||= browser.setTimeout(() => ready(event, "public address, no relay"), ICE_RELAY_WAIT_MS);
+                }
+                if (!iceTimer) {
+                    iceTimer = browser.setTimeout(() => {
+                        if (!publicAddress) {
+                            // only the masked address of the computer (".local"): the call
+                            // server cannot send the voice back, it refuses the call
+                            notification.add(
+                                _t("The voice relay of the call server (STUN/TURN, ports 3478 and 5349) does not answer: the call cannot go through. Tell the administrator (coturn on the call server, firewall)."),
+                                { type: "danger", sticky: true }
+                            );
+                        }
+                        ready(event, publicAddress ? "public address" : "no public address");
+                    }, ICE_GATHERING_MS);
+                }
+            };
+        }
+
         async function answer() {
             const session = incomingSession;
             if (!session) {
@@ -361,24 +426,10 @@ export const whatsappSoftphoneService = {
             incomingSession = null;
             activeSession = session;
             // the diagnostic of this answer, kept on the call in Odoo (whatsapp.call phone_trace)
-            const clicked = Date.now();
-            const traceCallId = state.incoming?.callId;
-            const rung = state.incoming?.ringingSince ? clicked - state.incoming.ringingSince : "?";
-            const trace = [`phone ${SOFTPHONE_VERSION}`, `answered ${rung} ms after the ring`];
-            const seenTypes = new Set();
-            let traceSent = false;
-            session.ocdNote = (text) => trace.push(`${Date.now() - clicked} ms ${text}`);
-            const sendTrace = (end) => {
-                if (traceSent) {
-                    return;
-                }
-                traceSent = true;
-                session.ocdNote(end);
-                if (traceCallId) {
-                    rpc("/whatsapp/call/softphone/trace", { call_id: traceCallId, trace: trace.join("; ") },
-                        { silent: true }).catch(() => {});
-                }
-            };
+            const rung = state.incoming?.ringingSince ? Date.now() - state.incoming.ringingSince : "?";
+            const tracker = makeTracker(state.incoming?.callId, `answered ${rung} ms after the ring`);
+            const sendTrace = tracker.send;
+            session.ocdNote = tracker.note;
             session.on("confirmed", () => session.ocdNote("established"));
             session.on("ended", (event) => sendTrace(`ended: ${event.cause} (${event.originator})`));
             state.active = {
@@ -448,43 +499,7 @@ export const whatsappSoftphoneService = {
             state.active.askingMicrophone = false;
             localStream = stream;
             session.on("peerconnection", () => watchMedia(session));
-            let iceTimer = null;
-            let relayWait = null;
-            let publicAddress = false;
-            const ready = (event, why) => {
-                session.ocdNote(`answer sent (${why})`);
-                event.ready();
-            };
-            session.on("icecandidate", (event) => {
-                const type = event.candidate?.type;
-                if (type && !seenTypes.has(type)) {
-                    seenTypes.add(type);
-                    session.ocdNote(`address ${type}${event.candidate?.protocol ? " " + event.candidate.protocol : ""}`);
-                }
-                if (type === "relay") {
-                    browser.clearTimeout(iceTimer);
-                    browser.clearTimeout(relayWait);
-                    ready(event, "relay");
-                    return;
-                }
-                if (type === "srflx") {
-                    publicAddress = true;
-                    relayWait ||= browser.setTimeout(() => ready(event, "public address, no relay"), ICE_RELAY_WAIT_MS);
-                }
-                if (!iceTimer) {
-                    iceTimer = browser.setTimeout(() => {
-                        if (!publicAddress) {
-                            // only the masked address of the computer (".local"): the call
-                            // server cannot send the voice back, it refuses the call
-                            notification.add(
-                                _t("The voice relay of the call server (STUN/TURN, ports 3478 and 5349) does not answer: the call cannot go through. Tell the administrator (coturn on the call server, firewall)."),
-                                { type: "danger", sticky: true }
-                            );
-                        }
-                        ready(event, publicAddress ? "public address" : "no public address");
-                    }, ICE_GATHERING_MS);
-                }
-            });
+            session.on("icecandidate", iceHandler(tracker.note, "answer"));
             try {
                 session.answer({
                     mediaStream: stream,
@@ -498,6 +513,104 @@ export const whatsappSoftphoneService = {
             if (session.connection) {
                 watchMedia(session);
             }
+        }
+
+        // === CALLS OF THE COMPANY === //
+
+        /** Why a call of the company did not go through, for the agent. */
+        function dialFailure(event) {
+            const C = browser.JsSIP?.C?.causes || {};
+            if (event.originator === "local" && event.cause === C.CANCELED) {
+                return ""; // the agent hung up while it rang
+            }
+            if (event.message?.status_code === 403) {
+                return _t("The call did not leave: %s", event.message.reason_phrase || "");
+            }
+            if ([C.BUSY, C.REJECTED].includes(event.cause)) {
+                return _t("The customer declined the call.");
+            }
+            if ([C.UNAVAILABLE, C.NO_ANSWER, C.REQUEST_TIMEOUT].includes(event.cause)) {
+                return _t("No answer from the customer.");
+            }
+            return _t("The call did not go through (%s).", event.cause);
+        }
+
+        /** Call a customer through WhatsApp (prepared by Odoo, whatsapp_action_call): the call
+         * server checks the call with Odoo and calls the customer through Meta; the agent hears
+         * it ring, then the customer. */
+        async function dial({ call_id: callId, name, number }) {
+            const fail = (reason, text) => {
+                if (text) {
+                    notification.add(text, { type: "warning" });
+                }
+                rpc("/whatsapp/call/softphone/dial_failed", { call_id: callId, reason }, { silent: true }).catch(() => {});
+            };
+            if (!ua || state.status !== "ready") {
+                return fail("PHONE_NOT_CONNECTED",
+                    _t("Take the WhatsApp calls first (phone of the top bar): the call leaves from it."));
+            }
+            if (activeSession || incomingSession) {
+                return fail("PHONE_BUSY", _t("Finish the current call first."));
+            }
+            unlockAudio();
+            const tracker = makeTracker(callId, "call of the company");
+            let stream = null;
+            try {
+                stream = await browser.navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                state.microphone = "granted";
+                tracker.note("microphone");
+            } catch (error) {
+                state.microphone = "denied";
+                tracker.send(`microphone refused (${error?.name || error})`);
+                return fail("MICROPHONE",
+                    _t("The browser refuses the microphone: allow it for this site, then call again."));
+            }
+            if (activeSession || incomingSession) {
+                // a call came meanwhile
+                stream.getTracks().forEach((track) => track.stop());
+                return fail("PHONE_BUSY", _t("Finish the current call first."));
+            }
+            localStream = stream;
+            state.message = "";
+            state.active = {
+                callId, name, number, outgoing: true, startedAt: Date.now(), muted: false, lost: false,
+                connecting: true, ringing: false, askingMicrophone: false,
+            };
+            let session = null;
+            const established = () => {
+                tracker.note("established");
+                if (session && session === activeSession && state.active) {
+                    state.active.connecting = false;
+                    state.active.startedAt = Date.now();
+                }
+            };
+            session = ua.call(`sip:out${callId}@${config.uri.split("@")[1]}`, {
+                mediaStream: stream,
+                pcConfig: { iceServers: config.ice_servers || [], iceTransportPolicy: "all" },
+                extraHeaders: [`X-OCD-Call: ${callId}`],
+                eventHandlers: {
+                    icecandidate: iceHandler(tracker.note, "call"),
+                    progress: () => {
+                        tracker.note("ringing");
+                        if (state.active?.outgoing) {
+                            state.active.ringing = true;
+                        }
+                    },
+                    confirmed: established,
+                    ended: (event) => {
+                        tracker.send(`ended: ${event.cause} (${event.originator})`);
+                        onEnded(session);
+                    },
+                    failed: (event) => {
+                        tracker.send(`failed: ${event.cause} (${event.originator})`);
+                        state.message = dialFailure(event);
+                        onEnded(session);
+                    },
+                },
+            });
+            activeSession = session;
+            session.ocdNote = tracker.note;
+            watchMedia(session);
         }
 
         function decline() {
@@ -609,9 +722,14 @@ export const whatsappSoftphoneService = {
             }
         })();
 
-        Object.assign(state, { answer, decline, hangup, toggleMute, openConversation, setAvailable });
+        Object.assign(state, { answer, decline, dial, hangup, toggleMute, openConversation, setAvailable });
         return state;
     },
 };
 
 registry.category("services").add("whatsapp_softphone", whatsappSoftphoneService);
+
+// "Call through WhatsApp" (conversation, call): the call prepared by Odoo leaves from this phone
+registry.category("actions").add("whatsapp_call_dial", (env, action) => {
+    env.services.whatsapp_softphone.dial(action.params || {});
+});

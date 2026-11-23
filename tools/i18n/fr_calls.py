@@ -61,6 +61,36 @@ CALLS = {
     "Allow the microphone when the browser asks (at the top, at the left of the address).":
         "Autorisez le micro quand le navigateur le demande (en haut, à gauche de l'adresse).",
     "Connecting...": "Connexion...",
+    "Call Back": "Rappeler",
+    "Call the customer through WhatsApp from your phone of the top bar (a call of the company, paid; the customer must have allowed it).":
+        "Appeler le client par WhatsApp depuis votre téléphone de la barre du haut (un appel de l'entreprise, payant ; le client doit l'avoir accepté).",
+    "Call through WhatsApp": "Appeler par WhatsApp",
+    "Call to the customer by %(agent)s: it did not go through (%(cause)s).":
+        "Appel du client par %(agent)s : il n'a pas abouti (%(cause)s).",
+    "Call to the customer by %s: hung up before they answered.":
+        "Appel du client par %s : raccroché avant sa réponse.",
+    "Call to the customer by %s: no answer.": "Appel du client par %s : pas de réponse.",
+    "Call to the customer of %(duration)s, by %(agent)s.": "Appel du client de %(duration)s, par %(agent)s.",
+    "Calling through WhatsApp...": "Appel par WhatsApp...",
+    "Finish the current call first.": "Terminez d'abord l'appel en cours.",
+    "It rings at the customer's...": "Ça sonne chez le client...",
+    "Meta does not allow more calls to this customer for now (limit of calls): try again later.":
+        "Meta ne permet pas d'autres appels vers ce client pour le moment (limite d'appels) : réessayez plus tard.",
+    "No answer from the customer.": "Pas de réponse du client.",
+    "Take the WhatsApp calls first (phone of the top bar): the call leaves from it.":
+        "Prenez d'abord les appels WhatsApp (téléphone de la barre du haut) : l'appel part de lui.",
+    "The browser refuses the microphone: allow it for this site, then call again.":
+        "Le navigateur refuse le micro : autorisez-le pour ce site, puis appelez de nouveau.",
+    "The call did not go through (%s).": "L'appel n'a pas abouti (%s).",
+    "The call did not leave: %s": "L'appel n'est pas parti : %s",
+    "The customer declined the call.": "Le client a refusé l'appel.",
+    "The customer did not allow the company to call them on WhatsApp: ask them first (Ask to call them).":
+        "Le client n'a pas accepté que l'entreprise l'appelle sur WhatsApp : demandez-lui d'abord (Demander l'accord pour appeler).",
+    "The customer hides their number behind a WhatsApp username: the company cannot call them.":
+        "Le client cache son numéro derrière un nom d'utilisateur WhatsApp : l'entreprise ne peut pas l'appeler.",
+    "This call has no conversation.": "Cet appel n'a pas de conversation.",
+    "You do not take the WhatsApp calls of this account (Team tab).":
+        "Vous ne prenez pas les appels WhatsApp de ce compte (onglet Équipe).",
     "Allowed": "Accordé",
     "Allowed for a while": "Accordé pour un temps",
     "Ask to call them": "Demander l'accord pour appeler",

@@ -1,4 +1,4 @@
-from odoo import http
+from odoo import fields, http
 from odoo.http import request
 
 
@@ -46,6 +46,17 @@ class WhatsAppSoftphone(http.Controller):
         call = self._get_call(call_id)
         if call:
             call._call_add_phone_trace(request.env.user, trace)
+        return True
+
+    @http.route("/whatsapp/call/softphone/dial_failed", type="jsonrpc", auth="user")
+    def softphone_dial_failed(self, call_id, reason=""):
+        """The phone could not place a call of the company (not connected, microphone...)."""
+        call = self._get_call(call_id)
+        if call and call.direction == "outbound" and call.state == "ringing" and not call.server_seen:
+            call.sudo().write({
+                "state": "failed", "end_date": fields.Datetime.now(), "ended_by": "agent",
+                "end_cause": str(reason or "PHONE")[:64],
+            })
         return True
 
     @http.route("/whatsapp/call/softphone/declined", type="jsonrpc", auth="user")

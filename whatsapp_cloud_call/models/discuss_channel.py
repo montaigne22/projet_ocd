@@ -180,6 +180,61 @@ class DiscussChannel(models.Model):
         channel._whatsapp_notify(text)
         return channel
 
+    # === CALLING THE CUSTOMER === #
+
+    def whatsapp_action_call(self):
+        """Call the customer through WhatsApp from the phone of the top bar (a call of the
+        company, paid): Meta must allow it (permission of the customer, limits). The call is
+        prepared here, the phone of the agent places it, the call server checks it with Odoo."""
+        self._whatsapp_check_agent()
+        self.ensure_one()
+        user = self.env.user
+        channel = self.sudo()
+        account = channel.whatsapp_account_id
+        if not account.call_enabled or not account.sudo().call_sip_password:
+            raise UserError(_("The calls are not enabled on this WhatsApp account (Calls tab)."))
+        if user.sudo()._whatsapp_call_softphone() is None:
+            raise UserError(_("You do not take the WhatsApp calls of this account (Team tab)."))
+        if not channel.whatsapp_number:
+            raise UserError(_(
+                "The customer hides their number behind a WhatsApp username: the company cannot "
+                "call them."
+            ))
+        try:
+            data = channel._whatsapp_call_permission_read()
+        except WhatsAppApiError as error:
+            raise UserError(_("Meta does not answer: %s", account._get_error_text(error))) from error
+        start = next((a for a in data.get("actions") or [] if a.get("action_name") == "start_call"), {})
+        if not start.get("can_perform_action"):
+            if not channel._whatsapp_call_allowed():
+                raise UserError(_(
+                    "The customer did not allow the company to call them on WhatsApp: ask them "
+                    "first (Ask to call them)."
+                ))
+            raise UserError(_(
+                "Meta does not allow more calls to this customer for now (limit of calls): try "
+                "again later."
+            ))
+        call = self.env["whatsapp.call"].sudo().create({
+            "account_id": account.id,
+            "direction": "outbound",
+            "channel_id": channel.id,
+            "partner_id": channel.whatsapp_partner_id.id,
+            "number": channel.whatsapp_number,
+            "user_ref": channel.whatsapp_user_ref or False,
+            "user_id": user.id,
+            "in_hours": account._is_open(),
+        })
+        return {
+            "type": "ir.actions.client",
+            "tag": "whatsapp_call_dial",
+            "params": {
+                "call_id": call.id,
+                "name": channel.whatsapp_partner_id.display_name or f"+{channel.whatsapp_number}",
+                "number": f"+{channel.whatsapp_number}",
+            },
+        }
+
     # === INFORMATION PANEL === #
 
     def _whatsapp_get_info_sections(self):
@@ -190,7 +245,10 @@ class DiscussChannel(models.Model):
                 "title": _("Calling the Customer"),
                 "items": [],
                 "empty": self._whatsapp_call_permission_text(),
-                "buttons": [] if self._whatsapp_call_allowed() else [{
+                "buttons": [{
+                    "method": "whatsapp_action_call",
+                    "name": _("Call through WhatsApp"),
+                }] if self._whatsapp_call_allowed() else [{
                     "method": "whatsapp_action_call_permission_request",
                     "name": _("Ask to call them"),
                 }],

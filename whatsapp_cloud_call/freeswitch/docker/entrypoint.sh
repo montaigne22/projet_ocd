@@ -8,6 +8,8 @@
 #   OCD_SRTP                  SDES (default) or DTLS: encryption of the voice with Meta
 #   OCD_AGENT_CANDIDATE_ACL   ICE candidates of the agents accepted (default wan_v4.auto)
 #   OCD_RTP_START, OCD_RTP_END  UDP ports of the voice (default 16384-29999)
+#   OCD_META_SIP              SIP server of Meta for the calls of the company (test only; default
+#                             wa.meta.vc)
 #
 # The certificate (fullchain + key in agent.pem, as written by ocd-freeswitch-certs.sh) is read
 # from /run/ocd-certs and copied for FreeSWITCH, which writes its own DTLS key next to it.
@@ -83,6 +85,7 @@ cat > "$STATE/vars_env.xml" <<EOF
   <X-PRE-PROCESS cmd="set" data="ocd_sip_domain=$(xml_value "$OCD_SIP_DOMAIN")"/>
   <X-PRE-PROCESS cmd="set" data="ocd_esl_password=$(xml_value "$OCD_ESL_PASSWORD")"/>
   <X-PRE-PROCESS cmd="set" data="ocd_srtp=$SRTP"/>
+  <X-PRE-PROCESS cmd="set" data="ocd_meta_sip=$(xml_value "${OCD_META_SIP:-wa.meta.vc}")"/>
   <X-PRE-PROCESS cmd="set" data="ocd_agent_candidate_acl=$(xml_value "${OCD_AGENT_CANDIDATE_ACL:-wan_v4.auto}")"/>
 </include>
 EOF

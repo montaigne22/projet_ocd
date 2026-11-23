@@ -126,4 +126,4 @@ class TestCallPermission(WhatsAppCallCommon):
         self.assertEqual(section["buttons"][0]["method"], "whatsapp_action_call_permission_request")
         self.channel.whatsapp_call_permission = "permanent"
         section = next(s for s in self.channel._whatsapp_get_info_sections() if s["title"] == "Calling the Customer")
-        self.assertFalse(section["buttons"])
+        self.assertEqual([b["method"] for b in section["buttons"]], ["whatsapp_action_call"])

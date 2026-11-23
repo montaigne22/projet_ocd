@@ -161,6 +161,19 @@ class TestCallSettings(WhatsAppCallCommon):
         self.account.messaging_limit = "TIER_10K"
         self.assertFalse(self.account.call_limit_warning)
 
+    def test_version_of_the_phone(self):
+        """The phone shows the version of the module (in its menu and its diagnostic): kept
+        equal to the manifest, to tell which phone a browser loaded."""
+        import ast
+        import re
+
+        from odoo.tools.misc import file_open
+        with file_open("whatsapp_cloud_call/__manifest__.py") as manifest:
+            version = ast.literal_eval(manifest.read())["version"]
+        with file_open("whatsapp_cloud_call/static/src/softphone/softphone_service.js") as script:
+            phone = re.search(r'SOFTPHONE_VERSION = "([^"]+)"', script.read()).group(1)
+        self.assertEqual(phone, version, "Raise SOFTPHONE_VERSION with the version of the module")
+
     def test_softphone_of_an_agent(self):
         config = self.agent._whatsapp_call_softphone()
         self.assertEqual(config["wss"], "wss://calls.example.com:7443")

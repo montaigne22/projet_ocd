@@ -12,6 +12,9 @@
        dialplan (not tried yet with Meta) -->
   <X-PRE-PROCESS cmd="set" data="ocd_srtp=mandatory:AES_CM_128_HMAC_SHA1_80:AES_CM_128_HMAC_SHA1_32"/>
 
+  <!-- where the calls of the company go: the SIP server of Meta (TLS, port 5061) -->
+  <X-PRE-PROCESS cmd="set" data="ocd_meta_sip=wa.meta.vc"/>
+
   <!-- password of the event socket (127.0.0.1:8021), the same in /etc/ocd-call-sync.conf -->
   <X-PRE-PROCESS cmd="set" data="ocd_esl_password=CHANGE-ME"/>
 

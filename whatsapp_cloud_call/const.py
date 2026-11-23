@@ -35,6 +35,13 @@ AGENT_PREFIX = "agent"
 
 MAX_VOICEMAIL_SIZE = 20 * 1024 * 1024
 
+# Calls of the company (phase 2): the call server takes a call prepared by Odoo for this long
+# after the click of the agent; WhatsApp rings the customer this long at most.
+OUTBOUND_PREPARED_FOR = timedelta(minutes=2)
+OUTBOUND_MAX_RING = 45
+# A call of the company noted by Meta is linked to the call prepared in Odoo within this time.
+OUTBOUND_META_LINK = timedelta(minutes=15)
+
 # The thresholds to open the calls to all the customers (docs/APPELS_WHATSAPP.md), measured on
 # the last days: calls cut under 2 %, voicemail while an agent was free under 5 %, average wait
 # under 1 minute during the call hours.
