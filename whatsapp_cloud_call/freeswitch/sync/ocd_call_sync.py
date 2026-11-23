@@ -24,7 +24,9 @@ import json
 import logging
 import os
 import re
+import shutil
 import socket
+import subprocess
 import sys
 import tempfile
 import time
@@ -62,6 +64,10 @@ ENVIRONMENT = {
 }
 # Written after each exchange with Odoo; its age tells whether the service works (--health).
 HEALTH_FILE = "sync_ok"
+# A recording is sent once its file has not changed for this long (the call ended); under this
+# size (half a second at 16 kHz), nothing was said: dropped.
+RECORDING_QUIET = 30
+RECORDING_MIN_BYTES = 16000
 HEALTH_MAX_AGE = 180
 
 
@@ -264,6 +270,7 @@ def settings_lua(data, conf):
                 "number": str(t.get("number") or ""),
                 "max_wait": int(t.get("max_wait") or 180),
                 "voicemail": bool(t.get("voicemail", True)),
+                "record": bool(t.get("record", False)),
             }
             for t in data.get("trunks") or [] if t.get("phone_number_id")
         },
@@ -353,6 +360,9 @@ class Sync:
         cdrs = sorted((self.spool / "cdr-errors").glob("*.json"))
         return voicemails, cdrs
 
+    def recording_files(self):
+        return sorted((self.spool / "recordings").glob("*.wav"))
+
     def write_files(self, data):
         conf = self.conf
         directory = Path(conf["directory_dir"])
@@ -411,6 +421,66 @@ class Sync:
                 # refused for a week (call unknown to Odoo): kept aside for the team
                 path.rename(path.with_suffix(".refused.wav"))
 
+    def send_recordings(self, files):
+        """The recordings of the calls ended (unchanged for RECORDING_QUIET seconds), in MP3 (lame;
+        the WAV when it cannot convert), with the facts written by the script of the call."""
+        for path in files:
+            try:
+                age = time.time() - path.stat().st_mtime
+            except OSError:
+                continue
+            if age < RECORDING_QUIET:
+                continue  # the call goes on, or its file was just closed
+            facts_path = path.with_suffix(".txt")
+            facts = {"uuid": path.stem}
+            if facts_path.exists():
+                for line in facts_path.read_text(encoding="utf-8").splitlines():
+                    key, _sep, value = line.partition("=")
+                    if key.strip():
+                        facts[key.strip()] = value.strip()
+            if path.stat().st_size < RECORDING_MIN_BYTES:
+                # nothing said (an agent who answered and hung up at once)
+                for leftover in (path, facts_path, path.with_suffix(".mp3")):
+                    leftover.unlink(missing_ok=True)
+                continue
+            sent, content_type = self.recording_mp3(path), "audio/mpeg"
+            if not sent:
+                sent, content_type = path, "audio/wav"
+            body, multipart_type = multipart(facts, sent, content_type)
+            try:
+                status, _answer = self._request("/whatsapp/call/server/recording", body, multipart_type, timeout=120)
+            except urllib.error.HTTPError as error:
+                status = error.code
+            except (urllib.error.URLError, OSError) as error:
+                _logger.warning("Recording %s not sent: %s", path.name, error)
+                return
+            if status == 200:
+                for leftover in (path, facts_path, path.with_suffix(".mp3")):
+                    leftover.unlink(missing_ok=True)
+                _logger.info("Recording %s sent to Odoo", path.stem)
+            elif age > 7 * 86400:
+                # refused for a week (call unknown to Odoo): kept aside for the team
+                path.rename(path.with_suffix(".refused.wav"))
+                path.with_suffix(".mp3").unlink(missing_ok=True)
+
+    def recording_mp3(self, path):
+        """The MP3 of a recording (mono, 32 kbit/s: about 240 kB a minute), made once; None when
+        lame is missing or fails."""
+        mp3 = path.with_suffix(".mp3")
+        if mp3.exists() and mp3.stat().st_size and mp3.stat().st_mtime >= path.stat().st_mtime:
+            return mp3
+        lame = shutil.which("lame")
+        if not lame:
+            return None
+        try:
+            subprocess.run([lame, "--quiet", "-m", "m", "-b", "32", str(path), str(mp3)],
+                           check=True, timeout=600, capture_output=True)
+        except (subprocess.SubprocessError, OSError) as error:
+            _logger.warning("Recording %s not converted to MP3 (%s): sent in WAV", path.name, error)
+            mp3.unlink(missing_ok=True)
+            return None
+        return mp3
+
     def send_cdrs(self, files):
         """Records of calls that mod_json_cdr could not give to Odoo."""
         for path in files:
@@ -428,10 +498,11 @@ class Sync:
 
     def run_once(self):
         voicemails, cdrs = self.spool_files()
+        recordings = self.recording_files()
         report = {
             "registrations": self.registrations(),
             "version": self.version(),
-            "spool": len(voicemails) + len(cdrs),
+            "spool": len(voicemails) + len(cdrs) + len(recordings),
         }
         try:
             data = self.fetch_config(report)
@@ -441,11 +512,12 @@ class Sync:
         self.write_files(data)
         self.send_voicemails(voicemails)
         self.send_cdrs(cdrs)
+        self.send_recordings(recordings)
         write_if_changed(Path(self.conf["state_dir"]) / HEALTH_FILE, f"{int(time.time())}\n", mode=0o644)
         return True
 
     def run(self):
-        for folder in ("voicemail", "cdr-errors"):
+        for folder in ("voicemail", "cdr-errors", "recordings"):
             try:
                 (self.spool / folder).mkdir(parents=True, exist_ok=True)
             except OSError as error:
@@ -461,7 +533,7 @@ class Sync:
             time.sleep(max(1.0, interval - (time.monotonic() - started)))
 
 
-def multipart(fields, path):
+def multipart(fields, path, content_type="audio/wav"):
     """Body multipart/form-data with the fields and the file."""
     boundary = uuid.uuid4().hex
     parts = []
@@ -471,7 +543,7 @@ def multipart(fields, path):
         )
     parts.append(
         f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"{path.name}\"\r\n"
-        "Content-Type: audio/wav\r\n\r\n".encode()
+        f"Content-Type: {content_type}\r\n\r\n".encode()
     )
     parts.append(path.read_bytes())
     parts.append(f"\r\n--{boundary}--\r\n".encode())

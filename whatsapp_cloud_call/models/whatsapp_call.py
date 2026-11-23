@@ -141,6 +141,17 @@ class WhatsappCall(models.Model):
         help="In the currency of the calls of the account. Pulses billed at the price of a minute of the country called (the most it costs: "
         "Meta lowers its rates with the minutes of the month). The calls of the customers are free.",
     )
+    # Recording of the call (phase 3.1): its file is read by the managers only
+    recording_status = fields.Selection(
+        selection=[("none", "Not recorded"), ("kept", "Recorded"), ("deleted", "Recording deleted")],
+        string="Recording", default="none", required=True, readonly=True,
+        help="Recorded: the managers listen to it (Listen). Deleted: after the days the "
+        "recordings are kept (WhatsApp account, Calls tab).",
+    )
+    recording_id = fields.Many2one(
+        comodel_name="whatsapp.call.recording", string="Recording File", readonly=True,
+        groups="whatsapp_cloud.group_whatsapp_manager",
+    )
     phone_trace = fields.Text(
         string="Diagnostic of the Phone", readonly=True,
         help="What the phone of each agent who answered did (version, microphone, network "
@@ -280,6 +291,7 @@ class WhatsappCall(models.Model):
             "max_wait": max(account.call_max_wait, 30),
             "voicemail": 1 if account.call_voicemail else 0,
             "open": 1 if account._is_open() else 0,
+            "record": 1 if account.call_recording else 0,
         }
 
     @api.model
@@ -482,6 +494,42 @@ class WhatsappCall(models.Model):
             call.state = "voicemail"
         return call
 
+    @api.model
+    def _server_recording(self, values, content, mimetype):
+        """The recording of a call, sent by the call server once the call ended (MP3, or WAV
+        when it could not convert it): kept for the managers."""
+        call = self._server_find(values)
+        if not call:
+            return False
+        call = call.sudo()
+        if call.recording_id or call.recording_status == "deleted":
+            return call
+        mimetype = mimetype if mimetype in ("audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg") else "audio/mpeg"
+        extension = {"audio/mpeg": "mp3", "audio/ogg": "ogg"}.get(mimetype, "wav")
+        Recording = self.env["whatsapp.call.recording"].sudo()
+        recording = Recording.create({"call_id": call.id, "size": len(content)})
+        recording.attachment_id = self.env["ir.attachment"].sudo().create({
+            "name": Recording.with_context(lang=call.account_id._get_team_lang())._file_name(call, extension),
+            "raw": content,
+            "mimetype": mimetype,
+            "res_model": "whatsapp.call.recording",
+            "res_id": recording.id,
+        })
+        call.write({"recording_id": recording.id, "recording_status": "kept"})
+        return call
+
+    def action_listen_recording(self):
+        self.ensure_one()
+        if not self.recording_id:
+            raise UserError(_("This call has no recording (any more)."))
+        return self.recording_id.action_listen()
+
+    def action_download_recording(self):
+        self.ensure_one()
+        if not self.recording_id:
+            raise UserError(_("This call has no recording (any more)."))
+        return self.recording_id.action_download()
+
     # === META === #
 
     @api.model
@@ -573,6 +621,7 @@ class WhatsappCall(models.Model):
             "srtp": account.call_srtp,
             "max_ring": const.OUTBOUND_MAX_RING,
             "max_talk": max(0, account.call_max_outbound_minutes) * 60,
+            "record": 1 if account.call_recording else 0,
         }
 
     def action_call_back(self):

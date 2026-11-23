@@ -1,5 +1,48 @@
 # The WhatsApp calls (whatsapp_cloud_call): the call server, the phone of the agents, the calls
 CALLS = {
+    # Phase 3.1: the recordings of the calls
+    'A call has one recording.':
+        'Un appel a un seul enregistrement.',
+    'Call':
+        'Appel',
+    'Days the Recordings are Kept':
+        'Jours de conservation des enregistrements',
+    'Download':
+        'Télécharger',
+    'Every call (of the customers and of the company) is recorded, from the moment an agent talks with the customer to the end, and kept on the call for the managers. The customer is told at the start of the call (message enregistrement of the call server).':
+        "Chaque appel (des clients et de l'entreprise) est enregistré, du moment où un conseiller parle avec le client jusqu'à la fin, et gardé sur l'appel pour les responsables. Le client est prévenu au début de l'appel (message enregistrement du serveur d'appels).",
+    'File':
+        'Fichier',
+    'Listen':
+        'Écouter',
+    'Mime Type':
+        'Type MIME',
+    'Not recorded':
+        'Non enregistré',
+    'Record the Calls':
+        'Enregistrer les appels',
+    'Recorded':
+        'Enregistré',
+    'Recorded: the managers listen to it (Listen). Deleted: after the days the recordings are kept (WhatsApp account, Calls tab).':
+        "Enregistré : les responsables l'écoutent (Écouter). Supprimé : après les jours de conservation des enregistrements (compte WhatsApp, onglet Appels).",
+    'Recording':
+        'Enregistrement',
+    'Recording File':
+        "Fichier de l'enregistrement",
+    'Recording deleted':
+        'Enregistrement supprimé',
+    'Recording of %s':
+        'Enregistrement de %s',
+    'Recording of a WhatsApp Call':
+        "Enregistrement d'un appel WhatsApp",
+    'Size (bytes)':
+        'Taille (octets)',
+    'Then they are deleted (the call keeps the trace that it was recorded); 0: kept.':
+        "Ensuite, ils sont supprimés (l'appel garde la trace qu'il a été enregistré) ; 0 : gardés.",
+    'This call has no recording (any more).':
+        "Cet appel n'a pas (ou plus) d'enregistrement.",
+    'WhatsApp: delete the recordings of the calls kept long enough':
+        "WhatsApp : supprimer les enregistrements d'appels gardés assez longtemps",
     # Phase 2.5: the cost of the calls of the company
     '%(share)s of the budget of the month is spent.':
         '%(share)s du budget du mois sont dépensés.',

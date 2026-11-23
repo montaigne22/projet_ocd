@@ -54,7 +54,7 @@ class TestCallServerApi(HttpCase):
         self.assertEqual(data["domain"], "calls.example.com")
         self.assertEqual(data["trunks"], [{
             "phone_number_id": "1110001", "number": "22890000001", "password": "meta-sip-password",
-            "max_wait": 180, "voicemail": True,
+            "max_wait": 180, "voicemail": True, "record": False,
         }])
         self.assertEqual(data["agents"][0]["login"], f"agent{self.agent.id}")
         self.assertTrue(data["agents"][0]["password"])

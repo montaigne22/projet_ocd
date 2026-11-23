@@ -65,8 +65,8 @@ function sql(query) {
   const partner = sql("select whatsapp_partner_id from discuss_channel where id = " + channel);
   const callId = sql(
     "insert into whatsapp_call (account_id, company_id, direction, channel_id, partner_id, number, user_id, state, " +
-    "start_date, create_date, write_date, create_uid, write_uid) select " +
-    `${account}, company_id, 'outbound', ${channel}, ${partner}, '237670000000', ${uid}, 'ringing', ` +
+    "recording_status, start_date, create_date, write_date, create_uid, write_uid) select " +
+    `${account}, company_id, 'outbound', ${channel}, ${partner}, '237670000000', ${uid}, 'ringing', 'none', ` +
     `now() at time zone 'utc', now() at time zone 'utc', now() at time zone 'utc', ${uid}, ${uid} ` +
     `from whatsapp_account where id = ${account} returning id`
   ).split("\n")[0];
@@ -117,8 +117,8 @@ function sql(query) {
   // the fake Meta answers the numbers +237699... and hangs up after 10 s
   const callId2 = sql(
     "insert into whatsapp_call (account_id, company_id, direction, channel_id, partner_id, number, user_id, state, " +
-    "start_date, create_date, write_date, create_uid, write_uid) select " +
-    `${account}, company_id, 'outbound', ${channel}, ${partner}, '237699000001', ${uid}, 'ringing', ` +
+    "recording_status, start_date, create_date, write_date, create_uid, write_uid) select " +
+    `${account}, company_id, 'outbound', ${channel}, ${partner}, '237699000001', ${uid}, 'ringing', 'none', ` +
     `now() at time zone 'utc', now() at time zone 'utc', now() at time zone 'utc', ${uid}, ${uid} ` +
     `from whatsapp_account where id = ${account} returning id`
   ).split("\n")[0];
@@ -146,8 +146,8 @@ function sql(query) {
   // at Meta"; the call server counts it as ended by the customer
   const callId3 = sql(
     "insert into whatsapp_call (account_id, company_id, direction, channel_id, partner_id, number, user_id, state, " +
-    "start_date, create_date, write_date, create_uid, write_uid) select " +
-    `${account}, company_id, 'outbound', ${channel}, ${partner}, '237670000066', ${uid}, 'ringing', ` +
+    "recording_status, start_date, create_date, write_date, create_uid, write_uid) select " +
+    `${account}, company_id, 'outbound', ${channel}, ${partner}, '237670000066', ${uid}, 'ringing', 'none', ` +
     `now() at time zone 'utc', now() at time zone 'utc', now() at time zone 'utc', ${uid}, ${uid} ` +
     `from whatsapp_account where id = ${account} returning id`
   ).split("\n")[0];

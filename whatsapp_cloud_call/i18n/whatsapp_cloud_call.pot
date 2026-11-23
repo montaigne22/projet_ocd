@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:30+0000\n"
-"PO-Revision-Date: 2026-11-23 15:30+0000\n"
+"POT-Creation-Date: 2026-11-23 16:08+0000\n"
+"PO-Revision-Date: 2026-11-23 16:08+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -93,6 +93,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.res_config_settings_view_form_calls
 msgid "<span class=\"o_form_label me-2\">Last report:</span>"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.constraint,message:whatsapp_cloud_call.constraint_whatsapp_call_recording_call_uniq
+msgid "A call has one recording."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -220,6 +225,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_monthly_budget
 msgid "Budget per Month"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__call_id
+msgid "Call"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -361,6 +371,7 @@ msgstr ""
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__start_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__start_date
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
 msgid "Called on"
 msgstr ""
@@ -543,6 +554,7 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__create_uid
 msgid "Created by"
 msgstr ""
@@ -550,6 +562,7 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__create_date
 msgid "Created on"
 msgstr ""
@@ -593,6 +606,11 @@ msgid "Day"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_recording_days
+msgid "Days the Recordings are Kept"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "Decline"
@@ -631,10 +649,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_message__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
+msgid "Download"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -644,6 +668,7 @@ msgstr ""
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__duration
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__duration
 msgid "Duration (s)"
 msgstr ""
 
@@ -699,8 +724,18 @@ msgid "Error"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_recording
+msgid "Every call (of the customers and of the company) is recorded, from the moment an agent talks with the customer to the end, and kept on the call for the managers. The customer is told at the start of the call (message enregistrement of the call server)."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__failed
 msgid "Failed"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__attachment_id
+msgid "File"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -753,6 +788,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_message__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__id
@@ -815,6 +851,7 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__write_uid
 msgid "Last Updated by"
 msgstr ""
@@ -822,8 +859,14 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
+msgid "Listen"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -931,6 +974,11 @@ msgid "Microphone off"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__mimetype
+msgid "Mime Type"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__missed
 msgid "Missed"
 msgstr ""
@@ -1015,6 +1063,11 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.js:0
 msgid "Not connected"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__recording_status__none
+msgid "Not recorded"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -1142,6 +1195,47 @@ msgid "Read the State at Meta"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_recording
+msgid "Record the Calls"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__recording_status__kept
+msgid "Recorded"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__recording_status
+msgid "Recorded: the managers listen to it (Listen). Deleted: after the days the recordings are kept (WhatsApp account, Calls tab)."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__recording_status
+msgid "Recording"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__recording_id
+msgid "Recording File"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__recording_status__deleted
+msgid "Recording deleted"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call_recording.py:0
+msgid "Recording of %s"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_call_recording
+msgid "Recording of a WhatsApp Call"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__discuss_channel__whatsapp_call_permission__refused
 msgid "Refused"
 msgstr ""
@@ -1204,6 +1298,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__silence_alerted
 msgid "Silence Alerted"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__size
+msgid "Size (bytes)"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -1432,9 +1531,20 @@ msgid "The voice relay of the call server (STUN/TURN, ports 3478 and 5349) does 
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_recording_days
+msgid "Then they are deleted (the call keeps the trace that it was recorded); 0: kept."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #. odoo-python
 #: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
 msgid "This call has no conversation."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "This call has no recording (any more)."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -1544,6 +1654,7 @@ msgstr ""
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__account_id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__account_id
 msgid "WhatsApp Account"
 msgstr ""
 
@@ -1617,6 +1728,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.actions.server,name:whatsapp_cloud_call.ir_cron_check_calls_ir_actions_server
 msgid "WhatsApp: check the calls and the call server"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.actions.server,name:whatsapp_cloud_call.ir_cron_delete_recordings_ir_actions_server
+msgid "WhatsApp: delete the recordings of the calls kept long enough"
 msgstr ""
 
 #. module: whatsapp_cloud_call

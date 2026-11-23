@@ -30,22 +30,14 @@ local function setvar(name, value)
   session:setVariable(name, tostring(value))
 end
 
-local function file_exists(path)
-  local handle = io.open(path, "rb")
-  if handle then
-    handle:close()
-    return true
-  end
-  return false
-end
 
--- A prompt of the team (sounds/ocd/<name>.wav), else a short tone.
+-- A prompt of the team (sounds/<name>.wav or .mp3), else a short tone.
 local function play(name)
   if not session:ready() then
     return
   end
-  local path = settings.sounds .. "/" .. name .. ".wav"
-  if file_exists(path) then
+  local path = odoo.sound(settings, name)
+  if path then
     session:execute("playback", path)
   else
     session:execute("playback", "tone_stream://%(250,100,800);loops=2")
@@ -116,6 +108,19 @@ if not route.from_odoo then
   log("WARNING", "Odoo did not answer: all the connected agents ring")
 end
 play("accueil")
+
+-- recorded (WhatsApp account in Odoo): the customer is told, then the call is recorded from the
+-- moment an agent answers (not the waiting) to the end
+local recording
+if route.record and session:ready() then
+  local notice = odoo.sound(settings, "enregistrement")
+  if notice then
+    session:execute("playback", notice)
+  else
+    log("WARNING", "recorded without telling the customer: no message enregistrement in sounds/")
+  end
+  recording = odoo.recording_start(session, settings, uuid)
+end
 
 local state = {
   start = os.time(),
@@ -283,6 +288,9 @@ setvar("ocd_wait", waited)
 -- the customer is let go first (Meta told at once), Odoo after (up to 3 seconds)
 if session:ready() then
   session:hangup("NORMAL_CLEARING")
+end
+if recording then
+  odoo.recording_facts(recording, { call = route.call, wacid = call.wacid, uuid = uuid })
 end
 odoo.event(settings, {
   event = "ended", call = route.call, wacid = call.wacid, uuid = uuid, agent = answered_agent,

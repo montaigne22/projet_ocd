@@ -62,3 +62,8 @@ CALL_BLOCKED_PREFIXES = {
     "84": "Vietnam",
     "234": "Nigeria",
 }
+
+# Recordings of the calls (phase 3.1): sent by the call server in MP3 (WAV when it could not
+# convert it); kept this many days by default, then deleted (0: kept).
+MAX_RECORDING_SIZE = 100 * 1024 * 1024
+DEFAULT_RECORDING_DAYS = 90

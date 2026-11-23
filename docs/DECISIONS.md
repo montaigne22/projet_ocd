@@ -847,6 +847,9 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   l'entreprise est payé à Meta, et les livreurs appelleraient des centaines de fois par jour ; ils
   gardent les liens « Appeler » et « WhatsApp » de leur tournée. Les appels payants d'OCD (rappel d'un
   client, animatrice) ont des tarifs par pays, un budget par mois et une durée maximale par appel.
+- **Tous les appels enregistrés, pour une trace complète** (décidé le 23 novembre 2026) : annoncés au
+  client, gardés 90 jours (réglable), écoutés par les responsables seulement ; la conversation
+  seulement (pas l'attente), en MP3. À valider avec le cadre légal du pays (consentement, durée).
 
 ## Back-office
 

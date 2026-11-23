@@ -382,6 +382,14 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
   l'appel (`max_talk`, compte WhatsApp, onglet Appels, 30 minutes par défaut) : le serveur arrête la
   ligne du client à cette durée après sa réponse (`sched_hangup`, cause `ALLOTTED_TIMEOUT`, fin notée
   « système »).
+- **L'enregistrement des appels** (Odoo, compte WhatsApp, onglet Appels, « Enregistrer les appels ») :
+  le client entend `enregistrement` (après l'accueil ; à son décroché pour un appel de l'entreprise,
+  avant le conseiller) ; le serveur enregistre l'appel à partir du moment où le client et un conseiller
+  sont mis ensemble (pas l'attente), jusqu'à la fin, les deux voix mêlées, 16 kHz
+  (`/var/spool/ocd-calls/recordings/<uuid>.wav`). Une fois l'appel fini (fichier inchangé depuis
+  30 secondes), ocd-call-sync le convertit en MP3 (32 kbit/s, environ 240 ko par minute) et l'envoie
+  à Odoo (`/whatsapp/call/server/recording`), et le renvoie tant qu'Odoo ne l'a pas pris (refusé une
+  semaine : mis de côté en `.refused.wav`). Journal : « Recording ... sent to Odoo ».
 - **Jamais de boucle** : un conseiller qui décroche mais dont la voix ne passe pas (sa branche
   coupée moins de 15 secondes après le décroché, deux fois dans le même appel) n'est plus appelé
   pour cet appel : les collègues sonnent, sinon la messagerie (journal : `cut off again ... not rung
@@ -403,28 +411,38 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
 
 ## 5. Les messages enregistrés
 
-Dans `sounds/` (Docker) ou `/usr/share/freeswitch/sounds/ocd/` (sur le serveur) ; WAV, mono, 16 kHz,
-la voix de l'équipe, en français :
+Dans `sounds/` (Docker) ou `/usr/share/freeswitch/sounds/ocd/` (sur le serveur) : **MP3 ou WAV**, la voix
+de l'équipe (ou une voix off), en français. Au démarrage, le serveur prépare chaque fichier : un MP3 est
+converti en WAV (mono, 16 kHz) ; un WAV et un MP3 du même nom : le WAV l'emporte. Les noms : lettres,
+chiffres, `-`, `_`, `.` (pas d'espace, pas d'accent). `docker compose logs freeswitch` dit « Sounds
+ready: N file(s) » (et pourquoi un fichier est écarté).
 
-| Fichier | Quand | Exemple |
+| Fichier | Quand | Texte proposé |
 |---|---|---|
-| `accueil.wav` | dès que l'appel arrive | « Bonjour, bienvenue chez OCD Live, un conseiller va vous répondre. » |
-| `reconnexion.wav` | le conseiller a été coupé | « Un instant, nous vous reconnectons. » |
-| `messagerie.wav` | personne de disponible | « Nos conseillers sont occupés. Laissez votre message après le bip, nous vous rappelons. » |
-| `indisponible.wav` | personne, et pas de messagerie | « Nos conseillers sont occupés. Écrivez-nous sur WhatsApp, nous vous répondons vite. » |
+| `accueil.mp3` | dès que l'appel arrive | « Bonjour et bienvenue chez OCD Live. Un conseiller va vous répondre dans un instant. » |
+| `enregistrement.mp3` | après l'accueil, et quand le client décroche un appel de l'entreprise, si l'enregistrement est activé (Odoo) | « Pour la qualité de notre service, cet appel est enregistré. » |
+| `voix/attente.mp3` (un ou plusieurs) | pendant l'attente, par-dessus la musique, toutes les 30 secondes, l'un après l'autre | « Merci de patienter, un conseiller va vous répondre dans un instant. » ; un deuxième : « Tous nos conseillers sont occupés. Merci de rester en ligne, votre appel est important pour nous. » |
+| `attente/musique.mp3` (un ou plusieurs) | la musique d'attente (facultatif : sinon celle de FreeSWITCH) | une musique libre de droits ou à OCD |
+| `reconnexion.mp3` | le conseiller a été coupé | « Un instant, nous vous reconnectons à votre conseiller. » |
+| `messagerie.mp3` | personne de disponible | « Nos conseillers sont tous occupés. Laissez votre message après le bip : nous vous rappelons dès que possible. » |
+| `indisponible.mp3` | personne, et pas de messagerie | « Nos conseillers sont tous occupés. Écrivez-nous sur WhatsApp, à ce même numéro : nous vous répondons rapidement. » |
 
-Sans fichier, une tonalité courte le remplace.
+Sans fichier : une tonalité courte pour l'accueil et les messages, rien pour la voix d'attente, et
+l'appel enregistré sans annonce (le journal le signale : « recorded without telling the customer »).
 
-**L'attente** : pendant qu'il attend (et pendant que les conseillers sonnent), le client entend la
-musique de FreeSWITCH. Pour la remplacer par celle de l'équipe, ou y mêler des messages
-(« Merci de patienter, un conseiller va vous répondre »), poser des fichiers WAV dans `sounds/attente/`
-(Docker) : ils passent l'un après l'autre, dans l'ordre de leur nom, en boucle (par ex.
-`1-musique.wav`, `2-patientez.wav`, `3-musique.wav`). Puis `docker compose up -d --force-recreate
-freeswitch` (quand personne n'est en appel). `docker compose logs freeswitch` dit alors « Music while
-waiting: the files of sounds/attente ». Les retirer tous : la musique de FreeSWITCH revient (au
-redémarrage suivant). La musique doit être libre de droits ou à OCD.
+**L'attente** : les fichiers de `attente/` passent l'un après l'autre, dans l'ordre de leur nom, en
+boucle (par ex. `1-musique.mp3`, `2-musique.mp3`) ; ceux de `voix/` passent par-dessus, toutes les
+`OCD_HOLD_VOICE_EVERY` secondes (30 par défaut, dans `.env`). Le flux est le même pour tous les clients
+qui attendent (comme une radio) : un client entend la voix au plus 30 secondes après son arrivée.
+`docker compose logs freeswitch` dit « Music while waiting: the files of sounds/attente » et « Voice
+while waiting: the files of sounds/voix, every 30 s ».
 
-Convertir un enregistrement : `ffmpeg -i accueil.m4a -ac 1 -ar 16000 accueil.wav`.
+Après avoir posé ou changé des fichiers : `docker compose up -d --force-recreate freeswitch` (quand
+personne n'est en appel).
+
+**Enregistrer la voix** : un téléphone suffit (pièce calme, à 20 cm, voix posée) ; ou une voix off
+(comédien, service de voix de synthèse dont la licence permet l'usage commercial). Le MP3 est pris tel
+quel ; un autre format : `ffmpeg -i accueil.m4a accueil.mp3`.
 
 ## 6. Chez Meta
 

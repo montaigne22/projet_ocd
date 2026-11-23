@@ -174,10 +174,29 @@ propose au client de retirer son accord, 4 : il le retire. Facturation par tranc
 
 | # | Chantier | Ce que c'est |
 |---|---|---|
-| 3.1 | **Enregistrement** | Annoncé au client, gardé 30 jours, écouté par les responsables ; à valider avec le cadre légal du pays |
+| 3.1 | **Enregistrement** | Annoncé au client, gardé 90 jours (réglable), écouté par les responsables ; à valider avec le cadre légal du pays |
 | 3.2 | **Chiffres** | Appels par jour et par heure, attente, manqués, durée par agent, sur le tableau de bord |
 | 3.3 | **Transfert** | Passer l'appel à un collègue |
 | 3.4 | **Deuxième serveur** | Une deuxième machine derrière le même nom, si les appels deviennent critiques |
+
+**3.1 fait (version 20.0.1.9.0)**, avec la voix off : compte WhatsApp, onglet Appels, « Enregistrer les
+appels » et « Jours de conservation des enregistrements » (90 par défaut ; 0 : gardés).
+- Le client est prévenu : le message `enregistrement` après l'accueil, et pour un appel de l'entreprise
+  quand il décroche (avant d'entendre le conseiller).
+- L'appel est enregistré du moment où le client et un conseiller sont mis ensemble jusqu'à la fin (pas
+  l'attente ; un conseiller coupé qui reprend l'appel : le même enregistrement), les deux voix mêlées.
+  Le serveur d'appels l'envoie à Odoo en MP3 une fois l'appel fini (environ 240 ko par minute), et le
+  renvoie tant qu'Odoo ne l'a pas pris.
+- Sur la fiche de l'appel : « Enregistrement : Enregistré », et pour les responsables seulement
+  « Écouter » et « Télécharger » (le fichier n'est lisible que par eux, pas par les conseillers ni dans
+  la conversation). Passé le délai, le fichier est supprimé et la fiche dit « Enregistrement supprimé ».
+- La voix off : les messages de l'équipe en **MP3** ou WAV dans `sounds/` du serveur d'appels :
+  `accueil`, `enregistrement`, `voix/` (la voix pendant l'attente, par-dessus la musique, toutes les
+  30 secondes), `attente/` (la musique), `reconnexion`, `messagerie`, `indisponible`. Les textes
+  proposés : `whatsapp_cloud_call/freeswitch/README.md`, partie 5.
+
+Vu de bout en bout avec un faux Meta : le client entend l'accueil, l'annonce, puis la voix d'attente ;
+les enregistrements arrivent dans Odoo en MP3, avec la conversation seulement.
 
 ## Options écartées
 

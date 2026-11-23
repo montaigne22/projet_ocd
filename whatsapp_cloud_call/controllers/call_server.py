@@ -76,6 +76,7 @@ class WhatsAppCallServer(http.Controller):
                     "password": account.call_sip_password or "",
                     "max_wait": max(account.call_max_wait, 30),
                     "voicemail": account.call_voicemail,
+                    "record": account.call_recording,
                 }
                 for account in accounts
             ],
@@ -138,6 +139,24 @@ class WhatsAppCallServer(http.Controller):
         )
         if not call:
             # nothing to attach it to: keep it on the call server for later
+            raise BadRequest()
+        return request.make_response("OK\n", headers=[("Content-Type", "text/plain")])
+
+    @http.route("/whatsapp/call/server/recording", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    def recording(self, **kwargs):
+        """The recording of a call, once it ended (sent again by ocd-call-sync until Odoo takes
+        it)."""
+        self._check_token()
+        upload = request.httprequest.files.get("file")
+        if not upload:
+            raise BadRequest()
+        content = upload.read(const.MAX_RECORDING_SIZE + 1)
+        if not content or len(content) > const.MAX_RECORDING_SIZE:
+            raise BadRequest()
+        call = self._calls()._server_recording(self._values(), content, upload.mimetype or "audio/mpeg")
+        if not call:
+            # nothing to attach it to: kept on the call server for later
             raise BadRequest()
         return request.make_response("OK\n", headers=[("Content-Type", "text/plain")])
 

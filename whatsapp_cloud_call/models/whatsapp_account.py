@@ -107,6 +107,19 @@ class WhatsappAccount(models.Model):
     call_stats_ok = fields.Boolean(string="Thresholds Met", compute="_compute_call_stats")
     call_limit_warning = fields.Char(compute="_compute_call_limit_warning")
     call_hours_warning = fields.Char(compute="_compute_call_hours_warning")
+    # Recordings of the calls (phase 3.1)
+    call_recording = fields.Boolean(
+        string="Record the Calls",
+        tracking=True,
+        help="Every call (of the customers and of the company) is recorded, from the moment an "
+        "agent talks with the customer to the end, and kept on the call for the managers. The "
+        "customer is told at the start of the call (message enregistrement of the call server).",
+    )
+    call_recording_days = fields.Integer(
+        string="Days the Recordings are Kept",
+        default=const.DEFAULT_RECORDING_DAYS,
+        help="Then they are deleted (the call keeps the trace that it was recorded); 0: kept.",
+    )
     # Cost of the calls of the company (phase 2.5)
     call_currency_id = fields.Many2one(
         comodel_name="res.currency",
@@ -548,6 +561,10 @@ class WhatsappAccount(models.Model):
         action = self.env["ir.actions.act_window"]._for_xml_id("whatsapp_cloud_call.whatsapp_call_cost_action")
         action["domain"] = [("direction", "=", "outbound"), ("account_id", "=", self.id)]
         return action
+
+    def _call_recording_kept(self):
+        self.ensure_one()
+        return timedelta(days=max(0, self.call_recording_days))
 
     def _call_business_number(self):
         """Number of the account in international format, digits only."""

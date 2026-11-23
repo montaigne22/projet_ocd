@@ -19,6 +19,7 @@
                 <field name="ended_by" optional="hide"/>
                 <field name="account_id" optional="hide"/>
                 <field name="direction" optional="hide"/>
+                <field name="recording_status" optional="hide"/>
                 <field name="currency_id" column_invisible="True"/>
                 <field name="cost" optional="hide" sum="Total"/>
             </list>
@@ -69,6 +70,14 @@
                             <field name="available_agents"/>
                             <field name="declined_user_ids" widget="many2many_tags"/>
                             <field name="voicemail_attachment_id"/>
+                            <field name="recording_status"/>
+                            <field name="recording_id" invisible="1"/>
+                            <div colspan="2" groups="whatsapp_cloud.group_whatsapp_manager" invisible="not recording_id">
+                                <button name="action_listen_recording" type="object" string="Listen"
+                                        class="btn-secondary me-2"/>
+                                <button name="action_download_recording" type="object" string="Download"
+                                        class="btn-link"/>
+                            </div>
                         </group>
                         <group string="Seen by">
                             <field name="server_seen"/>

@@ -79,6 +79,14 @@ serveur voie la fin ; l'appel est fini par le client, sans coupure, et le consei
 L'appel préparé par Odoo (après les vérifications de Meta, testées dans les tests d'Odoo) est écrit
 avec psql : l'API de Meta n'est pas jointe dans cet essai.
 
+## L'enregistrement et les messages
+
+Avec « Enregistrer les appels » coché sur le compte et des messages de test dans `sounds/` (des MP3 :
+`accueil`, `enregistrement`, et `voix/` avec `OCD_HOLD_VOICE_EVERY=6`), les deux essais doivent passer
+pareil ; puis : les enregistrements arrivent dans Odoo en MP3 (`whatsapp_call_recording`), le client
+du faux Meta a entendu l'accueil, l'annonce et la voix d'attente (ses enregistrements `/tmp/meta`), et
+l'enregistrement d'Odoo contient la conversation seulement. Vu le 23 novembre 2026.
+
 ## Le client raccroche pendant la conversation
 
 Sans Odoo ni navigateur, avec l'image du serveur d'appels déjà construite :

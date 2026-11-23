@@ -16,10 +16,17 @@ end
 
 local tmp = os.tmpname()
 os.remove(tmp)
-os.execute("mkdir -p " .. tmp .. "/voicemail")
+os.execute("mkdir -p " .. tmp .. "/voicemail " .. tmp .. "/sounds")
 
 -- a call: registered agents, what each bridge does, what Odoo answers
 local function run(scenario)
+  -- the messages of the team present for this call (sounds/<name>.wav)
+  os.execute("rm -f " .. tmp .. "/sounds/*.wav")
+  for _, name in ipairs(scenario.sounds or {}) do
+    local file = io.open(tmp .. "/sounds/" .. name .. ".wav", "wb")
+    file:write("RIFF")
+    file:close()
+  end
   local clock = 1000
   local real_time = os.time
   os.time = function() return clock end
@@ -105,6 +112,16 @@ local function run(scenario)
       return true
     end,
     voicemail = function(_, path, values) log.voicemails[#log.voicemails + 1] = values; return scenario.voicemail_ok ~= false end,
+    sound = function(settings, name)
+      local path = settings.sounds .. "/" .. name .. ".wav"
+      local handle = io.open(path, "rb")
+      if handle then handle:close(); return path end
+    end,
+    recording_start = function(_, _settings, id)
+      log.recording = { started_after = #log.played, bridges = #log.bridges, uuid = id }
+      return "/spool/recordings/" .. id .. ".wav"
+    end,
+    recording_facts = function(path, values) log.recording_facts = { path = path, values = values } end,
   }
   local chunk = assert(loadfile(here .. "/scripts/ocd_whatsapp_inbound.lua"))
   local ok, err = pcall(chunk)
@@ -135,6 +152,28 @@ check("1 ended completed by the agent", ended and ended.outcome == "completed" a
 check("1 agent and talk time", ended.agent == "agent7" and ended.talk == 95)
 check("1 variables for the record", log.vars.ocd_outcome == "completed" and log.vars.ocd_wacid == "wacid.TEST" and log.vars.ocd_from == "237670000000")
 check("1 hung up", log.hangup == "NORMAL_CLEARING")
+
+-- 1b. recorded: the customer is told after the welcome, the recording starts before the agents
+-- ring (FreeSWITCH starts it when they are put together), its facts written at the end
+log = run({
+  registered = { agent5 = true, agent7 = true },
+  sounds = { "accueil", "enregistrement" },
+  odoo_route = queue.parse_lines("call=21\nagents=agent7\nfirst=\nrecord=1\n"),
+  bridges = { { answer = "agent7", talk = 40, cause = "NORMAL_CLEARING", seconds = 45 } },
+})
+check("1b no error " .. tostring(log.error), not log.error)
+check("1b welcome, then told it is recorded", log.played[1] and log.played[1]:find("accueil.wav", 1, true)
+      and log.played[2] and log.played[2]:find("enregistrement.wav", 1, true))
+check("1b recording started before the agents ring", log.recording and log.recording.bridges == 0
+      and log.recording.uuid == "uuid-a")
+check("1b facts for ocd-call-sync", log.recording_facts and log.recording_facts.values.call == "21"
+      and log.recording_facts.values.wacid == "wacid.TEST" and log.recording_facts.path == "/spool/recordings/uuid-a.wav")
+log = run({
+  registered = { agent5 = true },
+  odoo_route = queue.parse_lines("call=22\nagents=agent5\nfirst=\n"),
+  bridges = { { answer = "agent5", talk = 10, cause = "NORMAL_CLEARING", seconds = 12 } },
+})
+check("1b not recorded unless Odoo asks", not log.recording and not log.recording_facts)
 
 -- 2. the agent is cut off, reconnects and gets the call back
 log = run({

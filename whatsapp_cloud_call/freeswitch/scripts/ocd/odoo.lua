@@ -14,6 +14,8 @@ function M.load_settings(path)
     domain = "",
     spool = "/var/spool/ocd-calls",
     sounds = "/usr/share/freeswitch/sounds/ocd",
+    -- the messages of sounds/ made ready at the start (WAV, and MP3 decoded): docker/entrypoint.sh
+    sounds_ready = "/var/lib/freeswitch/sounds-ocd",
     hold_music = "local_stream://moh",
     agents = {},
     trunks = {},
@@ -66,6 +68,49 @@ function M.post(settings, path, fields, timeout, file)
   pipe:close()
   local body, code = output:match("^(.*)\n(%d%d%d)$")
   return tonumber(code) or 0, body or ""
+end
+
+-- A recorded message of the team (<name>.wav): made ready at the start (Docker: WAV or MP3 of
+-- sounds/), else in the folder of the sounds itself (installation without Docker); nil if none.
+function M.sound(settings, name)
+  for _, dir in ipairs({ settings.sounds_ready or "", settings.sounds or "" }) do
+    if dir ~= "" then
+      local path = dir .. "/" .. name .. ".wav"
+      local handle = io.open(path, "rb")
+      if handle then
+        handle:close()
+        return path
+      end
+    end
+  end
+  return nil
+end
+
+-- The recording of the call (asked by Odoo): from the moment the customer and an agent are put
+-- together (not the waiting) to the end, mixed, 16 kHz, in spool/recordings/<uuid>.wav; sent to
+-- Odoo by ocd-call-sync once the call ended (in MP3).
+function M.recording_start(session, settings, uuid)
+  local path = settings.spool .. "/recordings/" .. uuid .. ".wav"
+  session:setVariable("RECORD_BRIDGE_REQ", "true")
+  session:setVariable("RECORD_STEREO", "false")
+  session:setVariable("record_sample_rate", "16000")
+  session:execute("record_session", path)
+  return path
+end
+
+-- The facts of a recording for ocd-call-sync (the call in Odoo), written once the call ended.
+function M.recording_facts(path, values)
+  local handle = io.open((path:gsub("%.wav$", ".txt")), "w")
+  if not handle then
+    return false
+  end
+  for _, key in ipairs({ "call", "wacid", "uuid" }) do
+    if values[key] and values[key] ~= "" then
+      handle:write(key .. "=" .. tostring(values[key]) .. "\n")
+    end
+  end
+  handle:close()
+  return true
 end
 
 function M.route(settings, call)

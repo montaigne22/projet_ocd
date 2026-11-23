@@ -102,6 +102,8 @@ function M.route(answer, settings, trunk)
     max_wait = tonumber(trunk.max_wait) or 180,
     voicemail = trunk.voicemail ~= false,
     open = true,
+    -- recorded (Odoo, WhatsApp account): the last copy of the settings when Odoo does not answer
+    record = trunk.record == true,
   }
   if answer and answer.agents then
     route.from_odoo = true
@@ -112,6 +114,7 @@ function M.route(answer, settings, trunk)
     route.max_wait = tonumber(answer.max_wait) or route.max_wait
     route.voicemail = answer.voicemail ~= "0"
     route.open = answer.open ~= "0"
+    route.record = answer.record == "1"
   else
     for _, agent in ipairs((settings or {}).agents or {}) do
       route.agents[#route.agents + 1] = agent

@@ -10,7 +10,8 @@ COPY docker/build_ca.sh /usr/local/bin/build_ca.sh
 RUN --mount=type=secret,id=build_ca,required=false \
     . /usr/local/bin/build_ca.sh \
     && apt-get update \
-    && apt-get install -y --no-install-recommends python3 ca-certificates \
+    # lame: the recordings of the calls sent to Odoo in MP3
+    && apt-get install -y --no-install-recommends python3 ca-certificates lame \
     && build_ca_done \
     && rm -rf /var/lib/apt/lists/* \
     # the user of FreeSWITCH (same id): the files they share

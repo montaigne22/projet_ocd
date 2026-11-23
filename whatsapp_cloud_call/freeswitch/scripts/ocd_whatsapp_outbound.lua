@@ -71,6 +71,18 @@ local max_talk = math.floor(tonumber(answer.max_talk) or 0)
 if max_talk > 0 then
   leg[#leg + 1] = "execute_on_answer='sched_hangup +" .. max_talk .. " ALLOTTED_TIMEOUT'"
 end
+-- recorded (WhatsApp account in Odoo): the customer hears it when they pick up (before the agent),
+-- then the call is recorded from the moment they are put together to the end
+local recording
+if answer.record == "1" then
+  local notice = odoo.sound(settings, "enregistrement")
+  if notice then
+    leg[#leg + 1] = "execute_on_answer_notice='playback " .. notice .. "'"
+  else
+    log("WARNING", "recorded without telling the customer: no message enregistrement in sounds/")
+  end
+  recording = odoo.recording_start(session, settings, uuid)
+end
 local started = os.time()
 session:execute("bridge", "{ignore_early_media=false}[" .. table.concat(leg, ",") .. "]sofia/gateway/meta_"
   .. pnid .. "/+" .. number)
@@ -95,6 +107,9 @@ setvar("ocd_ended_by", ended_by)
 setvar("ocd_talk", talk)
 if agent_up then
   session:hangup(answered and "NORMAL_CLEARING" or (cause or "NORMAL_CLEARING"))
+end
+if recording then
+  odoo.recording_facts(recording, { call = call_id, uuid = uuid })
 end
 odoo.event(settings, {
   event = "ended", call = call_id, uuid = uuid, agent = agent, outcome = outcome,

@@ -59,6 +59,12 @@ local function run(scenario)
       return scenario.odoo_code or 200, scenario.odoo_body or ""
     end,
     event = function(_, values) log.events[#log.events + 1] = values; return true end,
+    sound = function(_, name) return (scenario.sounds or {})[name] end,
+    recording_start = function(_, _settings, id)
+      log.recording = { bridges = #log.bridges, uuid = id }
+      return "/spool/recordings/" .. id .. ".wav"
+    end,
+    recording_facts = function(path, values) log.recording_facts = { path = path, values = values } end,
   }
   local chunk = assert(loadfile(here .. "/scripts/ocd_whatsapp_outbound.lua"))
   local ok, err = pcall(chunk)
@@ -129,6 +135,20 @@ check("8 completed, ended by the system", ended.outcome == "completed" and ended
       and ended.cause == "ALLOTTED_TIMEOUT")
 check("8 without a limit: no end set", (run({ odoo_body = ALLOWED, bridge = { answer = true, talk = 5 } }).bridges[1] or "")
       :find("sched_hangup", 1, true) == nil)
+
+-- 9. recorded: the customer hears it when they pick up, the call recorded from then
+log = run({ odoo_body = ALLOWED_30 .. "record=1\n", sounds = { enregistrement = "/sounds/enregistrement.wav" },
+            bridge = { answer = true, ring = 5, talk = 60, cause = "NORMAL_CLEARING" } })
+check("9 the customer is told when they pick up",
+      (log.bridges[1] or ""):find("execute_on_answer_notice='playback /sounds/enregistrement.wav'", 1, true) ~= nil
+      and (log.bridges[1] or ""):find("execute_on_answer='sched_hangup +1800 ALLOTTED_TIMEOUT'", 1, true) ~= nil)
+check("9 recording started before the bridge", log.recording and log.recording.bridges == 0 and log.recording.uuid == "uuid-out")
+check("9 facts for ocd-call-sync", log.recording_facts and log.recording_facts.values.call == "42")
+log = run({ odoo_body = ALLOWED .. "record=1\n", bridge = { answer = true, talk = 5 } })
+check("9 without the message: recorded all the same, the team warned",
+      log.recording and (log.console or ""):find("no message enregistrement", 1, true) ~= nil
+      and not (log.bridges[1] or ""):find("execute_on_answer_notice", 1, true))
+check("9 not recorded unless Odoo asks", not run({ odoo_body = ALLOWED, bridge = { answer = true, talk = 5 } }).recording)
 
 print(string.format("%d checks, %d failures", count, failures))
 os.exit(failures == 0 and 0 or 1)

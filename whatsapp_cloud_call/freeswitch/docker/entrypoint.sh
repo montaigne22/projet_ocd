@@ -49,7 +49,7 @@ mkdir -p /usr/share/freeswitch/scripts
 cp -r "$OCD/scripts/." /usr/share/freeswitch/scripts/
 
 # 2. the settings of this server (read by vars_ocd.xml, after its own values)
-mkdir -p "$STATE" /var/spool/ocd-calls/voicemail /var/spool/ocd-calls/cdr-errors
+mkdir -p "$STATE" /var/spool/ocd-calls/voicemail /var/spool/ocd-calls/cdr-errors /var/spool/ocd-calls/recordings
 # a fixed public IP: no question to a STUN server at each reload of the configuration (the
 # examples of FreeSWITCH ask stun.freeswitch.org, a server outside, each time)
 if [ -n "${EXTERNAL_IP:-}" ]; then
@@ -71,14 +71,60 @@ case "${OCD_SRTP:-SDES}" in
   DTLS|dtls) SRTP="optional:AES_CM_128_HMAC_SHA1_80" ;;
   *) SRTP="mandatory:AES_CM_128_HMAC_SHA1_80:AES_CM_128_HMAC_SHA1_32" ;;
 esac
-# the music while the customer waits: the files of the team in sounds/attente (music, messages,
-# played one after the other in the order of their names, again and again), else the music of
-# FreeSWITCH
-if ls /usr/share/freeswitch/sounds/ocd/attente/*.wav >/dev/null 2>&1; then
-  sed -i -e 's#path="[^"]*"#path="/usr/share/freeswitch/sounds/ocd/attente"#' \
+# the recorded messages of the team (sounds/: accueil, enregistrement..., sounds/attente: the music,
+# sounds/voix: the voice while waiting), in WAV or MP3: made ready in $SOUNDS (the MP3 decoded to
+# WAV, mono, 16 kHz; a WAV of the same name wins), where the scripts and the music read them
+TEAM_SOUNDS=/usr/share/freeswitch/sounds/ocd
+SOUNDS=/var/lib/freeswitch/sounds-ocd
+rm -rf "$SOUNDS"
+mkdir -p "$SOUNDS/attente" "$SOUNDS/voix"
+for folder in "" attente voix; do
+  for file in "$TEAM_SOUNDS/$folder"/*; do
+    [ -f "$file" ] || continue
+    base=$(basename "$file")
+    name="${base%.*}"
+    case "$base" in
+      *.wav|*.WAV|*.mp3|*.MP3) ;;
+      *) continue ;;
+    esac
+    case "$name" in
+      *[!A-Za-z0-9_.-]*) echo "Sounds: $folder/$base skipped (name of letters, digits, - _ . only)" >&2; continue ;;
+    esac
+    case "$base" in
+      *.wav|*.WAV) cp "$file" "$SOUNDS/$folder/$name.wav" ;;
+      *)
+        if [ -e "$TEAM_SOUNDS/$folder/$name.wav" ] || [ -e "$TEAM_SOUNDS/$folder/$name.WAV" ]; then
+          continue
+        fi
+        if ! mpg123 -q -m -r 16000 -w "$SOUNDS/$folder/$name.wav" "$file"; then
+          rm -f "$SOUNDS/$folder/$name.wav"
+          echo "Sounds: $folder/$base could not be read (not an MP3?)" >&2
+        fi
+        ;;
+    esac
+  done
+done
+chown -R freeswitch:freeswitch "$SOUNDS"
+echo "Sounds ready: $(find "$SOUNDS" -name '*.wav' | wc -l) file(s)"
+# the music while the customer waits: the files of sounds/attente (music, messages, played one
+# after the other in the order of their names, again and again), else the music of FreeSWITCH
+if ls "$SOUNDS"/attente/*.wav >/dev/null 2>&1; then
+  sed -i -e "s#path=\"[^\"]*\"#path=\"$SOUNDS/attente\"#" \
     -e 's#name="shuffle" value="true"#name="shuffle" value="false"#' \
     "$CONF/autoload_configs/local_stream.conf.xml"
   echo "Music while waiting: the files of sounds/attente"
+fi
+# the voice over the music while the customer waits: the files of sounds/voix ("Thank you for
+# waiting..."), one after the other every OCD_HOLD_VOICE_EVERY seconds (30 by default)
+VOICES=$(ls "$SOUNDS"/voix/*.wav 2>/dev/null | tr '\n' ',' | sed 's/,$//')
+if [ -n "$VOICES" ]; then
+  EVERY="${OCD_HOLD_VOICE_EVERY:-30}"
+  case "$EVERY" in
+    ''|*[!0-9]*) echo "OCD_HOLD_VOICE_EVERY is a number of seconds" >&2; exit 1 ;;
+  esac
+  sed -i "s#</directory>#  <param name=\"chime-list\" value=\"$VOICES\"/>\n    <param name=\"chime-freq\" value=\"$EVERY\"/>\n    <param name=\"chime-max\" value=\"60000\"/>\n  </directory>#" \
+    "$CONF/autoload_configs/local_stream.conf.xml"
+  echo "Voice while waiting: the files of sounds/voix, every $EVERY s"
 fi
 cat > "$STATE/vars_env.xml" <<EOF
 <include>

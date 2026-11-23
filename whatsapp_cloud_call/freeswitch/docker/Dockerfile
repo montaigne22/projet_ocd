@@ -67,6 +67,8 @@ RUN --mount=type=secret,id=build_ca,required=false \
         ca-certificates curl openssl tini libssl3 libcurl4 libpcre2-8-0 libspeex1 libspeexdsp1 \
         libsqlite3-0 libedit2 libopus0 libsndfile1 liblua5.3-0 libuuid1 zlib1g libtiff6 \
         libjpeg62-turbo \
+        # the recorded messages of the team given in MP3, decoded at each start (entrypoint)
+        mpg123 \
     && build_ca_done \
     && rm -rf /var/lib/apt/lists/* \
     # a fixed user, the same in the other containers that share the files of FreeSWITCH

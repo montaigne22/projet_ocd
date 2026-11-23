@@ -6,14 +6,19 @@ The Lua parts run with lua5.3 (or lua) when it is installed.
 """
 
 import json
+import math
 import os
 import shutil
 import socketserver
+import struct
 import subprocess
 import sys
 import tempfile
 import threading
+import time
 import unittest
+import unittest.mock
+import wave
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs
@@ -136,7 +141,7 @@ class TestSync(unittest.TestCase):
             "state_dir": str(self.tmp / "state"),
             "spool_dir": str(self.tmp / "spool"),
         })
-        for folder in ("voicemail", "cdr-errors"):
+        for folder in ("voicemail", "cdr-errors", "recordings"):
             (self.tmp / "spool" / folder).mkdir(parents=True)
 
     def test_run_once_writes_the_users(self):
@@ -224,6 +229,64 @@ class TestSync(unittest.TestCase):
         self.assertFalse(voicemail.exists())
         self.assertFalse(record.exists())
 
+    def recording(self, name, seconds=2, age=60, facts="call=12\nuuid=u\n"):
+        """A recording left by the script of a call: WAV 16 kHz mono, <age> seconds old."""
+        path = self.tmp / "spool" / "recordings" / f"{name}.wav"
+        with wave.open(str(path), "wb") as file:
+            file.setnchannels(1)
+            file.setsampwidth(2)
+            file.setframerate(16000)
+            file.writeframes(b"".join(
+                struct.pack("<h", int(8000 * math.sin(2 * math.pi * 440 * i / 16000)))
+                for i in range(16000 * seconds)
+            ))
+        if facts is not None:
+            path.with_suffix(".txt").write_text(facts)
+        then = time.time() - age
+        os.utime(path, (then, then))
+        return path
+
+    def recording_requests(self):
+        return [b for p, _h, b in FakeOdoo.requests if p == "/whatsapp/call/server/recording"]
+
+    def test_recordings_sent_once_the_call_ended(self):
+        ended = self.recording("uuid-r1", facts="call=12\nwacid=wacid.R\nuuid=uuid-r1\n")
+        going_on = self.recording("uuid-r2", age=2)
+        silent = self.recording("uuid-r3", seconds=0)
+        self.assertTrue(ocd_call_sync.Sync(self.conf).run_once())
+        bodies = self.recording_requests()
+        self.assertEqual(len(bodies), 1)
+        self.assertIn(b'name="call"\r\n\r\n12', bodies[0])
+        self.assertIn(b'name="wacid"\r\n\r\nwacid.R', bodies[0])
+        if shutil.which("lame"):
+            self.assertIn(b"Content-Type: audio/mpeg", bodies[0])
+            self.assertLess(len(bodies[0]), 40000)  # 2 s of MP3, far smaller than the WAV (64 kB)
+        else:
+            self.assertIn(b"Content-Type: audio/wav", bodies[0])
+        self.assertFalse(ended.exists() or ended.with_suffix(".txt").exists() or ended.with_suffix(".mp3").exists())
+        self.assertTrue(going_on.exists())  # the call goes on
+        self.assertFalse(silent.exists())  # nothing said
+
+    def test_recording_without_mp3_or_facts(self):
+        """Without lame: the WAV; without the facts (script stopped): the ID of the call server."""
+        path = self.recording("uuid-r4", facts=None)
+        with unittest.mock.patch.object(ocd_call_sync.shutil, "which", return_value=None):
+            self.assertTrue(ocd_call_sync.Sync(self.conf).run_once())
+        body = self.recording_requests()[0]
+        self.assertIn(b"Content-Type: audio/wav", body)
+        self.assertIn(b'name="uuid"\r\n\r\nuuid-r4', body)
+        self.assertFalse(path.exists())
+
+    def test_recording_refused_kept_then_set_aside(self):
+        FakeOdoo.status = 400
+        path = self.recording("uuid-r5")
+        ocd_call_sync.Sync(self.conf).send_recordings([path])
+        self.assertTrue(path.exists())
+        old = self.recording("uuid-r6", age=8 * 86400)
+        ocd_call_sync.Sync(self.conf).send_recordings([old])
+        self.assertFalse(old.exists())
+        self.assertTrue(old.with_suffix(".refused.wav").exists())
+
     def test_freeswitch_down_or_wrong_password(self):
         """Odoo still told, FreeSWITCH asked again at the next run."""
         self.conf["esl_password"] = "wrong"
@@ -272,6 +335,25 @@ class TestSync(unittest.TestCase):
         )
         output = subprocess.run([LUA, "-e", script], capture_output=True, text=True, check=True).stdout
         self.assertEqual(output.split(), ["calls.example.com", "agent5", "1", "120", "true"])
+
+    @unittest.skipUnless(LUA, "Lua is not installed")
+    def test_sounds_found_by_lua(self):
+        """A message made ready at the start (WAV or MP3 of sounds/) first, else the one of the
+        folder of the sounds (installation without Docker), else none."""
+        ready, team = self.tmp / "ready", self.tmp / "team"
+        ready.mkdir()
+        team.mkdir()
+        (ready / "accueil.wav").write_bytes(b"RIFF")
+        (team / "accueil.wav").write_bytes(b"RIFF")
+        (team / "messagerie.wav").write_bytes(b"RIFF")
+        script = (
+            f"package.path = {json.dumps(str(FREESWITCH / 'scripts') + '/?.lua')} .. ';' .. package.path\n"
+            "local odoo = require('ocd.odoo')\n"
+            f"local s = {{sounds_ready = {json.dumps(str(ready))}, sounds = {json.dumps(str(team))}}}\n"
+            "print(odoo.sound(s, 'accueil'), odoo.sound(s, 'messagerie'), odoo.sound(s, 'enregistrement'))\n"
+        )
+        output = subprocess.run([LUA, "-e", script], capture_output=True, text=True, check=True).stdout
+        self.assertEqual(output.split(), [str(ready / "accueil.wav"), str(team / "messagerie.wav"), "nil"])
 
     @unittest.skipUnless(LUA and shutil.which("curl"), "Lua or curl is not installed")
     def test_lua_asks_odoo(self):
