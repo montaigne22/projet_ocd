@@ -69,6 +69,7 @@ local function run(scenario)
 end
 
 local ALLOWED = "number=237670000000\nphone_number_id=1110001\nbusiness_number=22890000001\nsrtp=SDES\nmax_ring=45\n"
+local ALLOWED_30 = ALLOWED .. "max_talk=1800\n"
 
 -- 1. the customer picks up, talks 40 s, the agent hangs up
 local log = run({ odoo_body = ALLOWED, bridge = { answer = true, ring = 8, talk = 40, cause = "NORMAL_CLEARING", agent_hangs_up = true } })
@@ -118,6 +119,16 @@ log = run({ odoo_body = ALLOWED, bridge = { answer = true, ring = 5, talk = 30, 
                                             agent_hangs_up = true, agent_reason = 'Q.850;cause=31;text="ended at Meta"' } })
 ended = log.events[#log.events]
 check("7 completed, ended by the customer", ended.outcome == "completed" and ended.ended_by == "customer" and ended.talk == 30)
+
+-- 8. the longest duration of a call of the company: the customer's leg ends after it
+log = run({ odoo_body = ALLOWED_30, bridge = { answer = true, ring = 5, talk = 1800, cause = "ALLOTTED_TIMEOUT" } })
+check("8 the customer's leg ends after 30 minutes",
+      (log.bridges[1] or ""):find("execute_on_answer='sched_hangup +1800 ALLOTTED_TIMEOUT'", 1, true) ~= nil)
+ended = log.events[#log.events]
+check("8 completed, ended by the system", ended.outcome == "completed" and ended.ended_by == "system"
+      and ended.cause == "ALLOTTED_TIMEOUT")
+check("8 without a limit: no end set", (run({ odoo_body = ALLOWED, bridge = { answer = true, talk = 5 } }).bridges[1] or "")
+      :find("sched_hangup", 1, true) == nil)
 
 print(string.format("%d checks, %d failures", count, failures))
 os.exit(failures == 0 and 0 or 1)

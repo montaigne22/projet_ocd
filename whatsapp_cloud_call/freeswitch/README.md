@@ -378,7 +378,10 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
   signée avec le numéro de l'entreprise et le mot de passe SIP de Meta), écrite par ocd-call-sync
   (`/var/lib/freeswitch/ocd/gateways_meta.xml`) et rechargée quand elle change (journal : `gateways to
   Meta: meta_...`). Vérifier : `docker compose exec freeswitch fs_cli -x "sofia status gateway"`. Le
-  serveur doit pouvoir sortir vers `wa.meta.vc` port 5061 (TCP).
+  serveur doit pouvoir sortir vers `wa.meta.vc` port 5061 (TCP). Odoo donne aussi la durée maximale de
+  l'appel (`max_talk`, compte WhatsApp, onglet Appels, 30 minutes par défaut) : le serveur arrête la
+  ligne du client à cette durée après sa réponse (`sched_hangup`, cause `ALLOTTED_TIMEOUT`, fin notée
+  « système »).
 - **Jamais de boucle** : un conseiller qui décroche mais dont la voix ne passe pas (sa branche
   coupée moins de 15 secondes après le décroché, deux fois dans le même appel) n'est plus appelé
   pour cet appel : les collègues sonnent, sinon la messagerie (journal : `cut off again ... not rung

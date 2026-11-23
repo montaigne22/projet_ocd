@@ -112,7 +112,7 @@ tenu). Le détail : WhatsApp › Appels, vues graphique et tableau croisé (par 
 |---|---|---|
 | 2.1 | **Accord du client** | « Demander l'accord pour appeler » dans la conversation (message de Meta, dans les 24 h) ou un modèle ; la réponse notée sur le contact (7 jours ou pour toujours) ; les limites de Meta respectées (1 demande par 24 h, 2 par 7 jours) |
 | 2.2 | **Rappeler** | « Rappeler » sur un appel manqué ou coupé : l'accord est donné par Meta quand le client a appelé (rappel de l'appel) ; le serveur appelle par `wa.meta.vc` |
-| 2.3 | **Le livreur appelle le client** | Depuis sa tournée, par le numéro d'OCD : le livreur ne voit pas le numéro du client ; les 2 appels avant « absent » comptés |
+| 2.3 | ~~**Le livreur appelle le client**~~ | **Abandonné le 23 novembre 2026** : chaque appel du livreur serait payé à Meta (des centaines par jour) ; le livreur garde ses liens « Appeler » et « WhatsApp » de la tournée |
 | 2.4 | **L'animatrice appelle le vendeur** | 30 minutes avant un live à distance |
 | 2.5 | **Coût** | Durée facturée par tranches de 6 s selon le pays appelé, rapport mensuel ; pas vers le Nigeria, les États-Unis, le Canada, l'Égypte, le Vietnam (refusés par Meta) |
 
@@ -144,6 +144,25 @@ passerelle vers Meta du numéro (`wa.meta.vc`, TLS, signé avec le mot de passe 
 mettre « en attente de réponse ». L'avis de Meta sur cet appel rejoint la même fiche. Vu de bout en bout
 avec un faux Meta (`tests/e2e/company_calls.js`) : voix dans les deux sens, durée, refus d'un appel non
 préparé.
+
+**2.5 fait (version 20.0.1.8.0)** : le coût des appels de l'entreprise, gardé sous contrôle. Compte
+WhatsApp, onglet Appels, partie « Coût des appels de l'entreprise » :
+- les **tarifs** de Meta par pays (prix d'une minute, en dollars par défaut) et un prix pour les autres
+  pays : Meta change sa grille chaque trimestre, les responsables la recopient ([tarifs des appels de
+  Meta](https://developers.facebook.com/documentation/business-messaging/whatsapp/calling/pricing/)) ;
+  « Appliquer les tarifs aux appels du mois » quand ils sont saisis après coup ;
+- chaque appel de l'entreprise note le pays appelé et son tarif quand il est préparé ; son coût = les
+  tranches de 6 secondes (une commencée est due) sur la durée de Meta (celle du serveur quand Meta
+  n'a rien dit), au prix de la minute. C'est le plus que ça coûte : Meta baisse ses tarifs avec les
+  minutes du mois. Les appels des clients sont gratuits (coût 0) ;
+- un **budget par mois** : quand les appels du mois l'ont dépensé, Odoo refuse « Appeler par
+  WhatsApp » et « Rappeler » jusqu'au mois suivant (alerte dans l'onglet à 80 %) ; 0 : pas de limite ;
+- l'**appel de l'entreprise le plus long** (30 minutes par défaut) : le serveur d'appels arrête l'appel
+  à cette durée (« arrêté à la durée maximale » dans la conversation) ;
+- les **pays refusés par Meta** (États-Unis, Canada, Égypte, Vietnam, Nigeria) : Odoo ne prépare pas
+  l'appel, et le serveur d'appels le refuse aussi ;
+- le rapport **WhatsApp › Coût des appels** (responsables) : par mois et par conseiller, coût,
+  tranches et durée ; aussi par pays (Regrouper par).
 
 Ce que dit Meta pour la suite (novembre 2026) : un appel de l'entreprise part du serveur d'appels vers
 `sip:+<numéro du client>@wa.meta.vc` (TLS), signé avec le numéro de l'entreprise (sans `+`) et le mot de

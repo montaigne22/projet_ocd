@@ -4,6 +4,7 @@ from datetime import datetime, time, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import format_amount
 
 from odoo.addons.whatsapp_cloud.models.whatsapp_account import WhatsAppApiError
 from odoo.addons.whatsapp_cloud_call import const
@@ -106,6 +107,41 @@ class WhatsappAccount(models.Model):
     call_stats_ok = fields.Boolean(string="Thresholds Met", compute="_compute_call_stats")
     call_limit_warning = fields.Char(compute="_compute_call_limit_warning")
     call_hours_warning = fields.Char(compute="_compute_call_hours_warning")
+    # Cost of the calls of the company (phase 2.5)
+    call_currency_id = fields.Many2one(
+        comodel_name="res.currency",
+        string="Currency of the Calls",
+        default=lambda self: self.env.ref("base.USD", raise_if_not_found=False) or self.env.company.currency_id,
+        help="Currency of the rate card of Meta (dollars) and of the budget of the calls.",
+    )
+    call_default_rate = fields.Float(
+        string="Price of a Minute (other countries)",
+        digits=(16, 5),
+        help="Rate of Meta for a minute of call of the company to a country without its own "
+        "rate below. The rate card of Meta changes every quarter, and its rates go down with "
+        "the minutes of the month: the cost computed here is the most it costs.",
+    )
+    call_rate_ids = fields.One2many(
+        comodel_name="whatsapp.call.rate", inverse_name="account_id", string="Rates by Country"
+    )
+    call_monthly_budget = fields.Monetary(
+        string="Budget per Month",
+        currency_field="call_currency_id",
+        help="Once the calls of the company of the month cost this much, Odoo refuses them until "
+        "the next month (0: no limit). The calls of the customers are free and always taken.",
+    )
+    call_max_outbound_minutes = fields.Integer(
+        string="Longest Call of the Company (minutes)",
+        default=const.DEFAULT_OUTBOUND_MAX_MINUTES,
+        help="The call server ends a call of the company after this long (0: no limit).",
+    )
+    call_month_cost = fields.Monetary(
+        string="Cost of the Month", currency_field="call_currency_id", compute="_compute_call_month_cost"
+    )
+    call_month_count = fields.Integer(
+        string="Calls of the Company this Month", compute="_compute_call_month_cost"
+    )
+    call_budget_warning = fields.Char(compute="_compute_call_month_cost")
 
     def _compute_call_count(self):
         counts = dict(self.env["whatsapp.call"]._read_group(
@@ -415,6 +451,103 @@ class WhatsappAccount(models.Model):
                 agents.setdefault(user, self.browse())
                 agents[user] |= account
         return agents
+
+    # === COST OF THE CALLS OF THE COMPANY === #
+
+    @api.model
+    def _call_month_start(self):
+        """Start of the month of the bills of Meta (calendar month, UTC)."""
+        return fields.Datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    def _call_month_costs(self):
+        """{account id: (cost, number of calls)} of the calls of the company of this month (the
+        exact sum: a call costs a fraction of a cent)."""
+        if not self.ids:
+            return {}
+        return {
+            account.id: (cost, count)
+            for account, cost, count in self.env["whatsapp.call"].sudo()._read_group(
+                [("account_id", "in", self.ids), ("direction", "=", "outbound"),
+                 ("start_date", ">=", self._call_month_start())],
+                ["account_id"], ["cost:sum", "__count"],
+            )
+        }
+
+    @api.depends("call_monthly_budget", "call_currency_id")
+    def _compute_call_month_cost(self):
+        groups = self._call_month_costs()
+        for account in self:
+            cost, count = groups.get(account.id, (0.0, 0))
+            account.call_month_cost = cost
+            account.call_month_count = count
+            budget = account.call_monthly_budget
+            if budget and cost >= budget:
+                account.call_budget_warning = _(
+                    "The budget of the month is spent: the calls of the company are refused until "
+                    "the next month (raise the budget to call again)."
+                )
+            elif budget and cost >= budget * 0.8:
+                account.call_budget_warning = _("%(share)s of the budget of the month is spent.", share="80 %")
+            else:
+                account.call_budget_warning = False
+
+    @api.model
+    def _call_country(self, number):
+        """Country of an international number (the longest calling code that matches)."""
+        digits = "".join(ch for ch in str(number or "") if ch.isdigit())
+        countries = self.env["res.country"].sudo().search([("phone_code", "!=", 0)], order="id")
+        by_code = {}
+        for country in countries:
+            by_code.setdefault(str(country.phone_code), country)
+        for size in (4, 3, 2, 1):
+            if len(digits) > size and digits[:size] in by_code:
+                return by_code[digits[:size]]
+        return self.env["res.country"]
+
+    @api.model
+    def _call_blocked_country(self, number):
+        """Name of the country where Meta refuses the calls of a company, else None."""
+        digits = "".join(ch for ch in str(number or "") if ch.isdigit())
+        for prefix, name in sorted(const.CALL_BLOCKED_PREFIXES.items(), key=lambda item: -len(item[0])):
+            if digits.startswith(prefix):
+                return name
+        return None
+
+    def _call_rate(self, country):
+        """Price of a minute of call to the country (its rate, else the default one)."""
+        self.ensure_one()
+        rate = self.call_rate_ids.filtered(lambda r: r.country_id == country)[:1]
+        return rate.price_per_minute if rate else self.call_default_rate
+
+    def _call_check_budget(self):
+        self.ensure_one()
+        account = self.sudo()
+        cost = account._call_month_costs().get(account.id, (0.0, 0))[0]
+        if account.call_monthly_budget and cost >= account.call_monthly_budget:
+            raise UserError(_(
+                "The budget of the calls of the company of this month is spent (%(cost)s of "
+                "%(budget)s): no more calls until the next month, or the managers raise it (WhatsApp "
+                "account, Calls tab).",
+                cost=format_amount(self.env, cost, account.call_currency_id),
+                budget=format_amount(self.env, account.call_monthly_budget, account.call_currency_id),
+            ))
+
+    def action_call_recompute_costs(self):
+        """The rates of now on the calls of the company of this month (after entering them)."""
+        for account in self:
+            calls = self.env["whatsapp.call"].sudo().search([
+                ("account_id", "=", account.id), ("direction", "=", "outbound"),
+                ("start_date", ">=", self._call_month_start()),
+            ])
+            calls._call_set_rate()
+        return True
+
+    def action_call_costs(self):
+        """Cost of the calls of the company, by month and agent."""
+        self.ensure_one()
+        action = self.env["ir.actions.act_window"]._for_xml_id("whatsapp_cloud_call.whatsapp_call_cost_action")
+        action["domain"] = [("direction", "=", "outbound"), ("account_id", "=", self.id)]
+        return action
 
     def _call_business_number(self):
         """Number of the account in international format, digits only."""

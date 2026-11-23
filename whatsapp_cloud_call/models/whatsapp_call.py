@@ -125,6 +125,22 @@ class WhatsappCall(models.Model):
         string="Free Agents", readonly=True,
         help="Agents who took the calls and were free when the call came.",
     )
+    # Cost of a call of the company (phase 2.5): the rate of the country called, noted when the
+    # call is prepared (a later rate card does not change the calls already made)
+    country_id = fields.Many2one(comodel_name="res.country", string="Country Called", readonly=True)
+    call_rate = fields.Float(string="Price of a Minute", digits=(16, 5), readonly=True)
+    currency_id = fields.Many2one(comodel_name="res.currency", readonly=True)
+    billed_pulses = fields.Integer(
+        string="Pulses Billed", compute="_compute_cost", store=True,
+        help="Meta bills a call of the company by pulses of 6 seconds (a pulse begun is due), on "
+        "its own duration of the call.",
+    )
+    # (4 decimals: a call costs a fraction of a cent, a field of an amount would round it)
+    cost = fields.Float(
+        string="Cost", compute="_compute_cost", store=True, digits=(16, 4),
+        help="In the currency of the calls of the account. Pulses billed at the price of a minute of the country called (the most it costs: "
+        "Meta lowers its rates with the minutes of the month). The calls of the customers are free.",
+    )
     phone_trace = fields.Text(
         string="Diagnostic of the Phone", readonly=True,
         help="What the phone of each agent who answered did (version, microphone, network "
@@ -141,7 +157,29 @@ class WhatsappCall(models.Model):
             call.duration_display = format_duration(self.env, call.duration) if call.duration else False
             call.wait_display = format_duration(self.env, call.wait_duration) if call.wait_duration else False
 
-    @api.depends("partner_id", "number", "user_ref", "start_date")
+    @api.depends("direction", "state", "duration", "meta_duration", "call_rate")
+    def _compute_cost(self):
+        for call in self:
+            seconds = 0
+            if call.direction == "outbound" and call.state == "completed":
+                # the duration of Meta is the one billed; the call server's when Meta said nothing
+                seconds = call.meta_duration or call.duration
+            pulses = -(-seconds // const.CALL_PULSE_SECONDS) if seconds > 0 else 0
+            call.billed_pulses = pulses
+            call.cost = pulses * const.CALL_PULSE_SECONDS / 60 * call.call_rate
+
+    def _call_set_rate(self):
+        """The country called and its rate of now (calls of the company)."""
+        for call in self:
+            account = call.account_id
+            country = account._call_country(call.number)
+            call.write({
+                "country_id": country.id,
+                "call_rate": account._call_rate(country),
+                "currency_id": account.call_currency_id.id,
+            })
+
+    @api.depends("partner_id", "number", "user_ref", "start_date", "direction")
     def _compute_display_name(self):
         for call in self:
             label = call._call_customer_label() or _("Unknown")
@@ -525,6 +563,8 @@ class WhatsappCall(models.Model):
         account = call.account_id
         if not account.call_enabled or not account.sudo().call_sip_password or not call.number:
             return {"error": "Calls not enabled or no number"}
+        if account._call_blocked_country(call.number):
+            return {"error": "Meta refuses the calls to this country"}
         call.write({"server_seen": True, "server_uuid": values.get("uuid") or False})
         return {
             "number": call.number,
@@ -532,6 +572,7 @@ class WhatsappCall(models.Model):
             "business_number": account._call_business_number(),
             "srtp": account.call_srtp,
             "max_ring": const.OUTBOUND_MAX_RING,
+            "max_talk": max(0, account.call_max_outbound_minutes) * 60,
         }
 
     def action_call_back(self):
@@ -611,6 +652,10 @@ class WhatsappCall(models.Model):
         wait = format_duration(env, self.wait_duration)
         if self.direction == "outbound":
             agent = self.user_id.name or _("an agent")
+            if self.state == "completed" and self.end_cause == "ALLOTTED_TIMEOUT":
+                return _("Call to the customer of %(duration)s, by %(agent)s: ended at the longest "
+                         "duration of a call of the company.",
+                         duration=format_duration(env, self.duration), agent=agent)
             if self.state == "completed":
                 return _("Call to the customer of %(duration)s, by %(agent)s.",
                          duration=format_duration(env, self.duration), agent=agent)

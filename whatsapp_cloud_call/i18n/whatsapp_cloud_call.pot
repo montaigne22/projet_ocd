@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:02+0000\n"
-"PO-Revision-Date: 2026-11-23 14:02+0000\n"
+"POT-Creation-Date: 2026-11-23 15:30+0000\n"
+"PO-Revision-Date: 2026-11-23 15:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -65,6 +65,12 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #. odoo-python
 #: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "%(share)s of the budget of the month is spent."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
 msgid "%(type)s: %(reason)s"
 msgstr ""
 
@@ -90,6 +96,11 @@ msgid "<span class=\"o_form_label me-2\">Last report:</span>"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.constraint,message:whatsapp_cloud_call.constraint_whatsapp_call_rate_account_country_unique
+msgid "A country has one rate per WhatsApp account."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_callback_permission
 msgid "A customer who calls allows the company to call them back (Meta, 7 days)."
 msgstr ""
@@ -97,6 +108,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_max_wait
 msgid "A customer who waits this long without an agent leaves a message."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__account_id
+msgid "Account"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -171,6 +187,11 @@ msgid "Answered on"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Apply the Rates to the Calls of the Month"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #. odoo-python
 #: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
 msgid "Ask to call them"
@@ -197,8 +218,18 @@ msgid "Average wait of the calls answered during the call hours of the last 14 d
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_monthly_budget
+msgid "Budget per Month"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
 msgid "Call Back"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_budget_warning
+msgid "Call Budget Warning"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -317,6 +348,12 @@ msgid "Call to the customer of %(duration)s, by %(agent)s."
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
+msgid "Call to the customer of %(duration)s, by %(agent)s: ended at the longest duration of a call of the company."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
 msgid "Call: %s"
@@ -381,6 +418,16 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_stats_cut_rate
 msgid "Calls lost or failed, and calls where the agent was cut off (network, closed page), among the calls of the last 14 days. To open the calls to all: under 2 %."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Calls of the Company"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_month_count
+msgid "Calls of the Company this Month"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -458,15 +505,70 @@ msgid "Conversation"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__cost
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
+msgid "Cost"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Cost Report"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.actions.act_window,name:whatsapp_cloud_call.whatsapp_call_cost_action
+#: model:ir.ui.menu,name:whatsapp_cloud_call.whatsapp_menu_call_costs
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_graph_cost
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_pivot_cost
+msgid "Cost of the Calls"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Cost of the Calls of the Company"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_month_cost
+msgid "Cost of the Month"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__country_id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__country_id
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Country Called"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__create_uid
 msgid "Created by"
 msgstr ""
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__create_date
 msgid "Created on"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_currency_id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__currency_id
+msgid "Currency of the Calls"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_currency_id
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_rate__currency_id
+msgid "Currency of the rate card of Meta (dollars) and of the budget of the calls."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -528,6 +630,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_users__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_message__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__display_name
@@ -649,6 +752,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_users__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_message__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__id
@@ -669,6 +773,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_call__state__answered
 msgid "In progress"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__cost
+msgid "In the currency of the calls of the account. Pulses billed at the price of a minute of the country called (the most it costs: Meta lowers its rates with the minutes of the month). The calls of the customers are free."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -705,12 +814,14 @@ msgstr ""
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__write_uid
 msgid "Last Updated by"
 msgstr ""
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__write_date
 msgid "Last Updated on"
 msgstr ""
@@ -718,6 +829,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_server__registrations
 msgid "Logins, one per line."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_max_outbound_minutes
+msgid "Longest Call of the Company (minutes)"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -764,6 +880,16 @@ msgid "Meta allows 1 request to call a customer per 24 hours, and 2 per 7 days: 
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__billed_pulses
+msgid "Meta bills a call of the company by pulses of 6 seconds (a pulse begun is due), on its own duration of the call."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Meta bills the calls of the company by pulses of 6 seconds at the rate of the country called (its rate card, in dollars, changes every quarter; the rates go down with the minutes of the month): the cost here is the most it costs. The calls of the customers are free. Meta refuses the calls to the United States, Canada, Egypt, Vietnam and Nigeria: Odoo does not place them."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #. odoo-python
 #: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
 msgid "Meta does not allow more calls to this customer for now (limit of calls): try again later."
@@ -785,6 +911,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
 msgid "Meta gave no SIP password: check the SIP server in the settings, then send them again."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "Meta refuses the calls of a company to this country (%s)."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -813,6 +945,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
 msgid "Missed call (waited %s): the customer left a message."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
+msgid "Month"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -852,6 +989,11 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone_service.js:0
 msgid "No answer from the customer."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud_call.whatsapp_call_cost_action
+msgid "No call of the company yet"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -901,6 +1043,11 @@ msgid "Number of the Customer"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_monthly_budget
+msgid "Once the calls of the company of the month cost this much, Odoo refuses them until the next month (0: no limit). The calls of the customers are free and always taken."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_form
 msgid "Open the Conversation"
 msgstr ""
@@ -934,6 +1081,11 @@ msgid "Phone"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__phone_code
+msgid "Phone Prefix"
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_icon_visibility
 msgid "Phone icon in the conversation with the company, in WhatsApp."
 msgstr ""
@@ -946,6 +1098,42 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_turn_tls_port
 msgid "Port of the TURN Relay (TLS)"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__call_rate
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__price_per_minute
+msgid "Price of a Minute"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_default_rate
+msgid "Price of a Minute (other countries)"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__billed_pulses
+msgid "Pulses Billed"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_default_rate
+msgid "Rate of Meta for a minute of call of the company to a country without its own rate below. The rate card of Meta changes every quarter, and its rates go down with the minutes of the month: the cost computed here is the most it costs."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_rate__price_per_minute
+msgid "Rate of Meta for a minute of call of the company to this country (billed by pulses of 6 seconds)."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_call_rate
+msgid "Rate of the WhatsApp Calls of the Company"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_rate_ids
+msgid "Rates by Country"
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -1075,6 +1263,18 @@ msgid "The browser refuses the microphone: the calls cannot be answered. Allow i
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "The budget of the calls of the company of this month is spent (%(cost)s of %(budget)s): no more calls until the next month, or the managers raise it (WhatsApp account, Calls tab)."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_account.py:0
+msgid "The budget of the month is spent: the calls of the company are refused until the next month (raise the budget to call again)."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call__in_hours
 msgid "The call came while the team works (opening hours of the account)."
 msgstr ""
@@ -1104,6 +1304,11 @@ msgid "The call server does not answer"
 msgstr ""
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_max_outbound_minutes
+msgid "The call server ends a call of the company after this long (0: no limit)."
+msgstr ""
+
+#. module: whatsapp_cloud_call
 #. odoo-python
 #: code:addons/whatsapp_cloud_call/models/whatsapp_call.py:0
 msgid "The call server has not reported since %s: the WhatsApp calls may not ring. Check that FreeSWITCH and the copy of the agents (ocd-call-sync) run on it."
@@ -1129,6 +1334,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
 msgid "The calls are not enabled on this WhatsApp account (Calls tab)."
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.actions.act_window,help:whatsapp_cloud_call.whatsapp_call_cost_action
+msgid "The calls of the company to the customers (Call through WhatsApp, Call Back), billed by Meta by pulses of 6 seconds; the calls of the customers are free."
 msgstr ""
 
 #. module: whatsapp_cloud_call
@@ -1265,6 +1475,11 @@ msgstr ""
 #. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
 msgid "Today"
+msgstr ""
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_list
+msgid "Total"
 msgstr ""
 
 #. module: whatsapp_cloud_call

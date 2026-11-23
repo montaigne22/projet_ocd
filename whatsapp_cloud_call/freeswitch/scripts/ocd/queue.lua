@@ -229,6 +229,10 @@ M.NOT_TAKEN_CAUSES = {
 }
 function M.outbound_end(info)
   if info.answered then
+    if info.cause == "ALLOTTED_TIMEOUT" then
+      -- the longest duration of a call of the company (set in Odoo) was reached
+      return "completed", "system"
+    end
     local by_customer = info.agent_up or info.agent_cause == M.ENDED_AT_META
     return "completed", by_customer and "customer" or "agent"
   end

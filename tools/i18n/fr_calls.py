@@ -1,5 +1,84 @@
 # The WhatsApp calls (whatsapp_cloud_call): the call server, the phone of the agents, the calls
 CALLS = {
+    # Phase 2.5: the cost of the calls of the company
+    '%(share)s of the budget of the month is spent.':
+        '%(share)s du budget du mois sont dépensés.',
+    'A country has one rate per WhatsApp account.':
+        'Un pays a un seul tarif par compte WhatsApp.',
+    'Account':
+        'Compte',
+    'Apply the Rates to the Calls of the Month':
+        'Appliquer les tarifs aux appels du mois',
+    'Budget per Month':
+        'Budget par mois',
+    'Call Budget Warning':
+        'Alerte du budget des appels',
+    'Call to the customer of %(duration)s, by %(agent)s: ended at the longest duration of a call of the company.':
+        "Appel au client de %(duration)s, par %(agent)s : arrêté à la durée maximale d'un appel de l'entreprise.",
+    'Calls of the Company':
+        "Appels de l'entreprise",
+    'Calls of the Company this Month':
+        "Appels de l'entreprise ce mois-ci",
+    'Cost':
+        'Coût',
+    'Cost Report':
+        'Rapport des coûts',
+    'Cost of the Calls':
+        'Coût des appels',
+    'Cost of the Calls of the Company':
+        "Coût des appels de l'entreprise",
+    'Cost of the Month':
+        'Coût du mois',
+    'Country Called':
+        'Pays appelé',
+    'Currency':
+        'Devise',
+    'Currency of the Calls':
+        'Devise des appels',
+    'Currency of the rate card of Meta (dollars) and of the budget of the calls.':
+        'Devise de la grille tarifaire de Meta (dollars) et du budget des appels.',
+    'In the currency of the calls of the account. Pulses billed at the price of a minute of the country called (the most it costs: Meta lowers its rates with the minutes of the month). The calls of the customers are free.':
+        "Dans la devise des appels du compte. Tranches facturées au prix d'une minute du pays appelé (le plus que ça coûte : Meta baisse ses tarifs avec les minutes du mois). Les appels des clients sont gratuits.",
+    'Longest Call of the Company (minutes)':
+        "Appel de l'entreprise le plus long (minutes)",
+    'Meta bills a call of the company by pulses of 6 seconds (a pulse begun is due), on its own duration of the call.':
+        "Meta facture un appel de l'entreprise par tranches de 6 secondes (une tranche commencée est due), sur sa propre durée de l'appel.",
+    'Meta bills the calls of the company by pulses of 6 seconds at the rate of the country called (its rate card, in dollars, changes every quarter; the rates go down with the minutes of the month): the cost here is the most it costs. The calls of the customers are free. Meta refuses the calls to the United States, Canada, Egypt, Vietnam and Nigeria: Odoo does not place them.':
+        "Meta facture les appels de l'entreprise par tranches de 6 secondes au tarif du pays appelé (sa grille, en dollars, change chaque trimestre ; les tarifs baissent avec les minutes du mois) : le coût ici est le plus que ça coûte. Les appels des clients sont gratuits. Meta refuse les appels vers les États-Unis, le Canada, l'Égypte, le Vietnam et le Nigeria : Odoo ne les passe pas.",
+    'Meta refuses the calls of a company to this country (%s).':
+        "Meta refuse les appels d'une entreprise vers ce pays (%s).",
+    'Month':
+        'Mois',
+    'No call of the company yet':
+        "Pas encore d'appel de l'entreprise",
+    'Once the calls of the company of the month cost this much, Odoo refuses them until the next month (0: no limit). The calls of the customers are free and always taken.':
+        "Quand les appels de l'entreprise du mois coûtent autant, Odoo les refuse jusqu'au mois suivant (0 : pas de limite). Les appels des clients sont gratuits et toujours pris.",
+    'Phone Prefix':
+        'Indicatif',
+    'Price of a Minute':
+        "Prix d'une minute",
+    'Price of a Minute (other countries)':
+        "Prix d'une minute (autres pays)",
+    'Pulses Billed':
+        'Tranches facturées',
+    'Rate of Meta for a minute of call of the company to a country without its own rate below. The rate card of Meta changes every quarter, and its rates go down with the minutes of the month: the cost computed here is the most it costs.':
+        "Tarif de Meta pour une minute d'appel de l'entreprise vers un pays sans tarif propre ci-dessous. La grille de Meta change chaque trimestre, et ses tarifs baissent avec les minutes du mois : le coût calculé ici est le plus que ça coûte.",
+    'Rate of Meta for a minute of call of the company to this country (billed by pulses of 6 seconds).':
+        "Tarif de Meta pour une minute d'appel de l'entreprise vers ce pays (facturé par tranches de 6 secondes).",
+    'Rate of the WhatsApp Calls of the Company':
+        "Tarif des appels WhatsApp de l'entreprise",
+    'Rates by Country':
+        'Tarifs par pays',
+    'The budget of the calls of the company of this month is spent (%(cost)s of %(budget)s): no more calls until the next month, or the managers raise it (WhatsApp account, Calls tab).':
+        "Le budget des appels de l'entreprise de ce mois est dépensé (%(cost)s sur %(budget)s) : plus d'appel jusqu'au mois suivant, ou les responsables l'augmentent (compte WhatsApp, onglet Appels).",
+    'The budget of the month is spent: the calls of the company are refused until the next month (raise the budget to call again).':
+        "Le budget du mois est dépensé : les appels de l'entreprise sont refusés jusqu'au mois suivant (augmentez le budget pour appeler à nouveau).",
+    'The call server ends a call of the company after this long (0: no limit).':
+        "Le serveur d'appels arrête un appel de l'entreprise après cette durée (0 : pas de limite).",
+    'The calls of the company to the customers (Call through WhatsApp, Call Back), billed by Meta by pulses of 6 seconds; the calls of the customers are free.':
+        "Les appels de l'entreprise aux clients (Appeler par WhatsApp, Rappeler), facturés par Meta par tranches de 6 secondes ; les appels des clients sont gratuits.",
+    'Total':
+        'Total',
     " (until %s)": " (jusqu'au %s)",
     "%(hours)s h %(minutes)02d min": "%(hours)s h %(minutes)02d min",
     "%(minutes)s min %(seconds)02d s": "%(minutes)s min %(seconds)02d s",

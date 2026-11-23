@@ -281,6 +281,10 @@ class DiscussChannel(models.Model):
                 "The customer hides their number behind a WhatsApp username: the company cannot "
                 "call them."
             ))
+        blocked = account._call_blocked_country(channel.whatsapp_number)
+        if blocked:
+            raise UserError(_("Meta refuses the calls of a company to this country (%s).", blocked))
+        account._call_check_budget()
         try:
             data = channel._whatsapp_call_permission_read()
         except WhatsAppApiError as error:
@@ -306,6 +310,7 @@ class DiscussChannel(models.Model):
             "user_id": user.id,
             "in_hours": account._is_open(),
         })
+        call._call_set_rate()
         return {
             "type": "ir.actions.client",
             "tag": "whatsapp_call_dial",

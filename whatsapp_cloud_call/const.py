@@ -49,3 +49,16 @@ CALL_STATS_DAYS = 14
 CALL_MAX_CUT_RATE = 0.02
 CALL_MAX_VOICEMAIL_RATE = 0.05
 CALL_MAX_AVERAGE_WAIT = 60
+
+# Cost of the calls of the company (phase 2.5): Meta bills them by pulses of 6 seconds (a pulse
+# begun is due), at the rate of the country called; the calls of the customers are free.
+CALL_PULSE_SECONDS = 6
+# A call of the company is cut after this long (minutes; 0: no limit), by the call server.
+DEFAULT_OUTBOUND_MAX_MINUTES = 30
+# Countries where Meta refuses the calls of a company (November 2026): calling code -> name.
+CALL_BLOCKED_PREFIXES = {
+    "1": "United States / Canada",
+    "20": "Egypt",
+    "84": "Vietnam",
+    "234": "Nigeria",
+}

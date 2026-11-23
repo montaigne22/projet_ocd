@@ -73,6 +73,37 @@
                             </div>
                         </group>
                     </group>
+                    <div class="alert alert-warning" role="alert" invisible="not call_budget_warning">
+                        <field name="call_budget_warning"/>
+                    </div>
+                    <group string="Cost of the Calls of the Company" invisible="not call_enabled">
+                        <group>
+                            <field name="call_currency_id"/>
+                            <field name="call_default_rate"/>
+                            <field name="call_max_outbound_minutes"/>
+                            <field name="call_monthly_budget"/>
+                        </group>
+                        <group>
+                            <field name="call_month_count"/>
+                            <field name="call_month_cost"/>
+                            <button name="action_call_costs" type="object" string="Cost Report"
+                                    class="btn-link ps-0" invisible="not id"/>
+                            <button name="action_call_recompute_costs" type="object"
+                                    string="Apply the Rates to the Calls of the Month" class="btn-link ps-0"
+                                    invisible="not id"/>
+                        </group>
+                        <field name="call_rate_ids" colspan="2" nolabel="1">
+                            <list editable="bottom">
+                                <field name="country_id"/>
+                                <field name="phone_code"/>
+                                <field name="price_per_minute"/>
+                                <field name="currency_id" column_invisible="True"/>
+                            </list>
+                        </field>
+                        <div class="text-muted mb-3" colspan="2">
+                            Meta bills the calls of the company by pulses of 6 seconds at the rate of the country called (its rate card, in dollars, changes every quarter; the rates go down with the minutes of the month): the cost here is the most it costs. The calls of the customers are free. Meta refuses the calls to the United States, Canada, Egypt, Vietnam and Nigeria: Odoo does not place them.
+                        </div>
+                    </group>
                     <div class="text-muted">
                         The calls ring for the agents of the Team tab who take the calls (phone of the top bar). The address of the call server is in Settings &gt; WhatsApp &gt; Calls. In the webhook of the Meta app, also subscribe to the field calls: Odoo then sees the calls that the call server did not take.
                     </div>

@@ -59,14 +59,21 @@ log("NOTICE", "outbound call " .. call_id .. " of " .. agent .. " to +" .. numbe
 local srtp = answer.srtp == "DTLS" and "optional:AES_CM_128_HMAC_SHA1_80"
   or "mandatory:AES_CM_128_HMAC_SHA1_80:AES_CM_128_HMAC_SHA1_32"
 local ring = tonumber(answer.max_ring) or 45
-local started = os.time()
-session:execute("bridge", "{ignore_early_media=false}[" .. table.concat({
+local leg = {
   "leg_timeout=" .. ring,
   "absolute_codec_string=OPUS",
   "rtp_secure_media=" .. srtp,
   "origination_caller_id_number=+" .. queue.digits(answer.business_number),
   "api_on_answer=luarun ocd_whatsapp_event.lua outbound_answered " .. uuid .. " " .. agent,
-}, ",") .. "]sofia/gateway/meta_" .. pnid .. "/+" .. number)
+}
+-- a call of the company is paid by the minute: ended after the longest duration set in Odoo
+local max_talk = math.floor(tonumber(answer.max_talk) or 0)
+if max_talk > 0 then
+  leg[#leg + 1] = "execute_on_answer='sched_hangup +" .. max_talk .. " ALLOTTED_TIMEOUT'"
+end
+local started = os.time()
+session:execute("bridge", "{ignore_early_media=false}[" .. table.concat(leg, ",") .. "]sofia/gateway/meta_"
+  .. pnid .. "/+" .. number)
 
 local answered = var("ocd_customer_answered") == "1"
 local cause = var("last_bridge_hangup_cause")

@@ -18,6 +18,9 @@
                 <field name="reconnect_count" optional="hide"/>
                 <field name="ended_by" optional="hide"/>
                 <field name="account_id" optional="hide"/>
+                <field name="direction" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="cost" optional="hide" sum="Total"/>
             </list>
         </field>
     </record>
@@ -76,6 +79,17 @@
                             <field name="meta_duration"/>
                         </group>
                     </group>
+                    <group string="Cost" invisible="direction != 'outbound'">
+                        <group>
+                            <field name="country_id"/>
+                            <field name="call_rate"/>
+                        </group>
+                        <group>
+                            <field name="billed_pulses"/>
+                            <field name="currency_id"/>
+                            <field name="cost"/>
+                        </group>
+                    </group>
                     <group string="Diagnostic of the Phone" invisible="not phone_trace">
                         <field name="phone_trace" nolabel="1" colspan="2" class="font-monospace small"/>
                     </group>
@@ -97,6 +111,7 @@
                         domain="[('state', 'in', ('missed', 'voicemail', 'lost'))]"/>
                 <filter name="filter_now" string="Now" domain="[('state', 'in', ('ringing', 'answered'))]"/>
                 <filter name="filter_completed" string="Completed" domain="[('state', '=', 'completed')]"/>
+                <filter name="filter_outbound" string="Calls of the Company" domain="[('direction', '=', 'outbound')]"/>
                 <filter name="filter_lost" string="Lost or Failed" domain="[('state', 'in', ('lost', 'failed'))]"/>
                 <separator/>
                 <filter name="filter_today" string="Today"
@@ -106,6 +121,8 @@
                     <filter name="group_user" string="Agent" context="{'group_by': 'user_id'}"/>
                     <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
                     <filter name="group_day" string="Day" context="{'group_by': 'start_date:day'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'start_date:month'}"/>
+                    <filter name="group_country" string="Country Called" context="{'group_by': 'country_id'}"/>
                 </group>
             </search>
         </field>
@@ -132,6 +149,48 @@
                 <field name="duration" type="measure"/>
                 <field name="wait_duration" type="measure"/>
             </pivot>
+        </field>
+    </record>
+
+    <record id="whatsapp_call_view_pivot_cost" model="ir.ui.view">
+        <field name="name">whatsapp.call.pivot.cost</field>
+        <field name="model">whatsapp.call</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <pivot string="Cost of the Calls" disable_linking="0">
+                <field name="start_date" interval="month" type="row"/>
+                <field name="user_id" type="col"/>
+                <field name="cost" type="measure"/>
+                <field name="billed_pulses" type="measure"/>
+                <field name="duration" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="whatsapp_call_view_graph_cost" model="ir.ui.view">
+        <field name="name">whatsapp.call.graph.cost</field>
+        <field name="model">whatsapp.call</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <graph string="Cost of the Calls" type="bar" stacked="1">
+                <field name="start_date" interval="month"/>
+                <field name="user_id"/>
+                <field name="cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="whatsapp_call_cost_action" model="ir.actions.act_window">
+        <field name="name">Cost of the Calls</field>
+        <field name="res_model">whatsapp.call</field>
+        <field name="view_mode">pivot,graph,list,form</field>
+        <field name="domain">[("direction", "=", "outbound")]</field>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'pivot', 'view_id': ref('whatsapp_call_view_pivot_cost')}),
+            Command.create({'view_mode': 'graph', 'view_id': ref('whatsapp_call_view_graph_cost')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No call of the company yet</p>
+            <p>The calls of the company to the customers (Call through WhatsApp, Call Back), billed by Meta by pulses of 6 seconds; the calls of the customers are free.</p>
         </field>
     </record>
 

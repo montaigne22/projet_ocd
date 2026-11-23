@@ -843,6 +843,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   Debian 12). Détails et étapes : [`APPELS_WHATSAPP.md`](APPELS_WHATSAPP.md).
 - **D'abord les clients qui appellent** (gratuit chez Meta, sans accord à demander) ; les appels d'OCD vers
   les gens (payants, avec leur accord : rappel, livreur, animatrice) viennent ensuite.
+- **Le livreur n'appelle pas par le numéro WhatsApp d'OCD** (décidé le 23 novembre 2026) : chaque appel de
+  l'entreprise est payé à Meta, et les livreurs appelleraient des centaines de fois par jour ; ils
+  gardent les liens « Appeler » et « WhatsApp » de leur tournée. Les appels payants d'OCD (rappel d'un
+  client, animatrice) ont des tarifs par pays, un budget par mois et une durée maximale par appel.
 
 ## Back-office
 
