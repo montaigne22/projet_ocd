@@ -465,7 +465,12 @@ webhook abonné au champ `calls` ; puis, dans Odoo, « Envoyer les appels à Met
   `stun:appels.rollbackk.app:3478`, « Gather candidates » : une ligne `srflx` doit apparaître.
 - **La fin d'un appel** : quand Meta dit à Odoo (webhook `calls`) qu'un appel est fini alors que le
   serveur d'appels le croit encore en cours, le téléphone du conseiller raccroche de lui-même, ce qui
-  finit l'appel sur le serveur. La trace SIP montre si les « BYE » passent entre Meta et le serveur :
+  finit l'appel sur le serveur. Il le fait avec la raison `Q.850;cause=31;text="ended at Meta"` :
+  le serveur compte alors l'appel fini par le client (pas par le conseiller) et ne fait jamais
+  resonner les conseillers pour un client parti ; le diagnostic du téléphone dit « ended at Meta,
+  told by Odoo before the call server ». Les deux avis (Meta par Odoo, le serveur par sa ligne)
+  arrivent souvent à quelques centaines de millisecondes l'un de l'autre : le premier arrivé coupe le
+  téléphone (premier vrai appel de l'entreprise, 23 novembre 2026). La trace SIP montre si les « BYE » passent entre Meta et le serveur :
   `docker compose exec freeswitch fs_cli -x "sofia profile ocd_whatsapp siptrace on"` avant l'appel,
   `... siptrace off` après ; elle est dans `/var/log/freeswitch/freeswitch.log` (elle contient les
   clés de la voix de cet appel : ne pas la laisser allumée).

@@ -208,6 +208,37 @@ async function waitState(page, wacid, states, seconds = 30) {
     ended2 && ended2.state === "completed" && ended2.reconnect_count === 1 && ended2.user_id && ended2.user_id[1] !== "",
     JSON.stringify(ended2));
 
+  // === 3. Meta tells Odoo the end before the call server sees it === //
+  // (the notification "terminate" given to Odoo by `odoo shell`, ODOO_SHELL and ODOO_DB): Odoo
+  // tells the phone, which hangs up with the reason "ended at Meta"; the call server counts it
+  // as ended by the customer, and never rings the agents again for a customer who is gone
+  if (process.env.ODOO_SHELL) {
+    console.log("3. ended at Meta, told to the phone before the call server");
+    const wacid3 = `wacid.META.${Date.now()}`;
+    metaCall(wacid3, 120);
+    const panel3 = agent2.locator(".o_whatsapp_softphone_panel");
+    await panel3.locator("button.btn-success").waitFor({ timeout: 30000 });
+    await panel3.locator("button.btn-success").click();
+    await panel3.locator("button.btn-danger").waitFor({ timeout: 15000 });
+    await waitState(agent2, wacid3, ["answered"], 15);
+    await agent2.waitForTimeout(3000);
+    const end = JSON.stringify({ calls: [{
+      id: wacid3, event: "terminate", direction: "USER_INITIATED", from: "237670000000",
+      status: "COMPLETED", duration: 3,
+    }] });
+    execSync(`${process.env.ODOO_SHELL} -d ${process.env.ODOO_DB || "e2e"} --no-http`, {
+      input: 'account = env["whatsapp.account"].search([("phone_number_id", "=", "1110001")], limit=1)\n' +
+        `env["whatsapp.call"]._meta_process(account, ${end})\nenv.cr.commit()\n`,
+      stdio: ["pipe", "ignore", "ignore"],
+    });
+    const ended3 = await waitState(agent2, wacid3, ["completed"], 20);
+    check("Odoo: completed, ended by the customer, not cut off",
+      ended3 && ended3.state === "completed" && ended3.ended_by === "customer" && ended3.reconnect_count === 0,
+      JSON.stringify(ended3));
+    await agent2.waitForTimeout(4000);
+    check("the agent does not ring again", !(await panel3.locator("button.btn-success").count()));
+  }
+
   await browser.close();
   console.log(failures ? `${failures} failure(s)` : "all checks passed");
   process.exit(failures ? 1 : 0);

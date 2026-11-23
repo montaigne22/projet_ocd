@@ -14,6 +14,19 @@ M.NOBODY_LIMIT = 30
 -- Hang-up causes of the agent's leg meaning "the agent hung up"; any other one means the agent
 -- was cut off (network, closed page, media timeout), and the customer waits for them.
 M.NORMAL_CAUSES = { NORMAL_CLEARING = true }
+-- The phone of the agent hung up because the call ended at Meta (Odoo told it before the call
+-- server saw it): Reason Q.850 cause 31 in its BYE. The customer ended the call, not the agent.
+M.ENDED_AT_META = "NORMAL_UNSPECIFIED"
+
+-- The hang-up cause of the agent's leg, from the Reason of their BYE (variable sip_reason): the
+-- script runs in that leg, whose cause is set only once the script ends.
+function M.reason_cause(reason)
+  local q850 = tostring(reason or ""):match("[Qq]%.850%s*;%s*cause%s*=%s*(%d+)")
+  if q850 == "31" then
+    return M.ENDED_AT_META
+  end
+  return nil
+end
 -- An agent whose voice does not get through (their leg cut off this soon after they answered)
 -- twice in a call is not rung again for it: the colleagues ring, else the voicemail. Never an
 -- endless loop of rings for an agent who answers but cannot talk (network, relay).
@@ -174,7 +187,7 @@ end
 -- info: customer_up, agent (who answered this round, or nil), cause (hang-up cause of the agent)
 -- Returns "customer_gone", "agent_ended", "reconnect" or "retry".
 function M.after_bridge(info)
-  if not info.customer_up then
+  if not info.customer_up or info.cause == M.ENDED_AT_META then
     return "customer_gone"
   end
   if info.agent and info.agent ~= "" then
@@ -207,7 +220,8 @@ end
 
 -- A call of the company to a customer (outbound): how it ended.
 -- info: answered (the customer picked up), agent_up (the agent's leg still up after the
--- bridge), cause (hang-up cause of the customer's leg or of the failed call)
+-- bridge), agent_cause (hang-up cause of the agent's leg: M.ENDED_AT_META when their phone hung
+-- up because the call ended at Meta), cause (hang-up cause of the customer's leg or of the failed call)
 -- Returns outcome ("completed", "missed", "failed") and ended_by ("customer", "agent", "system").
 M.NOT_TAKEN_CAUSES = {
   NO_ANSWER = true, ALLOTTED_TIMEOUT = true, NO_USER_RESPONSE = true, USER_BUSY = true,
@@ -215,7 +229,8 @@ M.NOT_TAKEN_CAUSES = {
 }
 function M.outbound_end(info)
   if info.answered then
-    return "completed", info.agent_up and "customer" or "agent"
+    local by_customer = info.agent_up or info.agent_cause == M.ENDED_AT_META
+    return "completed", by_customer and "customer" or "agent"
   end
   if not info.agent_up or info.cause == "ORIGINATOR_CANCEL" then
     return "missed", "agent"

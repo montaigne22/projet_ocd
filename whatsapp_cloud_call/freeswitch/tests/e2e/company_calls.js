@@ -140,6 +140,41 @@ function sql(query) {
   const row2 = sql(`select state, ended_by, duration from whatsapp_call where id = ${callId2}`);
   check("Odoo: completed, ended by the customer", row2.startsWith("completed|customer|"), row2);
 
+  console.log("6. Meta tells Odoo the end before the call server sees it: still ended by the customer");
+  // the notification "terminate" of Meta, given to Odoo by `odoo shell` (ODOO_SHELL) while the
+  // call goes on on the call server: Odoo tells the phone, which hangs up with the reason "ended
+  // at Meta"; the call server counts it as ended by the customer
+  const callId3 = sql(
+    "insert into whatsapp_call (account_id, company_id, direction, channel_id, partner_id, number, user_id, state, " +
+    "start_date, create_date, write_date, create_uid, write_uid) select " +
+    `${account}, company_id, 'outbound', ${channel}, ${partner}, '237670000066', ${uid}, 'ringing', ` +
+    `now() at time zone 'utc', now() at time zone 'utc', now() at time zone 'utc', ${uid}, ${uid} ` +
+    `from whatsapp_account where id = ${account} returning id`
+  ).split("\n")[0];
+  await page.evaluate((id) => odoo.__WOWL_DEBUG__.root.env.services.whatsapp_softphone.dial(
+    { call_id: Number(id), name: "Awa Ngono", number: "+237670000066" }), callId3);
+  await panel.locator("text=In call").waitFor({ timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(3000);
+  const metaEnd = JSON.stringify({ calls: [{
+    id: `wacid.META6.${Date.now()}`, event: "terminate", direction: "BUSINESS_INITIATED",
+    to: "237670000066", status: "COMPLETED", duration: 3,
+  }] });
+  execSync(`${process.env.ODOO_SHELL || "odoo shell"} -d ${DB} --no-http`, {
+    input: `env["whatsapp.call"]._meta_process(env["whatsapp.account"].browse(${account}), ${metaEnd})\nenv.cr.commit()\n`,
+    stdio: ["pipe", "ignore", "ignore"],
+  });
+  let gone = false;
+  for (let i = 0; i < 20 && !gone; i++) {
+    await page.waitForTimeout(500);
+    gone = !(await panel.locator("text=In call").count());
+  }
+  check("the phone hung up when Odoo told it", gone);
+  await page.waitForTimeout(2000);
+  const trace3 = sql(`select phone_trace from whatsapp_call where id = ${callId3}`);
+  check("the phone noted why", trace3.includes("ended at Meta, told by Odoo"), trace3.slice(-140));
+  const row3 = sql(`select state, ended_by from whatsapp_call where id = ${callId3}`);
+  check("Odoo: completed, ended by the customer (not the agent)", row3 === "completed|customer", row3);
+
   console.log("4. a call that Odoo did not prepare is refused by the call server");
   const before = Number(sql("select count(*) from whatsapp_call"));
   await page.evaluate(() => odoo.__WOWL_DEBUG__.root.env.services.whatsapp_softphone.dial(

@@ -41,7 +41,7 @@ local function run(scenario)
       end
       vars.last_bridge_hangup_cause = step.cause
       vars.originate_disposition = step.answer and "SUCCESS" or step.cause
-      if step.agent_hangs_up then up = false end
+      if step.agent_hangs_up then up = false; vars.sip_reason = step.agent_reason end
     elseif app == "respond" then
       log.responds[#log.responds + 1] = data
       up = false
@@ -111,6 +111,13 @@ check("5 missed, ended by the agent", ended.outcome == "missed" and ended.ended_
 log = run({ odoo_body = ALLOWED, bridge = { ring = 1, cause = "NORMAL_TEMPORARY_FAILURE" } })
 ended = log.events[#log.events]
 check("6 failed", ended.outcome == "failed" and ended.ended_by == "system" and ended.cause == "NORMAL_TEMPORARY_FAILURE")
+
+-- 7. the customer hung up, Meta told Odoo first: the phone hung up with the reason "ended at
+-- Meta" (Q.850 31) before the call server saw the end of Meta: ended by the customer
+log = run({ odoo_body = ALLOWED, bridge = { answer = true, ring = 5, talk = 30, cause = "NORMAL_CLEARING",
+                                            agent_hangs_up = true, agent_reason = 'Q.850;cause=31;text="ended at Meta"' } })
+ended = log.events[#log.events]
+check("7 completed, ended by the customer", ended.outcome == "completed" and ended.ended_by == "customer" and ended.talk == 30)
 
 print(string.format("%d checks, %d failures", count, failures))
 os.exit(failures == 0 and 0 or 1)

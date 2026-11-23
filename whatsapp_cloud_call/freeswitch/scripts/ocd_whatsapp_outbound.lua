@@ -72,7 +72,11 @@ local answered = var("ocd_customer_answered") == "1"
 local cause = var("last_bridge_hangup_cause")
   or (answered and "NORMAL_CLEARING" or var("originate_failed_cause") or var("originate_disposition"))
 local agent_up = session:ready()
-local outcome, ended_by = queue.outbound_end({ answered = answered, agent_up = agent_up, cause = cause })
+-- why the phone of the agent hung up (Reason of its BYE: ended at Meta, see queue.ENDED_AT_META)
+local agent_cause = (not agent_up) and queue.reason_cause(var("sip_reason")) or nil
+local outcome, ended_by = queue.outbound_end({
+  answered = answered, agent_up = agent_up, agent_cause = agent_cause, cause = cause,
+})
 local talk = 0
 if answered then
   talk = math.max(0, os.time() - (tonumber(var("ocd_answer_epoch") or "") or os.time()))

@@ -86,6 +86,14 @@ check("agent hung up", queue.after_bridge({ customer_up = true, agent = "agent5"
 check("agent cut off", queue.after_bridge({ customer_up = true, agent = "agent5", cause = "MEDIA_TIMEOUT" }) == "reconnect")
 check("agent cut off without cause", queue.after_bridge({ customer_up = true, agent = "agent5" }) == "reconnect")
 check("nobody answered", queue.after_bridge({ customer_up = true, agent = nil, cause = "NO_ANSWER" }) == "retry")
+-- the phone hung up because the call ended at Meta (Odoo told it first): the customer is gone,
+-- never a reconnection (the colleagues would ring for a customer who hung up)
+check("ended at Meta, told to the phone first", queue.after_bridge({ customer_up = true, agent = "agent5", cause = "NORMAL_UNSPECIFIED" }) == "customer_gone")
+check("outbound: answered, the phone hung up for Meta", select(2, queue.outbound_end({ answered = true, agent_up = false, agent_cause = "NORMAL_UNSPECIFIED" })) == "customer")
+check("reason of the BYE: ended at Meta", queue.reason_cause('Q.850;cause=31;text="ended at Meta"') == "NORMAL_UNSPECIFIED")
+check("reason of the BYE: other causes", queue.reason_cause('Q.850;cause=16;text="NORMAL_CLEARING"') == nil
+      and queue.reason_cause(nil) == nil and queue.reason_cause('Q.850;cause=41;text="media lost"') == nil)
+check("outbound: answered, the agent hung up", select(2, queue.outbound_end({ answered = true, agent_up = false, agent_cause = "NORMAL_CLEARING" })) == "agent")
 
 -- waiting
 local w = { max_wait = 180, open = true }

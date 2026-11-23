@@ -21,7 +21,10 @@ const ICE_RELAY_WAIT_MS = 3000;
 // The browser still asks for the microphone after this time: the agent is shown where to allow it.
 const MICROPHONE_HINT_MS = 1500;
 // Shown in the menu of the phone and in its diagnostic: the version of the module.
-const SOFTPHONE_VERSION = "20.0.1.7.3";
+const SOFTPHONE_VERSION = "20.0.1.7.4";
+// The phone hangs up because the call ended at Meta (told by Odoo before the call server): the
+// call server counts it as ended by the customer (scripts/ocd/queue.lua, ENDED_AT_META)
+const ENDED_AT_META_REASON = 'Reason: Q.850;cause=31;text="ended at Meta"';
 
 /**
  * The phone of the agents: connected to the call server (SIP over WSS, JsSIP) while the agent
@@ -628,10 +631,10 @@ export const whatsappSoftphoneService = {
         }
 
         /** Hang up the call in progress; the reason goes to the diagnostic of the call. */
-        function hangup(reason = "hung up by the agent") {
+        function hangup(reason = "hung up by the agent", options = {}) {
             if (activeSession) {
                 activeSession.ocdNote?.(reason);
-                activeSession.terminate();
+                activeSession.terminate(options);
                 onEnded(activeSession);
             }
         }
@@ -699,7 +702,11 @@ export const whatsappSoftphoneService = {
                 // the customer hung up (told by Meta) and the call server did not see it: the
                 // phone hangs up, which ends the call on the call server too
                 if (activeSession && state.active?.callId === payload.id) {
-                    hangup("ended at Meta, told by Odoo before the call server");
+                    // the cause tells the call server that the customer ended the call (Q.850
+                    // 31, NORMAL_UNSPECIFIED there), not the agent
+                    hangup("ended at Meta, told by Odoo before the call server", {
+                        extraHeaders: [ENDED_AT_META_REASON],
+                    });
                 } else if (incomingSession && state.incoming?.callId === payload.id) {
                     const session = incomingSession;
                     session.terminate({ status_code: 487, reason_phrase: "Request Terminated" });
