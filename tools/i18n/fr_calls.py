@@ -61,6 +61,39 @@ CALLS = {
     "Allow the microphone when the browser asks (at the top, at the left of the address).":
         "Autorisez le micro quand le navigateur le demande (en haut, à gauche de l'adresse).",
     "Connecting...": "Connexion...",
+    "Allowed": "Accordé",
+    "Allowed for a while": "Accordé pour un temps",
+    "Ask to call them": "Demander l'accord pour appeler",
+    "Asked": "Demandé",
+    "Call Permission": "Accord pour appeler",
+    "Call Permission Asked on": "Accord demandé le",
+    "Call Permission until": "Accord jusqu'au",
+    "Calling the Customer": "Appeler le client",
+    "May %(company)s call you on WhatsApp? It is about your request.":
+        "%(company)s peut-il vous appeler sur WhatsApp ? C'est au sujet de votre demande.",
+    "Meta allows 1 request to call a customer per 24 hours, and 2 per 7 days: try again later (the limits restart after a call between the customer and the company).":
+        "Meta permet 1 demande d'appel par client en 24 heures, et 2 en 7 jours : réessayez plus tard (les limites repartent de zéro après un appel entre le client et l'entreprise).",
+    "Meta does not answer: %s": "Meta ne répond pas : %s",
+    "More than 24 hours since the last message of the customer: the permission to call can only be asked in the 24 hours after a message of the customer.":
+        "Plus de 24 heures depuis le dernier message du client : l'accord pour appeler ne peut se demander que dans les 24 heures qui suivent un message du client.",
+    "Not asked": "Pas demandé",
+    "Permission to call asked, no answer yet.": "Accord pour appeler demandé, pas encore de réponse.",
+    "Refused": "Refusé",
+    "The calls are not enabled on this WhatsApp account (Calls tab).":
+        "Les appels ne sont pas activés sur ce compte WhatsApp (onglet Appels).",
+    "The company may not call the customer on WhatsApp yet: ask them first.":
+        "L'entreprise ne peut pas encore appeler ce client sur WhatsApp : demandez-lui d'abord son accord.",
+    "The customer allows the company to call them on WhatsApp until %s.":
+        "Le client accepte que l'entreprise l'appelle sur WhatsApp jusqu'au %s.",
+    "The customer allows the company to call them on WhatsApp.":
+        "Le client accepte que l'entreprise l'appelle sur WhatsApp.",
+    "The customer called: %s": "Le client a appelé : %s",
+    "The customer does not want to be called on WhatsApp.":
+        "Le client ne veut pas être appelé sur WhatsApp.",
+    "WhatsApp Message": "Message WhatsApp",
+    "WhatsApp withdrew the permission to call the customer (calls not answered).":
+        "WhatsApp a retiré l'accord pour appeler ce client (appels sans réponse).",
+    "Whatsapp Call Permission Reply": "Dernière réponse à la demande d'accord",
     "Agents who took the calls and were free when the call came.":
         "Conseillers qui prenaient les appels et étaient libres quand l'appel est arrivé.",
     "Average Wait (s)": "Attente moyenne (s)",

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 08:09+0000\n"
-"PO-Revision-Date: 2026-11-23 08:09+0000\n"
+"POT-Creation-Date: 2026-11-23 08:15+0000\n"
+"PO-Revision-Date: 2026-11-23 08:15+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -159,6 +159,16 @@ msgid "Allow the microphone when the browser asks (at the top, at the left of th
 msgstr "Autorisez le micro quand le navigateur le demande (en haut, à gauche de l'adresse)."
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__discuss_channel__whatsapp_call_permission__permanent
+msgid "Allowed"
+msgstr "Accordé"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__discuss_channel__whatsapp_call_permission__temporary
+msgid "Allowed for a while"
+msgstr "Accordé pour un temps"
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "Answer"
@@ -185,6 +195,17 @@ msgstr "Pris par un collègue."
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__answer_date
 msgid "Answered on"
 msgstr "Décroché le"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "Ask to call them"
+msgstr "Demander l'accord pour appeler"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__discuss_channel__whatsapp_call_permission__requested
+msgid "Asked"
+msgstr "Demandé"
 
 #. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
@@ -225,6 +246,21 @@ msgstr "Icône d'appel"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_limit_warning
 msgid "Call Limit Warning"
 msgstr "Alerte de limite pour les appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_discuss_channel__whatsapp_call_permission
+msgid "Call Permission"
+msgstr "Accord pour appeler"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_discuss_channel__whatsapp_call_permission_asked
+msgid "Call Permission Asked on"
+msgstr "Accord demandé le"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_discuss_channel__whatsapp_call_permission_until
+msgid "Call Permission until"
+msgstr "Accord jusqu'au"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_callback_permission
@@ -271,6 +307,12 @@ msgstr "Appel : %s"
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
 msgid "Called on"
 msgstr "Appelé le"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "Calling the Customer"
+msgstr "Appeler le client"
 
 #. module: whatsapp_cloud_call
 #. odoo-python
@@ -461,6 +503,7 @@ msgstr "Canal de discussion"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_message__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
@@ -575,6 +618,7 @@ msgstr "Je prends les appels WhatsApp"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_server__id
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_message__id
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_webhook_event__id
 msgid "ID"
 msgstr "ID"
@@ -649,6 +693,12 @@ msgid "Lost or Failed"
 msgstr "Perdus ou échoués"
 
 #. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "May %(company)s call you on WhatsApp? It is about your request."
+msgstr "%(company)s peut-il vous appeler sur WhatsApp ? C'est au sujet de votre demande."
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__voicemail_attachment_id
 msgid "Message"
 msgstr "Message"
@@ -668,6 +718,18 @@ msgstr "Message de Meta"
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_server__spool
 msgid "Messages and records of calls kept on the call server until Odoo takes them."
 msgstr "Messages et fiches d'appels gardés sur le serveur d'appels jusqu'à ce qu'Odoo les prenne."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "Meta allows 1 request to call a customer per 24 hours, and 2 per 7 days: try again later (the limits restart after a call between the customer and the company)."
+msgstr "Meta permet 1 demande d'appel par client en 24 heures, et 2 en 7 jours : réessayez plus tard (les limites repartent de zéro après un appel entre le client et l'entreprise)."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "Meta does not answer: %s"
+msgstr "Meta ne répond pas : %s"
 
 #. module: whatsapp_cloud_call
 #. odoo-python
@@ -710,6 +772,12 @@ msgid "Missed call (waited %s): the customer left a message."
 msgstr "Appel manqué (attente %s) : le client a laissé un message."
 
 #. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "More than 24 hours since the last message of the customer: the permission to call can only be asked in the 24 hours after a message of the customer."
+msgstr "Plus de 24 heures depuis le dernier message du client : l'accord pour appeler ne peut se demander que dans les 24 heures qui suivent un message du client."
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "Mute"
@@ -745,6 +813,11 @@ msgstr "Aucun appel pour l'instant"
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_voicemail
 msgid "Nobody answers: the customer leaves a message, posted in their conversation."
 msgstr "Personne ne décroche : le client laisse un message, posé dans sa conversation."
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__discuss_channel__whatsapp_call_permission__none
+msgid "Not asked"
+msgstr "Pas demandé"
 
 #. module: whatsapp_cloud_call
 #. odoo-javascript
@@ -799,6 +872,12 @@ msgid "Password of the agent on the call server, given to their phone in Odoo."
 msgstr "Mot de passe du conseiller sur le serveur d'appels, donné à son téléphone dans Odoo."
 
 #. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "Permission to call asked, no answer yet."
+msgstr "Accord pour appeler demandé, pas encore de réponse."
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "Phone"
@@ -823,6 +902,11 @@ msgstr "Port du relais TURN (TLS)"
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
 msgid "Read the State at Meta"
 msgstr "Lire l'état chez Meta"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__discuss_channel__whatsapp_call_permission__refused
+msgid "Refused"
+msgstr "Refusé"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields.selection,name:whatsapp_cloud_call.selection__whatsapp_account__call_meta_state__restricted
@@ -968,9 +1052,45 @@ msgid "The call server took the call (else only Meta told it)."
 msgstr "Le serveur d'appels a pris l'appel (sinon, seul Meta l'a signalé)."
 
 #. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "The calls are not enabled on this WhatsApp account (Calls tab)."
+msgstr "Les appels ne sont pas activés sur ce compte WhatsApp (onglet Appels)."
+
+#. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
 msgid "The calls ring for the agents of the Team tab who take the calls (phone of the top bar). The address of the call server is in Settings &gt; WhatsApp &gt; Calls. In the webhook of the Meta app, also subscribe to the field calls: Odoo then sees the calls that the call server did not take."
 msgstr "Les appels sonnent chez les conseillers de l'onglet Équipe qui prennent les appels (téléphone de la barre du haut). L'adresse du serveur d'appels est dans Paramètres › WhatsApp › Appels. Dans le webhook de l'app Meta, abonnez-vous aussi au champ calls : Odoo voit alors les appels que le serveur d'appels n'a pas pris."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "The company may not call the customer on WhatsApp yet: ask them first."
+msgstr "L'entreprise ne peut pas encore appeler ce client sur WhatsApp : demandez-lui d'abord son accord."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "The customer allows the company to call them on WhatsApp until %s."
+msgstr "Le client accepte que l'entreprise l'appelle sur WhatsApp jusqu'au %s."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "The customer allows the company to call them on WhatsApp."
+msgstr "Le client accepte que l'entreprise l'appelle sur WhatsApp."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "The customer called: %s"
+msgstr "Le client a appelé : %s"
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "The customer does not want to be called on WhatsApp."
+msgstr "Le client ne veut pas être appelé sur WhatsApp."
 
 #. module: whatsapp_cloud_call
 #: model_terms:ir.actions.act_window,help:whatsapp_cloud_call.whatsapp_call_action
@@ -1141,6 +1261,11 @@ msgid "WhatsApp ID of the Customer"
 msgstr "Identifiant WhatsApp du client"
 
 #. module: whatsapp_cloud_call
+#: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_message
+msgid "WhatsApp Message"
+msgstr "Message WhatsApp"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model,name:whatsapp_cloud_call.model_whatsapp_webhook_event
 msgid "WhatsApp Webhook Event"
 msgstr "Notification de Meta"
@@ -1171,9 +1296,20 @@ msgid "WhatsApp calls"
 msgstr "Appels WhatsApp"
 
 #. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/discuss_channel.py:0
+msgid "WhatsApp withdrew the permission to call the customer (calls not answered)."
+msgstr "WhatsApp a retiré l'accord pour appeler ce client (appels sans réponse)."
+
+#. module: whatsapp_cloud_call
 #: model:ir.actions.server,name:whatsapp_cloud_call.ir_cron_check_calls_ir_actions_server
 msgid "WhatsApp: check the calls and the call server"
 msgstr "WhatsApp : vérifier les appels et le serveur d'appels"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_discuss_channel__whatsapp_call_permission_reply_id
+msgid "Whatsapp Call Permission Reply"
+msgstr "Dernière réponse à la demande d'accord"
 
 #. module: whatsapp_cloud_call
 #. odoo-javascript

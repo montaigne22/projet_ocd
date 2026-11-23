@@ -116,6 +116,22 @@ tenu). Le détail : WhatsApp › Appels, vues graphique et tableau croisé (par 
 | 2.4 | **L'animatrice appelle le vendeur** | 30 minutes avant un live à distance |
 | 2.5 | **Coût** | Durée facturée par tranches de 6 s selon le pays appelé, rapport mensuel ; pas vers le Nigeria, les États-Unis, le Canada, l'Égypte, le Vietnam (refusés par Meta) |
 
+**2.1 fait (version 20.0.1.6.0)** : dans la conversation, panneau « Client », partie « Appeler le
+client » : l'état de l'accord (pas demandé, demandé, accordé jusqu'au…, accordé, refusé) et le bouton
+« Demander l'accord pour appeler ». Odoo lit d'abord l'état chez Meta (un client qui vient d'appeler a
+déjà donné son accord pour 7 jours : rien n'est envoyé) et ses limites (1 demande par 24 h, 2 par
+7 jours, remises à zéro par un appel), puis envoie le message de Meta (boutons Autoriser / Refuser),
+seulement dans les 24 h qui suivent un message du client. La réponse du client est notée sur la
+conversation, avec une ligne pour l'équipe ; elle ne compte pas comme un message à traiter. WhatsApp
+retire l'accord après 4 appels sans réponse : noté aussi. À venir : la demande par un modèle (hors des
+24 h), à faire approuver par Meta.
+
+Ce que dit Meta pour la suite (novembre 2026) : un appel de l'entreprise part du serveur d'appels vers
+`sip:+<numéro du client>@wa.meta.vc` (TLS), signé avec le numéro de l'entreprise (sans `+`) et le mot de
+passe SIP de Meta ; 100 appels aboutis au plus par 24 h ; 2 appels sans réponse d'affilée : WhatsApp
+propose au client de retirer son accord, 4 : il le retire. Facturation par tranches de 6 secondes
+(une tranche commencée est due), selon le pays du client ; les appels des clients restent gratuits.
+
 ## Phase 3 : la qualité
 
 | # | Chantier | Ce que c'est |
