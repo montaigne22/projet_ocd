@@ -469,10 +469,11 @@ class WhatsappCall(models.Model):
             return call
         call._call_link_conversation()
         channel = call.channel_id
-        extension = "ogg" if "ogg" in (mimetype or "") else "wav"
+        # the words are for the team (the customer never sees them): in its language
+        team = self.with_context(lang=call.account_id._get_team_lang()).env
+        extension = "ogg" if "ogg" in (mimetype or "") else "mp3" if "mpeg" in (mimetype or "") else "wav"
         attachment = self.env["ir.attachment"].sudo().create({
-            "name": _("Message of %(name)s.%(ext)s",
-                      name=call._call_customer_label(), ext=extension),
+            "name": team._("Message of %(name)s.%(ext)s", name=call._call_customer_label(), ext=extension),
             "raw": content,
             "mimetype": mimetype or "audio/wav",
             "res_model": "discuss.channel" if channel else "whatsapp.call",
@@ -480,10 +481,12 @@ class WhatsappCall(models.Model):
         })
         call.write({"voicemail_attachment_id": attachment.id})
         if channel:
-            channel = channel.with_context(lang=channel._whatsapp_get_lang())
+            # a voice message of Discuss: played in the conversation (play, waveform), not a file
+            # to download first
+            self.env["discuss.voice.metadata"].sudo().create({"attachment_id": attachment.id})
             channel.with_context(whatsapp_skip_send=True).message_post(
                 author_id=call.partner_id.id,
-                body=Markup("<p>%s</p>") % _("Voice message left after a call."),
+                body=Markup("<p>%s</p>") % team._("Voice message left after a call."),
                 attachment_ids=attachment.ids,
                 message_type="whatsapp_message",
                 subtype_xmlid="mail.mt_comment",
@@ -493,6 +496,27 @@ class WhatsappCall(models.Model):
         elif call.state == "missed":
             call.state = "voicemail"
         return call
+
+    @api.model
+    def _voicemail_repair(self):
+        """The messages left before 20.0.1.12.2: played in the conversation (voice message of
+        Discuss) instead of a file to download, their line in the language of the team."""
+        english = "<p>Voice message left after a call.</p>"
+        for call in self.sudo().search([("voicemail_attachment_id", "!=", False)]):
+            attachment = call.voicemail_attachment_id
+            if attachment.res_model != "discuss.channel":
+                continue
+            if not attachment.voice_ids:
+                self.env["discuss.voice.metadata"].sudo().create({"attachment_id": attachment.id})
+            team = self.with_context(lang=call.account_id._get_team_lang()).env
+            text = Markup("<p>%s</p>") % team._("Voice message left after a call.")
+            messages = self.env["mail.message"].sudo().search([
+                ("model", "=", "discuss.channel"), ("res_id", "=", attachment.res_id),
+                ("attachment_ids", "in", attachment.ids),
+            ])
+            for message in messages:
+                if str(message.body) == english and str(text) != english:
+                    message.body = text
 
     @api.model
     def _server_recording(self, values, content, mimetype):

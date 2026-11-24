@@ -21,7 +21,7 @@ const ICE_RELAY_WAIT_MS = 3000;
 // The browser still asks for the microphone after this time: the agent is shown where to allow it.
 const MICROPHONE_HINT_MS = 1500;
 // Shown in the menu of the phone and in its diagnostic: the version of the module.
-const SOFTPHONE_VERSION = "20.0.1.12.1";
+const SOFTPHONE_VERSION = "20.0.1.12.2";
 // The phone hangs up because the call ended at Meta (told by Odoo before the call server): the
 // call server counts it as ended by the customer (scripts/ocd/queue.lua, ENDED_AT_META)
 const ENDED_AT_META_REASON = 'Reason: Q.850;cause=31;text="ended at Meta"';

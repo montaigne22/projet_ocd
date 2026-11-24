@@ -2,6 +2,8 @@ import json
 from datetime import timedelta
 from unittest.mock import patch
 
+from markupsafe import Markup
+
 from odoo import fields
 from odoo.tests import tagged
 
@@ -156,6 +158,26 @@ class TestCalls(WhatsAppCallCommon):
         # sent again by the call server: once only
         self.Call._server_voicemail({"wacid": "wacid.ABC"}, b"RIFF....WAVEfmt ", "audio/wav")
         self.assertEqual(len(call.channel_id.message_ids.filtered(lambda m: m.attachment_ids)), 1)
+        # played in the conversation like a voice message of Discuss, not a file to download first
+        self.assertTrue(call.voicemail_attachment_id.voice_ids)
+
+    def test_voicemail_in_the_language_of_the_team(self):
+        """The line of the message left is for the team: in its language, whatever the language
+        of the customer; the messages left before are repaired."""
+        self.env["res.lang"]._activate_lang("fr_FR")
+        (self.agent | self.agent2).lang = "fr_FR"
+        call = self.Call.browse(self.route()["call"])
+        self.Call.with_context(lang="en_US")._server_voicemail({"wacid": "wacid.ABC"}, b"RIFF....WAVEfmt ", "audio/wav")
+        message = call.channel_id.message_ids.filtered(lambda m: m.attachment_ids)[:1]
+        self.assertIn("Message vocal laissé après un appel.", str(message.body))
+        # a message left before: a file, its line in English
+        call.voicemail_attachment_id.voice_ids.unlink()
+        message.body = Markup("<p>Voice message left after a call.</p>")
+        self.Call._voicemail_repair()
+        self.assertTrue(call.voicemail_attachment_id.voice_ids)
+        self.assertIn("Message vocal laissé après un appel.", str(message.body))
+        self.Call._voicemail_repair()  # twice: nothing more
+        self.assertEqual(len(call.voicemail_attachment_id.voice_ids), 1)
 
     def test_event_without_route(self):
         """The call server could not reach Odoo when the call arrived: its record of the call

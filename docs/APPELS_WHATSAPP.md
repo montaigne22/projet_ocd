@@ -210,7 +210,10 @@ chaque fichier (MP3 lu trame par trame, WAV par son en-tête), rappelle la duré
 et signale en orange un message trop long (par ex. l'accueil au-delà de 12 s). Depuis la version
 20.0.1.12.1, « Écouter » (un message, un enregistrement) joue le son dans une petite fenêtre d'Odoo, avec
 « Télécharger » ; avant, un nouvel onglet s'ouvrait après la réponse du serveur, et le navigateur pouvait
-le bloquer sans rien dire. Vu de bout en bout avec un faux Meta : un message ajouté dans la
+le bloquer sans rien dire. Depuis la version 20.0.1.12.2, le message laissé par un client (messagerie)
+est un message vocal de Discuss : il se lit dans la conversation (lecture, onde, durée), sans le
+télécharger, et sa ligne est dans la langue de l'équipe ; les messages déjà reçus sont repris à la
+mise à jour. Vu de bout en bout avec un faux Meta : un message ajouté dans la
 fiche du compte arrive sur le serveur en moins d'une minute ; le client entend l'accueil, la musique et
 la voix du numéro ; un message changé ou retiré dans Odoo est appliqué sans redémarrage.
 
