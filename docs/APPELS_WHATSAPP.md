@@ -203,7 +203,9 @@ appels » : l'accueil, l'annonce d'enregistrement, les voix d'attente, la musiqu
 conseiller coupé, la messagerie, personne de disponible, en MP3 ou WAV, par numéro WhatsApp, et la
 fréquence de la voix d'attente. Le serveur d'appels les prend dans la minute, les convertit et les
 applique sans redémarrer ; Odoo montre s'ils sont sur le serveur ou refusés (et pourquoi). Le dossier
-`sounds/` du serveur reste le repli. Vu de bout en bout avec un faux Meta : un message ajouté dans la
+`sounds/` du serveur reste le repli. Depuis la version 20.0.1.11.0, choisir le message propose son
+texte en français puis en anglais (à dire dans le même fichier), avec le nom du numéro chez WhatsApp ;
+l'équipe le garde ou l'écrit à sa façon. Vu de bout en bout avec un faux Meta : un message ajouté dans la
 fiche du compte arrive sur le serveur en moins d'une minute ; le client entend l'accueil, la musique et
 la voix du numéro ; un message changé ou retiré dans Odoo est appliqué sans redémarrage.
 

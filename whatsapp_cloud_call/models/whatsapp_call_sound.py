@@ -38,7 +38,11 @@ class WhatsappCallSound(models.Model):
         "Nobody Available: when there is no voicemail.",
     )
     sequence = fields.Integer(default=10, help="Order of the voices and of the music.")
-    name = fields.Char(string="Text", help="What the message says (for the team).")
+    name = fields.Text(
+        string="Text",
+        help="What the message says, for the team who records it: a text in French and in English is "
+        "proposed when the message is chosen (both said in the same file, French first).",
+    )
     file = fields.Binary(string="File (MP3 or WAV)", attachment=True, required=True)
     file_name = fields.Char()
     checksum = fields.Char(compute="_compute_file_facts", store=True, readonly=True)
@@ -54,6 +58,30 @@ class WhatsappCallSound(models.Model):
         "(account_id, kind) WHERE kind IN ('accueil', 'enregistrement', 'reconnexion', 'messagerie', 'indisponible')",
         "This message is already given for this number: change its file.",
     )
+
+    @api.depends("kind", "file_name")
+    def _compute_display_name(self):
+        labels = dict(self._fields["kind"]._description_selection(self.env))
+        for sound in self:
+            label = labels.get(sound.kind) or ""
+            sound.display_name = f"{label} ({sound.file_name})" if label and sound.file_name else label
+
+    def _example(self, kind=None):
+        """The text proposed for a message (French, then English), with the name of the business:
+        the display name of the number at WhatsApp, else the name of the account."""
+        texts = const.SOUND_EXAMPLES.get(kind or self.kind)
+        if not texts:
+            return False
+        account = self.account_id
+        business = account.verified_name or account.name or self.env.company.name
+        return "\n".join(text.format(name=business) for text in texts)
+
+    @api.onchange("kind")
+    def _onchange_kind(self):
+        """The text proposed for the message chosen, as long as the team has not written its own."""
+        proposed = {self._example(kind) for kind in const.SOUND_EXAMPLES}
+        if not self.name or self.name in proposed:
+            self.name = self._example()
 
     def _file_attachment(self):
         self.ensure_one()

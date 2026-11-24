@@ -53,10 +53,10 @@ CALLS = {
         "Accueil : dès que l'appel arrive. Annonce d'enregistrement : après l'accueil, et quand le client décroche un appel de l'entreprise (quand les appels sont enregistrés). Voix d'attente : par-dessus la musique, toutes les quelques secondes, l'une après l'autre. Musique d'attente : jouées l'une après l'autre. Conseiller coupé : pendant que l'appel revient. Messagerie : avant le bip. Personne de disponible : quand il n'y a pas de messagerie.",
     'What the customers who call this number hear, in MP3 or WAV: the call server takes them within a minute, without stopping the calls. Without a message here: the one of the folder sounds of the call server, else a short tone (nothing for the voice while waiting).':
         "Ce qu'entendent les clients qui appellent ce numéro, en MP3 ou WAV : le serveur d'appels les prend dans la minute, sans couper les appels. Sans message ici : celui du dossier sounds du serveur d'appels, sinon une tonalité courte (rien pour la voix d'attente).",
-    'What the message says (for the team).':
-        "Ce que dit le message (pour l'équipe).",
-    'e.g. Thank you for waiting, an agent answers you in a moment.':
-        'ex. Merci de patienter, un conseiller va vous répondre dans un instant.',
+    'What the message says, for the team who records it: a text in French and in English is proposed when the message is chosen (both said in the same file, French first).':
+        "Ce que dit le message, pour l'équipe qui l'enregistre : un texte en français et en anglais est proposé quand le message est choisi (les deux dits dans le même fichier, le français d'abord).",
+    'Choose the message: a text in French and in English is proposed.':
+        'Choisissez le message : un texte en français et en anglais est proposé.',
     # Phase 3.1: the recordings of the calls
     'A call has one recording.':
         'Un appel a un seul enregistrement.',

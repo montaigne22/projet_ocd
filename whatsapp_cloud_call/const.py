@@ -72,3 +72,37 @@ DEFAULT_RECORDING_DAYS = 90
 # comes back every DEFAULT_HOLD_VOICE_EVERY seconds by default.
 MAX_SOUND_SIZE = 20 * 1024 * 1024
 DEFAULT_HOLD_VOICE_EVERY = 30
+
+# The texts proposed for the messages of the calls, in French then in English (both said in the
+# same file for the customers of both languages), given in Odoo when the message is chosen;
+# {name} is the name of the business. Not translated: they are what the customers hear.
+SOUND_EXAMPLES = {
+    "accueil": (
+        "Bonjour et bienvenue chez {name}. Un conseiller va vous répondre dans un instant.",
+        "Hello and welcome to {name}. An advisor will be with you in a moment.",
+    ),
+    "enregistrement": (
+        "Pour la qualité de notre service, cet appel est enregistré.",
+        "To help us improve our service, this call is recorded.",
+    ),
+    "voix": (
+        "Merci de patienter, un conseiller va vous répondre dans un instant.",
+        "Thank you for holding, an advisor will be with you in a moment.",
+    ),
+    "reconnexion": (
+        "Un instant, nous vous reconnectons à votre conseiller.",
+        "One moment please, we are reconnecting you to your advisor.",
+    ),
+    "messagerie": (
+        "Nos conseillers sont tous occupés. Laissez votre message après le bip : nous vous rappelons "
+        "dès que possible.",
+        "All our advisors are busy. Please leave your message after the beep, and we will call you "
+        "back as soon as possible.",
+    ),
+    "indisponible": (
+        "Nos conseillers sont tous occupés. Écrivez-nous sur WhatsApp, à ce même numéro : nous vous "
+        "répondons rapidement.",
+        "All our advisors are busy. Send us a message on WhatsApp, at this same number, and we will "
+        "reply quickly.",
+    ),
+}

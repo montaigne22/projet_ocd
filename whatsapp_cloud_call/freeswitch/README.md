@@ -414,7 +414,9 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
 **Le plus simple : dans Odoo**, compte WhatsApp, onglet Appels, « Messages des appels » : un message
 par ligne (Accueil, Annonce d'enregistrement, Voix d'attente, Musique d'attente, Conseiller coupé,
 Messagerie, Personne de disponible), un fichier MP3 ou WAV, « Écouter » pour l'entendre ; et « Voix
-d'attente toutes les (secondes) ». Chaque numéro WhatsApp a les siens. ocd-call-sync les prend dans la
+d'attente toutes les (secondes) ». Choisir le message remplit sa colonne « Texte » avec le texte
+proposé ci-dessous, en français puis en anglais, avec le nom du numéro chez WhatsApp : l'équipe le
+garde ou l'écrit à sa façon, puis l'enregistre. Chaque numéro WhatsApp a les siens. ocd-call-sync les prend dans la
 minute : il télécharge les fichiers changés (vérifiés par leur empreinte), les convertit (sox : mono,
 16 kHz, volume égalisé) dans `/var/lib/freeswitch/ocd/sounds/<ID du numéro>/`, et met à jour le flux
 d'attente du numéro (`local_stream://ocd_<ID du numéro>` : sa musique et ses voix) sans redémarrer
@@ -454,15 +456,21 @@ sounds/
     └── 1-musique.mp3
 ```
 
-| Fichier | Quand | Texte proposé |
-|---|---|---|
-| `accueil.mp3` | dès que l'appel arrive | « Bonjour et bienvenue chez OCD Live. Un conseiller va vous répondre dans un instant. » |
-| `enregistrement.mp3` | après l'accueil, et quand le client décroche un appel de l'entreprise, si l'enregistrement est activé (Odoo) | « Pour la qualité de notre service, cet appel est enregistré. » |
-| `voix/attente.mp3` (un ou plusieurs) | pendant l'attente, par-dessus la musique, toutes les 30 secondes, l'un après l'autre | « Merci de patienter, un conseiller va vous répondre dans un instant. » ; un deuxième : « Tous nos conseillers sont occupés. Merci de rester en ligne, votre appel est important pour nous. » |
-| `attente/musique.mp3` (un ou plusieurs) | la musique d'attente (facultatif : sinon celle de FreeSWITCH) | une musique libre de droits ou à OCD |
-| `reconnexion.mp3` | le conseiller a été coupé | « Un instant, nous vous reconnectons à votre conseiller. » |
-| `messagerie.mp3` | personne de disponible | « Nos conseillers sont tous occupés. Laissez votre message après le bip : nous vous rappelons dès que possible. » |
-| `indisponible.mp3` | personne, et pas de messagerie | « Nos conseillers sont tous occupés. Écrivez-nous sur WhatsApp, à ce même numéro : nous vous répondons rapidement. » |
+| Message dans Odoo (fichier du dossier) | Quand | Texte proposé | En anglais |
+|---|---|---|---|
+| Accueil (`accueil.mp3`) | dès que l'appel arrive | « Bonjour et bienvenue chez OCD Live. Un conseiller va vous répondre dans un instant. » | “Hello and welcome to OCD Live. An advisor will be with you in a moment.” |
+| Annonce d'enregistrement (`enregistrement.mp3`) | après l'accueil, et quand le client décroche un appel de l'entreprise, si l'enregistrement est activé (Odoo) | « Pour la qualité de notre service, cet appel est enregistré. » | “To help us improve our service, this call is recorded.” |
+| Voix d'attente (`voix/`, une ou plusieurs) | pendant l'attente, par-dessus la musique, toutes les 30 secondes, l'une après l'autre | « Merci de patienter, un conseiller va vous répondre dans un instant. » ; une deuxième : « Tous nos conseillers sont occupés. Merci de rester en ligne, votre appel est important pour nous. » | “Thank you for holding, an advisor will be with you in a moment.” ; a second one: “All our advisors are busy. Please stay on the line, your call is important to us.” |
+| Musique d'attente (`attente/`, une ou plusieurs) | la musique d'attente (facultatif : sinon celle de FreeSWITCH) | une musique libre de droits ou à OCD | (sans paroles) |
+| Conseiller coupé (`reconnexion.mp3`) | le conseiller a été coupé | « Un instant, nous vous reconnectons à votre conseiller. » | “One moment please, we are reconnecting you to your advisor.” |
+| Messagerie (`messagerie.mp3`) | personne de disponible | « Nos conseillers sont tous occupés. Laissez votre message après le bip : nous vous rappelons dès que possible. » | “All our advisors are busy. Please leave your message after the beep, and we will call you back as soon as possible.” |
+| Personne de disponible (`indisponible.mp3`) | personne, et pas de messagerie | « Nos conseillers sont tous occupés. Écrivez-nous sur WhatsApp, à ce même numéro : nous vous répondons rapidement. » | “All our advisors are busy. Send us a message on WhatsApp, at this same number, and we will reply quickly.” |
+
+**En deux langues** : chaque message est un seul fichier par numéro. Pour des clients francophones et
+anglophones, enregistrer les deux phrases dans le même fichier, le français d'abord, puis l'anglais
+(par ex. « Bonjour et bienvenue chez OCD Live… » puis “Hello and welcome to OCD Live…”), avec une courte
+pause entre les deux. Garder la voix d'attente courte (moins de 15 secondes avec les deux langues) : elle
+passe toutes les 30 secondes.
 
 Sans fichier : une tonalité courte pour l'accueil et les messages, rien pour la voix d'attente, et
 l'appel enregistré sans annonce (le journal le signale : « recorded without telling the customer »).

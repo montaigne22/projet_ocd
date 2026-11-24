@@ -5,7 +5,7 @@ from unittest.mock import patch
 import psycopg2
 
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tests import HttpCase, tagged
+from odoo.tests import Form, HttpCase, tagged
 from odoo.tools import BinaryBytes, mute_logger
 
 from odoo.addons.whatsapp_cloud_call import const
@@ -104,3 +104,27 @@ class TestCallSound(WhatsAppCallCommon, HttpCase):
         self.assertEqual(action["url"], f"/web/content/whatsapp.call.sound/{sound.id}/file?download=false")
         with self.assertRaises(AccessError):
             sound.with_user(self.agent).read(["name"])
+
+    def test_proposed_texts(self):
+        self.account.verified_name = "OCD Live"
+        form = Form(self.Sound.with_context(default_account_id=self.account.id))
+        form.kind = "accueil"
+        self.assertEqual(form.name, "Bonjour et bienvenue chez OCD Live. Un conseiller va vous répondre dans "
+                         "un instant.\nHello and welcome to OCD Live. An advisor will be with you in a moment.")
+        form.kind = "messagerie"  # a proposed text follows the message chosen
+        self.assertIn("Laissez votre message après le bip", form.name)
+        self.assertIn("leave your message after the beep", form.name)
+        form.kind = "musique"  # no text for the music
+        self.assertFalse(form.name)
+        form.kind = "voix"
+        form.name = "Merci de rester en ligne."
+        form.kind = "indisponible"  # the text of the team stays
+        self.assertEqual(form.name, "Merci de rester en ligne.")
+        # each message with a role has its text; the business is the name of the account without
+        # the display name of WhatsApp
+        self.account.verified_name = False
+        self.assertIn(f"chez {self.account.name}.", self.Sound.new({"account_id": self.account.id})._example("accueil"))
+        self.assertEqual(set(const.SOUND_EXAMPLES), {"accueil", "enregistrement", "voix", "reconnexion",
+                                                     "messagerie", "indisponible"})
+        sound = self.sound("voix")
+        self.assertEqual(sound.display_name, "Voice while Waiting (voix.mp3)")
