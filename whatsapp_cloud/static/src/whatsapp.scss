@@ -10,3 +10,31 @@
 .o_whatsapp_notice {
     font-style: italic;
 }
+
+// A WhatsApp conversation laid out like WhatsApp: the customer on the left, the team on the right
+// (its avatar and name on the right too), each message at most about three quarters wide
+.o-mail-Message.o-whatsapp-team {
+    flex-direction: row-reverse;
+
+    .o-mail-Message-core,
+    .o-mail-Message-textContent {
+        flex-direction: row-reverse;
+    }
+    .o-mail-Message-header {
+        justify-content: flex-end;
+    }
+    .o-mail-AttachmentList {
+        justify-content: flex-end;
+    }
+}
+
+.o-mail-Message.o-whatsapp-team,
+.o-mail-Message.o-whatsapp-customer {
+    .o-mail-Message-content {
+        max-width: 75%;
+    }
+}
+
+.o-mail-Message.o-whatsapp-team .o-mail-Message-contentContainer {
+    justify-content: flex-start;
+}

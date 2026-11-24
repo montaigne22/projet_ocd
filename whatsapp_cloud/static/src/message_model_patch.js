@@ -25,6 +25,40 @@ const messagePatch = {
         }
         return this.whatsapp_error ? `${status.label}: ${this.whatsapp_error}` : status.label;
     },
+    /** In a WhatsApp conversation: written by the customer (on the left, like in WhatsApp). */
+    get isWhatsAppCustomer() {
+        const channel = this.thread?.channel;
+        return Boolean(
+            channel?.isWhatsApp && this.author_id && this.author_id.id === channel.whatsapp_partner_id
+        );
+    },
+    /**
+     * In a WhatsApp conversation: a message of the team to the customer (on the right, in green),
+     * whoever wrote it (any agent, an automatic answer, a template); not the notices nor the notes.
+     */
+    get isWhatsAppTeam() {
+        const channel = this.thread?.channel;
+        if (
+            !channel?.isWhatsApp ||
+            ["notification", "tracking"].includes(this.message_type) ||
+            this.isNote ||
+            this.isWhatsAppCustomer
+        ) {
+            return false;
+        }
+        return channel.whatsapp_partner_id ? true : this.isSelfAuthored;
+    },
+    get bubbleColor() {
+        if (this.thread?.channel?.isWhatsApp && !this.isHighlightedFromMention) {
+            if (this.isWhatsAppTeam) {
+                return "green";
+            }
+            if (this.isWhatsAppCustomer) {
+                return "blue";
+            }
+        }
+        return super.bubbleColor;
+    },
     get canReplyTo() {
         if (this.thread?.channel?.channel_type === "whatsapp") {
             return (
