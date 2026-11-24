@@ -38,3 +38,57 @@
 .o-mail-Message.o-whatsapp-team .o-mail-Message-contentContainer {
     justify-content: flex-start;
 }
+
+// The files of a WhatsApp conversation shown like in WhatsApp (whatsapp_attachment.xml): a sound as a
+// small player, a video in place, a document as a line; not the cards of Odoo (their fixed size)
+.o-mail-AttachmentList .o-mail-AttachmentContainer.o-inMessage[data-whatsapp-media] {
+    width: 19rem;
+    max-width: 100%;
+    height: auto;
+    background-color: $o-view-background-color;
+    cursor: default;
+}
+
+.o-whatsapp-Audio-play {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.o-whatsapp-Audio-seek {
+    height: 1rem;
+    accent-color: $primary;
+}
+
+.o-whatsapp-Audio-time {
+    font-variant-numeric: tabular-nums;
+}
+
+.o-whatsapp-Audio-rate {
+    min-width: 2.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.o-whatsapp-Video-player {
+    max-height: 22rem;
+    object-fit: contain;
+}
+
+.o-whatsapp-Document-icon {
+    width: 2rem;
+    height: 2.5rem;
+}
+
+.o-whatsapp-Document-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.25;
+}
+
+.o-whatsapp-Document:hover .o-whatsapp-Document-name {
+    text-decoration: underline;
+}

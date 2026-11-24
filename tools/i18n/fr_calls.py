@@ -554,5 +554,21 @@ La configuration du serveur d'appels est dans le dossier freeswitch du module.
 
 # WhatsApp Cloud API (whatsapp_cloud): texts added with the calls
 WA_CLOUD_CALLS = {
+    # The files of a WhatsApp conversation shown like in WhatsApp
+    'Cannot be played here':
+        'Lecture impossible ici',
+    'Cannot be played here: download it':
+        'Lecture impossible ici : téléchargez-le',
+    'Download':
+        'Télécharger',
+    'File':
+        'Fichier',
+    'Pause':
+        'Pause',
+    'Play':
+        'Lire',
+    # The help of the assignment, as written in whatsapp_cloud (whatsapp_cloud_sale adds the salesperson)
+    'Taken by an agent: all the agents see the new conversation, the first one who answers (or takes it) handles it. Each agent in turn: the conversation goes to the agent with the fewest open conversations, online agents first.':
+        "Prise en charge par un agent : tous les agents voient la nouvelle conversation, le premier qui répond (ou la prend) la traite. Chaque agent à tour de rôle : la conversation va à l’agent qui a le moins de conversations ouvertes, les agents en ligne d’abord.",
     "(Message of the customer without text: %s)": "(Message du client sans texte : %s)",
 }

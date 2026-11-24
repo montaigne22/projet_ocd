@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.AttachmentList" t-inherit-mode="extension">
+        <!-- a file of a WhatsApp conversation (not an image): like in WhatsApp -->
+        <xpath expr="//div[hasclass('o-mail-AttachmentCard')]" position="before">
+            <WhatsAppAttachment t-elif="this.isWhatsAppMedia(attachment)" attachment="attachment"
+                                open="() => this.onClickAttachment(attachment)"/>
+        </xpath>
+        <xpath expr="//div[hasclass('o-mail-AttachmentContainer')]" position="attributes">
+            <attribute name="t-att-data-whatsapp-media">this.isWhatsAppMedia(attachment) ? 'true' : undefined</attribute>
+        </xpath>
+        <!-- its own buttons: not the layer of Odoo over the card -->
+        <xpath expr="//div[hasclass('o-mail-Attachment-hover')]" position="attributes">
+            <attribute name="t-if">!this.isMobileOS and !attachment.voice and !this.isWhatsAppMedia(attachment)</attribute>
+        </xpath>
+        <xpath expr="//Actions" position="attributes">
+            <attribute name="t-elif">!this.props.isSelecting and !this.isWhatsAppMedia(attachment)</attribute>
+        </xpath>
+    </t>
+</templates>
