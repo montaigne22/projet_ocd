@@ -144,10 +144,11 @@ export class OcdWhatsappInbox extends Component {
         this.draft.set(ev.target.value);
     }
 
-    onKeydown(ev) {
+    /** Enter sends (a note when the 24-hour window is closed), Shift+Enter goes to the line. */
+    onKeydown(ev, note = false) {
         if (ev.key === "Enter" && !ev.shiftKey) {
             ev.preventDefault();
-            this.post(false);
+            this.post(note);
         }
     }
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- more than 24 hours after the last message of the customer: the composer writes internal
+         notes (in yellow, like the notes) -->
+    <t t-inherit="mail.Composer" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o-mail-Composer')]" position="attributes">
+            <attribute name="t-att-data-whatsapp-note">this.thread?.channel?.whatsappNoteOnly ? 'true' : undefined</attribute>
+        </xpath>
+    </t>
+</templates>

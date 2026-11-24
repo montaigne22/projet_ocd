@@ -554,6 +554,13 @@ La configuration du serveur d'appels est dans le dossier freeswitch du module.
 
 # WhatsApp Cloud API (whatsapp_cloud): texts added with the calls
 WA_CLOUD_CALLS = {
+    # The notes at any time and the follow-up template
+    'Follow-up Template':
+        'Modèle de relance',
+    'Internal note… (more than 24 h: write to the customer with a template)':
+        'Note interne… (plus de 24 h : écrivez au client avec un modèle)',
+    'More than 24 hours after the last message of the customer, only a template reaches them: Send a template proposes this one first (the agent can choose another). Each customer receives it in their language.':
+        "Plus de 24 h après le dernier message du client, seul un modèle lui parvient : « Envoyer un modèle » propose celui-ci d'abord (l'agent peut en choisir un autre). Chaque client le reçoit dans sa langue.",
     # The composer of a WhatsApp conversation says how to write an internal note
     'Message to %(name)s… (/note: an internal note, not sent)':
         'Message à %(name)s… (/note : une note interne, non envoyée)',

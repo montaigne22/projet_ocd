@@ -820,6 +820,11 @@ class DiscussChannel(models.Model):
             return super().message_post(message_type=message_type, **kwargs)
         if self.env.user._is_public() or self.env.user.share:
             raise AccessError(_("Only the team can write in a WhatsApp conversation."))
+        if self._whatsapp_is_note(kwargs):
+            # an internal note of the team: never sent to the customer, written at any time (also
+            # after the 24-hour window, when the composer of the conversation writes notes)
+            kwargs["body"] = self._whatsapp_note_body(kwargs.get("body"))
+            return super().message_post(message_type=message_type, **kwargs)
         if not self._whatsapp_is_window_open():
             raise UserError(_(
                 "More than 24 hours since the last message of the customer: WhatsApp allows "
@@ -831,6 +836,20 @@ class DiscussChannel(models.Model):
         self._whatsapp_send_mail_message(message)
         self._whatsapp_after_agent_message()
         return message
+
+    def _whatsapp_is_note(self, kwargs):
+        """Whether a message posted by the team is an internal note (subtype Note)."""
+        note = self.env.ref("mail.mt_note")
+        return kwargs.get("subtype_xmlid") == "mail.mt_note" or kwargs.get("subtype_id") == note.id
+
+    def _whatsapp_note_body(self, body):
+        """The body of an internal note, starting with its lock and "Internal note:" (as /note)."""
+        label = Markup("🔒 <b>%s</b> ") % _("Internal note:")
+        # the HTML of the composer (sanitized) as it is; a text is escaped
+        body = body if isinstance(body, Markup) else escape(body or "")
+        if str(body).startswith("<p>"):
+            return Markup("<p>") + label + Markup(str(body)[3:])
+        return Markup("<p>") + label + body + Markup("</p>")
 
     def _whatsapp_after_agent_message(self):
         """An agent answered: the customer no longer waits, the agent handles the
@@ -1033,6 +1052,15 @@ class DiscussChannel(models.Model):
         partner = self.whatsapp_partner_id
         if not partner:
             raise UserError(_("The conversation has no customer."))
+        context = {
+            "default_res_model": "res.partner",
+            "default_res_ids": partner.ids,
+            "whatsapp_channel_id": self.id,
+        }
+        # more than 24 hours after their last message: the follow-up template first
+        follow_up = self.sudo()._whatsapp_follow_up_template() if not self._whatsapp_is_window_open() else False
+        if follow_up:
+            context["default_template_id"] = follow_up.id
         return {
             "type": "ir.actions.act_window",
             "name": _("Send a Template"),
@@ -1040,12 +1068,26 @@ class DiscussChannel(models.Model):
             "view_mode": "form",
             "views": [(False, "form")],
             "target": "new",
-            "context": {
-                "default_res_model": "res.partner",
-                "default_res_ids": partner.ids,
-                "whatsapp_channel_id": self.id,
-            },
+            "context": context,
         }
+
+    def _whatsapp_follow_up_template(self):
+        """The template to write again to the customer more than 24 hours after their last
+        message: the one of the account, else the one of this module; none when it cannot go
+        (refused, paused or disabled by Meta, archived)."""
+        self.ensure_one()
+        template = (
+            self.whatsapp_account_id.follow_up_template_id
+            or self.env.ref("whatsapp_cloud.template_conversation_follow_up", raise_if_not_found=False)
+        )
+        if (
+            not template
+            or not template.active
+            or template.model != "res.partner"
+            or template.status in ("rejected", "paused", "disabled")
+        ):
+            return self.env["whatsapp.template"]
+        return template
 
     def whatsapp_action_link_partner(self):
         self._whatsapp_check_agent()

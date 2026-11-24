@@ -155,6 +155,15 @@
                                             t-on-click="() => this.sendTemplate()">Send the template</button>
                                 </t>
                                 <p t-else="" class="o_ocd_wa_empty">No approved template for this contact: they write first, then the team answers.</p>
+                                <!-- an internal note: at any time, never sent to the contact -->
+                                <div class="o_ocd_wa_write o_ocd_wa_write_note">
+                                    <label for="o_ocd_wa_note" class="visually-hidden">Internal note</label>
+                                    <textarea id="o_ocd_wa_note" class="o_ocd_wa_input" rows="1"
+                                              placeholder="Internal note for the team (not sent)…" t-att-value="this.draft()"
+                                              t-on-input="(ev) => this.onDraft(ev)" t-on-keydown="(ev) => this.onKeydown(ev, true)"/>
+                                    <button type="button" class="o_ocd_wa_note_button" t-att-disabled="this.busy() or !this.draft().trim()"
+                                            t-on-click="() => this.post(true)">Internal note</button>
+                                </div>
                             </div>
                         </t>
                         <p t-else="" class="o_ocd_wa_empty o_ocd_wa_empty_center">Choose a conversation.</p>

@@ -75,6 +75,13 @@ class TestOcdWhatsappInbox(OcdLiveCommon):
         self.assertFalse(current["open"])
         with self.assertRaises(UserError):
             self.Inbox.ocd_post(channel.id, "Bonjour", False)
+        # the follow-up template first, chosen by default
+        self.assertEqual(current["templates"][0]["name"], "conversation_follow_up")
+        self.assertEqual(current["templates"][0]["res_model"], "res.partner")
+        # an internal note: at any time
+        page = self.Inbox.ocd_post(channel.id, "Rappelé, pas de réponse", True)
+        self.assertEqual(page["current"]["messages"][-1]["kind"], "note")
+        self.assertEqual(page["current"]["messages"][-1]["text"], "Rappelé, pas de réponse")
         template = next(t for t in current["templates"] if t["name"] == "ocd_lien_espace")
         page = self.Inbox.ocd_send_template(channel.id, template["template_id"], template["res_model"], template["res_id"])
         auto = page["current"]["messages"][-1]

@@ -78,9 +78,14 @@ const discussChannelPatch = {
         }
         return super.inChathubOnNewMessage;
     },
+    /** More than 24 hours since the last message of the customer: only a template reaches them,
+     * the composer writes internal notes of the team (never sent). */
+    get whatsappNoteOnly() {
+        return this.isWhatsApp && !this.whatsappWindowOpen;
+    },
     get composerHidden() {
         if (this.isWhatsApp) {
-            return !this.self_member_id || !this.whatsappWindowOpen;
+            return !this.self_member_id;
         }
         return super.composerHidden;
     },

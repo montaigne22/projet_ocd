@@ -64,6 +64,7 @@ BO = {
 }
 
 WHATSAPP = {
+    'Internal note for the team (not sent)…': "Note interne pour l'équipe (non envoyée)…",
     # The calls in the conversations of OCD Live (with the WhatsApp calls)
     'All the calls': 'Tous les appels',
     'Ask to call them': "Demander l'accord d'appeler",

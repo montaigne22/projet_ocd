@@ -133,6 +133,15 @@ class WhatsappAccount(models.Model):
         help="Added to the conversations that wait too long for an answer. When empty: the "
         "WhatsApp managers.",
     )
+    follow_up_template_id = fields.Many2one(
+        comodel_name="whatsapp.template",
+        string="Follow-up Template",
+        domain="[('model', '=', 'res.partner'), ('account_id', 'in', [id, False])]",
+        default=lambda self: self.env.ref("whatsapp_cloud.template_conversation_follow_up", raise_if_not_found=False),
+        help="More than 24 hours after the last message of the customer, only a template reaches "
+        "them: Send a template proposes this one first (the agent can choose another). Each "
+        "customer receives it in their language.",
+    )
     response_delay = fields.Integer(
         string="Answer within (minutes)",
         default=15,

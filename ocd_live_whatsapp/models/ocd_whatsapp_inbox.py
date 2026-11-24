@@ -377,8 +377,16 @@ class OcdWhatsappInbox(models.AbstractModel):
         return [{"label": f"::{response.source}", "text": response.substitution or ""} for response in responses]
 
     def _ocd_template_rows(self, channel):
+        """The templates to choose from; more than 24 hours after the last message of the contact,
+        the follow-up template of the account first (chosen by default, the agent can change)."""
         rows = []
-        for choice in self._ocd_template_choices(channel):
+        choices = self._ocd_template_choices(channel)
+        if not channel._whatsapp_is_window_open():
+            follow_up = channel.sudo()._whatsapp_follow_up_template()
+            choices.sort(key=lambda choice: not (
+                choice["template"] == follow_up and choice["record"] == channel.whatsapp_partner_id
+            ))
+        for choice in choices:
             template, record = choice["template"], choice["record"]
             rows.append({
                 "key": f"{template.id}-{record._name}-{record.id}",

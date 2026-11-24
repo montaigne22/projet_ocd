@@ -509,6 +509,56 @@ class TestWhatsAppConversation(WhatsAppCommon):
         self.assertEqual(self.outgoing(channel), before)
         self.assertIn("vérifier le stock", channel.message_ids[0].body)
 
+    def test_internal_note_at_any_time(self):
+        """More than 24 hours after the last message of the customer, a message of the team is
+        refused, a note goes (the composer writes notes then), with its files, never sent."""
+        channel = self.receive("Bonjour").channel_id
+        channel.whatsapp_last_inbound_date = fields.Datetime.now() - timedelta(hours=25)
+        self.assertFalse(channel._whatsapp_is_window_open())
+        before = self.outgoing(channel)
+        agent_channel = channel.with_user(self.agent)
+        with self.assertRaises(UserError):
+            agent_channel.message_post(body=Markup("<p>Bonjour</p>"), message_type="comment",
+                                       subtype_xmlid="mail.mt_comment")
+        file = self.env["ir.attachment"].create({
+            "name": "bon.pdf", "raw": b"%PDF-1.4", "res_model": "discuss.channel", "res_id": channel.id,
+        })
+        note = agent_channel.message_post(
+            body=Markup("<p>Rappelé à 10 h, pas de réponse.</p>"), message_type="comment",
+            subtype_xmlid="mail.mt_note", attachment_ids=file.ids,
+        )
+        self.assertEqual(self.outgoing(channel), before, "Never sent to the customer")
+        self.assertEqual(note.subtype_id, self.env.ref("mail.mt_note"))
+        self.assertEqual(note.attachment_ids, file)
+        self.assertEqual(str(note.body), "<p>🔒 <b>Internal note:</b> Rappelé à 10 h, pas de réponse.</p>")
+        # a text, not HTML: escaped
+        note = agent_channel.message_post(body="<b>2</b> colis", message_type="comment", subtype_xmlid="mail.mt_note")
+        self.assertIn("&lt;b&gt;2&lt;/b&gt; colis", str(note.body))
+
+    def test_send_a_template_proposes_the_follow_up(self):
+        """More than 24 hours after the last message of the customer, Send a template proposes the
+        follow-up template of the account first; the agent can choose another one."""
+        channel = self.receive("Bonjour").channel_id
+        agent_channel = channel.with_user(self.agent)
+        module_template = self.env.ref("whatsapp_cloud.template_conversation_follow_up")
+        self.assertEqual(self.account.follow_up_template_id, module_template, "The template of the module by default")
+        action = agent_channel.whatsapp_action_send_template()
+        self.assertNotIn("default_template_id", action["context"], "Window open: the agent writes freely")
+        channel.whatsapp_last_inbound_date = fields.Datetime.now() - timedelta(hours=25)
+        action = agent_channel.whatsapp_action_send_template()
+        self.assertEqual(action["context"]["default_template_id"], module_template.id)
+        composer = self.env["whatsapp.composer"].with_user(self.agent).with_context(action["context"]).create({})
+        self.assertEqual(composer.template_id, module_template)
+        composer.template_id = self.template  # the agent changes it
+        self.assertEqual(composer.template_id, self.template)
+        # the template chosen on the account
+        other = module_template.copy({"name": "Relance OCD", "template_name": "ocd_relance"})
+        self.account.follow_up_template_id = other
+        self.assertEqual(agent_channel.whatsapp_action_send_template()["context"]["default_template_id"], other.id)
+        # refused by Meta: not proposed
+        other.status = "rejected"
+        self.assertNotIn("default_template_id", agent_channel.whatsapp_action_send_template()["context"])
+
     def test_read_receipt_and_typing(self):
         self.account.bot_enabled = False
         message = self.receive("Bonjour")
