@@ -1,6 +1,7 @@
 import re
 from collections import defaultdict
 from datetime import timedelta
+from urllib.parse import urlencode
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError
@@ -14,6 +15,9 @@ SECRET_RE = re.compile(r"(?<![\w])\d{4,6}(?![\w])")
 # Line added by whatsapp_cloud under a template shown in a conversation
 TEMPLATE_LINE_RE = re.compile(r"\n*\s*(Template|Modèle)\s*:[^\n]*\s*$")
 STATUS_ORDER = ["failed", "skipped", "queued", "sent", "delivered", "read", "received"]
+# The calls of a conversation (with whatsapp_cloud_call): the customer did not reach the team
+CALL_MISSED_STATES = ("missed", "voicemail", "lost", "failed")
+CALL_LAST = 5
 
 
 class OcdWhatsappInbox(models.AbstractModel):
@@ -179,7 +183,8 @@ class OcdWhatsappInbox(models.AbstractModel):
             "quick": self._ocd_quick_replies(),
             "templates": self._ocd_template_rows(channel),
             "consent": self._ocd_consent(partner),
-            "sections": self._ocd_panel_sections(partner) if partner else [],
+            "calls": self._ocd_call_state(channel),
+            "sections": (self._ocd_panel_sections(partner) if partner else []) + self._ocd_call_sections(channel),
             "partner_action": partner and {
                 "type": "ir.actions.act_window",
                 "res_model": "res.partner",
@@ -197,22 +202,116 @@ class OcdWhatsappInbox(models.AbstractModel):
         by_message = defaultdict(lambda: self.env["whatsapp.message"])
         for wa_message in wa_messages:
             by_message[wa_message.mail_message_id.id] |= wa_message
+        calls = self._ocd_message_calls(messages)
         rows = []
         for message in messages.sorted("id"):
             linked = by_message[message.id]
             kind = self._ocd_message_kind(channel, message, linked)
             template = linked.template_id[:1]
+            text = self._ocd_message_text(channel, message, kind, template)
+            files = [self._ocd_file(attachment) for attachment in message.attachment_ids]
+            if files and text == ", ".join(file["name"] for file in files):
+                text = ""  # a file alone: shown, not written
             rows.append({
                 "id": message.id,
                 "kind": kind,
                 "tag": self._ocd_message_tag(kind, message, template),
-                "text": self._ocd_message_text(channel, message, kind, template),
-                "files": message.attachment_ids.mapped("name"),
+                "text": text,
+                "files": files,
+                "call": calls.get(message.id, False),
                 "time": self._ocd_time_label(message.date),
                 "status": self._ocd_status(linked) if kind in ("out", "auto") else "",
                 "failed": any(m.state in ("failed", "skipped") for m in linked),
             })
         return rows
+
+    def _ocd_file(self, attachment):
+        """A file of the conversation for the screen, shown like in WhatsApp: read with its own
+        token (an agent who did not take the conversation reads it too), cached by its checksum."""
+        token = attachment._get_raw_access_token()
+        query = urlencode({"access_token": token, "unique": attachment.checksum or "", "filename": attachment.name or ""})
+        url = f"/web/content/{attachment.id}?{query}"
+        mimetype = (attachment.mimetype or "").split(";")[0]
+        return {
+            "id": attachment.id,
+            "name": attachment.name or "",
+            "mimetype": mimetype,
+            "size": attachment.file_size or 0,
+            "checksum": attachment.checksum or "",
+            "access_token": token,
+            "url": url,
+            "downloadUrl": f"{url}&download=true",
+            "viewable": mimetype.startswith(("image/", "video/", "audio/", "text/")) or mimetype == "application/pdf",
+        }
+
+    # === CALLS (with whatsapp_cloud_call) === #
+
+    def _ocd_calls_enabled(self, channel):
+        return "whatsapp.call" in self.env and bool(channel.whatsapp_account_id.call_enabled)
+
+    def _ocd_message_calls(self, messages):
+        """The calls behind the lines of the conversation (Missed call, Call of 2 min...): {message
+        id: {id, state, inbound, missed, call_back, recording}}."""
+        if "whatsapp.call" not in self.env or not messages:
+            return {}
+        manager = self.env.user.has_group("whatsapp_cloud.group_whatsapp_manager")
+        calls = self.env["whatsapp.call"].sudo().search([("notice_message_id", "in", messages.ids)])
+        return {
+            call.notice_message_id.id: {
+                "id": call.id,
+                "state": call.state,
+                "inbound": call.direction == "inbound",
+                "missed": call.state in CALL_MISSED_STATES,
+                "call_back": call.direction == "inbound" and call.state in CALL_MISSED_STATES,
+                "recording": manager and bool(call.recording_id.attachment_id),
+            }
+            for call in calls
+        }
+
+    def _ocd_call_state(self, channel):
+        """Calling the customer from the conversation: allowed by the customer, or ask them first
+        (within 24 hours of their last message)."""
+        if not self._ocd_calls_enabled(channel):
+            return False
+        allowed = channel._whatsapp_call_allowed()
+        return {
+            "allowed": allowed,
+            "text": channel._whatsapp_call_permission_text(),
+            "can_ask": not allowed and channel._whatsapp_is_window_open(),
+        }
+
+    def _ocd_call_sections(self, channel):
+        """The last calls of the conversation, in the panel of the contact."""
+        if not self._ocd_calls_enabled(channel):
+            return []
+        calls = self.env["whatsapp.call"].sudo().search([("channel_id", "=", channel.id)], limit=CALL_LAST)
+        if not calls:
+            return []
+        _ = self.env._
+        states = dict(calls._fields["state"]._description_selection(self.env))
+        rows = []
+        for call in calls:
+            detail = [states.get(call.state, "")]
+            if call.duration:
+                minutes, seconds = divmod(call.duration, 60)
+                detail.append(f"{minutes} min {seconds:02d} s" if minutes else f"{seconds} s")
+            if call.user_id:
+                detail.append(call.user_id.name)
+            rows.append({
+                "key": format_datetime(self.env, call.start_date, dt_format="dd/MM HH:mm"),
+                "value": " · ".join(filter(None, detail)),
+            })
+        return [{
+            "title": _("Calls"),
+            "rows": rows,
+            "links": [{"label": _("All the calls"), "action": {
+                "type": "ir.actions.act_window",
+                "name": _("Calls"),
+                "res_model": "whatsapp.call",
+                "views": [[False, "list"], [False, "form"]],
+                "domain": [("channel_id", "=", channel.id)],
+            }}],
+        }]
 
     def _ocd_message_kind(self, channel, message, linked=None):
         if message.message_type == "notification":

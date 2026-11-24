@@ -72,17 +72,50 @@
                                 </span>
                                 <span t-attf-class="o_ocd_wa_window #{current.open ? 'o_ocd_wa_window_open' : 'o_ocd_wa_window_closed'}"
                                       t-out="current.window"/>
+                                <t t-if="current.calls">
+                                    <button t-if="current.calls.allowed" type="button" class="o_ocd_wa_call_button"
+                                            t-att-disabled="this.busy()" t-att-title="current.calls.text"
+                                            t-on-click="() => this.callCustomer()">
+                                        <i class="oi" data-icon="phone" aria-hidden="true"/> Call
+                                    </button>
+                                    <button t-elif="current.calls.can_ask" type="button" class="o_ocd_wa_call_button o_ocd_wa_call_ask"
+                                            t-att-disabled="this.busy()" t-att-title="current.calls.text"
+                                            t-on-click="() => this.askToCall()">
+                                        <i class="oi" data-icon="add_call" aria-hidden="true"/> Ask to call them
+                                    </button>
+                                    <span t-else="" class="o_ocd_wa_call_none" t-att-title="current.calls.text">
+                                        <i class="oi" data-icon="phone" aria-hidden="true"/> Not allowed to call
+                                    </span>
+                                </t>
                             </div>
                             <div class="o_ocd_wa_messages" t-ref="this.messagesRef" role="log" aria-live="polite"
                                  t-att-aria-label="current.name">
                                 <div t-foreach="current.messages" t-as="message" t-key="message.id"
                                      t-attf-class="o_ocd_wa_line o_ocd_wa_line_#{message.kind}">
-                                    <div t-attf-class="o_ocd_wa_bubble o_ocd_wa_bubble_#{message.kind} #{message.failed ? 'o_ocd_wa_bubble_failed' : ''}">
-                                        <span t-if="message.tag" class="o_ocd_wa_tag" t-out="message.tag"/>
-                                        <span class="o_ocd_wa_text" t-out="message.text"/>
-                                        <span t-if="message.files.length and message.text !== message.files.join(', ')" class="o_ocd_wa_files">
-                                            <span t-foreach="message.files" t-as="file" t-key="file_index" t-out="file"/>
+                                    <!-- a call: a line of its own, like in WhatsApp -->
+                                    <div t-if="message.call" t-attf-class="o_ocd_wa_call #{message.call.missed ? 'o_ocd_wa_call_missed' : ''}">
+                                        <i class="oi o_ocd_wa_call_icon" t-att-data-icon="this.callIcon(message.call)" aria-hidden="true"/>
+                                        <span class="o_ocd_wa_call_text" t-out="message.text"/>
+                                        <span class="o_ocd_wa_meta" t-out="message.time"/>
+                                        <span t-if="(message.call.call_back and current.calls) or message.call.recording" class="o_ocd_wa_call_actions">
+                                            <button t-if="message.call.call_back and current.calls" type="button" class="o_ocd_wa_call_link"
+                                                    t-att-disabled="this.busy()" t-on-click="() => this.callCustomer()">
+                                                <i class="oi" data-icon="phone_callback" aria-hidden="true"/> Call back
+                                            </button>
+                                            <button t-if="message.call.recording" type="button" class="o_ocd_wa_call_link"
+                                                    t-on-click="() => this.listenRecording(message.call)">
+                                                <i class="oi" data-icon="play_arrow" aria-hidden="true"/> Listen to the recording
+                                            </button>
                                         </span>
+                                    </div>
+                                    <div t-else="" t-attf-class="o_ocd_wa_bubble o_ocd_wa_bubble_#{message.kind} #{message.failed ? 'o_ocd_wa_bubble_failed' : ''}">
+                                        <span t-if="message.tag" class="o_ocd_wa_tag" t-out="message.tag"/>
+                                        <div t-if="message.files.length" class="o_ocd_wa_files">
+                                            <div t-foreach="message.files" t-as="file" t-key="file.id" class="o_ocd_wa_file">
+                                                <WhatsAppAttachment file="file" open="() => this.openFile(file, message.files)"/>
+                                            </div>
+                                        </div>
+                                        <span t-if="message.text" class="o_ocd_wa_text" t-out="message.text"/>
                                         <span class="o_ocd_wa_meta">
                                             <t t-out="message.time"/><t t-if="message.status"> · <t t-out="message.status"/></t>
                                         </span>

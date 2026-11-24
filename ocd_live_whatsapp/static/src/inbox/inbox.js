@@ -1,8 +1,11 @@
 import { Component, onMounted, onPatched, onWillStart, onWillUnmount, signal, useProps } from "@odoo/owl";
+import { FileModel } from "@web/core/file_viewer/file_model";
+import { useFileViewer } from "@web/core/file_viewer/file_viewer_hook";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { standardActionServiceProps } from "@web/webclient/actions/action_plugin";
+import { WhatsAppAttachment } from "@whatsapp_cloud/whatsapp_attachment";
 
 const POLL_MS = 20000;
 
@@ -10,10 +13,14 @@ const POLL_MS = 20000;
  * WhatsApp conversations of the team, as in the validated design (BoWhatsApp): the list (all,
  * or waiting for an answer), the conversation with its automatic messages, answers and internal
  * notes, and the contact on the right. New messages come by the bus (and every 20 seconds while
- * the page is shown). Out of the 24-hour window, only an approved template can go.
+ * the page is shown). Out of the 24-hour window, only an approved template can go. The files are
+ * shown like in WhatsApp (sounds played, videos and images in place, documents opened); with the
+ * WhatsApp calls, the calls are lines of the conversation (call back, listen to the recording) and
+ * the customer is called from here.
  */
 export class OcdWhatsappInbox extends Component {
     static template = "ocd_live_whatsapp.Inbox";
+    static components = { WhatsAppAttachment };
     props = useProps(standardActionServiceProps);
     data = signal(null);
     filter = signal("all");
@@ -28,6 +35,7 @@ export class OcdWhatsappInbox extends Component {
         this.actionService = useService("action");
         this.notification = useService("notification");
         this.bus = useService("bus_service");
+        this.fileViewer = useFileViewer();
         this.lastShown = null;
         this.onBusMessage = (payload) => {
             const ids = (this.data()?.conversations || []).map((conversation) => conversation.id);
@@ -191,6 +199,69 @@ export class OcdWhatsappInbox extends Component {
         } finally {
             this.busy.set(false);
         }
+    }
+
+    // === FILES === //
+
+    /** A file in the viewer of Odoo (a PDF, an image...), with the other files of its message. */
+    openFile(file, files) {
+        const models = files.map((row) =>
+            Object.assign(new FileModel(), {
+                id: row.id,
+                name: row.name,
+                mimetype: row.mimetype,
+                checksum: row.checksum,
+                raw_access_token: row.access_token,
+            })
+        );
+        this.fileViewer.open(models[files.indexOf(file)], models);
+    }
+
+    // === CALLS (with the WhatsApp calls) === //
+
+    /** Call the customer through WhatsApp: the phone of the top bar places the call; Odoo says
+     * why when it cannot (permission of the customer, limits of Meta, budget). */
+    async callCustomer() {
+        if (this.busy()) {
+            return;
+        }
+        this.busy.set(true);
+        try {
+            const action = await this.orm.call("discuss.channel", "whatsapp_action_call", [[this.current.id]]);
+            if (action && typeof action === "object") {
+                await this.actionService.doAction(action);
+            }
+        } finally {
+            this.busy.set(false);
+        }
+    }
+
+    /** Ask the customer whether the company may call them (within 24 hours of their message). */
+    async askToCall() {
+        if (this.busy()) {
+            return;
+        }
+        this.busy.set(true);
+        try {
+            await this.orm.call("discuss.channel", "whatsapp_action_call_permission_request", [[this.current.id]]);
+        } finally {
+            this.busy.set(false);
+        }
+        await this.refresh();
+    }
+
+    async listenRecording(call) {
+        const action = await this.orm.call("whatsapp.call", "action_listen_recording", [[call.id]]);
+        if (action) {
+            await this.actionService.doAction(action);
+        }
+    }
+
+    callIcon(call) {
+        if (call.missed) {
+            return "phone_missed";
+        }
+        return call.inbound ? "phone_in_talk" : "phone";
     }
 
     // === CONTACT === //

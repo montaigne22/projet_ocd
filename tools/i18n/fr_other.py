@@ -64,6 +64,14 @@ BO = {
 }
 
 WHATSAPP = {
+    # The calls in the conversations of OCD Live (with the WhatsApp calls)
+    'All the calls': 'Tous les appels',
+    'Ask to call them': "Demander l'accord d'appeler",
+    'Call': 'Appeler',
+    'Call back': 'Rappeler',
+    'Calls': 'Appels',
+    'Listen to the recording': "Écouter l'enregistrement",
+    'Not allowed to call': "Pas d'accord pour appeler",
     "%(name)s waits for an answer for %(minutes)s min": "%(name)s attend une réponse depuis %(minutes)s min",
     "Automatic messages": "Messages automatiques",
     "Conversations": "Conversations",

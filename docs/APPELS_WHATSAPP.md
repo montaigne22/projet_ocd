@@ -213,7 +213,11 @@ et signale en orange un message trop long (par ex. l'accueil au-delà de 12 s). 
 le bloquer sans rien dire. Depuis la version 20.0.1.12.2, le message laissé par un client (messagerie)
 est un message vocal de Discuss : il se lit dans la conversation (lecture, onde, durée), sans le
 télécharger, et sa ligne est dans la langue de l'équipe ; les messages déjà reçus sont repris à la
-mise à jour. Vu de bout en bout avec un faux Meta : un message ajouté dans la
+mise à jour. Les conversations sont disposées comme dans WhatsApp (le client à gauche, l'équipe à
+droite) et leurs fichiers s'ouvrent sur place (sons, vidéos, documents), dans Discuss comme dans la
+boîte de réception d'OCD Live ; dans celle-ci, les appels sont des lignes de la conversation
+(« Rappeler », « Écouter l'enregistrement ») et le client s'appelle d'en haut (« Appeler », ou
+« Demander l'accord d'appeler »). Vu de bout en bout avec un faux Meta : un message ajouté dans la
 fiche du compte arrive sur le serveur en moins d'une minute ; le client entend l'accueil, la musique et
 la voix du numéro ; un message changé ou retiré dans Odoo est appliqué sans redémarrage.
 

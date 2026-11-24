@@ -1,5 +1,8 @@
+from markupsafe import Markup
+
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import new_test_user, tagged
+from odoo.tools.misc import verify_limited_field_access_token
 
 from odoo.addons.ocd_live.tests.common import OcdLiveCommon
 
@@ -90,3 +93,51 @@ class TestOcdWhatsappInbox(OcdLiveCommon):
         user = new_test_user(self.env, login="ocd_not_agent", groups="base.group_user")
         with self.assertRaises(AccessError):
             self.env["ocd.whatsapp.inbox"].with_user(user).get_inbox()
+
+    def test_files_shown_like_in_whatsapp(self):
+        """A file of the conversation: given with its own token (read by an agent who did not
+        take the conversation), not written as its name."""
+        channel = self._receive("Voici mon message vocal")
+        sound = self.env["ir.attachment"].create({
+            "name": "Voice message.ogg", "raw": b"OggS-voice", "mimetype": "audio/ogg",
+            "res_model": "discuss.channel", "res_id": channel.id,
+        })
+        channel.sudo().with_context(whatsapp_skip_send=True).message_post(
+            author_id=self.vendor.id, body=Markup(""), attachment_ids=sound.ids,
+            message_type="whatsapp_message", subtype_xmlid="mail.mt_comment",
+        )
+        row = self.Inbox.get_conversation(channel.id)["messages"][-1]
+        self.assertEqual(row["text"], "", "A file alone: shown, not written")
+        file = row["files"][0]
+        self.assertEqual((file["name"], file["mimetype"], file["size"]), ("Voice message.ogg", "audio/ogg", 10))
+        self.assertTrue(file["url"].startswith(f"/web/content/{sound.id}?access_token="))
+        self.assertIn(f"unique={sound.checksum}", file["url"])
+        self.assertEqual(file["downloadUrl"], file["url"] + "&download=true")
+        self.assertTrue(file["viewable"])
+        self.assertTrue(verify_limited_field_access_token(sound, "raw", file["access_token"], scope="binary"))
+        # the same token at each refresh: a sound being played does not start again
+        self.assertEqual(self.Inbox.get_conversation(channel.id)["messages"][-1]["files"][0]["url"], file["url"])
+
+    def test_calls_in_the_conversation(self):
+        """With the WhatsApp calls: a call is a line of its own (call back a missed call), the
+        customer is called from the conversation, the last calls are next to it."""
+        if "whatsapp.call" not in self.env:
+            self.skipTest("The WhatsApp calls (whatsapp_cloud_call) are not installed")
+        channel = self._receive("Je vous ai appelé")
+        self.assertFalse(self.Inbox.get_conversation(channel.id)["calls"], "Calls not enabled on the account")
+        self.account.call_enabled = True
+        notice = channel.sudo().message_post(body=Markup("<p>Missed call</p>"), message_type="notification")
+        call = self.env["whatsapp.call"].sudo().create({
+            "account_id": self.account.id, "channel_id": channel.id, "partner_id": self.vendor.id,
+            "number": "237670000002", "direction": "inbound", "state": "missed", "notice_message_id": notice.id,
+        })
+        current = self.Inbox.get_conversation(channel.id)
+        row = next(message for message in current["messages"] if message["id"] == notice.id)
+        self.assertEqual(row["call"], {
+            "id": call.id, "state": "missed", "inbound": True, "missed": True, "call_back": True, "recording": False,
+        })
+        self.assertEqual(current["calls"]["allowed"], False)
+        self.assertTrue(current["calls"]["can_ask"], "The customer just wrote: the team may ask to call them")
+        self.assertIn("Calls", [section["title"] for section in current["sections"]])
+        channel.sudo().whatsapp_call_permission = "permanent"
+        self.assertTrue(self.Inbox.get_conversation(channel.id)["calls"]["allowed"])

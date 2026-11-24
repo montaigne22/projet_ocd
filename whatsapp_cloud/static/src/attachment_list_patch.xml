@@ -3,7 +3,7 @@
     <t t-inherit="mail.AttachmentList" t-inherit-mode="extension">
         <!-- a file of a WhatsApp conversation (not an image): like in WhatsApp -->
         <xpath expr="//div[hasclass('o-mail-AttachmentCard')]" position="before">
-            <WhatsAppAttachment t-elif="this.isWhatsAppMedia(attachment)" attachment="attachment"
+            <WhatsAppAttachment t-elif="this.isWhatsAppMedia(attachment)" file="this.whatsAppFile(attachment)"
                                 open="() => this.onClickAttachment(attachment)"/>
         </xpath>
         <xpath expr="//div[hasclass('o-mail-AttachmentContainer')]" position="attributes">

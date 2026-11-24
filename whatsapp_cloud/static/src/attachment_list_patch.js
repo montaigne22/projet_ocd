@@ -2,7 +2,7 @@ import { AttachmentList } from "@mail/core/common/attachment_list";
 
 import { patch } from "@web/core/utils/patch";
 
-import { WhatsAppAttachment } from "./whatsapp_attachment";
+import { WhatsAppAttachment, whatsappFileFromAttachment } from "./whatsapp_attachment";
 
 patch(AttachmentList, {
     components: { ...AttachmentList.components, WhatsAppAttachment },
@@ -22,5 +22,8 @@ patch(AttachmentList.prototype, {
                 !attachment.uploading &&
                 attachment.type !== "url"
         );
+    },
+    whatsAppFile(attachment) {
+        return whatsappFileFromAttachment(attachment);
     },
 });

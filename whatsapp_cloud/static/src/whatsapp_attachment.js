@@ -20,9 +20,12 @@ function formatTime(seconds) {
         : `${minutes}:${rest}`;
 }
 
-/** "audio", "video" or "document": how WhatsApp shows a file that is not an image. */
-export function whatsappMediaKind(attachment) {
-    const mimetype = (attachment.mimetype || "").split(";")[0];
+/** "image", "audio", "video" or "document": how WhatsApp shows a file. */
+export function whatsappMediaKind(file) {
+    const mimetype = (file.mimetype || "").split(";")[0];
+    if (mimetype.startsWith("image/")) {
+        return "image";
+    }
     if (mimetype.startsWith("audio/")) {
         return "audio";
     }
@@ -32,17 +35,31 @@ export function whatsappMediaKind(attachment) {
     return "document";
 }
 
+/** The file of an attachment of Discuss, for WhatsAppAttachment. */
+export function whatsappFileFromAttachment(attachment) {
+    return {
+        name: attachment.name || "",
+        mimetype: attachment.mimetype || "",
+        size: attachment.file_size || 0,
+        url: url(attachment.urlRoute, attachment.urlQueryParams),
+        downloadUrl: attachment.downloadUrl,
+        viewable: Boolean(attachment.isViewable),
+        poster: attachment.has_thumbnail ? attachment.thumbnailUrl : undefined,
+    };
+}
+
 /**
  * A file of a WhatsApp conversation shown like in WhatsApp, inside the conversation: a sound as a
- * small player (play, progress to move in it, time, speed), a video played in place, a document as a
- * line (icon, name, type and size; opened in the viewer of Odoo when it can, else downloaded). The
- * file is read from Odoo as it plays (no download first); when the browser cannot play it, it says
- * so and offers the download.
+ * small player (play, progress to move in it, time, speed), a video played in place, an image in
+ * place, a document as a line (icon, name, type and size; opened in the viewer of Odoo when it can,
+ * else downloaded). The file is read from Odoo as it plays (no download first); when the browser
+ * cannot play it, it says so and offers the download. Used by Discuss and by the inbox of OCD Live:
+ * `file` is {name, mimetype, size, url, downloadUrl, viewable, poster}.
  */
 export class WhatsAppAttachment extends Component {
     static template = "whatsapp_cloud.WhatsAppAttachment";
     props = useProps({
-        attachment: t.any(),
+        file: t.object(),
         open: t.function().optional(),
     });
 
@@ -58,32 +75,32 @@ export class WhatsAppAttachment extends Component {
         });
     }
 
-    get attachment() {
-        return this.props.attachment;
+    get file() {
+        return this.props.file;
     }
     get kind() {
-        return whatsappMediaKind(this.attachment);
+        return whatsappMediaKind(this.file);
     }
     get src() {
-        return url(this.attachment.urlRoute, this.attachment.urlQueryParams);
+        return this.file.url;
     }
     get downloadUrl() {
-        return this.attachment.downloadUrl;
+        return this.file.downloadUrl;
     }
     get poster() {
-        return this.attachment.has_thumbnail ? this.attachment.thumbnailUrl : undefined;
+        return this.file.poster;
     }
     get typeLabel() {
-        const name = this.attachment.name || "";
+        const name = this.file.name || "";
         const dot = name.lastIndexOf(".");
         if (dot > 0 && dot > name.length - 7) {
             return name.slice(dot + 1).toUpperCase();
         }
-        const subtype = (this.attachment.mimetype || "").split(";")[0].split("/")[1] || "";
+        const subtype = (this.file.mimetype || "").split(";")[0].split("/")[1] || "";
         return subtype.length <= 6 ? subtype.toUpperCase() : _t("File");
     }
     get sizeLabel() {
-        return this.attachment.file_size ? humanSize(this.attachment.file_size) : "";
+        return this.file.size ? humanSize(this.file.size) : "";
     }
     get timeLabel() {
         const { playing, current, duration } = this.state;
@@ -170,7 +187,7 @@ export class WhatsAppAttachment extends Component {
         }
     }
     onClickDocument() {
-        if (this.attachment.isViewable && this.props.open) {
+        if (this.file.viewable && this.props.open) {
             this.props.open();
         } else {
             window.open(this.downloadUrl, "_self");
