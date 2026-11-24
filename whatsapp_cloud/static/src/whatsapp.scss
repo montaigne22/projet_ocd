@@ -23,8 +23,13 @@
     .o-mail-Message-header {
         justify-content: flex-end;
     }
+    // the files under the bubble, on its right edge however wide the bubble is (the list is a
+    // column: its row of files is pushed to the right)
     .o-mail-AttachmentList {
-        justify-content: flex-end;
+        align-items: flex-end;
+        > .d-flex {
+            justify-content: flex-end;
+        }
     }
 }
 
@@ -97,4 +102,25 @@
     max-width: 100%;
     max-height: 20rem;
     object-fit: contain;
+}
+
+// An internal note of the team (/note) in a WhatsApp conversation: in the middle, in yellow,
+// never sent to the customer (like in the inbox of OCD Live)
+.o-mail-Message.o-whatsapp-note {
+    // over the d-flex of Odoo (!important)
+    .o-mail-Message-sidebar,
+    .o-mail-Message-bubbleTail {
+        display: none !important;
+    }
+    .o-mail-Message-core > .w-100 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .o-mail-Message-header {
+        justify-content: center;
+    }
+    .o-mail-Message-content {
+        max-width: 75%;
+    }
 }

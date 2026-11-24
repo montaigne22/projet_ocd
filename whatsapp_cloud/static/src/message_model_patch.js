@@ -48,7 +48,15 @@ const messagePatch = {
         }
         return channel.whatsapp_partner_id ? true : this.isSelfAuthored;
     },
+    /** In a WhatsApp conversation: an internal note of the team (/note), never sent to the
+     * customer: in the middle, in yellow. */
+    get isWhatsAppNote() {
+        return Boolean(this.thread?.channel?.isWhatsApp && this.isNote);
+    },
     get bubbleColor() {
+        if (this.isWhatsAppNote) {
+            return "orange";
+        }
         if (this.thread?.channel?.isWhatsApp && !this.isHighlightedFromMention) {
             if (this.isWhatsAppTeam) {
                 return "green";

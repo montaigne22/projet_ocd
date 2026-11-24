@@ -554,6 +554,9 @@ La configuration du serveur d'appels est dans le dossier freeswitch du module.
 
 # WhatsApp Cloud API (whatsapp_cloud): texts added with the calls
 WA_CLOUD_CALLS = {
+    # The composer of a WhatsApp conversation says how to write an internal note
+    'Message to %(name)s… (/note: an internal note, not sent)':
+        'Message à %(name)s… (/note : une note interne, non envoyée)',
     # The files of a WhatsApp conversation shown like in WhatsApp
     'Cannot be played here':
         'Lecture impossible ici',

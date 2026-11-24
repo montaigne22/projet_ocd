@@ -4,8 +4,8 @@ import { patch } from "@web/core/utils/patch";
 
 /**
  * A WhatsApp conversation laid out like WhatsApp, in Discuss and in the chat windows: the customer
- * on the left, the team on the right (every agent, not only the one reading), the notices in the
- * middle.
+ * on the left, the team on the right (every agent, not only the one reading), the notices and the
+ * internal notes (in yellow) in the middle.
  */
 patch(Message.prototype, {
     get isWhatsAppLayout() {
@@ -22,6 +22,7 @@ patch(Message.prototype, {
         if (this.isWhatsAppLayout) {
             result["o-whatsapp-team"] = this.props.message.isWhatsAppTeam;
             result["o-whatsapp-customer"] = this.props.message.isWhatsAppCustomer;
+            result["o-whatsapp-note"] = this.props.message.isWhatsAppNote;
         }
         return result;
     },
