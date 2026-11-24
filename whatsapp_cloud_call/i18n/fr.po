@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 06:58+0000\n"
-"PO-Revision-Date: 2026-11-24 06:58+0000\n"
+"POT-Creation-Date: 2026-11-24 07:12+0000\n"
+"PO-Revision-Date: 2026-11-24 07:12+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -107,6 +107,12 @@ msgid "%s s"
 msgstr "%s s"
 
 #. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call_sound.py:0
+msgid "2 to 5 minutes, or several files"
+msgstr "2 à 5 minutes, ou plusieurs fichiers"
+
+#. module: whatsapp_cloud_call
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_res_config_settings__whatsapp_call_turn_tls_port
 msgid "443 (passes almost every firewall), or 5349 when another program (nginx) holds the port 443 on the call server. The same as TURN_TLS_PORT in its .env."
 msgstr "443 (passe presque tous les pare-feu), ou 5349 quand un autre programme (nginx) tient le port 443 sur le serveur d'appels. Le même que TURN_TLS_PORT dans son .env."
@@ -140,6 +146,12 @@ msgstr "Un client qui appelle permet à l'entreprise de le rappeler (Meta, 7 jou
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_account__call_max_wait
 msgid "A customer who waits this long without an agent leaves a message."
 msgstr "Un client qui attend aussi longtemps sans conseiller laisse un message."
+
+#. module: whatsapp_cloud_call
+#. odoo-python
+#: code:addons/whatsapp_cloud_call/models/whatsapp_call_sound.py:0
+msgid "About %(one)s s in one language, %(most)s s at most with both"
+msgstr "Environ %(one)s s en une langue, %(most)s s au plus avec les deux"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_rate__account_id
@@ -724,6 +736,7 @@ msgstr "Durée"
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call__duration
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_recording__duration
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__duration
 msgid "Duration (s)"
 msgstr "Durée (s)"
 
@@ -841,6 +854,11 @@ msgid "How Meta and the call server agree on the keys of the encrypted voice."
 msgstr "Comment Meta et le serveur d'appels s'accordent sur les clés de la voix chiffrée."
 
 #. module: whatsapp_cloud_call
+#: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_sound__duration
+msgid "How long the message lasts, read in its file."
+msgstr "La durée du message, lue dans son fichier."
+
+#. module: whatsapp_cloud_call
 #. odoo-javascript
 #: code:addons/whatsapp_cloud_call/static/src/softphone/softphone.xml:0
 msgid "I take the WhatsApp calls"
@@ -942,6 +960,11 @@ msgstr "Écouter"
 #: model:ir.model.fields,help:whatsapp_cloud_call.field_whatsapp_call_server__registrations
 msgid "Logins, one per line."
 msgstr "Identifiants, un par ligne."
+
+#. module: whatsapp_cloud_call
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_account_view_form_calls
+msgid "Longer than recommended: the customer waits while it plays. Say it more briefly, or keep one language."
+msgstr "Plus long que conseillé : le client attend pendant qu'il passe. Le dire plus brièvement, ou garder une seule langue."
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_max_outbound_minutes
@@ -1299,6 +1322,11 @@ msgstr "Lire l'état chez Meta"
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__server_message
 msgid "Reason"
 msgstr "Raison"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__duration_advice
+msgid "Recommended Duration"
+msgstr "Durée conseillée"
 
 #. module: whatsapp_cloud_call
 #: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_account__call_recording
@@ -1737,6 +1765,11 @@ msgstr "À envoyer à Meta"
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_search
 msgid "Today"
 msgstr "Aujourd'hui"
+
+#. module: whatsapp_cloud_call
+#: model:ir.model.fields,field_description:whatsapp_cloud_call.field_whatsapp_call_sound__too_long
+msgid "Too Long"
+msgstr "Trop long"
 
 #. module: whatsapp_cloud_call
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud_call.whatsapp_call_view_list

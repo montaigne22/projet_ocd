@@ -34,17 +34,32 @@ sounds/
 
 ## Les fichiers de ce dossier
 
-| Fichier | Quand le client l'entend | Texte proposé | En anglais |
-|---|---|---|---|
-| `accueil.mp3` | dès que l'appel arrive | « Bonjour et bienvenue chez OCD Live. Un conseiller va vous répondre dans un instant. » | “Hello and welcome to OCD Live. An advisor will be with you in a moment.” |
-| `enregistrement.mp3` | après l'accueil, et quand il décroche un appel de l'entreprise, si les appels sont enregistrés (Odoo) | « Pour la qualité de notre service, cet appel est enregistré. » | “To help us improve our service, this call is recorded.” |
-| `reconnexion.mp3` | le conseiller a été coupé, pendant que l'appel revient | « Un instant, nous vous reconnectons à votre conseiller. » | “One moment please, we are reconnecting you to your advisor.” |
-| `messagerie.mp3` | personne de disponible, avant le bip | « Nos conseillers sont tous occupés. Laissez votre message après le bip : nous vous rappelons dès que possible. » | “All our advisors are busy. Please leave your message after the beep, and we will call you back as soon as possible.” |
-| `indisponible.mp3` | personne de disponible, et pas de messagerie | « Nos conseillers sont tous occupés. Écrivez-nous sur WhatsApp, à ce même numéro : nous vous répondons rapidement. » | “All our advisors are busy. Send us a message on WhatsApp, at this same number, and we will reply quickly.” |
+| Fichier | Quand le client l'entend | Durée conseillée | Texte proposé | En anglais |
+|---|---|---|---|---|
+| `accueil.mp3` | dès que l'appel arrive | environ 6 s ; 12 s au plus avec les deux langues | « Bonjour et bienvenue chez OCD Live. Un conseiller va vous répondre dans un instant. » | “Hello and welcome to OCD Live. An advisor will be with you in a moment.” |
+| `enregistrement.mp3` | après l'accueil, et quand il décroche un appel de l'entreprise, si les appels sont enregistrés (Odoo) | environ 4 s ; 8 s au plus avec les deux langues | « Pour la qualité de notre service, cet appel est enregistré. » | “To help us improve our service, this call is recorded.” |
+| `reconnexion.mp3` | le conseiller a été coupé, pendant que l'appel revient | environ 3 s ; 8 s au plus avec les deux langues | « Un instant, nous vous reconnectons à votre conseiller. » | “One moment please, we are reconnecting you to your advisor.” |
+| `messagerie.mp3` | personne de disponible, avant le bip | environ 8 s ; 15 s au plus avec les deux langues | « Nos conseillers sont tous occupés. Laissez votre message après le bip : nous vous rappelons dès que possible. » | “All our advisors are busy. Please leave your message after the beep, and we will call you back as soon as possible.” |
+| `indisponible.mp3` | personne de disponible, et pas de messagerie | environ 8 s ; 15 s au plus avec les deux langues | « Nos conseillers sont tous occupés. Écrivez-nous sur WhatsApp, à ce même numéro : nous vous répondons rapidement. » | “All our advisors are busy. Send us a message on WhatsApp, at this same number, and we will reply quickly.” |
 
 **En deux langues** : chaque message est un seul fichier. Pour des clients francophones et
 anglophones, enregistrer les deux phrases dans le même fichier : le français d'abord, une courte
 pause, puis l'anglais.
+
+**Les durées conseillées** : le client attend pendant que le message passe, avant d'être mis en
+relation. Un message court est mieux reçu : dire le texte posément, sans le rallonger. Au-delà de la
+durée « au plus », raccourcir le texte ou garder une seule langue. Pour un message donné dans Odoo,
+Odoo mesure la durée du fichier et le signale en orange quand il est trop long.
+
+| Message | En une langue | Au plus, avec les deux langues |
+|---|---|---|
+| Accueil | environ 6 s | 12 s |
+| Annonce d'enregistrement | environ 4 s | 8 s |
+| Voix d'attente (`voix/`), chacune | environ 7 s | 15 s |
+| Conseiller coupé | environ 3 s | 8 s |
+| Messagerie | environ 8 s | 15 s |
+| Personne de disponible | environ 8 s | 15 s |
+| Musique d'attente (`attente/`) | 2 à 5 minutes par fichier, ou plusieurs fichiers | pas de limite |
 
 ## Les règles
 

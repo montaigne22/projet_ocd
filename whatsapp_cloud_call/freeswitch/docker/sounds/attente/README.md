@@ -26,8 +26,8 @@ attente/
   un titre de la radio : il est protégé.
 - **Sans paroles** : les phrases à dire vont dans `../voix/`, pour qu'elles passent par-dessus la
   musique toutes les 30 secondes.
-- **Un fichier assez long** (2 à 5 minutes), ou plusieurs, pour qu'un client qui attend n'entende pas
-  la même boucle.
+- **Durée conseillée : 2 à 5 minutes par fichier**, ou plusieurs fichiers, pour qu'un client qui
+  attend n'entende pas la même boucle. Pas de limite de durée (20 Mo au plus par fichier dans Odoo).
 - **Un volume modéré**, celui des voix : le serveur n'égalise pas le volume des fichiers de ce dossier.
 
 ## Les règles

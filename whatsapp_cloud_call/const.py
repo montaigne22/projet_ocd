@@ -106,3 +106,15 @@ SOUND_EXAMPLES = {
         "reply quickly.",
     ),
 }
+
+# How long the messages of the calls should last, in seconds: about the first in one language, at
+# most the second with both languages (the customer waits while it plays); Odoo warns above it. The
+# music has no limit (2 to 5 minutes, or several files).
+SOUND_SECONDS = {
+    "accueil": (6, 12),
+    "enregistrement": (4, 8),
+    "voix": (7, 15),
+    "reconnexion": (3, 8),
+    "messagerie": (8, 15),
+    "indisponible": (8, 15),
+}

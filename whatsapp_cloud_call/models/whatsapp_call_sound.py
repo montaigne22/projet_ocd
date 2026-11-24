@@ -6,6 +6,74 @@ from odoo.addons.whatsapp_cloud_call import const
 # The messages with a role (one each per number); "voix" and "musique" are lists, played in turn.
 SINGLE_KINDS = ("accueil", "enregistrement", "reconnexion", "messagerie", "indisponible")
 
+# MPEG audio (MP3): kbit/s by bitrate index, for (MPEG-1, layer) and (MPEG-2 or 2.5, layer)
+MPEG_BITRATES = {
+    (True, 1): (0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448),
+    (True, 2): (0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384),
+    (True, 3): (0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320),
+    (False, 1): (0, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256),
+    (False, 2): (0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160),
+    (False, 3): (0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160),
+}
+MPEG_RATES = {3: (44100, 48000, 32000), 2: (22050, 24000, 16000), 0: (11025, 12000, 8000)}
+
+
+def mp3_frame(head):
+    """(length in bytes, samples, sample rate) of the MPEG audio frame starting with these 4 bytes,
+    or None when they are not the header of a frame."""
+    if len(head) < 4 or head[0] != 0xFF or head[1] & 0xE0 != 0xE0:
+        return None
+    version, layer = (head[1] >> 3) & 3, 4 - ((head[1] >> 1) & 3)
+    index, rate_index, padding = head[2] >> 4, (head[2] >> 2) & 3, (head[2] >> 1) & 1
+    if version == 1 or layer == 4 or index in (0, 15) or rate_index == 3:
+        return None
+    bitrate = MPEG_BITRATES[(version == 3, layer)][index] * 1000
+    rate = MPEG_RATES[version][rate_index]
+    if layer == 1:
+        return (12 * bitrate // rate + padding) * 4, 384, rate
+    samples = 1152 if layer == 2 or version == 3 else 576
+    return samples // 8 * bitrate // rate + padding, samples, rate
+
+
+def mp3_seconds(content):
+    """The length of an MP3, frame by frame (constant or variable bitrate); 0 when unknown."""
+    data = bytes(content)
+    pos = 0
+    if data[:3] == b"ID3" and len(data) >= 10:  # a tag ID3v2 first (its size is "syncsafe")
+        size = (data[6] & 0x7F) << 21 | (data[7] & 0x7F) << 14 | (data[8] & 0x7F) << 7 | data[9] & 0x7F
+        pos = 10 + size + (10 if data[5] & 0x10 else 0)
+    seconds, synced = 0.0, False
+    while 0 <= pos <= len(data) - 4:
+        frame = mp3_frame(data[pos:pos + 4])
+        # out of step (junk, a tag at the end): a frame is taken again when the next one follows it
+        if frame and not synced:
+            following = data[pos + frame[0]:pos + frame[0] + 4]
+            if following and not mp3_frame(following):
+                frame = None
+        if not frame:
+            synced = False
+            pos = data.find(b"\xff", pos + 1)
+            continue
+        synced = True
+        seconds += frame[1] / frame[2]
+        pos += frame[0]
+    return seconds
+
+
+def wav_seconds(content):
+    """The length of a WAV: the size of its data over its bytes per second; 0 when unknown."""
+    data = bytes(content)
+    pos, byte_rate = 12, 0
+    while pos + 8 <= len(data):
+        chunk, size = data[pos:pos + 4], int.from_bytes(data[pos + 4:pos + 8], "little")
+        if chunk == b"fmt " and size >= 16:
+            byte_rate = int.from_bytes(data[pos + 16:pos + 20], "little")
+        elif chunk == b"data":
+            size = min(size, len(data) - pos - 8)
+            return size / byte_rate if byte_rate else 0.0
+        pos += 8 + size + (size & 1)
+    return 0.0
+
 
 class WhatsappCallSound(models.Model):
     """A message heard by the customers who call a WhatsApp number (welcome, recording notice,
@@ -47,6 +115,12 @@ class WhatsappCallSound(models.Model):
     file_name = fields.Char()
     checksum = fields.Char(compute="_compute_file_facts", store=True, readonly=True)
     size = fields.Integer(string="Size (bytes)", compute="_compute_file_facts", store=True)
+    duration = fields.Float(
+        string="Duration (s)", compute="_compute_file_facts", store=True, digits=(16, 1),
+        help="How long the message lasts, read in its file.",
+    )
+    duration_advice = fields.Char(string="Recommended Duration", compute="_compute_duration_advice")
+    too_long = fields.Boolean(compute="_compute_duration_advice")
     server_state = fields.Selection(
         selection=[("pending", "Being sent"), ("ok", "On the call server"), ("error", "Refused")],
         string="Call Server", default="pending", readonly=True, copy=False,
@@ -99,6 +173,30 @@ class WhatsappCallSound(models.Model):
             attachment = sound._file_attachment() if sound.id else self.env["ir.attachment"]
             sound.checksum = attachment.checksum or False
             sound.size = attachment.file_size or 0
+            sound.duration = self._seconds(bytes(attachment.raw)) if attachment else 0.0
+
+    @api.model
+    def _seconds(self, content):
+        """The length of an MP3 or a WAV, in seconds (0 when it cannot be read)."""
+        try:
+            kind = self._format(content)
+            return round(wav_seconds(content) if kind == "wav" else mp3_seconds(content) if kind else 0.0, 1)
+        except (IndexError, KeyError, ValueError, ZeroDivisionError):
+            return 0.0
+
+    @api.depends("kind", "duration")
+    def _compute_duration_advice(self):
+        for sound in self:
+            seconds = const.SOUND_SECONDS.get(sound.kind)
+            if sound.kind == "musique":
+                sound.duration_advice = _("2 to 5 minutes, or several files")
+            elif seconds:
+                sound.duration_advice = _(
+                    "About %(one)s s in one language, %(most)s s at most with both", one=seconds[0], most=seconds[1],
+                )
+            else:
+                sound.duration_advice = False
+            sound.too_long = bool(seconds and sound.duration > seconds[1])
 
     @api.model
     def _format(self, content):

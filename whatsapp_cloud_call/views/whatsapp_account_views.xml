@@ -83,20 +83,27 @@
                         <field name="call_sound_ids" colspan="2" nolabel="1">
                             <list>
                                 <field name="sequence" widget="handle"/>
-                                <field name="kind"/>
-                                <field name="name"/>
-                                <field name="file_name"/>
-                                <field name="server_state" widget="badge"
+                                <field name="kind" width="[160px]"/>
+                                <field name="name" width="[200px]"/>
+                                <field name="file_name" width="[110px,180px]"/>
+                                <field name="too_long" column_invisible="1"/>
+                                <field name="duration" decoration-warning="too_long"/>
+                                <field name="server_state" widget="badge" width="[190px]"
                                        decoration-success="server_state == 'ok'"
                                        decoration-info="server_state == 'pending'"
                                        decoration-danger="server_state == 'error'"/>
-                                <field name="server_message" optional="show"/>
+                                <field name="server_message" optional="hide"/>
                                 <button name="action_listen" type="object" string="Listen" class="btn-link"/>
                             </list>
                             <form>
+                                <div class="alert alert-warning" role="alert" invisible="not too_long">
+                                    Longer than recommended: the customer waits while it plays. Say it more briefly, or keep one language.
+                                </div>
                                 <group>
                                     <group>
                                         <field name="kind"/>
+                                        <field name="duration_advice" invisible="not duration_advice"/>
+                                        <field name="too_long" invisible="1"/>
                                         <field name="file" filename="file_name"
                                                options="{'accepted_file_extensions': '.mp3,.wav'}"/>
                                         <field name="file_name" invisible="1"/>
@@ -105,6 +112,7 @@
                                     <group>
                                         <field name="server_state"/>
                                         <field name="server_message" invisible="not server_message"/>
+                                        <field name="duration" decoration-warning="too_long"/>
                                         <field name="size"/>
                                     </group>
                                 </group>

@@ -128,3 +128,31 @@ class TestCallSound(WhatsAppCallCommon, HttpCase):
                                                      "messagerie", "indisponible"})
         sound = self.sound("voix")
         self.assertEqual(sound.display_name, "Voice while Waiting (voix.mp3)")
+
+    def test_duration_and_advice(self):
+        # a WAV of 16 kHz, 16 bits, mono: 32000 bytes a second
+        def wav(seconds):
+            data = b"\x00" * int(32000 * seconds)
+            fmt = (1).to_bytes(2, "little") + (1).to_bytes(2, "little") + (16000).to_bytes(4, "little") \
+                + (32000).to_bytes(4, "little") + (2).to_bytes(2, "little") + (16).to_bytes(2, "little")
+            return b"RIFF" + (36 + len(data)).to_bytes(4, "little") + b"WAVEfmt " + (16).to_bytes(4, "little") \
+                + fmt + b"data" + len(data).to_bytes(4, "little") + data
+
+        welcome = self.sound("accueil", wav(10.5))
+        self.assertEqual(welcome.duration, 10.5)
+        self.assertEqual(welcome.duration_advice, "About 6 s in one language, 12 s at most with both")
+        self.assertFalse(welcome.too_long)
+        welcome.file = BinaryBytes(wav(13), filename="accueil.wav")
+        self.assertEqual(welcome.duration, 13)
+        self.assertTrue(welcome.too_long)
+        # an MP3, frame by frame: 50 frames of MPEG-1 layer III at 128 kbit/s, 44.1 kHz (417 bytes,
+        # 1152 samples each), after a tag ID3v2 and before a tag ID3v1
+        frame = b"\xff\xfb\x90\x00" + b"\x00" * 413
+        mp3 = b"ID3\x03\x00\x00\x00\x00\x00\x0a" + b"\x00" * 10 + frame * 50 + b"TAG" + b"\x00" * 125
+        voice = self.sound("voix", mp3)
+        self.assertEqual(voice.duration, round(50 * 1152 / 44100, 1))
+        self.assertEqual(voice.duration_advice, "About 7 s in one language, 15 s at most with both")
+        music = self.sound("musique", MP3)
+        self.assertEqual(music.duration_advice, "2 to 5 minutes, or several files")
+        self.assertFalse(music.too_long)
+        self.assertEqual(self.Sound._seconds(b"RIFF\x00\x00\x00\x00WAVE"), 0.0)

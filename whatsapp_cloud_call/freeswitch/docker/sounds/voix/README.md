@@ -30,8 +30,11 @@ voix/
 | `1-patientez.mp3` | « Merci de patienter, un conseiller va vous répondre dans un instant. » | “Thank you for holding, an advisor will be with you in a moment.” |
 | `2-occupes.mp3` | « Tous nos conseillers sont occupés. Merci de rester en ligne, votre appel est important pour nous. » | “All our advisors are busy. Please stay on the line, your call is important to us.” |
 
-**Court** : moins de 15 secondes par fichier, en comptant les deux langues (le français d'abord, une
-courte pause, puis l'anglais), puisque la voix revient toutes les 30 secondes.
+**Durée conseillée** : environ 7 secondes par fichier en une langue, **15 secondes au plus** avec les
+deux langues (le français d'abord, une courte pause, puis l'anglais). La voix revient toutes les 30
+secondes : plus longue, elle couvrirait la musique presque tout le temps. Au-delà, raccourcir le texte
+ou garder une seule langue. Dans Odoo, la durée de chaque voix est mesurée et signalée en orange quand
+elle dépasse 15 secondes.
 
 ## Les règles
 

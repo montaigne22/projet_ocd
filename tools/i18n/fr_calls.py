@@ -55,6 +55,20 @@ CALLS = {
         "Ce qu'entendent les clients qui appellent ce numéro, en MP3 ou WAV : le serveur d'appels les prend dans la minute, sans couper les appels. Sans message ici : celui du dossier sounds du serveur d'appels, sinon une tonalité courte (rien pour la voix d'attente).",
     'What the message says, for the team who records it: a text in French and in English is proposed when the message is chosen (both said in the same file, French first).':
         "Ce que dit le message, pour l'équipe qui l'enregistre : un texte en français et en anglais est proposé quand le message est choisi (les deux dits dans le même fichier, le français d'abord).",
+    '2 to 5 minutes, or several files':
+        '2 à 5 minutes, ou plusieurs fichiers',
+    'About %(one)s s in one language, %(most)s s at most with both':
+        'Environ %(one)s s en une langue, %(most)s s au plus avec les deux',
+    'Duration (s)':
+        'Durée (s)',
+    'How long the message lasts, read in its file.':
+        'La durée du message, lue dans son fichier.',
+    'Longer than recommended: the customer waits while it plays. Say it more briefly, or keep one language.':
+        "Plus long que conseillé : le client attend pendant qu'il passe. Le dire plus brièvement, ou garder une seule langue.",
+    'Recommended Duration':
+        'Durée conseillée',
+    'Too Long':
+        'Trop long',
     'Choose the message: a text in French and in English is proposed.':
         'Choisissez le message : un texte en français et en anglais est proposé.',
     # Phase 3.1: the recordings of the calls

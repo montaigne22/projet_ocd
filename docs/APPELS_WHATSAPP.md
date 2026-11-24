@@ -205,7 +205,9 @@ fréquence de la voix d'attente. Le serveur d'appels les prend dans la minute, l
 applique sans redémarrer ; Odoo montre s'ils sont sur le serveur ou refusés (et pourquoi). Le dossier
 `sounds/` du serveur reste le repli. Depuis la version 20.0.1.11.0, choisir le message propose son
 texte en français puis en anglais (à dire dans le même fichier), avec le nom du numéro chez WhatsApp ;
-l'équipe le garde ou l'écrit à sa façon. Vu de bout en bout avec un faux Meta : un message ajouté dans la
+l'équipe le garde ou l'écrit à sa façon. Depuis la version 20.0.1.12.0, Odoo mesure la durée de
+chaque fichier (MP3 lu trame par trame, WAV par son en-tête), rappelle la durée conseillée du message
+et signale en orange un message trop long (par ex. l'accueil au-delà de 12 s). Vu de bout en bout avec un faux Meta : un message ajouté dans la
 fiche du compte arrive sur le serveur en moins d'une minute ; le client entend l'accueil, la musique et
 la voix du numéro ; un message changé ou retiré dans Odoo est appliqué sans redémarrage.
 
