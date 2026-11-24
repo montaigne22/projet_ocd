@@ -58,6 +58,11 @@ class TestWhatsAppCloudSale(TransactionCase):
 
         picking = order.picking_ids
         self.assertTrue(picking)
+        # with the shop of OCD Live, the transfers of its orders are parcels with their own
+        # messages instead of this one (tested in ocd_live_shop_whatsapp): here, the transfer of
+        # a shop without it
+        if "ocd_is_parcel" in picking._fields:
+            picking.ocd_is_parcel = False
         picking.move_ids.write({"quantity": 1, "picked": True})
         picking._action_done()
         shipped = self._messages("whatsapp_cloud_sale.template_order_shipped")
