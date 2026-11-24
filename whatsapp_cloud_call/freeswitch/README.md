@@ -264,7 +264,7 @@ viennent d'Odoo ou doivent y être recopiées à l'identique : elles sont marqu�
 | `TURN_TLS_PORT` | `443` | Le port du relais TURN en TLS | `443`, ou `5349` quand nginx tient déjà le 443 sur la machine. **Odoo** : le même dans Paramètres › WhatsApp › Appels › Port du relais TURN (TLS) |
 | `OCD_SRTP` | `SDES` | Comment Meta et le serveur chiffrent la voix | Le même que dans Odoo, compte WhatsApp, onglet Appels, « Chiffrement de la voix » (SDES conseillé) |
 | `OCD_CERTS_DIR` | `./data/certs` | Le dossier du certificat | Laisser la valeur : le script de la section 2 y écrit |
-| `OCD_SOUNDS_DIR` | `./sounds` | Le dossier des messages enregistrés (section 5) | Laisser la valeur, y poser les fichiers WAV |
+| `OCD_SOUNDS_DIR` | `./sounds` | Le dossier des messages enregistrés (section 5) | Laisser la valeur, y poser les fichiers MP3 ou WAV (`docker/sounds/` et son README.md) |
 
 Lignes facultatives, à ne pas mettre sauf besoin : `OCD_SYNC_INTERVAL` (secondes entre deux copies
 des agents, 30 par défaut), `OCD_RTP_START` et `OCD_RTP_END` (ports UDP de la voix, 16384-29999 par
@@ -428,8 +428,10 @@ d'appels », ou « Refusé » avec la raison (pas un MP3 ou un WAV, illisible). 
 Ce qu'Odoo ne donne pas pour un numéro vient du dossier `sounds/` du serveur (ci-dessous), sinon une
 tonalité courte (rien pour la voix d'attente, la musique de FreeSWITCH pour la musique).
 
-**Le dossier du serveur** : dans `sounds/` (Docker) ou `/usr/share/freeswitch/sounds/ocd/` (sur le serveur) : **MP3 ou WAV**, la voix
-de l'équipe (ou une voix off), en français. Au démarrage, le serveur prépare chaque fichier : un MP3 est
+**Le dossier du serveur** : `docker/sounds/` (Docker) ou `/usr/share/freeswitch/sounds/ocd/` (sur le
+serveur). Avec Docker, le dossier vient avec le code, avec ses sous-dossiers `voix/` et `attente/` et
+un README.md dans chacun, qui explique ce qu'on y met ; les fichiers audio restent hors de git. **MP3 ou WAV**, la voix
+de l'équipe (ou une voix off), en français, puis en anglais si besoin. Au démarrage, le serveur prépare chaque fichier : un MP3 est
 converti en WAV (mono, 16 kHz) ; un WAV et un MP3 du même nom : le WAV l'emporte. `docker compose logs
 freeswitch` dit « Sounds ready: N file(s) » (et pourquoi un fichier est écarté).
 
