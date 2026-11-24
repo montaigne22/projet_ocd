@@ -69,6 +69,12 @@ CALLS = {
         'Durée conseillée',
     'Too Long':
         'Trop long',
+    'Recording of the call: %s':
+        "Enregistrement de l'appel : %s",
+    'This browser cannot play this file. Download it to listen to it on the computer.':
+        "Ce navigateur ne peut pas lire ce fichier. Téléchargez-le pour l'écouter sur l'ordinateur.",
+    'This message has no file.':
+        "Ce message n'a pas de fichier.",
     'Choose the message: a text in French and in English is proposed.':
         'Choisissez le message : un texte en français et en anglais est proposé.',
     # Phase 3.1: the recordings of the calls

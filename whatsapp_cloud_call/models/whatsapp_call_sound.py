@@ -60,6 +60,16 @@ def mp3_seconds(content):
     return seconds
 
 
+def listen_action(title, url, download_url, file_name):
+    """Listen in Odoo itself (a small window with a player and Download), not in a new tab: a tab
+    opened after the answer of the server can be blocked by the browser without a word."""
+    return {
+        "type": "ir.actions.client",
+        "tag": "whatsapp_call_audio",
+        "params": {"title": title, "url": url, "download_url": download_url, "file_name": file_name},
+    }
+
+
 def wav_seconds(content):
     """The length of a WAV: the size of its data over its bytes per second; 0 when unknown."""
     data = bytes(content)
@@ -222,13 +232,17 @@ class WhatsappCallSound(models.Model):
             vals = dict(vals, server_state="pending", server_message=False)
         return super().write(vals)
 
+    def _url(self, download=False):
+        """The file, named by its file name (not by its text), cached by its checksum."""
+        self.ensure_one()
+        url = f"/web/content/{self._name}/{self.id}/file?filename_field=file_name&unique={self.checksum or ''}"
+        return url + ("&download=true" if download else "")
+
     def action_listen(self):
         self.ensure_one()
-        return {
-            "type": "ir.actions.act_url",
-            "url": f"/web/content/{self._name}/{self.id}/file?download=false",
-            "target": "new",
-        }
+        if not self.checksum:
+            raise ValidationError(_("This message has no file."))
+        return listen_action(self.display_name, self._url(), self._url(download=True), self.file_name or "")
 
     # === CALL SERVER === #
 

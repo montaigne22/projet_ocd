@@ -1,6 +1,8 @@
 from odoo import _, api, fields, models
 from odoo.tools import format_datetime
 
+from .whatsapp_call_sound import listen_action
+
 
 class WhatsappCallRecording(models.Model):
     """The recording of a call (the customer and the agent), for a complete trace. Only the
@@ -31,11 +33,15 @@ class WhatsappCallRecording(models.Model):
         self.ensure_one()
         if not self.attachment_id:
             return False
-        return f"/web/content/{self.attachment_id.id}?download={'true' if download else 'false'}"
+        return (f"/web/content/{self.attachment_id.id}?unique={self.attachment_id.checksum or ''}"
+                f"&download={'true' if download else 'false'}")
 
     def action_listen(self):
         self.ensure_one()
-        return {"type": "ir.actions.act_url", "url": self._url(False), "target": "new"}
+        return listen_action(
+            _("Recording of the call: %s", self.call_id.display_name), self._url(False), self._url(True),
+            self.attachment_id.name or "",
+        )
 
     def action_download(self):
         self.ensure_one()

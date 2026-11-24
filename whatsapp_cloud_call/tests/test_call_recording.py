@@ -57,7 +57,13 @@ class TestCallRecording(WhatsAppCallCommon, HttpCase):
         self.assertEqual(self.env["whatsapp.call.recording"].search_count([("call_id", "=", call.id)]), 1)
         # the managers listen to it, the agents do not
         action = call.with_user(self.manager).action_listen_recording()
-        self.assertEqual(action["url"], f"/web/content/{recording.attachment_id.id}?download=false")
+        # listened to in Odoo itself (a player, no new tab the browser could block)
+        self.assertEqual(action["tag"], "whatsapp_call_audio")
+        attachment = recording.attachment_id
+        self.assertEqual(action["params"]["url"], f"/web/content/{attachment.id}?unique={attachment.checksum}&download=false")
+        self.assertEqual(action["params"]["download_url"],
+                         f"/web/content/{attachment.id}?unique={attachment.checksum}&download=true")
+        self.assertEqual(action["params"]["file_name"], attachment.name)
         with self.assertRaises(AccessError):
             recording.with_user(self.agent).read(["size"])
         with self.assertRaises(AccessError):

@@ -101,7 +101,24 @@ class TestCallSound(WhatsAppCallCommon, HttpCase):
             self.account.call_hold_voice_every = 5
         sound = self.sound()
         action = sound.action_listen()
-        self.assertEqual(action["url"], f"/web/content/whatsapp.call.sound/{sound.id}/file?download=false")
+        # listened to in Odoo itself, the file named by its file name and cached by its checksum
+        url = f"/web/content/whatsapp.call.sound/{sound.id}/file?filename_field=file_name&unique={sound.checksum}"
+        self.assertEqual(action["tag"], "whatsapp_call_audio")
+        self.assertEqual(action["params"], {
+            "title": "Welcome (accueil.mp3)", "url": url, "download_url": url + "&download=true",
+            "file_name": "accueil.mp3",
+        })
+        self.authenticate("admin", "admin")
+        response = self.url_open(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, MP3)
+        self.assertEqual(response.headers["Content-Type"], "audio/mpeg")
+        self.assertIn("accueil.mp3", response.headers["Content-Disposition"])
+        self.assertTrue(response.headers["Content-Disposition"].startswith("inline"))
+        # the player can go to any moment of the file
+        part = self.url_open(url, headers={"Range": "bytes=10-19"})
+        self.assertEqual((part.status_code, part.content), (206, MP3[10:20]))
+        self.assertTrue(self.url_open(url + "&download=true").headers["Content-Disposition"].startswith("attachment"))
         with self.assertRaises(AccessError):
             sound.with_user(self.agent).read(["name"])
 

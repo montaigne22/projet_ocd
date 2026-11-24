@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="whatsapp_cloud_call.AudioPlayerDialog">
+        <Dialog title="this.props.title" size="'md'">
+            <div class="o_whatsapp_call_audio_player">
+                <div t-if="this.props.fileName and !this.props.title.includes(this.props.fileName)"
+                     class="text-muted mb-2" t-out="this.props.fileName"/>
+                <audio t-ref="this.audio" class="w-100" controls="controls" preload="auto"
+                       t-att-src="this.props.url" t-on-error="this.onError"/>
+                <div t-if="this.state.error" class="alert alert-warning mt-3 mb-0" role="alert">
+                    This browser cannot play this file. Download it to listen to it on the computer.
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="this.props.close">Close</button>
+                <a t-if="this.props.downloadUrl" class="btn btn-secondary" t-att-href="this.props.downloadUrl"
+                   t-att-download="this.props.fileName">Download</a>
+            </t>
+        </Dialog>
+    </t>
+</templates>

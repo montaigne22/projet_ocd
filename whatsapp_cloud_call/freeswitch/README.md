@@ -413,7 +413,7 @@ Le service coturn de Debian a le droit d'ouvrir le port 443 ; sinon, ajouter
 
 **Le plus simple : dans Odoo**, compte WhatsApp, onglet Appels, « Messages des appels » : un message
 par ligne (Accueil, Annonce d'enregistrement, Voix d'attente, Musique d'attente, Conseiller coupé,
-Messagerie, Personne de disponible), un fichier MP3 ou WAV, « Écouter » pour l'entendre ; et « Voix
+Messagerie, Personne de disponible), un fichier MP3 ou WAV, « Écouter » pour l'entendre (dans une petite fenêtre d'Odoo, avec « Télécharger ») ; et « Voix
 d'attente toutes les (secondes) ». Choisir le message remplit sa colonne « Texte » avec le texte
 proposé ci-dessous, en français puis en anglais, avec le nom du numéro chez WhatsApp : l'équipe le
 garde ou l'écrit à sa façon, puis l'enregistre. Chaque numéro WhatsApp a les siens. ocd-call-sync les prend dans la

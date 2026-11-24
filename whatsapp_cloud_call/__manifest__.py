@@ -28,7 +28,7 @@ agents in their browser, in Odoo (WebRTC):
 
 The configuration of the call server is in the freeswitch folder of the module.
 """,
-    "version": "20.0.1.12.0",
+    "version": "20.0.1.12.1",
     "category": "Marketing",
     "author": "RollBackk",
     "license": "OPL-1",
@@ -44,6 +44,7 @@ The configuration of the call server is in the freeswitch folder of the module.
     "assets": {
         "web.assets_backend": [
             "whatsapp_cloud_call/static/src/softphone/*",
+            "whatsapp_cloud_call/static/src/audio_player/*",
         ],
     },
     "post_init_hook": "post_init_hook",
