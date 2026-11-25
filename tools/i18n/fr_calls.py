@@ -688,3 +688,9 @@ WA_CLOUD_FIGURES = {
     'The first message of the customer since the conversation was last resolved: the time to resolve it counts from here.':
         'Le premier message du client depuis la dernière résolution de la conversation : le temps de résolution compte à partir de là.',
 }
+
+# The voice messages converted with ffmpeg (chantier 24.5)
+WA_CLOUD_VOICE = {
+    'ffmpeg is not installed on the server of Odoo: the voice messages recorded in Odoo reach the customers as audio files, not as voice notes, and those of the customers may not play on old iPhones.':
+        "ffmpeg n'est pas installé sur le serveur d'Odoo : les messages vocaux enregistrés dans Odoo arrivent chez les clients comme des fichiers audio, pas comme des notes vocales, et ceux des clients peuvent ne pas se lire sur les anciens iPhone.",
+}

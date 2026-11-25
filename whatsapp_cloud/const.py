@@ -62,6 +62,12 @@ MEDIA_TYPE_BY_MIMETYPE = {
     "video/3gpp": "video",
     "video/mp4": "video",
 }
+# The sounds WhatsApp takes as they are; the others (WAV, WebM, an OGG that is not Opus...) and the
+# voice messages recorded in Odoo are converted to OGG Opus before leaving (audio.py).
+AUDIO_TYPES_SENT_AS_IS = {"audio/aac", "audio/amr", "audio/mpeg", "audio/mp4"}
+# The sounds every browser plays; a sound received in another format (OGG Opus of the voice notes,
+# AMR) is kept as MP3 (old iPhones do not play OGG).
+AUDIO_TYPES_FOR_BROWSERS = {"audio/mpeg", "audio/mp4", "audio/aac", "audio/wav", "audio/x-wav"}
 MAX_MEDIA_SIZE_BY_TYPE = {
     "image": 5 * 1024 * 1024,
     "sticker": 500 * 1024,

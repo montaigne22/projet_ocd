@@ -8,7 +8,7 @@ from markupsafe import Markup
 from odoo import Command, _, api, fields, models
 
 from odoo.addons.mail.tools.discuss import Store
-from odoo.addons.whatsapp_cloud import const
+from odoo.addons.whatsapp_cloud import audio, const
 from odoo.addons.whatsapp_cloud.models.whatsapp_account import WhatsAppApiError
 
 _logger = logging.getLogger(__name__)
@@ -203,8 +203,7 @@ class WhatsappMessage(models.Model):
                     header, *payload["template"].get("components", [])
                 ]
             elif self.attachment_id and payload.get("type") in const.MEDIA_TYPES:
-                media_type = payload["type"]
-                payload[media_type]["id"] = account._upload_media(self.attachment_id.sudo())
+                payload = self._prepare_media_payload(payload)
             result = account._api_request(
                 "POST", f"{account.phone_number_id}/messages", json=payload
             )
@@ -304,6 +303,34 @@ class WhatsappMessage(models.Model):
             lang=self.template_id.with_context(lang=lang)._get_lang_label(),
             missing=self.replaced_template_id.with_context(lang=lang)._get_lang_label(),
         )
+
+    def _prepare_media_payload(self, payload):
+        """Upload the file of the message and put it in `payload`. A sound is converted to OGG
+        Opus when WhatsApp needs it (see _get_audio_conversion): a voice message recorded in Odoo
+        then reaches the customer as a voice note. When it cannot be converted, the voice message
+        goes as a plain sound, and a sound WhatsApp would refuse goes as a document."""
+        self.ensure_one()
+        account = self.account_id
+        attachment = self.attachment_id.sudo()
+        media_type = payload["type"]
+        conversion = self._get_audio_conversion(attachment) if media_type == "audio" else False
+        sound = audio.convert(attachment.raw, "voice") if conversion else None
+        if sound:
+            name = f"{(attachment.name or 'voice').rsplit('.', 1)[0]}{audio.extension_of('voice')}"
+            payload["audio"]["id"] = account._upload_media_file(name, sound, audio.mimetype_of("voice"))
+            if conversion == "voice":
+                payload["audio"]["voice"] = True
+            return payload
+        mimetype = (attachment.mimetype or "").split(";")[0]
+        if media_type == "audio" and mimetype not in const.AUDIO_TYPES_SENT_AS_IS:
+            # not converted, and WhatsApp would refuse this sound: a file to download
+            _logger.info("WhatsApp: sound %s sent as a document (not converted).", attachment.id)
+            media = payload.pop("audio")
+            media["filename"] = attachment.name
+            payload.update(type="document", document=media)
+            media_type = "document"
+        payload[media_type]["id"] = account._upload_media(attachment)
+        return payload
 
     def _make_header_document(self):
         """Make the PDF of the header of the template (quotation, ticket...) just before
@@ -727,6 +754,13 @@ class WhatsappMessage(models.Model):
         except WhatsAppApiError as error:
             return None, str(error)
         mimetype = (mimetype or media.get("mime_type") or "").split(";")[0].strip()
+        if msg_type == "audio" and mimetype not in const.AUDIO_TYPES_FOR_BROWSERS:
+            # the voice notes (OGG Opus) do not play on old iPhones: kept as MP3
+            sound = audio.convert(raw, "mp3")
+            if sound:
+                raw, mimetype = sound, audio.mimetype_of("mp3")
+                if media.get("filename"):
+                    media = {**media, "filename": media["filename"].rsplit(".", 1)[0] + audio.extension_of("mp3")}
         name = media.get("filename")
         if not name:
             extension = mimetypes.guess_extension(mimetype) or ""
@@ -786,9 +820,23 @@ class WhatsappMessage(models.Model):
     @api.model
     def _get_media_type(self, attachment):
         """The WhatsApp type to send a file as: the documents for all that WhatsApp would refuse
-        as image, audio or video (format, size)."""
+        as image, audio or video (format, size). A sound converted before leaving is a sound."""
         mimetype = (attachment.mimetype or "").split(";")[0]
+        if self._get_audio_conversion(attachment):
+            return "audio"
         media_type = const.MEDIA_TYPE_BY_MIMETYPE.get(mimetype, "document")
         if (attachment.file_size or 0) > const.MAX_MEDIA_SIZE_BY_TYPE[media_type]:
             media_type = "document"
         return media_type
+
+    @api.model
+    def _get_audio_conversion(self, attachment):
+        """How a sound leaves, when ffmpeg is there: « voice » (a voice message recorded in Odoo:
+        an OGG Opus voice note), « audio » (a sound WhatsApp does not take: converted to OGG Opus),
+        False (sent as it is)."""
+        mimetype = (attachment.mimetype or "").split(";")[0]
+        if not mimetype.startswith("audio/") or not audio.ffmpeg():
+            return False
+        if attachment.sudo().voice_ids:
+            return "voice"
+        return "audio" if mimetype not in const.AUDIO_TYPES_SENT_AS_IS else False

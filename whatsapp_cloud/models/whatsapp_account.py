@@ -13,7 +13,7 @@ from odoo.exceptions import UserError
 from odoo.tools import SQL
 from odoo.tools.urls import urljoin as url_join
 
-from odoo.addons.whatsapp_cloud import const
+from odoo.addons.whatsapp_cloud import audio, const
 
 _logger = logging.getLogger(__name__)
 
@@ -479,11 +479,17 @@ class WhatsappAccount(models.Model):
     def _upload_media(self, attachment):
         """Upload a file to the media of the phone number; return the media ID."""
         self.ensure_one()
+        return self._upload_media_file(attachment.name, attachment.raw, attachment.mimetype)
+
+    def _upload_media_file(self, name, raw, mimetype):
+        """Upload the content of a file (e.g. a voice message converted for WhatsApp); return the
+        media ID."""
+        self.ensure_one()
         result = self._api_request(
             "POST",
             f"{self.phone_number_id}/media",
-            data={"messaging_product": "whatsapp", "type": attachment.mimetype},
-            files={"file": (attachment.name, attachment.raw, attachment.mimetype)},
+            data={"messaging_product": "whatsapp", "type": mimetype},
+            files={"file": (name, raw, mimetype)},
             timeout=60,
         )
         return result["id"]
@@ -898,6 +904,12 @@ class WhatsappAccount(models.Model):
             if not account.sudo().app_secret:
                 warnings.append(_(
                     "No app secret: the replies of the customers and the receipts are refused."
+                ))
+            if not audio.ffmpeg():
+                warnings.append(_(
+                    "ffmpeg is not installed on the server of Odoo: the voice messages recorded in "
+                    "Odoo reach the customers as audio files, not as voice notes, and those of the "
+                    "customers may not play on old iPhones."
                 ))
             vals["health_state"] = "error" if problems else "warning" if warnings else "ok"
             vals["health_message"] = "\n".join(problems + warnings) or False

@@ -160,6 +160,30 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · Les messages vocaux WhatsApp (chantier 24.5, fin du chantier 24)
+
+ffmpeg était déjà sur le serveur (script d'installation, et `imageio-ffmpeg` de `requirements.txt` à défaut) ;
+vérifié : il encode l'Opus (notes vocales de WhatsApp) et le MP3.
+
+- **Envoyés** : un vocal enregistré dans Odoo (Discuss ou boîte de réception d'OCD Live, en MP3) part en
+  OGG Opus avec `"voice": true` : le client reçoit une vraie note vocale (lecteur avec onde, transcription),
+  plus un fichier audio. Un son que WhatsApp refuse (WAV, WebM, un OGG non Opus) part en OGG Opus ; un MP3
+  envoyé comme fichier part tel quel. La conversion se fait à l'envoi, en arrière-plan ; la conversation
+  garde le fichier enregistré.
+- **Reçus** : les notes vocales des clients (OGG Opus, ou AMR) sont gardées en MP3 : elles se lisent dans
+  Discuss et la boîte de réception sur tous les navigateurs, anciens iPhone compris.
+- **Sans ffmpeg** : le vocal part comme un simple son, un son refusé comme un document (jamais refusé par
+  Meta), les vocaux reçus restent en OGG ; le contrôle du compte WhatsApp (onglet Santé) le signale.
+- Boîte de réception d'OCD Live : un message fait seulement d'un vocal ou de photos s'annonce
+  « 🎤 Message vocal », « 📷 Photo » dans la liste, plus par le nom du fichier.
+- Tests : base neuve, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp`, `ocd_vote_whatsapp`,
+  `ocd_tickets_whatsapp`, `ocd_soirees_whatsapp`, `whatsapp_cloud_call`, `whatsapp_cloud_sale` :
+  **272 sans échec** (6 nouveaux, avec de vrais sons convertis par ffmpeg) ; vu dans Chromium (une note vocale OGG reçue,
+  gardée en MP3 et lue dans la boîte de réception).
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **API Cloud WhatsApp** et
+  **OCD Live : messages WhatsApp** dans Applications, Ctrl+F5 ; sur le serveur, ffmpeg doit être là
+  (en root : `apt-get install -y ffmpeg`) : le contrôle du compte le dit sinon.
+
 ### 25 novembre 2026 · Les chiffres des conversations WhatsApp (chantier 24.4)
 
 Sur le tableau de bord d'OCD Live, un bloc « Conversations WhatsApp » (7 ou 30 jours), chaque chiffre

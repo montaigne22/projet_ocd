@@ -34,7 +34,7 @@ WhatsApp Business number of the company with the Cloud API of Meta (no intermedi
 - Settings (WhatsApp section): each feature enabled or disabled (conversations, read
   receipts, reminders, welcome menu, away message).
 """,
-    "version": "20.0.2.19.0",
+    "version": "20.0.2.20.0",
     "category": "Marketing",
     "author": "RollBackk",
     "license": "OPL-1",

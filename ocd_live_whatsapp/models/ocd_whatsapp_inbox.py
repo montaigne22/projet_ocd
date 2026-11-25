@@ -233,6 +233,8 @@ class OcdWhatsappInbox(models.AbstractModel):
         if message:
             kind = self._ocd_message_kind(channel, message)
             text = self._ocd_message_text(channel, message, kind)
+            if message.attachment_ids and text == ", ".join(message.attachment_ids.mapped("name")):
+                text = self._ocd_files_preview(message.attachment_ids)
             prefix = {"out": self.env._("You: "), "auto": self.env._("You: "), "note": self.env._("Note: ")}.get(kind, "")
             preview = f"{prefix}{text}"
         date = message.date if message else channel.create_date
@@ -251,6 +253,16 @@ class OcdWhatsappInbox(models.AbstractModel):
             **self._ocd_window_left(channel, list_item=True),
             "sort": (fields.Datetime.to_string(date) if date else "", message.id if message else 0),
         }
+
+    def _ocd_files_preview(self, attachments):
+        """A message of files only, in the list: « 🎤 Voice message », « 📷 Photo », else their names."""
+        _ = self.env._
+        kinds = {(attachment.mimetype or "").split("/")[0] for attachment in attachments}
+        if kinds == {"audio"}:
+            return "🎤 " + (_("Voice message") if len(attachments) == 1 else _("%s voice messages", len(attachments)))
+        if kinds == {"image"}:
+            return "📷 " + (_("Photo") if len(attachments) == 1 else _("%s photos", len(attachments)))
+        return "📎 " + ", ".join(attachments.mapped("name"))
 
     def _ocd_window_left(self, channel, list_item=False):
         """The time left to answer the contact for free (the 24-hour window after their last

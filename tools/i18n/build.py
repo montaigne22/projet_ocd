@@ -41,7 +41,7 @@ MODULES = {
     "attachment_s3": [ns["STORAGE"]],
     "ocd_clips": [ns["CLIPS"]],
     "ocd_clips_whatsapp": [ns["CLIPS_WHATSAPP"]],
-    "whatsapp_cloud": [ns["WA_CLOUD_VIDEO"], ns["WA_CLOUD_CALLS"], ns["WA_CLOUD_LANGUAGES"], ns["WA_CLOUD_WINDOW"], ns["WA_CLOUD_FIGURES"]],
+    "whatsapp_cloud": [ns["WA_CLOUD_VIDEO"], ns["WA_CLOUD_CALLS"], ns["WA_CLOUD_LANGUAGES"], ns["WA_CLOUD_WINDOW"], ns["WA_CLOUD_FIGURES"], ns["WA_CLOUD_VOICE"]],
     "ocd_express": [ns["WEB"], ns["REST"], ns["BO"], ns["BO2"], ns["BO3"], ns["SHOP"], ns["SHOP2"], ns["SHOP3"],
                     ns["SITE_SHOP"], ns["VENDOR_SPACE"], ns["SHOP_EXPRESS"], ns["EXPRESS"], ns["RELAY"], ns["RELAY_EXPRESS"], *SCREENS],
     "ocd_express_whatsapp": [ns["WHATSAPP"], ns["SHOP_WHATSAPP"], ns["EXPRESS_WHATSAPP"], ns["RELAY_WHATSAPP"], ns["RELAY_EXPRESS_WHATSAPP"], *SCREENS],

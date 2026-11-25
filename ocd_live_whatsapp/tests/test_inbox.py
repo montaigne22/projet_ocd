@@ -186,6 +186,8 @@ class TestOcdWhatsappInbox(OcdLiveCommon):
         page = self.Inbox.ocd_post(channel.id, "", False, [voice.id])
         answer = [row for row in page["current"]["messages"] if row["kind"] == "out"][-1]
         self.assertEqual((answer["text"], answer["files"][0]["name"]), ("", "Voice-2026-11-25.mp3"))
+        row = next(row for row in page["conversations"] if row["id"] == channel.id)
+        self.assertEqual(row["preview"], "You: 🎤 Voice message", "Not the name of the file")
         self.assertIn("audio", self.env["whatsapp.message"].search(
             [("channel_id", "=", channel.id), ("attachment_id", "=", voice.id)]).mapped("message_type"))
         # a note with a file: never sent

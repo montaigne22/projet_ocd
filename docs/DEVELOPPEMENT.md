@@ -41,6 +41,12 @@ data_dir = /opt/odoo20/data
   préparation » et se met à jour seule ; une vidéo refusée dit pourquoi dans l'espace du vendeur. ffmpeg
   tourne sans les limites des workers d'Odoo (`limit_time_cpu`, `limit_memory_hard`, qui le couperaient),
   avec 2 threads et 100 s au plus.
+
+  ffmpeg sert aussi aux **messages vocaux WhatsApp** (`whatsapp_cloud/audio.py`, le même ffmpeg) : un vocal
+  enregistré dans Odoo (MP3) part en OGG Opus avec `"voice": true` (une vraie note vocale chez le client),
+  un son que WhatsApp refuse (WAV, WebM…) part en OGG Opus ; les notes vocales des clients (OGG Opus, AMR)
+  sont gardées en MP3, lu par tous les navigateurs (les anciens iPhone ne lisent pas l'OGG). Sans ffmpeg, le
+  vocal part comme un simple son, un son refusé comme un document, et le contrôle du compte WhatsApp le dit.
 - **Le proxy devant Odoo** (nginx…) doit laisser passer les vidéos des téléphones, par ex. pour nginx :
   `client_max_body_size 220m;`. Sinon il les refuse avant Odoo (« 413 ») ; la page le dit au vendeur
   (« Le serveur refuse un fichier aussi lourd »).
