@@ -232,6 +232,12 @@ Disallow: /*/reserver/
                             <t t-call="ocd_live.icon" icon.f="share"/>
                             <span>Share</span>
                         </button>
+                        <!-- « I am live » of the lives on a phone: a small button of this bar, never a bar
+                             over the cards (a tablet and a computer have it above the cards) -->
+                        <a t-if="bottom_cta and bottom_cta.get('dot')" t-att-href="bottom_cta['href']" class="o_ocd_header_live">
+                            <span class="o_ocd_rec" aria-hidden="true"/>
+                            <span t-out="bottom_cta['label']"/>
+                        </a>
                         <!-- Language button: the language of the page (French, English…) and of the voice.
                              A language of the pages shows the page again in that language; a language
                              only spoken (Ewe…) changes the voice. -->
@@ -292,7 +298,7 @@ Disallow: /*/reserver/
                 <div t-if="voice_caption" class="o_ocd_caption" role="status" hidden="hidden" t-out="voice_caption"/>
                 <div t-if="header_share" class="o_ocd_share_done o_ocd_ok" role="status" hidden="hidden">Link copied. Paste it in a message.</div>
                 <div t-if="summary or nav or bottom_cta" class="o_ocd_bottom">
-                    <div t-if="bottom_cta" class="o_ocd_frame o_ocd_bottom_cta">
+                    <div t-if="bottom_cta" t-attf-class="o_ocd_frame o_ocd_bottom_cta #{'o_ocd_bottom_cta_live' if bottom_cta.get('dot') else ''}">
                         <a t-att-href="bottom_cta['href']" class="o_ocd_cta">
                             <span t-if="bottom_cta.get('dot')" class="o_ocd_rec" aria-hidden="true"/>
                             <span t-out="bottom_cta['label']"/>

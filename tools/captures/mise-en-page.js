@@ -3,7 +3,7 @@
 // a tablet, a laptop (1366 x 657) and large screens:
 // - nothing wider than the page;
 // - feed: no card cut, the cards wide enough for their product (tablet and up), « I am live »
-//   above the cards on a large screen and at the bottom on a phone, a country picked brings its
+//   above the cards on a large screen and small in the top bar on a phone, a country picked brings its
 //   band under the head;
 // - home: only the countries with a live and the one of the visitor, then « All countries »;
 // - the page of a country: its cards not cut, never one card stretched over the page;
@@ -11,6 +11,8 @@
 //   column on the board;
 // - the screens of the team on a phone and a tablet: nothing wider than the screen; on a phone, no
 //   chat bubbles of Odoo over it, no card cut (« To check », « Dispatch »);
+// - the pages of the site on a phone: nothing wider than the screen, titles at a phone size, the
+//   title of the bar on one line, the bar at the bottom low;
 // - with OCD_SPACE_LINK (the personal link of a vendor of the demo): « My space » has every entry
 //   of the computer on a phone and a tablet, each page of it with the menu at the bottom on a
 //   phone, no heading covered, no amount cut in « My figures ».
@@ -51,6 +53,7 @@ async function feed(browser, [width, height]) {
             smallestPhoto: photos.length ? Math.min(...photos) : null,
             ctaTop: shown(document.querySelector('.o_ocd_feed_live_cta')),
             ctaBottom: shown(document.querySelector('.o_ocd_bottom_cta')),
+            ctaBar: shown(document.querySelector('.o_ocd_header_live')),
         };
     });
     const large = width >= 768;
@@ -60,7 +63,7 @@ async function feed(browser, [width, height]) {
         check(info.narrowest >= 320, `${size}: cards 320 px wide at least (${Math.round(info.narrowest)})`);
         check(info.smallestPhoto === null || info.smallestPhoto >= 120,
             `${size}: product photos 120 px wide at least (${Math.round(info.smallestPhoto)})`);
-        check(info.ctaTop && !info.ctaBottom, `${size}: « I am live » above the cards, not over them`);
+        check(info.ctaTop && !info.ctaBottom && !info.ctaBar, `${size}: « I am live » above the cards, not over them`);
         // A country picked: its band right under the head
         const band = await page.$('.o_ocd_feed_divider[data-country-start]');
         if (band) {
@@ -74,7 +77,7 @@ async function feed(browser, [width, height]) {
             check(gap >= 0 && gap <= 40, `${size}: the country picked (${code}) under the head (${Math.round(gap)}px)`);
         }
     } else {
-        check(info.ctaBottom && !info.ctaTop, `${size}: « I am live » at the bottom of the phone`);
+        check(info.ctaBar && !info.ctaBottom && !info.ctaTop, `${size}: « I am live » small in the bar of the phone, never over the cards`);
     }
     await page.context().close();
 }
@@ -213,6 +216,54 @@ async function board(browser, [width, height]) {
     await page.context().close();
 }
 
+// The pages of the site on a phone (chantier 25.5): nothing wider than the screen, the title of the
+// page at a phone size (26 px, never 32 px on three lines), the title of the bar on one line, the bar
+// at the bottom low; the first product and the first boutique found are checked too
+const SITE_PHONE_PATHS = ['/', '/lives', '/shop', '/lives/programme', '/lives/pays', '/vote', '/billets', '/evenements',
+    '/express', '/business', '/ambassadeurs', '/points-relais', '/ocd/connexion', '/reserver/studio', '/ocd/garantie',
+    '/shop/cart', '/lives/pass'];
+
+async function sitePhone(browser, [width, height]) {
+    const context = await browser.newContext({ viewport: { width, height }, locale: 'fr-FR', isMobile: true, hasTouch: true });
+    const page = await context.newPage();
+    const paths = [...SITE_PHONE_PATHS];
+    await page.goto(`${BASE}/shop`, { waitUntil: 'load' });
+    const product = await page.evaluate(() => document.querySelector('a.o_ocd_product')?.getAttribute('href'));
+    if (product) {
+        paths.push(product);
+        await page.goto(`${BASE}${product}`, { waitUntil: 'load' });
+        const boutique = await page.evaluate(() => document.querySelector('a[href^="/ocd/boutique/"]')?.getAttribute('href'));
+        if (boutique) {
+            paths.push(boutique.split('?')[0]);
+        }
+    }
+    for (const path of paths) {
+        const response = await page.goto(`${BASE}${path}`, { waitUntil: 'load' });
+        if (!response || response.status() >= 400) {
+            continue;  // a module not installed in this base
+        }
+        await page.waitForTimeout(600);
+        const size = `site ${path} ${width}x${height}`;
+        const info = await page.evaluate(() => {
+            const shown = (el) => el && el.getBoundingClientRect().height > 0 && getComputedStyle(el).display !== 'none';
+            const h1 = [...document.querySelectorAll('#wrapwrap h1')].find(shown);
+            const bar = document.querySelector('.o_ocd_header_title');
+            const nav = document.querySelector('.o_ocd_nav');
+            return {
+                over: document.documentElement.scrollWidth - innerWidth,
+                h1: h1 ? parseFloat(getComputedStyle(h1).fontSize) : 0,
+                bar: shown(bar) ? bar.getBoundingClientRect().height / parseFloat(getComputedStyle(bar).fontSize) : 0,
+                nav: shown(nav) ? nav.getBoundingClientRect().height : 0,
+            };
+        });
+        check(info.over <= 0, `${size}: nothing wider than the screen (${info.over}px)`);
+        check(info.h1 <= 27, `${size}: the title of the page at a phone size (${info.h1}px)`);
+        check(info.bar < 1.8, `${size}: the title of the bar on one line (${info.bar.toFixed(1)} lines)`);
+        check(info.nav <= 64, `${size}: the bar at the bottom low (${Math.round(info.nav)}px)`);
+    }
+    await context.close();
+}
+
 // The screens of the team on a phone and a tablet (chantier 25): nothing wider than the screen, no
 // chat bubbles of Odoo over a phone screen, on a phone no card cut to the height of the screen
 // (« To check »: one column open, its cards whole; « Dispatch »: one step, its parcels whole)
@@ -288,6 +339,9 @@ async function team(browser, [width, height]) {
     }
     for (const size of TEAM_SIZES) {
         await team(browser, size);
+    }
+    for (const size of [[390, 844], [450, 800]]) {
+        await sitePhone(browser, size);
     }
     await browser.close();
     console.log(failures.length ? `${failures.length} rule(s) broken` : 'Every rule holds.');

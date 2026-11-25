@@ -874,6 +874,14 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 
 ## Grand public
 
+- **Sur un téléphone, « Je suis en live » est un petit bouton de la barre du haut** (25 novembre 2026,
+  demande de l'équipe) : la barre orange en bas, sur toute la largeur, cachait le bas des cartes des
+  lives (« Sa boutique ») pour un bouton qui ne sert qu'aux vendeurs. Les visiteurs voient d'abord le
+  live : la photo du produit, le vendeur, ses boutons. Sur une tablette et un ordinateur, il reste dans
+  la ligne au-dessus des cartes.
+- **Le site a des tailles de téléphone** (chantier 25) : titres de 26 px, boutons de 44 à 48 px, puces de
+  34 à 36 px, champs de 44 px (16 px de texte, pour que le téléphone ne zoome pas) ; une tablette et un
+  ordinateur gardent les leurs.
 - **Pages publiques gardées en mémoire quelques secondes** (réglable : Paramètres › Vitesse du site) :
   le fil des lives, la page d'un live, les boutiques, le shop et les produits sont construits une fois,
   puis redonnés aux visiteurs suivants (de 10 à 60 secondes selon la page). Chaque serveur les garde

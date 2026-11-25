@@ -160,6 +160,29 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · Toutes les pages du site sur un téléphone, « Je suis en live » en haut (chantier 25.5, fin du chantier 25)
+
+- **Parcours de tout le site à 450 px** (88 sortes de pages, en suivant les liens : visiteur, Mon
+  espace du vendeur, tournée du livreur, magasin de l'équipe du vendeur, ambassadeur, OCD Express) :
+  rien ne déborde ; les défauts relevés sont corrigés pour tout le site :
+  - les titres de page à 26 px partout (32 à 34 px dans les espaces et les modules : deux ou trois lignes) ;
+  - le titre de la barre (ex. un grand événement) sur une ligne, coupé s'il le faut ;
+  - la barre du bas plus basse (icônes de 21 px), le bouton « Partager » plus petit ;
+  - la connexion par numéro en taille de téléphone (48 px au lieu de 56).
+- **Le fil des lives (demande de l'équipe)** : sur un téléphone, « Je suis en live » devient un petit
+  bouton orange de la barre du haut (à côté de la langue et de la voix ; sur un petit téléphone, il prend
+  la place du badge LIVE) ; la barre orange du bas, qui cachait « Sa boutique », n'est plus là. La carte
+  d'un live gagne cette place : la photo du produit grandit, le nom du vendeur à 26 px, les boutons
+  (Revoir, Sa boutique, Suivre, Partager) à 44 px, entiers. Sur une tablette et un ordinateur, rien ne
+  change (le bouton reste au-dessus des cartes).
+- **Contrôle automatique** (`tools/captures/mise-en-page.js`) : les pages du site à 390 et 450 px (rien de
+  plus large, titres de téléphone, titre de la barre sur une ligne, barre du bas basse) et « Je suis en
+  live » dans la barre du haut sur un téléphone : 310 contrôles sans échec sur la base de démo.
+- Reste : l'espace du point relais (connexion par code WhatsApp) n'a pas pu être ouvert sur la démo.
+- Tests : suite complète des modules OCD sur une base neuve, **838 sans échec**.
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live** et **OCD
+  Live : shop** dans Applications, redémarrer le service d'Odoo, recharger la page sur le téléphone.
+
 ### 25 novembre 2026 · Commandes, automatisations et le site sur un téléphone (chantier 25.3 et 25.4)
 
 Suite du chantier 25, après les retours de l'équipe sur le site (« trop grand, moins épuré, moins

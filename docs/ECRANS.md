@@ -35,7 +35,7 @@ téléphone garde son design. Captures dans `docs/captures/maquette-responsive-*
 
 | Écran du design | Où | État |
 |---|---|---|
-| `Lives` Lives par pays | `/lives`, `ocd_directory_templates.xml` ; les pays puis les catégories en haut (une catégorie choisie garde le pays, et l'inverse) ; sur tablette et ordinateur, une grille qui suit le défilement de la page (colonnes de 320 px au moins, un bandeau par pays sur toute la largeur, la barre des pays et « Je suis en live » en haut) | ✅ |
+| `Lives` Lives par pays | `/lives`, `ocd_directory_templates.xml` ; les pays puis les catégories en haut (une catégorie choisie garde le pays, et l'inverse) ; sur tablette et ordinateur, une grille qui suit le défilement de la page (colonnes de 320 px au moins, un bandeau par pays sur toute la largeur, la barre des pays et « Je suis en live » en haut) ; sur un téléphone (chantier 25), « Je suis en live » est un petit bouton de la barre du haut (plus de barre par-dessus les cartes), la carte d'un live en tailles de téléphone : la photo du produit grandit, le vendeur et ses boutons restent entiers | ✅ |
 | `LivesPays` Lives d'un pays | `/lives/<pays>` : les mêmes cartes que l'onglet Lives (les lives en cours, au studio, les prochains lives et les replays du pays, l'une sous l'autre, la page défile), ses catégories, « Où ? » et où vend chaque vendeur (« 2 magasins · Akwa », en congé), « Programme des lives » du pays, « Je suis en live » ; `/lives/pays` : tous les pays, avec « Cherche ton pays » | ✅ |
 | `Pass` Pass annuaire | `/lives/pass` | ✅ |
 | `EnvoyerLien` Envoyer le lien de son live | `/lives/envoyer` | ✅ |
