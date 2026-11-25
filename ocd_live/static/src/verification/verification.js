@@ -17,6 +17,8 @@ export class OcdLiveVerification extends Component {
     refusing = signal(false);
     reasons = signal({});
     choices = signal({});
+    // on a phone: one column open at a time ("" when the team closed them all)
+    openColumn = signal(false);
 
     setup() {
         this.orm = useService("orm");
@@ -32,6 +34,20 @@ export class OcdLiveVerification extends Component {
     /** The columns with something in them: wide enough for their cards, side by side. */
     busyColumns() {
         return this.data().columns.filter((column) => column.items.length);
+    }
+
+    /** The column open on a phone: the one touched, else the first with something waiting. */
+    get openKey() {
+        const columns = this.busyColumns();
+        const chosen = this.openColumn();
+        if (chosen !== false && (chosen === "" || columns.some((column) => column.key === chosen))) {
+            return chosen;
+        }
+        return (columns.find((column) => !column.done) || columns[0])?.key;
+    }
+
+    toggleColumn(column) {
+        this.openColumn.set(this.openKey === column.key ? "" : column.key);
     }
 
     /** The columns with nothing waiting: one line above the board, never a column of space. */

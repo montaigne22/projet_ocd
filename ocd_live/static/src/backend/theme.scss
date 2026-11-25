@@ -22,12 +22,18 @@
         font-weight: 700;
     }
 }
+// The rest of the bar, as the menus of Odoo (width 0, then grow): on a tablet, the menus that do
+// not fit slide sideways instead of widening the bar and the page
 .o_ocd_navbar_sections {
     display: flex;
+    flex: 1 1 0;
+    width: 0;
     align-self: stretch;
     margin-left: 6px;
     min-width: 0;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
 }
 .o_ocd_navbar_section {
     display: flex;
@@ -139,6 +145,15 @@
     }
 }
 
+// On a phone, the bubbles of the chat windows of Odoo cover the buttons and the cards of every
+// screen: hidden; the conversations stay one tap away in the messaging menu of the bar (with
+// its counter), and a conversation opened from it still takes the whole screen.
+@include media-breakpoint-down(md) {
+    .o_web_client .o-mail-ChatHub-bubbles {
+        display: none !important;
+    }
+}
+
 // Screens of OCD Live made for the design (dashboard, planning, control room…): a white bar
 // with the title, as the bar of the lists, then the content on the grey background.
 .o_ocd_bo {
@@ -217,6 +232,42 @@
     .o_ocd_bo_header, .o_ocd_bo_body {
         padding-left: 16px;
         padding-right: 16px;
+    }
+    // a phone: the title first, then everything smaller, on as few lines as possible
+    .o_ocd_bo_header {
+        gap: 6px 8px;
+        min-height: 0;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        .btn-primary {
+            min-height: 32px;
+            padding: 0 12px;
+            font-size: 13px;
+        }
+    }
+    .o_ocd_bo_title {
+        order: -1;
+        font-size: 17px;
+    }
+    .o_ocd_bo_facet {
+        min-height: 26px;
+        padding: 0 8px;
+        font-size: 12px;
+    }
+    .o_ocd_bo_pager {
+        font-size: 12.5px;
+    }
+    .o_ocd_bo_icon_button {
+        width: 32px;
+        height: 32px;
+    }
+    .o_ocd_bo_views button {
+        width: 32px;
+        height: 30px;
+    }
+    .o_ocd_bo_body {
+        padding-top: 12px;
+        padding-bottom: 12px;
     }
 }
 // Pager with its arrows, and the buttons of the views, as in the bar of the lists

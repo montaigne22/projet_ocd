@@ -160,6 +160,35 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · Les écrans de l'équipe sur un téléphone (chantier 25.1 et 25.2)
+
+Retour de l'équipe avec des captures du téléphone : Dispatch, Conversations, Réservations, Régie et
+À vérifier trop grands, coupés, peu intuitifs, les bulles de discussion d'Odoo par-dessus, et
+« Chargement… » qui revient. Tous les écrans de l'équipe passés en revue à 450 px (base de démo) ;
+le chantier 25 est écrit dans la feuille de route (le site suit en 25.4 et 25.5).
+
+- **Socle commun (25.1)** : sur un téléphone, plus de bulles de discussion d'Odoo sur les écrans (les
+  conversations restent dans le menu de la barre, avec leur compteur) ; les rafraîchissements
+  automatiques (Conversations, Régie, écran des clips) sans « Chargement… » d'Odoo ; l'en-tête de
+  chaque écran plus compact, le titre d'abord ; sur une tablette, les menus d'OCD de la barre du haut
+  glissent sur le côté au lieu d'élargir la page (elle débordait de 224 px à 900 px de large).
+- **Dispatch** : sur un téléphone, une étape à la fois en onglets (À préparer 3, Prêt 6…), ses colis
+  sur toute la largeur, puis les livreurs et les vendeurs du jour ; sur une tablette, la page défile en
+  entier (les colonnes n'étaient plus coupées à mi-hauteur).
+- **Réservations** : sur un téléphone, un jour à la fois (onglets des jours, aujourd'hui d'abord), les
+  créneaux sur toute la largeur ; le créneau touché monte du bas de l'écran, fermé par sa croix ; sur
+  une tablette, le planning en entier puis le créneau.
+- **À vérifier** : sur un téléphone, chaque colonne est une ligne avec son nombre, une seule ouverte à
+  la fois (la première qui attend), ses cartes en entier (elles étaient coupées à zéro).
+- **Régie** : la page défile, plus rien de coupé (les boutons Appeler, WhatsApp).
+- **Conversations, plus de 24 h** : le modèle dans une carte, « Envoyer le modèle » sur toute la largeur
+  (il était coupé), la note interne avec son bouton rond 🔒 (il manquait sur un téléphone).
+- Vu dans Chromium à 450 px, 800, 900, 1024, 1200 et 1400 px : rien ne déborde ; l'ordinateur ne change pas.
+- Tests : suite complète des modules OCD sur une base neuve, **838 sans échec**.
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live**, **OCD Live :
+  shop**, **OCD Live : messages WhatsApp** et **OCD Clips** dans Applications, redémarrer le service
+  d'Odoo, puis recharger la page sur le téléphone.
+
 ### 25 novembre 2026 · Boîte de réception : une conversation bloquée par un modèle des clips
 
 Sur le serveur, ouvrir la conversation d'un vendeur qui a un live à venir affichait « Échec du rendu

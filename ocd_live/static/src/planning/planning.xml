@@ -2,9 +2,10 @@
 <templates xml:space="preserve">
 
     <t t-name="ocd_live.Planning">
-        <div class="o_action o_ocd_bo o_ocd_planning">
+        <div t-attf-class="o_action o_ocd_bo o_ocd_planning #{this.sheet() and this.detail ? 'o_ocd_planning_sheet_open' : ''}">
             <t t-set="data" t-value="this.data()"/>
             <t t-set="detail" t-value="this.detail"/>
+            <t t-set="dayKey" t-value="this.dayKey"/>
             <div class="o_ocd_bo_header">
                 <button type="button" class="btn btn-primary" t-on-click="() => this.newBooking()">New booking</button>
                 <h1 class="o_ocd_bo_title">Bookings</h1>
@@ -42,18 +43,25 @@
             </div>
             <div class="o_ocd_bo_body o_ocd_planning_body">
                 <div class="o_ocd_planning_board">
+                    <!-- on a phone: the days of the week as tabs, one day at a time -->
+                    <div class="o_ocd_planning_days" role="tablist" aria-label="Days of the week">
+                        <button t-foreach="data.days" t-as="day" t-key="day.key" type="button" role="tab"
+                                t-attf-class="#{day.today ? 'o_ocd_today' : ''}"
+                                t-att-aria-selected="day.key === dayKey ? 'true' : 'false'"
+                                t-on-click="() => this.day.set(day.key)" t-out="day.label"/>
+                    </div>
                     <div class="o_ocd_planning_grid" t-att-style="'grid-template-rows: 30px repeat(' + data.rows.length + ', minmax(46px, 1fr))'">
                         <span/>
                         <span t-foreach="data.days" t-as="day" t-key="day.key"
-                              t-att-class="{ 'o_ocd_planning_day': true, 'o_ocd_today': day.today }">
+                              t-att-class="{ 'o_ocd_planning_day': true, 'o_ocd_today': day.today, 'o_ocd_planning_on': day.key === dayKey }">
                             <t t-out="day.label"/><t t-if="day.today"> · today</t>
                         </span>
                         <t t-foreach="data.rows" t-as="row" t-key="row.time">
                             <span class="o_ocd_planning_time" t-out="row.time"/>
                             <t t-foreach="row.cells" t-as="cell" t-key="cell.key">
-                                <span t-if="cell.kind === 'closed'" class="o_ocd_planning_closed" t-out="cell.label"/>
+                                <span t-if="cell.kind === 'closed'" t-attf-class="o_ocd_planning_closed #{data.days[cell_index].key === dayKey ? 'o_ocd_planning_on' : ''}" t-out="cell.label"/>
                                 <button t-else="" type="button"
-                                        t-attf-class="o_ocd_planning_cell o_ocd_kind_#{cell.kind} #{cell.past ? 'o_ocd_past' : ''} #{this.selected() === cell.key ? 'o_ocd_selected' : ''}"
+                                        t-attf-class="o_ocd_planning_cell o_ocd_kind_#{cell.kind} #{cell.past ? 'o_ocd_past' : ''} #{this.selected() === cell.key ? 'o_ocd_selected' : ''} #{data.days[cell_index].key === dayKey ? 'o_ocd_planning_on' : ''}"
                                         t-att-aria-pressed="this.selected() === cell.key ? 'true' : 'false'"
                                         t-att-aria-label="this.cellLabel(cell, data.days[cell_index])"
                                         t-on-click="() => this.pick(cell)">
@@ -75,6 +83,10 @@
 
                 <aside class="o_ocd_planning_panel" aria-live="polite">
                     <t t-if="detail">
+                        <button type="button" class="o_ocd_planning_sheet_close" title="Close" aria-label="Close"
+                                t-on-click="() => this.sheet.set(false)">
+                            <i class="oi" data-icon="close" aria-hidden="true"/>
+                        </button>
                         <span t-attf-class="o_ocd_planning_tag o_ocd_kind_#{detail.kind}" t-out="detail.tag"/>
                         <h2 t-out="detail.title"/>
                         <span class="o_ocd_planning_when" t-out="detail.when"/>

@@ -317,12 +317,105 @@
     font-size: 13px;
 }
 @include media-breakpoint-down(xl) {
+    // the couriers under the parcels: the page scrolls as a whole, the parcels are never cut
     .o_ocd_dispatch_body {
-        grid-template-columns: minmax(0, 1fr);
+        display: flex;
+        flex-direction: column;
+    }
+    .o_ocd_dispatch_main, .o_ocd_dispatch_aside {
+        flex: none;
     }
     .o_ocd_dispatch_columns {
         overflow-x: auto;
         grid-template-columns: repeat(5, minmax(220px, 1fr));
+    }
+    .o_ocd_dispatch_column, .o_ocd_dispatch_aside {
+        overflow-y: visible;
+    }
+}
+// The tabs of the steps: on a phone only
+.o_ocd_dispatch_steps {
+    display: none;
+}
+// A phone: the page scrolls as a whole; the filters, then the steps as tabs and the parcels of
+// one step on the whole width, then the couriers and the vendors of the day
+@include media-breakpoint-down(md) {
+    .o_ocd_dispatch_body {
+        display: block;
+        padding-top: 10px;
+        padding-bottom: 16px;
+    }
+    .o_ocd_dispatch_main {
+        gap: 8px;
+    }
+    .o_ocd_dispatch_toolbar {
+        gap: 6px 10px;
+        .o_ocd_switch {
+            max-width: 100%;
+            overflow-x: auto;
+            scrollbar-width: none;
+            button {
+                flex: none;
+                min-height: 32px;
+                padding: 0 10px;
+                font-size: 12.5px;
+            }
+        }
+    }
+    .o_ocd_dispatch_hint, .o_ocd_dispatch_alert {
+        font-size: 12.5px;
+    }
+    .o_ocd_dispatch_steps {
+        display: flex;
+        gap: 6px;
+        margin: 0 -16px;
+        padding: 2px 16px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        button {
+            flex: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 34px;
+            padding: 0 6px 0 12px;
+            border: 1px solid $ocd-bo-input;
+            border-radius: 17px;
+            background: #FFFFFF;
+            color: $ocd-ink;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            &[aria-selected="true"] {
+                border-color: $ocd-ink;
+                background: $ocd-ink;
+                color: #FFFFFF;
+                .o_ocd_dispatch_count {
+                    background: rgba(255, 255, 255, 0.2);
+                    color: #FFFFFF;
+                }
+            }
+        }
+    }
+    .o_ocd_dispatch_columns {
+        display: block;
+        overflow: visible;
+    }
+    .o_ocd_dispatch_column {
+        display: none;
+        overflow: visible;
+        &.o_ocd_dispatch_column_on {
+            display: flex;
+        }
+    }
+    .o_ocd_dispatch_column_head {
+        display: none;
+    }
+    .o_ocd_dispatch_aside {
+        margin-top: 18px;
+        max-height: none;
+        overflow: visible;
     }
 }
 // Record of a parcel, as in the validated design (BoLivraison)

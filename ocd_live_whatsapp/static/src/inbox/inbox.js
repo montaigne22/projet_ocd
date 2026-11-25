@@ -98,8 +98,10 @@ export class OcdWhatsappInbox extends Component {
         return { search: this.search(), filter: this.filter(), limit: this.limit() };
     }
 
-    async load(channelId) {
-        this.show(await this.orm.call("ocd.whatsapp.inbox", "get_inbox", [channelId || null, this.listOptions]));
+    /** `silent`: the refreshes of the screen, without the « Loading… » of Odoo each time. */
+    async load(channelId, silent = false) {
+        const orm = silent ? this.orm.silent : this.orm;
+        this.show(await orm.call("ocd.whatsapp.inbox", "get_inbox", [channelId || null, this.listOptions]));
     }
 
     /** The page as given by the server (after loading it, or after an action). */
@@ -118,7 +120,7 @@ export class OcdWhatsappInbox extends Component {
         if (this.busy() && !force) {
             return;
         }
-        await this.load(this.current?.id);
+        await this.load(this.current?.id, true);
     }
 
     /** Run an action of the inbox on the conversation shown: the page comes back with it. */

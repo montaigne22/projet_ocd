@@ -20,6 +20,9 @@ export class OcdLivePlanning extends Component {
     selected = signal(false);
     moving = signal(false);
     offered = signal({});
+    // on a phone: one day at a time, and the slot touched in a panel from the bottom
+    day = signal(false);
+    sheet = signal(false);
 
     setup() {
         this.orm = useService("orm");
@@ -31,10 +34,25 @@ export class OcdLivePlanning extends Component {
 
     async load(weekStart = this.data()?.week_start) {
         const data = await this.orm.call("ocd.live.planning", "get_planning_data", [weekStart || false]);
+        if (weekStart !== this.data()?.week_start) {
+            // another week: its first day (or today), not the day of the week before
+            this.day.set(false);
+        }
         this.data.set(data);
         if (!this.selected() || !data.details[this.selected()]) {
             this.selected.set(data.default_key);
         }
+    }
+
+    /** The day shown on a phone: the one chosen, else today, else the day of the slot shown. */
+    get dayKey() {
+        const days = this.data().days;
+        const chosen = this.day();
+        if (chosen && days.some((day) => day.key === chosen)) {
+            return chosen;
+        }
+        const selected = (this.selected() || "").split("|")[0];
+        return (days.find((day) => day.today) || days.find((day) => day.key === selected) || days[0])?.key;
     }
 
     get detail() {
@@ -63,6 +81,7 @@ export class OcdLivePlanning extends Component {
             return;
         }
         this.selected.set(cell.key);
+        this.sheet.set(true);
     }
 
     async setHost(ev) {

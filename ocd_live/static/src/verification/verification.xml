@@ -29,12 +29,18 @@
                 </div>
                 <!-- More columns than the screen holds: the board scrolls sideways, a card is never squeezed -->
                 <div t-else="" class="o_ocd_verification_columns">
-                    <div t-foreach="this.busyColumns()" t-as="column" t-key="column.key" class="o_ocd_verification_column">
-                        <div class="o_ocd_verification_column_head">
+                    <t t-set="openKey" t-value="this.openKey"/>
+                    <!-- on a phone: each column opens with a touch on its title, one at a time -->
+                    <div t-foreach="this.busyColumns()" t-as="column" t-key="column.key"
+                         t-attf-class="o_ocd_verification_column #{column.key === openKey ? 'o_ocd_verification_open' : ''}">
+                        <button type="button" class="o_ocd_verification_column_head"
+                                t-att-aria-expanded="column.key === openKey ? 'true' : 'false'"
+                                t-on-click="() => this.toggleColumn(column)">
                             <span t-out="column.label"/>
                             <span t-att-class="{ 'o_ocd_verification_count': true, 'o_ocd_waiting': !column.done and column.items.length }"
                                   t-out="column.items.length"/>
-                        </div>
+                            <i class="oi o_ocd_verification_chevron" data-icon="keyboard_arrow_down" aria-hidden="true"/>
+                        </button>
                         <div t-if="!column.items.length" class="o_ocd_verification_empty" t-out="column.empty"/>
                         <div t-foreach="column.items" t-as="item" t-key="item.key" class="o_ocd_verification_card">
                             <img t-if="item.photo" t-att-src="item.photo" alt="" loading="lazy" class="o_ocd_verification_photo"/>

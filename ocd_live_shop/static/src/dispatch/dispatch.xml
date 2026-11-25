@@ -36,8 +36,19 @@
                             <span class="o_ocd_dispatch_alert_dot" aria-hidden="true"/><t t-out="data.alert"/>
                         </span>
                     </div>
+                    <!-- on a phone: the steps as tabs, one at a time -->
+                    <t t-set="stepKey" t-value="this.stepKey"/>
+                    <div class="o_ocd_dispatch_steps" role="tablist" aria-label="Steps of the parcels">
+                        <button t-foreach="data.columns" t-as="column" t-key="column.key" type="button" role="tab"
+                                t-att-aria-selected="column.key === stepKey ? 'true' : 'false'"
+                                t-on-click="() => this.step.set(column.key)">
+                            <span t-out="column.label"/>
+                            <span class="o_ocd_dispatch_count" t-out="this.cardsOf(column).length"/>
+                        </button>
+                    </div>
                     <div class="o_ocd_dispatch_columns">
-                        <div t-foreach="data.columns" t-as="column" t-key="column.key" class="o_ocd_dispatch_column">
+                        <div t-foreach="data.columns" t-as="column" t-key="column.key"
+                             t-attf-class="o_ocd_dispatch_column #{column.key === stepKey ? 'o_ocd_dispatch_column_on' : ''}">
                             <t t-set="cards" t-value="this.cardsOf(column)"/>
                             <div class="o_ocd_dispatch_column_head">
                                 <span t-out="column.label"/>

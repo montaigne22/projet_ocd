@@ -99,13 +99,13 @@ Le design n'a pas d'écran pour ces pages : elles prennent l'allure d'OCD Live p
 
 | Écran du design | Où | État |
 |---|---|---|
-| `BoShell` En-tête (barre, onglets) | `ocd_live/static/src/backend/navbar.*`, menus `ocd_live_menus.xml` et des autres modules | ✅ |
+| `BoShell` En-tête (barre, onglets) | `ocd_live/static/src/backend/navbar.*`, menus `ocd_live_menus.xml` et des autres modules ; sur un téléphone (chantier 25) : pas de bulles de discussion d'Odoo, en-tête des écrans compact (titre d'abord) ; sur une tablette, les menus de la barre glissent sur le côté | ✅ |
 | `BoDashboard` Tableau de bord | action `ocd_live.dashboard`, `ocd_live/static/src/dashboard/`, modèle `ocd.live.dashboard` (le shop et WhatsApp ajoutent leurs chiffres) | ✅ |
-| `BoReservations` Réservations | action `ocd_live.planning`, `static/src/planning/`, modèle `ocd.live.planning` | ✅ |
-| `Regie` Régie du live en cours | action `ocd_live_shop.regie`, `ocd_live_shop/static/src/regie/`, modèle `ocd.live.regie` | ✅ |
-| `BoVerification` À vérifier | action `ocd_live.verification` (liens, produits, vendeurs), modèle `ocd.live.verification` ; seules les colonnes avec quelque chose à vérifier sur le tableau (280 px au moins, le tableau défile de côté), les autres en une ligne « Rien en attente » | ✅ |
+| `BoReservations` Réservations | action `ocd_live.planning`, `static/src/planning/`, modèle `ocd.live.planning` ; sur un téléphone, un jour à la fois (onglets des jours) et le créneau dans un panneau du bas | ✅ |
+| `Regie` Régie du live en cours | action `ocd_live_shop.regie`, `ocd_live_shop/static/src/regie/`, modèle `ocd.live.regie` ; sur un téléphone ou une tablette, la page défile en entier | ✅ |
+| `BoVerification` À vérifier | action `ocd_live.verification` (liens, produits, vendeurs), modèle `ocd.live.verification` ; seules les colonnes avec quelque chose à vérifier sur le tableau (280 px au moins, le tableau défile de côté), les autres en une ligne « Rien en attente » ; sur un téléphone, une colonne ouverte à la fois, ses cartes en entier | ✅ |
 | `BoCommandes` Commandes du shop | action `ocd_live_shop.orders`, modèle `ocd.live.orders` | ✅ |
-| `BoDispatch` Dispatch | action `ocd_live_shop.dispatch`, modèle `ocd.live.dispatch` | ✅ |
+| `BoDispatch` Dispatch | action `ocd_live_shop.dispatch`, modèle `ocd.live.dispatch` ; sur un téléphone, une étape à la fois en onglets, puis les livreurs du jour | ✅ |
 | `BoLivraison` Fiche d'une livraison | vue `stock_picking_view_form_ocd_parcel` | ✅ |
 | `BoLivreurs` Livreurs et caisse | action `ocd_live_shop.couriers`, modèle `ocd.live.couriers` | ✅ |
 | `BoVendeur` Fiche vendeur | vue `res_partner_view_form_ocd_vendor` (+ ajouts du shop), widget `ocd_choice_cards` | ✅ |

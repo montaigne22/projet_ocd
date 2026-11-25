@@ -286,13 +286,127 @@
 }
 // Tablets and phones: the detail below the planning, the planning scrolls sideways
 @include media-breakpoint-down(xl) {
+    // the slot under the planning: the page scrolls as a whole, the planning is never cut
     .o_ocd_planning_body {
-        grid-template-columns: minmax(0, 1fr);
+        display: flex;
+        flex-direction: column;
+    }
+    .o_ocd_planning_board, .o_ocd_planning_panel {
+        flex: none;
     }
     .o_ocd_planning_board {
         overflow-x: auto;
     }
     .o_ocd_planning_grid {
         min-width: 760px;
+    }
+}
+// The tabs of the days and the button closing the panel: on a phone only
+.o_ocd_planning_days, .o_ocd_planning_sheet_close {
+    display: none;
+}
+// A phone: one day at a time (its tabs above), the hours on the whole width; the slot touched
+// comes up from the bottom of the screen, closed by its cross
+@include media-breakpoint-down(md) {
+    .o_ocd_planning_body {
+        display: block;
+        padding-top: 10px;
+    }
+    .o_ocd_planning_board {
+        overflow: visible;
+        padding: 8px;
+        gap: 8px;
+    }
+    .o_ocd_planning_days {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        button {
+            flex: 1 0 auto;
+            min-height: 34px;
+            padding: 0 8px;
+            border: 1px solid $ocd-bo-line;
+            border-radius: 8px;
+            background: #FFFFFF;
+            color: $ocd-ink;
+            font-family: inherit;
+            font-size: 12.5px;
+            font-weight: 700;
+            white-space: nowrap;
+            &.o_ocd_today {
+                color: $ocd-orange-dark;
+            }
+            &[aria-selected="true"] {
+                border-color: $ocd-ink;
+                background: $ocd-ink;
+                color: #FFFFFF;
+            }
+        }
+    }
+    .o_ocd_planning_grid {
+        min-width: 0;
+        grid-template-columns: 46px minmax(0, 1fr);
+        // the day is in its tab: no row of titles
+        grid-template-rows: none !important;
+        grid-auto-rows: minmax(48px, auto);
+        > :first-child, .o_ocd_planning_day {
+            display: none;
+        }
+        .o_ocd_planning_cell:not(.o_ocd_planning_on), .o_ocd_planning_closed:not(.o_ocd_planning_on) {
+            display: none;
+        }
+    }
+    .o_ocd_planning_cell {
+        justify-content: center;
+        padding: 6px 10px;
+    }
+    .o_ocd_planning_cell_label {
+        font-size: 13px;
+    }
+    .o_ocd_planning_cell_sub {
+        font-size: 12px;
+    }
+    .o_ocd_planning_time {
+        align-items: center;
+        padding-top: 0;
+    }
+    .o_ocd_planning_legend {
+        gap: 6px 12px;
+        font-size: 11.5px;
+    }
+    .o_ocd_planning_panel {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 30;
+        max-height: 78vh;
+        padding: 16px 16px 20px;
+        border: 0;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+        transform: translateY(105%);
+        visibility: hidden;
+        transition: transform 0.2s ease, visibility 0.2s;
+    }
+    .o_ocd_planning_sheet_open .o_ocd_planning_panel {
+        transform: none;
+        visibility: visible;
+    }
+    .o_ocd_planning_sheet_close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: $ocd-bo-background;
+        color: $ocd-ink;
+        font-size: 20px;
     }
 }

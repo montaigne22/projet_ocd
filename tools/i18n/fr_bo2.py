@@ -89,6 +89,9 @@ BO2 = {
     "To check · %s": "À vérifier · %s",
     "To choose": "À affecter",
     "Touch a slot of the planning to see it here.": "Touche un créneau du planning pour le voir ici.",
+    # On a phone: one day at a time, chosen in the tabs of the days (chantier 25)
+    "Days of the week": "Jours de la semaine",
+    "Remind the vendor, with the link to renew the pass.": "Relancer le vendeur, avec le lien pour renouveler son pass.",
     "Unknown kind of check: %s": "Type de vérification inconnu : %s",
     "Validate the vendor": "Valider le vendeur",
     "Vendor Checked At": "Vendeur vérifié le",

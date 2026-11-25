@@ -36,7 +36,7 @@ export class OcdClipsScreen extends Component {
         this.bookingId = this.props.action?.params?.booking_id || this.props.action?.context?.active_id;
         onWillStart(() => this.load());
         onMounted(() => {
-            this.refresher = setInterval(() => this.data()?.busy && !this.sending() && this.load(), REFRESH_SECONDS * 1000);
+            this.refresher = setInterval(() => this.data()?.busy && !this.sending() && this.load(true), REFRESH_SECONDS * 1000);
         });
         onWillUnmount(() => {
             clearInterval(this.refresher);
@@ -44,8 +44,10 @@ export class OcdClipsScreen extends Component {
         });
     }
 
-    async load() {
-        this.data.set(await this.orm.call("ocd.live.booking", "ocd_clips_screen_data", [[this.bookingId]]));
+    /** `silent`: the refresh while the clips are made, without the « Loading… » of Odoo each time. */
+    async load(silent = false) {
+        const orm = silent ? this.orm.silent : this.orm;
+        this.data.set(await orm.call("ocd.live.booking", "ocd_clips_screen_data", [[this.bookingId]]));
     }
 
     async call(method, ...args) {

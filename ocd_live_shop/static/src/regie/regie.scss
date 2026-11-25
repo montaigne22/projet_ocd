@@ -378,14 +378,27 @@
     color: $ocd-bo-muted;
 }
 @include media-breakpoint-down(xl) {
+    // one column: the page scrolls as a whole, no card cut to the height of the screen
     .o_ocd_regie_body {
         grid-template-columns: minmax(0, 1fr);
+        align-content: start;
+    }
+    .o_ocd_regie_live, .o_ocd_regie_moments {
+        min-height: auto;
+        overflow: visible;
     }
     .o_ocd_regie_tiles {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 @include media-breakpoint-down(md) {
+    .o_ocd_regie_body {
+        gap: 14px;
+    }
+    .o_ocd_regie_live {
+        gap: 10px;
+        padding: 14px;
+    }
     .o_ocd_regie_tiles {
         grid-template-columns: minmax(0, 1fr);
     }

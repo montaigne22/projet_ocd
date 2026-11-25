@@ -87,8 +87,21 @@
     justify-content: space-between;
     gap: 8px;
     padding: 2px 2px 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
     font-size: 14px;
     font-weight: 700;
+    text-align: left;
+    cursor: default;
+    > span:first-child {
+        flex: 1 1 auto;
+    }
+}
+// The arrow of a column: on a phone only, where the columns open one at a time
+.o_ocd_verification_chevron {
+    display: none;
 }
 .o_ocd_verification_count {
     flex: none;
@@ -272,11 +285,46 @@
     }
 }
 // A phone: one column under the other
+// A phone: the columns one under the other, each a row with its count; a touch opens it and
+// shows its cards whole (the page scrolls, a card is never cut)
 @include media-breakpoint-down(md) {
+    .o_ocd_verification_body {
+        gap: 8px;
+    }
     .o_ocd_verification_columns {
-        grid-auto-flow: row;
-        grid-template-columns: minmax(0, 1fr);
-        grid-auto-columns: auto;
-        overflow-x: visible;
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        overflow: visible;
+    }
+    .o_ocd_verification_column {
+        flex: none;
+        min-height: 0;
+        overflow: visible;
+        &:not(.o_ocd_verification_open) > :not(.o_ocd_verification_column_head) {
+            display: none;
+        }
+    }
+    .o_ocd_verification_column_head {
+        min-height: 48px;
+        padding: 0 10px 0 14px;
+        border: 1px solid $ocd-bo-border;
+        border-radius: 10px;
+        background: #FFFFFF;
+        cursor: pointer;
+    }
+    .o_ocd_verification_open .o_ocd_verification_column_head {
+        border-color: $ocd-ink;
+    }
+    .o_ocd_verification_chevron {
+        display: block;
+        flex: none;
+        font-size: 22px;
+        color: $ocd-bo-muted;
+        transition: transform 0.15s ease;
+    }
+    .o_ocd_verification_open .o_ocd_verification_chevron {
+        transform: rotate(180deg);
     }
 }

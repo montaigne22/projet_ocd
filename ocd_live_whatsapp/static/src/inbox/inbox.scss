@@ -779,10 +779,39 @@
     }
 }
 .o_ocd_wa_note_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     border: 1px solid $ocd-bo-input;
     background: #FFF6D6;
     color: $ocd-ink;
     font-size: 13px;
+    .oi {
+        font-size: 16px;
+    }
+}
+// More than 24 hours: the template in a card, its text as the contact will read it
+.o_ocd_wa_template_box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 12px;
+    background: #FFFFFF;
+}
+.o_ocd_wa_template_title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: $ocd-bo-muted;
+}
+.o_ocd_wa_compose_closed {
+    background: $ocd-bo-background;
+    .o_ocd_wa_input {
+        background: #FFFBEB;
+    }
 }
 .o_ocd_wa_send {
     display: inline-flex;
@@ -799,6 +828,8 @@
     }
     &.o_ocd_wa_send_template {
         align-self: flex-end;
+        border-radius: 20px;
+        padding: 0 18px;
     }
 }
 // On a phone: one button for the message or the internal note
@@ -860,6 +891,8 @@
     }
 }
 .o_ocd_wa_select {
+    width: 100%;
+    min-width: 0;
     height: 36px;
     padding: 0 8px;
     border: 1px solid $ocd-bo-input;
@@ -869,6 +902,8 @@
     font-size: 13.5px;
 }
 .o_ocd_wa_preview {
+    max-height: 120px;
+    overflow-y: auto;
     padding: 8px 10px;
     border: 1px dashed $ocd-bo-input;
     border-radius: 8px;
@@ -1080,8 +1115,26 @@
         overflow-x: auto;
         scrollbar-width: none;
     }
-    .o_ocd_wa_quick_title, .o_ocd_wa_note_button {
+    .o_ocd_wa_quick_title, .o_ocd_wa_compose:not(.o_ocd_wa_compose_closed) .o_ocd_wa_note_button {
         display: none;
+    }
+    .o_ocd_wa_note_send {
+        width: 40px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
+    .o_ocd_wa_note_label {
+        display: none;
+    }
+    .o_ocd_wa_template_box {
+        padding: 8px;
+    }
+    .o_ocd_wa_preview {
+        max-height: 92px;
+        font-size: 13px;
     }
     .o_ocd_wa_note_toggle {
         display: inline-flex;
@@ -1108,6 +1161,13 @@
         min-height: 40px;
         padding: 0;
         border-radius: 50%;
+        // the template: its words, the whole width
+        &.o_ocd_wa_send_template {
+            align-self: stretch;
+            width: auto;
+            padding: 0 16px;
+            border-radius: 20px;
+        }
     }
     .o_ocd_wa_send_label {
         display: none;

@@ -206,9 +206,10 @@
                                     </button>
                                 </div>
                             </div>
-                            <div t-else="" class="o_ocd_wa_compose">
-                                <t t-if="current.templates.length">
-                                    <label for="o_ocd_wa_template" class="o_ocd_wa_quick_title">Template approved by Meta</label>
+                            <div t-else="" class="o_ocd_wa_compose o_ocd_wa_compose_closed">
+                                <!-- more than 24 hours: only a template approved by Meta reaches the contact -->
+                                <div t-if="current.templates.length" class="o_ocd_wa_template_box">
+                                    <label for="o_ocd_wa_template" class="o_ocd_wa_template_title">Template approved by Meta</label>
                                     <select id="o_ocd_wa_template" class="o_ocd_wa_select" t-on-change="(ev) => this.onTemplate(ev)">
                                         <option t-foreach="current.templates" t-as="template" t-key="template.key"
                                                 t-att-value="template.key"
@@ -217,8 +218,10 @@
                                     </select>
                                     <div t-if="this.template" class="o_ocd_wa_preview" t-out="this.template.preview"/>
                                     <button type="button" class="o_ocd_wa_send o_ocd_wa_send_template" t-att-disabled="this.busy()"
-                                            t-on-click="() => this.sendTemplate()">Send the template</button>
-                                </t>
+                                            t-on-click="() => this.sendTemplate()">
+                                        <i class="oi" data-icon="send" aria-hidden="true"/><span>Send the template</span>
+                                    </button>
+                                </div>
                                 <p t-else="" class="o_ocd_wa_empty">No approved template for this contact: they write first, then the team answers.</p>
                                 <!-- an internal note: at any time, never sent to the contact -->
                                 <t t-call="ocd_live_whatsapp.InboxFiles"/>
@@ -228,8 +231,11 @@
                                     <textarea id="o_ocd_wa_note" class="o_ocd_wa_input" rows="1"
                                               placeholder="Internal note for the team (not sent)…" t-att-value="this.draft()"
                                               t-on-input="(ev) => this.onDraft(ev)" t-on-keydown="(ev) => this.onKeydown(ev, true)"/>
-                                    <button type="button" class="o_ocd_wa_note_button" t-att-disabled="!this.canPost"
-                                            t-on-click="() => this.post(true)">Internal note</button>
+                                    <button type="button" class="o_ocd_wa_note_button o_ocd_wa_note_send" t-att-disabled="!this.canPost"
+                                            t-att-title="this.noteLabel" t-att-aria-label="this.noteLabel"
+                                            t-on-click="() => this.post(true)">
+                                        <i class="oi" data-icon="lock" aria-hidden="true"/><span class="o_ocd_wa_note_label">Internal note</span>
+                                    </button>
                                 </div>
                             </div>
                         </t>

@@ -16,6 +16,8 @@ export class OcdLiveDispatch extends Component {
     props = useProps(standardActionServiceProps);
     data = signal(null);
     filter = signal("all");
+    // on a phone: one step of the parcels at a time, chosen in a row of tabs
+    step = signal(false);
 
     setup() {
         this.orm = useService("orm");
@@ -33,6 +35,16 @@ export class OcdLiveDispatch extends Component {
         return this.data().cards.filter(
             (card) => card.column === column.key && (filter === "all" || card.by === filter)
         );
+    }
+
+    /** The step shown on a phone: the one chosen, else the first with parcels. */
+    get stepKey() {
+        const columns = this.data().columns;
+        const chosen = this.step();
+        if (chosen && columns.some((column) => column.key === chosen)) {
+            return chosen;
+        }
+        return (columns.find((column) => this.cardsOf(column).length) || columns[0])?.key;
     }
 
     filterLabel(key) {

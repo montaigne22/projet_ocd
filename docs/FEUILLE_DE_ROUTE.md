@@ -76,6 +76,24 @@ Appeler, Demander l'accord), notes internes à tout moment, modèle de relance p
 | 24.4 | **Les chiffres des conversations** (pilotage) | Délai de première réponse, conversations par conseiller, en attente, temps de résolution, modèles envoyés (payés) par mois ; sur le tableau de bord, comme les seuils des appels | `whatsapp_cloud` (calcul), `ocd_live_whatsapp` (tableau de bord `ocd.live.dashboard`) | 3 à 4 jours ; **fait le 25 novembre 2026** (`whatsapp_cloud` 20.0.2.19.0, `whatsapp_cloud_call` 20.0.1.13.0, `ocd_live_whatsapp` 20.0.1.15.0) |
 | 24.5 | **Les messages vocaux** (confort) | Un vocal enregistré dans Odoo (MP3) arrive chez le client comme un fichier audio, pas comme une note vocale (il faut du OGG Opus) ; les notes vocales des clients (OGG) ne se lisent pas sur d'anciens iPhone (Safari). Convertir à l'envoi et à la réception, avec ffmpeg sur le serveur d'Odoo (à vérifier d'abord) | `whatsapp_cloud` : envoi des médias (`MEDIA_TYPE_BY_MIMETYPE`), réception (`_download_media`) | 2 à 3 jours ; **fait le 25 novembre 2026** (`whatsapp_cloud` 20.0.2.20.0) |
 
+## OCD sur téléphone : épuré, compact, intuitif (chantier 25, demandé le 25 novembre 2026)
+
+Retour de l'équipe, captures du téléphone à l'appui : beaucoup d'écrans, de l'équipe comme du site,
+sont trop grands, chargés et peu intuitifs sur un téléphone (colonnes coupées, listes écrasées à
+deux lignes, détail sous la liste, bulles de discussion d'Odoo par-dessus les boutons, « Chargement… »
+qui revient sans cesse). Règle pour tous les écrans sur un téléphone : une chose à la fois (des
+onglets ou des sections qui s'ouvrent, comme dans WhatsApp), la page qui défile en entier (jamais
+une carte coupée à la hauteur de l'écran), le détail qui monte du bas ou prend l'écran avec ←, des
+tailles de téléphone (titres 17 px, boutons de 32 à 40 px).
+
+| # | Étape | Ce que c'est | Où | Effort |
+|---|---|---|---|---|
+| 25.1 | **Le socle commun** | Les bulles des discussions d'Odoo cachées sur téléphone (les conversations restent dans le menu de la barre) ; les rafraîchissements automatiques sans « Chargement… » ; l'en-tête des écrans compact (titre d'abord) | `ocd_live/static/src/backend/theme.scss`, `regie.js`, `inbox.js`, `screen.js` des clips | 1 jour ; **fait le 25 novembre 2026** |
+| 25.2 | **Les écrans de l'équipe montrés** | Conversations (une conversation à la fois, le modèle après 24 h dans une carte), Dispatch (une étape à la fois, en onglets), Réservations (un jour à la fois, le créneau en panneau du bas), À vérifier (une colonne ouverte à la fois), Régie (la page défile, rien n'est coupé) | `ocd_live_whatsapp`, `ocd_live_shop` (dispatch, régie), `ocd_live` (planning, vérification) | 2 jours ; **fait le 25 novembre 2026** |
+| 25.3 | **Les autres écrans de l'équipe** | Commandes et Automatisations (la liste en entier, le détail en plein écran avec ←), tableau de bord, livreurs, paramètres, fiches (vendeur, colis) et listes d'Odoo, recrutement | `ocd_live_shop` (commandes), `ocd_live` (automatisations, paramètres) | 2 à 3 jours |
+| 25.4 | **Le site : accueil, lives, shop** | Moins grand et plus épuré : en-têtes, cartes de l'accueil, pays et catégories, « Je suis en live », cartes des lives et des produits | `ocd_live`, `ocd_live_shop` (site) | 3 jours |
+| 25.5 | **Les autres pages du site, et un contrôle automatique** | Fiche produit, panier, réservation, Mon espace, pages des modules ; `tools/captures/mise-en-page.js` étendu aux écrans de l'équipe sur un téléphone (rien de coupé, rien de plus large que l'écran) | tous les modules du site | 3 à 4 jours |
+
 ## Charge
 
 Avec les chantiers ajoutés le 16 novembre, le développement passe d'environ 37 à 63 semaines :

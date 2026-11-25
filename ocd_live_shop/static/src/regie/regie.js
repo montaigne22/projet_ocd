@@ -36,7 +36,7 @@ export class OcdLiveRegie extends Component {
         onWillStart(() => this.load());
         onMounted(() => {
             this.ticker = setInterval(() => this.tick(), 1000);
-            this.refresher = setInterval(() => this.data()?.status === "live" && this.load(), REFRESH_SECONDS * 1000);
+            this.refresher = setInterval(() => this.data()?.status === "live" && this.load(true), REFRESH_SECONDS * 1000);
         });
         onWillUnmount(() => {
             clearInterval(this.ticker);
@@ -44,8 +44,9 @@ export class OcdLiveRegie extends Component {
         });
     }
 
-    async load() {
-        const data = await this.orm.call("ocd.live.regie", "get_regie_data", [this.bookingId]);
+    /** `silent`: the refresh of every few seconds, without the « Loading… » of Odoo each time. */
+    async load(silent = false) {
+        const data = await (silent ? this.orm.silent : this.orm).call("ocd.live.regie", "get_regie_data", [this.bookingId]);
         this.bookingId = data.booking_id || this.bookingId;
         this.offset = data.now ? parseUtc(data.now) - Date.now() : 0;
         if (!this.data() || this.data().booking_id !== data.booking_id) {
