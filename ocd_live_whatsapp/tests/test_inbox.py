@@ -264,6 +264,23 @@ class TestOcdWhatsappInbox(OcdLiveCommon):
         self.assertEqual(auto["kind"], "auto")
         self.assertIn("ocd_lien_espace", auto["tag"])
 
+    def test_a_template_that_cannot_be_filled_is_not_offered(self):
+        # « The clips of the live are ready » for a live still to come: no clip, so no day of the
+        # clips; the conversation opens all the same, with the other templates of the live
+        self._book(self.starts[0], state="confirmed")
+        confirmed = self.env.ref("ocd_live_whatsapp.template_live_confirmed")
+        confirmed.status = "approved"
+        broken = confirmed.copy({"name": "Clips ready (test)", "template_name": "ocd_test_clips"})
+        broken.status = "approved"
+        broken.variable_ids.filtered(lambda variable: variable.sequence == 2).value = (
+            "{{ object.partner_id.child_ids[:1].ensure_one().name }}"
+        )
+        channel = self._receive("Bonjour")
+        current = self.Inbox.get_conversation(channel.id)
+        names = {row["name"]: row["res_model"] for row in current["templates"]}
+        self.assertNotIn("ocd_test_clips", names)
+        self.assertEqual(names.get("ocd_live_confirme"), "ocd.live.booking")
+
     def test_codes_are_hidden(self):
         channel = self._receive("Bonjour")
         self.vendor.with_context(whatsapp_channel_id=channel.id)._ocd_deliver_login_code("482913")

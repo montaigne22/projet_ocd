@@ -1,3 +1,4 @@
+import logging
 import re
 from collections import defaultdict
 from datetime import timedelta
@@ -9,6 +10,8 @@ from odoo.tools import html2plaintext, plaintext2html
 from odoo.tools.misc import format_date, format_datetime
 
 from odoo.addons.whatsapp_cloud.const import WINDOW_URGENT_MINUTES
+
+_logger = logging.getLogger(__name__)
 
 # The conversations shown at first, and added by « Show more », up to LIST_MAX
 LIST_LIMIT = 80
@@ -539,6 +542,9 @@ class OcdWhatsappInbox(models.AbstractModel):
             ))
         for choice in choices:
             template, record = choice["template"], choice["record"]
+            preview = self._ocd_preview(template, record)
+            if preview is None:
+                continue
             rows.append({
                 "key": f"{template.id}-{record._name}-{record.id}",
                 "template_id": template.id,
@@ -546,7 +552,7 @@ class OcdWhatsappInbox(models.AbstractModel):
                 "res_id": record.id,
                 "label": choice["label"],
                 "name": template.template_name,
-                "preview": self._ocd_preview(template, record),
+                "preview": preview,
             })
         return rows
 
@@ -598,10 +604,19 @@ class OcdWhatsappInbox(models.AbstractModel):
         )
 
     def _ocd_preview(self, template, record):
-        values = {
-            variable._get_placeholder_key(): template._render(variable.value, record)[record.id]
-            for variable in template.variable_ids
-        }
+        """The text the contact would receive; None when a value of the template cannot be
+        computed for this document (« the clips of the live are ready » for a live still to
+        come): not offered, it could not go, and the conversation opens all the same."""
+        try:
+            with self.env.cr.savepoint():
+                values = {
+                    variable._get_placeholder_key(): template._render(variable.value, record)[record.id]
+                    for variable in template.variable_ids
+                }
+        except Exception:  # noqa: BLE001 - any error of an expression written in the template
+            _logger.info("WhatsApp inbox: template %s not offered for %s, a value cannot be computed",
+                         template.template_name, record, exc_info=True)
+            return None
         text = template._fill_body(values)
         if template.template_name in self._ocd_secret_templates():
             text = SECRET_RE.sub("••••", text)

@@ -160,6 +160,21 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · Boîte de réception : une conversation bloquée par un modèle des clips
+
+Sur le serveur, ouvrir la conversation d'un vendeur qui a un live à venir affichait « Échec du rendu
+du modèle inline_template : {{ object.ocd_clip_ids[:1]._ocd_live_day() }} … Expected singleton » :
+la boîte de réception propose les modèles du prochain live du contact, et l'aperçu de « les clips du
+live sont prêts » ne peut pas se calculer pour un live sans clip. L'erreur bloquait l'écran entier.
+
+- Un modèle dont une valeur ne peut pas se calculer pour ce document n'est plus proposé (il ne pourrait
+  pas partir) ; la conversation s'ouvre avec les autres modèles. Le journal d'Odoo le note (INFO).
+- Vu dans Chromium : erreur reproduite avec l'ancien code, conversation ouverte avec le nouveau.
+- Tests : base neuve, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp`, `ocd_clips`, `ocd_clips_whatsapp` :
+  **88 sans échec** (1 nouveau).
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live : messages
+  WhatsApp**, **redémarrer le service d'Odoo** (le code Python change), Ctrl+F5.
+
 ### 25 novembre 2026 · La boîte de réception de WhatsApp refaite pour le téléphone
 
 Retour de l'équipe sur téléphone : écran ni adapté, ni épuré, ni intuitif (en-tête de trois lignes, onglets
