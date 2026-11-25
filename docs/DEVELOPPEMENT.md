@@ -581,6 +581,11 @@ Avec `OCD_SPACE_LINK` (le lien personnel d'un vendeur de la démo), il contrôle
 mêmes entrées de menu sur téléphone, tablette et ordinateur, aucun titre recouvert, aucun montant coupé
 dans « Mes chiffres ».
 
+Il contrôle enfin les écrans de l'équipe (tableau de bord, réservations, à vérifier, automatisations,
+paramètres, régie, dispatch, commandes, livreurs, conversations) à 390, 450 et 900 px : rien de plus
+large que l'écran ; sur un téléphone, pas de bulles de discussion d'Odoo par-dessus, aucune colonne ni
+liste qui défile en elle-même (la page défile en entier, chantier 25).
+
 ## Modèles WhatsApp
 
 Les textes des modèles (`data/whatsapp_template_data.xml`) suivent les règles de Meta, vérifiées par

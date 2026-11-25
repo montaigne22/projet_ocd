@@ -51,7 +51,7 @@
 .o_ocd_orders_row {
     width: 100%;
     display: grid;
-    grid-template-columns: 76px 44px minmax(0, 1.5fr) minmax(0, 1.2fr) 96px minmax(0, 1.1fr) minmax(0, 1.3fr);
+    grid-template-columns: 76px 44px minmax(0, 1.5fr) minmax(0, 1.2fr) 118px minmax(0, 1.1fr) minmax(0, 1.3fr);
     gap: 8px;
     align-items: center;
     padding: 7px 12px;
@@ -336,13 +336,97 @@
     }
 }
 @include media-breakpoint-down(xl) {
+    // the order under the list: the page scrolls as a whole, the list is never squeezed
     .o_ocd_orders_body {
-        grid-template-columns: minmax(0, 1fr);
+        display: flex;
+        flex-direction: column;
+    }
+    .o_ocd_orders_main, .o_ocd_orders_panel {
+        flex: none;
     }
     .o_ocd_orders_table {
         overflow-x: auto;
     }
+    .o_ocd_orders_scroll, .o_ocd_orders_panel {
+        overflow-y: visible;
+    }
     .o_ocd_orders_row {
         min-width: 760px;
+    }
+}
+// The way back to the list: on a phone only
+.o_ocd_orders_back {
+    display: none;
+}
+// A phone: each order a small card (reference, hour and total; customer and vendor; payment and
+// delivery); the order touched takes the whole screen, ← back to the list
+@include media-breakpoint-down(md) {
+    .o_ocd_orders_hint {
+        display: none;
+    }
+    .o_ocd_orders_filters {
+        flex-wrap: nowrap;
+        margin: 0 -16px;
+        padding: 0 16px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        button {
+            flex: none;
+        }
+    }
+    .o_ocd_orders_head {
+        display: none !important;
+    }
+    .o_ocd_orders_row:not(.o_ocd_orders_head) {
+        min-width: 0;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+            "ref time total"
+            "client client vendor"
+            "pay status status";
+        gap: 3px 8px;
+        padding: 10px 12px;
+        > :nth-child(1) { grid-area: ref; }
+        > :nth-child(2) { grid-area: time; }
+        > :nth-child(3) { grid-area: client; }
+        > :nth-child(4) { grid-area: vendor; max-width: 160px; justify-self: end; }
+        > :nth-child(5) { grid-area: total; }
+        > :nth-child(6) { grid-area: pay; justify-self: start; }
+        > :nth-child(7) { grid-area: status; justify-self: end; align-items: flex-end; text-align: right; }
+    }
+    .o_ocd_orders_panel {
+        position: fixed;
+        inset: 0;
+        z-index: 30;
+        overflow-y: auto;
+        padding-top: 8px;
+        border: 0;
+        border-radius: 0;
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform 0.2s ease, visibility 0.2s;
+    }
+    .o_ocd_orders_sheet_open .o_ocd_orders_panel {
+        transform: none;
+        visibility: visible;
+    }
+    .o_ocd_orders_back {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        gap: 8px;
+        min-height: 40px;
+        margin-left: -6px;
+        padding: 0 10px 0 6px;
+        border: 0;
+        border-radius: 20px;
+        background: transparent;
+        color: $ocd-ink;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        .oi {
+            font-size: 22px;
+        }
     }
 }

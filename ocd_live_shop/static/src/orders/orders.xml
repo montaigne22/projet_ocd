@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
 
     <t t-name="ocd_live_shop.Orders">
-        <div class="o_action o_ocd_bo o_ocd_orders">
+        <div t-attf-class="o_action o_ocd_bo o_ocd_orders #{this.sheet() and this.detail() ? 'o_ocd_orders_sheet_open' : ''}">
             <t t-set="data" t-value="this.data()"/>
             <t t-set="detail" t-value="this.detail()"/>
             <t t-set="rows" t-value="this.rows"/>
@@ -47,7 +47,7 @@
                                 <button t-foreach="group.rows" t-as="row" t-key="row.id" type="button"
                                         t-att-class="{ 'o_ocd_orders_row': true, 'o_ocd_selected': detail and detail.id === row.id }"
                                         t-att-aria-pressed="detail and detail.id === row.id ? 'true' : 'false'"
-                                        t-on-click="() => this.select(row.id)">
+                                        t-on-click="() => this.open(row.id)">
                                     <b t-out="row.ref"/>
                                     <span class="o_ocd_orders_muted" t-out="row.time"/>
                                     <span class="o_ocd_orders_two">
@@ -74,6 +74,10 @@
 
                 <aside class="o_ocd_orders_panel">
                     <t t-if="detail">
+                        <button type="button" class="o_ocd_orders_back" title="Back to the orders" aria-label="Back to the orders"
+                                t-on-click="() => this.sheet.set(false)">
+                            <i class="oi" data-icon="arrow_back" aria-hidden="true"/><span>Orders</span>
+                        </button>
                         <div class="o_ocd_orders_panel_head">
                             <a href="#" t-on-click.prevent="() => this.openOrder()" t-out="detail.ref"/>
                             <span t-attf-class="o_ocd_orders_tag o_ocd_tone_#{detail.state_tone}" t-out="detail.state"/>

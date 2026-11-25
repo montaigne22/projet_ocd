@@ -139,6 +139,7 @@ SHOP = {
     "Give to an OCD courier": "Passer à un livreur OCD",
     # On a phone: the steps of the parcels as tabs, one at a time (chantier 25)
     "Steps of the parcels": "Étapes des colis",
+    "Back to the orders": "Retour aux commandes",
     "Good delivery! The customer received the code.": "Bonne livraison ! Le client a reçu le code.",
     "Goods": "Marchandises",
     "Handed Over": "Remis",

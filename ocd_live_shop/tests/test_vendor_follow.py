@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
+import pytz
+
 from odoo import fields
 from odoo.exceptions import UserError
 from odoo.modules.module import load_script
@@ -135,7 +137,9 @@ class TestOcdVendorFollow(HttpCase, OcdShopCommon):
             self.assertEqual(self.env["ocd.live.booking"].search_count([("partner_id", "=", self.brenda.id)]), 2)
             third = self._live(self.brenda, now - timedelta(minutes=5))
             self.Follower._ocd_send_lives()
-        if (now - timedelta(minutes=300)).date() == now.date():
+        # « today » is the day of the vendor (their hour): near their midnight, the two lives were yesterday
+        tz = pytz.timezone(self.brenda._ocd_tz_name())
+        if pytz.utc.localize(now - timedelta(minutes=300)).astimezone(tz).date() == pytz.utc.localize(now).astimezone(tz).date():
             self.assertEqual(told, [], "Two lives told today already")
             self.assertTrue(third.ocd_followers_skipped)
         # A follower who arrived during the live is not told of it

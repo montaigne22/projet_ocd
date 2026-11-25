@@ -435,6 +435,13 @@
         &.o_ocd_set_wide, &.o_ocd_set_item_templates, &.o_ocd_set_item_warn {
             grid-column: auto;
         }
+        // no box to tick: the text takes the whole card (no empty margin on its left)
+        &:not(.o_ocd_set_item_check):not(.o_ocd_set_item_warn) {
+            grid-template-columns: minmax(0, 1fr);
+            > .o_ocd_set_mark {
+                display: none;
+            }
+        }
     }
     .o_ocd_set_template {
         grid-template-columns: minmax(0, 1fr) auto;

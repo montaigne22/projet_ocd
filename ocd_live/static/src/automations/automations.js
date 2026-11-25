@@ -16,6 +16,8 @@ export class OcdLiveAutomations extends Component {
     data = signal(null);
     selected = signal(null);
     busy = signal(false);
+    // on a phone: the automation touched takes the whole screen, ← back to the list
+    sheet = signal(false);
 
     setup() {
         this.orm = useService("orm");
@@ -43,6 +45,7 @@ export class OcdLiveAutomations extends Component {
 
     pick(row) {
         this.selected.set(row.id);
+        this.sheet.set(true);
     }
 
     runs(row) {

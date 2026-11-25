@@ -160,6 +160,37 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · Commandes, automatisations et le site sur un téléphone (chantier 25.3 et 25.4)
+
+Suite du chantier 25, après les retours de l'équipe sur le site (« trop grand, moins épuré, moins
+intuitif » : accueil, lives, shop).
+
+- **Commandes** : sur un téléphone, chaque commande est une petite carte (référence, heure et total ;
+  client et vendeur ; paiement et livraison), la commande touchée prend tout l'écran, ← pour revenir ;
+  sur une tablette, la liste en entier puis la commande (la liste était écrasée à deux lignes), la
+  colonne du total plus large.
+- **Automatisations** : la liste en entier ; l'automatisation touchée prend tout l'écran sur un
+  téléphone, ← pour revenir.
+- **Tableau de bord** : sur un téléphone, les chiffres en entier (un montant était coupé).
+- **Paramètres** : sur un téléphone, un réglage sans case à cocher prend toute sa carte.
+- Les listes et les fiches d'Odoo (vendeurs, réservations, colis, reversements, liens) tiennent déjà
+  sur un téléphone : rien ne déborde.
+- **Le site sur un téléphone (25.4)** : même pages, une taille en dessous : en-tête de 56 px (logo,
+  langue, son, panier plus petits), boutons de 48 px au lieu de 58, puces de 34 à 36 px, champs de
+  44 px (16 px de texte, sans zoom du téléphone), cartes « Au studio » et « Chez toi » de l'accueil
+  deux fois moins hautes, la ligne d'état et « Programme des lives » sur une ligne, « Je suis en live »
+  plus bas ; le shop montre deux rangées de produits d'emblée au lieu d'une. La tablette et
+  l'ordinateur ne changent pas.
+- Un test des abonnés comptait « aujourd'hui » en heure UTC, l'application à l'heure du vendeur : il
+  échouait juste après minuit à Douala ; il compte maintenant à l'heure du vendeur.
+- Vu dans Chromium à 450 px, 900 px et 1400 px ; fiche produit, panier et Mon espace sans défaut.
+- `tools/captures/mise-en-page.js` contrôle aussi les écrans de l'équipe à 390, 450 et 900 px (rien de
+  plus large que l'écran ; sur un téléphone, pas de bulles d'Odoo, aucune colonne ni carte qui défile
+  en elle-même) : 158 contrôles sans échec sur la base de démo.
+- Tests : suite complète des modules OCD sur une base neuve, **838 sans échec**.
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live** et **OCD
+  Live : shop** dans Applications, redémarrer le service d'Odoo, recharger la page sur le téléphone.
+
 ### 25 novembre 2026 · Les écrans de l'équipe sur un téléphone (chantier 25.1 et 25.2)
 
 Retour de l'équipe avec des captures du téléphone : Dispatch, Conversations, Réservations, Régie et

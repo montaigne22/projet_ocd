@@ -5854,3 +5854,30 @@
         gap: 10px;
     }
 }
+
+// A phone (chantier 25.4): the search and the filters of the shop a size down, as the rest of the
+// site on a phone
+@media (max-width: $ocd-tablet - 1px) {
+    .o_ocd_app {
+        .o_ocd_shop {
+            gap: 8px;
+        }
+        .o_ocd_shop_search .o_ocd_input {
+            height: 44px;
+        }
+        .o_ocd_shop_country {
+            > summary, &.o_ocd_shop_country_one {
+                height: 44px;
+                border-radius: 12px;
+            }
+        }
+        .o_ocd_where_row .o_ocd_chip {
+            min-height: 36px;
+        }
+        .o_ocd_where_select {
+            min-height: 36px;
+            font-size: 13.5px;
+        }
+    }
+}
+

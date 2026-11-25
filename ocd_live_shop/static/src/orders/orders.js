@@ -18,6 +18,8 @@ export class OcdLiveOrders extends Component {
     data = signal(null);
     detail = signal(null);
     filter = signal("all");
+    // on a phone: the order touched takes the whole screen, ← back to the list
+    sheet = signal(false);
 
     setup() {
         this.orm = useService("orm");
@@ -37,6 +39,11 @@ export class OcdLiveOrders extends Component {
 
     async select(orderId) {
         this.detail.set(await this.orm.call("ocd.live.orders", "get_order_detail", [orderId]));
+    }
+
+    async open(orderId) {
+        await this.select(orderId);
+        this.sheet.set(true);
     }
 
     keep(row) {

@@ -9,6 +9,8 @@
 // - the page of a country: its cards not cut, never one card stretched over the page;
 // - « To check »: no column squeezed under 280 px, no card wider than its column, no empty
 //   column on the board;
+// - the screens of the team on a phone and a tablet: nothing wider than the screen; on a phone, no
+//   chat bubbles of Odoo over it, no card cut (« To check », « Dispatch »);
 // - with OCD_SPACE_LINK (the personal link of a vendor of the demo): « My space » has every entry
 //   of the computer on a phone and a tablet, each page of it with the menu at the bottom on a
 //   phone, no heading covered, no amount cut in « My figures ».
@@ -211,6 +213,59 @@ async function board(browser, [width, height]) {
     await page.context().close();
 }
 
+// The screens of the team on a phone and a tablet (chantier 25): nothing wider than the screen, no
+// chat bubbles of Odoo over a phone screen, on a phone no card cut to the height of the screen
+// (« To check »: one column open, its cards whole; « Dispatch »: one step, its parcels whole)
+const TEAM_SCREENS = {
+    dashboard: 'ocd_live.ocd_live_dashboard_action',
+    planning: 'ocd_live.ocd_live_planning_action',
+    verification: 'ocd_live.ocd_live_verification_action',
+    automations: 'ocd_live.ocd_live_automations_action',
+    settings: 'ocd_live.ocd_live_settings_action',
+    regie: 'ocd_live_shop.ocd_live_regie_action',
+    dispatch: 'ocd_live_shop.ocd_live_dispatch_action',
+    orders: 'ocd_live_shop.ocd_live_orders_action',
+    couriers: 'ocd_live_shop.ocd_live_couriers_action',
+    inbox: 'ocd_live_whatsapp.ocd_whatsapp_inbox_action',
+};
+const TEAM_SIZES = [[390, 844], [450, 800], [900, 1000]];
+
+async function team(browser, [width, height]) {
+    const phone = width < 768;
+    const context = await browser.newContext({ viewport: { width, height }, locale: 'fr-FR', isMobile: phone, hasTouch: phone });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/web/login`, { waitUntil: 'load' });
+    await page.fill('input[name="login"]', LOGIN);
+    await page.fill('input[name="password"]', PASSWORD);
+    await page.press('input[name="password"]', 'Enter');
+    await page.waitForSelector('.o_main_navbar', { timeout: 60000 });
+    for (const [name, action] of Object.entries(TEAM_SCREENS)) {
+        const response = await page.goto(`${BASE}/odoo/action-${action}`, { waitUntil: 'load' });
+        if (!response || response.status() >= 400) {
+            continue;  // a module not installed in this base
+        }
+        await page.waitForTimeout(2500);
+        const size = `team ${name} ${width}x${height}`;
+        const info = await page.evaluate(() => {
+            const bubbles = document.querySelector('.o-mail-ChatHub-bubbles');
+            // the column shown scrolls inside itself: its cards are cut to the height of the screen
+            const cut = [...document.querySelectorAll('.o_ocd_verification_open, .o_ocd_dispatch_column_on, .o_ocd_regie_live, .o_ocd_orders_scroll, .o_ocd_auto_rows')]
+                .filter((pane) => pane.offsetParent !== null && pane.scrollHeight > pane.clientHeight + 1);
+            return {
+                over: document.documentElement.scrollWidth - innerWidth,
+                bubbles: !!bubbles && bubbles.offsetParent !== null && bubbles.getBoundingClientRect().height > 0,
+                cut: cut.length,
+            };
+        });
+        check(info.over <= 0, `${size}: nothing wider than the screen (${info.over}px)`);
+        if (phone) {
+            check(!info.bubbles, `${size}: no chat bubbles of Odoo over the screen`);
+            check(!info.cut, `${size}: no card cut (${info.cut})`);
+        }
+    }
+    await context.close();
+}
+
 (async () => {
     const browser = await chromium.launch();
     for (const size of SITE_SIZES) {
@@ -230,6 +285,9 @@ async function board(browser, [width, height]) {
     }
     for (const size of BACK_SIZES) {
         await board(browser, size);
+    }
+    for (const size of TEAM_SIZES) {
+        await team(browser, size);
     }
     await browser.close();
     console.log(failures.length ? `${failures.length} rule(s) broken` : 'Every rule holds.');

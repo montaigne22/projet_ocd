@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
 
     <t t-name="ocd_live.Automations">
-        <div class="o_action o_ocd_bo o_ocd_autos">
+        <div t-attf-class="o_action o_ocd_bo o_ocd_autos #{this.sheet() ? 'o_ocd_auto_sheet_open' : ''}">
             <t t-set="data" t-value="this.data()"/>
             <div class="o_ocd_bo_header">
                 <h1 class="o_ocd_bo_title">Automations</h1>
@@ -60,6 +60,10 @@
 
                 <t t-set="current" t-value="this.current"/>
                 <aside t-if="current" class="o_ocd_auto_detail" aria-live="polite">
+                    <button type="button" class="o_ocd_auto_back" title="Back to the automations" aria-label="Back to the automations"
+                            t-on-click="() => this.sheet.set(false)">
+                        <i class="oi" data-icon="arrow_back" aria-hidden="true"/><span>Automations</span>
+                    </button>
                     <h2 class="o_ocd_auto_detail_title" t-out="current.name"/>
                     <span class="o_ocd_auto_tags">
                         <span t-attf-class="o_ocd_auto_badge o_ocd_auto_badge_#{current.kind}" t-out="current.kind_label"/>
