@@ -909,7 +909,8 @@ class WhatsappAccount(models.Model):
                 warnings.append(_(
                     "ffmpeg is not installed on the server of Odoo: the voice messages recorded in "
                     "Odoo reach the customers as audio files, not as voice notes, and those of the "
-                    "customers may not play on old iPhones."
+                    "customers may not play on old iPhones. Install it with pip in the environment "
+                    "of Odoo: imageio-ffmpeg (requirements.txt)."
                 ))
             vals["health_state"] = "error" if problems else "warning" if warnings else "ok"
             vals["health_message"] = "\n".join(problems + warnings) or False

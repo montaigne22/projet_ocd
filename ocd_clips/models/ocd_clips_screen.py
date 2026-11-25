@@ -128,7 +128,7 @@ class OcdLiveBooking(models.Model):
                          received=size_text(env, part.received), size=size_text(env, part.size))
         elif part.state == "checking":
             line = env._("Received, being checked.") if media.can_convert() else env._(
-                "Received: waits for ffmpeg, not installed on the server (apt-get install ffmpeg)."
+                "Received: waits for ffmpeg, not installed on the server (pip install -r requirements.txt: imageio-ffmpeg)."
             )
         elif part.state == "refused":
             line = part.error or states["refused"]

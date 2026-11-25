@@ -852,6 +852,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 - **Tous les appels enregistrés, pour une trace complète** (décidé le 23 novembre 2026) : annoncés au
   client, gardés 90 jours (réglable), écoutés par les responsables seulement ; la conversation
   seulement (pas l'attente), en MP3. À valider avec le cadre légal du pays (consentement, durée).
+- **Messages vocaux** (25 novembre 2026) : un vocal enregistré dans Odoo part en note vocale (OGG Opus),
+  ceux des clients sont gardés en MP3 pour être lus partout, anciens iPhone compris. ffmpeg s'installe
+  **avec pip** sur le serveur (`pip install -r requirements.txt` dans l'environnement d'Odoo :
+  `imageio-ffmpeg`), **pas avec apt-get** ; c'est aussi celui des vidéos des cartes et des clips.
 
 ## Back-office
 

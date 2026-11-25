@@ -6,8 +6,9 @@
 - Received: the voice notes of the customers (OGG Opus, AMR) do not play in the browsers of old
   iPhones (Safari): kept as MP3, which every browser plays.
 
-ffmpeg is the one of the server (``apt-get install ffmpeg``), else the one of imageio-ffmpeg (pip,
-requirements.txt). Without it, the files go and stay as they are.
+ffmpeg is installed with pip in the environment of Odoo: imageio-ffmpeg (requirements.txt of the
+project) brings its own. An ffmpeg of the system is taken first when there is one. Without ffmpeg, the
+files go and stay as they are.
 """
 import logging
 import os

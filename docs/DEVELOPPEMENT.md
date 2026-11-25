@@ -28,11 +28,10 @@ data_dir = /opt/odoo20/data
   commande du shop envoie un PDF, le ticket du live est un PDF. La version « avec Qt patché » est la
   meilleure ; celle d'Ubuntu (Qt non patché) marche aussi, le ticket corrige son échelle.
 - **ffmpeg** : la vidéo courte d'un vendeur, filmée sur son téléphone (MP4, MOV, 3GP, WebM…), est rendue
-  lisible par tous les téléphones (MP4 720 px, 30 s au plus) et son affiche en est tirée. Deux façons de
-  l'avoir :
-  - avec pip, sans accès administrateur : `imageio-ffmpeg` est dans `requirements.txt`
-    (`pip install -r requirements.txt` le pose dans l'environnement d'Odoo, avec son propre ffmpeg) ;
-  - ou celui du système : `apt-get install -y ffmpeg` (pris en premier quand il est là).
+  lisible par tous les téléphones (MP4 720 px, 30 s au plus) et son affiche en est tirée. Il s'installe
+  **avec pip**, pas avec apt-get : `imageio-ffmpeg` est dans `requirements.txt`, et
+  `pip install -r requirements.txt` le pose dans l'environnement d'Odoo, avec son propre ffmpeg (un ffmpeg
+  du système, s'il y en a déjà un, est pris en premier).
 
   Sans ffmpeg, seules les vidéos MP4 et WebM de 15 Mo au plus sont acceptées, telles quelles.
 
@@ -42,7 +41,8 @@ data_dir = /opt/odoo20/data
   tourne sans les limites des workers d'Odoo (`limit_time_cpu`, `limit_memory_hard`, qui le couperaient),
   avec 2 threads et 100 s au plus.
 
-  ffmpeg sert aussi aux **messages vocaux WhatsApp** (`whatsapp_cloud/audio.py`, le même ffmpeg) : un vocal
+  ffmpeg sert aussi aux **messages vocaux WhatsApp** (`whatsapp_cloud/audio.py`, le même ffmpeg, installé
+  avec pip : `pip install -r requirements.txt` dans l'environnement d'Odoo) : un vocal
   enregistré dans Odoo (MP3) part en OGG Opus avec `"voice": true` (une vraie note vocale chez le client),
   un son que WhatsApp refuse (WAV, WebM…) part en OGG Opus ; les notes vocales des clients (OGG Opus, AMR)
   sont gardées en MP3, lu par tous les navigateurs (les anciens iPhone ne lisent pas l'OGG). Sans ffmpeg, le
@@ -312,9 +312,9 @@ Après un live, l'équipe envoie sa vidéo (bouton « Clips » du live, ou « En
 la régie) ; chaque produit mis à l'écran dans la régie devient un clip vertical de 30 secondes avec son
 lien court. Ce qu'il faut sur le serveur :
 
-- **ffmpeg et ffprobe** (`apt-get install -y ffmpeg`) : ffprobe vérifie la vidéo reçue, ffmpeg fait les
-  clips. Le ffmpeg de `imageio-ffmpeg` suffit (la vérification lit alors sa sortie) ; sans ffmpeg, la vidéo
-  reçue attend (l'écran et les Paramètres le disent).
+- **ffmpeg**, installé avec pip dans l'environnement d'Odoo (`pip install -r requirements.txt` :
+  `imageio-ffmpeg`) : il fait les clips et vérifie la vidéo reçue (un ffprobe du système, s'il y en a un,
+  sert à la vérification) ; sans ffmpeg, la vidéo reçue attend (l'écran et les Paramètres le disent).
 - **Le dossier des vidéos des lives** : `<ocd_recordings_path>/<base>` (`ocd_recordings_path` dans
   `odoo.conf`, ex. un disque à part), sinon `<data_dir>/ocd_recordings/<base>`. Ces fichiers (1 à 3 Go par live) restent hors de la base, hors des
   pièces jointes et donc hors des sauvegardes et du bucket S3 : ils ne durent que 7 jours (réglable),

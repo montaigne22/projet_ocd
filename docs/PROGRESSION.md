@@ -162,7 +162,7 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ### 25 novembre 2026 · Les messages vocaux WhatsApp (chantier 24.5, fin du chantier 24)
 
-ffmpeg était déjà sur le serveur (script d'installation, et `imageio-ffmpeg` de `requirements.txt` à défaut) ;
+ffmpeg vient de `imageio-ffmpeg` (`requirements.txt`, installé avec pip dans l'environnement d'Odoo) ;
 vérifié : il encode l'Opus (notes vocales de WhatsApp) et le MP3.
 
 - **Envoyés** : un vocal enregistré dans Odoo (Discuss ou boîte de réception d'OCD Live, en MP3) part en
@@ -181,8 +181,9 @@ vérifié : il encode l'Opus (notes vocales de WhatsApp) et le MP3.
   **272 sans échec** (6 nouveaux, avec de vrais sons convertis par ffmpeg) ; vu dans Chromium (une note vocale OGG reçue,
   gardée en MP3 et lue dans la boîte de réception).
 - Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **API Cloud WhatsApp** et
-  **OCD Live : messages WhatsApp** dans Applications, Ctrl+F5 ; sur le serveur, ffmpeg doit être là
-  (en root : `apt-get install -y ffmpeg`) : le contrôle du compte le dit sinon.
+  **OCD Live : messages WhatsApp** dans Applications, Ctrl+F5 ; sur le serveur, ffmpeg s'installe avec
+  pip, dans l'environnement Python d'Odoo (`pip install -r requirements.txt` du dépôt : `imageio-ffmpeg`
+  apporte son ffmpeg) ; s'il manque, le contrôle du compte le dit.
 
 ### 25 novembre 2026 · Les chiffres des conversations WhatsApp (chantier 24.4)
 

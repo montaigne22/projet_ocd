@@ -23,7 +23,7 @@ Automatic clips of the lives
   on the replay; the short link leads to the product with the colour shown,
   its visits and its sales counted for the vendor.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.0.1",
     "category": "Website/Website",
     "author": "RollBackk",
     "license": "LGPL-3",

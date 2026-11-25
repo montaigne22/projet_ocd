@@ -3,8 +3,9 @@
 A video sent from a phone is checked (kind, size); when ffmpeg is there, it is made readable by
 every phone and every browser: MP4 (H.264, AAC), at most 720 pixels wide and 30 seconds, with
 « fast start » so that it starts at once, and its first image becomes the poster of the card.
-ffmpeg is the one of the server (apt-get install ffmpeg), else the one of the Python package
-imageio-ffmpeg (pip install imageio-ffmpeg, in requirements.txt). Without any, only MP4 and WebM
+ffmpeg is installed with pip in the environment of Odoo: the Python package imageio-ffmpeg
+(requirements.txt) brings its own; an ffmpeg of the system is taken first when there is one. Without any,
+only MP4 and WebM
 videos are kept (most phones record MP4), with a smaller size limit since they are kept as they
 are."""
 

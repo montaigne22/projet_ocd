@@ -691,6 +691,6 @@ WA_CLOUD_FIGURES = {
 
 # The voice messages converted with ffmpeg (chantier 24.5)
 WA_CLOUD_VOICE = {
-    'ffmpeg is not installed on the server of Odoo: the voice messages recorded in Odoo reach the customers as audio files, not as voice notes, and those of the customers may not play on old iPhones.':
-        "ffmpeg n'est pas installé sur le serveur d'Odoo : les messages vocaux enregistrés dans Odoo arrivent chez les clients comme des fichiers audio, pas comme des notes vocales, et ceux des clients peuvent ne pas se lire sur les anciens iPhone.",
+    'ffmpeg is not installed on the server of Odoo: the voice messages recorded in Odoo reach the customers as audio files, not as voice notes, and those of the customers may not play on old iPhones. Install it with pip in the environment of Odoo: imageio-ffmpeg (requirements.txt).':
+        "ffmpeg n'est pas installé sur le serveur d'Odoo : les messages vocaux enregistrés dans Odoo arrivent chez les clients comme des fichiers audio, pas comme des notes vocales, et ceux des clients peuvent ne pas se lire sur les anciens iPhone. Installez-le avec pip dans l'environnement d'Odoo : imageio-ffmpeg (requirements.txt).",
 }

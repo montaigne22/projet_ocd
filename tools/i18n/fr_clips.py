@@ -207,8 +207,8 @@ CLIPS = {
     "Received (Bytes)": "Reçu (octets)",
     "Received At": "Reçue le",
     "Received, being checked.": "Reçue, en vérification.",
-    "Received: waits for ffmpeg, not installed on the server (apt-get install ffmpeg).":
-        "Reçue : attend ffmpeg, pas installé sur le serveur (apt-get install ffmpeg).",
+    "Received: waits for ffmpeg, not installed on the server (pip install -r requirements.txt: imageio-ffmpeg).":
+        "Reçue : attend ffmpeg, pas installé sur le serveur (pip install -r requirements.txt : imageio-ffmpeg).",
     "Reels": "Reels",
     "Refused": "Refusée",
     "Remove": "Retirer",
@@ -356,8 +356,8 @@ CLIPS = {
     "clips at most": "clips au plus",
     "days": "jours",
     "ffmpeg is not installed on the server.": "ffmpeg n'est pas installé sur le serveur.",
-    "ffmpeg is not installed on the server: the clips cannot be made (apt-get install ffmpeg).":
-        "ffmpeg n'est pas installé sur le serveur : les clips ne peuvent pas être faits (apt-get install ffmpeg).",
+    "ffmpeg is not installed on the server: the clips cannot be made (pip install -r requirements.txt: imageio-ffmpeg).":
+        "ffmpeg n'est pas installé sur le serveur : les clips ne peuvent pas être faits (pip install -r requirements.txt : imageio-ffmpeg).",
     "ffmpeg is there; %(free)s GB free for the videos of the lives (1 to 3 GB each, kept a few days).":
         "ffmpeg est là ; %(free)s Go libres pour les vidéos des lives (1 à 3 Go chacune, gardées quelques jours).",
     "image and sound checked": "image et son vérifiés",

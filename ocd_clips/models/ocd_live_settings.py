@@ -24,7 +24,7 @@ class OcdLiveSettings(models.AbstractModel):
             "ffmpeg is there; %(free)s GB free for the videos of the lives (1 to 3 GB each, kept a few days).",
             free=f"{free:.1f}",
         ) if media.can_convert() else _(
-            "ffmpeg is not installed on the server: the clips cannot be made (apt-get install ffmpeg)."
+            "ffmpeg is not installed on the server: the clips cannot be made (pip install -r requirements.txt: imageio-ffmpeg)."
         )
         return {
             "key": "clips",
