@@ -6,15 +6,16 @@ class OcdEvening(models.Model):
 
     def _ocd_tell_invited(self, vendors):
         """Override of `ocd_soirees`: the invitation of the vendors (ocd_soiree_invitation), in the
-        language of each vendor; never after STOP."""
+        language of each vendor (the one of the version they receive); never after STOP."""
         super()._ocd_tell_invited(vendors)
         Partner = self.env["res.partner"]
+        xmlid = "ocd_soirees_whatsapp.template_evening_invite"
         for evening in self:
             for vendor in vendors.sudo().filtered(lambda vendor: not vendor.whatsapp_opt_out):
-                local = evening.with_context(lang=vendor.lang or self.env.lang)
+                local = evening.with_context(lang=Partner._ocd_whatsapp_lang(xmlid, vendor))
                 tz_name = vendor._ocd_tz_name()
                 Partner._ocd_whatsapp_send(
-                    "ocd_soirees_whatsapp.template_evening_invite", vendor,
+                    xmlid, vendor,
                     ocd_evening_name=evening.name,
                     ocd_evening_when=local._ocd_when_sentence(tz_name),
                     ocd_evening_until=local._ocd_registration_day(tz_name),

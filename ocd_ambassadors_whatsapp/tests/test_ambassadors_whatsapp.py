@@ -40,6 +40,19 @@ class TestOcdAmbassadorsWhatsapp(OcdAmbassadorCommon):
         self.Gain._ocd_tell_delivered(now=datetime(2026, 11, 19, 21, 0))
         self.assertEqual(len(self.messages(self.grace, "ocd_ambassadeur_livres")), 1, "Once a day")
 
+    def test_parcels_counted_in_the_language_sent(self):
+        """Meta does not know the English version: the French one, with « 2 colis » in French."""
+        self.env["res.lang"]._activate_lang("fr_FR")
+        english = self.env["whatsapp.template"].search([
+            ("template_name", "=", "ocd_ambassadeur_livres"), ("lang_code", "=", "en"),
+        ])
+        english.status = "missing"
+        Partner = self.env["res.partner"]
+        xmlid = "ocd_ambassadors_whatsapp.template_ambassador_delivered"
+        self.assertEqual(Partner._ocd_whatsapp_lang(xmlid, self.grace), "fr_FR")
+        english.status = "unknown"
+        self.assertEqual(Partner._ocd_whatsapp_lang(xmlid, self.grace), "en_US")
+
     def test_the_payout_and_a_new_number(self):
         orders = self._amb_order(lines=[(self.dress, 4)])
         self._deliver(self._parcel(orders, self.brenda))

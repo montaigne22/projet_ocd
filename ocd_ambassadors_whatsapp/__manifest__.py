@@ -2,7 +2,7 @@
     "name": "OCD Live: Ambassadors On WhatsApp",
     "summary": "The ambassadors on WhatsApp: the parcels they shared delivered today (once a day), "
     "their payout made, their payout number changed",
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.0.1",
     "category": "Marketing/WhatsApp",
     "author": "RollBackk",
     "license": "LGPL-3",

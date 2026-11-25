@@ -181,6 +181,10 @@ Un client anglophone recevait la version anglaise d'un modèle même quand Meta 
   un lien de connexion dont aucune langue n'existe chez Meta laisse la place au code.
 - Au passage : les icônes des boutons du compte, du message et du contact (Font Awesome, absent d'Odoo 20)
   remplacées par celles d'Odoo 20.
+- Correctif du même jour : les valeurs que le code calcule avant l'envoi (dates de l'invitation à un grand
+  événement, « 2 colis » des ambassadeurs) sont écrites dans la langue de la version qui part vraiment :
+  plus de texte français avec des dates en anglais (`ocd_live_whatsapp` 20.0.1.12.1,
+  `ocd_soirees_whatsapp` 20.0.1.1.1, `ocd_ambassadors_whatsapp` 20.0.1.0.1).
 - Tests : base neuve, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp`, `ocd_vote_whatsapp`,
   `ocd_tickets_whatsapp`, `ocd_soirees_whatsapp`, `whatsapp_cloud_call`, `whatsapp_cloud_sale` :
   **253 sans échec** (12 nouveaux) ; vu à l'écran dans Chromium (compte, onglet Santé, modèle, message,

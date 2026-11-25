@@ -18,10 +18,10 @@ class ResPartner(models.Model):
         count = len(gains.picking_id)
         amount = sum(gains.mapped("amount"))
         currency = (self.company_id or self.env.company).currency_id
-        lang = self.lang or self.env.lang
-        partner = self.with_context(lang=lang)
+        xmlid = "ocd_ambassadors_whatsapp.template_ambassador_delivered"
+        partner = self.with_context(lang=self._ocd_whatsapp_lang(xmlid, self))
         return partner._ocd_whatsapp_send(
-            "ocd_ambassadors_whatsapp.template_ambassador_delivered", self,
+            xmlid, self,
             ocd_amb_count=partner.env._("1 parcel") if count == 1 else partner.env._("%s parcels", count),
             ocd_amb_amount=self.env["ocd.live.dashboard"]._ocd_money(amount, currency),
             ocd_amb_days=str((self.company_id or self.env.company).ocd_ambassador_confirm_days),

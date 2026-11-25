@@ -73,6 +73,18 @@ class ResPartner(models.Model):
         return bool(messages.filtered(lambda message: message.state != "skipped"))
 
     @api.model
+    def _ocd_whatsapp_lang(self, xmlid, partner):
+        """The language (code of Odoo) of the version of the template `xmlid` that `partner`
+        receives: the values computed by the code before the sending (dates, counts) are written
+        in it. A contact whose language is missing at Meta gets the main language of the template:
+        its dates too, never French text with English dates."""
+        fallback = (partner.lang if partner else False) or self.env.lang
+        template = self.env.ref(xmlid, raise_if_not_found=False)
+        if not template or not partner:
+            return fallback
+        return template.sudo()._get_lang_version(partner)._get_render_lang() or fallback
+
+    @api.model
     def _ocd_whatsapp_refused_for(self, template, record):
         partner = template._get_recipient(record)
         return not partner or partner._ocd_whatsapp_refused()

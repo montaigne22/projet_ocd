@@ -43,6 +43,21 @@ class TestOcdSoireesWhatsapp(OcdShopCommon):
         self.assertIn("OCD Live organises Black Friday, which takes place", invitation.body)
         self.assertIn("tap « Join » before", invitation.body)
 
+    def test_english_version_missing_at_meta(self):
+        """Meta does not know the English invitation: the vendor gets the French one, with its
+        dates in French too (computed in the language of the version sent)."""
+        self.env["res.lang"]._activate_lang("fr_FR")
+        english = self.env.ref("ocd_soirees_whatsapp.template_evening_invite_en")
+        english.status = "missing"
+        self.evening.action_ocd_open()
+        invitation = self._messages("ocd_soiree_invitation")
+        self.assertEqual(invitation.template_id, self.env.ref("ocd_soirees_whatsapp.template_evening_invite"))
+        tz_name = self.brenda._ocd_tz_name()
+        french = self.evening.with_context(lang="fr_FR")
+        self.assertIn(french._ocd_when_sentence(tz_name), invitation.body)
+        self.assertIn(french._ocd_registration_day(tz_name), invitation.body)
+        self.assertNotIn(self.evening.with_context(lang="en_US")._ocd_registration_day(tz_name), invitation.body)
+
     def test_the_start_is_told(self):
         self.evening.action_ocd_open()
         partner = self.env["res.partner"].create({"name": "Paul", "phone": "+237 670000039", "lang": "en_US"})

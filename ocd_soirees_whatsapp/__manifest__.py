@@ -2,7 +2,7 @@
     "name": "OCD Live: Big Events On WhatsApp",
     "summary": "The vendors invited to a big event, and the start of the event told to the people who "
     "asked",
-    "version": "20.0.1.1.0",
+    "version": "20.0.1.1.1",
     "category": "Marketing/WhatsApp",
     "author": "RollBackk",
     "license": "LGPL-3",
