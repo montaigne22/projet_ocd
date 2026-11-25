@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- The figures of the WhatsApp conversations, under the other cards -->
+    <t t-inherit="ocd_live.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_ocd_dash')]" position="inside">
+            <div t-if="data.whatsapp" class="o_ocd_dash_row o_ocd_dash_wa_row">
+                <t t-set="wa" t-value="data.whatsapp"/>
+                <section class="o_ocd_dash_card o_ocd_dash_wa_card" aria-labelledby="o_ocd_dash_wa_title">
+                    <div class="o_ocd_dash_card_head">
+                        <div class="o_ocd_dash_card_titles">
+                            <h2 id="o_ocd_dash_wa_title">WhatsApp conversations</h2>
+                            <span t-out="wa.subtitle"/>
+                        </div>
+                        <div class="o_ocd_switch" role="group" aria-label="Period">
+                            <button t-foreach="wa.periods" t-as="days" t-key="days" type="button"
+                                    t-att-aria-pressed="wa.days === days ? 'true' : 'false'"
+                                    t-att-disabled="this.whatsappBusy()"
+                                    t-on-click="() => this.setWhatsappDays(days)" t-out="this.whatsappPeriodLabel(days)"/>
+                        </div>
+                    </div>
+                    <div class="o_ocd_dash_wa_figures">
+                        <t t-foreach="wa.figures" t-as="figure" t-key="figure.key">
+                            <a t-if="figure.action" href="#" t-attf-class="o_ocd_dash_wa_figure o_ocd_dash_wa_link o_ocd_dash_wa_tone_#{figure.tone or 'none'}"
+                               t-on-click.prevent="() => this.open(figure.action)">
+                                <t t-call="ocd_live_whatsapp.DashboardFigure"/>
+                            </a>
+                            <div t-else="" t-attf-class="o_ocd_dash_wa_figure o_ocd_dash_wa_tone_#{figure.tone or 'none'}">
+                                <t t-call="ocd_live_whatsapp.DashboardFigure"/>
+                            </div>
+                        </t>
+                    </div>
+                    <div t-if="wa.agents.length" class="o_ocd_dash_wa_agents_wrap">
+                    <table class="o_ocd_dash_wa_agents">
+                        <thead>
+                            <tr>
+                                <th scope="col">Agent</th>
+                                <th scope="col">Conversations</th>
+                                <th scope="col">First answer</th>
+                                <th scope="col">Resolutions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="wa.agents" t-as="agent" t-key="agent.key">
+                                <th scope="row" t-out="agent.name"/>
+                                <td t-out="agent.conversations"/>
+                                <td><span t-attf-class="o_ocd_dash_wa_value o_ocd_dash_wa_tone_#{agent.tone or 'none'}" t-out="agent.first_answer"/></td>
+                                <td t-out="agent.resolved"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </section>
+
+                <section class="o_ocd_dash_card o_ocd_dash_wa_templates" aria-labelledby="o_ocd_dash_wa_templates_title">
+                    <div class="o_ocd_dash_card_head">
+                        <div class="o_ocd_dash_card_titles">
+                            <h2 id="o_ocd_dash_wa_templates_title">Templates sent per month</h2>
+                            <span>Paid: as charged by Meta (the answers within 24 hours are free)</span>
+                        </div>
+                    </div>
+                    <a t-foreach="wa.templates" t-as="row" t-key="row.key" href="#" class="o_ocd_dash_wa_month"
+                       t-att-aria-label="this.whatsappTemplatesLabel(row)" t-on-click.prevent="() => this.open(wa.templates_action)">
+                        <span class="o_ocd_dash_wa_month_label" t-out="row.label"/>
+                        <span class="o_ocd_dash_wa_month_track" aria-hidden="true">
+                            <span class="o_ocd_dash_wa_month_sent" t-att-style="'width: ' + row.width + '%'"/>
+                            <span class="o_ocd_dash_wa_month_paid" t-att-style="'width: ' + row.paid_width + '%'"/>
+                        </span>
+                        <span class="o_ocd_dash_wa_month_value" t-out="row.value"/>
+                        <span t-if="row.detail" class="o_ocd_dash_wa_month_detail" t-out="row.detail"/>
+                    </a>
+                    <div class="o_ocd_dash_wa_legend" aria-hidden="true">
+                        <span><i class="o_ocd_dash_wa_key o_ocd_dash_wa_month_sent"/>Templates sent</span>
+                        <span><i class="o_ocd_dash_wa_key o_ocd_dash_wa_month_paid"/>Paid by the company</span>
+                    </div>
+                </section>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-name="ocd_live_whatsapp.DashboardFigure">
+        <span class="o_ocd_dash_wa_label" t-out="figure.label"/>
+        <span class="o_ocd_dash_wa_value" t-out="figure.value"/>
+        <span t-if="figure.sub" class="o_ocd_dash_wa_sub" t-out="figure.sub"/>
+        <span t-if="figure.target" class="o_ocd_dash_wa_target">
+            <i class="o_ocd_dash_wa_dot" aria-hidden="true"/><t t-out="figure.target"/>
+        </span>
+    </t>
+
+</templates>

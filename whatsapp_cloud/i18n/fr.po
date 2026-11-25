@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 09:27+0000\n"
-"PO-Revision-Date: 2026-11-25 09:27+0000\n"
+"POT-Creation-Date: 2026-11-25 10:07+0000\n"
+"PO-Revision-Date: 2026-11-25 10:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -330,6 +330,7 @@ msgstr "Jeton d’accès"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__account_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__account_id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__account_id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__account_id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_webhook_event__account_id
@@ -371,6 +372,7 @@ msgstr "Ajoutés aux conversations qui attendent trop longtemps une réponse. Si
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__user_id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__user_id
 #: model:res.groups,name:whatsapp_cloud.group_whatsapp_user
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_search_whatsapp
 msgid "Agent"
@@ -415,6 +417,11 @@ msgid "Answer Delays"
 msgstr "Délais de réponse"
 
 #. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_conversation_event__kind__answer
+msgid "Answer to a customer who waited"
+msgstr "Réponse à un client qui attendait"
+
+#. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_bot_option__action__text
 msgid "Answer with a text"
 msgstr "Répondre par un texte"
@@ -423,6 +430,11 @@ msgstr "Répondre par un texte"
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__response_delay
 msgid "Answer within (minutes)"
 msgstr "Répondre sous (minutes)"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_conversation_event__start_date
+msgid "Answer: the customer waited since this date. Resolution: the conversation opened then."
+msgstr "Réponse : le client attendait depuis cette date. Résolution : la conversation s'est ouverte à cette date."
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__window_warning_delay
@@ -715,6 +727,7 @@ msgstr "Contacts"
 #. module: whatsapp_cloud
 #. odoo-javascript
 #: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__channel_id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__channel_id
 msgid "Conversation"
 msgstr "Conversation"
@@ -753,6 +766,11 @@ msgid "Conversation reopened by %s."
 msgstr "Conversation rouverte par %s."
 
 #. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_conversation_event__kind__resolve
+msgid "Conversation resolved"
+msgstr "Conversation résolue"
+
+#. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/discuss_channel.py:0
 msgid "Conversation resolved by %s."
@@ -786,6 +804,7 @@ msgstr "Créez les modèles de vos messages"
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__create_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__create_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__create_uid
@@ -801,6 +820,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__create_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__create_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__create_date
@@ -838,6 +858,7 @@ msgid "Customer to identify"
 msgstr "Client à identifier"
 
 #. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__date
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_message_view_list
 msgid "Date"
@@ -894,6 +915,7 @@ msgstr "Message de discussion"
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__display_name
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__display_name
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__display_name
@@ -1249,6 +1271,7 @@ msgstr "Comment pouvons-nous vous aider ?"
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__id
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__id
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__id
@@ -1402,6 +1425,11 @@ msgid "It is the right contact"
 msgstr "C’est le bon contact"
 
 #. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: whatsapp_cloud
 #: model:ir.model,name:whatsapp_cloud.model_res_lang
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__lang
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__lang_code
@@ -1443,6 +1471,7 @@ msgstr "Dernier message du client"
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__write_uid
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__write_uid
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__write_uid
@@ -1458,6 +1487,7 @@ msgstr "Dernière mise à jour par"
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_bot_option__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_assign__write_date
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_link_partner__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__write_date
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_tag__write_date
@@ -1709,6 +1739,16 @@ msgstr "Meta a bloqué temporairement le numéro pour non-respect des règles : 
 #: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
 msgid "Mine"
 msgstr "Les miennes"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__minutes
+msgid "Minutes"
+msgstr "Minutes"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__working_minutes
+msgid "Minutes of Opening Hours"
+msgstr "Minutes d'ouverture"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__status__missing
@@ -2036,6 +2076,11 @@ msgstr "Ouvrir un sous-menu"
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.discuss_channel_view_form_whatsapp
 msgid "Open the Conversation"
 msgstr "Ouvrir la conversation"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_opened_date
+msgid "Opened on"
+msgstr "Ouverte le"
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__resource_calendar_id
@@ -2492,6 +2537,11 @@ msgstr "Affichée dans la conversation, pour l’agent qui la reprend."
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_bot_option__description
 msgid "Shown under the option when the menu has more than 3 options (72 characters at most)."
 msgstr "Affichée sous l’option quand le menu a plus de 3 options (72 caractères au plus)."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_conversation_event__start_date
+msgid "Since"
+msgstr "Depuis"
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
@@ -3009,6 +3059,11 @@ msgid "The file is too big."
 msgstr "Le fichier est trop volumineux."
 
 #. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_opened_date
+msgid "The first message of the customer since the conversation was last resolved: the time to resolve it counts from here."
+msgstr "Le premier message du client depuis la dernière résolution de la conversation : le temps de résolution compte à partir de là."
+
+#. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
 msgid "The flow of the template is blocked."
@@ -3106,6 +3161,11 @@ msgid ""
 msgstr ""
 "Les messages envoyés par les règles d’automatisation et les boutons « Envoyer un WhatsApp », et\n"
 "               les réponses des clients, apparaissent ici avec leur statut."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_conversation_event__working_minutes
+msgid "The minutes within the opening hours of the account (public holidays excluded)."
+msgstr "Les minutes comprises dans les horaires d'ouverture du compte (jours fériés exclus)."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3792,6 +3852,11 @@ msgstr "API Cloud WhatsApp"
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__discuss_channel__channel_type__whatsapp
 msgid "WhatsApp Conversation"
 msgstr "Conversation WhatsApp"
+
+#. module: whatsapp_cloud
+#: model:ir.model,name:whatsapp_cloud.model_whatsapp_conversation_event
+msgid "WhatsApp Conversation Event"
+msgstr "Événement de conversation WhatsApp"
 
 #. module: whatsapp_cloud
 #: model:ir.model,name:whatsapp_cloud.model_whatsapp_tag

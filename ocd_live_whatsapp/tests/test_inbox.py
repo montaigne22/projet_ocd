@@ -206,6 +206,42 @@ class TestOcdWhatsappInbox(OcdLiveCommon):
         with self.assertRaises(UserError):
             self.Inbox.ocd_post(channel.id, "", False, [])
 
+    def test_figures_on_the_dashboard(self):
+        """The figures of the conversations on the dashboard: against the targets of the account
+        (green, yellow, red), each agent for the managers, 7 or 30 days."""
+        self.account.write({"response_delay": 15, "escalation_delay": 60})
+        channel = self._receive("Bonjour")
+        channel.whatsapp_waiting_since = fields.Datetime.now() - timedelta(minutes=10)
+        self.Inbox.ocd_post(channel.id, "Bonjour Brenda", False)
+        waiting = self._receive_from("237699000001", "Paul Mbarga", "Ma commande ?", "wamid.PAUL1")
+        waiting.whatsapp_waiting_since = fields.Datetime.now() - timedelta(minutes=70)
+        self.assertTrue(self.env["ocd.live.dashboard"].get_dashboard_data()["whatsapp"], "On the dashboard")
+        Dashboard = self.env["ocd.live.dashboard"].with_user(self.agent)
+
+        def plain(value):
+            # the durations do not break: non-breaking spaces
+            return value.replace("\u00a0", " ") if isinstance(value, str) else value
+
+        block = Dashboard.get_whatsapp_stats(7)
+        figures = {figure["key"]: {key: plain(value) for key, value in figure.items()} for figure in block["figures"]}
+        self.assertEqual(block["days"], 7)
+        self.assertEqual((figures["first_answer"]["value"], figures["first_answer"]["tone"]), ("10 min", "green"))
+        self.assertEqual(figures["first_answer"]["target"], "target: within 15 min")
+        self.assertEqual(figures["in_time"]["value"], "100 %")
+        self.assertEqual((figures["waiting"]["value"], figures["waiting"]["tone"]), ("1", "red"))
+        self.assertIn("1 h 10", figures["waiting"]["sub"])
+        self.assertEqual(block["agents"], [], "Each agent: for the managers only")
+        self.assertEqual(len(block["templates"]), 6)
+        self.agent.group_ids |= self.env.ref("whatsapp_cloud.group_whatsapp_manager")
+        block = Dashboard.get_whatsapp_stats(30)
+        self.assertEqual(block["days"], 30)
+        self.assertEqual([(row["name"], row["conversations"], plain(row["first_answer"])) for row in block["agents"]],
+                         [("Régie OCD", 1, "10 min")])
+        self.assertEqual(Dashboard.get_whatsapp_stats(365)["days"], 7, "Only the periods of the screen")
+        # not an agent: no figures of the conversations
+        user = new_test_user(self.env, login="ocd_dash_only", groups="base.group_user")
+        self.assertFalse(self.env["ocd.live.dashboard"].with_user(user)._ocd_whatsapp_stats(7))
+
     def test_window_closed_only_a_template(self):
         channel = self._receive("Merci")
         channel.sudo().whatsapp_last_inbound_date = channel.whatsapp_last_inbound_date.replace(year=2020)

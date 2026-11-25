@@ -10,6 +10,7 @@ from . import (
     res_users,
     whatsapp_account,
     whatsapp_bot_option,
+    whatsapp_conversation_event,
     whatsapp_message,
     whatsapp_tag,
     whatsapp_template,

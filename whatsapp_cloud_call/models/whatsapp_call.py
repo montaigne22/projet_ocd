@@ -366,6 +366,8 @@ class WhatsappCall(models.Model):
             if channel and user:
                 if channel.whatsapp_user_id != user:
                     channel._whatsapp_assign(user, notify=False)
+                # the call answers the customer who waited (figures of the team)
+                channel.sudo()._whatsapp_log_answer(user)
                 channel.sudo().write({"whatsapp_waiting_since": False, "whatsapp_alert_level": 0,
                                       "whatsapp_bot_state": "agent", "whatsapp_state": "open"})
             call._call_bus_send()

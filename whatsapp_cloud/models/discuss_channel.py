@@ -76,6 +76,11 @@ class DiscussChannel(models.Model):
     whatsapp_last_inbound_date = fields.Datetime(
         string="Last Message of the Customer", readonly=True
     )
+    whatsapp_opened_date = fields.Datetime(
+        string="Opened on", readonly=True,
+        help="The first message of the customer since the conversation was last resolved: the "
+        "time to resolve it counts from here.",
+    )
     whatsapp_channel_valid_until = fields.Datetime(
         string="Answers Allowed until",
         compute="_compute_whatsapp_channel_valid_until",
@@ -324,6 +329,8 @@ class DiscussChannel(models.Model):
         now = fields.Datetime.now()
         # a new 24-hour window: its warnings start again
         vals = {"whatsapp_last_inbound_date": now, "whatsapp_window_alert_level": 0}
+        if self.whatsapp_state == "done" or not self.whatsapp_opened_date:
+            vals["whatsapp_opened_date"] = now  # a new request of the customer
         if self.whatsapp_state == "done":
             vals["whatsapp_state"] = "new" if not self.whatsapp_user_id else "open"
             recent = self.whatsapp_last_inbound_date and (
@@ -962,6 +969,7 @@ class DiscussChannel(models.Model):
         self.ensure_one()
         vals = {}
         if self.whatsapp_waiting_since:
+            self._whatsapp_log_answer(self.env.user)
             vals.update(whatsapp_waiting_since=False, whatsapp_alert_level=0)
         if self.whatsapp_bot_state != "agent":
             vals["whatsapp_bot_state"] = "agent"
@@ -1139,9 +1147,19 @@ class DiscussChannel(models.Model):
         for channel in self.sudo():
             channel._whatsapp_assign(self.env.user)
 
+    def _whatsapp_log_answer(self, user):
+        """The figures of the team: `user` answers the customer who waits (time of the first
+        answer)."""
+        for channel in self.filtered("whatsapp_waiting_since"):
+            self.env["whatsapp.conversation.event"]._log(channel, "answer", channel.whatsapp_waiting_since, user)
+
     def whatsapp_action_resolve(self):
         self._whatsapp_check_agent()
         for channel in self.sudo():
+            if channel.whatsapp_state != "done":
+                self.env["whatsapp.conversation.event"]._log(
+                    channel, "resolve", channel.whatsapp_opened_date, self.env.user
+                )
             channel.write({
                 "whatsapp_state": "done",
                 "whatsapp_waiting_since": False,

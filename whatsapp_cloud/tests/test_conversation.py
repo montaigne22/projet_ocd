@@ -733,6 +733,77 @@ class TestWhatsAppConversation(WhatsAppCommon):
         channel.whatsapp_last_inbound_date = fields.Datetime.now() - timedelta(hours=25)
         self.assertEqual(channel._whatsapp_window_minutes_left(), 0)
 
+    # === FIGURES === #
+
+    def test_figures_of_the_conversations(self):
+        """The first answers, the resolutions and each agent, over the last days; the customers
+        who wait now."""
+        self.account.write({"bot_enabled": False, "response_delay": 15, "escalation_delay": 60})
+        now = fields.Datetime.now()
+        first = self.receive("Bonjour").channel_id
+        second = self.receive("Bonsoir", wa_id="wamid.P1", number="237699000001", name="Paul").channel_id
+        third = self.receive("Allô ?", wa_id="wamid.K1", number="237699000002", name="Koffi").channel_id
+        first.whatsapp_waiting_since = now - timedelta(minutes=10)
+        second.whatsapp_waiting_since = now - timedelta(minutes=40)
+        third.whatsapp_waiting_since = now - timedelta(minutes=25)
+        first.with_user(self.agent).message_post(body="Bonjour Awa", message_type="comment")
+        second.with_user(self.agent_2).message_post(body="Bonsoir Paul", message_type="comment")
+        Event = self.env["whatsapp.conversation.event"]
+        answers = Event.search([("kind", "=", "answer")])
+        self.assertEqual(
+            {(event.channel_id.id, event.user_id.id, event.minutes) for event in answers},
+            {(first.id, self.agent.id, 10), (second.id, self.agent_2.id, 40)},
+        )
+        # an answer while nobody waits: not a first answer
+        first.with_user(self.agent).message_post(body="Autre chose ?", message_type="comment")
+        self.assertEqual(Event.search_count([("kind", "=", "answer")]), 2)
+        # resolved: from the first message of the customer
+        first.whatsapp_opened_date = now - timedelta(hours=2)
+        first.with_user(self.agent).whatsapp_action_resolve()
+        resolution = Event.search([("kind", "=", "resolve")])
+        self.assertEqual((resolution.channel_id, resolution.user_id, resolution.minutes), (first, self.agent, 120))
+        first.with_user(self.agent).whatsapp_action_resolve()
+        self.assertEqual(Event.search_count([("kind", "=", "resolve")]), 1, "Resolved once")
+        # a new message of the customer: a new request, from now
+        self.receive("Encore moi", wa_id="wamid.IN2")
+        self.assertGreater(first.whatsapp_opened_date, now - timedelta(minutes=1))
+
+        stats = self.account._whatsapp_stats(7)
+        self.assertEqual((stats["answers"], stats["first_answer"], stats["in_time"]), (2, 25, 1))
+        self.assertEqual((stats["resolutions"], stats["resolution"]), (1, 120))
+        self.assertEqual((stats["first_answer_target"], stats["escalation_target"]), (15, 60))
+        self.assertEqual((stats["waiting"], stats["conversations"]), (2, 2))
+        self.assertGreaterEqual(stats["waiting_oldest"], 25)
+        by_agent = {row["name"]: row for row in stats["agents"]}
+        self.assertEqual(
+            (by_agent["Agent Amina"]["conversations"], by_agent["Agent Amina"]["first_answer"], by_agent["Agent Amina"]["resolved"]),
+            (1, 10, 1),
+        )
+        self.assertEqual(by_agent["Agent Boris"]["first_answer"], 40)
+        # older than the period: not counted
+        Event.search([]).date = now - timedelta(days=8)
+        self.assertEqual(self.account._whatsapp_stats(7)["answers"], 0)
+        self.assertEqual(self.account._whatsapp_stats(30)["answers"], 2)
+
+    def test_templates_paid_each_month(self):
+        """The templates sent each month, and those charged by Meta (pricing « regular »)."""
+        Message = self.env["whatsapp.message"]
+        base = {"account_id": self.account.id, "direction": "outgoing", "message_type": "template",
+                "template_id": self.template.id, "phone": "237670000000", "mail_message_id": False}
+        Message.create([
+            {**base, "state": "read", "pricing_category": "utility / regular"},
+            {**base, "state": "delivered", "pricing_category": "marketing / regular"},
+            {**base, "state": "sent", "pricing_category": "utility / free_customer_service"},
+            {**base, "state": "sent"},  # no receipt of Meta yet
+            {**base, "state": "failed", "pricing_category": "utility / regular"},
+        ])
+        months = self.account._whatsapp_template_months(3)
+        self.assertEqual(len(months), 3)
+        self.assertEqual(months[-1]["month"], fields.Date.context_today(Message).replace(day=1))
+        self.assertEqual((months[-1]["sent"], months[-1]["paid"]), (4, 2))
+        self.assertEqual(months[-1]["categories"], {"marketing": 1, "utility": 1})
+        self.assertEqual((months[0]["sent"], months[1]["sent"]), (0, 0))
+
     # === SETTINGS === #
 
     def test_conversations_disabled(self):

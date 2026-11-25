@@ -935,6 +935,99 @@ class WhatsappAccount(models.Model):
                     name=account.name, hours=hours,
                 ))
 
+    # === FIGURES OF THE CONVERSATIONS === #
+
+    def _whatsapp_stats(self, days=7, months=6):
+        """The figures of the conversations of these accounts, for the team: over the last `days`,
+        the first answers to the customers who waited (average within the opening hours, share
+        within the answer delay of the account), the resolutions (average time), each agent;
+        now, the customers who wait; over the last `months`, the templates sent and those Meta
+        charges (pricing type « regular », the others are free).
+
+        :return: dict of numbers (minutes, counts), formatted by the screens that show them
+        """
+        now = fields.Datetime.now()
+        since = now - timedelta(days=days)
+        Event = self.env["whatsapp.conversation.event"].sudo()
+        events = Event.search([("account_id", "in", self.ids), ("date", ">=", since)])
+        answers = events.filtered(lambda event: event.kind == "answer")
+        resolutions = events.filtered(lambda event: event.kind == "resolve")
+        in_time = answers.filtered(
+            lambda event: event.account_id.response_delay
+            and event.working_minutes <= event.account_id.response_delay
+        )
+        waiting = self.env["discuss.channel"].sudo().search([
+            ("channel_type", "=", "whatsapp"), ("whatsapp_account_id", "in", self.ids),
+            ("whatsapp_waiting_since", "!=", False), ("whatsapp_state", "!=", "done"),
+        ], order="whatsapp_waiting_since")
+
+        def average(records):
+            return round(sum(records.mapped("working_minutes")) / len(records)) if records else None
+
+        agents = []
+        for user in events.user_id.sorted("name"):
+            mine = events.filtered(lambda event, user=user: event.user_id == user)
+            user_answers = mine.filtered(lambda event: event.kind == "answer")
+            agents.append({
+                "user_id": user.id,
+                "name": user.name,
+                "conversations": len(mine.channel_id),
+                "answers": len(user_answers),
+                "first_answer": average(user_answers),
+                "resolved": len(mine.filtered(lambda event: event.kind == "resolve")),
+            })
+        agents.sort(key=lambda row: (-row["conversations"], row["name"]))
+        delays = [delay for delay in self.mapped("response_delay") if delay]
+        return {
+            "days": days,
+            "answers": len(answers),
+            "first_answer": average(answers),
+            "first_answer_target": min(delays) if delays else 0,
+            "escalation_target": min([d for d in self.mapped("escalation_delay") if d] or [0]),
+            "in_time": len(in_time),
+            "resolutions": len(resolutions),
+            "resolution": average(resolutions),
+            "conversations": len(events.channel_id),
+            "waiting": len(waiting),
+            "waiting_oldest": (
+                int((now - waiting[0].whatsapp_waiting_since).total_seconds() // 60) if waiting else 0
+            ),
+            "agents": agents,
+            "templates": self._whatsapp_template_months(months),
+        }
+
+    def _whatsapp_template_months(self, months=6):
+        """The templates sent by these accounts each month (the current one last): sent (Meta
+        took them), paid (pricing type « regular » given by Meta), by pricing category."""
+        today = fields.Date.context_today(self)
+        first = today.replace(day=1)
+        for _index in range(months - 1):
+            first = (first - timedelta(days=1)).replace(day=1)
+        groups = self.env["whatsapp.message"].sudo()._read_group(
+            [
+                ("account_id", "in", self.ids), ("direction", "=", "outgoing"),
+                ("message_type", "=", "template"), ("state", "in", ("sent", "delivered", "read")),
+                ("create_date", ">=", fields.Datetime.to_datetime(first)),
+            ],
+            ["create_date:month", "pricing_category"], ["__count"],
+        )
+        rows = {}
+        month = first
+        for _index in range(months):
+            rows[month] = {"month": month, "sent": 0, "paid": 0, "categories": {}}
+            month = (month + timedelta(days=32)).replace(day=1)
+        for month_start, pricing, count in groups:
+            row = rows.get(month_start.date() if hasattr(month_start, "date") else month_start)
+            if row is None:
+                continue
+            category, _sep, kind = (pricing or "").partition(" / ")
+            row["sent"] += count
+            if kind.strip().lower() == "regular":
+                row["paid"] += count
+                key = category.strip().lower() or "other"
+                row["categories"][key] = row["categories"].get(key, 0) + count
+        return list(rows.values())
+
     def _alert_managers(self, text):
         """Note on the account, and notification to the managers in their inbox."""
         self.ensure_one()

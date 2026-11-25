@@ -24,7 +24,7 @@ the others never go to a contact who refused.
 
 The texts are editable in WhatsApp > Templates.
 """,
-    "version": "20.0.1.14.0",
+    "version": "20.0.1.15.0",
     "category": "Marketing/WhatsApp",
     "author": "RollBackk",
     "license": "LGPL-3",
@@ -41,6 +41,7 @@ The texts are editable in WhatsApp > Templates.
     "assets": {
         "web.assets_backend": [
             "ocd_live_whatsapp/static/src/inbox/*",
+            "ocd_live_whatsapp/static/src/dashboard/*",
         ],
     },
     "post_init_hook": "post_init_hook",

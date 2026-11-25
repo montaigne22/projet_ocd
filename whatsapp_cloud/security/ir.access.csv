@@ -23,6 +23,8 @@ access_whatsapp_bot_option_manager,whatsapp.bot.option manager,whatsapp.bot.opti
 access_whatsapp_composer_user,whatsapp.composer user,whatsapp.composer,base.group_user,cru,
 access_whatsapp_conversation_assign_user,whatsapp.conversation.assign user,whatsapp.conversation.assign,group_whatsapp_user,cru,
 access_whatsapp_link_partner_user,whatsapp.link.partner user,whatsapp.link.partner,group_whatsapp_user,cru,
+access_whatsapp_conversation_event_user,whatsapp.conversation.event user,whatsapp.conversation.event,group_whatsapp_user,r,
+access_whatsapp_conversation_event_system,whatsapp.conversation.event system,whatsapp.conversation.event,base.group_system,crud,
 whatsapp_account_company_rule,WhatsApp account: multi-company,whatsapp.account,,crud,"[('company_id', 'in', company_ids)]"
 whatsapp_template_company_rule,WhatsApp template: multi-company,whatsapp.template,,crud,"[('company_id', 'in', company_ids + [False])]"
 whatsapp_message_company_rule,WhatsApp message: multi-company,whatsapp.message,,crud,"[('company_id', 'in', company_ids)]"
@@ -31,3 +33,4 @@ ir_rule_discuss_channel_whatsapp_manager,discuss.channel: WhatsApp managers read
 ir_rule_discuss_channel_member_whatsapp_user,discuss.channel.member: WhatsApp agents read and add the members of the conversations,discuss.channel.member,group_whatsapp_user,cr,"[('channel_id.channel_type', '=', 'whatsapp')]"
 whatsapp_bot_option_company_rule,WhatsApp menu option: multi-company,whatsapp.bot.option,,crud,"[('account_id.company_id', 'in', company_ids)]"
 whatsapp_webhook_event_company_rule,WhatsApp webhook event: multi-company,whatsapp.webhook.event,,crud,"['|', ('account_id', '=', False), ('account_id.company_id', 'in', company_ids)]"
+whatsapp_conversation_event_company_rule,WhatsApp conversation event: multi-company,whatsapp.conversation.event,,crud,"[('account_id.company_id', 'in', company_ids)]"

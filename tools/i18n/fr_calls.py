@@ -670,3 +670,21 @@ WA_CLOUD_WINDOW = {
     'Warnings before the End of the 24 h':
         'Alertes avant la fin des 24 h',
 }
+
+# The figures of the conversations (chantier 24.4)
+WA_CLOUD_FIGURES = {
+    'WhatsApp Conversation Event': 'Événement de conversation WhatsApp',
+    'Answer to a customer who waited': "Réponse à un client qui attendait",
+    'Conversation resolved': 'Conversation résolue',
+    'Kind': 'Type',
+    'Minutes': 'Minutes',
+    'Minutes of Opening Hours': "Minutes d'ouverture",
+    'Since': 'Depuis',
+    'Answer: the customer waited since this date. Resolution: the conversation opened then.':
+        "Réponse : le client attendait depuis cette date. Résolution : la conversation s'est ouverte à cette date.",
+    'The minutes within the opening hours of the account (public holidays excluded).':
+        "Les minutes comprises dans les horaires d'ouverture du compte (jours fériés exclus).",
+    'Opened on': 'Ouverte le',
+    'The first message of the customer since the conversation was last resolved: the time to resolve it counts from here.':
+        'Le premier message du client depuis la dernière résolution de la conversation : le temps de résolution compte à partir de là.',
+}

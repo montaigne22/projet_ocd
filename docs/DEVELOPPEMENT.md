@@ -606,6 +606,12 @@ Le temps restant pour répondre gratuitement (24 h après le dernier message du 
 (`whatsapp_cloud/static/src/whatsapp_window_chip.js`, calcul dans `whatsappWindowLeft`), mis à jour chaque
 minute. Les alertes avant la fin : `_whatsapp_check_windows`, appelée par la tâche des relances.
 
+Les chiffres des conversations : `whatsapp.conversation.event` note chaque réponse à un client qui attendait
+(`discuss.channel._whatsapp_log_answer`, aussi par un appel décroché) et chaque résolution
+(`whatsapp_action_resolve`, depuis `whatsapp_opened_date`) ; `whatsapp.account._whatsapp_stats(days)` les
+calcule (et les modèles payés de chaque mois, `_whatsapp_template_months`) ; le tableau de bord d'OCD Live les
+affiche (`ocd_live_whatsapp`, `ocd.live.dashboard._ocd_whatsapp_stats`).
+
 Les modèles sont des données `noupdate` : chargés à l'installation, jamais réécrits par une mise à jour
 (l'équipe peut changer les textes). **Pour corriger le texte d'un modèle fourni** : changer le XML, monter
 la version du module et ajouter une migration qui donne l'ancien texte, mot pour mot :

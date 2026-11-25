@@ -160,6 +160,31 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · Les chiffres des conversations WhatsApp (chantier 24.4)
+
+Sur le tableau de bord d'OCD Live, un bloc « Conversations WhatsApp » (7 ou 30 jours), chaque chiffre
+comparé à son objectif comme les seuils des appels : vert atteint, orange au-delà, rouge au-delà du délai qui
+alerte les responsables (délais du compte WhatsApp, onglet Équipe).
+
+- **Première réponse** : le temps moyen entre le moment où un client attend et la réponse d'un conseiller
+  (écrite, ou un appel décroché), en heures d'ouverture ; objectif : le délai de réponse du compte (15 min).
+  **Réponses dans le délai** : la part de ces réponses dans ce délai.
+- **En attente maintenant** : les clients qui attendent et le plus ancien (ouvre les conversations) ;
+  objectif : personne.
+- **Temps de résolution** : du premier message du client à « Marquer résolue ».
+- **Par conseiller** (pour les responsables) : conversations traitées, première réponse moyenne, résolutions.
+- **Modèles envoyés par mois** (6 mois) : envoyés et payés (facturés par Meta : les réponses dans les 24 h
+  sont gratuites), par catégorie (marketing, utilité, authentification) ; ouvre les messages.
+- Ce qui est compté : chaque réponse à un client qui attendait et chaque résolution sont notées au moment où
+  elles arrivent (`whatsapp.conversation.event`, avec la durée réelle et en heures d'ouverture). Les chiffres
+  partent donc de la mise à jour ; les modèles payés, eux, sont lus dans les messages déjà envoyés (tarif
+  donné par Meta dans ses accusés).
+- Tests : base neuve, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp`, `ocd_vote_whatsapp`,
+  `ocd_tickets_whatsapp`, `ocd_soirees_whatsapp`, `whatsapp_cloud_call`, `whatsapp_cloud_sale` :
+  **266 sans échec** (4 nouveaux) ; vu dans Chromium (ordinateur, 7 et 30 jours, téléphone).
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **API Cloud WhatsApp**,
+  **Appels WhatsApp** et **OCD Live : messages WhatsApp** dans Applications, Ctrl+F5.
+
 ### 25 novembre 2026 · La boîte de réception d'OCD Live complète (chantier 24.3)
 
 WhatsApp › Conversations fait maintenant tout ce que l'équipe faisait dans Discuss :

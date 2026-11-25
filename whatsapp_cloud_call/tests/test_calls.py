@@ -136,6 +136,17 @@ class TestCalls(WhatsAppCallCommon):
                                  "reconnects": "1"})
         self.assertIn("cut off 1 time", str(call.notice_message_id.body))
 
+    def test_call_taken_answers_the_customer_who_waits(self):
+        """A customer who waited for an answer is answered by the call taken: the figures of the
+        conversations count it as the first answer of the agent."""
+        call = self.Call.browse(self.route()["call"])
+        channel = call.channel_id
+        channel.whatsapp_waiting_since = fields.Datetime.now() - timedelta(minutes=12)
+        self.Call._server_event({"event": "answered", "call": call.id, "agent": f"agent{self.agent.id}"})
+        event = self.env["whatsapp.conversation.event"].search([("channel_id", "=", channel.id)])
+        self.assertEqual((event.kind, event.user_id, event.minutes), ("answer", self.agent, 12))
+        self.assertFalse(channel.whatsapp_waiting_since)
+
     def test_missed_call_waits_for_an_answer(self):
         call = self.Call.browse(self.route()["call"])
         self.Call._server_event({"event": "ended", "call": call.id, "outcome": "missed", "wait": "180",
