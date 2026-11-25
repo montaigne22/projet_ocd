@@ -1,12 +1,14 @@
 import json
 import logging
-from datetime import timedelta
+from datetime import UTC, timedelta
+from zoneinfo import ZoneInfo
 
 from markupsafe import Markup, escape
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.fields import Command, Domain
+from odoo.tools import format_datetime
 
 from odoo.addons.mail.tools.discuss import Store
 from odoo.addons.whatsapp_cloud import const
@@ -86,6 +88,8 @@ class DiscussChannel(models.Model):
         help="The customer waits for an answer of the team since this date.",
     )
     whatsapp_alert_level = fields.Integer(readonly=True)
+    # warnings before the end of the 24-hour window: 1 the agent, 2 the managers too
+    whatsapp_window_alert_level = fields.Integer(string="Warnings before the End of the 24 h", readonly=True)
     whatsapp_bot_state = fields.Selection(
         selection=[("menu", "Welcome menu"), ("agent", "With the team")],
         string="Automatic Answers",
@@ -265,6 +269,46 @@ class DiscussChannel(models.Model):
             and self.whatsapp_channel_valid_until > fields.Datetime.now()
         )
 
+    def _whatsapp_window_minutes_left(self, now=None):
+        """Whole minutes left in the 24-hour window (free answers); 0 when it is closed."""
+        self.ensure_one()
+        end = self.whatsapp_channel_valid_until
+        now = now or fields.Datetime.now()
+        if not end or end <= now:
+            return 0
+        return int((end - now).total_seconds() // 60)
+
+    def _whatsapp_duration_text(self, minutes):
+        """« 2 h 05 », « 45 min », « less than 1 min »: a time left, in the language of the context."""
+        minutes = int(minutes)
+        if minutes < 1:
+            return self.env._("less than 1 min")
+        hours, rest = divmod(minutes, 60)
+        if hours:
+            return self.env._("%(hours)s h %(minutes)s", hours=hours, minutes=f"{rest:02d}")
+        return self.env._("%s min", rest)
+
+    def _whatsapp_window_end_text(self, tz=None):
+        """When the 24-hour window closes, at the hour of `tz` (else of the team: the agent of the
+        conversation, the agents, the company): « 14:35 » today, « Thu 09:12 » another day."""
+        self.ensure_one()
+        end = self.whatsapp_channel_valid_until
+        if not end:
+            return ""
+        account = self.whatsapp_account_id
+        if not tz and account:
+            tz = account._get_team_tz(self.whatsapp_user_id)
+        tz = tz or self.env.user.tz or "UTC"
+        try:
+            zone = ZoneInfo(tz)
+        except (KeyError, ValueError):
+            zone, tz = ZoneInfo("UTC"), "UTC"
+        local_end = end.replace(tzinfo=UTC).astimezone(zone)
+        local_now = fields.Datetime.now().replace(tzinfo=UTC).astimezone(zone)
+        if local_end.date() == local_now.date():
+            return f"{local_end:%H:%M}"
+        return format_datetime(self.env, end, tz=tz, dt_format="EEE HH:mm")
+
     # === RECEIVING === #
 
     def _whatsapp_receive(self, wa_message, content):
@@ -278,7 +322,8 @@ class DiscussChannel(models.Model):
             self._whatsapp_receive_system(wa_message, content["system"])
             return
         now = fields.Datetime.now()
-        vals = {"whatsapp_last_inbound_date": now}
+        # a new 24-hour window: its warnings start again
+        vals = {"whatsapp_last_inbound_date": now, "whatsapp_window_alert_level": 0}
         if self.whatsapp_state == "done":
             vals["whatsapp_state"] = "new" if not self.whatsapp_user_id else "open"
             recent = self.whatsapp_last_inbound_date and (
@@ -770,6 +815,66 @@ class DiscussChannel(models.Model):
                 and channel.whatsapp_alert_level < 1
             ):
                 channel._whatsapp_remind(minutes)
+        self._whatsapp_check_windows(now)
+
+    @api.model
+    def _whatsapp_check_windows(self, now):
+        """Before the end of the 24-hour window of a customer who waits for an answer: after it,
+        only a paid template reaches them. The agent is warned (window_warning_delay of the
+        account), then the managers (window_escalation_delay), at any hour: the window closes
+        also at night."""
+        accounts = self.env["whatsapp.account"].search([("company_id.whatsapp_answer_reminders", "=", True)])
+        longest = max([*accounts.mapped("window_warning_delay"), *accounts.mapped("window_escalation_delay"), 0])
+        if not longest:
+            return
+        channels = self.search([
+            ("channel_type", "=", "whatsapp"),
+            ("whatsapp_account_id", "in", accounts.ids),
+            ("whatsapp_waiting_since", "!=", False),
+            ("whatsapp_state", "!=", "done"),
+            ("whatsapp_window_alert_level", "<", 2),
+            ("whatsapp_channel_valid_until", ">", now),
+            ("whatsapp_channel_valid_until", "<=", now + timedelta(minutes=longest)),
+        ])
+        for channel in channels:
+            account = channel.whatsapp_account_id
+            channel = channel.with_context(lang=account._get_team_lang())
+            left = channel._whatsapp_window_minutes_left(now)
+            if account.window_escalation_delay and left < account.window_escalation_delay:
+                channel._whatsapp_window_escalate(left)
+            elif (
+                account.window_warning_delay and left < account.window_warning_delay
+                and channel.whatsapp_window_alert_level < 1
+            ):
+                channel._whatsapp_window_warn(left)
+
+    def _whatsapp_window_warn(self, left):
+        """The agent of the conversation (else all the agents): little time left to answer for free."""
+        self.ensure_one()
+        users = self.whatsapp_user_id or self.whatsapp_account_id._get_agents()
+        self._whatsapp_add_users(users)
+        self.whatsapp_window_alert_level = 1
+        self._whatsapp_notify(
+            _("Only %(left)s left to answer %(name)s for free: the 24 hours end at %(time)s, then only "
+              "a paid template reaches them.",
+              left=self._whatsapp_duration_text(left), time=self._whatsapp_window_end_text(),
+              name=self.whatsapp_partner_id.display_name or self.name),
+            partners=users.partner_id,
+        )
+
+    def _whatsapp_window_escalate(self, left):
+        """The managers (and the agent): the customer still waits, the free window ends soon."""
+        self.ensure_one()
+        managers = self.whatsapp_account_id._get_escalation_users()
+        self._whatsapp_add_users(managers)
+        self.whatsapp_window_alert_level = 2
+        self._whatsapp_notify(
+            _("%(name)s still waits for an answer: the 24 hours end in %(left)s (%(time)s), then only a "
+              "paid template reaches them.",
+              left=self._whatsapp_duration_text(left), time=self._whatsapp_window_end_text(),
+              name=self.whatsapp_partner_id.display_name or self.name),
+            partners=managers.partner_id | self.whatsapp_user_id.partner_id,
+        )
 
     def _whatsapp_remind(self, minutes):
         self.ensure_one()

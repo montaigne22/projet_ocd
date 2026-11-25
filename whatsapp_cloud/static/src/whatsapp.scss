@@ -137,3 +137,35 @@
     background-color: rgba($warning, .12);
     border: 1px solid rgba($warning, .45);
 }
+
+// The time left to answer for free (24-hour window): calm, then urgent the last hour, closed after
+.o-whatsapp-WindowChip {
+    background-color: rgba(37, 211, 102, 0.14);
+    color: #12723a;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    align-self: center;
+
+    .oi {
+        font-size: 0.85rem;
+        vertical-align: -0.15em;
+    }
+    &.o-whatsapp-WindowChip-urgent {
+        background-color: rgba(255, 153, 0, 0.18);
+        color: #8a4b00;
+        font-weight: 600 !important;
+    }
+    &.o-whatsapp-WindowChip-closed {
+        background-color: rgba(220, 53, 69, 0.12);
+        color: #a4202e;
+    }
+}
+.o-mail-DiscussContent-header .o-whatsapp-WindowChip,
+.o-mail-ChatWindow-header .o-whatsapp-WindowChip {
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+}
+.o-mail-NotificationItem .o-whatsapp-WindowChip {
+    align-self: flex-start;
+    margin-top: 2px;
+}

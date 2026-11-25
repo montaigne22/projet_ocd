@@ -160,6 +160,32 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · Prévenir avant la fin des 24 h (chantier 24.2)
+
+Répondre à un client dans les 24 h qui suivent son dernier message est gratuit ; ensuite, seul un
+modèle payant lui parvient.
+
+- **Le temps restant, partout où l'équipe répond** : une pastille « encore 2 h 15 » dans l'en-tête de la
+  conversation (Discuss, fenêtre de discussion sur téléphone, panneau Client), et « 2 h 15 » dans la liste
+  pour chaque client qui attend une réponse ; verte, puis orange la dernière heure, « 24 h passées » en rouge
+  après. Elle se met à jour chaque minute ; l'infobulle donne l'heure de fin. Dans la boîte de réception
+  d'OCD Live : « 2 h 15 » dans la liste et « Réponse gratuite encore 2 h 15 (jusqu'à 14:35) » en tête
+  de la conversation, « Plus que 40 min pour répondre gratuitement » en orange la dernière heure.
+- **Les alertes** (tâche « remind the conversations waiting for an answer », toutes les 5 minutes) : pour un
+  client qui attend une réponse, le conseiller de la conversation (sinon tous les agents) est prévenu une
+  heure avant la fin, puis les responsables une demi-heure avant, une seule fois chacun ; un nouveau message
+  du client ouvre une nouvelle fenêtre et de nouvelles alertes. À toute heure : la fenêtre se ferme aussi la
+  nuit. L'heure écrite est celle du conseiller (sinon de l'équipe, sinon de la société).
+- Réglages sur le compte WhatsApp, onglet Équipe : « Prévenir le conseiller avant la fin des 24 h » (60 min)
+  et « Prévenir les responsables… » (30 min), 0 pour jamais ; le réglage « Relances WhatsApp » de la société
+  les coupe avec les relances.
+- Tests : base neuve, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp`, `ocd_vote_whatsapp`,
+  `ocd_tickets_whatsapp`, `ocd_soirees_whatsapp`, `whatsapp_cloud_call`, `whatsapp_cloud_sale` :
+  **257 sans échec** (4 nouveaux) ; vu à l'écran dans Chromium (Discuss : en-tête, liste, panneau, fenêtre sur téléphone,
+  conversation fermée ; boîte de réception d'OCD Live sur ordinateur et téléphone).
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **WhatsApp Cloud API** et
+  **OCD Live : WhatsApp** dans Applications, Ctrl+F5.
+
 ### 25 novembre 2026 · Les modèles dans une langue absente chez Meta (chantier 24.1)
 
 Un client anglophone recevait la version anglaise d'un modèle même quand Meta ne la connaissait pas

@@ -165,6 +165,19 @@ class WhatsappAccount(models.Model):
         help="Opening hours after which the managers are alerted of a message without answer "
         "(0: never).",
     )
+    window_warning_delay = fields.Integer(
+        string="Warn the agent before the end of the 24 h (minutes)",
+        default=60,
+        help="Answering within 24 hours after the last message of the customer is free; after it, "
+        "only a paid template reaches them. The agent of a customer who waits for an answer is "
+        "warned this many minutes before the end (0: never).",
+    )
+    window_escalation_delay = fields.Integer(
+        string="Warn the managers before the end of the 24 h (minutes)",
+        default=30,
+        help="The managers are warned this many minutes before the end of the 24 hours when the "
+        "customer still waits for an answer (0: never).",
+    )
     resource_calendar_id = fields.Many2one(
         comodel_name="resource.calendar",
         string="Opening Hours",
@@ -554,6 +567,19 @@ class WhatsappAccount(models.Model):
         if langs:
             return max(sorted(set(langs)), key=langs.count)
         return self.company_id.partner_id.lang or self.env.lang or "en_US"
+
+    def _get_team_tz(self, user=None):
+        """Time zone of the hours written for the team (end of the 24 hours...): the one of `user`
+        (the agent of the conversation), else the most common one of the agents, else the one of
+        the company."""
+        self.ensure_one()
+        if user and user.tz:
+            return user.tz
+        zones = [agent.tz for agent in self._get_agents() if agent.tz]
+        if zones:
+            return max(sorted(set(zones)), key=zones.count)
+        company = self.company_id
+        return company.tz or company.partner_id.tz or "UTC"
 
     def _get_escalation_users(self):
         self.ensure_one()

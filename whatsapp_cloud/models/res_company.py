@@ -20,5 +20,6 @@ class ResCompany(models.Model):
         string="WhatsApp Answer Reminders",
         default=True,
         help="The agents are reminded of the messages waiting for an answer, then the managers "
-        "are alerted (delays of the WhatsApp account).",
+        "are alerted; before the end of the 24 hours of free answers too (delays of the "
+        "WhatsApp account).",
     )

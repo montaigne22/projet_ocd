@@ -31,6 +31,9 @@ HANDOVER_KEYWORDS = {
 # The customer service window: free-form messages are allowed for 24 hours after the last
 # message of the customer; templates are required after.
 SERVICE_WINDOW = timedelta(hours=24)
+# The last minutes of the window, shown as urgent (« 45 min left »): the default warning delay
+# of the accounts too.
+WINDOW_URGENT_MINUTES = 60
 
 # Errors worth a new attempt later (rate limits, temporary unavailability of Meta).
 RETRYABLE_ERROR_CODES = {

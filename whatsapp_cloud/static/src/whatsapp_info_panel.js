@@ -1,12 +1,13 @@
 import { ActionPanel } from "@mail/discuss/core/common/action_panel";
 import { callWhatsappAction } from "@whatsapp_cloud/whatsapp_utils";
+import { WhatsappWindowChip } from "@whatsapp_cloud/whatsapp_window_chip";
 
 import { Component, proxy, t, useOnChange, useProps } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 
 /** Information on the customer of a WhatsApp conversation, and the actions on it. */
 export class WhatsappInfoPanel extends Component {
-    static components = { ActionPanel };
+    static components = { ActionPanel, WhatsappWindowChip };
     static template = "whatsapp_cloud.WhatsappInfoPanel";
 
     setup() {

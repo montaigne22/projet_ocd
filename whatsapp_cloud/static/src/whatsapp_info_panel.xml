@@ -36,8 +36,9 @@
                         <t t-if="this.channel.whatsapp_user_name"> · <t t-out="this.channel.whatsapp_user_name"/></t>
                         <t t-else=""> · <span class="text-warning">Not assigned</span></t>
                     </span>
-                    <span class="small" t-att-class="this.channel.whatsappWindowOpen ? 'text-muted' : 'text-danger'">
-                        <t t-if="this.channel.whatsappWindowOpen">Answers allowed until <t t-out="this.validUntilText"/></t>
+                    <span class="small d-flex flex-wrap align-items-center gap-1" t-att-class="this.channel.whatsappWindowOpen ? 'text-muted' : 'text-danger'">
+                        <t t-if="this.channel.whatsappWindowOpen">Free answers until <t t-out="this.validUntilText"/>
+                            <WhatsappWindowChip channel="this.channel" compact="true"/></t>
                         <t t-else="">24-hour window closed: send a template</t>
                     </span>
                     <span t-if="this.channel.whatsapp_waiting_since" class="small text-warning">

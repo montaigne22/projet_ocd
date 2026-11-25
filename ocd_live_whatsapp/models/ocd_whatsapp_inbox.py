@@ -8,6 +8,8 @@ from odoo.exceptions import AccessError, UserError
 from odoo.tools import html2plaintext, plaintext2html
 from odoo.tools.misc import format_date, format_datetime
 
+from odoo.addons.whatsapp_cloud.const import WINDOW_URGENT_MINUTES
+
 LIST_LIMIT = 80
 MESSAGE_LIMIT = 60
 # The secret of a message sent by a template (a delivery code, a login code): hidden from the team
@@ -152,7 +154,35 @@ class OcdWhatsappInbox(models.AbstractModel):
             "time": self._ocd_time_label(date),
             "waiting": bool(channel.whatsapp_waiting_since),
             "done": channel.whatsapp_state == "done",
+            # a contact who waits: the time left to answer for free (24-hour window)
+            **self._ocd_window_left(channel, list_item=True),
             "sort": (fields.Datetime.to_string(date) if date else "", message.id if message else 0),
+        }
+
+    def _ocd_window_left(self, channel, list_item=False):
+        """The time left to answer the contact for free (the 24-hour window after their last
+        message, then only a paid template): « 2 h 15 » in the list for a contact who waits, « Free
+        answer for 2 h 15 more (until 14:35) » in the conversation; urgent the last hour."""
+        _ = self.env._
+        channel = channel.sudo()
+        minutes = channel._whatsapp_window_minutes_left()
+        urgent = bool(minutes) and minutes < WINDOW_URGENT_MINUTES
+        if list_item:
+            shown = bool(minutes) and bool(channel.whatsapp_waiting_since)
+            return {
+                "window_left": channel._whatsapp_duration_text(minutes) if shown else "",
+                "window_urgent": shown and urgent,
+            }
+        if not minutes and not channel._whatsapp_is_window_open():
+            return {"window_text": "", "window_urgent": False}
+        values = {
+            "left": channel._whatsapp_duration_text(minutes),
+            "time": channel._whatsapp_window_end_text(tz=self.env.user.tz),
+        }
+        return {
+            "window_text": _("Only %(left)s left to answer for free (until %(time)s)", **values) if urgent
+            else _("Free answer for %(left)s more (until %(time)s)", **values),
+            "window_urgent": urgent,
         }
 
     # === CONVERSATION === #
@@ -163,8 +193,9 @@ class OcdWhatsappInbox(models.AbstractModel):
         partner = channel.whatsapp_partner_id
         name = partner.name or (f"+{channel.whatsapp_number}" if channel.whatsapp_number else channel.name)
         is_open = channel._whatsapp_is_window_open()
+        left = self._ocd_window_left(channel)
         if is_open:
-            window = _("24-hour window open: free answer")
+            window = left["window_text"]
         else:
             first = name.split(" ")[0] if name else ""
             window = _("More than 24 hours without a message of %s: only an approved template", first)
@@ -178,6 +209,7 @@ class OcdWhatsappInbox(models.AbstractModel):
             "place": self._ocd_partner_place(partner) if partner else "",
             "open": is_open,
             "window": window,
+            "window_urgent": left["window_urgent"],
             "assigned": channel.whatsapp_user_id.name or "",
             "messages": self._ocd_messages(channel),
             "quick": self._ocd_quick_replies(),

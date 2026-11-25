@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 08:43+0000\n"
-"PO-Revision-Date: 2026-11-25 08:43+0000\n"
+"POT-Creation-Date: 2026-11-25 09:27+0000\n"
+"PO-Revision-Date: 2026-11-25 09:27+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,9 @@ msgid ""
 "  canned responses with variables, tags, information panel on the customer.\n"
 "- Team: agents and managers, assignment (taken by an agent, each agent in turn), transfer,\n"
 "  reminders and escalation of the messages waiting for an answer (opening hours and public\n"
-"  holidays), unknown numbers identified or merged into the right contact.\n"
+"  holidays), the time left to answer for free shown in the conversations and their list, the\n"
+"  agent then the managers warned before the end of the 24 hours, unknown numbers identified or\n"
+"  merged into the right contact.\n"
 "- Automatic answers: away message outside of the opening hours, welcome menu with buttons,\n"
 "  hand over to an agent, STOP / START.\n"
 "- Templates: synchronised from Meta, or written in Odoo and submitted to Meta (header,\n"
@@ -63,7 +65,9 @@ msgstr ""
 "  internes (/note), réponses rapides avec variables, étiquettes, panneau d’information client.\n"
 "- Équipe : agents et responsables, attribution (prise par un agent, chacun son tour), transfert,\n"
 "  relances et escalade des messages en attente de réponse (horaires d’ouverture et jours fériés),\n"
-"  numéros inconnus identifiés ou fusionnés avec le bon contact.\n"
+"  le temps restant pour répondre gratuitement affiché dans les conversations et leur liste, le\n"
+"  conseiller puis les responsables prévenus avant la fin des 24 heures, numéros inconnus\n"
+"  identifiés ou fusionnés avec le bon contact.\n"
 "- Réponses automatiques : message d’absence en dehors des horaires, menu d’accueil à boutons,\n"
 "  passage à un conseiller, STOP / START.\n"
 "- Modèles : synchronisés depuis Meta, ou rédigés dans Odoo et soumis à Meta (en-tête, pied,\n"
@@ -78,10 +82,36 @@ msgstr ""
 "  accusés de lecture, relances, menu d’accueil, message d’absence).\n"
 
 #. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_utils.js:0
+msgid "%(duration)s left"
+msgstr "encore %(duration)s"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+#: code:addons/whatsapp_cloud/static/src/whatsapp_utils.js:0
+msgid "%(hours)s h %(minutes)s"
+msgstr "%(hours)s h %(minutes)s"
+
+#. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
 msgid "%(message)s Not submitted: %(errors)s"
 msgstr "%(message)s Pas soumis : %(errors)s"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_utils.js:0
+msgid "%(minutes)s min"
+msgstr "%(minutes)s min"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "%(name)s still waits for an answer: the 24 hours end in %(left)s (%(time)s), then only a paid template reaches them."
+msgstr "%(name)s attend toujours une réponse : les 24 h se terminent dans %(left)s (%(time)s), ensuite seul un modèle payant lui parvient."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -100,6 +130,12 @@ msgstr "%s message(s) WhatsApp en cours d’envoi."
 #: code:addons/whatsapp_cloud/wizard/whatsapp_composer.py:0
 msgid "%s documents"
 msgstr "%s documents"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "%s min"
+msgstr "%s min"
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -154,6 +190,12 @@ msgstr "1 modèle soumis à Meta : son examen peut prendre jusqu’à 24 heures.
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
 msgid "1 template version does not exist at Meta: its messages leave in another language. See the Health tab of the account."
 msgstr "1 version de modèle n'existe pas chez Meta : ses messages partent dans une autre langue. Voir l'onglet Santé du compte."
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_window_chip.xml:0
+msgid "24 h passed"
+msgstr "24 h passées"
 
 #. module: whatsapp_cloud
 #. odoo-javascript
@@ -383,14 +425,13 @@ msgid "Answer within (minutes)"
 msgstr "Répondre sous (minutes)"
 
 #. module: whatsapp_cloud
-#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_channel_valid_until
-msgid "Answers Allowed until"
-msgstr "Réponses permises jusqu’au"
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__window_warning_delay
+msgid "Answering within 24 hours after the last message of the customer is free; after it, only a paid template reaches them. The agent of a customer who waits for an answer is warned this many minutes before the end (0: never)."
+msgstr "Répondre dans les 24 h après le dernier message du client est gratuit ; ensuite, seul un modèle payant lui parvient. Le conseiller d'un client qui attend une réponse est prévenu ce nombre de minutes avant la fin (0 : jamais)."
 
 #. module: whatsapp_cloud
-#. odoo-javascript
-#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
-msgid "Answers allowed until"
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_channel_valid_until
+msgid "Answers Allowed until"
 msgstr "Réponses permises jusqu’au"
 
 #. module: whatsapp_cloud
@@ -1063,6 +1104,18 @@ msgid "For a sub-menu: the text above its options"
 msgstr "Pour un sous-menu : le texte au-dessus de ses options"
 
 #. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
+msgid "Free answers until"
+msgstr "Réponse gratuite jusqu'à"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_utils.js:0
+msgid "Free answers until %(time)s: after it, only a paid template reaches the customer."
+msgstr "Réponse gratuite jusqu'à %(time)s : ensuite, seul un modèle payant parvient au client."
+
+#. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_discuss_channel__whatsapp_channel_valid_until
 msgid "Free-form answers are allowed for 24 hours after the last message of the customer; a template is required after."
 msgstr "Les réponses libres sont permises 24 heures après le dernier message du client ; un modèle est nécessaire ensuite."
@@ -1687,6 +1740,12 @@ msgstr "Plus de 24 heures depuis le dernier message du client : WhatsApp ne perm
 
 #. module: whatsapp_cloud
 #. odoo-javascript
+#: code:addons/whatsapp_cloud/static/src/whatsapp_window_chip.xml:0
+msgid "More than 24 hours since the last message of the customer: only a paid template reaches them."
+msgstr "Plus de 24 h depuis le dernier message du client : seul un modèle payant lui parvient."
+
+#. module: whatsapp_cloud
+#. odoo-javascript
 #: code:addons/whatsapp_cloud/static/src/composer_patch.xml:0
 msgid "More than 24 hours since the last message of the customer: only a template reaches them. Below: an internal note for the team."
 msgstr "Plus de 24 h depuis le dernier message du client : seul un modèle lui parvient. En dessous : une note interne pour l'équipe."
@@ -1938,6 +1997,12 @@ msgstr "Numérotées : {{1}}"
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__health_state__ok
 msgid "OK"
 msgstr "OK"
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+msgid "Only %(left)s left to answer %(name)s for free: the 24 hours end at %(time)s, then only a paid template reaches them."
+msgstr "Plus que %(left)s pour répondre gratuitement à %(name)s : les 24 h se terminent à %(time)s, ensuite seul un modèle payant lui parvient."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2740,8 +2805,8 @@ msgstr "Le compte fonctionne."
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_company__whatsapp_answer_reminders
 #: model:ir.model.fields,help:whatsapp_cloud.field_res_config_settings__whatsapp_answer_reminders
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
-msgid "The agents are reminded of the messages waiting for an answer, then the managers are alerted (delays of the WhatsApp account)."
-msgstr "Les agents sont relancés pour les messages en attente de réponse, puis les responsables sont alertés (délais du compte WhatsApp)."
+msgid "The agents are reminded of the messages waiting for an answer, then the managers are alerted; before the end of the 24 hours of free answers too (delays of the WhatsApp account)."
+msgstr "Les agents sont relancés pour les messages en attente de réponse, puis les responsables sont alertés ; avant la fin des 24 h de réponses gratuites aussi (délais du compte WhatsApp)."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -2996,6 +3061,11 @@ msgstr "Le lien du bouton %s doit commencer par https://."
 #: code:addons/whatsapp_cloud/const.py:0
 msgid "The list of the templates could not be read: synchronise again."
 msgstr "La liste des modèles n’a pas pu être lue : synchronisez à nouveau."
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__window_escalation_delay
+msgid "The managers are warned this many minutes before the end of the 24 hours when the customer still waits for an answer (0: never)."
+msgstr "Les responsables sont prévenus ce nombre de minutes avant la fin des 24 h quand le client attend toujours une réponse (0 : jamais)."
 
 #. module: whatsapp_cloud
 #. odoo-python
@@ -3607,10 +3677,25 @@ msgid "Waiting for an answer since"
 msgstr "En attente de réponse depuis"
 
 #. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__window_warning_delay
+msgid "Warn the agent before the end of the 24 h (minutes)"
+msgstr "Prévenir le conseiller avant la fin des 24 h (minutes)"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__window_escalation_delay
+msgid "Warn the managers before the end of the 24 h (minutes)"
+msgstr "Prévenir les responsables avant la fin des 24 h (minutes)"
+
+#. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_composer__warning
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_account__health_state__warning
 msgid "Warning"
 msgstr "Avertissement"
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_discuss_channel__whatsapp_window_alert_level
+msgid "Warnings before the End of the 24 h"
+msgstr "Alertes avant la fin des 24 h"
 
 #. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
@@ -4027,6 +4112,14 @@ msgstr "https://... ; pour un lien propre à chaque document, terminez-la par {{
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
 msgid "id"
 msgstr "id"
+
+#. module: whatsapp_cloud
+#. odoo-javascript
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/discuss_channel.py:0
+#: code:addons/whatsapp_cloud/static/src/whatsapp_utils.js:0
+msgid "less than 1 min"
+msgstr "moins d'1 min"
 
 #. module: whatsapp_cloud
 #. odoo-python

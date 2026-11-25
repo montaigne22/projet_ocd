@@ -18,7 +18,9 @@ WhatsApp Business number of the company with the Cloud API of Meta (no intermedi
   canned responses with variables, tags, information panel on the customer.
 - Team: agents and managers, assignment (taken by an agent, each agent in turn), transfer,
   reminders and escalation of the messages waiting for an answer (opening hours and public
-  holidays), unknown numbers identified or merged into the right contact.
+  holidays), the time left to answer for free shown in the conversations and their list, the
+  agent then the managers warned before the end of the 24 hours, unknown numbers identified or
+  merged into the right contact.
 - Automatic answers: away message outside of the opening hours, welcome menu with buttons,
   hand over to an agent, STOP / START.
 - Templates: synchronised from Meta, or written in Odoo and submitted to Meta (header,
@@ -32,7 +34,7 @@ WhatsApp Business number of the company with the Cloud API of Meta (no intermedi
 - Settings (WhatsApp section): each feature enabled or disabled (conversations, read
   receipts, reminders, welcome menu, away message).
 """,
-    "version": "20.0.2.17.0",
+    "version": "20.0.2.18.0",
     "category": "Marketing",
     "author": "RollBackk",
     "license": "OPL-1",

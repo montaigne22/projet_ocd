@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from markupsafe import Markup
 
+from odoo import fields
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import new_test_user, tagged
 from odoo.tools.misc import verify_limited_field_access_token
@@ -53,6 +56,27 @@ class TestOcdWhatsappInbox(OcdLiveCommon):
         incoming = [message for message in current["messages"] if message["kind"] == "in"]
         self.assertEqual(incoming[-1]["text"], "Bonjour, mon live est à quelle heure ?")
         self.assertEqual(current["consent"]["tone"], "green")
+
+    def test_time_left_to_answer_for_free(self):
+        """« 2 h 15 » in the list for a contact who waits, the end of the free window in the
+        conversation; urgent the last hour."""
+        channel = self._receive("Bonjour")
+        channel.whatsapp_last_inbound_date = fields.Datetime.now() - timedelta(hours=24) + timedelta(minutes=135, seconds=30)
+        page = self.Inbox.get_inbox(channel.id)
+        row = next(row for row in page["conversations"] if row["id"] == channel.id)
+        self.assertEqual((row["window_left"], row["window_urgent"]), ("2 h 15", False))
+        self.assertIn("Free answer for 2 h 15 more (until ", page["current"]["window"])
+        self.assertFalse(page["current"]["window_urgent"])
+        channel.whatsapp_last_inbound_date = fields.Datetime.now() - timedelta(hours=24) + timedelta(minutes=40, seconds=30)
+        page = self.Inbox.get_inbox(channel.id)
+        row = next(row for row in page["conversations"] if row["id"] == channel.id)
+        self.assertEqual((row["window_left"], row["window_urgent"]), ("40 min", True))
+        self.assertIn("Only 40 min left to answer for free (until ", page["current"]["window"])
+        self.assertTrue(page["current"]["window_urgent"])
+        # answered: nobody waits, the list says nothing more
+        self.Inbox.ocd_post(channel.id, "On regarde.", False)
+        row = next(row for row in self.Inbox.get_inbox(channel.id)["conversations"] if row["id"] == channel.id)
+        self.assertEqual(row["window_left"], "")
 
     def test_answer_and_internal_note(self):
         channel = self._receive("Bonjour")

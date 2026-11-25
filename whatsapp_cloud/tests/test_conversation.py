@@ -663,6 +663,76 @@ class TestWhatsAppConversation(WhatsAppCommon):
         channel.with_user(self.agent).message_post(body="Pardon pour l'attente", message_type="comment")
         self.assertEqual((channel.whatsapp_alert_level, channel.whatsapp_waiting_since), (0, False))
 
+    def _window_ends_in(self, channel, minutes):
+        """The 24-hour window of the conversation ends in `minutes`."""
+        channel.whatsapp_last_inbound_date = (
+            fields.Datetime.now() - timedelta(hours=24) + timedelta(minutes=minutes, seconds=30)
+        )
+
+    def test_warned_before_the_end_of_the_24_hours(self):
+        """A customer who waits: the agent is warned an hour before the end of the free window,
+        then the managers half an hour before; once each, again in a new window."""
+        self.account.write({"bot_enabled": False, "response_delay": 0, "escalation_delay": 0})
+        channel = self.receive("Bonjour").channel_id
+        channel.sudo()._whatsapp_assign(self.agent, notify=False)
+        Channel = self.env["discuss.channel"]
+        self._window_ends_in(channel, 90)
+        Channel._cron_whatsapp_check_delays()
+        self.assertEqual(channel.whatsapp_window_alert_level, 0, "More than an hour left")
+        self._window_ends_in(channel, 50)
+        Channel._cron_whatsapp_check_delays()
+        self.assertEqual(channel.whatsapp_window_alert_level, 1)
+        notice = channel.message_ids[0]
+        self.assertIn("Only 50 min left to answer Awa Ngono for free: the 24 hours end at", notice.body)
+        self.assertIn("only a paid template reaches them", notice.body)
+        self.assertEqual(notice.partner_ids, self.agent.partner_id)
+        Channel._cron_whatsapp_check_delays()
+        self.assertEqual(channel.message_ids[0], notice, "Warned once")
+        self._window_ends_in(channel, 20)
+        Channel._cron_whatsapp_check_delays()
+        self.assertEqual(channel.whatsapp_window_alert_level, 2)
+        escalation = channel.message_ids[0]
+        self.assertIn("Awa Ngono still waits for an answer: the 24 hours end in 20 min", escalation.body)
+        self.assertIn(self.manager.partner_id, channel.channel_member_ids.partner_id)
+        self.assertEqual(escalation.partner_ids, self.manager.partner_id | self.agent.partner_id)
+        # a new message of the customer: a new window, new warnings
+        self.receive("Vous êtes là ?", wa_id="wamid.IN2")
+        self.assertEqual(channel.whatsapp_window_alert_level, 0)
+        self.assertGreater(channel._whatsapp_window_minutes_left(), 23 * 60)
+
+    def test_no_warning_once_answered_or_disabled(self):
+        self.account.write({"bot_enabled": False, "response_delay": 0, "escalation_delay": 0})
+        channel = self.receive("Bonjour").channel_id
+        Channel = self.env["discuss.channel"]
+        self._window_ends_in(channel, 50)
+        self.env.company.whatsapp_answer_reminders = False
+        Channel._cron_whatsapp_check_delays()
+        self.assertEqual(channel.whatsapp_window_alert_level, 0, "Reminders disabled")
+        self.env.company.whatsapp_answer_reminders = True
+        self.account.write({"window_warning_delay": 0, "window_escalation_delay": 0})
+        Channel._cron_whatsapp_check_delays()
+        self.assertEqual(channel.whatsapp_window_alert_level, 0, "Delays at 0: never")
+        self.account.write({"window_warning_delay": 60, "window_escalation_delay": 30})
+        channel.with_user(self.agent).message_post(body="Je regarde", message_type="comment")
+        Channel._cron_whatsapp_check_delays()
+        self.assertEqual(channel.whatsapp_window_alert_level, 0, "Answered: nobody waits")
+
+    def test_time_left_texts(self):
+        channel = self.receive("Bonjour").channel_id
+        texts = [channel._whatsapp_duration_text(minutes) for minutes in (135, 125, 60, 45, 0)]
+        self.assertEqual(texts, ["2 h 15", "2 h 05", "1 h 00", "45 min", "less than 1 min"])
+        self._window_ends_in(channel, 135)
+        self.assertEqual(channel._whatsapp_window_minutes_left(), 135)
+        self.assertRegex(channel._whatsapp_window_end_text(tz="Africa/Douala"), r"\d{2}:\d{2}$")
+        # the hour of the agent of the conversation, for the notices of the team
+        (self.agent | self.agent_2).tz = "Pacific/Kiritimati"
+        channel.sudo()._whatsapp_assign(self.agent, notify=False)
+        self.assertEqual(channel._whatsapp_window_end_text(), channel._whatsapp_window_end_text(tz="Pacific/Kiritimati"))
+        self.agent.tz = "Africa/Douala"
+        self.assertEqual(channel._whatsapp_window_end_text(), channel._whatsapp_window_end_text(tz="Africa/Douala"))
+        channel.whatsapp_last_inbound_date = fields.Datetime.now() - timedelta(hours=25)
+        self.assertEqual(channel._whatsapp_window_minutes_left(), 0)
+
     # === SETTINGS === #
 
     def test_conversations_disabled(self):

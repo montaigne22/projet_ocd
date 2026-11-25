@@ -151,6 +151,27 @@
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
+// The time left to answer for free, for a contact who waits (orange the last hour)
+.o_ocd_wa_left {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: $ocd-green-soft;
+    color: $ocd-green-text;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    .oi {
+        font-size: 12px;
+    }
+    &.o_ocd_wa_left_urgent {
+        background: $ocd-orange-soft;
+        color: $ocd-orange-dark;
+    }
+}
 .o_ocd_wa_dot {
     width: 10px;
     height: 10px;
@@ -247,6 +268,15 @@
     &.o_ocd_wa_window_closed {
         background: $ocd-yellow-soft;
         color: $ocd-yellow-text;
+    }
+    &.o_ocd_wa_window_urgent {
+        background: $ocd-orange-soft;
+        color: $ocd-orange-dark;
+    }
+    .oi {
+        font-size: 13px;
+        vertical-align: -2px;
+        margin-right: 2px;
     }
 }
 .o_ocd_wa_messages {
@@ -658,6 +688,20 @@
     .o_ocd_wa_list {
         border-right: 0;
         border-bottom: 1px solid $ocd-bo-border;
+    }
+    // the name on one line, the time left to answer under it
+    .o_ocd_wa_head {
+        flex-wrap: wrap;
+        row-gap: 6px;
+    }
+    .o_ocd_wa_head_text {
+        flex: 1 1 60%;
+    }
+    .o_ocd_wa_window {
+        order: 3;
+        flex: 1 1 100%;
+        max-width: none;
+        margin-left: 0;
     }
 }
 

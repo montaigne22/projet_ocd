@@ -65,6 +65,10 @@ BO = {
 
 WHATSAPP = {
     'Internal note for the team (not sent)…': "Note interne pour l'équipe (non envoyée)…",
+    # The time left to answer for free (chantier 24.2)
+    'Free answer for %(left)s more (until %(time)s)': "Réponse gratuite encore %(left)s (jusqu'à %(time)s)",
+    'Only %(left)s left to answer for free (until %(time)s)': "Plus que %(left)s pour répondre gratuitement (jusqu'à %(time)s)",
+    'Time left to answer for free (24 hours after the last message)': 'Temps restant pour répondre gratuitement (24 h après le dernier message)',
     # The languages of a template that Meta does not know (chantier 24.1)
     'A language missing at Meta': 'Une langue absente chez Meta',
     'Meta does not know these languages of the templates: %s. Their contacts receive the message in another language; submit them from the Health tab of the WhatsApp account.':

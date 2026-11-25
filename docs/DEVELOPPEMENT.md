@@ -600,6 +600,12 @@ mêmes valeurs**, relues dans le corps de la requête (`_prepare_payload_from`),
 le code (`ctx`). Le compte WhatsApp liste ces versions (onglet Santé, « Soumettre à Meta »). Deux versions
 d'un même modèle doivent donc garder les mêmes variables (mêmes noms, ou même nombre).
 
+Le temps restant pour répondre gratuitement (24 h après le dernier message du client) : côté serveur,
+`discuss.channel._whatsapp_window_minutes_left`, `_whatsapp_duration_text` (« 2 h 15 ») et
+`_whatsapp_window_end_text` (heure de l'équipe) ; dans le navigateur, le composant `WhatsappWindowChip`
+(`whatsapp_cloud/static/src/whatsapp_window_chip.js`, calcul dans `whatsappWindowLeft`), mis à jour chaque
+minute. Les alertes avant la fin : `_whatsapp_check_windows`, appelée par la tâche des relances.
+
 Les modèles sont des données `noupdate` : chargés à l'installation, jamais réécrits par une mise à jour
 (l'équipe peut changer les textes). **Pour corriger le texte d'un modèle fourni** : changer le XML, monter
 la version du module et ajouter une migration qui donne l'ancien texte, mot pour mot :

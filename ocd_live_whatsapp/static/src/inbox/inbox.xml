@@ -39,7 +39,12 @@
                                 </span>
                                 <span class="o_ocd_wa_item_side">
                                     <span class="o_ocd_wa_item_time" t-out="conversation.time"/>
-                                    <span t-if="conversation.waiting" class="o_ocd_wa_dot" role="img"
+                                    <span t-if="conversation.window_left"
+                                          t-attf-class="o_ocd_wa_left #{conversation.window_urgent ? 'o_ocd_wa_left_urgent' : ''}"
+                                          title="Time left to answer for free (24 hours after the last message)">
+                                        <i class="oi" data-icon="schedule" aria-hidden="true"/><t t-out="conversation.window_left"/>
+                                    </span>
+                                    <span t-elif="conversation.waiting" class="o_ocd_wa_dot" role="img"
                                           aria-label="Waiting for an answer"/>
                                 </span>
                             </button>
@@ -70,8 +75,10 @@
                                         <t t-if="current.assigned"> · <t t-out="current.assigned"/></t>
                                     </span>
                                 </span>
-                                <span t-attf-class="o_ocd_wa_window #{current.open ? 'o_ocd_wa_window_open' : 'o_ocd_wa_window_closed'}"
-                                      t-out="current.window"/>
+                                <span t-attf-class="o_ocd_wa_window #{current.open ? (current.window_urgent ? 'o_ocd_wa_window_urgent' : 'o_ocd_wa_window_open') : 'o_ocd_wa_window_closed'}">
+                                    <i t-if="current.open" class="oi" data-icon="schedule" aria-hidden="true"/>
+                                    <t t-out="current.window"/>
+                                </span>
                                 <t t-if="current.calls">
                                     <button t-if="current.calls.allowed" type="button" class="o_ocd_wa_call_button"
                                             t-att-disabled="this.busy()" t-att-title="current.calls.text"
