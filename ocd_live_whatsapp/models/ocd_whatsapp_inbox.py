@@ -10,7 +10,10 @@ from odoo.tools.misc import format_date, format_datetime
 
 from odoo.addons.whatsapp_cloud.const import WINDOW_URGENT_MINUTES
 
+# The conversations shown at first, and added by « Show more », up to LIST_MAX
 LIST_LIMIT = 80
+LIST_MAX = 2000
+LIST_FILTERS = ("all", "waiting", "mine")
 MESSAGE_LIMIT = 60
 # The secret of a message sent by a template (a delivery code, a login code): hidden from the team
 SECRET_RE = re.compile(r"(?<![\w])\d{4,6}(?![\w])")
@@ -39,24 +42,75 @@ class OcdWhatsappInbox(models.AbstractModel):
     # === PAGE === #
 
     @api.model
-    def get_inbox(self, channel_id=None):
+    def get_inbox(self, channel_id=None, options=None):
+        """The page: the list (searched by name or number, filtered: all, waiting for an answer,
+        mine; the first LIST_LIMIT, more with « Show more ») and the conversation shown.
+
+        :param dict options: ``search``, ``filter`` (all, waiting, mine) and ``limit`` of the list
+        """
         self._ocd_check_agent()
-        channels = self.env["discuss.channel"].search(
-            [("channel_type", "=", "whatsapp")], order="last_interest_dt desc, id desc", limit=LIST_LIMIT
+        options = self._ocd_list_options(options)
+        Channel = self.env["discuss.channel"]
+        domain = [("channel_type", "=", "whatsapp"), *self._ocd_search_domain(options["search"])]
+        channels = Channel.search(
+            domain + self._ocd_filter_domain(options["filter"]),
+            order="last_interest_dt desc, id desc", limit=options["limit"] + 1,
         )
+        has_more = len(channels) > options["limit"]
+        channels = channels[:options["limit"]]
         last_messages = self._ocd_last_messages(channels)
         rows = [self._ocd_list_item(channel, last_messages.get(channel.id)) for channel in channels]
         rows.sort(key=lambda row: row["sort"], reverse=True)
-        current = channels.filtered(lambda channel: channel.id == channel_id) if channel_id else channels.browse()
+        counts = {key: Channel.search_count(domain + self._ocd_filter_domain(key)) for key in LIST_FILTERS}
+        current = channels.browse()
+        if channel_id:
+            # the conversation shown stays, even out of the list (another search, more than the limit)
+            current = Channel.search([("id", "=", channel_id), ("channel_type", "=", "whatsapp")])
         if not current and rows:
             current = channels.browse(rows[0]["id"])
         return {
             "conversations": rows,
-            "waiting": len([row for row in rows if row["waiting"]]),
+            "waiting": counts["waiting"],
+            "counts": counts,
+            "has_more": has_more,
+            "options": options,
             "account": self._ocd_account_text(),
             "team_channels": self._ocd_team_channels(),
             "current": self._ocd_conversation(current) if current else False,
         }
+
+    @api.model
+    def _ocd_list_options(self, options):
+        options = options or {}
+        try:
+            limit = int(options.get("limit") or LIST_LIMIT)
+        except (TypeError, ValueError):
+            limit = LIST_LIMIT
+        return {
+            "search": (options.get("search") or "").strip()[:80],
+            "filter": options.get("filter") if options.get("filter") in LIST_FILTERS else "all",
+            "limit": max(LIST_LIMIT, min(limit, LIST_MAX)),
+        }
+
+    @api.model
+    def _ocd_search_domain(self, search):
+        """The conversations of a contact by their name (or the name of the conversation), or by
+        their number, written in any way: « 6 70 00 », « +237 670… »."""
+        if not search:
+            return []
+        domain = ["|", ("whatsapp_partner_id.name", "ilike", search), ("name", "ilike", search)]
+        digits = re.sub(r"\D", "", search)
+        if len(digits) >= 3:
+            domain = ["|", ("whatsapp_number", "ilike", digits), *domain]
+        return domain
+
+    @api.model
+    def _ocd_filter_domain(self, key):
+        if key == "waiting":
+            return [("whatsapp_waiting_since", "!=", False), ("whatsapp_state", "!=", "done")]
+        if key == "mine":
+            return [("whatsapp_user_id", "=", self.env.uid)]
+        return []
 
     @api.model
     def get_conversation(self, channel_id):
@@ -69,20 +123,58 @@ class OcdWhatsappInbox(models.AbstractModel):
         return self._ocd_conversation(channel)
 
     @api.model
-    def ocd_post(self, channel_id, body, note=False):
-        """An answer to the contact (within the 24-hour window), or an internal note."""
+    def ocd_post(self, channel_id, body, note=False, attachment_ids=None, options=None):
+        """An answer to the contact (within the 24-hour window), or an internal note, with the
+        files added to it (photos, documents, voice messages: uploaded first, then sent)."""
         channel = self._ocd_channel(channel_id)
         text = (body or "").strip()
-        if not text:
-            raise UserError(self.env._("Write the message first."))
-        if note:
-            channel.execute_command_note(body=text)
-        else:
-            channel.message_post(body=plaintext2html(text), message_type="comment", subtype_xmlid="mail.mt_comment")
-        return self.get_inbox(channel.id)
+        attachments = self._ocd_pending_attachments(attachment_ids)
+        if not text and not attachments:
+            raise UserError(self.env._("Write the message or add a file first."))
+        channel.message_post(
+            body=plaintext2html(text) if text else "",
+            message_type="comment",
+            subtype_xmlid="mail.mt_note" if note else "mail.mt_comment",
+            attachment_ids=attachments.ids,
+        )
+        return self.get_inbox(channel.id, options)
 
     @api.model
-    def ocd_send_template(self, channel_id, template_id, res_model, res_id):
+    def _ocd_pending_attachments(self, attachment_ids):
+        """The files uploaded by the agent for their next message (not posted yet)."""
+        Attachment = self.env["ir.attachment"].sudo()
+        if not attachment_ids:
+            return Attachment
+        attachments = Attachment.browse(attachment_ids).exists()
+        if len(attachments) != len(set(attachment_ids)) or any(
+            attachment.create_uid != self.env.user or attachment.res_model != "mail.compose.message"
+            for attachment in attachments
+        ):
+            raise UserError(self.env._("A file of the message is not available any more: add it again."))
+        return attachments
+
+    @api.model
+    def ocd_take(self, channel_id, options=None):
+        """« Take »: the agent handles the conversation (the other agents leave it)."""
+        channel = self._ocd_channel(channel_id)
+        channel.whatsapp_action_take()
+        return self.get_inbox(channel.id, options)
+
+    @api.model
+    def ocd_resolve(self, channel_id, options=None):
+        """« Mark as resolved »: nobody waits any more; a new message of the contact opens it again."""
+        channel = self._ocd_channel(channel_id)
+        channel.whatsapp_action_resolve()
+        return self.get_inbox(channel.id, options)
+
+    @api.model
+    def ocd_reopen(self, channel_id, options=None):
+        channel = self._ocd_channel(channel_id)
+        channel.whatsapp_action_reopen()
+        return self.get_inbox(channel.id, options)
+
+    @api.model
+    def ocd_send_template(self, channel_id, template_id, res_model, res_id, options=None):
         """A template approved by Meta, sent from the conversation (also out of the window)."""
         channel = self._ocd_channel(channel_id)
         choice = next(
@@ -102,7 +194,7 @@ class OcdWhatsappInbox(models.AbstractModel):
         skipped = messages.filtered(lambda message: message.state == "skipped")
         if skipped:
             raise UserError(self.env._("Not sent: %s", skipped[0].error or ""))
-        return self.get_inbox(channel.id)
+        return self.get_inbox(channel.id, options)
 
     # === ACCESS === #
 
@@ -152,8 +244,9 @@ class OcdWhatsappInbox(models.AbstractModel):
             "vendor": bool(partner and partner.ocd_is_vendor),
             "preview": preview[:120],
             "time": self._ocd_time_label(date),
-            "waiting": bool(channel.whatsapp_waiting_since),
+            "waiting": bool(channel.whatsapp_waiting_since) and channel.whatsapp_state != "done",
             "done": channel.whatsapp_state == "done",
+            "mine": channel.whatsapp_user_id == self.env.user,
             # a contact who waits: the time left to answer for free (24-hour window)
             **self._ocd_window_left(channel, list_item=True),
             "sort": (fields.Datetime.to_string(date) if date else "", message.id if message else 0),
@@ -211,6 +304,9 @@ class OcdWhatsappInbox(models.AbstractModel):
             "window": window,
             "window_urgent": left["window_urgent"],
             "assigned": channel.whatsapp_user_id.name or "",
+            "mine": channel.whatsapp_user_id == self.env.user,
+            "state": channel.whatsapp_state or "new",
+            "state_label": self._ocd_state_label(channel),
             "messages": self._ocd_messages(channel),
             "quick": self._ocd_quick_replies(),
             "templates": self._ocd_template_rows(channel),
@@ -224,6 +320,17 @@ class OcdWhatsappInbox(models.AbstractModel):
                 "views": [[False, "form"]],
             },
         }
+
+    def _ocd_state_label(self, channel):
+        """« New · not taken », « Taken by Amina », « Resolved »."""
+        _ = self.env._
+        if channel.whatsapp_state == "done":
+            return _("Resolved")
+        if channel.whatsapp_user_id == self.env.user:
+            return _("Taken by you")
+        if channel.whatsapp_user_id:
+            return _("Taken by %s", channel.whatsapp_user_id.name)
+        return _("Not taken yet")
 
     def _ocd_messages(self, channel):
         messages = self.env["mail.message"].sudo().search([

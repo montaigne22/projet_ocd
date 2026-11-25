@@ -31,11 +31,87 @@
     min-height: 0;
     border-right: 1px solid $ocd-bo-border;
 }
+.o_ocd_wa_search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 10px 12px 0;
+    > .oi {
+        position: absolute;
+        left: 10px;
+        font-size: 17px;
+        color: $ocd-bo-hint;
+        pointer-events: none;
+    }
+}
+.o_ocd_wa_search_input {
+    width: 100%;
+    min-height: 36px;
+    padding: 0 34px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 13.5px;
+    &::-webkit-search-cancel-button {
+        display: none;
+    }
+    &:focus {
+        outline: 0;
+        border-color: $ocd-green;
+        box-shadow: 0 0 0 3px rgba($ocd-green, 0.2);
+    }
+}
+.o_ocd_wa_search_clear {
+    position: absolute;
+    right: 4px;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: $ocd-bo-muted;
+    cursor: pointer;
+    &:hover {
+        background: $ocd-bo-grey;
+    }
+}
 .o_ocd_wa_chips {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
     padding: 10px 12px;
     border-bottom: 1px solid $ocd-bo-grey;
+}
+.o_ocd_wa_more {
+    display: block;
+    width: calc(100% - 24px);
+    min-height: 36px;
+    margin: 10px 12px;
+    border: 1px dashed $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    &:hover {
+        background: $ocd-bo-background;
+    }
+}
+.o_ocd_wa_item_done {
+    .o_ocd_wa_item_name, .o_ocd_wa_item_preview {
+        color: $ocd-bo-muted;
+    }
+}
+.o_ocd_wa_done_mark {
+    color: $ocd-green;
+    font-size: 16px;
+    line-height: 1;
 }
 .o_ocd_wa_chip {
     min-height: 30px;
@@ -244,6 +320,108 @@
     flex-direction: column;
     min-width: 0;
     line-height: 1.3;
+}
+.o_ocd_wa_actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+.o_ocd_wa_state {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: $ocd-bo-grey;
+    color: $ocd-bo-text;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    &.o_ocd_wa_state_new {
+        background: $ocd-yellow-soft;
+        color: $ocd-yellow-text;
+    }
+    &.o_ocd_wa_state_done {
+        background: $ocd-green-soft;
+        color: $ocd-green-text;
+    }
+}
+.o_ocd_wa_action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    .oi {
+        font-size: 16px;
+    }
+    &:hover:not(:disabled) {
+        background: $ocd-bo-background;
+    }
+    &:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+    &.o_ocd_wa_action_main {
+        border-color: $ocd-ink;
+        background: $ocd-ink;
+        color: #FFFFFF;
+        &:hover:not(:disabled) {
+            background: #000000;
+        }
+    }
+}
+// The conversation or the contact, on a phone or a tablet (the contact is not shown beside)
+.o_ocd_wa_tabs {
+    display: none;
+    gap: 6px;
+    padding: 8px 12px;
+    border-bottom: 1px solid $ocd-bo-grey;
+}
+.o_ocd_wa_back {
+    display: none;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-size: 19px;
+    cursor: pointer;
+}
+.o_ocd_wa_tab {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 34px;
+    padding: 0 10px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    .oi {
+        font-size: 17px;
+    }
+    &[aria-selected="true"] {
+        border-color: $ocd-ink;
+        background: $ocd-ink;
+        color: #FFFFFF;
+    }
 }
 .o_ocd_wa_head_name {
     font-size: 16px;
@@ -488,6 +666,99 @@
     gap: 8px;
     align-items: flex-end;
 }
+.o_ocd_wa_tool {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-bo-text;
+    font-size: 20px;
+    cursor: pointer;
+    &:hover:not(:disabled) {
+        background: $ocd-bo-background;
+    }
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    &.o_ocd_wa_tool_recording {
+        border-color: $ocd-red;
+        background: $ocd-red-soft;
+        color: $ocd-red-text;
+    }
+}
+.o_ocd_wa_pending {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.o_ocd_wa_pending_file {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 260px;
+    min-height: 30px;
+    padding: 0 4px 0 9px;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 15px;
+    background: $ocd-bo-background;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: $ocd-ink;
+    > .oi {
+        font-size: 16px;
+        color: $ocd-bo-muted;
+    }
+    &.o_ocd_wa_pending_busy {
+        padding-right: 10px;
+        color: $ocd-bo-muted;
+    }
+    &.o_ocd_wa_recording {
+        border-color: $ocd-red;
+        background: $ocd-red-soft;
+        color: $ocd-red-text;
+        font-variant-numeric: tabular-nums;
+    }
+}
+.o_ocd_wa_pending_name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.o_ocd_wa_pending_remove {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    flex: none;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: $ocd-bo-muted;
+    font-size: 15px;
+    cursor: pointer;
+    &:hover {
+        background: $ocd-bo-grey;
+        color: $ocd-ink;
+    }
+}
+.o_ocd_wa_recording_dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: $ocd-red;
+    animation: o_ocd_wa_blink 1s ease-in-out infinite;
+}
+@keyframes o_ocd_wa_blink {
+    50% {
+        opacity: 0.25;
+    }
+}
 .o_ocd_wa_input {
     flex: 1 1 auto;
     min-width: 0;
@@ -676,18 +947,59 @@
     .o_ocd_wa_contact {
         display: none;
     }
+    .o_ocd_wa_tabs {
+        display: flex;
+    }
+    .o_ocd_wa_contact .o_ocd_wa_tabs {
+        margin: -14px -14px 0;
+    }
+    .o_ocd_wa_box.o_ocd_wa_show_contact {
+        .o_ocd_wa_thread {
+            display: none;
+        }
+        .o_ocd_wa_contact {
+            display: flex;
+            border-left: 0;
+        }
+    }
 }
 @media (max-width: 767.98px) {
     .o_ocd_wa {
         padding: 10px;
     }
+    // one pane at a time, like in WhatsApp: the list, or the conversation (and its contact)
     .o_ocd_wa_box {
         grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: 40% minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
     }
     .o_ocd_wa_list {
         border-right: 0;
-        border-bottom: 1px solid $ocd-bo-border;
+    }
+    .o_ocd_wa_box.o_ocd_wa_pane_list {
+        .o_ocd_wa_thread, .o_ocd_wa_contact {
+            display: none !important;
+        }
+    }
+    .o_ocd_wa_box.o_ocd_wa_pane_thread .o_ocd_wa_list {
+        display: none;
+    }
+    .o_ocd_wa_back {
+        display: grid;
+    }
+    // the message on its own line, the buttons under it
+    .o_ocd_wa_write {
+        flex-wrap: wrap;
+    }
+    .o_ocd_wa_input {
+        order: -1;
+        flex: 1 1 100%;
+    }
+    .o_ocd_wa_write .o_ocd_wa_send {
+        margin-left: auto;
+    }
+    .o_ocd_wa_quick {
+        flex-wrap: nowrap;
+        overflow-x: auto;
     }
     // the name on one line, the time left to answer under it
     .o_ocd_wa_head {

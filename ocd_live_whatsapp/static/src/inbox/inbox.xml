@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
 
     <t t-name="ocd_live_whatsapp.Inbox">
-        <div class="o_action o_ocd_bo o_ocd_inbox">
+        <div class="o_action o_ocd_bo o_ocd_inbox" t-ref="this.rootRef">
             <t t-set="data" t-value="this.data()"/>
             <t t-set="current" t-value="this.current"/>
             <div class="o_ocd_bo_header">
@@ -15,17 +15,28 @@
                 </button>
             </div>
             <div class="o_ocd_wa">
-                <div class="o_ocd_wa_box">
+                <div t-attf-class="o_ocd_wa_box o_ocd_wa_pane_#{current ? this.pane() : 'list'} #{this.tab() === 'contact' ? 'o_ocd_wa_show_contact' : ''}">
                     <!-- Conversations -->
                     <div class="o_ocd_wa_list">
+                        <div class="o_ocd_wa_search">
+                            <i class="oi" data-icon="search" aria-hidden="true"/>
+                            <label for="o_ocd_wa_search" class="visually-hidden">Search a name or a number</label>
+                            <input id="o_ocd_wa_search" type="search" class="o_ocd_wa_search_input" autocomplete="off"
+                                   placeholder="Name or number…" t-att-value="this.search()"
+                                   t-on-input="(ev) => this.onSearch(ev)"/>
+                            <button t-if="this.search()" type="button" class="o_ocd_wa_search_clear"
+                                    title="Clear the search" aria-label="Clear the search" t-on-click="() => this.clearSearch()">
+                                <i class="oi" data-icon="close" aria-hidden="true"/>
+                            </button>
+                        </div>
                         <div class="o_ocd_wa_chips" role="group" aria-label="Filter the conversations">
                             <button t-foreach="this.chips" t-as="chip" t-key="chip.key" type="button" class="o_ocd_wa_chip"
                                     t-att-aria-pressed="this.filter() === chip.key ? 'true' : 'false'"
-                                    t-on-click="() => this.filter.set(chip.key)" t-out="chip.label"/>
+                                    t-on-click="() => this.setFilter(chip.key)" t-out="chip.label"/>
                         </div>
                         <div class="o_ocd_wa_items">
                             <button t-foreach="this.conversations" t-as="conversation" t-key="conversation.id" type="button"
-                                    t-att-class="{ 'o_ocd_wa_item': true, 'o_ocd_current': current and current.id === conversation.id, 'o_ocd_waiting': conversation.waiting }"
+                                    t-att-class="{ 'o_ocd_wa_item': true, 'o_ocd_current': current and current.id === conversation.id, 'o_ocd_waiting': conversation.waiting, 'o_ocd_wa_item_done': conversation.done }"
                                     t-att-aria-pressed="current and current.id === conversation.id ? 'true' : 'false'"
                                     t-on-click="() => this.open(conversation)">
                                 <span t-attf-class="o_ocd_wa_avatar #{conversation.vendor ? 'o_ocd_wa_avatar_vendor' : ''}"
@@ -46,12 +57,15 @@
                                     </span>
                                     <span t-elif="conversation.waiting" class="o_ocd_wa_dot" role="img"
                                           aria-label="Waiting for an answer"/>
+                                    <span t-elif="conversation.done" class="o_ocd_wa_done_mark" title="Resolved">
+                                        <i class="oi" data-icon="check" aria-hidden="true"/>
+                                    </span>
                                 </span>
                             </button>
-                            <p t-if="!this.conversations.length" class="o_ocd_wa_empty">
-                                <t t-if="this.filter() === 'waiting'">Nobody waits for an answer.</t>
-                                <t t-else="">No WhatsApp conversation yet.</t>
-                            </p>
+                            <p t-if="!this.conversations.length" class="o_ocd_wa_empty" t-out="this.emptyText"/>
+                            <button t-if="data.has_more" type="button" class="o_ocd_wa_more" t-on-click="() => this.showMore()">
+                                Show more conversations
+                            </button>
                         </div>
                         <div t-if="data.team_channels.length" class="o_ocd_wa_team">
                             <span class="o_ocd_wa_team_title">Channels of the team · Discuss</span>
@@ -67,14 +81,32 @@
                     <!-- Conversation -->
                     <div class="o_ocd_wa_thread">
                         <t t-if="current">
+                            <t t-call="ocd_live_whatsapp.InboxTabs"/>
                             <div class="o_ocd_wa_head">
                                 <span class="o_ocd_wa_head_text">
                                     <b class="o_ocd_wa_head_name" t-out="current.name"/>
                                     <span class="o_ocd_wa_head_sub">
                                         <t t-out="current.phone"/> · <t t-out="current.role"/>
-                                        <t t-if="current.assigned"> · <t t-out="current.assigned"/></t>
                                     </span>
                                 </span>
+                                <div class="o_ocd_wa_actions">
+                                    <span t-attf-class="o_ocd_wa_state o_ocd_wa_state_#{current.state}" t-out="current.state_label"/>
+                                    <button t-if="!current.mine and current.state !== 'done'" type="button"
+                                            class="o_ocd_wa_action o_ocd_wa_action_main" t-att-disabled="this.busy()"
+                                            title="You handle this conversation: the other agents leave it"
+                                            t-on-click="() => this.take()">
+                                        <i class="oi" data-icon="person_add" aria-hidden="true"/> Take
+                                    </button>
+                                    <button t-if="current.state !== 'done'" type="button" class="o_ocd_wa_action"
+                                            t-att-disabled="this.busy()" title="Nobody waits any more: a new message of the contact opens it again"
+                                            t-on-click="() => this.resolve()">
+                                        <i class="oi" data-icon="task_alt" aria-hidden="true"/> Mark as resolved
+                                    </button>
+                                    <button t-else="" type="button" class="o_ocd_wa_action" t-att-disabled="this.busy()"
+                                            t-on-click="() => this.reopen()">
+                                        <i class="oi" data-icon="undo" aria-hidden="true"/> Reopen
+                                    </button>
+                                </div>
                                 <span t-attf-class="o_ocd_wa_window #{current.open ? (current.window_urgent ? 'o_ocd_wa_window_urgent' : 'o_ocd_wa_window_open') : 'o_ocd_wa_window_closed'}">
                                     <i t-if="current.open" class="oi" data-icon="schedule" aria-hidden="true"/>
                                     <t t-out="current.window"/>
@@ -96,7 +128,9 @@
                                 </t>
                             </div>
                             <div class="o_ocd_wa_messages" t-ref="this.messagesRef" role="log" aria-live="polite"
-                                 t-att-aria-label="current.name">
+                                 t-att-aria-label="current.name" t-on-scroll="() => this.onMessagesScroll()"
+                                 t-on-load.capture="() => this.onMediaLoaded()"
+                                 t-on-loadedmetadata.capture="() => this.onMediaLoaded()">
                                 <div t-foreach="current.messages" t-as="message" t-key="message.id"
                                      t-attf-class="o_ocd_wa_line o_ocd_wa_line_#{message.kind}">
                                     <!-- a call: a line of its own, like in WhatsApp -->
@@ -137,14 +171,16 @@
                                             class="o_ocd_wa_quick_button" t-att-title="quick.text"
                                             t-on-click="() => this.useQuick(quick)" t-out="quick.label"/>
                                 </div>
+                                <t t-call="ocd_live_whatsapp.InboxFiles"/>
                                 <div class="o_ocd_wa_write">
+                                    <t t-call="ocd_live_whatsapp.InboxAttach"/>
                                     <label for="o_ocd_wa_draft" class="visually-hidden">Message to <t t-out="current.name"/></label>
                                     <textarea id="o_ocd_wa_draft" class="o_ocd_wa_input" rows="1" t-ref="this.inputRef"
                                               placeholder="Write a message…" t-att-value="this.draft()"
                                               t-on-input="(ev) => this.onDraft(ev)" t-on-keydown="(ev) => this.onKeydown(ev)"/>
-                                    <button type="button" class="o_ocd_wa_note_button" t-att-disabled="this.busy() or !this.draft().trim()"
+                                    <button type="button" class="o_ocd_wa_note_button" t-att-disabled="!this.canPost"
                                             t-on-click="() => this.post(true)">Internal note</button>
-                                    <button type="button" class="o_ocd_wa_send" t-att-disabled="this.busy() or !this.draft().trim()"
+                                    <button type="button" class="o_ocd_wa_send" t-att-disabled="!this.canPost"
                                             t-on-click="() => this.post(false)">Send</button>
                                 </div>
                             </div>
@@ -163,12 +199,14 @@
                                 </t>
                                 <p t-else="" class="o_ocd_wa_empty">No approved template for this contact: they write first, then the team answers.</p>
                                 <!-- an internal note: at any time, never sent to the contact -->
+                                <t t-call="ocd_live_whatsapp.InboxFiles"/>
                                 <div class="o_ocd_wa_write o_ocd_wa_write_note">
+                                    <t t-call="ocd_live_whatsapp.InboxAttach"/>
                                     <label for="o_ocd_wa_note" class="visually-hidden">Internal note</label>
                                     <textarea id="o_ocd_wa_note" class="o_ocd_wa_input" rows="1"
                                               placeholder="Internal note for the team (not sent)…" t-att-value="this.draft()"
                                               t-on-input="(ev) => this.onDraft(ev)" t-on-keydown="(ev) => this.onKeydown(ev, true)"/>
-                                    <button type="button" class="o_ocd_wa_note_button" t-att-disabled="this.busy() or !this.draft().trim()"
+                                    <button type="button" class="o_ocd_wa_note_button" t-att-disabled="!this.canPost"
                                             t-on-click="() => this.post(true)">Internal note</button>
                                 </div>
                             </div>
@@ -178,6 +216,7 @@
 
                     <!-- Contact -->
                     <aside class="o_ocd_wa_contact" t-if="current">
+                        <t t-call="ocd_live_whatsapp.InboxTabs"/>
                         <div class="o_ocd_wa_contact_head">
                             <span t-attf-class="o_ocd_wa_avatar o_ocd_wa_avatar_big #{current.vendor ? 'o_ocd_wa_avatar_vendor' : ''}"
                                   aria-hidden="true" t-out="current.initials"/>
@@ -214,6 +253,65 @@
                 </div>
             </div>
         </div>
+    </t>
+    <!-- On a phone or a tablet: the conversation, or the contact with their calls -->
+    <t t-name="ocd_live_whatsapp.InboxTabs">
+        <div class="o_ocd_wa_tabs" role="tablist" aria-label="Conversation or contact">
+            <button type="button" class="o_ocd_wa_back" title="Back to the conversations"
+                    aria-label="Back to the conversations" t-on-click="() => this.back()">
+                <i class="oi" data-icon="arrow_back" aria-hidden="true"/>
+            </button>
+            <button type="button" role="tab" class="o_ocd_wa_tab" t-att-aria-selected="this.tab() === 'thread' ? 'true' : 'false'"
+                    t-on-click="() => this.tab.set('thread')">
+                <i class="oi" data-icon="chat_bubble" aria-hidden="true"/> Conversation
+            </button>
+            <button type="button" role="tab" class="o_ocd_wa_tab" t-att-aria-selected="this.tab() === 'contact' ? 'true' : 'false'"
+                    t-on-click="() => this.tab.set('contact')">
+                <i class="oi" data-icon="contact_page" aria-hidden="true"/>
+                <t t-if="current.calls">Contact and calls</t><t t-else="">Contact</t>
+            </button>
+        </div>
+    </t>
+
+    <!-- The files that leave with the next message, and the upload in progress -->
+    <t t-name="ocd_live_whatsapp.InboxFiles">
+        <div t-if="this.files().length or this.uploading() or this.voice.recording" class="o_ocd_wa_pending">
+            <span t-foreach="this.files()" t-as="file" t-key="file.id" class="o_ocd_wa_pending_file">
+                <i class="oi" t-att-data-icon="this.fileIcon(file)" aria-hidden="true"/>
+                <span class="o_ocd_wa_pending_name" t-out="file.name" t-att-title="file.name"/>
+                <button type="button" class="o_ocd_wa_pending_remove" title="Remove the file"
+                        aria-label="Remove the file" t-on-click="() => this.removeFile(file)">
+                    <i class="oi" data-icon="close" aria-hidden="true"/>
+                </button>
+            </span>
+            <span t-if="this.uploading()" class="o_ocd_wa_pending_file o_ocd_wa_pending_busy">
+                <i class="oi" data-icon="upload" aria-hidden="true"/> Adding the file…
+            </span>
+            <span t-if="this.voice.recording" class="o_ocd_wa_pending_file o_ocd_wa_recording" role="status">
+                <span class="o_ocd_wa_recording_dot" aria-hidden="true"/>
+                <t t-out="this.voice.elapsed"/>
+                <button type="button" class="o_ocd_wa_pending_remove" title="Cancel the voice message"
+                        aria-label="Cancel the voice message" t-on-click="() => this.voice.cancelRecording()">
+                    <i class="oi" data-icon="close" aria-hidden="true"/>
+                </button>
+            </span>
+        </div>
+    </t>
+
+    <!-- Add a photo or a document, record a voice message -->
+    <t t-name="ocd_live_whatsapp.InboxAttach">
+        <input type="file" class="d-none" multiple="multiple" t-ref="this.fileInputRef"
+               accept="image/*,video/*,audio/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip"
+               t-on-change="(ev) => this.onFilesChosen(ev)"/>
+        <button type="button" class="o_ocd_wa_tool" title="Add a photo or a document" aria-label="Add a photo or a document"
+                t-att-disabled="this.busy() or this.voice.recording" t-on-click="() => this.chooseFiles()">
+            <i class="oi" data-icon="attach_file" aria-hidden="true"/>
+        </button>
+        <button type="button" t-attf-class="o_ocd_wa_tool #{this.voice.recording ? 'o_ocd_wa_tool_recording' : ''}"
+                t-att-title="this.voiceTitle" t-att-aria-label="this.voiceTitle"
+                t-att-disabled="this.busy()" t-on-click="() => this.toggleVoice()">
+            <i class="oi" t-att-data-icon="this.voice.recording ? 'stop' : 'mic'" aria-hidden="true"/>
+        </button>
     </t>
 
 </templates>

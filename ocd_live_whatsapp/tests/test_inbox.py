@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from markupsafe import Markup
 
@@ -91,6 +92,119 @@ class TestOcdWhatsappInbox(OcdLiveCommon):
         self.assertEqual(note["text"], "Elle a déjà appelé hier.")
         with self.assertRaises(UserError):
             self.Inbox.ocd_post(channel.id, "   ", False)
+
+    def _receive_from(self, number, name, body, wa_id):
+        message = {"from": number, "id": wa_id, "timestamp": "1760000000", "type": "text", "text": {"body": body}}
+        self.env["whatsapp.message"]._process_incoming(self.account, message, [{"profile": {"name": name}, "wa_id": number}])
+        return self.env["discuss.channel"].search([("whatsapp_number", "=", number)])
+
+    def _rows(self, page):
+        return [row["id"] for row in page["conversations"]]
+
+    def test_search_by_name_or_number(self):
+        brenda = self._receive("Bonjour")
+        paul = self._receive_from("237699000001", "Paul Mbarga", "Ma commande ?", "wamid.PAUL1")
+        for search, expected in [
+            ("brend", brenda), ("Mbarga", paul), ("6 99 00", paul), ("+237 670", brenda), ("670000002", brenda),
+        ]:
+            with self.subTest(search=search):
+                page = self.Inbox.get_inbox(None, {"search": search})
+                self.assertEqual(self._rows(page), expected.ids)
+                self.assertEqual(page["counts"]["all"], 1)
+        page = self.Inbox.get_inbox(None, {"search": "Personne"})
+        self.assertEqual(page["conversations"], [])
+        self.assertFalse(page["current"], "Nothing found, nothing shown")
+        # the conversation shown stays, out of the list too
+        page = self.Inbox.get_inbox(brenda.id, {"search": "Mbarga"})
+        self.assertEqual((self._rows(page), page["current"]["id"]), (paul.ids, brenda.id))
+
+    def test_filters_and_more_conversations(self):
+        channels = [self._receive_from(f"23769900000{index}", f"Client {index}", "Bonjour", f"wamid.C{index}")
+                    for index in range(1, 4)]
+        with patch("odoo.addons.ocd_live_whatsapp.models.ocd_whatsapp_inbox.LIST_LIMIT", 2):
+            page = self.Inbox.get_inbox()
+            self.assertEqual((len(page["conversations"]), page["has_more"]), (2, True))
+            self.assertEqual(page["counts"], {"all": 3, "waiting": 3, "mine": 0})
+            page = self.Inbox.get_inbox(None, {"limit": page["options"]["limit"] + 2})
+            self.assertEqual((len(page["conversations"]), page["has_more"]), (3, False))
+        self.Inbox.ocd_take(channels[0].id)
+        page = self.Inbox.get_inbox(None, {"filter": "mine"})
+        self.assertEqual(self._rows(page), channels[0].ids)
+        self.assertTrue(page["conversations"][0]["mine"])
+        self.Inbox.ocd_resolve(channels[1].id)
+        page = self.Inbox.get_inbox(None, {"filter": "waiting"})
+        self.assertNotIn(channels[1].id, self._rows(page))
+        self.assertEqual(page["counts"]["waiting"], 2)
+        # a filter that does not exist: all of them
+        self.assertEqual(self.Inbox.get_inbox(None, {"filter": "nope"})["options"]["filter"], "all")
+
+    def test_take_resolve_reopen(self):
+        channel = self._receive("Bonjour")
+        current = self.Inbox.get_conversation(channel.id)
+        self.assertEqual((current["state"], current["mine"], current["state_label"]), ("new", False, "Not taken yet"))
+        page = self.Inbox.ocd_take(channel.id, {"filter": "mine"})
+        self.assertEqual(channel.whatsapp_user_id, self.agent)
+        self.assertEqual((page["current"]["mine"], page["current"]["state_label"]), (True, "Taken by you"))
+        self.assertEqual(page["options"]["filter"], "mine", "The list keeps its filter")
+        page = self.Inbox.ocd_resolve(channel.id)
+        self.assertEqual(page["current"]["state"], "done")
+        self.assertEqual(page["current"]["state_label"], "Resolved")
+        self.assertFalse(channel.whatsapp_waiting_since)
+        row = next(row for row in page["conversations"] if row["id"] == channel.id)
+        self.assertEqual((row["done"], row["waiting"]), (True, False))
+        self.assertIn("Conversation resolved by Régie OCD", page["current"]["messages"][-1]["text"])
+        page = self.Inbox.ocd_reopen(channel.id)
+        self.assertEqual(page["current"]["state"], "open")
+        # a new message of the contact opens it again by itself
+        self.Inbox.ocd_resolve(channel.id)
+        self._receive("Encore une question", wa_id="wamid.OCD2")
+        self.assertEqual(channel.whatsapp_state, "open")
+
+    def test_files_sent_to_the_contact(self):
+        """Photos, documents and voice messages: uploaded by the agent, then sent with the message
+        or alone, and shown in the conversation; a note keeps its files for the team."""
+        channel = self._receive("Vous avez la facture ?")
+        # as /mail/attachment/upload makes them: pending files of the agent
+        Attachment = self.env["ir.attachment"].with_user(self.agent).sudo()
+
+        def upload(name, raw, mimetype):
+            return Attachment.create({"name": name, "raw": raw, "mimetype": mimetype,
+                                      "res_model": "mail.compose.message", "res_id": 0})
+
+        invoice = upload("Facture-S042.pdf", b"%PDF-1.4 facture", "application/pdf")
+        photo = upload("colis.jpg", b"\xff\xd8\xff photo", "image/jpeg")
+        page = self.Inbox.ocd_post(channel.id, "Voici la facture et le colis.", False, [invoice.id, photo.id])
+        # the last answer (the conversation is then assigned to the agent: a notice follows it)
+        message = [row for row in page["current"]["messages"] if row["kind"] == "out"][-1]
+        self.assertEqual(message["text"], "Voici la facture et le colis.")
+        self.assertEqual(sorted(file["name"] for file in message["files"]), ["Facture-S042.pdf", "colis.jpg"])
+        sent = self.env["whatsapp.message"].search([("channel_id", "=", channel.id), ("direction", "=", "outgoing")])
+        self.assertEqual(sorted(sent.mapped("message_type")), ["document", "image", "text"])
+        self.assertEqual((invoice.res_model, invoice.res_id), ("discuss.channel", channel.id))
+        # a voice message alone
+        voice = upload("Voice-2026-11-25.mp3", b"ID3 voice", "audio/mpeg")
+        page = self.Inbox.ocd_post(channel.id, "", False, [voice.id])
+        answer = [row for row in page["current"]["messages"] if row["kind"] == "out"][-1]
+        self.assertEqual((answer["text"], answer["files"][0]["name"]), ("", "Voice-2026-11-25.mp3"))
+        self.assertIn("audio", self.env["whatsapp.message"].search(
+            [("channel_id", "=", channel.id), ("attachment_id", "=", voice.id)]).mapped("message_type"))
+        # a note with a file: never sent
+        before = self.env["whatsapp.message"].search_count([("channel_id", "=", channel.id)])
+        scan = upload("bon-de-livraison.jpg", b"\xff\xd8\xff scan", "image/jpeg")
+        page = self.Inbox.ocd_post(channel.id, "Bon signé", True, [scan.id])
+        note = page["current"]["messages"][-1]
+        self.assertEqual((note["kind"], note["files"][0]["name"]), ("note", "bon-de-livraison.jpg"))
+        self.assertEqual(self.env["whatsapp.message"].search_count([("channel_id", "=", channel.id)]), before)
+
+    def test_files_of_someone_else_refused(self):
+        channel = self._receive("Bonjour")
+        other = self.env["ir.attachment"].create({
+            "name": "secret.pdf", "raw": b"%PDF", "res_model": "mail.compose.message", "res_id": 0,
+        })
+        with self.assertRaises(UserError):
+            self.Inbox.ocd_post(channel.id, "Tenez", False, [other.id])
+        with self.assertRaises(UserError):
+            self.Inbox.ocd_post(channel.id, "", False, [])
 
     def test_window_closed_only_a_template(self):
         channel = self._receive("Merci")

@@ -160,6 +160,33 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · La boîte de réception d'OCD Live complète (chantier 24.3)
+
+WhatsApp › Conversations fait maintenant tout ce que l'équipe faisait dans Discuss :
+
+- **Envoyer des fichiers** : le trombone ajoute photos, PDF et documents (100 Mo au plus), le micro
+  enregistre un message vocal (5 minutes au plus) ; les fichiers attendent au-dessus du message (retirables),
+  partent avec lui ou seuls, et s'affichent dans la conversation comme dans WhatsApp. Une note interne garde
+  ses fichiers pour l'équipe, sans rien envoyer.
+- **« Prendre » et « Marquer résolue »** en tête de la conversation, avec son état (« Pas encore prise »,
+  « Prise par vous », « Prise par Amina », « Résolue ») ; « Rouvrir » sur une conversation résolue ; un
+  nouveau message du contact la rouvre de lui-même. Dans la liste, une coche verte pour une conversation
+  résolue.
+- **Chercher** par nom ou par numéro, écrit comme on veut (« 6 90 00 », « +237 690… ») ; filtres
+  « Toutes », « En attente » et « Les miennes », comptés sur toutes les conversations.
+- **Plus de 80 conversations** : « Afficher plus de conversations » charge les 80 suivantes ; la
+  conversation ouverte reste affichée même hors de la liste.
+- **Sur téléphone**, comme dans WhatsApp : la liste en plein écran, puis la conversation en plein écran
+  avec un bouton retour, et un onglet « Contact et appels » (aussi sur tablette, où le contact n'a pas sa
+  colonne) ; la zone d'écriture sur deux lignes. La conversation descend jusqu'au dernier message même quand
+  une photo se charge après.
+- Tests : base neuve, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp`, `ocd_vote_whatsapp`,
+  `ocd_tickets_whatsapp`, `ocd_soirees_whatsapp`, `whatsapp_cloud_call`, `whatsapp_cloud_sale` :
+  **262 sans échec** (5 nouveaux) ; parcours vu dans Chromium (recherche par nom et par numéro, prendre, PDF + photo + vocal
+  enregistré, envoi, résolue, téléphone : liste, conversation, contact, retour).
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live : WhatsApp** dans
+  Applications, Ctrl+F5. Le micro demande l'autorisation du navigateur la première fois (site en https).
+
 ### 25 novembre 2026 · Prévenir avant la fin des 24 h (chantier 24.2)
 
 Répondre à un client dans les 24 h qui suivent son dernier message est gratuit ; ensuite, seul un
