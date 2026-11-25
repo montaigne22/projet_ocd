@@ -65,6 +65,12 @@ BO = {
 
 WHATSAPP = {
     'Internal note for the team (not sent)…': "Note interne pour l'équipe (non envoyée)…",
+    # The languages of a template that Meta does not know (chantier 24.1)
+    'A language missing at Meta': 'Une langue absente chez Meta',
+    'Meta does not know these languages of the templates: %s. Their contacts receive the message in another language; submit them from the Health tab of the WhatsApp account.':
+        "Meta ne connaît pas ces langues des modèles : %s. Leurs contacts reçoivent le message dans une autre langue ; soumettez-les depuis l'onglet Santé du compte WhatsApp.",
+    'The template %s does not exist at Meta: this message does not go. Submit it from the Health tab of the WhatsApp account.':
+        "Le modèle %s n'existe pas chez Meta : ce message ne part pas. Soumettez-le depuis l'onglet Santé du compte WhatsApp.",
     # The calls in the conversations of OCD Live (with the WhatsApp calls)
     'All the calls': 'Tous les appels',
     'Ask to call them': "Demander l'accord d'appeler",

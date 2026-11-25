@@ -970,14 +970,9 @@ class DiscussChannel(models.Model):
         author = user.partner_id if not user._is_superuser() and not user.share else (
             self.env.ref("base.partner_root")
         )
-        body = whatsapp_to_html(wa_message.body or "")
-        if wa_message.template_id:
-            body = Markup("%s<br/><i>%s</i>") % (
-                body, _("Template: %s", wa_message.template_id.name)
-            )
         message = self.with_context(whatsapp_skip_send=True).message_post(
             author_id=author.id,
-            body=body,
+            body=self._whatsapp_outgoing_body(wa_message),
             message_type="whatsapp_message",
             subtype_xmlid="mail.mt_comment",
             date=wa_message.create_date,
@@ -987,6 +982,28 @@ class DiscussChannel(models.Model):
         if wa_message.state != "queued":
             wa_message._bus_send_status()
         return message
+
+    def _whatsapp_outgoing_body(self, wa_message, note=None):
+        """The text of a template sent to the customer, as the conversation shows it: the text
+        of the message, the name of the template, and a note for the team (e.g. the language it
+        was sent in)."""
+        body = whatsapp_to_html(wa_message.body or "")
+        if wa_message.template_id:
+            footer = _("Template: %s", wa_message.template_id.name)
+            if note:
+                footer = f"{footer} · {note}"
+            body = Markup("%s<br/><i>%s</i>") % (body, footer)
+        return body
+
+    def _whatsapp_update_outgoing(self, wa_message, note=None):
+        """The conversation shows again the template of `wa_message` after its text changed
+        (sent in another language of the template)."""
+        self.ensure_one()
+        message = wa_message.mail_message_id.sudo()
+        if not message:
+            return
+        message.write({"body": self._whatsapp_outgoing_body(wa_message, note)})
+        Store(bus_channel=self).add(message, ["body"])
 
     # === COMMANDS AND ACTIONS (Discuss) === #
 

@@ -592,6 +592,14 @@ nouveaux, et les changements des refusés ou en pause ; les approuvés et ceux e
 Chaque modèle a sa version anglaise (`data/whatsapp_template_en_data.xml`, même nom chez Meta, langue `en`) :
 changer les deux ensemble. Le test `test_english_versions` vérifie qu'elles vont par paires.
 
+Une langue que Meta ne connaît pas (erreur 132001, ou absente de la liste lue par « Synchroniser les
+modèles ») prend l'état **Absent chez Meta** (`missing`) : `_get_lang_version` ne la choisit plus, un message
+déjà en file part dans la version de remplacement (`_get_fallback_version` : une autre variante de la même
+langue, puis la langue de la société, puis la première version écrite ; les approuvées d'abord) avec **les
+mêmes valeurs**, relues dans le corps de la requête (`_prepare_payload_from`), y compris celles données par
+le code (`ctx`). Le compte WhatsApp liste ces versions (onglet Santé, « Soumettre à Meta »). Deux versions
+d'un même modèle doivent donc garder les mêmes variables (mêmes noms, ou même nombre).
+
 Les modèles sont des données `noupdate` : chargés à l'installation, jamais réécrits par une mise à jour
 (l'équipe peut changer les textes). **Pour corriger le texte d'un modèle fourni** : changer le XML, monter
 la version du module et ajouter une migration qui donne l'ancien texte, mot pour mot :

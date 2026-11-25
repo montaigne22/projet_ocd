@@ -38,6 +38,11 @@ RETRYABLE_ERROR_CODES = {
 }
 MAX_ATTEMPTS = 5
 
+# Meta does not know the template in the language of the message (or has not approved it yet):
+# the message leaves at once in another language of the template, this version is marked
+# missing at Meta (see whatsapp.message._switch_to_fallback).
+TEMPLATE_MISSING_ERROR_CODE = 132001
+
 # Media of the messages (Meta limits) and the types that accept a caption.
 MEDIA_TYPES = {"image", "audio", "video", "document", "sticker"}
 CAPTION_TYPES = {"image", "video", "document"}
@@ -134,8 +139,10 @@ ERROR_HELP = {
                 "later."),
     132000: _lt("The number of variables differs from the template at Meta: synchronise the "
                 "templates and check their variables."),
-    132001: _lt("The template does not exist at Meta in this language, or is not approved yet: "
-                "synchronise the templates."),
+    132001: _lt("The template does not exist at Meta in this language, or is not approved yet. Odoo "
+                "sends the message in another language of the template when it has one, and lists "
+                "the versions to create on the WhatsApp account (Health tab): submit them to Meta, "
+                "then synchronise the templates."),
     132005: _lt("A variable of the template is too long once filled."),
     132007: _lt("The text of the template breaks the WhatsApp policy."),
     132012: _lt("The format of a variable is invalid (text expected, image, document...)."),

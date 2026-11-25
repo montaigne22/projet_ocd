@@ -6,6 +6,7 @@ from functools import reduce
 from urllib.parse import quote, urlsplit
 
 import requests
+from babel.core import Locale, UnknownLocaleError
 from lxml import etree
 
 from odoo import _, api, fields, models
@@ -80,8 +81,9 @@ class WhatsappTemplate(models.Model):
     status = fields.Selection(
         selection=[
             ("unknown", "Not synchronised"),
-            ("approved", "Approved"),
+            ("missing", "Missing at Meta"),
             ("pending", "Pending approval"),
+            ("approved", "Approved"),
             ("rejected", "Rejected"),
             ("paused", "Paused"),
             ("disabled", "Disabled"),
@@ -90,7 +92,10 @@ class WhatsappTemplate(models.Model):
         readonly=True,
         copy=False,
         help="Status of the template at Meta, read by the synchronisation. The messages are "
-        "sent only with the approved and not synchronised templates.",
+        "sent only with the approved and not synchronised templates. Missing at Meta: Meta does "
+        "not know this language of the template (error 132001, or not found by the "
+        "synchronisation); its messages leave in another language of the template until it is "
+        "created at Meta and synchronised.",
     )
     wa_template_id = fields.Char(
         string="ID at Meta", readonly=True, copy=False, index="btree_not_null"
@@ -448,6 +453,10 @@ class WhatsappTemplate(models.Model):
         self.button_ids._normalize_url_for_meta()
         self._check_for_meta()
         components = self._prepare_meta_components(account)
+        if self.status == "missing":
+            # Not at Meta in this language: created anew (an ID kept from a deleted version is
+            # no longer valid at Meta)
+            self.wa_template_id = False
         try:
             if self.wa_template_id:
                 if self.status not in ("approved", "rejected", "paused"):
@@ -490,7 +499,7 @@ class WhatsappTemplate(models.Model):
         cannot be submitted says why, the others go."""
         submitted, errors = self.browse(), []
         for template in self:
-            if template.wa_template_id and template.status not in ("rejected", "paused"):
+            if template.wa_template_id and template.status not in ("rejected", "paused", "missing"):
                 continue
             try:
                 with self.env.cr.savepoint():
@@ -781,13 +790,16 @@ class WhatsappTemplate(models.Model):
 
     def _get_account(self, records):
         """The account that sends the template: the one of the conversation it is sent from
-        (when the template exists in its WhatsApp Business account), else the account of the
+        (when the template exists in its WhatsApp Business account) or the account given in the
+        context (``whatsapp_account_id``: submitted from the account), else the account of the
         template, else the first account of the company."""
         self.ensure_one()
         channel = self.env["discuss.channel"].sudo().browse(
             self.env.context.get("whatsapp_channel_id") or []
         ).exists()
-        channel_account = channel.whatsapp_account_id
+        channel_account = channel.whatsapp_account_id or self.env["whatsapp.account"].sudo().browse(
+            self.env.context.get("whatsapp_account_id") or []
+        ).exists()
         if channel_account and (
             not self.account_id or self.account_id.waba_id == channel_account.waba_id
         ):
@@ -832,31 +844,112 @@ class WhatsappTemplate(models.Model):
     def _get_lang_version(self, partner):
         """The version of this template in the language of the contact: the template of the
         same name at Meta for the same documents and account, in that language (or another
-        variant of it: en for en_US), not refused by Meta. This template when there is none.
-        When this template is approved, only an approved version: a version not synchronised
-        may not be submitted to Meta yet, and its messages would fail.
+        variant of it: en for en_US), not refused by Meta nor missing at Meta. This template
+        when there is none. When this template is approved, only an approved version: a version
+        not synchronised may not be submitted to Meta yet, and its messages would fail.
+        When this template itself is missing at Meta, the version that replaces it (see
+        ``_get_fallback_version``), if any.
         """
         self.ensure_one()
         lang = (partner.lang or "") if partner else ""
-        if not lang or self._lang_base(self.lang_code) == self._lang_base(lang):
-            return self
-        domain = [
-            ("template_name", "=", self.template_name),
-            ("model_id", "=", self.model_id.id),
-            ("status", "not in", ("rejected", "paused", "disabled", "pending")),
-            ("id", "!=", self.id),
-        ]
-        if self.account_id:
-            domain.append(("account_id", "in", [self.account_id.id, False]))
-        if self.status == "approved":
-            domain.append(("status", "=", "approved"))
-        versions = self.search(domain)
+        main = self
+        if self.status == "missing":
+            main = self._get_fallback_version() or self
+        if not lang or self._lang_base(main.lang_code) == self._lang_base(lang):
+            return main
+        versions = (self._get_versions() - self - main).filtered(
+            lambda version: version.status in (
+                ("approved",) if main.status == "approved" else ("approved", "unknown")
+            )
+        )
         code = lang.replace("-", "_")
         same_code = versions.filtered(lambda version: version.lang_code.replace("-", "_") == code)
         same_language = versions.filtered(
             lambda version: self._lang_base(version.lang_code) == self._lang_base(code)
         )
-        return same_code[:1] or same_language[:1] or self
+        return same_code[:1] or same_language[:1] or main
+
+    def _get_versions(self, account=None):
+        """All the languages of this template: the templates of the same name at Meta for the
+        same documents, of the account of this template (or of `account`) or of no account;
+        this template included."""
+        self.ensure_one()
+        domain = [("template_name", "=", self.template_name), ("model_id", "=", self.model_id.id)]
+        account = account or self.account_id
+        if account:
+            # an account of the same WhatsApp Business account knows the same templates
+            accounts = self.env["whatsapp.account"].sudo().with_context(active_test=False).search(
+                [("waba_id", "=", account.waba_id)]
+            )
+            domain.append(("account_id", "in", [*accounts.ids, False]))
+        return self.search(domain) | self
+
+    def _get_fallback_version(self, account=None):
+        """The version sent instead of this one when Meta does not know it (missing at Meta):
+        another variant of the same language (en_US for en), else the main language of the
+        template, the one of the company, else the first version written (the one of the
+        module). Approved versions first; only the versions that may be sent (approved or not
+        synchronised), of the WhatsApp Business account of `account`.
+        """
+        self.ensure_one()
+        if not account:
+            account = self._get_account(self.env[self.model if self.model in self.env else "res.partner"])
+        versions = (self._get_versions(account) - self).filtered(
+            lambda version: version.status in ("approved", "unknown")
+        )
+        if not versions:
+            return versions
+        company_lang = self._lang_base(
+            (account.company_id.partner_id.lang if account else False) or self.env.company.partner_id.lang
+        )
+        return min(versions, key=lambda version: (
+            self._lang_base(version.lang_code) != self._lang_base(self.lang_code),
+            self._lang_base(version.lang_code) != company_lang,
+            version.status != "approved",
+            version.id,
+        ))
+
+    def _mark_missing_at_meta(self, account, reason=None):
+        """Meta does not know these versions (error 132001): they are no longer chosen until
+        they are created at Meta and synchronised, and the managers are told once which
+        versions to create (WhatsApp account, Health tab).
+
+        :return: the versions newly marked
+        """
+        marked = self.filtered(lambda template: template.status != "missing")
+        if not marked:
+            return marked
+        marked.write({"status": "missing", "rejected_reason": reason or False})
+        if account:
+            account = account.with_context(lang=account._get_team_lang())
+            for template in marked.with_context(lang=account.env.lang):
+                fallback = template._get_fallback_version(account)
+                account._alert_managers(
+                    template.env._(
+                        "WhatsApp template %(name)s: the version in %(lang)s does not exist at Meta. "
+                        "Its messages leave in %(other)s until it is created at Meta: submit it from "
+                        "the Health tab of the WhatsApp account, then synchronise the templates.",
+                        name=template.template_name, lang=template._get_lang_label(),
+                        other=fallback._get_lang_label(),
+                    ) if fallback else template.env._(
+                        "WhatsApp template %(name)s: the version in %(lang)s does not exist at Meta, "
+                        "and no other language of it can be sent: its messages do not leave. Submit "
+                        "it from the Health tab of the WhatsApp account, then synchronise the "
+                        "templates.",
+                        name=template.template_name, lang=template._get_lang_label(),
+                    )
+                )
+        return marked
+
+    def _get_lang_label(self):
+        """Name of the language of the template in the language of the user: « English » or
+        « anglais » for en, « English (United States) » for en_US; the code if unknown."""
+        self.ensure_one()
+        code = (self.lang_code or "").replace("-", "_")
+        try:
+            return Locale.parse(code).get_display_name(Locale.parse(self.env.lang or "en_US")) or code
+        except (UnknownLocaleError, ValueError, TypeError):
+            return code
 
     @staticmethod
     def _lang_base(code):
@@ -873,9 +966,13 @@ class WhatsappTemplate(models.Model):
         """
         self.ensure_one()
         records = records.sudo()
-        by_version = {}
+        by_version, by_lang = {}, {}
         for record in records:
-            version = self._get_lang_version(self._get_recipient(record))
+            partner = self._get_recipient(record)
+            lang = partner.lang if partner else False
+            if lang not in by_lang:  # the same for all the contacts of a language
+                by_lang[lang] = self._get_lang_version(partner)
+            version = by_lang[lang]
             by_version[version] = by_version.get(version, records.browse()) | record
         if not by_version or list(by_version) == [self]:
             return self._send_version(records)
@@ -966,6 +1063,12 @@ class WhatsappTemplate(models.Model):
             return _("The contact did not agree to receive WhatsApp messages.")
         if self.status in ("rejected", "paused", "disabled"):
             return _("The template is %s at Meta.", self.status)
+        if self.status == "missing":
+            # _get_lang_version gives the version that replaces it when there is one
+            return _(
+                "The template does not exist at Meta in %s, and no other language of it can be "
+                "sent: submit it from the Health tab of the WhatsApp account.", self._get_lang_label(),
+            )
         return False
 
     def _prepare_payload(self, number, values, header=None, button=None, user_ref=None):
@@ -1034,6 +1137,46 @@ class WhatsappTemplate(models.Model):
             "type": "template",
             "template": template,
         }
+
+    def _prepare_payload_from(self, payload, number, user_ref=None):
+        """The message of another version of this template (`payload`, its body of the request)
+        in this version, with the same values: the variables, the header and the end of the
+        link were filled when the message was queued, sometimes with values given by the code
+        (``ctx``) that cannot be computed again. None when this version does not take them (other
+        variables, a link expected and not given).
+
+        :return: (payload, values of the variables by key), or None
+        """
+        self.ensure_one()
+        components = (payload.get("template") or {}).get("components") or []
+        parameters, header, button = [], None, None
+        for component in components:
+            texts = [
+                parameter for parameter in component.get("parameters") or []
+                if parameter.get("type") == "text"
+            ]
+            if component.get("type") == "body":
+                parameters = texts
+            elif component.get("type") == "header" and texts:
+                header = texts[0].get("text")
+            elif component.get("type") == "button" and component.get("sub_type") == "url" and texts:
+                button = texts[0].get("text")
+        keys = [variable._get_placeholder_key() for variable in self.variable_ids]
+        by_name = {parameter["parameter_name"]: parameter.get("text") for parameter in parameters
+                   if parameter.get("parameter_name")}
+        if self.parameter_format == "named" and by_name and set(keys) <= set(by_name):
+            values = {key: by_name[key] for key in keys}
+        elif len(keys) == len(parameters):
+            values = {key: parameter.get("text") for key, parameter in zip(keys, parameters)}
+        else:
+            return None
+        if self.category == "authentication" and (not keys or not values.get(keys[0])):
+            return None
+        if self._expects_url_button_value(known_only=True) and not (button and self.button_url_value):
+            return None
+        if self.header_type == "text" and "{{" in (self.header_text or "") and not header:
+            return None
+        return self._prepare_payload(number, values, header=header, button=button, user_ref=user_ref), values
 
     def _expects_url_button_value(self, known_only=False):
         """Whether Meta expects the end of the URL of the link button with each message: the

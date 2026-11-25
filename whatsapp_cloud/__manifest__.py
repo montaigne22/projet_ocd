@@ -23,14 +23,16 @@ WhatsApp Business number of the company with the Cloud API of Meta (no intermedi
   hand over to an agent, STOP / START.
 - Templates: synchronised from Meta, or written in Odoo and submitted to Meta (header,
   footer, quick replies, link and call buttons, examples); status, quality and category
-  updated by Meta; each contact gets the version in their language.
+  updated by Meta; each contact gets the version in their language. A language that Meta
+  does not know (error 132001) is marked missing at Meta: the message leaves at once in the
+  main language of the template, and the account lists the versions to submit to Meta.
 - "Send WhatsApp" action in the automation rules and server actions.
 - Webhook signed by Meta (X-Hub-Signature-256), stored and acknowledged at once, then
   processed in the background without duplicates.
 - Settings (WhatsApp section): each feature enabled or disabled (conversations, read
   receipts, reminders, welcome menu, away message).
 """,
-    "version": "20.0.2.16.0",
+    "version": "20.0.2.17.0",
     "category": "Marketing",
     "author": "RollBackk",
     "license": "OPL-1",

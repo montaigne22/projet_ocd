@@ -829,7 +829,9 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   l'approuve. La page répond pareil pour tous les numéros.
 - **Messages en français et en anglais** : chaque modèle existe dans les deux langues (même nom chez Meta).
   Un contact dont la langue est l'anglais reçoit la version anglaise une fois approuvée par Meta, la
-  version française en attendant.
+  version française en attendant. Si Meta ne connaît pas la version anglaise (erreur 132001), le message
+  repart aussitôt en français ; la version est marquée « Absent chez Meta » et n'est plus choisie tant
+  qu'elle n'est pas créée chez Meta et synchronisée (25 novembre 2026).
 - **Textes des modèles** : chargés à l'installation, puis à l'équipe. Une nouvelle version d'un module ne
   change que les textes restés tels que le module les avait écrits, et jamais celui d'un modèle approuvé par
   Meta (c'est le texte que Meta envoie). Odoo refuse de soumettre un texte que Meta refuserait (variable au

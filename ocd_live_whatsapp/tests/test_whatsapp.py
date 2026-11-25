@@ -299,6 +299,26 @@ class TestOcdWhatsappAutomations(OcdLiveCommon):
         self.assertIn("ocd_lien_recu", row["warning"])
         self.assertEqual(row["templates"], ["ocd_lien_recu"])
 
+    def test_language_missing_at_meta_is_told(self):
+        """A language of a template that Meta does not know (error 132001): the automation
+        and the settings page say it; the link still goes in French, not without any language."""
+        main = self.env.ref("ocd_live_whatsapp.template_space_link")
+        english = self.env["whatsapp.template"].search([
+            ("template_name", "=", main.template_name), ("lang_code", "=", "en"),
+        ])
+        self.assertTrue(english, "The module gives the English version")
+        english.status = "missing"
+        automation = self.env["ocd.automation"].search([("template_ids", "in", main.ids)], limit=1)
+        self.assertIn(f"{main.template_name} (en)", automation._ocd_row()["warning"])
+        rows = {row["name"]: row for row in self.env["ocd.live.settings"]._ocd_template_rows()}
+        self.assertEqual(rows[main.template_name]["status"], "A language missing at Meta")
+        Partner = self.env["res.partner"]
+        self.assertTrue(Partner._ocd_template_usable("ocd_live_whatsapp.template_space_link"))
+        # the French one missing too: no language of it can go
+        main.status = "missing"
+        self.assertFalse(Partner._ocd_template_usable("ocd_live_whatsapp.template_space_link"))
+        self.assertIn("does not exist at Meta: this message does not go", automation._ocd_row()["warning"])
+
 
 @tagged("post_install", "-at_install")
 class TestOcdTemplatesForMeta(TransactionCase):

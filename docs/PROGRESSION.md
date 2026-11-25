@@ -160,6 +160,35 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · Les modèles dans une langue absente chez Meta (chantier 24.1)
+
+Un client anglophone recevait la version anglaise d'un modèle même quand Meta ne la connaissait pas
+(erreur #132001, vu le 24 novembre avec `ocd_soiree_invitation`) : il ne recevait rien.
+
+- **Renvoi aussitôt** : sur l'erreur 132001, le même message repart dans la langue principale du modèle
+  (une autre variante de la même langue d'abord, puis la langue de la société), avec les mêmes valeurs,
+  y compris celles calculées par le code au moment de l'envoi. La conversation montre le texte envoyé
+  (« Envoyé en français : la version en anglais n'existe pas chez Meta ») ; le message garde la version
+  remplacée (« À la place de ») ; le document note la langue.
+- **Version absente chez Meta** : nouvel état « Absent chez Meta » ; la version n'est plus choisie tant
+  qu'elle n'est pas créée chez Meta et synchronisée, et les messages déjà en file passent à l'autre langue
+  sans être refusés un par un. Les responsables sont prévenus une fois. « Synchroniser les modèles » marque
+  aussi les versions que Meta n'a pas, et rend leur état à celles qu'il a.
+- **Sur le compte WhatsApp** : un bandeau « Versions de modèles à créer chez Meta » et, dans l'onglet Santé,
+  leur liste avec « Soumettre à Meta » (pour toutes, ou ligne par ligne) ; une version absente se soumet de
+  nouveau même si elle avait un ID chez Meta.
+- **OCD Live** : la page des Paramètres (« Une langue absente chez Meta ») et les Automatisations le disent ;
+  un lien de connexion dont aucune langue n'existe chez Meta laisse la place au code.
+- Au passage : les icônes des boutons du compte, du message et du contact (Font Awesome, absent d'Odoo 20)
+  remplacées par celles d'Odoo 20.
+- Tests : base neuve, `ocd_live_whatsapp`, `ocd_live_shop_whatsapp`, `ocd_vote_whatsapp`,
+  `ocd_tickets_whatsapp`, `ocd_soirees_whatsapp`, `whatsapp_cloud_call`, `whatsapp_cloud_sale` :
+  **253 sans échec** (12 nouveaux) ; vu à l'écran dans Chromium (compte, onglet Santé, modèle, message,
+  conversation, téléphone).
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **WhatsApp Cloud API** et
+  **OCD Live : WhatsApp** dans Applications, Ctrl+F5 ; puis WhatsApp › Comptes › « Synchroniser les
+  modèles » : le bandeau du compte liste les versions à créer chez Meta.
+
 ### 21 novembre 2026 · Appels WhatsApp : le serveur d'appels en Docker, vu de bout en bout
 `whatsapp_cloud_call` 20.0.1.1.0. Guide : [`whatsapp_cloud_call/freeswitch/README.md`](../whatsapp_cloud_call/freeswitch/README.md).
 - **Docker** (`whatsapp_cloud_call/freeswitch/docker/`) : FreeSWITCH 1.11.3 compilé depuis ses sources

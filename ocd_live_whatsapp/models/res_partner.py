@@ -115,6 +115,8 @@ class ResPartner(models.Model):
         template = template.sudo()
         if template.status in ("pending", "rejected", "paused", "disabled"):
             return False
+        if template.status == "missing" and not template._get_fallback_version():
+            return False  # not at Meta, and no other language of it
         return self.env["ocd.automation"]._ocd_template_enabled(template)
 
     @api.model

@@ -97,6 +97,17 @@ class WhatsappAccount(models.Model):
         string="Test Number", help="Number that receives the test message (hello_world template)."
     )
     template_count = fields.Integer(compute="_compute_counts")
+    missing_template_ids = fields.Many2many(
+        comodel_name="whatsapp.template",
+        string="Templates to Create at Meta",
+        compute="_compute_missing_templates",
+        help="Versions of the templates that Meta does not know (error 132001, or not found by the "
+        "synchronisation): their messages leave in another language of the template until they are "
+        "submitted to Meta, approved and synchronised.",
+    )
+    missing_template_count = fields.Integer(
+        string="Versions to Create at Meta", compute="_compute_missing_templates"
+    )
     message_count = fields.Integer(compute="_compute_counts")
     conversation_count = fields.Integer(compute="_compute_counts")
 
@@ -617,6 +628,7 @@ class WhatsappAccount(models.Model):
             "limit": 100,
         }
         created = updated = 0
+        found, at_meta = Template.browse(), set()
         while True:
             try:
                 result = self._api_request(
@@ -630,6 +642,7 @@ class WhatsappAccount(models.Model):
             for data in result.get("data", []):
                 template = Template._find_from_meta(self, data)
                 vals = Template._prepare_vals_from_meta(data)
+                at_meta.add((data["name"], vals["lang_code"]))
                 if template:
                     if vals["status"] == "rejected":
                         # Refused by Meta: the text of Odoo is the one being corrected (by the team
@@ -640,19 +653,90 @@ class WhatsappAccount(models.Model):
                             if key in vals
                         }
                     template.write(vals)
+                    found |= template
                     updated += 1
                 else:
-                    Template.create({**vals, "account_id": self.id, "name": data["name"]})
+                    found |= Template.create({**vals, "account_id": self.id, "name": data["name"]})
                     created += 1
             after = result.get("paging", {}).get("cursors", {}).get("after")
             if not after or not result.get("paging", {}).get("next"):
                 break
             params["after"] = after
-        return self._notify(
-            _("Templates synchronised: %(created)s new, %(updated)s updated.",
-              created=created, updated=updated),
-            "success",
+        self._mark_templates_missing(found, at_meta)
+        message = _("Templates synchronised: %(created)s new, %(updated)s updated.",
+                    created=created, updated=updated)
+        missing_count = len(self._get_missing_templates())
+        if missing_count:
+            missing_text = _(
+                "1 template version does not exist at Meta: its messages leave in another language. "
+                "See the Health tab of the account."
+            ) if missing_count == 1 else _(
+                "%s template versions do not exist at Meta: their messages leave in another language. "
+                "See the Health tab of the account.", missing_count,
+            )
+            return self._notify(f"{message} {missing_text}", "warning")
+        return self._notify(message, "success")
+
+    def _mark_templates_missing(self, found, at_meta):
+        """After a whole synchronisation: the templates of the account that Meta does not have
+        (not submitted yet, deleted at Meta, other language code) are missing at Meta, so that no
+        message takes them. Only the ones a message could take (approved or not synchronised):
+        the refused, paused or pending ones say it already. The templates of no account count
+        when every account uses this WhatsApp Business account.
+
+        :param found: the templates read from Meta
+        :param set at_meta: (name, language) of the templates at Meta
+        :return: the templates newly missing
+        """
+        self.ensure_one()
+        accounts = [self.id]
+        if not self.search_count([("waba_id", "!=", self.waba_id)], limit=1):
+            accounts.append(False)
+        Template = self.env["whatsapp.template"]
+        templates = Template.search([
+            ("account_id", "in", accounts), ("status", "in", ("approved", "unknown", "missing")),
+        ]) - found
+
+        def known(template):
+            return (template.template_name, Template._normalize_lang(template.lang_code)) in at_meta
+
+        # A twin of a template read from Meta (same name and language): Meta has it
+        templates.filtered(lambda template: template.status == "missing" and known(template)).write(
+            {"status": "unknown", "rejected_reason": False}
         )
+        missing = templates.filtered(lambda template: template.status != "missing" and not known(template))
+        missing.write({"status": "missing", "rejected_reason": False})
+        return missing
+
+    def _get_missing_templates(self):
+        """The versions of the templates of the account that do not exist at Meta: the ones to
+        create there (templates of the account, or of no account)."""
+        self.ensure_one()
+        return self.env["whatsapp.template"].search([
+            ("status", "=", "missing"), ("account_id", "in", [self.id, False]),
+        ], order="template_name, lang_code")
+
+    def _compute_missing_templates(self):
+        for account in self:
+            account.missing_template_ids = account._get_missing_templates() if account.id else False
+            account.missing_template_count = len(account.missing_template_ids)
+
+    def action_submit_missing_templates(self):
+        """Submit to Meta the versions of the templates it does not have yet."""
+        self.ensure_one()
+        templates = self._get_missing_templates()
+        if not templates:
+            return self._notify(_("Every template of the account exists at Meta."), "info")
+        return templates.with_context(whatsapp_account_id=self.id).action_submit_selected_to_meta()
+
+    def action_open_missing_templates(self):
+        self.ensure_one()
+        action = self.action_open_templates()
+        action.update({
+            "name": _("Templates to Create at Meta"),
+            "domain": [("id", "in", self._get_missing_templates().ids)],
+        })
+        return action
 
     def action_send_test(self):
         """Send the "hello_world" template of Meta to the test number."""

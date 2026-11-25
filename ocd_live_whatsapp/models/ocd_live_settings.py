@@ -1,7 +1,7 @@
 from odoo import api, models
 
 # Status of a template at Meta, from the least to the most worrying
-TEMPLATE_STATUS = ["approved", "unknown", "pending", "paused", "rejected", "disabled"]
+TEMPLATE_STATUS = ["approved", "unknown", "missing", "pending", "paused", "rejected", "disabled"]
 
 
 class OcdLiveSettings(models.AbstractModel):
@@ -91,6 +91,7 @@ class OcdLiveSettings(models.AbstractModel):
         labels = {
             "approved": (_("Approved"), "green"),
             "unknown": (_("Not synchronised"), "grey"),
+            "missing": (_("A language missing at Meta"), "yellow"),
             "pending": (_("Waiting for Meta"), "yellow"),
             "paused": (_("Paused by Meta"), "red"),
             "rejected": (_("Refused by Meta"), "red"),

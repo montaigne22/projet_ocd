@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 19:00+0000\n"
-"PO-Revision-Date: 2026-11-24 19:00+0000\n"
+"POT-Creation-Date: 2026-11-25 08:43+0000\n"
+"PO-Revision-Date: 2026-11-25 08:43+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,9 @@ msgid ""
 "  hand over to an agent, STOP / START.\n"
 "- Templates: synchronised from Meta, or written in Odoo and submitted to Meta (header,\n"
 "  footer, quick replies, link and call buttons, examples); status, quality and category\n"
-"  updated by Meta; each contact gets the version in their language.\n"
+"  updated by Meta; each contact gets the version in their language. A language that Meta\n"
+"  does not know (error 132001) is marked missing at Meta: the message leaves at once in the\n"
+"  main language of the template, and the account lists the versions to submit to Meta.\n"
 "- \"Send WhatsApp\" action in the automation rules and server actions.\n"
 "- Webhook signed by Meta (X-Hub-Signature-256), stored and acknowledged at once, then\n"
 "  processed in the background without duplicates.\n"
@@ -68,6 +70,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/whatsapp_cloud/wizard/whatsapp_composer.py:0
 msgid "%s documents"
+msgstr ""
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "%s template versions do not exist at Meta: their messages leave in another language. See the Health tab of the account."
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -113,9 +121,30 @@ msgid "1 template submitted to Meta: its review can take up to 24 hours."
 msgstr ""
 
 #. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "1 template version does not exist at Meta: its messages leave in another language. See the Health tab of the account."
+msgstr ""
+
+#. module: whatsapp_cloud
 #. odoo-javascript
 #: code:addons/whatsapp_cloud/static/src/whatsapp_info_panel.xml:0
 msgid "24-hour window closed: send a template"
+msgstr ""
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
+msgid ""
+"<b>Meta does not know this language of the template.</b>\n"
+"                            Its messages leave at once in another language of the template, and Odoo no longer\n"
+"                            chooses it until it is submitted to Meta, approved and synchronised."
+msgstr ""
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid ""
+"<i class=\"oi\" data-icon=\"translate\" aria-hidden=\"true\"/>\n"
+"                            <span>Template versions to create at Meta:</span>"
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -881,9 +910,20 @@ msgid "Error Code"
 msgstr ""
 
 #. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Error of Meta"
+msgstr ""
+
+#. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/discuss_channel.py:0
 msgid "Escalation: the customer has been waiting for an answer for %s minutes."
+msgstr ""
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "Every template of the account exists at Meta."
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -1232,6 +1272,11 @@ msgid ""
 msgstr ""
 
 #. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_message__replaced_template_id
+msgid "Instead of"
+msgstr ""
+
+#. module: whatsapp_cloud
 #: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_message__message_type__interactive
 msgid "Interactive"
 msgstr ""
@@ -1505,6 +1550,22 @@ msgid "Meta did not deliver this marketing message to keep a good experience for
 msgstr ""
 
 #. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid ""
+"Meta does not know these languages of the templates (error 132001, or not found by\n"
+"                                    the synchronisation). Their messages leave at once in another language of the\n"
+"                                    template (the language of the company first), and Odoo no longer chooses them until\n"
+"                                    they are submitted to Meta, approved and synchronised."
+msgstr ""
+
+#. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid ""
+"Meta does not know these languages: their messages leave in another language of the\n"
+"                            template until they are submitted to Meta, approved and synchronised."
+msgstr ""
+
+#. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
 msgid "Meta limits the messages of the number because of their quality (spam reports): send fewer messages, only to customers who agreed."
@@ -1523,11 +1584,17 @@ msgid "Meta refused the template: %s"
 msgstr ""
 
 #. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Meta reviews each version (up to 24 hours): the messages leave in it once approved and synchronised."
+msgstr ""
+
+#. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
 msgid "Meta reviews the changes again. An approved template can be edited 10 times in 30 days, once a day at most."
 msgstr ""
 
 #. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
 msgid "Meta reviews the template (up to 24 hours): it can be used once approved."
 msgstr ""
@@ -1548,6 +1615,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/whatsapp_cloud/static/src/messaging_menu_model_patch.js:0
 msgid "Mine"
+msgstr ""
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields.selection,name:whatsapp_cloud.selection__whatsapp_template__status__missing
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_search
+msgid "Missing at Meta"
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -2155,6 +2228,11 @@ msgid "Sample PDF (or MP4 video) for the review by Meta; when empty, the one of 
 msgstr ""
 
 #. module: whatsapp_cloud
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "See Them"
+msgstr ""
+
+#. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/discuss_channel.py:0
 msgid "See the options"
@@ -2246,6 +2324,12 @@ msgid "Sent Date"
 msgstr ""
 
 #. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "Sent in %(lang)s: the version in %(missing)s does not exist at Meta."
+msgstr ""
+
+#. module: whatsapp_cloud
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.res_config_settings_view_form
 msgid "Sent outside of the opening hours of the account, at most once every 12 hours to a customer."
 msgstr ""
@@ -2332,7 +2416,7 @@ msgstr ""
 
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template__status
-msgid "Status of the template at Meta, read by the synchronisation. The messages are sent only with the approved and not synchronised templates."
+msgid "Status of the template at Meta, read by the synchronisation. The messages are sent only with the approved and not synchronised templates. Missing at Meta: Meta does not know this language of the template (error 132001, or not found by the synchronisation); its messages leave in another language of the template until it is created at Meta and synchronised."
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -2373,6 +2457,7 @@ msgstr ""
 
 #. module: whatsapp_cloud
 #: model:ir.actions.server,name:whatsapp_cloud.action_submit_selected_to_meta
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
 #: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_template_view_form
 msgid "Submit to Meta"
 msgstr ""
@@ -2481,6 +2566,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
 msgid "Templates synchronised: %(created)s new, %(updated)s updated."
+msgstr ""
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__missing_template_ids
+#: model_terms:ir.ui.view,arch_db:whatsapp_cloud.whatsapp_account_view_form
+msgid "Templates to Create at Meta"
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -3000,8 +3093,20 @@ msgstr ""
 
 #. module: whatsapp_cloud
 #. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_message.py:0
+msgid "The template %(name)s does not exist at Meta in %(lang)s, and no other language of it can take this message."
+msgstr ""
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "The template does not exist at Meta in %s, and no other language of it can be sent: submit it from the Health tab of the WhatsApp account."
+msgstr ""
+
+#. module: whatsapp_cloud
+#. odoo-python
 #: code:addons/whatsapp_cloud/const.py:0
-msgid "The template does not exist at Meta in this language, or is not approved yet: synchronise the templates."
+msgid "The template does not exist at Meta in this language, or is not approved yet. Odoo sends the message in another language of the template when it has one, and lists the versions to create on the WhatsApp account (Health tab): submit them to Meta, then synchronise the templates."
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -3079,6 +3184,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
 msgid "The variable of the link %s must be at its end."
+msgstr ""
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_message__replaced_template_id
+msgid "The version of the template in the language of the contact, missing at Meta: the message left at once in another language of the template, with the same values."
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -3369,6 +3479,16 @@ msgstr ""
 #. module: whatsapp_cloud
 #: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_template__variable_ids
 msgid "Variables"
+msgstr ""
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_account__missing_template_ids
+msgid "Versions of the templates that Meta does not know (error 132001, or not found by the synchronisation): their messages leave in another language of the template until they are submitted to Meta, approved and synchronised."
+msgstr ""
+
+#. module: whatsapp_cloud
+#: model:ir.model.fields,field_description:whatsapp_cloud.field_whatsapp_account__missing_template_count
+msgid "Versions to Create at Meta"
 msgstr ""
 
 #. module: whatsapp_cloud
@@ -3710,6 +3830,18 @@ msgstr ""
 #. module: whatsapp_cloud
 #. odoo-python
 #: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "WhatsApp template %(name)s: the version in %(lang)s does not exist at Meta, and no other language of it can be sent: its messages do not leave. Submit it from the Health tab of the WhatsApp account, then synchronise the templates."
+msgstr ""
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
+msgid "WhatsApp template %(name)s: the version in %(lang)s does not exist at Meta. Its messages leave in %(other)s until it is created at Meta: submit it from the Health tab of the WhatsApp account, then synchronise the templates."
+msgstr ""
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_template.py:0
 msgid "WhatsApp template %s: low quality at Meta, it may be paused."
 msgstr ""
 
@@ -3828,6 +3960,12 @@ msgstr ""
 #. module: whatsapp_cloud
 #: model:ir.model.fields,help:whatsapp_cloud.field_whatsapp_template_button__url
 msgid "https://... ; for a link per document, end it with {{1}} after a slash (e.g. {base_url}/{{1}}): Odoo adds the value of the Link Button Variable of the template."
+msgstr ""
+
+#. module: whatsapp_cloud
+#. odoo-python
+#: code:addons/whatsapp_cloud/models/whatsapp_account.py:0
+msgid "id"
 msgstr ""
 
 #. module: whatsapp_cloud

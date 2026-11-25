@@ -29,6 +29,11 @@ class WhatsappMessage(models.Model):
         comodel_name="whatsapp.template", string="Template", index="btree_not_null",
         ondelete="set null",
     )
+    replaced_template_id = fields.Many2one(
+        comodel_name="whatsapp.template", string="Instead of", readonly=True, ondelete="set null",
+        help="The version of the template in the language of the contact, missing at Meta: the "
+        "message left at once in another language of the template, with the same values.",
+    )
     direction = fields.Selection(
         selection=[("outgoing", "Sent"), ("incoming", "Received")],
         required=True,
@@ -178,6 +183,12 @@ class WhatsappMessage(models.Model):
             return
         account = self.account_id
         payload = json.loads(self.sudo().payload or "{}")
+        if payload.get("type") == "template" and self.template_id.status == "missing":
+            # Known to be missing at Meta (an earlier message, the synchronisation): the other
+            # language at once, without a refusal of Meta for each message
+            if not self._switch_to_fallback():
+                return
+            payload = json.loads(self.sudo().payload)
         if payload.get("type") == "template" and not self._make_header_document():
             return
         try:
@@ -198,6 +209,16 @@ class WhatsappMessage(models.Model):
                 "POST", f"{account.phone_number_id}/messages", json=payload
             )
         except WhatsAppApiError as error:
+            if (
+                error.code == const.TEMPLATE_MISSING_ERROR_CODE
+                and payload.get("type") == "template" and self.template_id
+            ):
+                # Meta does not know this language of the template: never again chosen, and this
+                # message leaves at once in the main language of the template
+                self.template_id.sudo()._mark_missing_at_meta(account, str(error))
+                if self._switch_to_fallback(error):
+                    self._send()
+                return
             attempts = self.attempts + 1
             if error.retryable and attempts < const.MAX_ATTEMPTS:
                 self.write({"attempts": attempts, "error": str(error), "error_code": error.code})
@@ -218,7 +239,71 @@ class WhatsappMessage(models.Model):
         })
         self._bus_send_status()
         if not self.channel_id and self.model != "discuss.channel":
-            self._log_on_record(_("WhatsApp message sent to +%s:", self.phone), self.body)
+            title = _("WhatsApp message sent to +%s:", self.phone)
+            if self.replaced_template_id:
+                title = f"{title} ({self._get_fallback_note()})"
+            self._log_on_record(title, self.body)
+
+    def _switch_to_fallback(self, error=None):
+        """The template of the message does not exist at Meta in its language: the message
+        takes the version that replaces it (see whatsapp.template._get_fallback_version), with
+        the same values, and leaves as soon as it is sent again; the conversation shows the
+        text the customer receives. Return False when no other version can take it: the
+        message then fails and says why.
+
+        :param error: the refusal of Meta (WhatsAppApiError), if any
+        """
+        self.ensure_one()
+        version = self.template_id
+        team = self.with_context(lang=self.account_id._get_team_lang())
+        fallback = version._get_fallback_version(self.account_id)
+        result = fallback._prepare_payload_from(
+            json.loads(self.sudo().payload or "{}"), self.phone, self.user_ref
+        ) if fallback else None
+        if not result:
+            reason = team.env._(
+                "The template %(name)s does not exist at Meta in %(lang)s, and no other language of "
+                "it can take this message.",
+                name=version.template_name, lang=version.with_context(lang=team.env.lang)._get_lang_label(),
+            )
+            self.write({
+                "attempts": self.attempts + 1, "state": "failed",
+                "error": f"{error} {reason}" if error else reason,
+                "error_code": const.TEMPLATE_MISSING_ERROR_CODE,
+            })
+            self._notify_failure()
+            return False
+        payload, values = result
+        vals = {
+            "template_id": fallback.id,
+            "replaced_template_id": (self.replaced_template_id or version).id,
+            "body": fallback._fill_body(values),
+            "payload": json.dumps(payload),
+            "error": False,
+            "error_code": False,
+        }
+        if self.attachment_id and fallback.header_type not in ("document", "video"):
+            vals["attachment_id"] = False
+        self.write(vals)
+        _logger.info(
+            "WhatsApp: template %s missing at Meta in %s, message %s sent in %s.",
+            version.template_name, version.lang_code, self.id, fallback.lang_code,
+        )
+        if self.channel_id and self.mail_message_id:
+            self.channel_id.with_context(lang=team.env.lang)._whatsapp_update_outgoing(
+                self, team._get_fallback_note()
+            )
+        return True
+
+    def _get_fallback_note(self):
+        """What the team reads on a message sent in another language of its template."""
+        self.ensure_one()
+        lang = self.env.lang
+        return self.env._(
+            "Sent in %(lang)s: the version in %(missing)s does not exist at Meta.",
+            lang=self.template_id.with_context(lang=lang)._get_lang_label(),
+            missing=self.replaced_template_id.with_context(lang=lang)._get_lang_label(),
+        )
 
     def _make_header_document(self):
         """Make the PDF of the header of the template (quotation, ticket...) just before

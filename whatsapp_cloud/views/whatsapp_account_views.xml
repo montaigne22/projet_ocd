@@ -35,13 +35,13 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_open_conversations" type="object" class="oe_stat_button" icon="fa-whatsapp">
+                        <button name="action_open_conversations" type="object" class="oe_stat_button" icon="forum">
                             <field name="conversation_count" widget="statinfo" string="Conversations"/>
                         </button>
-                        <button name="action_open_templates" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                        <button name="action_open_templates" type="object" class="oe_stat_button" icon="description">
                             <field name="template_count" widget="statinfo" string="Templates"/>
                         </button>
-                        <button name="action_open_messages" type="object" class="oe_stat_button" icon="fa-comments-o">
+                        <button name="action_open_messages" type="object" class="oe_stat_button" icon="chat_bubble">
                             <field name="message_count" widget="statinfo" string="Messages"/>
                         </button>
                     </div>
@@ -49,6 +49,25 @@
                     <field name="active" invisible="1"/>
                     <div class="alert alert-warning" role="alert" invisible="health_state not in ('warning', 'error')">
                         <field name="health_message" readonly="1"/>
+                    </div>
+                    <field name="missing_template_count" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="not missing_template_count">
+                        <div class="d-flex align-items-center gap-2 fw-bold">
+                            <i class="oi" data-icon="translate" aria-hidden="true"/>
+                            <span>Template versions to create at Meta:</span>
+                            <field name="missing_template_count" readonly="1"/>
+                        </div>
+                        <div class="mt-1">
+                            Meta does not know these languages: their messages leave in another language of the
+                            template until they are submitted to Meta, approved and synchronised.
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            <button name="action_submit_missing_templates" type="object" string="Submit to Meta"
+                                    class="btn btn-sm btn-primary" groups="whatsapp_cloud.group_whatsapp_manager"
+                                    confirm="Meta reviews each version (up to 24 hours): the messages leave in it once approved and synchronised."/>
+                            <button name="action_open_missing_templates" type="object" string="See Them"
+                                    class="btn btn-sm btn-secondary"/>
+                        </div>
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
@@ -150,6 +169,28 @@
                                     <field name="health_state"/>
                                     <field name="health_check_date"/>
                                 </group>
+                            </group>
+                            <group string="Templates to Create at Meta" invisible="not missing_template_count">
+                                <div class="text-muted" colspan="2">
+                                    Meta does not know these languages of the templates (error 132001, or not found by
+                                    the synchronisation). Their messages leave at once in another language of the
+                                    template (the language of the company first), and Odoo no longer chooses them until
+                                    they are submitted to Meta, approved and synchronised.
+                                </div>
+                                <field name="missing_template_ids" nolabel="1" colspan="2" readonly="1"
+                                       context="{'whatsapp_account_id': id}">
+                                    <list>
+                                        <field name="template_name"/>
+                                        <field name="lang_code"/>
+                                        <field name="name"/>
+                                        <field name="model_id" optional="hide"/>
+                                        <field name="category" optional="show"/>
+                                        <field name="rejected_reason" string="Error of Meta" optional="hide"/>
+                                        <button name="action_submit_to_meta" type="object" string="Submit to Meta"
+                                                icon="send" class="btn-link" groups="whatsapp_cloud.group_whatsapp_manager"
+                                                confirm="Meta reviews the template (up to 24 hours): it can be used once approved."/>
+                                    </list>
+                                </field>
                             </group>
                         </page>
                     </notebook>
