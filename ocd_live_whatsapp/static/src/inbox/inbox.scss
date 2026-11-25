@@ -310,57 +310,76 @@
 }
 .o_ocd_wa_head {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
+    gap: 6px 10px;
+    padding: 10px 16px 8px;
     border-bottom: 1px solid $ocd-bo-grey;
+    background: #FFFFFF;
 }
+.o_ocd_wa_head_avatar {
+    flex: none;
+    width: 38px;
+    height: 38px;
+}
+// the name takes what is left and shortens: the buttons stay on its line
 .o_ocd_wa_head_text {
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
     min-width: 0;
     line-height: 1.3;
 }
-.o_ocd_wa_actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-}
-.o_ocd_wa_state {
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: $ocd-bo-grey;
-    color: $ocd-bo-text;
-    font-size: 11.5px;
-    font-weight: 700;
+.o_ocd_wa_head_name {
+    font-size: 16px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.o_ocd_wa_head_sub {
+    font-size: 12.5px;
+    color: $ocd-bo-muted;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+// The state of the conversation: a coloured word before the number
+.o_ocd_wa_state {
+    font-weight: 700;
+    color: $ocd-bo-text;
     &.o_ocd_wa_state_new {
-        background: $ocd-yellow-soft;
-        color: $ocd-yellow-text;
+        color: $ocd-orange-dark;
     }
     &.o_ocd_wa_state_done {
-        background: $ocd-green-soft;
         color: $ocd-green-text;
     }
+}
+.o_ocd_wa_actions {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 .o_ocd_wa_action {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    min-height: 32px;
-    padding: 0 10px;
-    border: 1px solid $ocd-bo-input;
-    border-radius: 8px;
+    justify-content: center;
+    gap: 5px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 18px;
     background: #FFFFFF;
     color: $ocd-ink;
     font-family: inherit;
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 700;
     white-space: nowrap;
     cursor: pointer;
     .oi {
-        font-size: 16px;
+        font-size: 18px;
     }
     &:hover:not(:disabled) {
         background: $ocd-bo-background;
@@ -377,70 +396,56 @@
             background: #000000;
         }
     }
+    // calling the customer (with the WhatsApp calls)
+    &.o_ocd_wa_call_button {
+        border-color: $ocd-green-text;
+        background: $ocd-green-text;
+        color: #FFFFFF;
+        &.o_ocd_wa_call_ask {
+            border-color: $ocd-green-soft;
+            background: $ocd-green-soft;
+            color: $ocd-green-text;
+        }
+    }
 }
-// The conversation or the contact, on a phone or a tablet (the contact is not shown beside)
-.o_ocd_wa_tabs {
+// The contact is beside on a wide screen: no button for it
+.o_ocd_wa_info_button {
     display: none;
-    gap: 6px;
-    padding: 8px 12px;
-    border-bottom: 1px solid $ocd-bo-grey;
+}
+.o_ocd_wa_icon_button {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: $ocd-ink;
+    font-size: 22px;
+    cursor: pointer;
+    &:hover {
+        background: $ocd-bo-grey;
+    }
 }
 .o_ocd_wa_back {
     display: none;
-    flex: none;
-    width: 34px;
-    height: 34px;
-    place-items: center;
-    border: 1px solid $ocd-bo-input;
-    border-radius: 8px;
-    background: #FFFFFF;
-    color: $ocd-ink;
-    font-size: 19px;
-    cursor: pointer;
 }
-.o_ocd_wa_tab {
-    flex: 1 1 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    min-height: 34px;
-    padding: 0 10px;
-    border: 1px solid $ocd-bo-input;
-    border-radius: 8px;
-    background: #FFFFFF;
-    color: $ocd-ink;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    .oi {
-        font-size: 17px;
-    }
-    &[aria-selected="true"] {
-        border-color: $ocd-ink;
-        background: $ocd-ink;
-        color: #FFFFFF;
-    }
-}
-.o_ocd_wa_head_name {
-    font-size: 16px;
-}
-.o_ocd_wa_head_sub {
-    font-size: 12.5px;
-    color: $ocd-bo-muted;
-    font-variant-numeric: tabular-nums;
-}
+// The time left to answer for free: a thin line under the header
 .o_ocd_wa_window {
-    margin-left: auto;
-    max-width: 300px;
-    padding: 4px 9px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1.35;
+    order: 10;
+    flex: 1 1 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0 -16px -8px;
+    padding: 5px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.3;
     &.o_ocd_wa_window_open {
-        background: $ocd-green-soft;
+        background: #F1FAF4;
         color: $ocd-green-text;
     }
     &.o_ocd_wa_window_closed {
@@ -448,13 +453,12 @@
         color: $ocd-yellow-text;
     }
     &.o_ocd_wa_window_urgent {
-        background: $ocd-orange-soft;
+        background: $ocd-orange-pale;
         color: $ocd-orange-dark;
     }
     .oi {
-        font-size: 13px;
-        vertical-align: -2px;
-        margin-right: 2px;
+        flex: none;
+        font-size: 15px;
     }
 }
 .o_ocd_wa_messages {
@@ -594,26 +598,6 @@
     color: $ocd-green-text;
     &:hover:not(:disabled) {
         background: $ocd-green-soft;
-    }
-}
-.o_ocd_wa_call_button {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-    padding: 5px 11px;
-    border: 0;
-    border-radius: 8px;
-    background: $ocd-green-text;
-    color: #FFFFFF;
-    font-size: 12.5px;
-    font-weight: 700;
-    &.o_ocd_wa_call_ask {
-        background: $ocd-green-soft;
-        color: $ocd-green-text;
-    }
-    &:disabled {
-        opacity: .6;
     }
 }
 .o_ocd_wa_call_none {
@@ -801,13 +785,78 @@
     font-size: 13px;
 }
 .o_ocd_wa_send {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     border: 0;
     background: $ocd-green;
     color: #FFFFFF;
     font-size: 14px;
     font-weight: 800;
+    .oi {
+        font-size: 18px;
+    }
     &.o_ocd_wa_send_template {
         align-self: flex-end;
+    }
+}
+// On a phone: one button for the message or the internal note
+.o_ocd_wa_note_toggle {
+    display: none;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    min-height: 30px;
+    padding: 0 10px;
+    border: 1px solid $ocd-bo-border;
+    border-radius: 15px;
+    background: #FFFFFF;
+    color: $ocd-bo-text;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    .oi {
+        font-size: 15px;
+    }
+    &[aria-pressed="true"] {
+        border-color: #E9D48A;
+        background: #FFF6D6;
+        color: $ocd-ink;
+    }
+}
+// No quick answer: no row for them on a wide screen
+.o_ocd_wa_quick:not(:has(.o_ocd_wa_quick_button)) {
+    display: none;
+}
+// Writing an internal note: in yellow, like the notes
+.o_ocd_wa_compose_note {
+    background: #FFFBEB;
+    .o_ocd_wa_input {
+        background: #FFF6D6;
+        border-color: #E9D48A;
+    }
+    .o_ocd_wa_send {
+        background: $ocd-ink;
+    }
+}
+// The contact on a phone or a tablet: a bar back to the conversation
+.o_ocd_wa_contact_bar {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    margin: -14px -14px 0;
+    padding: 8px 10px;
+    border-bottom: 1px solid $ocd-bo-grey;
+    b {
+        font-size: 15px;
+    }
+}
+// The bubbles of the chat windows of Odoo cover the conversations on a phone or a tablet
+@media (max-width: 1199.98px) {
+    body.o_ocd_inbox_open .o-mail-ChatHub {
+        display: none !important;
     }
 }
 .o_ocd_wa_select {
@@ -947,11 +996,8 @@
     .o_ocd_wa_contact {
         display: none;
     }
-    .o_ocd_wa_tabs {
+    .o_ocd_wa_info_button, .o_ocd_wa_contact_bar {
         display: flex;
-    }
-    .o_ocd_wa_contact .o_ocd_wa_tabs {
-        margin: -14px -14px 0;
     }
     .o_ocd_wa_box.o_ocd_wa_show_contact {
         .o_ocd_wa_thread {
@@ -963,14 +1009,20 @@
         }
     }
 }
+// Phones: one pane at a time, like in WhatsApp (the list, or the conversation and its contact),
+// the whole screen for it; the buttons as icons; one line to write
 @media (max-width: 767.98px) {
-    .o_ocd_wa {
-        padding: 10px;
+    .o_ocd_inbox_in_thread .o_ocd_bo_header {
+        display: none;
     }
-    // one pane at a time, like in WhatsApp: the list, or the conversation (and its contact)
+    .o_ocd_wa {
+        padding: 0;
+    }
     .o_ocd_wa_box {
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: minmax(0, 1fr);
+        border: 0;
+        border-radius: 0;
     }
     .o_ocd_wa_list {
         border-right: 0;
@@ -985,35 +1037,83 @@
     }
     .o_ocd_wa_back {
         display: grid;
+        margin-left: -6px;
     }
-    // the message on its own line, the buttons under it
-    .o_ocd_wa_write {
-        flex-wrap: wrap;
-    }
-    .o_ocd_wa_input {
-        order: -1;
-        flex: 1 1 100%;
-    }
-    .o_ocd_wa_write .o_ocd_wa_send {
-        margin-left: auto;
-    }
-    .o_ocd_wa_quick {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-    }
-    // the name on one line, the time left to answer under it
     .o_ocd_wa_head {
-        flex-wrap: wrap;
-        row-gap: 6px;
+        gap: 4px 8px;
+        padding: 8px 10px 6px;
     }
-    .o_ocd_wa_head_text {
-        flex: 1 1 60%;
+    .o_ocd_wa_head_avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 12px;
+    }
+    .o_ocd_wa_head_name {
+        font-size: 15px;
+    }
+    .o_ocd_wa_head_role {
+        display: none;
+    }
+    .o_ocd_wa_action {
+        width: 36px;
+        padding: 0;
+    }
+    .o_ocd_wa_action_label, .o_ocd_wa_call_none {
+        display: none;
     }
     .o_ocd_wa_window {
-        order: 3;
-        flex: 1 1 100%;
-        max-width: none;
-        margin-left: 0;
+        margin: 0 -10px -6px;
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+    .o_ocd_wa_messages {
+        padding: 10px;
+    }
+    .o_ocd_wa_compose {
+        gap: 6px;
+        padding: 6px 8px 8px;
+    }
+    // the row of the internal note and of the quick answers, always there on a phone
+    .o_ocd_wa_compose .o_ocd_wa_quick {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .o_ocd_wa_quick_title, .o_ocd_wa_note_button {
+        display: none;
+    }
+    .o_ocd_wa_note_toggle {
+        display: inline-flex;
+    }
+    .o_ocd_wa_write {
+        gap: 6px;
+        align-items: flex-end;
+    }
+    .o_ocd_wa_tool {
+        width: 40px;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: $ocd-bo-text;
+    }
+    .o_ocd_wa_input {
+        min-height: 40px;
+        border-radius: 20px;
+        padding: 9px 14px;
+        resize: none;
+    }
+    .o_ocd_wa_send {
+        width: 40px;
+        min-height: 40px;
+        padding: 0;
+        border-radius: 50%;
+    }
+    .o_ocd_wa_send_label {
+        display: none;
+    }
+    .o_ocd_wa_contact {
+        padding: 14px;
     }
 }
 

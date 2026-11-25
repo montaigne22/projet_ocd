@@ -65,6 +65,19 @@ BO = {
 
 WHATSAPP = {
     'Internal note for the team (not sent)…': "Note interne pour l'équipe (non envoyée)…",
+    # The inbox redone for a phone: buttons as icons, their full meaning in the tooltips
+    'Back to the conversation': 'Retour à la conversation',
+    'Internal note: seen by the team only, never sent': "Note interne : vue seulement par l'équipe, jamais envoyée",
+    'Mark the conversation as resolved': 'Marquer la conversation comme résolue',
+    'Reopen the conversation': 'Rouvrir la conversation',
+    'Resolved: nobody waits any more; a new message of the contact opens it again':
+        "Résolue : plus personne n'attend ; un nouveau message du contact la rouvre",
+    'Save the internal note': 'Enregistrer la note interne',
+    'Send to the contact': 'Envoyer au contact',
+    'Take the conversation': 'Prendre la conversation',
+    'Take the conversation: you handle it, the other agents leave it':
+        'Prendre la conversation : vous vous en occupez, les autres conseillers la laissent',
+    'The contact and the calls': 'Le contact et les appels',
     # The figures of the conversations on the dashboard (chantier 24.4)
     '%(count)s of %(total)s answers within %(delay)s': '%(count)s réponses sur %(total)s en moins de %(delay)s',
     '%(month)s: %(sent)s templates sent, %(paid)s paid': '%(month)s : %(sent)s modèles envoyés, %(paid)s payés',

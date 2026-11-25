@@ -160,6 +160,31 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 25 novembre 2026 · La boîte de réception de WhatsApp refaite pour le téléphone
+
+Retour de l'équipe sur téléphone : écran ni adapté, ni épuré, ni intuitif (en-tête de trois lignes, onglets
+« Conversation / Contact », gros bandeau de la fenêtre de 24 h, bulles de discussion d'Odoo par-dessus
+le bouton « Envoyer »).
+
+- **Un volet à la fois, comme dans WhatsApp** : la liste, puis la conversation en plein écran (le titre de
+  la page disparaît, ← pour revenir à la liste), le contact par le bouton ⓘ (← pour revenir).
+- **En-tête d'une ligne** : avatar, nom, état en couleur (« Pas encore prise », « Résolue »…) et numéro ;
+  les boutons ronds en icônes (Prendre, Résolue, Rouvrir, Appeler, ⓘ) avec leur sens complet en
+  info-bulle ; sur ordinateur, ils gardent leur texte.
+- **La fenêtre de 24 h** : une fine ligne de couleur sous l'en-tête (verte, orange la dernière heure,
+  jaune fermée) au lieu du bandeau.
+- **Écrire** : une seule ligne (📎 🎤 message ➤) ; au-dessus, « Note interne » (la zone passe en jaune,
+  rien n'est envoyé au client) et les réponses rapides qui défilent ; sur ordinateur, « Note interne »
+  et « Envoyer » restent côte à côte.
+- Les bulles des fenêtres de discussion d'Odoo sont cachées sur ce seul écran, sur téléphone et tablette.
+- Tablette : la liste et la conversation côte à côte, le contact par ⓘ ; ordinateur : les trois colonnes.
+- Vu dans Chromium à 390 et 450 px (téléphone), 900 px (tablette) et 1400 px : rien ne déborde.
+- Tests : suite complète des modules OCD sur une base neuve (en cours).
+- « Take » ou « Marquer comme résolue » encore affichés sur un serveur : les traductions de l'interface
+  sont gardées en mémoire par Odoo ; redémarrer le service d'Odoo après la mise à jour du module.
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live : messages
+  WhatsApp** dans Applications, redémarrer le service d'Odoo, Ctrl+F5.
+
 ### 25 novembre 2026 · Les messages vocaux WhatsApp (chantier 24.5, fin du chantier 24)
 
 ffmpeg vient de `imageio-ffmpeg` (`requirements.txt`, installé avec pip dans l'environnement d'Odoo) ;

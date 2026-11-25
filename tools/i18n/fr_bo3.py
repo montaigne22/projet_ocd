@@ -231,6 +231,7 @@ SHOP3.update({
     "Products": "Produits",
 })
 RECRUITMENT3.update({
+    "Logo OCD": "Logo OCD",
     "1 Onsite Interview": "1 entretien sur place",
     "1 Phone Call": "1 appel",
     "2 open days": "2 jours ouvrés",

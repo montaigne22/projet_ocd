@@ -47,6 +47,8 @@ export class OcdWhatsappInbox extends Component {
     tab = signal("thread");
     // on a phone: the list, or the conversation (one at a time, like in WhatsApp)
     pane = signal("list");
+    // on a phone: the button sends an internal note instead of a message to the contact
+    noteMode = signal(false);
     messagesRef = signal.ref();
     inputRef = signal.ref();
     fileInputRef = signal.ref();
@@ -71,6 +73,8 @@ export class OcdWhatsappInbox extends Component {
         };
         onWillStart(() => this.load(this.props.action?.context?.active_id));
         onMounted(() => {
+            // the bubbles of the chat windows of Odoo would cover the conversation (phone, tablet)
+            document.body.classList.add("o_ocd_inbox_open");
             this.bus.subscribe("discuss.channel/new_message", this.onBusMessage);
             this.timer = setInterval(() => {
                 if (document.visibilityState === "visible") {
@@ -81,6 +85,7 @@ export class OcdWhatsappInbox extends Component {
         });
         onPatched(() => this.scrollToEnd());
         onWillUnmount(() => {
+            document.body.classList.remove("o_ocd_inbox_open");
             this.bus.unsubscribe("discuss.channel/new_message", this.onBusMessage);
             clearInterval(this.timer);
             clearTimeout(this.refreshTimeout);
@@ -201,6 +206,7 @@ export class OcdWhatsappInbox extends Component {
             return;
         }
         this.draft.set("");
+        this.noteMode.set(false);
         this.dropFiles();
         const current = await this.orm.call("ocd.whatsapp.inbox", "get_conversation", [conversation.id]);
         this.data.set({ ...this.data(), current });
@@ -258,6 +264,18 @@ export class OcdWhatsappInbox extends Component {
         }
     }
 
+    get draftPlaceholder() {
+        return this.noteMode() ? _t("Internal note for the team (not sent)…") : _t("Write a message…");
+    }
+
+    get sendLabel() {
+        return _t("Send to the contact");
+    }
+
+    get noteLabel() {
+        return _t("Save the internal note");
+    }
+
     useQuick(quick) {
         this.draft.set(quick.text);
         this.inputRef()?.focus();
@@ -296,6 +314,7 @@ export class OcdWhatsappInbox extends Component {
         if (done) {
             this.draft.set("");
             this.files.set([]);
+            this.noteMode.set(false);
         }
     }
 
