@@ -32,6 +32,8 @@ class TestOcdLiveWebsite(HttpCase):
             "country_id": cls.env.ref("base.tg").id,
         })
         cls.day = fields.Date.today() + timedelta(days=8)
+        # the calendar shows a month at a time: the month of that day (the next one at the end of a month)
+        cls.month = f"?mois={cls.day:%Y-%m}"
         cls.discovery = cls.env.ref("ocd_live.product_package_discovery").product_variant_id
 
     def test_booking_pages_day_first(self):
@@ -39,7 +41,8 @@ class TestOcdLiveWebsite(HttpCase):
         response = self.url_open("/reserver")
         self.assertEqual(response.status_code, 200)
         self.assertIn("/reserver/studio", response.text)
-        response = self.url_open("/reserver/studio")
+        self.assertEqual(self.url_open("/reserver/studio").status_code, 200)
+        response = self.url_open(f"/reserver/studio{self.month}")
         self.assertIn(f"/reserver/studio/{self.day.isoformat()}", response.text)
         response = self.url_open(f"/reserver/studio/{self.day.isoformat()}")
         self.assertIn(f"/reserver/studio/{self.day.isoformat()}/0830", response.text)
@@ -67,7 +70,7 @@ class TestOcdLiveWebsite(HttpCase):
         home = self.url_open("/reserver").text
         self.assertNotIn('content="noindex, nofollow"', home)
         self.assertNofollow(home, "/reserver/studio")
-        month = self.url_open("/reserver/studio").text
+        month = self.url_open(f"/reserver/studio{self.month}").text
         self.assertIn('<meta name="robots" content="noindex, nofollow"/>', month)
         self.assertNofollow(month, f"/reserver/studio/{self.day.isoformat()}")
         hours = self.url_open(f"/reserver/studio/{self.day.isoformat()}").text
@@ -121,7 +124,7 @@ class TestOcdLiveWebsite(HttpCase):
         self.company.ocd_booking_flow = "package_first"
         response = self.url_open("/reserver/remote")
         self.assertIn(f"/reserver/remote/paquet/{self.discovery.id}", response.text)
-        response = self.url_open(f"/reserver/remote/paquet/{self.discovery.id}")
+        response = self.url_open(f"/reserver/remote/paquet/{self.discovery.id}{self.month}")
         self.assertIn(f"/reserver/remote/paquet/{self.discovery.id}/{self.day.isoformat()}", response.text)
         response = self.url_open(f"/reserver/remote/paquet/{self.discovery.id}/{self.day.isoformat()}")
         self.assertIn(f"/reserver/remote/{self.day.isoformat()}/0830/{self.discovery.id}", response.text)
@@ -326,9 +329,10 @@ class TestOcdLiveWebsite(HttpCase):
         order = booking.sale_order_id
         order.action_confirm()
         token = order.access_token
-        response = self.url_open(f"/ocd/deplacer/{booking.id}?access_token={token}")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.url_open(f"/ocd/deplacer/{booking.id}?access_token={token}").status_code, 200)
         new_day = self.day + timedelta(days=1)
+        response = self.url_open(f"/ocd/deplacer/{booking.id}?access_token={token}&mois={new_day:%Y-%m}")
+        self.assertEqual(response.status_code, 200)
         self.assertIn(f"/ocd/deplacer/{booking.id}/{new_day.isoformat()}", response.text)
         response = self.url_open(f"/ocd/deplacer/{booking.id}/{new_day.isoformat()}?access_token={token}")
         self.assertEqual(response.status_code, 200)
@@ -748,8 +752,8 @@ class TestOcdLiveWebsite(HttpCase):
         self.authenticate(None, None)
         response = self.url_open(f"/ocd/espace/{token}")
         self.assertIn(f"/ocd/espace/moi/placer/{credit.id}", response.text)
-        response = self.url_open(f"/ocd/espace/moi/placer/{credit.id}?mode=remote")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.url_open(f"/ocd/espace/moi/placer/{credit.id}?mode=remote").status_code, 200)
+        response = self.url_open(f"/ocd/espace/moi/placer/{credit.id}{self.month}&mode=remote")
         day = self.day.isoformat()
         self.assertIn(f"/ocd/espace/moi/placer/{credit.id}/{day}?mode=remote", response.text)
         response = self.url_open(f"/ocd/espace/moi/placer/{credit.id}/{day}?mode=remote")

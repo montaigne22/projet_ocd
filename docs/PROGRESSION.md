@@ -179,7 +179,10 @@ le bouton « Envoyer »).
 - Les bulles des fenêtres de discussion d'Odoo sont cachées sur ce seul écran, sur téléphone et tablette.
 - Tablette : la liste et la conversation côte à côte, le contact par ⓘ ; ordinateur : les trois colonnes.
 - Vu dans Chromium à 390 et 450 px (téléphone), 900 px (tablette) et 1400 px : rien ne déborde.
-- Tests : suite complète des modules OCD sur une base neuve (en cours).
+- Tests : suite complète des modules OCD sur une base neuve, **837 sans échec**. Six tests échouaient
+  les derniers jours d'un mois (le calendrier des réservations montre un mois à la fois ; les nouveautés
+  du vendredi testées à une date fixe déjà passée) : ils ouvrent désormais le mois du jour cherché et
+  prennent le prochain vendredi ; les pages elles-mêmes étaient justes.
 - « Take » ou « Marquer comme résolue » encore affichés sur un serveur : les traductions de l'interface
   sont gardées en mémoire par Odoo ; redémarrer le service d'Odoo après la mise à jour du module.
 - Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live : messages

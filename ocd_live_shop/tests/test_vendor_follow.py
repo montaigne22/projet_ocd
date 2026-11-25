@@ -153,7 +153,15 @@ class TestOcdVendorFollow(HttpCase, OcdShopCommon):
     def test_news_on_friday_weekly_with_business_monthly_otherwise(self):
         wants = self.Follower._ocd_follow(self.brenda, self.Follower._ocd_contact("+237 670000006"))
         lives_only = self.Follower._ocd_follow(self.brenda, self.Follower._ocd_contact("+237 670000007"), news=False)
-        friday = datetime(2026, 11, 20, 9, 30)  # 10:30 in Douala, the third Friday of the month
+        # The next Friday that is not the first of its month, 10:30 in Douala: after the products of
+        # the test, as in real life (a date of the past would make them new for the week after)
+        day = fields.Date.today() + timedelta(days=1)
+        while day.weekday() != 4 or day.day <= 7:
+            day += timedelta(days=1)
+        friday = datetime(day.year, day.month, day.day, 9, 30)
+        first = (day.replace(day=1) + timedelta(days=32)).replace(day=1)
+        first += timedelta(days=(4 - first.weekday()) % 7)
+        first_friday = datetime(first.year, first.month, first.day, 9, 30)
         self.assertTrue(self.brenda._ocd_news_due(friday))
         self.assertFalse(self.brenda._ocd_news_due(friday - timedelta(hours=2)), "From 10:00")
         self.assertFalse(self.brenda._ocd_news_due(friday + timedelta(days=1)), "Friday only")
@@ -174,7 +182,7 @@ class TestOcdVendorFollow(HttpCase, OcdShopCommon):
         # Without OCD Business: once a month, the first Friday
         self.company.ocd_business_offered_all = False
         self.assertFalse(self.brenda._ocd_news_due(friday))
-        self.assertTrue(self.brenda._ocd_news_due(datetime(2026, 12, 4, 9, 30)))
+        self.assertTrue(self.brenda._ocd_news_due(first_friday))
         self.assertEqual(self.brenda._ocd_next_news_day().weekday(), 4)
         # « Robe en wax, Sac en raphia and 1 more »
         bag = self._product("Sac en raphia", 8000, self.brenda).product_tmpl_id
