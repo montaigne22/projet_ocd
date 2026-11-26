@@ -282,9 +282,22 @@ boutiques 10 %, réservation 5 % ; paliers de 30 s, visiteurs qui gardent leurs 
   processeur reste vers 0,6 cœur. **Réglage retenu : 3 workers.**
 - Les écarts entre les deux mesures à 3 workers (44 puis 90 pages/s à 64 et 128 visiteurs) viennent de la
   plateforme et du réseau ce jour-là, pas du code (le même) : refaire chaque mesure deux fois.
-- Depuis, **la mémoire des pages est partagée par les workers du serveur** (`ocd_live` 20.0.1.32.0) : sur la
-  machine de test, avec 3 workers, 99,6 % des pages viennent de la mémoire (une page construite une fois
-  pour tous les workers) ; à remesurer ici après la mise à jour.
+- **Le partage de la mémoire des pages entre les workers** (`ocd_live` 20.0.1.32.0, fichiers dans
+  `/dev/shm`), mesuré ici avec 3 workers, le même jour, partage allumé puis coupé par le paramètre
+  `ocd_live.page_cache_shared` :
+
+  | Visiteurs à la fois | Partage allumé | Partage coupé |
+  |---|---|---|
+  | 32 | 25 pages/s, p95 1,9 s | 29 pages/s, p95 1,5 s |
+  | 64 | 32 pages/s, p95 5,1 s, 25 % d'erreurs | **55 pages/s, p95 1,6 s, 0 erreur** |
+  | 128 | 25 pages/s, p95 15 s, 1 % d'erreurs | **68 pages/s, p95 3,8 s, 0 erreur** |
+  | 128 nouveaux visiteurs | 28 pages/s, 1 % d'erreurs | **63 pages/s, 0 erreur** |
+  | 64 pendant 2 minutes | 33 pages/s, p95 3,5 s | **52 pages/s, p95 1,7 s, 0 erreur** |
+
+  Le processeur était plein (0,9 à 1 cœur) avec le partage, pour deux fois moins de pages : sur cette
+  plateforme, les fichiers partagés coûtent (dossier sans doute sur un disque et non en mémoire). Sur la
+  machine de test, le partage ne coûtait rien (194 contre 190 pages/s). **Le partage est coupé par défaut
+  depuis `ocd_live` 20.0.1.33.0** ; à n'allumer que là où une mesure montre qu'il aide.
 - L'appel le plus léger d'Odoo (`/web/health`) passe à 135 par seconde depuis la même machine : le chemin
   réseau et la plateforme ne limitent pas les pages.
 

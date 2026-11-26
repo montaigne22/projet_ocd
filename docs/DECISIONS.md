@@ -890,9 +890,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   avec un panier : les pages restent construites par Odoo, et seulement pour les visiteurs qui n'ont
   encore rien à eux sur le site. Un changement (produit, prix, live vérifié) se voit au plus après ces
   secondes ; les vendeurs, les livreurs et l'équipe voient toujours leurs pages à jour.
-  Les workers d'un même serveur **partagent** ces pages (fichiers dans la mémoire de la machine,
-  `/dev/shm`) : une page est construite une fois pour tous, et ajouter des workers ne fait pas baisser la
-  part de pages données depuis la mémoire (26 novembre 2026). Toujours rien à installer.
+  Le partage de ces pages entre les workers d'un serveur (fichiers dans `/dev/shm`) existe mais est
+  **coupé par défaut** (paramètre système `ocd_live.page_cache_shared`) : mesuré sur le serveur de
+  préproduction le 26 novembre 2026, il doublait le coût de chaque page (52 pages/s sans lui sur 2 minutes à
+  64 visiteurs, 33 avec). La mesure sur le vrai serveur décide, pas celle de la machine de test.
 - **Les photos, les vidéos et les fichiers du site partent d'un CDN** (réglable : son adresse), sur son
   propre domaine : ils sont gardés un an par les téléphones et par le CDN grâce à leur version dans
   l'adresse, et le serveur ne fait plus que les pages.

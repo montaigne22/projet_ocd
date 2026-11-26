@@ -200,15 +200,15 @@ Ce qui est à un seul visiteur n'est jamais donné à un autre :
 - une page pendant laquelle le visiteur reçoit un cookie ou une clé de session à lui n'est pas gardée,
   ni une page qui montre un paramètre des réseaux (les boutons de langue gardent les paramètres).
 
-Deux mémoires : chaque worker garde les pages qu'il donne le plus (500 au plus, les plus anciennes
-partent), et tous les workers d'un serveur partagent les autres dans des fichiers de la mémoire de la
-machine (`/dev/shm/ocd_page_cache_<utilisateur>/<base>/<version des modules>/`, 1 000 pages au plus) : une
-page construite par un worker est donnée par tous les autres, si bien que plus de workers ne veut pas dire
-plus de pages reconstruites. Rien à installer ; un dossier qui ne peut pas être écrit laisse chaque worker
-avec ses pages (un avertissement dans le journal). Une installation ou une mise à jour des modules change
-de dossier : jamais une page d'avant la mise à jour. Le paramètre système `ocd_live.page_cache_shared` à
-`0` coupe le partage (chaque worker ses pages), sans redémarrer : pour comparer sur un serveur, ou si le
-dossier y est lent. L'en-tête `X-OCD-Cache` dit
+Chaque worker garde ses pages (500 au plus, les plus anciennes partent). Avec le paramètre système
+`ocd_live.page_cache_shared` à `1`, les workers d'un serveur partagent aussi leurs pages dans des fichiers
+de la mémoire de la machine (`/dev/shm/ocd_page_cache_<utilisateur>/<base>/<version des modules>/`, 1 000
+pages au plus) : une page construite par un worker est donnée par les autres. **Coupé par défaut** : sur le
+serveur de préproduction (1 cœur, une plateforme de conteneurs), le partage doublait le coût de chaque page
+(55 pages/s à 64 visiteurs sans lui, 32 avec, et des 503), alors qu'il ne coûtait rien sur la machine de
+test ; ne l'allumer que là où une mesure montre qu'il aide (voir le rapport de charge, partie 8). Il agit
+sans redémarrer ; un dossier qui ne peut pas être écrit laisse chaque worker avec ses pages ; une mise à
+jour des modules change de dossier (jamais une page d'avant). L'en-tête `X-OCD-Cache` dit
 d'où vient une page : `hit` (mémoire), `miss` (construite et gardée), `pass` (construite pour ce
 visiteur). Un changement (nouveau produit, prix, live vérifié) se voit au plus après la durée de la page ;
 les vendeurs, les livreurs et l'équipe voient toujours leurs pages à jour. La case « Pages publiques
@@ -256,8 +256,8 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
   (ici 4 cœurs). Les actions planifiées tournent sur un serveur (ou un processus) à part, avec
   `max_cron_threads = 2`.
 - **Plusieurs serveurs d'Odoo** derrière un répartiteur : ils partagent la base et le dossier `data_dir`
-  (pièces jointes et sessions, sur un disque partagé). La mémoire des pages est propre à chaque serveur
-  (partagée par ses workers) : rien à partager entre serveurs.
+  (pièces jointes et sessions, sur un disque partagé). La mémoire des pages est propre à chaque worker
+  (ou à chaque serveur, partage allumé) : rien à partager entre serveurs.
 - **CDN** (Cloudflare, Bunny, CloudFront…) : une adresse à part, `https://cdn.<domaine>`, qui va chercher
   les fichiers sur le site et **respecte ses en-têtes** (`Cache-Control`), puis cette adresse dans
   Paramètres › Vitesse du site. Seuls les fichiers, les photos et les vidéos passent par le CDN, jamais

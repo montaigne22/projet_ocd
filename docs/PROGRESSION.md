@@ -160,6 +160,15 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 26 novembre 2026 · Le partage des pages entre workers coupé par défaut
+
+Mesuré sur le serveur de préproduction, partage allumé puis coupé (paramètre système
+`ocd_live.page_cache_shared`), avec 3 workers et les mêmes paliers : sans le partage, 55 pages/s à 64
+visiteurs, 68 à 128, 52 sur 2 minutes, aucune erreur ; avec, 32, 25 et 33 pages/s, processeur plein et des
+503. Le partage ne coûtait rien sur la machine de test, mais c'est le vrai serveur qui décide : **il est
+coupé par défaut** (`ocd_live` 20.0.1.33.0) et ne s'allume qu'avec le paramètre à `1`, là où une mesure
+montre qu'il aide. Détail dans le rapport de charge (partie 8). Suite complète sur une base neuve : **841 sans échec**.
+
 ### 26 novembre 2026 · Un interrupteur pour le partage des pages entre workers
 
 Après la mise à jour du serveur de préproduction, les paliers de charge sont revenus à 30 à 38 pages par
