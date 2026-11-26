@@ -160,6 +160,23 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 26 novembre 2026 · La boîte de réception WhatsApp lit toutes ses conversations ensemble
+
+La liste des conversations est relue toutes les 20 secondes par chaque conseiller. Mesurée sur une copie de
+la démo avec 300 conversations, dans une transaction neuve comme un vrai rafraîchissement : 176 requêtes
+pour 80 conversations affichées, 396 pour 300, une de plus par conversation (le shop cherchait, contact par
+contact, s'il avait une commande avec un colis, pour écrire « Client » sous son nom). Les rôles des
+contacts de la liste sont maintenant trouvés ensemble (`_ocd_partner_roles`) : **97 requêtes pour 80 comme
+pour 300 conversations**, 0,17 s au lieu de 0,29 et 0,64 s. Un test échoue si le nombre de requêtes
+recommence à grandir avec les conversations.
+
+(Le premier chiffre annoncé, 3 451 requêtes pour 159 conversations, était faussé par la mesure : des
+conversations créées dans la même transaction laissaient leurs notifications à envoyer, que la page
+payait.) Suite complète sur une base neuve : **842 sans échec**.
+
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live : messages
+  WhatsApp** et **OCD Live : messages WhatsApp des colis** dans Applications, redémarrer le service d'Odoo.
+
 ### 26 novembre 2026 · Le partage des pages entre workers coupé par défaut
 
 Mesuré sur le serveur de préproduction, partage allumé puis coupé (paramètre système

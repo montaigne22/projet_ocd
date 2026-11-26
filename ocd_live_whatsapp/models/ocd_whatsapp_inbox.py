@@ -62,7 +62,8 @@ class OcdWhatsappInbox(models.AbstractModel):
         has_more = len(channels) > options["limit"]
         channels = channels[:options["limit"]]
         last_messages = self._ocd_last_messages(channels)
-        rows = [self._ocd_list_item(channel, last_messages.get(channel.id)) for channel in channels]
+        roles = self._ocd_partner_roles(channels.whatsapp_partner_id)
+        rows = [self._ocd_list_item(channel, last_messages.get(channel.id), roles) for channel in channels]
         rows.sort(key=lambda row: row["sort"], reverse=True)
         counts = {key: Channel.search_count(domain + self._ocd_filter_domain(key)) for key in LIST_FILTERS}
         current = channels.browse()
@@ -229,7 +230,9 @@ class OcdWhatsappInbox(models.AbstractModel):
         messages = self.env["mail.message"].sudo().browse([message_id for _res_id, message_id in groups])
         return {message.res_id: message for message in messages}
 
-    def _ocd_list_item(self, channel, message):
+    def _ocd_list_item(self, channel, message, roles=None):
+        """A conversation of the list; `roles`: the roles of the contacts of the list, found
+        together (_ocd_partner_roles)."""
         partner = channel.whatsapp_partner_id
         name = partner.name or (f"+{channel.whatsapp_number}" if channel.whatsapp_number else channel.name)
         preview = ""
@@ -245,7 +248,8 @@ class OcdWhatsappInbox(models.AbstractModel):
             "id": channel.id,
             "name": name,
             "initials": self._ocd_initials(name),
-            "role": self._ocd_partner_role(partner) if partner else self.env._("Unknown number"),
+            "role": (roles[partner.id] if roles and partner.id in roles else self._ocd_partner_role(partner))
+            if partner else self.env._("Unknown number"),
             "vendor": bool(partner and partner.ocd_is_vendor),
             "preview": preview[:120],
             "time": self._ocd_time_label(date),
@@ -623,6 +627,12 @@ class OcdWhatsappInbox(models.AbstractModel):
         return text
 
     # === CONTACT === #
+
+    @api.model
+    def _ocd_partner_roles(self, partners):
+        """The role of each contact of the list ({partner id: role}): found together, never one
+        query per conversation (the list is read again every few seconds by each agent)."""
+        return {partner.id: self._ocd_partner_role(partner) for partner in partners}
 
     @api.model
     def _ocd_partner_role(self, partner):

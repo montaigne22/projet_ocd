@@ -101,6 +101,25 @@ class TestOcdWhatsappInbox(OcdLiveCommon):
     def _rows(self, page):
         return [row["id"] for row in page["conversations"]]
 
+    def test_the_list_reads_its_conversations_together(self):
+        """The list is read again every few seconds by each agent: as many queries for 25
+        conversations as for 5 (a query per conversation slowed it down as they grew)."""
+        def queries():
+            # as a refresh of the agent: a new transaction, nothing of the messages above left to send
+            self.env.cr.flush()
+            self.env.invalidate_all()
+            start = self.env.cr.sql_log_count
+            self.Inbox.get_inbox(None, {"limit": 80})
+            return self.env.cr.sql_log_count - start
+
+        for index in range(5):
+            self._receive_from(f"23769900{index:04d}", f"Client {index}", "Bonjour", f"wamid.LIST{index}")
+        few = queries()
+        for index in range(5, 25):
+            self._receive_from(f"23769900{index:04d}", f"Client {index}", "Bonjour", f"wamid.LIST{index}")
+        many = queries()
+        self.assertLess(many - few, 10, f"{few} queries for 5 conversations, {many} for 25")
+
     def test_search_by_name_or_number(self):
         brenda = self._receive("Bonjour")
         paul = self._receive_from("237699000001", "Paul Mbarga", "Ma commande ?", "wamid.PAUL1")

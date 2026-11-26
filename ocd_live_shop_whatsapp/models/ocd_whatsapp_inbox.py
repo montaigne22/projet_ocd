@@ -22,12 +22,25 @@ class OcdWhatsappInbox(models.AbstractModel):
             if partner.country_id and partner.country_id != self.env.company.country_id:
                 role = f"{role} · {partner.country_id.name}"
             return role
-        if not partner.ocd_is_vendor and self._ocd_last_order(partner):
+        known = self.env.context.get("ocd_customer_ids")
+        if not partner.ocd_is_vendor and (partner.id in known if known is not None else self._ocd_last_order(partner)):
             role = self.env._("Customer")
             if partner.country_id and partner.country_id != self.env.company.country_id:
                 role = f"{role} · {partner.country_id.name}"
             return role
         return super()._ocd_partner_role(partner)
+
+    @api.model
+    def _ocd_partner_roles(self, partners):
+        """The customers of the whole list (an order with a parcel) in one query, not one per
+        conversation."""
+        groups = self.env["sale.order"].sudo()._read_group([
+            ("partner_id", "in", partners.ids),
+            ("state", "in", ("sale", "sent", "draft")),
+            ("picking_ids.ocd_is_parcel", "=", True),
+        ], ["partner_id"])
+        customers = frozenset(partner.id for (partner,) in groups)
+        return super(OcdWhatsappInbox, self.with_context(ocd_customer_ids=customers))._ocd_partner_roles(partners)
 
     @api.model
     def _ocd_partner_place(self, partner):
