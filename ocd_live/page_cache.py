@@ -22,10 +22,21 @@ What belongs to one visitor is never given to another: the token of the forms (C
 back for each visitor; a visitor with something of their own always gets a page built for them;
 a page during which the visitor got something of their own (a cookie, a key of the session) is
 not kept. The memory is off during the tests of the modules (a test would see the pages of the
-test before), except for the tests of this memory (IN_TESTS)."""
+test before), except for the tests of this memory (IN_TESTS).
 
+Two memories: each worker keeps the pages it gives most in its own memory (the fastest), and all
+the workers of the server share the others in files of the memory of the machine (/dev/shm): a
+page built by one worker is given by all the others, so that more workers never mean more pages
+built again. Nothing else to install; when the folder cannot be written, each worker keeps its
+own pages only. A new version of the modules (an update) starts a new folder: an old page is
+never given after an update."""
+
+import hashlib
 import json
+import logging
+import os
 import re
+import tempfile
 import threading
 import time
 import zlib
@@ -38,8 +49,13 @@ from odoo.modules import module as odoo_module
 
 from . import tools
 
+_logger = logging.getLogger(__name__)
+
 MAX_PAGES = 500  # pages kept by each worker; the oldest used go first
+MAX_SHARED_PAGES = 1000  # pages shared by the workers of the server (files); the oldest go first
 MAX_BYTES = 2 * 1024 * 1024  # a bigger page is not kept
+SHARED_ROOTS = ("/dev/shm",)  # the memory of the machine; else the folder of the temporary files
+SHARED_CLEAN_SECONDS = 30  # how often a worker removes the shared pages too old
 HEADER = "X-OCD-Cache"  # hit: from memory, miss: built and kept, pass: built for its visitor
 IN_TESTS = False
 
@@ -72,6 +88,7 @@ CSRF_MARK = b"__ocd_csrf_token__"
 
 _pages = OrderedDict()
 _lock = threading.Lock()
+_shared = {"cleaned": 0.0, "broken": False}
 
 
 def active():
@@ -83,9 +100,25 @@ def active():
 
 
 def clear():
-    """Forget the pages kept by this worker."""
+    """Forget the pages kept by this worker and the ones shared by the workers of the server."""
     with _lock:
         _pages.clear()
+    for folder, _dirs, files in os.walk(_shared_base()):
+        for name in files:
+            _remove(os.path.join(folder, name))
+
+
+def expire():
+    """Make every page kept too old, here and shared (the tests of the seconds)."""
+    with _lock:
+        for key, entry in _pages.items():
+            _pages[key] = (0, *entry[1:])
+    for folder, _dirs, files in os.walk(_shared_base()):
+        for name in files:
+            try:
+                os.utime(os.path.join(folder, name), (0, 0))
+            except OSError:
+                pass
 
 
 def dispatch(endpoint, build):
@@ -165,23 +198,143 @@ def _key(params, jsonrpc):
 
 
 def _get(key):
+    """The page kept for `key`: in the memory of this worker, else shared by another worker."""
     with _lock:
         entry = _pages.get(key)
-        if entry is None:
-            return None
-        if entry[0] <= time.monotonic():
+        if entry is not None:
+            if entry[0] > time.time():
+                _pages.move_to_end(key)
+                return entry
             del _pages[key]
-            return None
-        _pages.move_to_end(key)
-        return entry
+    entry = _get_shared(key)
+    if entry:
+        _put_here(key, entry)
+    return entry
 
 
 def _put(key, entry):
+    _put_here(key, entry)
+    _put_shared(key, entry)
+
+
+def _put_here(key, entry):
     with _lock:
         _pages[key] = entry
         _pages.move_to_end(key)
         while len(_pages) > MAX_PAGES:
             _pages.popitem(last=False)
+
+
+# === SHARED BY THE WORKERS OF THE SERVER === #
+# One file per page: the second it ends is its date of modification (os.utime), its first line
+# the headers, then the page compressed. Written aside then renamed: a worker never reads half a
+# page. Any error of the files leaves the page to the memory of the worker.
+
+def _shared_base():
+    """The folder of the pages shared on this server (all its databases)."""
+    base = next((root for root in SHARED_ROOTS if os.access(root, os.W_OK)), tempfile.gettempdir())
+    user = os.getuid() if hasattr(os, "getuid") else 0
+    return os.path.join(base, f"ocd_page_cache_{user}")
+
+
+def _shared_root():
+    """The folder of the pages of this database on this server, or None (not writable)."""
+    if _shared["broken"] or not request or not request.db:
+        return None
+    return os.path.join(_shared_base(), hashlib.sha1(request.db.encode()).hexdigest()[:16])
+
+
+def _shared_folder():
+    """The folder of the pages of this version of the modules (another after an update)."""
+    root = _shared_root()
+    if not root:
+        return None
+    folder = os.path.join(root, str(_version()))
+    try:
+        os.makedirs(folder, mode=0o700, exist_ok=True)
+    except OSError as error:
+        _logger.warning("Pages kept in memory: the folder %s cannot be written (%s), each worker keeps its own", folder, error)
+        _shared["broken"] = True
+        return None
+    return folder
+
+
+def _version():
+    """The version of the modules of the database: it changes with each install or update."""
+    return request.env.registry.registry_sequence
+
+
+def _shared_path(folder, key):
+    return os.path.join(folder, hashlib.sha1(repr(key).encode()).hexdigest())
+
+
+def _get_shared(key):
+    folder = _shared_folder()
+    if not folder:
+        return None
+    path = _shared_path(folder, key)
+    try:
+        until = os.stat(path).st_mtime
+        if until <= time.time():
+            return None
+        with open(path, "rb") as file:
+            headers_line, packed = file.read().split(b"\n", 1)
+        headers = tuple(tuple(header) for header in json.loads(headers_line))
+    except (OSError, ValueError):
+        return None
+    return (until, packed, headers)
+
+
+def _put_shared(key, entry):
+    folder = _shared_folder()
+    if not folder:
+        return
+    until, packed, headers = entry
+    try:
+        handle, temporary = tempfile.mkstemp(dir=folder, prefix=".")
+        with os.fdopen(handle, "wb") as file:
+            file.write(json.dumps(list(headers)).encode() + b"\n" + packed)
+        os.utime(temporary, (until, until))
+        os.replace(temporary, _shared_path(folder, key))
+    except OSError as error:
+        _logger.debug("Pages kept in memory: a page not shared (%s)", error)
+        return
+    if time.time() - _shared["cleaned"] > SHARED_CLEAN_SECONDS:
+        _shared["cleaned"] = time.time()
+        _clean_shared(folder)
+
+
+def _clean_shared(folder):
+    """Remove the pages too old, the ones of the older versions of the modules, and the oldest
+    beyond MAX_SHARED_PAGES."""
+    now = time.time()
+    root = os.path.dirname(folder)
+    try:
+        for name in os.listdir(root):
+            path = os.path.join(root, name)
+            if path != folder and os.path.isdir(path):
+                for old in os.listdir(path):
+                    _remove(os.path.join(path, old))
+                os.rmdir(path)
+        pages = []
+        for name in os.listdir(folder):
+            path = os.path.join(folder, name)
+            until = os.stat(path).st_mtime
+            if until <= now or (name.startswith(".") and until < now - 60):
+                _remove(path)
+            else:
+                pages.append((until, path))
+    except OSError:
+        return
+    for _until, path in sorted(pages)[:max(0, len(pages) - MAX_SHARED_PAGES)]:
+        _remove(path)
+
+
+def _remove(path):
+    try:
+        os.remove(path)
+    except OSError:
+        pass
 
 
 def _entry(result, ttl, jsonrpc):
@@ -213,7 +366,7 @@ def _entry(result, ttl, jsonrpc):
         )
     if len(body) > MAX_BYTES or _shows_tracking(body):
         return None
-    return (time.monotonic() + ttl, zlib.compress(CSRF_RE.sub(CSRF_MARK, body), 1), headers)
+    return (time.time() + ttl, zlib.compress(CSRF_RE.sub(CSRF_MARK, body), 1), headers)
 
 
 def _shows_tracking(body):

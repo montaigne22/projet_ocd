@@ -257,7 +257,38 @@ jusqu'en Afrique, et la plateforme qui héberge le site (son entrée est partag�
 **La preuve reste à faire sur les vrais serveurs** (parties 1 à 5), avec des machines de test près des
 visiteurs, et en prévenant la plateforme avant.
 
-## 8. Commandes
+## 8. Serveur de préproduction, 26 novembre 2026
+
+`ocd.my.rollbackk.app` : **1 cœur, 2 Go**, Odoo 20, pages compressées par la plateforme, fichiers du site,
+photos et vidéos par le CDN (Cloudflare). Mesuré depuis un serveur hors d'Afrique : environ 0,15 s par
+aller-retour et 0,4 s pour ouvrir une connexion sécurisée ; chaque page de l'outil ouvre une nouvelle
+connexion (un téléphone la garde) : la médiane d'environ 1,07 s est surtout ce trajet. Le serveur donne une
+page gardée en mémoire en 50 à 100 ms. Parcours : fil des lives 30 %, accueil 10 %, shop 20 %, produits 20 %,
+boutiques 10 %, réservation 5 % ; paliers de 30 s, visiteurs qui gardent leurs cookies.
+
+| Visiteurs à la fois | 3 workers, sans compression | 3 workers, pages compressées | 4 workers | 3 workers, de nouveau |
+|---|---|---|---|---|
+| 32 | 28 pages/s, p95 1,7 s | 29 pages/s, p95 1,5 s | 22 pages/s, p95 2,3 s | 30 pages/s, p95 1,3 s |
+| 64 | 38 pages/s, p95 3,7 s | 44 pages/s, p95 2,6 s | 30 pages/s, p95 3,4 s | **58 pages/s, p95 1,5 s** |
+| 128 | 43 pages/s, p95 7,0 s, 0,23 % d'erreurs | 40 pages/s, p95 7,2 s, 0,17 % | 35 pages/s, p95 13 s, **45 % d'erreurs (503)** | **90 pages/s, p95 2,5 s, 0 erreur** |
+| 32 nouveaux visiteurs | 26 pages/s, p95 2,4 s | 28 pages/s, p95 1,6 s | 23 pages/s, p95 2,5 s | - |
+
+- **La compression** des pages par la plateforme : le shop passe de 33 Ko à 5,5 Ko (le fil des lives de
+  60 Ko à environ 10 Ko) ; les fichiers du site arrivent déjà compressés du CDN (styles : 198 Ko au lieu de
+  1,4 Mo).
+- **4 workers sur 1 cœur font moins bien que 3** : le processeur est plein (1,00 cœur) pour moins de pages,
+  les workers se disputent le cœur, chacun gardait alors sa propre mémoire des pages (moins de pages
+  données depuis la mémoire), et la plateforme répond 503 sous forte charge. Avec 3 workers, le
+  processeur reste vers 0,6 cœur. **Réglage retenu : 3 workers.**
+- Les écarts entre les deux mesures à 3 workers (44 puis 90 pages/s à 64 et 128 visiteurs) viennent de la
+  plateforme et du réseau ce jour-là, pas du code (le même) : refaire chaque mesure deux fois.
+- Depuis, **la mémoire des pages est partagée par les workers du serveur** (`ocd_live` 20.0.1.32.0) : sur la
+  machine de test, avec 3 workers, 99,6 % des pages viennent de la mémoire (une page construite une fois
+  pour tous les workers) ; à remesurer ici après la mise à jour.
+- L'appel le plus léger d'Odoo (`/web/health`) passe à 135 par seconde depuis la même machine : le chemin
+  réseau et la plateforme ne limitent pas les pages.
+
+## 9. Commandes
 
 ```bash
 # Un palier : 200 visiteurs pendant 5 minutes, 8 processus (machine de 8 cœurs)

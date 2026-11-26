@@ -160,6 +160,26 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 26 novembre 2026 · Le serveur de préproduction mesuré ; la mémoire des pages partagée par les workers
+
+- **Mesures sur `ocd.my.rollbackk.app`** (1 cœur, 2 Go), détaillées dans
+  [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md) (partie 8) : avec 3 workers et les pages compressées,
+  jusqu'à 90 pages par seconde à 128 visiteurs à la fois, 95 % des pages en moins de 2,5 s, aucune erreur ;
+  4 workers sur 1 cœur font moins bien (processeur plein, 503 sous forte charge) : **3 workers retenus**.
+  La compression des pages (activée par l'équipe sur la plateforme) les rend 6 fois plus légères ; les
+  fichiers du site arrivaient déjà compressés par le CDN.
+- **La mémoire des pages partagée par les workers d'un serveur** (`ocd_live/page_cache.py`) : chaque
+  worker garde ses pages les plus demandées, et tous partagent les autres dans des fichiers de la mémoire
+  de la machine (`/dev/shm`) ; une page construite par un worker est donnée par les autres. Avant, chaque
+  worker reconstruisait la sienne : plus de workers voulait dire moins de pages données depuis la mémoire.
+  Sur la machine de test, 3 workers : 99,6 % des pages depuis la mémoire, 165 pages par seconde, aucune
+  erreur. Une mise à jour des modules change de dossier (jamais une page d'avant) ; un dossier qui ne peut
+  pas être écrit laisse chaque worker avec ses pages.
+- Tests : 2 nouveaux (une page d'un worker donnée par un autre, pas de page d'avant une mise à jour ; un
+  dossier non inscriptible) ; suite complète sur une base neuve, **840 sans échec**.
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live** dans
+  Applications, redémarrer le service d'Odoo ; rien d'autre à installer.
+
 ### 25 novembre 2026 · Toutes les pages du site sur un téléphone, « Je suis en live » en haut (chantier 25.5, fin du chantier 25)
 
 - **Parcours de tout le site à 450 px** (88 sortes de pages, en suivant les liens : visiteur, Mon

@@ -128,10 +128,31 @@ class TestPageCache(HttpCase):
     def test_kept_seconds(self):
         self._open("/lives")
         self.assertEqual(self._open("/lives")[1], "hit")
-        with page_cache._lock:
-            for key, entry in page_cache._pages.items():
-                page_cache._pages[key] = (0, *entry[1:])
+        page_cache.expire()
         self.assertEqual(self._open("/lives")[1], "miss", "Built again after its seconds")
+
+    def test_shared_by_the_workers_of_the_server(self):
+        """A page built by one worker is given by the others: their memory is shared in files."""
+        first, origin = self._open("/lives")
+        self.assertEqual(origin, "miss")
+        with page_cache._lock:
+            page_cache._pages.clear()  # another worker: nothing in its own memory
+        second, origin = self._open("/lives")
+        self.assertEqual(origin, "hit", "Given from the pages shared by the workers")
+        self.assertEqual(TOKEN.sub("", second.text), TOKEN.sub("", first.text), "The same page")
+        self.assertNotEqual(TOKEN.findall(second.text), TOKEN.findall(first.text), "The token of each visitor")
+        # After an update of the modules (a new version of the registry): a new folder, no old page
+        with page_cache._lock:
+            page_cache._pages.clear()
+        with patch.object(page_cache, "_version", lambda: "after-an-update"):
+            self.assertEqual(self._open("/lives")[1], "miss", "No page of the version before")
+
+    def test_a_folder_not_writable_leaves_the_pages_to_each_worker(self):
+        with patch.object(page_cache, "SHARED_ROOTS", ()), patch.object(page_cache.tempfile, "gettempdir", return_value="/proc/ocd"):
+            with patch.dict(page_cache._shared, broken=False), self.assertLogs(page_cache.__name__, "WARNING"):
+                self.assertEqual(self._open("/lives")[1], "miss")
+                self.assertEqual(self._open("/lives")[1], "hit", "Kept by the worker itself")
+                self.assertTrue(page_cache._shared["broken"])
 
     def test_media_kept_by_the_browsers_and_the_cdn(self):
         """The photos and the videos of the approved vendors: a year with their version, a day
