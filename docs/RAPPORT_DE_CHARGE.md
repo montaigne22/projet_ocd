@@ -301,7 +301,63 @@ boutiques 10 %, réservation 5 % ; paliers de 30 s, visiteurs qui gardent leurs 
 - L'appel le plus léger d'Odoo (`/web/health`) passe à 135 par seconde depuis la même machine : le chemin
   réseau et la plateforme ne limitent pas les pages.
 
-## 9. Commandes
+## 9. Dix fois plus de données : écrans de l'équipe et actions planifiées, 26 novembre 2026
+
+Une copie de la démo grossie par `tools/charge/volume.py` (facteur 10) : 141 vendeurs, 343 produits, 1 875
+clients, 3 490 commandes et 4 059 colis sur 30 jours (70 % livrés), 899 lives, 410 conversations WhatsApp,
+1 000 abonnés. `tools/charge/requetes.py` mesure chaque écran comme un vrai appel (transaction neuve, rien
+en mémoire) et lance chaque action planifiée une fois. Machine de test, un seul utilisateur.
+
+| Écran | Démo | 10 fois plus | Après correction |
+|---|---|---|---|
+| Tableau de bord | 317 requêtes, 1,0 s | **3 333 requêtes, 6,7 s** | **168 requêtes, 1,3 s** |
+| Commandes de la semaine | 60 requêtes, 0,15 s | **533 requêtes, 1,3 s** | **31 requêtes, 0,19 s** |
+| Dispatch | 47 requêtes, 0,1 s | 48 requêtes, 0,7 s | (dix fois plus de colis du jour à lire) |
+| Conversations WhatsApp | 254 requêtes, 0,34 s | 99 requêtes, 0,15 s (410 conversations) | |
+| Réservations, À vérifier, Automatisations, Paramètres, Livreurs, Régie | 35 à 196 requêtes | les mêmes | |
+
+- **La cause** : le taux de change d'une monnaie était demandé pour chaque montant additionné (deux fois
+  par colis livré pour les commissions, une fois par commande) ; il l'est maintenant une fois par jour et
+  par monnaie (`ocd_live/tools.py`, `converter`).
+- **Ce qui reste** : le tableau de bord additionne « l'argent reçu » depuis le premier paiement, colis par
+  colis (leurs montants sont calculés, pas enregistrés) : 1,3 s ici, et cela grandira avec l'historique. À
+  traiter avant d'avoir des dizaines de milliers de colis (enregistrer ces montants, ou un total par mois).
+- **Les actions planifiées** (toutes celles d'OCD Live, d'OCD Express, des concours, des billets, des
+  événements et de WhatsApp) : de 7 à 98 requêtes et moins de 0,5 s chacune, les mêmes à dix fois plus de
+  données. Seule celle de la démo (absente en production) est lourde (5,6 s).
+
+## 10. Le parcours d'achat, 26 novembre 2026
+
+Ces pages ne viennent jamais de la mémoire. `tools/charge/achat.py` : chaque client virtuel ouvre la fiche
+d'un produit, l'ajoute au panier (première couleur, première taille), ouvre l'adresse, choisit le
+Cameroun, la première ville et son premier quartier, envoie l'adresse et arrive à la page du paiement
+(sans payer). Machine de test (4 cœurs, 3 workers), copie de la démo.
+
+| Clients à la fois | Parcours jusqu'au paiement | Erreurs |
+|---|---|---|
+| 1 | 50 par minute | 0 |
+| 4 | 184 par minute | 0 |
+| 8 | 186 par minute | 0 |
+| 16 | 192 par minute | 0 |
+| 32 | 206 par minute | 0 |
+
+Chaque parcours coûte environ 1,1 s de processeur : le plafond (environ 3 achats par seconde) est atteint
+dès 4 clients à la fois. Sur le serveur de préproduction (1 cœur), on peut s'attendre à environ un achat par
+seconde au plus, en plus des visites. Le coût de chaque étape (un client) :
+
+| Étape | Requêtes | Temps |
+|---|---|---|
+| Fiche du produit | 30 | 0,14 s |
+| Ajout au panier | 89 | 0,18 s |
+| Panier | 48 | 0,08 s |
+| Adresse (formulaire, deux fois avec le pays) | 55 | 0,09 s |
+| Quartiers de la ville | 47 | 0,06 s |
+| Envoi de l'adresse | 196 | 0,31 s |
+| Page du paiement | 200 | 0,31 s |
+
+Les deux dernières étapes sont les plus lourdes : à regarder avant une forte affluence d'acheteurs.
+
+## 11. Commandes
 
 ```bash
 # Un palier : 200 visiteurs pendant 5 minutes, 8 processus (machine de 8 cœurs)
@@ -316,4 +372,14 @@ ab -n 5000 -c 50 https://preprod.example.com/lives
 # Les cœurs pour 3 millions de visiteurs par jour, puis avec une mémoire des pages commune aux workers
 python3 tools/charge/dimensionnement.py 3000000
 python3 tools/charge/dimensionnement.py 3000000 --partagee
+
+# Dix fois plus de données, sur une copie de la démo (jamais la production)
+createdb -T ocd_demo ocd_volume
+VOLUME=10 odoo-bin shell -c odoo.conf -d ocd_volume --no-http < tools/charge/volume.py
+
+# Le coût de chaque écran de l'équipe et de chaque action planifiée (sur la démo, puis sur la copie grossie)
+odoo-bin shell -c odoo.conf -d ocd_volume --no-http < tools/charge/requetes.py
+
+# Le parcours d'achat jusqu'au paiement (laisse un panier et un contact par parcours)
+python3 tools/charge/achat.py 8 60 --base https://preprod.example.com --produit /shop/robe-en-wax-38
 ```

@@ -62,6 +62,26 @@ REDIRECTS = (301, 302, 303, 307, 308)
 _expanded = {}
 
 
+def converter(company):
+    """A conversion to the currency of `company` that asks the rate of each currency once a day:
+    a screen that adds up hundreds of amounts (the dashboard, the orders) asked it for each amount,
+    a query each time. ``convert(amount, currency, date)`` gives the amount rounded, as _convert."""
+    target = company.currency_id
+    rates = {}
+
+    def convert(amount, currency, date=None):
+        currency = currency or target
+        if currency == target or not amount:
+            return target.round(amount or 0.0)
+        day = date.date() if hasattr(date, "date") else (date or target.env.cr.now().date())
+        key = (currency.id, day)
+        if key not in rates:
+            rates[key] = currency._get_conversion_rate(currency, target, company, day)
+        return target.round(amount * rates[key])
+
+    return convert
+
+
 def day_text(env, day, pattern="EEEE d MMMM", capital=False):
     """Return `day` written in the language of `env`, e.g. "Mardi 1er décembre" or
     "mar. 1er déc." (French writes the first day of the month "1er")."""

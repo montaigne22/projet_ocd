@@ -160,6 +160,25 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 26 novembre 2026 · Dix fois plus de données, et le parcours d'achat sous charge
+
+- **Trois outils** dans `tools/charge/` : `volume.py` grossit une copie de la démo (vendeurs, produits,
+  commandes confirmées par le vrai parcours avec leurs colis, lives, conversations, abonnés ; refuse une
+  base sans la démo), `requetes.py` mesure chaque écran de l'équipe et chaque action planifiée, `achat.py`
+  fait le parcours d'achat jusqu'au paiement à plusieurs clients à la fois.
+- **À dix fois plus de données** (3 490 commandes, 4 059 colis, 899 lives, 410 conversations) : le tableau
+  de bord passait de 317 à 3 333 requêtes (6,7 s) et les commandes de la semaine de 60 à 533 (1,3 s), à
+  cause du taux de change demandé pour chaque montant. Il l'est maintenant une fois par jour et par
+  monnaie (`tools.converter`) : **168 requêtes et 1,3 s, 31 requêtes et 0,19 s**. Les autres écrans et
+  toutes les actions planifiées ne grossissent pas. Reste : « l'argent reçu » du tableau de bord se calcule
+  colis par colis depuis le premier (1,3 s ici), à traiter avant des dizaines de milliers de colis.
+- **Le parcours d'achat** (machine de test, 3 workers) : environ 200 achats jusqu'au paiement par minute,
+  aucune erreur jusqu'à 32 clients à la fois ; chaque achat coûte environ 1,1 s de processeur, l'envoi de
+  l'adresse et la page du paiement font chacun environ 200 requêtes (0,3 s) : les prochains à alléger.
+- Détail dans [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md) (parties 9 et 10). Suite complète sur une base neuve : **842 sans échec**.
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live** et **OCD Live :
+  shop** dans Applications, redémarrer le service d'Odoo.
+
 ### 26 novembre 2026 · La boîte de réception WhatsApp lit toutes ses conversations ensemble
 
 La liste des conversations est relue toutes les 20 secondes par chaque conseiller. Mesurée sur une copie de

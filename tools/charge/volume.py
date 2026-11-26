@@ -5,6 +5,9 @@ base sans le module de démo (ocd_live_demo).
     createdb -T ocd_demo ocd_volume
     VOLUME=10 odoo-bin shell -c odoo.conf -d ocd_volume --no-http < tools/charge/volume.py
 
+PARTIES=conversations,abonnes ne fait que ces parties (vendeurs, clients, commandes, lives,
+conversations, abonnes) : pour compléter une base déjà grossie sans tout refaire.
+
 Ajoute, pour atteindre VOLUME fois la démo : des vendeurs (copies de ceux de la démo, avec leurs
 produits), des clients, des commandes du shop confirmées par le vrai parcours (colis découpés par
 vendeur ; 70 % livrés, 10 % en route), des lives payés (passés et à venir), des conversations
@@ -17,11 +20,14 @@ import random
 import time
 from datetime import timedelta
 
+from psycopg2 import IntegrityError
+
 from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import SQL
 
 FACTOR = int(os.environ.get("VOLUME", "10"))
+PARTS = set(filter(None, os.environ.get("PARTIES", "vendeurs,clients,commandes,lives,conversations,abonnes").split(",")))
 rand = random.Random(42)
 started = time.time()
 
@@ -44,7 +50,7 @@ def safely(function, *args):
     try:
         with env.cr.savepoint():
             return function(*args)
-    except (UserError, ValidationError, ValueError) as error:
+    except (UserError, ValidationError, ValueError, IntegrityError) as error:
         return error
 
 
@@ -57,7 +63,7 @@ vendors = Partner.search([("ocd_is_vendor", "=", True), ("ocd_vendor_state", "="
 products_of = {vendor: env["product.template"].sudo().search([("ocd_vendor_id", "=", vendor.id), ("sale_ok", "=", True)]) for vendor in vendors}
 sources = [vendor for vendor in vendors if products_of[vendor]]
 new_vendors = Partner
-for index in range(len(vendors) * (FACTOR - 1)):
+for index in range(len(vendors) * (FACTOR - 1) if "vendeurs" in PARTS else 0):
     source = sources[index % len(sources)]
     copy = safely(source.copy, {"name": f"{source.name} {index + 2}", "phone": f"+2376{50000000 + index:08d}", "email": False})
     if isinstance(copy, Exception):
@@ -76,7 +82,7 @@ say(f"{len(new_vendors)} vendeurs de plus, {len(products)} produits en vente")
 
 # === CLIENTS === #
 customers = Partner.search([("ocd_is_vendor", "=", False), ("district_id", "!=", False)], limit=40)
-for index in range(200 * (FACTOR - 1)):
+for index in range(200 * (FACTOR - 1) if "clients" in PARTS else 0):
     source = customers[index % len(customers)]
     safely(source.copy, {"name": f"Client {index + 1}", "phone": f"+2376{60000000 + index:08d}", "email": False})
 env.cr.commit()
@@ -110,7 +116,7 @@ def sell():
 
 
 made = 0
-while SaleOrder.search_count([("state", "=", "sale")]) < target and made < target:
+while "commandes" in PARTS and SaleOrder.search_count([("state", "=", "sale")]) < target and made < target:
     made += 1
     safely(sell)
     if made % 200 == 0:
@@ -143,7 +149,7 @@ def live(start, mode):
 
 
 day = company._ocd_local_today() - timedelta(days=30)
-while Booking.search_count([]) < target and day <= company._ocd_local_today() + timedelta(days=14):
+while "lives" in PARTS and Booking.search_count([]) < target and day <= company._ocd_local_today() + timedelta(days=14):
     for start in company._ocd_slot_starts(day):
         for mode in ("studio", "remote", "remote"):
             safely(live, start, mode)
@@ -153,11 +159,13 @@ say(f"{Booking.search_count([])} lives réservés")
 
 # === CONVERSATIONS WHATSAPP === #
 Channel = env["discuss.channel"].sudo()
-account = env["whatsapp.account"].sudo().search([], limit=1)
+# the account of the conversations of the demo (it may be switched off: nothing is sent anyway)
+account = Channel.search([("channel_type", "=", "whatsapp"), ("whatsapp_account_id", "!=", False)], limit=1).whatsapp_account_id \
+    or env["whatsapp.account"].sudo().with_context(active_test=False).search([], limit=1)
 contacts = rand.sample(list(customers), min(len(customers), max(300, 30 * FACTOR)))
-if account:
+if account and "conversations" in PARTS:
     for index, contact in enumerate(contacts):
-        number = f"2376{70000000 + index:08d}"
+        number = f"22997{index:06d}"  # numbers of the test only: never those of the demo
         channel = safely(Channel.create, {
             "name": contact.name, "channel_type": "whatsapp", "whatsapp_number": number,
             "whatsapp_partner_id": contact.id, "whatsapp_account_id": account.id,
@@ -175,7 +183,7 @@ say(f"{Channel.search_count([('channel_type', '=', 'whatsapp')])} conversations 
     + ("" if account else " (aucun compte WhatsApp dans la démo : aucune créée)"))
 
 # === ABONNÉS === #
-if "ocd.vendor.follower" in env:
+if "ocd.vendor.follower" in env and "abonnes" in PARTS:
     Follower = env["ocd.vendor.follower"].sudo()
     target = max(1000, Follower.search_count([]) * FACTOR)
     index = 0

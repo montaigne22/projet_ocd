@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from odoo import api, fields, models
 
-from odoo.addons.ocd_live.tools import day_text, hour_text
+from odoo.addons.ocd_live.tools import converter, day_text, hour_text
 
 from .stock_picking import OPEN_STAGES
 
@@ -33,9 +33,8 @@ class OcdLiveDashboard(models.AbstractModel):
             ("picking_ids.ocd_is_parcel", "=", True),
         ]
         orders = self.env["sale.order"].search(orders_domain)
-        total = sum(
-            order.currency_id._convert(order.amount_total, currency, company, order.date_order) for order in orders
-        )
+        convert = converter(company)
+        total = sum(convert(order.amount_total, order.currency_id, order.date_order) for order in orders)
         # Parcels of the day: still open, or delivered today
         parcels_domain = PARCEL + [
             ("company_id", "=", company.id),
@@ -189,13 +188,14 @@ class OcdLiveDashboard(models.AbstractModel):
             PARCEL + [("company_id", "=", company.id), ("ocd_stage", "=", "delivered")]
         )
         commissions = fees = 0.0
+        convert = converter(company)  # the rate of a currency once a day, not once per parcel
         for parcel in delivered:
             currency = parcel.ocd_currency_id or company.currency_id
             date = parcel.ocd_delivered_at or fields.Datetime.now()
             goods_share = parcel.ocd_vendor_share - parcel.ocd_vendor_fee_amount
-            commissions += currency._convert(parcel.ocd_goods_amount - goods_share, company.currency_id, company, date)
+            commissions += convert(parcel.ocd_goods_amount - goods_share, currency, date)
             # The deliveries of OCD (couriers, agencies), and its share on those of the vendors
-            fees += currency._convert(parcel.ocd_fee_amount - parcel.ocd_vendor_fee_amount, company.currency_id, company, date)
+            fees += convert(parcel.ocd_fee_amount - parcel.ocd_vendor_fee_amount, currency, date)
         return rows + [
             {"key": "commissions", "label": self.env._("Shop commissions"), "amount": commissions},
             {"key": "fees", "label": self.env._("Delivery fees kept by OCD"), "amount": fees},

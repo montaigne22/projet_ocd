@@ -4,7 +4,7 @@ from odoo import api, models
 from odoo.exceptions import UserError
 from odoo.tools.misc import format_amount
 
-from odoo.addons.ocd_live.tools import day_text
+from odoo.addons.ocd_live.tools import converter, day_text
 
 from .stock_picking import OPEN_STAGES
 
@@ -38,7 +38,8 @@ class OcdLiveOrders(models.AbstractModel):
         monday = today - timedelta(days=today.weekday())
         since, _end = self.env["ocd.live.dashboard"]._ocd_day_bounds(monday)
         orders = self._ocd_orders(since)
-        rows = [self._ocd_row(order) for order in orders]
+        convert = converter(company)  # the rate of a currency once a day, not once per order
+        rows = [self._ocd_row(order, convert) for order in orders]
         groups = []
         for row in rows:
             if not groups or groups[-1]["key"] != row["day"]:
@@ -58,8 +59,9 @@ class OcdLiveOrders(models.AbstractModel):
         return order.picking_ids.filtered("ocd_is_parcel")
 
     @api.model
-    def _ocd_row(self, order):
+    def _ocd_row(self, order, convert=None):
         company = order.company_id
+        convert = convert or converter(company)
         local = company._ocd_to_local(order.date_order)
         parcels = self._ocd_parcels(order)
         vendors = parcels.ocd_vendor_id
@@ -79,7 +81,7 @@ class OcdLiveOrders(models.AbstractModel):
             "place": order.partner_shipping_id.district_id.name or order.partner_shipping_id.city or "",
             "vendor": vendor_text,
             "total": format_amount(self.env, order.amount_total, order.currency_id),
-            "amount": order.currency_id._convert(order.amount_total, company.currency_id, company, order.date_order),
+            "amount": convert(order.amount_total, order.currency_id, order.date_order),
             "payment": payment,
             "payment_tone": payment_tone,
             "status": status,

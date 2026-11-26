@@ -281,8 +281,13 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
   de beaucoup de vidéos à ses offres payantes : à vérifier pour les vidéos des cartes.
 - **nginx** devant Odoo : `gzip on;` avec `gzip_types text/css application/javascript application/json
   image/svg+xml; gzip_proxied any;`, et `client_max_body_size 220m;` (vidéos des téléphones).
-- Mesurer avant d'ouvrir : [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md), outil
-  `tools/charge/charge.py`.
+- Mesurer avant d'ouvrir : [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md), outils de `tools/charge/` :
+  `charge.py` (les pages publiques), `achat.py` (le parcours d'achat jusqu'au paiement), `volume.py`
+  (grossir une copie de la démo, jamais la production) et `requetes.py` (le coût de chaque écran de
+  l'équipe et de chaque action planifiée). Une page de l'équipe qui grossit avec les données se voit en
+  lançant `requetes.py` sur la démo puis sur la copie grossie.
+- **Additionner des montants dans une autre monnaie** : `tools.converter(company)` (ocd_live), jamais
+  `_convert` dans une boucle (une requête par montant, un écran de 6,7 s à dix fois plus de données).
 
 ## Fichiers sur Cloudflare R2 (module `attachment_s3`)
 

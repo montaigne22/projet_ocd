@@ -7,7 +7,7 @@ from babel.numbers import get_currency_name
 
 from odoo.tools.misc import babel_locale_parse, format_amount
 
-from ..tools import day_text
+from ..tools import converter, day_text
 
 # Order of the tags of "To do now": red first, then yellow, then grey
 TONES = {"red": 10, "yellow": 20, "grey": 30}
@@ -340,11 +340,8 @@ class OcdLiveDashboard(models.AbstractModel):
     def _ocd_convert(self, lines):
         """Return the total of the sale order lines in the currency of the company."""
         company = self.env.company
-        total = 0.0
-        for line in lines:
-            total += line.currency_id._convert(
-                line.price_total, company.currency_id, company, line.order_id.date_order or fields.Date.today()
-            )
+        convert = converter(company)
+        total = sum(convert(line.price_total, line.currency_id, line.order_id.date_order) for line in lines)
         return company.currency_id.round(total)
 
     # === TODAY, NEXT === #
