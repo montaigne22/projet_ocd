@@ -29,7 +29,8 @@ the workers of the server share the others in files of the memory of the machine
 page built by one worker is given by all the others, so that more workers never mean more pages
 built again. Nothing else to install; when the folder cannot be written, each worker keeps its
 own pages only. A new version of the modules (an update) starts a new folder: an old page is
-never given after an update."""
+never given after an update. The system parameter ``ocd_live.page_cache_shared`` set to 0 keeps
+each worker with its own pages (to compare on a server, or if its folder is slow)."""
 
 import hashlib
 import json
@@ -56,6 +57,7 @@ MAX_SHARED_PAGES = 1000  # pages shared by the workers of the server (files); th
 MAX_BYTES = 2 * 1024 * 1024  # a bigger page is not kept
 SHARED_ROOTS = ("/dev/shm",)  # the memory of the machine; else the folder of the temporary files
 SHARED_CLEAN_SECONDS = 30  # how often a worker removes the shared pages too old
+SHARED_PARAM = "ocd_live.page_cache_shared"  # 0: each worker keeps its own pages
 HEADER = "X-OCD-Cache"  # hit: from memory, miss: built and kept, pass: built for its visitor
 IN_TESTS = False
 
@@ -240,6 +242,8 @@ def _shared_base():
 def _shared_root():
     """The folder of the pages of this database on this server, or None (not writable)."""
     if _shared["broken"] or not request or not request.db:
+        return None
+    if request.env["ir.config_parameter"].sudo().get_str(SHARED_PARAM, "1").strip().lower() in ("0", "false", "no"):
         return None
     return os.path.join(_shared_base(), hashlib.sha1(request.db.encode()).hexdigest()[:16])
 

@@ -160,6 +160,16 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 26 novembre 2026 · Un interrupteur pour le partage des pages entre workers
+
+Après la mise à jour du serveur de préproduction, les paliers de charge sont revenus à 30 à 38 pages par
+seconde, processeur plein, avec des 503 à 128 visiteurs (au lieu de 58 et 90 pages par seconde lors de la
+meilleure mesure, avec le code d'avant). Sur la machine de test, l'ancienne et la nouvelle mémoire, avec
+3 workers et la même charge, font jeu égal (190 et 194 pages/s à 16 visiteurs, 174 et 188 à 64) : rien ne
+montre que le partage coûte. Pour trancher sur le serveur lui-même, le paramètre système
+`ocd_live.page_cache_shared` à `0` coupe le partage, sans redémarrer ; il sert aussi de coupure de
+sécurité. Test ajouté ; suite complète sur une base neuve, **841 sans échec**.
+
 ### 26 novembre 2026 · Le serveur de préproduction mesuré ; la mémoire des pages partagée par les workers
 
 - **Mesures sur `ocd.my.rollbackk.app`** (1 cœur, 2 Go), détaillées dans

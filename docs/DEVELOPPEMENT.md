@@ -206,7 +206,9 @@ machine (`/dev/shm/ocd_page_cache_<utilisateur>/<base>/<version des modules>/`, 
 page construite par un worker est donnée par tous les autres, si bien que plus de workers ne veut pas dire
 plus de pages reconstruites. Rien à installer ; un dossier qui ne peut pas être écrit laisse chaque worker
 avec ses pages (un avertissement dans le journal). Une installation ou une mise à jour des modules change
-de dossier : jamais une page d'avant la mise à jour. L'en-tête `X-OCD-Cache` dit
+de dossier : jamais une page d'avant la mise à jour. Le paramètre système `ocd_live.page_cache_shared` à
+`0` coupe le partage (chaque worker ses pages), sans redémarrer : pour comparer sur un serveur, ou si le
+dossier y est lent. L'en-tête `X-OCD-Cache` dit
 d'où vient une page : `hit` (mémoire), `miss` (construite et gardée), `pass` (construite pour ce
 visiteur). Un changement (nouveau produit, prix, live vérifié) se voit au plus après la durée de la page ;
 les vendeurs, les livreurs et l'équipe voient toujours leurs pages à jour. La case « Pages publiques

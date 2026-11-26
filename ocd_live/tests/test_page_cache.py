@@ -147,6 +147,13 @@ class TestPageCache(HttpCase):
         with patch.object(page_cache, "_version", lambda: "after-an-update"):
             self.assertEqual(self._open("/lives")[1], "miss", "No page of the version before")
 
+    def test_shared_pages_switched_off_by_a_system_parameter(self):
+        self.env["ir.config_parameter"].sudo().set_str(page_cache.SHARED_PARAM, "0")
+        self.assertEqual(self._open("/lives")[1], "miss")
+        with page_cache._lock:
+            page_cache._pages.clear()  # another worker
+        self.assertEqual(self._open("/lives")[1], "miss", "Each worker its own pages")
+
     def test_a_folder_not_writable_leaves_the_pages_to_each_worker(self):
         with patch.object(page_cache, "SHARED_ROOTS", ()), patch.object(page_cache.tempfile, "gettempdir", return_value="/proc/ocd"):
             with patch.dict(page_cache._shared, broken=False), self.assertLogs(page_cache.__name__, "WARNING"):
