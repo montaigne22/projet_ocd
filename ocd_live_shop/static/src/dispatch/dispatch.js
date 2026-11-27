@@ -37,6 +37,20 @@ export class OcdLiveDispatch extends Component {
         );
     }
 
+    /** The parcels of a column for the filter: more than its cards beyond the first ones. */
+    countOf(column) {
+        return column.counts[this.filter()];
+    }
+
+    moreLabel(column, cards) {
+        return _t("%s more · see the list", this.countOf(column) - cards.length);
+    }
+
+    async openColumn(column) {
+        const action = await this.orm.call("ocd.live.dispatch", "ocd_column_action", [column.key, this.filter()]);
+        this.actionService.doAction(action, { viewType: "list" });
+    }
+
     /** The step shown on a phone: the one chosen, else the first with parcels. */
     get stepKey() {
         const columns = this.data().columns;
@@ -44,7 +58,7 @@ export class OcdLiveDispatch extends Component {
         if (chosen && columns.some((column) => column.key === chosen)) {
             return chosen;
         }
-        return (columns.find((column) => this.cardsOf(column).length) || columns[0])?.key;
+        return (columns.find((column) => this.countOf(column)) || columns[0])?.key;
     }
 
     filterLabel(key) {

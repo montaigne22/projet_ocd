@@ -905,3 +905,10 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
 - **La preuve se fait par la mesure** : un modèle de rapport ([`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md))
   et un outil (`tools/charge/charge.py`), à refaire sur les vrais serveurs avant l'ouverture au grand
   public.
+- **Ce qu'OCD Live garde sur un colis est figé à sa livraison** (27 novembre 2026) : sa commission sur la
+  marchandise et ses livraisons, dans la devise de la société au taux du jour de la livraison. « L'argent
+  reçu » du tableau de bord les additionne sans relire l'historique, et un changement ultérieur de taux de
+  commission ou de change ne réécrit pas le passé.
+- **Le Dispatch montre 40 cartes par colonne** (et par livreur : OCD ou vendeur), les alertes d'abord puis
+  les plus anciennes ; la colonne donne son vrai total et « N de plus · voir la liste » ouvre tous ses colis.
+  Des centaines de cartes n'aident personne et ralentissent l'écran.

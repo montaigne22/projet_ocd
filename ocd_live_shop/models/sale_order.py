@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from odoo import fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -167,24 +167,68 @@ class SaleOrder(models.Model):
             quotes = order._ocd_delivery_quotes()
             if any(quote["error"] for quote in quotes):
                 continue
-            self.env["ocd.order.delivery"].sudo().create([{
-                "order_id": order.id,
-                "vendor_id": quote["vendor"].id or False,
-                "rate_id": quote["rate"].id,
-                "operator": quote["operator"],
-                "origin_city_id": quote["origin"].id or False,
-                "amount": quote["price"],
-                "allow_cod": quote["allow_cod"],
-                "description": quote["description"] or False,
-                "pickup_place_id": quote["place"].id if quote.get("place") else False,
-                "relay_place_id": quote["relay"].id if quote.get("relay") else False,
-            } for quote in quotes])
+            self.env["ocd.order.delivery"].sudo().create([
+                {"order_id": order.id, **self._ocd_quote_values(quote)} for quote in quotes
+            ])
+
+    @api.model
+    def _ocd_quote_values(self, quote):
+        """The delivery of a parcel as kept on the order (`ocd.order.delivery`)."""
+        return {
+            "vendor_id": quote["vendor"].id or False,
+            "rate_id": quote["rate"].id,
+            "operator": quote["operator"],
+            "origin_city_id": quote["origin"].id or False,
+            "amount": quote["price"],
+            "allow_cod": quote["allow_cod"],
+            "description": quote["description"] or False,
+            "pickup_place_id": quote["place"].id if quote.get("place") else False,
+            "relay_place_id": quote["relay"].id if quote.get("relay") else False,
+        }
 
     def set_delivery_line(self, carrier, amount):
         """Override of `delivery`: keep the delivery of each parcel with the price of the order."""
         result = super().set_delivery_line(carrier, amount)
         self._ocd_store_delivery_quotes()
         return result
+
+    def _set_delivery_method(self, delivery_method, rate=None):
+        """Override of `website_sale`: the address and the payment page set the delivery again at
+        each step (« the prices up to date and final »). Unchanged (the method of OCD Live, the
+        same price and the same parcels), the delivery line and the delivery of each parcel are
+        kept instead of being deleted and created again: about a hundred queries saved each time."""
+        self.ensure_one()
+        if delivery_method and delivery_method == self.carrier_id and delivery_method.delivery_type == "ocd" \
+                and not delivery_method.enable_delivery_estimate:
+            rate = rate or delivery_method.rate_shipment(self)
+            if self._ocd_delivery_unchanged(delivery_method, rate):
+                return
+        return super()._set_delivery_method(delivery_method, rate=rate)
+
+    def _ocd_delivery_unchanged(self, carrier, rate):
+        """Whether the order already has the delivery `rate` of `carrier`: its one delivery line
+        (not invoiced) at that price with the same taxes, and the same delivery of each parcel."""
+        line = self.order_line.filtered("is_delivery")
+        if not rate.get("success") or len(line) != 1 or line.qty_invoiced or line.product_id != carrier.product_id:
+            return False
+        values = self._prepare_delivery_line_vals(carrier, rate["price"])
+        if self.currency_id.compare_amounts(line.price_unit, values["price_unit"]) \
+                or set(line.tax_ids.ids) != set(values["tax_ids"][0][2]) or line.name != values["name"]:
+            return False
+        quotes = self._ocd_delivery_quotes()
+        if not quotes or any(quote["error"] for quote in quotes):
+            return False
+        names = list(self._ocd_quote_values(quotes[0]))
+        round_amount = self.currency_id.round
+
+        def key(values):
+            return repr(sorted({**values, "amount": round_amount(values["amount"])}.items()))
+
+        def kept(parcel):
+            return {name: parcel[name].id if isinstance(parcel[name], models.BaseModel) else parcel[name] for name in names}
+
+        return sorted(key(kept(parcel)) for parcel in self.sudo().ocd_delivery_line_ids) \
+            == sorted(key(self._ocd_quote_values(quote)) for quote in quotes)
 
     def _remove_delivery_line(self):
         result = super()._remove_delivery_line()

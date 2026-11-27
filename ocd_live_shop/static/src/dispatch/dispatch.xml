@@ -43,7 +43,7 @@
                                 t-att-aria-selected="column.key === stepKey ? 'true' : 'false'"
                                 t-on-click="() => this.step.set(column.key)">
                             <span t-out="column.label"/>
-                            <span class="o_ocd_dispatch_count" t-out="this.cardsOf(column).length"/>
+                            <span class="o_ocd_dispatch_count" t-out="this.countOf(column)"/>
                         </button>
                     </div>
                     <div class="o_ocd_dispatch_columns">
@@ -52,7 +52,7 @@
                             <t t-set="cards" t-value="this.cardsOf(column)"/>
                             <div class="o_ocd_dispatch_column_head">
                                 <span t-out="column.label"/>
-                                <span class="o_ocd_dispatch_count" t-out="cards.length"/>
+                                <span class="o_ocd_dispatch_count" t-out="this.countOf(column)"/>
                             </div>
                             <div t-if="!cards.length" class="o_ocd_dispatch_empty">No parcel</div>
                             <div t-foreach="cards" t-as="card" t-key="card.id"
@@ -85,6 +85,8 @@
                                 <button t-if="card.can_retry" type="button" class="o_ocd_dispatch_button"
                                         t-on-click="() => this.retry(card)">New attempt</button>
                             </div>
+                            <button t-if="this.countOf(column) > cards.length" type="button" class="o_ocd_dispatch_more"
+                                    t-on-click="() => this.openColumn(column)" t-out="this.moreLabel(column, cards)"/>
                         </div>
                     </div>
                 </div>

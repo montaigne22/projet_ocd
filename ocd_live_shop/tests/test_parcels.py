@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from freezegun import freeze_time
 
@@ -220,6 +221,29 @@ class TestOcdParcels(OcdShopCommon):
         self.assertEqual(fatou_parcel.ocd_stage, "ready")
         with self.assertRaises(UserError):
             Dispatch.ocd_assign(fatou_parcel.id, self.estelle.id)
+
+    def test_dispatch_shows_the_first_cards_of_a_full_column(self):
+        """A column with more parcels than cards: the alerts first, then the oldest; its true
+        count, and the list of all its parcels."""
+        from odoo.addons.ocd_live_shop.models import ocd_live_dispatch
+        first = self._parcel(self._order(self.estelle, [(self.dress, 1)]), self.brenda)
+        late = self._parcel(self._order(self.estelle, [(self.dress, 1)]), self.brenda)
+        late.ocd_escalated_at = fields.Datetime.now()
+        Dispatch = self.env["ocd.live.dispatch"]
+        with patch.object(ocd_live_dispatch, "CARDS_PER_COLUMN", 1):
+            data = Dispatch.get_dispatch_data()
+        column = next(column for column in data["columns"] if column["key"] == "prep")
+        shown = [card["id"] for card in data["cards"] if card["column"] == "prep" and card["by"] == "ocd"]
+        self.assertEqual(shown, [late.id], "The late parcel first, the only card of its column")
+        self.assertGreaterEqual(column["counts"]["ocd"], 2)
+        self.assertEqual(column["counts"]["all"], column["counts"]["ocd"] + column["counts"]["vendor"])
+        action = Dispatch.ocd_column_action("prep", "ocd")
+        listed = self.env["stock.picking"].search(action["domain"])
+        self.assertIn(first, listed)
+        self.assertIn(late, listed)
+        self.assertEqual(len(listed), column["counts"]["ocd"])
+        with self.assertRaises(UserError):
+            Dispatch.ocd_column_action("nowhere")
 
     def test_orders_of_the_week(self):
         order = self._order(self.estelle, [(self.dress, 1), (self.butter, 2)])

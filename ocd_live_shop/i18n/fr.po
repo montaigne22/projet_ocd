@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 22:57+0000\n"
-"PO-Revision-Date: 2026-11-25 22:57+0000\n"
+"POT-Creation-Date: 2026-11-27 07:09+0000\n"
+"PO-Revision-Date: 2026-11-27 07:09+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -454,6 +454,12 @@ msgstr "%(summary)s · %(problems)s problèmes"
 
 #. module: ocd_live_shop
 #. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "%(summary)s · 1 problem"
+msgstr "%(summary)s · 1 problème"
+
+#. module: ocd_live_shop
+#. odoo-python
 #: code:addons/ocd_live_shop/models/ocd_live_settings.py:0
 msgid "%(text)s In %(currencies)s."
 msgstr "%(text)s En %(currencies)s."
@@ -869,6 +875,12 @@ msgstr "%s min"
 #: code:addons/ocd_live_shop/models/vendor_review.py:0
 msgid "%s months ago"
 msgstr "il y a %s mois"
+
+#. module: ocd_live_shop
+#. odoo-javascript
+#: code:addons/ocd_live_shop/static/src/dispatch/dispatch.js:0
+msgid "%s more · see the list"
+msgstr "%s de plus · voir la liste"
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -3223,6 +3235,11 @@ msgid "Amount handed over"
 msgstr "Montant remis"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_kept_frozen
+msgid "Amounts Kept Frozen"
+msgstr "Montants retenus figés"
+
+#. module: ocd_live_shop
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_delivery_rate__operator__courier
 #: model:ir.model.fields.selection,name:ocd_live_shop.selection__ocd_order_delivery__operator__courier
 msgid "An OCD courier delivers"
@@ -4550,6 +4567,11 @@ msgid "Commission (%)"
 msgstr "Commission (%)"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_commission_kept
+msgid "Commission Kept"
+msgstr "Commission retenue"
+
+#. module: ocd_live_shop
 #: model_terms:ir.ui.view,arch_db:ocd_live_shop.res_config_settings_view_form
 msgid "Commission of OCD"
 msgstr "Commission d'OCD"
@@ -5134,6 +5156,11 @@ msgid "Delivery Fees"
 msgstr "Frais de livraison"
 
 #. module: ocd_live_shop
+#: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_fees_kept
+msgid "Delivery Fees Kept"
+msgstr "Frais de livraison retenus"
+
+#. module: ocd_live_shop
 #: model:ir.model,name:ocd_live_shop.model_delivery_carrier
 msgid "Delivery Method"
 msgstr "Mode de livraison"
@@ -5387,6 +5414,12 @@ msgstr "Dispatch"
 #: model:ir.model.fields,field_description:ocd_live_shop.field_stock_picking__ocd_escalated_at
 msgid "Dispatch Alerted At"
 msgstr "Dispatch alerté le"
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "Dispatch · %s"
+msgstr "Dispatch · %s"
 
 #. module: ocd_live_shop
 #: model:ir.model.fields,field_description:ocd_live_shop.field_account_move__display_name
@@ -6085,6 +6118,16 @@ msgstr "Devanture et position obligatoires"
 #: model:ocd.listing.refuse.reason,name:ocd_live_shop.refuse_reason_store_front
 msgid "Front missing"
 msgstr "Devanture absente"
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_stock_picking__ocd_commission_kept
+msgid "Frozen at the delivery, in the currency of the company: the commission of OCD Live on the goods."
+msgstr "Figée à la livraison, dans la devise de la société : la commission d'OCD Live sur la marchandise."
+
+#. module: ocd_live_shop
+#: model:ir.model.fields,help:ocd_live_shop.field_stock_picking__ocd_fees_kept
+msgid "Frozen at the delivery, in the currency of the company: the deliveries of OCD (couriers, agencies) and its share on those of the vendors."
+msgstr "Figés à la livraison, dans la devise de la société : les livraisons d'OCD (livreurs, agences) et sa part sur celles des vendeurs."
 
 #. module: ocd_live_shop
 #. odoo-python
@@ -14146,6 +14189,12 @@ msgstr "Ce produit a déjà été ajouté depuis ce formulaire."
 #: code:addons/ocd_live_shop/models/stock_picking.py:0
 msgid "This step is not possible: the parcel %(parcel)s is %(stage)s."
 msgstr "Cette étape n'est pas possible : le colis %(parcel)s est %(stage)s."
+
+#. module: ocd_live_shop
+#. odoo-python
+#: code:addons/ocd_live_shop/models/ocd_live_dispatch.py:0
+msgid "This step of the dispatch does not exist."
+msgstr "Cette étape du dispatch n'existe pas."
 
 #. module: ocd_live_shop
 #. odoo-python

@@ -183,13 +183,16 @@ class OcdLiveDashboard(models.AbstractModel):
     def _ocd_revenue_rows(self):
         rows = super()._ocd_revenue_rows()
         company = self.env.company
-        # sudo: totals only
-        delivered = self.env["stock.picking"].sudo().search(
-            PARCEL + [("company_id", "=", company.id), ("ocd_stage", "=", "delivered")]
+        # sudo: totals only. The amounts kept are frozen at the delivery: added up by the database
+        Picking = self.env["stock.picking"].sudo()
+        delivered = PARCEL + [("company_id", "=", company.id), ("ocd_stage", "=", "delivered")]
+        [(commissions, fees)] = Picking._read_group(
+            delivered + [("ocd_kept_frozen", "=", True)], [], ["ocd_commission_kept:sum", "ocd_fees_kept:sum"],
         )
-        commissions = fees = 0.0
-        convert = converter(company)  # the rate of a currency once a day, not once per parcel
-        for parcel in delivered:
+        commissions, fees = commissions or 0.0, fees or 0.0
+        # Delivered without them (before this version, or written aside): counted parcel by parcel
+        convert = converter(company)
+        for parcel in Picking.search(delivered + [("ocd_kept_frozen", "=", False)]):
             currency = parcel.ocd_currency_id or company.currency_id
             date = parcel.ocd_delivered_at or fields.Datetime.now()
             goods_share = parcel.ocd_vendor_share - parcel.ocd_vendor_fee_amount

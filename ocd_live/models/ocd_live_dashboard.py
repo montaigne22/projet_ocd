@@ -58,7 +58,8 @@ class OcdLiveDashboard(models.AbstractModel):
                 action["domain"] = domain
                 action["context"] = {}
             if name:
-                action["name"] = name
+                # the title of the screen: Odoo shows `display_name` first
+                action["name"] = action["display_name"] = name
         return action
 
     @api.model
@@ -286,26 +287,21 @@ class OcdLiveDashboard(models.AbstractModel):
         company = self.env.company
         currency = company.currency_id
         # sudo: totals only, the team does not need the rights on the sales
-        lines = self.env["sale.order.line"].sudo().search([
-            ("company_id", "=", company.id),
-            ("order_id.state", "=", "sale"),
-            ("product_id.ocd_product_kind", "in", ("live_package", "hour_price", "directory_pass")),
-        ])
-        first_date = min(lines.order_id.mapped("date_order"), default=False)
+        sold = [("company_id", "=", company.id), ("order_id.state", "=", "sale")]
+        kinds = ("live_package", "hour_price", "directory_pass")
+        first_date = self.env["sale.order"].sudo().search([
+            ("company_id", "=", company.id), ("state", "=", "sale"), ("order_line.product_id.ocd_product_kind", "in", kinds),
+        ], order="date_order", limit=1).date_order
         rows = [
             {
                 "key": "packages",
                 "label": self.env._("Live packages"),
-                "amount": self._ocd_convert(
-                    lines.filtered(lambda line: line.product_id.ocd_product_kind in ("live_package", "hour_price"))
-                ),
+                "amount": self._ocd_lines_total(sold + [("product_id.ocd_product_kind", "in", ("live_package", "hour_price"))]),
             },
             {
                 "key": "passes",
                 "label": self.env._("Directory passes"),
-                "amount": self._ocd_convert(
-                    lines.filtered(lambda line: line.product_id.ocd_product_kind == "directory_pass")
-                ),
+                "amount": self._ocd_lines_total(sold + [("product_id.ocd_product_kind", "=", "directory_pass")]),
             },
         ]
         rows += self._ocd_revenue_rows()
@@ -337,12 +333,15 @@ class OcdLiveDashboard(models.AbstractModel):
         return []
 
     @api.model
-    def _ocd_convert(self, lines):
-        """Return the total of the sale order lines in the currency of the company."""
+    def _ocd_lines_total(self, domain):
+        """The total of the sale order lines of `domain` in the currency of the company: added up by
+        the database a day and a currency at a time (not line by line: it grows with the history)."""
         company = self.env.company
         convert = converter(company)
-        total = sum(convert(line.price_total, line.currency_id, line.order_id.date_order) for line in lines)
-        return company.currency_id.round(total)
+        groups = self.env["sale.order.line"].sudo()._read_group(
+            domain, ["currency_id", "order_id.date_order:day"], ["price_total:sum"],
+        )
+        return company.currency_id.round(sum(convert(total, currency, day) for currency, day, total in groups))
 
     # === TODAY, NEXT === #
 

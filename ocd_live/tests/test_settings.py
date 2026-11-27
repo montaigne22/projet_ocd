@@ -117,6 +117,7 @@ class TestOcdLiveSettings(OcdLiveCommon):
         })
         booking = self._book(self.starts[0], mode="remote")
         booking._ocd_confirm()
+        self._sell(self.duo)
         data = self.env["ocd.live.dashboard"].with_user(team).get_dashboard_data()
         tiles = {tile["key"]: tile for tile in data["tiles"]}
         self.assertEqual(tiles["lives"]["action"]["res_model"], "ocd.live.booking")
@@ -134,3 +135,10 @@ class TestOcdLiveSettings(OcdLiveCommon):
         self.assertEqual(ticks[0], 0)
         self.assertGreaterEqual(ticks[-1], data["chart"]["bars"][-1]["value"])
         self.assertEqual([row["key"] for row in data["revenue"]["rows"]][:2], ["packages", "passes"])
+        # Money received: the lines of the packages sold, added up by the database
+        lines = self.env["sale.order.line"].search([
+            ("order_id.state", "=", "sale"), ("product_id.ocd_product_kind", "in", ("live_package", "hour_price")),
+        ])
+        revenue = {row["key"]: row["amount"] for row in data["revenue"]["rows"]}
+        self.assertTrue(lines)
+        self.assertAlmostEqual(revenue["packages"], sum(lines.mapped("price_total")))

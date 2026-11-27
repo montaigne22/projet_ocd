@@ -153,6 +153,24 @@ class TestOcdMoney(OcdShopCommon):
         bill = parcel.ocd_vendor_bill_ids
         self.assertAlmostEqual(bill.amount_total, 5250, msg="4,250 F of sales + 1,000 F of delivery")
 
+    def test_amounts_kept_frozen_at_the_delivery(self):
+        """What OCD Live keeps on a parcel is frozen when it is delivered: « money received » of the
+        dashboard adds them up in the database, the same as counted parcel by parcel."""
+        parcel = self._order(self.estelle, [(self.dress, 1)]).picking_ids
+        self.assertFalse(parcel.ocd_kept_frozen)
+        self._deliver(parcel)
+        self.assertTrue(parcel.ocd_kept_frozen)
+        goods_share = parcel.ocd_vendor_share - parcel.ocd_vendor_fee_amount
+        self.assertAlmostEqual(parcel.ocd_commission_kept, parcel.ocd_goods_amount - goods_share)
+        self.assertAlmostEqual(parcel.ocd_fees_kept, parcel.ocd_fee_amount - parcel.ocd_vendor_fee_amount)
+        Dashboard = self.env["ocd.live.dashboard"]
+        rows = {row["key"]: row["amount"] for row in Dashboard._ocd_revenue_rows()}
+        # a parcel delivered before the amounts were frozen: counted parcel by parcel, the same
+        parcel.write({"ocd_kept_frozen": False, "ocd_commission_kept": 0, "ocd_fees_kept": 0})
+        again = {row["key"]: row["amount"] for row in Dashboard._ocd_revenue_rows()}
+        self.assertAlmostEqual(again["commissions"], rows["commissions"])
+        self.assertAlmostEqual(again["fees"], rows["fees"])
+
     def test_paid_on_the_phone_of_the_customer(self):
         """The customer pays on the phone with any provider of Odoo: once the provider confirms
         the payment, the parcel is paid, whoever is at the door."""

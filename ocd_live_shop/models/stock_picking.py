@@ -7,6 +7,7 @@ from odoo import Command, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import consteq
 
+from odoo.addons.ocd_live.tools import converter
 from odoo.addons.payment import utils as payment_utils
 
 from .res_company import DELIVERY_MODES
@@ -69,6 +70,19 @@ class StockPicking(models.Model):
     ocd_picked_at = fields.Datetime(string="Picked Up At", copy=False)
     ocd_left_at = fields.Datetime(string="Left At", copy=False)
     ocd_delivered_at = fields.Datetime(string="Delivered At", copy=False)
+    # What OCD Live keeps on the parcel, frozen when it is delivered, in the currency of the
+    # company: « money received » of the dashboard adds them up in the database, whatever the
+    # history (computed parcel by parcel, it grew with each parcel delivered)
+    ocd_kept_frozen = fields.Boolean(string="Amounts Kept Frozen", copy=False, readonly=True)
+    ocd_commission_kept = fields.Float(
+        string="Commission Kept", copy=False, readonly=True,
+        help="Frozen at the delivery, in the currency of the company: the commission of OCD Live on the goods.",
+    )
+    ocd_fees_kept = fields.Float(
+        string="Delivery Fees Kept", copy=False, readonly=True,
+        help="Frozen at the delivery, in the currency of the company: the deliveries of OCD (couriers, agencies) "
+        "and its share on those of the vendors.",
+    )
     ocd_delivery_code = fields.Char(
         string="Delivery Code",
         copy=False,
@@ -256,6 +270,29 @@ class StockPicking(models.Model):
                 picking.ocd_cod_amount = picking.ocd_goods_amount + picking.ocd_fee_amount
             else:
                 picking.ocd_cod_amount = picking.ocd_cod_collected_amount
+
+    def write(self, vals):
+        result = super().write(vals)
+        if vals.get("ocd_stage") == "delivered":
+            self.filtered("ocd_is_parcel").sudo()._ocd_freeze_kept()
+        return result
+
+    def _ocd_freeze_kept(self):
+        """What OCD Live keeps on these delivered parcels, frozen in the currency of the company at
+        the hour of the delivery: its commission on the goods, and the deliveries of OCD with its
+        share on those of the vendors."""
+        converters = {}
+        for parcel in self:
+            company = parcel.company_id
+            convert = converters.setdefault(company.id, converter(company))
+            currency = parcel.ocd_currency_id or company.currency_id
+            date = parcel.ocd_delivered_at or fields.Datetime.now()
+            goods_share = parcel.ocd_vendor_share - parcel.ocd_vendor_fee_amount
+            parcel.write({
+                "ocd_kept_frozen": True,
+                "ocd_commission_kept": convert(parcel.ocd_goods_amount - goods_share, currency, date),
+                "ocd_fees_kept": convert(parcel.ocd_fee_amount - parcel.ocd_vendor_fee_amount, currency, date),
+            })
 
     def action_cancel(self):
         result = super().action_cancel()

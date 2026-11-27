@@ -972,6 +972,10 @@ class OcdShop(WebsiteSale):
         order._update_address(partner_sudo.id, {"partner_id", "partner_invoice_id", "partner_shipping_id"})
         if order.website_id.partner_id:
             order.message_unsubscribe(order.website_id.partner_id.ids)
+        if order.carrier_id and order.order_line.filtered("is_delivery") and order._has_deliverable_products():
+            # Odoo has just set the delivery again for this address (`_update_address`)
+            request.session["sale_last_order_id"] = order.id
+            return request.redirect("/shop/payment")
         carriers = order._get_delivery_methods()
         carrier = order._get_preferred_delivery_method(carriers)
         if not carrier:

@@ -312,16 +312,20 @@ en mémoire) et lance chaque action planifiée une fois. Machine de test, un seu
 |---|---|---|---|
 | Tableau de bord | 317 requêtes, 1,0 s | **3 333 requêtes, 6,7 s** | **168 requêtes, 1,3 s** |
 | Commandes de la semaine | 60 requêtes, 0,15 s | **533 requêtes, 1,3 s** | **31 requêtes, 0,19 s** |
-| Dispatch | 47 requêtes, 0,1 s | 48 requêtes, 0,7 s | (dix fois plus de colis du jour à lire) |
+| Dispatch | 47 requêtes, 0,1 s | 48 requêtes, 0,7 s | **48 requêtes, 0,25 s** (27 novembre) |
 | Conversations WhatsApp | 254 requêtes, 0,34 s | 99 requêtes, 0,15 s (410 conversations) | |
 | Réservations, À vérifier, Automatisations, Paramètres, Livreurs, Régie | 35 à 196 requêtes | les mêmes | |
 
 - **La cause** : le taux de change d'une monnaie était demandé pour chaque montant additionné (deux fois
   par colis livré pour les commissions, une fois par commande) ; il l'est maintenant une fois par jour et
   par monnaie (`ocd_live/tools.py`, `converter`).
-- **Ce qui reste** : le tableau de bord additionne « l'argent reçu » depuis le premier paiement, colis par
-  colis (leurs montants sont calculés, pas enregistrés) : 1,3 s ici, et cela grandira avec l'historique. À
-  traiter avant d'avoir des dizaines de milliers de colis (enregistrer ces montants, ou un total par mois).
+- **« L'argent reçu »** (27 novembre) : il s'additionnait colis par colis depuis le premier paiement. Ce
+  qu'OCD Live garde sur un colis est maintenant figé à sa livraison et additionné par la base, comme les
+  lignes des lives et des pass : 14 requêtes quel que soit l'historique. Le tableau de bord entier : 154
+  requêtes, 0,3 s une fois le serveur chaud (0,7 s au tout premier appel d'un worker).
+- **Le Dispatch** (27 novembre) : la copie grossie a 1 257 colis ouverts ou livrés du jour ; chaque carte
+  calcule ses montants (0,5 ms par carte). Chaque colonne montre maintenant 40 cartes par livreur (OCD ou
+  vendeur), les alertes d'abord, avec son vrai total et la liste de tous ses colis : 196 cartes, 0,25 s.
 - **Les actions planifiées** (toutes celles d'OCD Live, d'OCD Express, des concours, des billets, des
   événements et de WhatsApp) : de 7 à 98 requêtes et moins de 0,5 s chacune, les mêmes à dix fois plus de
   données. Seule celle de la démo (absente en production) est lourde (5,6 s).

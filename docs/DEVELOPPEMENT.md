@@ -288,6 +288,21 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
   lançant `requetes.py` sur la démo puis sur la copie grossie.
 - **Additionner des montants dans une autre monnaie** : `tools.converter(company)` (ocd_live), jamais
   `_convert` dans une boucle (une requête par montant, un écran de 6,7 s à dix fois plus de données).
+- **Un total qui grandit avec l'historique** : additionné par la base (`_read_group`), jamais enregistrement
+  par enregistrement. « L'argent reçu » du tableau de bord : les lignes des lives et des pass par devise et
+  par jour (`ocd.live.dashboard._ocd_lines_total`) ; ce qu'OCD Live garde sur un colis (sa commission, ses
+  livraisons) est figé à la livraison dans la devise de la société (`stock.picking._ocd_freeze_kept`, champs
+  `ocd_commission_kept` et `ocd_fees_kept`) et additionné par la base. Un colis livré sans eux (avant la
+  version 20.0.1.52.0, figée par sa migration) est compté colis par colis, comme avant.
+- **Un écran qui liste des enregistrements vivants** en montre les premiers, avec le vrai total et la liste
+  complète : le Dispatch garde 40 cartes par colonne et par livreur (OCD ou vendeur), les alertes d'abord
+  (`CARDS_PER_COLUMN`, `ocd.live.dispatch.ocd_column_action`). Les montants des cartes ne se calculent que
+  pour les cartes montrées (un recordset neuf : le préchargement ne prend pas les autres colis).
+- **La livraison d'une commande n'est refaite que si elle change** : Odoo la remet à chaque étape (adresse,
+  page du paiement : « les prix à jour et définitifs »), en supprimant et recréant sa ligne et la livraison
+  de chaque colis. `sale.order._set_delivery_method` la garde quand c'est la livraison d'OCD Live au même
+  prix, avec les mêmes taxes et les mêmes colis (`_ocd_delivery_unchanged`) ; l'envoi de l'adresse ne la
+  choisit pas une seconde fois quand Odoo vient de la remettre pour la nouvelle adresse.
 
 ## Fichiers sur Cloudflare R2 (module `attachment_s3`)
 
