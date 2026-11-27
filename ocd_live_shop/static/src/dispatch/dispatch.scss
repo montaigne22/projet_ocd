@@ -31,6 +31,65 @@
     font-size: 13px;
     color: $ocd-bo-muted;
 }
+// Search a parcel: the board shows the parcels found
+.o_ocd_dispatch_search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 1 280px;
+    min-width: 200px;
+    > .oi {
+        position: absolute;
+        left: 10px;
+        font-size: 17px;
+        color: $ocd-bo-hint;
+        pointer-events: none;
+    }
+}
+.o_ocd_dispatch_search_input {
+    width: 100%;
+    min-height: 34px;
+    padding: 0 34px;
+    border: 1px solid $ocd-bo-input;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: $ocd-ink;
+    font-family: inherit;
+    font-size: 13.5px;
+    &::-webkit-search-cancel-button {
+        display: none;
+    }
+    &:focus {
+        outline: 0;
+        border-color: $ocd-green;
+        box-shadow: 0 0 0 3px rgba($ocd-green, 0.2);
+    }
+}
+.o_ocd_dispatch_search_clear {
+    position: absolute;
+    right: 3px;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: $ocd-bo-muted;
+    cursor: pointer;
+    &:hover {
+        background: $ocd-bo-grey;
+    }
+}
+.o_ocd_dispatch_no_result {
+    margin: 0;
+    padding: 12px 14px;
+    border: 1px dashed $ocd-bo-input;
+    border-radius: 10px;
+    font-size: 13px;
+    color: $ocd-bo-muted;
+    text-align: center;
+}
 .o_ocd_dispatch_alert {
     margin-left: auto;
     display: inline-flex;
@@ -365,6 +424,15 @@
     }
     .o_ocd_dispatch_toolbar {
         gap: 6px 10px;
+        // the search on the whole width; 16 px so that the phone does not zoom
+        .o_ocd_dispatch_search {
+            flex: 1 1 100%;
+            min-width: 0;
+        }
+        .o_ocd_dispatch_search_input {
+            min-height: 40px;
+            font-size: 16px;
+        }
         .o_ocd_switch {
             max-width: 100%;
             overflow-x: auto;

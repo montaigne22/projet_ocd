@@ -245,6 +245,35 @@ class TestOcdParcels(OcdShopCommon):
         with self.assertRaises(UserError):
             Dispatch.ocd_column_action("nowhere")
 
+    def test_dispatch_search(self):
+        """A parcel is found by its reference, its order, its customer (name or number written in
+        any way), its vendor; the couriers and the alerts stay those of the whole day."""
+        order = self._order(self.estelle, [(self.dress, 1), (self.butter, 1)])
+        brenda_parcel = self._parcel(order, self.brenda)
+        fatou_parcel = self._parcel(order, self.fatou)
+        Dispatch = self.env["ocd.live.dispatch"]
+        whole = Dispatch.get_dispatch_data()
+
+        def found(search):
+            return {card["id"] for card in Dispatch.get_dispatch_data(search=search)["cards"]}
+
+        self.assertEqual(found(brenda_parcel.name), {brenda_parcel.id})
+        self.assertTrue({brenda_parcel.id, fatou_parcel.id} <= found(order.name))
+        self.assertTrue({brenda_parcel.id, fatou_parcel.id} <= found(self.estelle.name.split()[0].lower()))
+        digits = "".join(char for char in self.estelle.phone if char.isdigit())
+        spaced = " ".join(digits[-6:][i:i + 2] for i in (0, 2, 4))
+        self.assertIn(brenda_parcel.id, found(spaced))
+        self.assertIn(fatou_parcel.id, found(self.fatou.name))
+        self.assertNotIn(brenda_parcel.id, found(self.fatou.name))
+        nothing = Dispatch.get_dispatch_data(search="zzz-nowhere")
+        self.assertFalse(nothing["cards"])
+        self.assertEqual(nothing["counts"]["all"], 0)
+        self.assertEqual(nothing["total"], whole["total"])
+        self.assertEqual(len(nothing["couriers"]), len(whole["couriers"]))
+        # The list of a column keeps the search
+        action = Dispatch.ocd_column_action("prep", "all", brenda_parcel.name)
+        self.assertEqual(self.env["stock.picking"].search(action["domain"]), brenda_parcel)
+
     def test_orders_of_the_week(self):
         order = self._order(self.estelle, [(self.dress, 1), (self.butter, 2)])
         Orders = self.env["ocd.live.orders"]

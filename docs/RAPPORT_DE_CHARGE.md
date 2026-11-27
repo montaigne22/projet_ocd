@@ -361,6 +361,22 @@ seconde au plus, en plus des visites. Le coût de chaque étape (un client) :
 
 Les deux dernières étapes sont les plus lourdes : à regarder avant une forte affluence d'acheteurs.
 
+**Allégé le 27 novembre 2026.** Odoo remettait la livraison de la commande à chaque étape (« les prix à jour
+et définitifs ») : il supprimait sa ligne et la livraison de chaque colis, puis les recréait, deux fois à la
+page du paiement et quatre fois à l'envoi de l'adresse. Elle est gardée quand rien n'a changé (même
+livraison d'OCD Live, même prix, mêmes taxes, mêmes colis), et l'envoi de l'adresse ne la choisit plus une
+seconde fois. Copie grossie de la démo (partie 9), un client :
+
+| Étape | Avant | Après |
+|---|---|---|
+| Page du paiement | 198 requêtes, 0,25 s | **109 requêtes, 0,11 s** |
+| Envoi de l'adresse, la première fois | 193 requêtes, 0,31 s | 193 requêtes, 0,31 s (création du contact et de l'adresse par Odoo) |
+| Envoi de l'adresse, une autre fois (adresse corrigée) | 355 requêtes | **153 requêtes** |
+
+Le parcours entier, 3 workers : **68 achats par minute pour un client seul (50 avant)**, soit environ 0,9 s
+de processeur par achat au lieu de 1,2 s ; 199 par minute à 8 clients, 192 à 16, aucune erreur. À plusieurs
+clients, le plafond (environ 200 par minute) est celui des 3 workers occupés en même temps.
+
 ## 11. Commandes
 
 ```bash

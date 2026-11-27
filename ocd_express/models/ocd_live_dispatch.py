@@ -9,6 +9,16 @@ class OcdLiveDispatch(models.AbstractModel):
     _inherit = "ocd.live.dispatch"
 
     @api.model
+    def _ocd_search_domain(self, search):
+        """A parcel of OCD Express is also found by its sender and its content."""
+        domain = super()._ocd_search_domain(search)
+        if domain:
+            search = search.strip()
+            domain = ["|", "|", ("ocd_express_sender_id.name", "ilike", search),
+                      ("ocd_express_content", "ilike", search), *domain]
+        return domain
+
+    @api.model
     def _ocd_card(self, parcel):
         card = super()._ocd_card(parcel)
         if parcel.ocd_express:

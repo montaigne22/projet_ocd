@@ -1,3 +1,4 @@
+import re
 from datetime import timedelta
 
 from odoo import api, fields, models
@@ -42,6 +43,29 @@ class OcdLiveDispatch(models.AbstractModel):
                          ("ocd_delivered_at", ">=", start)]
 
     @api.model
+    def _ocd_search_domain(self, search):
+        """The parcels found by what the team types: the reference of the parcel or of its order,
+        the customer (name or number, written in any way: « 6 70 00 », « +237 670… »), the
+        district, the vendor or the courier."""
+        search = (search or "").strip()
+        if not search:
+            return []
+        domain = [
+            "|", "|", "|", "|", "|",
+            ("name", "ilike", search),
+            ("origin", "ilike", search),
+            ("partner_id.name", "ilike", search),
+            ("ocd_district_id.name", "ilike", search),
+            ("ocd_vendor_id.name", "ilike", search),
+            ("ocd_courier_id.name", "ilike", search),
+        ]
+        digits = re.sub(r"\D", "", search)
+        if len(digits) >= 3:
+            field = "phone_sanitized" if "phone_sanitized" in self.env["res.partner"]._fields else "phone"
+            domain = ["|", (f"partner_id.{field}", "ilike", digits), *domain]
+        return domain
+
+    @api.model
     def _ocd_column_labels(self):
         return {
             "prep": self.env._("To prepare"),
@@ -57,9 +81,14 @@ class OcdLiveDispatch(models.AbstractModel):
         return "vendor" if parcel._ocd_vendor_delivers() or parcel.ocd_delivery_mode == "vendor" else "ocd"
 
     @api.model
-    def get_dispatch_data(self):
+    def get_dispatch_data(self, search=None):
+        """The board; with `search`, the cards and the counts of the parcels found only (the
+        couriers, the vendors and the alerts stay those of the whole day)."""
         company = self.env.company
-        parcels = self.env["stock.picking"].search(self._ocd_parcels_domain(), order="create_date")
+        everything = self.env["stock.picking"].search(self._ocd_parcels_domain(), order="create_date")
+        parcels = everything
+        if search_domain := self._ocd_search_domain(search):
+            parcels = self.env["stock.picking"].search(self._ocd_parcels_domain() + search_domain, order="create_date")
         # Each column, for each kind of courier: its count, and the cards of its first parcels
         groups = {}
         for parcel in parcels:
@@ -74,8 +103,8 @@ class OcdLiveDispatch(models.AbstractModel):
         )]
         cards.sort(key=lambda card: not card["alert"])
         labels = self._ocd_column_labels()
-        late = sum(1 for parcel in parcels if parcel.ocd_is_late)
-        problems = sum(1 for parcel in parcels if parcel.ocd_stage == "problem")
+        late = sum(1 for parcel in everything if parcel.ocd_is_late)
+        problems = sum(1 for parcel in everything if parcel.ocd_stage == "problem")
         alerts = []
         if late:
             alerts.append(self.env._("%s late", late))
@@ -97,8 +126,9 @@ class OcdLiveDispatch(models.AbstractModel):
             "counts": {"all": len(parcels), "ocd": count(by="ocd"), "vendor": count(by="vendor")},
             "alert": " · ".join(alerts),
             "subtitle": self.env._("Grouped by step · %s", now.strftime("%H:%M")),
-            "couriers": [self._ocd_courier_row(courier, parcels) for courier in couriers],
-            "vendors": self._ocd_vendor_rows(parcels),
+            "total": len(everything),
+            "couriers": [self._ocd_courier_row(courier, everything) for courier in couriers],
+            "vendors": self._ocd_vendor_rows(everything),
             "courier_options": [
                 {"id": courier.id, "name": courier.name}
                 for courier in couriers.filtered("ocd_courier_available")
@@ -113,13 +143,13 @@ class OcdLiveDispatch(models.AbstractModel):
         return next(key for key, stages in COLUMNS if parcel.ocd_stage in stages)
 
     @api.model
-    def ocd_column_action(self, column, by="all"):
-        """The list of the parcels of a column (those of a kind of courier), when it has more
-        parcels than cards."""
+    def ocd_column_action(self, column, by="all", search=None):
+        """The list of the parcels of a column (those of a kind of courier, those found), when it
+        has more parcels than cards."""
         labels = self._ocd_column_labels()
         if column not in labels:
             raise UserError(self.env._("This step of the dispatch does not exist."))
-        domain = self._ocd_parcels_domain(column)
+        domain = self._ocd_parcels_domain(column) + self._ocd_search_domain(search)
         if by in ("ocd", "vendor"):
             parcels = self.env["stock.picking"].search(domain)
             domain = [("id", "in", [parcel.id for parcel in parcels if self._ocd_by(parcel) == by])]

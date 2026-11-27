@@ -911,4 +911,6 @@ Ces choix ont été validés pendant le projet. Ceux marqués « réglable » se
   commission ou de change ne réécrit pas le passé.
 - **Le Dispatch montre 40 cartes par colonne** (et par livreur : OCD ou vendeur), les alertes d'abord puis
   les plus anciennes ; la colonne donne son vrai total et « N de plus · voir la liste » ouvre tous ses colis.
-  Des centaines de cartes n'aident personne et ralentissent l'écran.
+  Des centaines de cartes n'aident personne et ralentissent l'écran. Pour un colis précis, la case
+  « Rechercher » du Dispatch cherche dans tous ses colis (référence, commande, client, numéro, quartier,
+  vendeur, livreur) sans faire défiler.

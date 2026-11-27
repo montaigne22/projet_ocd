@@ -297,7 +297,11 @@ pages étaient refaites. Les visites d'un worker arrêté avant d'écrire sont p
 - **Un écran qui liste des enregistrements vivants** en montre les premiers, avec le vrai total et la liste
   complète : le Dispatch garde 40 cartes par colonne et par livreur (OCD ou vendeur), les alertes d'abord
   (`CARDS_PER_COLUMN`, `ocd.live.dispatch.ocd_column_action`). Les montants des cartes ne se calculent que
-  pour les cartes montrées (un recordset neuf : le préchargement ne prend pas les autres colis).
+  pour les cartes montrées (un recordset neuf : le préchargement ne prend pas les autres colis). La recherche
+  du Dispatch (`get_dispatch_data(search=…)`, `_ocd_search_domain`) cherche dans tous ses colis : la
+  référence du colis ou de la commande, le client (nom, numéro écrit de n'importe quelle façon), le
+  quartier, le vendeur, le livreur ; OCD Express y ajoute l'expéditeur et le contenu. Les livreurs, les
+  vendeurs et les alertes restent ceux de toute la journée.
 - **La livraison d'une commande n'est refaite que si elle change** : Odoo la remet à chaque étape (adresse,
   page du paiement : « les prix à jour et définitifs »), en supprimant et recréant sa ligne et la livraison
   de chaque colis. `sale.order._set_delivery_method` la garde quand c'est la livraison d'OCD Live au même

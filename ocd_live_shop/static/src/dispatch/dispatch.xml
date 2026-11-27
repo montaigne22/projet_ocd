@@ -7,7 +7,7 @@
             <div class="o_ocd_bo_header">
                 <h1 class="o_ocd_bo_title">Dispatch</h1>
                 <span class="o_ocd_bo_facet">Today</span>
-                <span class="o_ocd_bo_pager"><t t-out="data.counts.all"/> parcels</span>
+                <span class="o_ocd_bo_pager"><t t-out="data.total"/> parcels</span>
                 <button type="button" class="btn o_ocd_bo_icon_button" t-on-click="() => this.load()" title="Refresh" aria-label="Refresh">
                     <i class="oi" data-icon="refresh" aria-hidden="true"/>
                 </button>
@@ -31,11 +31,23 @@
                                     t-att-aria-pressed="this.filter() === key ? 'true' : 'false'"
                                     t-on-click="() => this.filter.set(key)" t-out="this.filterLabel(key)"/>
                         </div>
+                        <div class="o_ocd_dispatch_search">
+                            <i class="oi" data-icon="search" aria-hidden="true"/>
+                            <label for="o_ocd_dispatch_search" class="visually-hidden">Search a parcel</label>
+                            <input id="o_ocd_dispatch_search" type="search" class="o_ocd_dispatch_search_input" autocomplete="off"
+                                   placeholder="Parcel, customer, number, district…" t-att-value="this.search()"
+                                   t-on-input="(ev) => this.onSearch(ev)"/>
+                            <button t-if="this.search()" type="button" class="o_ocd_dispatch_search_clear"
+                                    title="Clear the search" aria-label="Clear the search" t-on-click="() => this.clearSearch()">
+                                <i class="oi" data-icon="close" aria-hidden="true"/>
+                            </button>
+                        </div>
                         <span class="o_ocd_dispatch_hint" t-out="data.subtitle"/>
                         <span t-if="data.alert" class="o_ocd_dispatch_alert">
                             <span class="o_ocd_dispatch_alert_dot" aria-hidden="true"/><t t-out="data.alert"/>
                         </span>
                     </div>
+                    <p t-if="this.noResult" class="o_ocd_dispatch_no_result" role="status" t-out="this.noResult"/>
                     <!-- on a phone: the steps as tabs, one at a time -->
                     <t t-set="stepKey" t-value="this.stepKey"/>
                     <div class="o_ocd_dispatch_steps" role="tablist" aria-label="Steps of the parcels">

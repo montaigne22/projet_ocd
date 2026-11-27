@@ -160,6 +160,25 @@ dans leur ordre : [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md). Avant eux :
 
 ## Journal
 
+### 27 novembre 2026 · Plus rapide quand les données grandissent ; une recherche au Dispatch
+
+- **« L'argent reçu » du tableau de bord ne relit plus l'historique** : ce qu'OCD Live garde sur un colis (sa
+  commission, ses livraisons) est figé à la livraison, dans la devise de la société, et additionné par la
+  base ; les lignes des lives et des pass aussi. 14 requêtes quel que soit le nombre de colis ; le tableau de
+  bord entier : 0,3 s à dix fois plus de données. La mise à jour fige les colis déjà livrés (2 860 colis : 30 s).
+- **Le parcours d'achat** : la livraison n'est plus supprimée puis recréée à chaque étape quand rien n'a
+  changé. Page du paiement : 198 → 109 requêtes (0,25 → 0,11 s) ; un achat coûte environ 0,9 s de processeur
+  au lieu de 1,2 s (68 achats par minute pour un client seul, 50 avant).
+- **Le Dispatch** : chaque colonne montre ses 40 premiers colis par livreur (OCD ou vendeur), les alertes
+  d'abord, avec son vrai total et « N de plus · voir la liste » ; 1 257 colis : 0,67 → 0,25 s. Une **case
+  « Rechercher »** trouve un colis sans faire défiler : référence, commande, client (nom ou numéro écrit
+  de n'importe quelle façon), quartier, vendeur, livreur, et pour OCD Express l'expéditeur et le contenu.
+- Les écrans ouverts depuis le tableau de bord portent leur titre ; « 1 problème » au singulier dans le
+  panneau des livreurs.
+- Détail dans [`RAPPORT_DE_CHARGE.md`](RAPPORT_DE_CHARGE.md) (parties 9 et 10). Suite complète sur une base neuve : **844 sans échec**.
+- Mise en place : mettre à jour le code d'Odoo depuis `main`, mettre à jour **OCD Live**, **OCD Live : shop** et
+  **OCD Express** dans Applications, redémarrer le service d'Odoo, Ctrl+F5.
+
 ### 26 novembre 2026 · Dix fois plus de données, et le parcours d'achat sous charge
 
 - **Trois outils** dans `tools/charge/` : `volume.py` grossit une copie de la démo (vendeurs, produits,
